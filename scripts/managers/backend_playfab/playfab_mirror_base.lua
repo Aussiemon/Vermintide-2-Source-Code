@@ -670,6 +670,31 @@ PlayFabMirrorBase.get_quests_cb = function (self, result)
 	self:set_quest_data("current_event_quests", current_event_quests)
 	self:set_quest_data("current_weekly_quests", current_weekly_quests)
 	self:set_quest_data("weekly_quest_update_time", weekly_quest_update_time)
+	self:_get_weekly_event_rewards()
+end
+
+PlayFabMirrorBase._get_weekly_event_rewards = function (self)
+	local request = {
+		FunctionName = "getWeeklyEventRewards",
+		FunctionParameter = {},
+	}
+	local success_callback = callback(self, "get_weekly_event_rewards_cb")
+
+	self._request_queue:enqueue(request, success_callback)
+
+	self._num_items_to_load = self._num_items_to_load + 1
+end
+
+PlayFabMirrorBase.get_weekly_event_rewards_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+
+	local function_result = result.FunctionResult
+	local data = function_result.data
+
+	if data then
+		self:set_read_only_data("weekly_event_rewards", cjson.encode(data), true)
+	end
+
 	self:_request_fix_inventory_data_1()
 end
 
@@ -1320,45 +1345,59 @@ PlayFabMirrorBase._set_inital_career_data = function (self, career_name, charact
 
 	local career_data = self._career_data[career_name]
 	local career_data_mirror = self._career_data_mirror[career_name]
-	local broken_slots = {}
-	local loadout = character_data
+	local broken_loadout_slots = {}
 
 	table.clear(career_data)
 	table.clear(career_data_mirror)
 
-	for i = 1, #slots_to_verify do
-		local slot_name = slots_to_verify[i]
-		local slot_data = loadout[slot_name]
-		local slot_item_value = type(slot_data) == "table" and slot_data.Value or slot_data
+	for i = 1, #character_data do
+		local loadout = character_data[i]
+		local broken_slots = {}
 
-		if not slot_item_value then
-			broken_slots[slot_name] = true
-		elseif CosmeticUtils.is_cosmetic_slot(slot_name) then
-			local cosmetic = self._unlocked_cosmetics[slot_item_value]
+		for j = 1, #slots_to_verify do
+			local slot_name = slots_to_verify[j]
+			local slot_data = loadout[slot_name]
+			local slot_item_value = type(slot_data) == "table" and slot_data.Value or slot_data
 
-			if not cosmetic then
+			if not slot_item_value then
 				broken_slots[slot_name] = true
-			end
-		else
-			local item = self._inventory_items[slot_item_value]
+			elseif CosmeticUtils.is_cosmetic_slot(slot_name) then
+				local cosmetic = self._unlocked_cosmetics[slot_item_value]
 
-			if not item then
-				broken_slots[slot_name] = true
+				if not cosmetic then
+					broken_slots[slot_name] = true
+				end
+			else
+				local item = self._inventory_items[slot_item_value]
+
+				if not item then
+					broken_slots[slot_name] = true
+				end
 			end
+		end
+
+		self:_verify_items_are_usable(broken_slots, loadout, career_name, slots_to_verify)
+
+		local loadout_career_data = {}
+		local loadout_career_mirror_data = {}
+
+		for key, data in pairs(loadout) do
+			local value = type(data) == "table" and data.Value or data
+
+			loadout_career_data[key] = value
+			loadout_career_mirror_data[key] = value
+		end
+
+		career_data[i] = loadout_career_data
+		career_data_mirror[i] = loadout_career_mirror_data
+
+		if table.size(broken_slots) > 0 then
+			broken_loadout_slots[tostring(i)] = broken_slots
 		end
 	end
 
-	self:_verify_items_are_usable(broken_slots, loadout, career_name, slots_to_verify)
-
-	for key, data in pairs(loadout) do
-		local value = type(data) == "table" and data.Value or data
-
-		career_data[key] = value
-		career_data_mirror[key] = value
-	end
-
-	if table.size(broken_slots) > 0 then
-		return broken_slots
+	if table.size(broken_loadout_slots) > 0 then
+		return broken_loadout_slots
 	end
 end
 
@@ -1592,28 +1631,165 @@ PlayFabMirrorBase.get_playfab_id = function (self)
 	return self._playfab_id
 end
 
-PlayFabMirrorBase.get_character_data = function (self, career_name, key)
+PlayFabMirrorBase.get_character_data = function (self, career_name, key, optional_loadout_index)
 	local career_data = self._career_data
+	local career_loadout_index = optional_loadout_index or self._career_loadouts[career_name]
+	local loadout_career_data = career_data[career_name] and career_data[career_name][career_loadout_index]
 
-	if career_data[career_name] ~= nil then
-		return self._career_data[career_name][key]
+	if loadout_career_data ~= nil then
+		return loadout_career_data[key]
 	end
 
 	return nil
 end
 
-PlayFabMirrorBase.set_character_data = function (self, career_name, key, value, set_mirror)
+PlayFabMirrorBase.set_character_data = function (self, career_name, key, value, set_mirror, optional_loadout_index)
 	local career_data = self._career_data[career_name]
+	local career_loadout_index = optional_loadout_index or self._career_loadouts[career_name]
+	local loadout_career_data = career_data[career_loadout_index]
 
-	career_data[key] = value
+	loadout_career_data[key] = value
 
 	if set_mirror then
-		self._career_data_mirror[career_name][key] = value
+		self._career_data_mirror[career_name][career_loadout_index][key] = value
 	end
 
 	local character_name = PROFILES_BY_CAREER_NAMES[career_name].display_name
 
-	self:set_career_read_only_data(character_name, key, value, career_name, set_mirror)
+	self:set_career_read_only_data(character_name, key, value, career_name, set_mirror, career_loadout_index)
+end
+
+PlayFabMirrorBase.get_career_loadouts = function (self, career_name)
+	if not career_name then
+		return nil
+	end
+
+	local career_data = self._career_data[career_name]
+	local selected_loadout = self._career_loadouts[career_name]
+
+	return selected_loadout, career_data
+end
+
+PlayFabMirrorBase.get_default_loadouts = function (self, career_name)
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+
+	if not career_name or not mechanism_name then
+		return nil
+	end
+
+	local default_loadouts = self._character_default_loadouts[mechanism_name] or self._character_default_loadouts.adventure
+	local career_default_loadouts = default_loadouts[career_name]
+
+	return career_default_loadouts
+end
+
+PlayFabMirrorBase.set_loadout_index = function (self, career_name, loadout_index)
+	if not career_name or not loadout_index then
+		return
+	end
+
+	local career_data = self._career_data[career_name]
+
+	if career_data[loadout_index] then
+		self._career_loadouts[career_name] = loadout_index
+
+		local profile = PROFILES_BY_CAREER_NAMES[career_name]
+		local profile_index = profile.index
+		local profile_name = profile.display_name
+		local career_index = career_index_from_name(profile_index, career_name)
+		local characters_data = self._characters_data
+		local character_data = characters_data[profile_name]
+
+		character_data.loadouts[career_index] = loadout_index
+
+		local encoded_data = cjson.encode(characters_data)
+
+		self:set_read_only_data(self._characters_data_key, encoded_data, false)
+		Managers.backend:dirtify_interfaces()
+	end
+end
+
+PlayFabMirrorBase.delete_loadout = function (self, career_name, loadout_index)
+	if not career_name or not loadout_index then
+		return
+	end
+
+	local selected_loadout_index, loadouts = self:get_career_loadouts(career_name)
+
+	if loadout_index > #loadouts then
+		return
+	end
+
+	if #loadouts == 1 then
+		return
+	end
+
+	local profile = PROFILES_BY_CAREER_NAMES[career_name]
+	local profile_index = profile.index
+	local profile_name = profile.display_name
+	local career_index = career_index_from_name(profile_index, career_name)
+	local characters_data = self._characters_data
+	local character_data = characters_data[profile_name]
+	local career_data = character_data.careers[career_name]
+
+	table.remove(career_data, loadout_index)
+	table.remove(loadouts, loadout_index)
+
+	if loadout_index == selected_loadout_index then
+		self._career_loadouts[career_name] = 1
+		character_data.loadouts[career_index] = 1
+	else
+		local new_loadout_index = math.clamp(selected_loadout_index, 1, #loadouts)
+
+		self._career_loadouts[career_name] = new_loadout_index
+		character_data.loadouts[career_index] = new_loadout_index
+	end
+
+	local encoded_data = cjson.encode(characters_data)
+
+	self:set_read_only_data(self._characters_data_key, encoded_data, false)
+	Managers.backend:dirtify_interfaces()
+end
+
+PlayFabMirrorBase.add_loadout = function (self, career_name)
+	if not career_name then
+		return
+	end
+
+	local selected_loadout_index, loadouts = self:get_career_loadouts(career_name)
+	local current_loadout = loadouts[selected_loadout_index]
+	local num_loadouts = #loadouts
+	local max_num_loadouts = 0
+
+	for _, loadout_data in ipairs(InventorySettings.loadouts) do
+		if loadout_data.loadout_type == "custom" then
+			max_num_loadouts = max_num_loadouts + 1
+		end
+	end
+
+	if num_loadouts < max_num_loadouts then
+		local profile = PROFILES_BY_CAREER_NAMES[career_name]
+		local profile_index = profile.index
+		local profile_name = profile.display_name
+		local career_index = career_index_from_name(profile_index, career_name)
+		local new_selected_loadut_index = selected_loadout_index + 1
+		local new_loadout = table.clone(current_loadout)
+
+		loadouts[#loadouts + 1] = new_loadout
+		self._career_loadouts[career_name] = new_selected_loadut_index
+
+		local characters_data = self._characters_data
+		local character_data = characters_data[profile_name]
+		local career_data = character_data.careers[career_name]
+
+		career_data[#career_data + 1] = table.clone(new_loadout)
+		character_data.loadouts[career_index] = new_selected_loadut_index
+
+		local encoded_data = cjson.encode(characters_data)
+
+		self:set_read_only_data(self._characters_data_key, encoded_data, false)
+		Managers.backend:dirtify_interfaces()
+	end
 end
 
 PlayFabMirrorBase.get_title_data = function (self)
@@ -1818,10 +1994,6 @@ PlayFabMirrorBase._create_fake_inventory_items = function (self, fake_inventory_
 		local weapon_skins = WeaponSkins
 
 		for skin_name, optional_offline_backend_id in pairs(fake_inventory_items) do
-			if skin_name == "bw_necromancy_staff_skin_02" then
-				local temp = 0
-			end
-
 			local item_key, rarity = weapon_skins.matching_weapon_skin_item_key(skin_name)
 
 			if item_key and rawget(ItemMasterList, item_key) then
@@ -2487,6 +2659,7 @@ PlayFabMirrorBase._setup_careers = function (self)
 
 	self._career_data = {}
 	self._career_data_mirror = {}
+	self._career_loadouts = {}
 	self._career_lookup = {}
 
 	local broken_slots_data = {}
@@ -2522,10 +2695,18 @@ PlayFabMirrorBase._setup_careers = function (self)
 			end
 
 			if slots_to_verify then
+				local careers_loadout = character_data.loadouts
+
 				for career_name, career_data in pairs(character_data.careers) do
 					if CareerSettings[career_name] then
 						self._career_data[career_name] = {}
 						self._career_data_mirror[career_name] = {}
+
+						local profile = PROFILES_BY_CAREER_NAMES[career_name]
+						local profile_index = profile.index
+						local career_index = career_index_from_name(profile_index, career_name)
+
+						self._career_loadouts[career_name] = careers_loadout and careers_loadout[career_index] or 1
 
 						local broken_slots = self:_set_inital_career_data(career_name, career_data, slots_to_verify)
 
@@ -2545,13 +2726,53 @@ PlayFabMirrorBase._setup_careers = function (self)
 		self._characters_data = characters_data
 		self._characters_data_mirror = table.clone(characters_data)
 
-		if Managers.mechanism:current_mechanism_name() == "adventure" then
-			self:_check_weaves_loadout()
-		else
+		if DEDICATED_SERVER then
 			self:unequip_disabled_items()
+		else
+			self:_verify_default_gear()
 		end
 	else
 		self:_fix_career_data(broken_slots_data)
+	end
+end
+
+PlayFabMirrorBase._verify_default_gear = function (self)
+	local request = {
+		FunctionName = "verifyDefaultLoadouts",
+		FunctionParameter = {
+			slots_to_verify = self._verify_slot_keys_per_affiliation.heroes,
+		},
+	}
+	local success_callback = callback(self, "verify_default_loadouts_request_cb")
+
+	self._request_queue:enqueue(request, success_callback)
+
+	self._num_items_to_load = self._num_items_to_load + 1
+end
+
+PlayFabMirrorBase.verify_default_loadouts_request_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+
+	local function_result = result.FunctionResult
+	local character_default_loadouts = function_result.character_default_loadouts
+	local vs_character_default_loadouts = function_result.vs_character_default_loadouts
+
+	if character_default_loadouts then
+		self:set_read_only_data("character_default_loadouts", cjson.encode(character_default_loadouts), true)
+	end
+
+	if vs_character_default_loadouts then
+		self:set_read_only_data("vs_character_default_loadouts", cjson.encode(vs_character_default_loadouts), true)
+	end
+
+	self._character_default_loadouts = {}
+	self._character_default_loadouts.adventure = character_default_loadouts
+	self._character_default_loadouts.versus = vs_character_default_loadouts
+
+	if Managers.mechanism:current_mechanism_name() == "adventure" then
+		self:_check_weaves_loadout()
+	else
+		self:unequip_disabled_items()
 	end
 end
 
@@ -2587,8 +2808,8 @@ PlayFabMirrorBase.fix_career_data_request_cb = function (self, result)
 		local careers = character_data.careers
 		local mirror_careers = mirror_data and mirror_data.careers
 
-		table.merge(current_career_data, careers)
-		table.merge(mirror_career_data, mirror_careers)
+		table.merge_recursive(current_career_data, careers)
+		table.merge_recursive(mirror_career_data, mirror_careers)
 	end
 
 	self:set_read_only_data(self._characters_data_key, cjson.encode(character_starting_gear), true)
@@ -2611,10 +2832,8 @@ PlayFabMirrorBase.fix_career_data_request_cb = function (self, result)
 		end
 
 		self:_request_user_inventory()
-	elseif Managers.mechanism:current_mechanism_name() == "adventure" then
-		self:_check_weaves_loadout()
 	else
-		self:unequip_disabled_items()
+		self:_verify_default_gear()
 	end
 end
 
@@ -2687,6 +2906,7 @@ PlayFabMirrorBase._check_career_data = function (self, careers_data, career_data
 	local dirty = false
 	local ignore_keys = {
 		"careers",
+		"loadouts",
 	}
 
 	for name, data in pairs(characters_data) do
@@ -2703,6 +2923,23 @@ PlayFabMirrorBase._check_career_data = function (self, careers_data, career_data
 		end
 	end
 
+	for name, data in pairs(characters_data) do
+		local loadouts = data.loadouts
+		local data_mirror = characters_data_mirror[name]
+
+		if data_mirror then
+			local loadouts_mirror = data_mirror.loadouts
+
+			if loadouts_mirror then
+				dirty = not table.compare(loadouts, loadouts_mirror)
+			else
+				dirty = true
+			end
+		else
+			dirty = true
+		end
+	end
+
 	for career_name, career_data in pairs(careers_data) do
 		local mirror_data = career_data_mirror[career_name]
 		local profile = PROFILES_BY_CAREER_NAMES[career_name]
@@ -2711,19 +2948,32 @@ PlayFabMirrorBase._check_career_data = function (self, careers_data, career_data
 			local slots_to_verify = self._verify_slot_keys_per_affiliation[profile.affiliation]
 
 			if slots_to_verify then
-				for _, loadout_key in pairs(slots_to_verify) do
-					local loadout_value = career_data[loadout_key]
-					local mirror_loadout_value = mirror_data[loadout_key]
+				for i = 1, #career_data do
+					local loadout = career_data[i]
+					local mirror_loadout = mirror_data[i]
 
-					if loadout_value ~= mirror_loadout_value then
-						for _, data in pairs(characters_data) do
-							if data.careers[career_name] then
-								data.careers[career_name][loadout_key] = loadout_value
+					if mirror_loadout then
+						for _, loadout_key in pairs(slots_to_verify) do
+							local loadout_value = loadout[loadout_key]
+							local mirror_loadout_value = mirror_loadout[loadout_key]
 
-								break
+							if loadout_value ~= mirror_loadout_value then
+								for _, data in pairs(characters_data) do
+									if data.careers[career_name] then
+										local career_loadout = data.careers[career_name][i]
+
+										if career_loadout then
+											career_loadout[loadout_key] = loadout_value
+										end
+
+										break
+									end
+								end
+
+								dirty = true
 							end
 						end
-
+					else
 						dirty = true
 					end
 				end
@@ -2738,15 +2988,16 @@ PlayFabMirrorBase._check_career_data = function (self, careers_data, career_data
 	return dirty, characters_data
 end
 
-PlayFabMirrorBase.set_career_read_only_data = function (self, character, key, value, career, set_mirror)
+PlayFabMirrorBase.set_career_read_only_data = function (self, character, key, value, career, set_mirror, loadout_index)
 	local characters_data = self._characters_data
-	local data = career and characters_data[character].careers[career] or characters_data[character]
+	local loadout_index = career and (loadout_index or self._career_loadouts[career_name])
+	local data = career and characters_data[character].careers[career][loadout_index] or characters_data[character]
 
 	data[key] = value
 
 	if set_mirror then
 		local characters_data_mirror = self._characters_data_mirror
-		local data_mirror = career and characters_data_mirror[character].careers[career] or characters_data_mirror[character]
+		local data_mirror = career and characters_data_mirror[character].careers[career][loadout_index] or characters_data_mirror[character]
 
 		if type(value) == "table" then
 			data_mirror[key] = table.clone(value)

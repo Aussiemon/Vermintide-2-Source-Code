@@ -56,7 +56,9 @@ mutator_config.pickup_system_multipliers = {
 	level_events = 0,
 	potions = 0,
 }
-mutator_config.curse_package_name = "resource_packages/mutators/mutator_curse_greed_pinata"
+mutator_config.packages = {
+	"resource_packages/mutators/mutator_curse_greed_pinata",
+}
 mutator_config.marked_enemy_killed_dialogue_event = "curse_see_objective"
 
 return mutator_config

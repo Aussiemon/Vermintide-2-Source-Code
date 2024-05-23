@@ -4082,6 +4082,11 @@ TitleScreenKeyMaps.win32 = InputUtils.keymaps_key_approved("win32") and {
 		"f12",
 		"held",
 	},
+	scroll_axis = {
+		"mouse",
+		"wheel",
+		"axis",
+	},
 }
 TitleScreenKeyMaps.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 	move_left_raw = {
@@ -4134,6 +4139,11 @@ TitleScreenKeyMaps.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 		"a",
 		"pressed",
 	},
+	special_1_press = {
+		"gamepad",
+		"x",
+		"pressed",
+	},
 	start_1 = {
 		"gamepad",
 		"a",
@@ -4158,6 +4168,21 @@ TitleScreenKeyMaps.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 		"gamepad",
 		"right_shoulder",
 		"held",
+	},
+	scroll_axis = {
+		"gamepad",
+		"right",
+		"axis",
+	},
+	gamepad_right_axis = {
+		"gamepad",
+		"right",
+		"axis",
+	},
+	start_press = {
+		"gamepad",
+		"start",
+		"pressed",
 	},
 }
 TitleScreenKeyMaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
@@ -4211,6 +4236,11 @@ TitleScreenKeyMaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		"cross",
 		"pressed",
 	},
+	special_1_press = {
+		"gamepad",
+		"square",
+		"pressed",
+	},
 	start_1 = {
 		"gamepad",
 		"cross",
@@ -4235,6 +4265,21 @@ TitleScreenKeyMaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		"gamepad",
 		"r1",
 		"held",
+	},
+	scroll_axis = {
+		"gamepad",
+		"right",
+		"axis",
+	},
+	gamepad_right_axis = {
+		"gamepad",
+		"right",
+		"axis",
+	},
+	start_press = {
+		"gamepad",
+		"options",
+		"pressed",
 	},
 }
 TitleScreenKeyMaps.ps_pad = InputUtils.keymaps_key_approved("ps_pad") and {
@@ -4288,6 +4333,11 @@ TitleScreenKeyMaps.ps_pad = InputUtils.keymaps_key_approved("ps_pad") and {
 		"cross",
 		"pressed",
 	},
+	special_1_press = {
+		"ps_pad",
+		"square",
+		"pressed",
+	},
 	start_1 = {
 		"ps_pad",
 		"cross",
@@ -4312,6 +4362,21 @@ TitleScreenKeyMaps.ps_pad = InputUtils.keymaps_key_approved("ps_pad") and {
 		"ps_pad",
 		"r1",
 		"held",
+	},
+	scroll_axis = {
+		"ps_pad",
+		"right",
+		"axis",
+	},
+	gamepad_right_axis = {
+		"ps_pad",
+		"right",
+		"axis",
+	},
+	start_press = {
+		"ps_pad",
+		"options",
+		"pressed",
 	},
 }
 TitleScreenFilters = {}

@@ -203,6 +203,219 @@ LiquidAreaDamageTemplates.templates = {
 			end
 		end,
 	},
+	vs_bile_troll_vomit_near = {
+		apply_buff_to_ai = false,
+		apply_buff_to_player = true,
+		buff_condition_function = "bile_troll_vomit_ground_base_condition",
+		buff_template_name = "bile_troll_vomit_ground_base",
+		buff_template_type = "troll_bile_ground",
+		cell_size = 1,
+		damage_type = "vomit_ground",
+		do_direct_damage_ai = true,
+		do_direct_damage_player = false,
+		end_pressure = 3,
+		fx_name_filled = "fx/wpnfx_troll_vomit_impact_01",
+		init_function = "vs_bile_troll_vomit_init",
+		linearized_flow = false,
+		liquid_spread_function = "pour_spread",
+		max_liquid = 30,
+		nav_cost_map_cost_type = "troll_bile",
+		sfx_name_start = "Play_enemy_troll_puke_loop",
+		sfx_name_stop = "Stop_enemy_troll_puke_loop",
+		starting_pressure = 20,
+		time_of_life = 7,
+		update_function = "vs_bile_troll_vomit_update",
+		use_nav_cost_map_volumes = true,
+		immune_breeds = {
+			chaos_dummy_troll = true,
+			chaos_spawn = true,
+			chaos_troll = true,
+			skaven_rat_ogre = true,
+			skaven_stormfiend = true,
+			vs_chaos_troll = true,
+			vs_gutter_runner = true,
+			vs_packmaster = true,
+			vs_poison_wind_globadier = true,
+			vs_ratling_gunner = true,
+			vs_warpfire_thrower = true,
+		},
+		difficulty_direct_damage = {
+			easy = {
+				1,
+				1,
+				0,
+				0,
+				1,
+			},
+			normal = {
+				1,
+				1,
+				0,
+				0,
+				1,
+			},
+			hard = {
+				1,
+				1,
+				0,
+				0,
+				1,
+			},
+			harder = {
+				1,
+				1,
+				0,
+				0,
+				1,
+			},
+			hardest = {
+				1,
+				1,
+				0,
+				0,
+				1,
+			},
+			cataclysm = {
+				1,
+				1,
+				0,
+				0,
+				1,
+			},
+			cataclysm_2 = {
+				1,
+				1,
+				0,
+				0,
+				1,
+			},
+			cataclysm_3 = {
+				1,
+				1,
+				0,
+				0,
+				1,
+			},
+			versus_base = {
+				1,
+				1,
+				0,
+				0,
+				1,
+			},
+		},
+	},
+	vs_bile_troll_vomit = {
+		apply_buff_to_ai = false,
+		apply_buff_to_player = true,
+		buff_condition_function = "bile_troll_vomit_ground_base_condition",
+		buff_template_name = "bile_troll_vomit_ground_base",
+		buff_template_type = "troll_bile_ground",
+		cell_size = 1,
+		damage_type = "vomit_ground",
+		do_direct_damage_ai = true,
+		do_direct_damage_player = false,
+		end_pressure = 3,
+		fx_name_filled = "fx/wpnfx_troll_vomit_impact_01",
+		init_function = "vs_bile_troll_vomit_init",
+		linearized_flow = false,
+		liquid_spread_function = "default_spread",
+		max_liquid = 20,
+		nav_cost_map_cost_type = "troll_bile",
+		sfx_name_start = "Play_enemy_troll_puke_loop",
+		sfx_name_stop = "Stop_enemy_troll_puke_loop",
+		starting_pressure = 20,
+		time_of_life = 7,
+		update_function = "vs_bile_troll_vomit_update",
+		use_nav_cost_map_volumes = true,
+		immune_breeds = {
+			chaos_dummy_troll = true,
+			chaos_spawn = true,
+			chaos_troll = true,
+			skaven_rat_ogre = true,
+			skaven_stormfiend = true,
+			vs_chaos_troll = true,
+			vs_gutter_runner = true,
+			vs_packmaster = true,
+			vs_poison_wind_globadier = true,
+			vs_ratling_gunner = true,
+			vs_warpfire_thrower = true,
+		},
+		difficulty_direct_damage = {
+			easy = {
+				1,
+				1,
+				0,
+				0,
+				1,
+			},
+			normal = {
+				1,
+				1,
+				0,
+				0,
+				1,
+			},
+			hard = {
+				1,
+				1,
+				0,
+				0,
+				1,
+			},
+			harder = {
+				1,
+				1,
+				0,
+				0,
+				1,
+			},
+			hardest = {
+				1,
+				1,
+				0,
+				0,
+				1,
+			},
+			cataclysm = {
+				1,
+				1,
+				0,
+				0,
+				1,
+			},
+			cataclysm_2 = {
+				1,
+				1,
+				0,
+				0,
+				1,
+			},
+			cataclysm_3 = {
+				1,
+				1,
+				0,
+				0,
+				1,
+			},
+			versus_base = {
+				1,
+				1,
+				0,
+				0,
+				1,
+			},
+		},
+		hit_player_function = function (player_unit, player_and_bot_units, source_unit)
+			if Unit.alive(source_unit) then
+				local blackboard = BLACKBOARDS[source_unit]
+
+				if blackboard then
+					blackboard.has_done_bile_damage = true
+				end
+			end
+		end,
+	},
 	nurgle_liquid = {
 		apply_buff_to_ai = false,
 		apply_buff_to_player = true,
@@ -835,6 +1048,50 @@ LiquidAreaDamageTemplates.bile_troll_vomit_init = function (self, t)
 	end
 end
 
+LiquidAreaDamageTemplates.vs_bile_troll_vomit_init = function (self, t)
+	local troll_unit = self._source_attacker_unit
+
+	if HEALTH_ALIVE[troll_unit] then
+		local world = self._world
+		local vomit_unit_name = "units/weapons/enemy/wpn_troll_vomit/wpn_troll_vomit"
+		local unit_spawner = Managers.state.unit_spawner
+		local vomit_unit
+		local player = Managers.player:unit_owner(troll_unit)
+
+		if player.remote then
+			local tongue_node = Unit.node(troll_unit, "j_tongue_01")
+			local tongue_pos = Unit.world_position(troll_unit, tongue_node)
+
+			vomit_unit = unit_spawner:spawn_local_unit(vomit_unit_name, tongue_pos, nil, nil)
+
+			World.link_unit(world, vomit_unit, troll_unit, tongue_node)
+			Unit.flow_event(vomit_unit, "fade_in")
+		else
+			local first_person_extension = ScriptUnit.has_extension(troll_unit, "first_person_system")
+			local local_player = Managers.player:local_player()
+			local vp_name = local_player.viewport_name
+			local vp = ScriptWorld.viewport(self._world, vp_name, true)
+			local camera = ScriptViewport.camera(vp)
+			local camera_unit = Camera.get_data(camera, "unit")
+			local camera_position = first_person_extension:current_position()
+
+			vomit_unit = unit_spawner:spawn_local_unit(vomit_unit_name, camera_position, nil, nil)
+
+			World.link_unit(world, vomit_unit, camera_unit, 0)
+			Unit.set_local_position(vomit_unit, 0, Vector3(0, 0, -0.5))
+			Unit.set_local_rotation(vomit_unit, 0, Quaternion.axis_angle(Vector3.up(), math.pi / 2))
+			Unit.flow_event(vomit_unit, "spawn_1p_effect")
+		end
+
+		self._vomit_unit = vomit_unit
+
+		local action = BreedActions.chaos_troll.vomit
+		local firing_time = action.firing_time
+
+		self._firing_time_deadline = t + firing_time
+	end
+end
+
 LiquidAreaDamageTemplates.nurgle_noxious_init = function (self, t)
 	local unit = self._source_attacker_unit
 
@@ -876,6 +1133,29 @@ LiquidAreaDamageTemplates.bile_troll_vomit_update = function (self, t, dt)
 	else
 		if vomit_unit ~= nil then
 			Unit.flow_event(vomit_unit, "fade_out")
+
+			self._vomit_unit = nil
+		end
+
+		return false
+	end
+end
+
+LiquidAreaDamageTemplates.vs_bile_troll_vomit_update = function (self, t, dt)
+	local vomit_unit = self._vomit_unit
+	local troll_unit = self._source_attacker_unit
+	local source_unit_is_alive = HEALTH_ALIVE[troll_unit]
+	local firing_time_deadline = self._firing_time_deadline
+
+	if source_unit_is_alive and vomit_unit ~= nil and t < firing_time_deadline then
+		return true
+	else
+		if vomit_unit ~= nil then
+			local player = Managers.player:unit_owner(troll_unit)
+
+			if player.remote then
+				Unit.flow_event(vomit_unit, "fade_out")
+			end
 
 			self._vomit_unit = nil
 		end

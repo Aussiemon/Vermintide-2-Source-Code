@@ -185,10 +185,12 @@ Commands = {
 			local mechanism = Managers.mechanism:game_mechanism()
 			local reservation_handler = mechanism:get_slot_reservation_handler()
 			local network_manager = Managers.state.network
-			local reserved_peer_ids = reservation_handler:reservers()
+			local reserved_peer_ids = reservation_handler:peers()
 
 			for _, peer_id in pairs(reserved_peer_ids) do
-				network_manager.network_server:kick_peer(peer_id)
+				if PEER_ID_TO_CHANNEL[peer_id] then
+					network_manager.network_server:kick_peer(peer_id)
+				end
 			end
 
 			local game_server_manager = Managers.game_server
@@ -719,19 +721,13 @@ Commands = {
 		max_args = 1,
 		min_args = 1,
 		func = function (peer_id)
-			local mechanism = Managers.mechanism:game_mechanism()
-			local reservation_handler = mechanism:get_slot_reservation_handler()
-			local reserved_peer_ids = reservation_handler:reservers()
-
-			for _, current_peer_id in pairs(reserved_peer_ids) do
-				if peer_id == current_peer_id then
-					Managers.state.network.network_server:kick_peer(peer_id)
-
-					return true, "Player kicked from server"
-				end
+			if not PEER_ID_TO_CHANNEL[peer_id] then
+				return false, "Failed to kick player - Player not found"
 			end
 
-			return false, "Failed to kick player - Player not found"
+			Managers.state.network.network_server:kick_peer(peer_id)
+
+			return true, "Player kicked from server"
 		end,
 	},
 	spawn_horde = {
@@ -742,6 +738,64 @@ Commands = {
 			Managers.state.conflict:debug_spawn_horde()
 
 			return true, "Spawning horde"
+		end,
+	},
+	trigger_playable_boss = {
+		description = "lets pactsworn pick playable boss",
+		max_args = 0,
+		min_args = 0,
+		func = function ()
+			cprint("[DEBUG] Triggered Playable boss")
+
+			local game_mode = Managers.state.game_mode:game_mode()
+
+			game_mode:set_playable_boss_can_be_picked(true)
+
+			return true, "trigger_playable_boss"
+		end,
+	},
+	enable_ai_and_bots = {
+		description = "disables ai and bots",
+		max_args = 0,
+		min_args = 0,
+		func = function ()
+			cprint("[DEBUG] disabling ai and bots")
+
+			script_data.ai_pacing_disabled = false
+			script_data.ai_roaming_spawning_disabled = false
+			script_data.ai_specials_spawning_disabled = false
+			script_data.ai_boss_spawning_disabled = false
+			script_data.ai_horde_spawning_disabled = false
+			script_data.ai_bots_disabled = false
+			script_data.ai_critter_spawning_disabled = false
+			script_data.ai_mini_patrol_disabled = false
+			script_data.ai_rush_intervention_disabled = false
+			script_data.ai_speed_run_intervention_disabled = false
+			script_data.ai_terror_events_disabled = false
+
+			return true, "disabling_ai_and_bots"
+		end,
+	},
+	disable_ai_and_bots = {
+		description = "enables ai and bots",
+		max_args = 0,
+		min_args = 0,
+		func = function ()
+			cprint("[DEBUG] enabling ai and bots")
+
+			script_data.ai_pacing_disabled = true
+			script_data.ai_roaming_spawning_disabled = true
+			script_data.ai_boss_spawning_disabled = true
+			script_data.ai_specials_spawning_disabled = true
+			script_data.ai_horde_spawning_disabled = true
+			script_data.ai_bots_disabled = true
+			script_data.ai_critter_spawning_disabled = true
+			script_data.ai_mini_patrol_disabled = true
+			script_data.ai_rush_intervention_disabled = true
+			script_data.ai_speed_run_intervention_disabled = true
+			script_data.ai_terror_events_disabled = true
+
+			return true, "enabling_ai_and_bots"
 		end,
 	},
 }

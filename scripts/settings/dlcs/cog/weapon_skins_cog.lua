@@ -138,8 +138,8 @@ local skins = {
 	{
 		name = "dr_steam_pistol_01_t2_magic_01",
 		data = {
-			description = "dr_steam_pistol_01_t2_magic_01_desciption",
-			display_name = "dr_steam_pistol_01_t2_magic_01_name",
+			description = "dr_steam_pistol_skin_02_magic_01_description",
+			display_name = "dr_steam_pistol_skin_02_magic_01_name",
 			display_unit = "units/weapons/weapon_display/display_drakefire_pistols",
 			hud_icon = "weapon_generic_icon_staff_3",
 			inventory_icon = "icon_wpn_dw_steam_pistol_01_t2_magic",

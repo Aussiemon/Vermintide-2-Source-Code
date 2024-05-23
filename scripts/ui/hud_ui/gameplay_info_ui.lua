@@ -34,32 +34,20 @@ GameplayInfoUI.add_gameplay_info_event = function (self, event_type, show, reaso
 	self._target_unit = target_unit
 
 	self:_update_button_prompts()
-	self:_update_selected_career_data()
 
 	if self._first_time then
-		local info_help = self._widgets_by_name.info_help
-
-		self:_start_animation("on_enter", "help_widget_on_enter", info_help)
-
-		self._first_time = false
+		-- Nothing
 	end
 end
 
 GameplayInfoUI._update_spawn_info_texts = function (self, state_text, sub_text, frame_color)
-	local widget = self._widgets_by_name.spawn_help
-	local content = widget.content
-	local style = widget.style
+	local spawn_text = self._widgets_by_name.spawn_text
+	local spawn_reason = self._widgets_by_name.spawn_reason
 
-	content.spawn_state_text = state_text and state_text or ""
-	style.spawn_state_text.text_color[1] = state_text ~= nil and 255 or 0
-	content.fail_reason_text = sub_text and sub_text or ""
-	style.fail_reason_text.text_color[1] = sub_text ~= nil and 255 or 0
-	style.glow_frame.color = frame_color and frame_color or {
-		255,
-		255,
-		255,
-		255,
-	}
+	spawn_text.content.text = state_text and state_text or ""
+	spawn_text.content.visible = state_text ~= nil
+	spawn_reason.content.text = sub_text and sub_text or ""
+	spawn_reason.content.visible = sub_text ~= nil
 end
 
 GameplayInfoUI._update_selected_career_data = function (self)
@@ -90,9 +78,17 @@ GameplayInfoUI._update_button_prompts = function (self)
 		input_service_name = "Player"
 		input_action = "ghost_mode_exit"
 
-		local input_text = "$KEY;" .. input_service_name .. "__" .. input_action .. ":"
+		local input_service = Managers.input:get_service(input_service_name)
+		local _, input_text = UISettings.get_gamepad_input_texture_data(input_service, input_action, self._gamepad_active)
+		local spawn_input_text = ""
 
-		spawn_state_text = string.format(Localize("versus_gameplay_info_spawn_here"), input_text)
+		if self._gamepad_active then
+			spawn_input_text = " $KEY;" .. input_service_name .. "__" .. input_action .. ":"
+		else
+			spawn_input_text = input_text and "{#color(193,91,36)}[" .. input_text .. "] {#reset()}" or ""
+		end
+
+		spawn_state_text = string.format(Localize("versus_gameplay_info_spawn_here"), spawn_input_text)
 		frame_color = {
 			175,
 			0,
@@ -275,49 +271,24 @@ GameplayInfoUI._set_tele_prompt = function (self, input_service_name, input_acti
 	local ui_renderer = self._ui_renderer
 	local input_service = input_service_name and input_manager:get_service(input_service_name)
 	local gamepad_active = input_manager:is_device_active("gamepad")
-	local widget_input = widgets_by_name.teleport_text_input
-	local widget_suffix = widgets_by_name.teleport_text
-	local widget_background = widgets_by_name.teleport_background
+	local teleport_text_widget = widgets_by_name.teleport_text
 	local texture_data, input_text
 
 	if input_action and not hide then
 		texture_data, input_text = UISettings.get_gamepad_input_texture_data(input_service, input_action, gamepad_active)
-
-		if texture_data and is_array(texture_data) then
-			texture_data = nil
-		end
 	end
 
-	widget_suffix.content.text = suffix_text or ""
+	local str = " %s %s "
+	local input_string = ""
 
-	if not texture_data then
-		widget_input.content.text = input_text and " [" .. input_text .. "] " or ""
-	elseif texture_data.texture then
-		widget_input.content.text = ""
-		widget_suffix.content.text = " " .. widget_suffix.content.text
+	if gamepad_active then
+		input_string = "$KEY;" .. input_service_name .. "__" .. input_action .. ":"
+	else
+		input_string = input_text and "{#color(193,91,36)}[" .. input_text .. "] {#reset()}" or ""
 	end
 
-	local font_input, scaled_font_input_size = UIFontByResolution(widget_input.style.text)
-	local font_suffix, scaled_font_size_suffix = UIFontByResolution(widget_suffix.style.text)
-	local text_input = widget_input.content.text
-	local text_suffix = widget_suffix.content.text
-	local text_width_input = UIRenderer.text_size(ui_renderer, text_input, font_input[1], scaled_font_input_size)
-	local text_width_suffix = UIRenderer.text_size(ui_renderer, text_suffix, font_suffix[1], scaled_font_size_suffix)
-	local total_length = text_width_input + text_width_suffix
-	local offset = -(total_length * 0.5)
-	local suffix_offset = offset + text_width_input
-
-	widget_suffix.style.text.offset[1] = suffix_offset
-	widget_suffix.style.text_shadow.offset[1] = suffix_offset + 2
-
-	if not texture_data then
-		widget_input.style.text.offset[1] = offset
-		widget_input.style.text_shadow.offset[1] = offset + 2
-	end
-
-	local background_scenegraph_id = widget_background.scenegraph_id
-
-	ui_scenegraph[background_scenegraph_id].size[1] = hide and 0 or total_length + 20
+	teleport_text_widget.content.text = string.format(str, input_string, suffix_text)
+	teleport_text_widget.content.visible = not hide
 end
 
 GameplayInfoUI._start_animation = function (self, animation_name, id, widget)
@@ -332,33 +303,4 @@ GameplayInfoUI._start_animation = function (self, animation_name, id, widget)
 		id = animation_id,
 		name = animation_name,
 	}
-end
-
-GameplayInfoUI._get_current_selected_career_data = function (self)
-	if not Managers then
-		return nil
-	end
-
-	if not Managers.player then
-		return nil
-	end
-
-	if not SPProfiles then
-		return nil
-	end
-
-	local local_player = Managers.player:local_player()
-
-	if not local_player then
-		return nil
-	end
-
-	local career_index = local_player:career_index()
-	local profile_index = local_player:profile_index()
-	local current_profile = SPProfiles[profile_index]
-	local current_career = current_profile.careers[career_index]
-	local display_name = current_career.display_name or "not_assigned"
-	local picking_image = current_career.picking_image or "icons_placeholder"
-
-	return display_name, picking_image
 end

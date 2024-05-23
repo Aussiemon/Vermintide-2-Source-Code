@@ -121,9 +121,9 @@ HeroWindowTalentsConsole.create_ui_elements = function (self, params, offset)
 	self._additional_widgets_by_name = {}
 
 	local input_service = Managers.input:get_service("hero_view")
-	local gui_layer = UILayer.default + 30
+	local gui_layer = UILayer.default + 300
 
-	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 5, gui_layer, generic_input_actions.default, true)
+	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 7, gui_layer, generic_input_actions.default, true)
 
 	self._menu_input_description:set_input_description(nil)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
@@ -147,9 +147,10 @@ HeroWindowTalentsConsole._initialize_talents = function (self)
 	self._selected_talents = table.clone(current_talents)
 	self._talent_interface = talent_interface
 
-	self:_update_talent_sync(true)
+	self:_update_talents(true)
 
 	self._initialized = true
+	self._talent_sync_id = self.parent.talent_sync_id
 end
 
 HeroWindowTalentsConsole._input_service = function (self)
@@ -170,6 +171,7 @@ HeroWindowTalentsConsole.update = function (self, dt, t)
 	end
 
 	self:_update_animations(dt)
+	self:_update_talent_sync()
 	self:_handle_gamepad_input(dt, t)
 	self:_handle_input(dt, t)
 	self:draw(dt, t)
@@ -179,9 +181,21 @@ HeroWindowTalentsConsole.post_update = function (self, dt, t)
 	return
 end
 
-HeroWindowTalentsConsole._update_talent_sync = function (self, initialize)
+HeroWindowTalentsConsole._update_talents = function (self, initialize)
 	self:_populate_talents_by_hero(initialize)
 	self:_populate_career_info(initialize)
+	self:_update_backend_talents(initialize)
+end
+
+HeroWindowTalentsConsole._update_backend_talents = function (self, initialize)
+	if initialize then
+		return
+	end
+
+	local talent_interface = self._talent_interface
+	local career_name = self._career_name
+
+	talent_interface:set_talents(career_name, self._selected_talents)
 end
 
 HeroWindowTalentsConsole._update_animations = function (self, dt)
@@ -317,8 +331,27 @@ HeroWindowTalentsConsole._set_talent_selected = function (self, row, column)
 
 	selected_talents[row] = column
 
-	self:_update_talent_sync()
+	self:_update_talents()
 	self.parent:update_talent_sync()
+
+	self._talent_sync_id = self.parent.talent_sync_id
+end
+
+HeroWindowTalentsConsole._update_talent_sync = function (self)
+	local talent_sync_id = self.parent.talent_sync_id
+
+	if talent_sync_id ~= self._talent_sync_id then
+		local career_name = self._career_name
+		local talent_interface = Managers.backend:get_interface("talents")
+		local current_talents = talent_interface:get_talents(career_name)
+
+		self._selected_talents = table.clone(current_talents)
+		self._talent_interface = talent_interface
+
+		self:_update_talents(true)
+
+		self._talent_sync_id = talent_sync_id
+	end
 end
 
 HeroWindowTalentsConsole.draw = function (self, dt, t)
@@ -348,7 +381,7 @@ HeroWindowTalentsConsole.draw = function (self, dt, t)
 
 	UIRenderer.end_pass(ui_top_renderer)
 
-	if gamepad_active then
+	if gamepad_active and not self.parent:input_blocked() then
 		self._menu_input_description:draw(ui_top_renderer, dt)
 	end
 

@@ -271,8 +271,8 @@ local generic_input_actions = {
 		},
 		{
 			description_text = "input_description_toggle_hero_details",
-			ignore_keybinding = true,
-			input_action = "right_thumb",
+			ignore_keybinding = false,
+			input_action = "right_stick_press",
 			priority = 4,
 		},
 		{

@@ -313,8 +313,8 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 		self._buff_extension:trigger_procs("on_overcharge_lost", pre_amount - post_amount, self.max_value)
 	end
 
-	if self.overcharge_value == 0 and pre_amount ~= 0 and self.overcharge_depleted_func then
-		self.overcharge_depleted_func(self.unit, self.first_person_extension, self.time1)
+	if self.overcharge_value <= 0 and pre_amount ~= 0 and self.overcharge_depleted_func then
+		self.overcharge_depleted_func(self.world, self.unit, self.first_person_extension)
 	end
 end
 
@@ -331,6 +331,8 @@ PlayerUnitOverchargeExtension.add_charge = function (self, overcharge_amount, ch
 	overcharge_amount = self._buff_extension:apply_buffs_to_value(overcharge_amount, "reduced_overcharge")
 
 	if buff_extension and not self._ignored_overcharge_types[overcharge_type] then
+		overcharge_amount = overcharge_amount * buff_extension:apply_buffs_to_value(1, "ammo_used_multiplier")
+
 		buff_extension:trigger_procs("on_ammo_used", self, 0)
 		buff_extension:trigger_procs("on_overcharge_used", overcharge_amount)
 		Managers.state.achievement:trigger_event("ammo_used", self.owner_unit)
@@ -356,7 +358,7 @@ PlayerUnitOverchargeExtension.add_charge = function (self, overcharge_amount, ch
 
 	local critical_overcharge_margin = self.critical_overcharge_margin
 
-	if current_overcharge_value <= max_value - critical_overcharge_margin and max_value < current_overcharge_value + overcharge_amount then
+	if current_overcharge_value <= max_value - critical_overcharge_margin and max_value <= current_overcharge_value + overcharge_amount then
 		local state_settings = self._overcharge_states[OVERCHARGE_LEVELS.critical]
 
 		self:_trigger_hud_sound(state_settings.sound_event, self.first_person_extension)

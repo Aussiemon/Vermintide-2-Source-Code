@@ -43,14 +43,95 @@ local function create_scrollbar(scenegraph_id, area_size, scroll_size, horizonta
 						end
 					end,
 				},
+				{
+					pass_type = "texture",
+					style_id = "gamepad_input",
+					texture_id = "xbox_input",
+					content_check_function = function (content, style)
+						local gamepad_active = Managers.input:is_device_active("gamepad")
+						local use_ps4_input_icons = UISettings.use_ps4_input_icons
+						local input_device = Managers.input:get_most_recent_device()
+						local device_type = input_device.type()
+						local is_ps_pad = device_type == "sce_pad"
+
+						use_ps4_input_icons = is_ps_pad or use_ps4_input_icons
+
+						return gamepad_active and not use_ps4_input_icons
+					end,
+					content_change_function = function (content, style)
+						if content.horizontal_scrollbar then
+							local scroller_style = style.parent.scroller
+							local scroller_width = scroller_style.rect_size[1]
+							local scroller_offset = scroller_style.offset[1]
+
+							style.offset[1] = scroller_offset + scroller_width * 0.5 - style.texture_size[1] * 0.5
+						else
+							local scroller_style = style.parent.scroller
+							local scroller_height = scroller_style.rect_size[2]
+							local scroller_offset = scroller_style.offset[2]
+
+							style.offset[2] = scroller_offset - scroller_height * 0.5 + style.texture_size[2] * 0.5
+						end
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "gamepad_input",
+					texture_id = "ps_input",
+					content_check_function = function (content, style)
+						local gamepad_active = Managers.input:is_device_active("gamepad")
+						local use_ps4_input_icons = UISettings.use_ps4_input_icons
+						local input_device = Managers.input:get_most_recent_device()
+						local device_type = input_device.type()
+						local is_ps_pad = device_type == "sce_pad"
+
+						use_ps4_input_icons = is_ps_pad or use_ps4_input_icons
+
+						return gamepad_active and use_ps4_input_icons
+					end,
+					content_change_function = function (content, style)
+						if content.horizontal_scrollbar then
+							local scroller_style = style.parent.scroller
+							local scroller_width = scroller_style.rect_size[1]
+							local scroller_offset = scroller_style.offset[1]
+
+							style.offset[1] = scroller_offset + scroller_width * 0.5 - style.texture_size[1] * 0.5
+						else
+							local scroller_style = style.parent.scroller
+							local scroller_height = scroller_style.rect_size[2]
+							local scroller_offset = scroller_style.offset[2]
+
+							style.offset[2] = scroller_offset - scroller_height * 0.5 + style.texture_size[2] * 0.5
+						end
+					end,
+				},
 			},
 		},
 		content = {
+			ps_input = "ps4_button_icon_right_stick",
+			xbox_input = "xbone_button_icon_right_stick",
 			scroller_hotspot = {},
 			scrollbar_hotspot = {},
 			horizontal_scrollbar = horizontal_scrollbar,
 		},
 		style = {
+			gamepad_input = {
+				texture_size = {
+					32,
+					33,
+				},
+				horizontal_alignment = horizontal_scrollbar and "left" or "right",
+				vertical_alignment = horizontal_scrollbar and "bottom" or "top",
+				offset = horizontal_scrollbar and {
+					0,
+					16.5,
+					103,
+				} or {
+					16,
+					0,
+					103,
+				},
+			},
 			scroller_hotspot = {
 				area_size = horizontal_scrollbar and {
 					math.max((1 - scroll_size / (scroll_size + area_size[1])) * area_size[1], 40),

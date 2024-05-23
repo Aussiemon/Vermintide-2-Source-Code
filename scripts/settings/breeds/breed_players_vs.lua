@@ -37,7 +37,7 @@ vs_gutter_runner.stagger_threshold_light = 1
 vs_gutter_runner.stagger_threshold_medium = 2
 vs_gutter_runner.stagger_threshold_heavy = 2.5
 vs_gutter_runner.stagger_threshold_explosion = 3
-vs_gutter_runner.z_onscreen_damage_offset = -0.5
+vs_gutter_runner.z_onscreen_damage_offset = 1
 vs_gutter_runner.damage_numbers_font_override = 10
 
 local vs_packmaster = table.clone(Breeds.skaven_pack_master)
@@ -176,12 +176,12 @@ vs_warpfire_thrower.movement_speed_multiplier = 0.875
 vs_warpfire_thrower.run_threshold = 4
 vs_warpfire_thrower.shoot_warpfire_prime_time = 0.2
 vs_warpfire_thrower.shoot_warpfire_wind_up_movement_speed = {
-	finish = 0.5,
+	finish = 1,
 	rate = 1,
 	start = 3,
 }
 vs_warpfire_thrower.shoot_warpfire_movement_speed_mod = 2
-vs_warpfire_thrower.shoot_warpfire_max_flame_time = 4
+vs_warpfire_thrower.shoot_warpfire_max_flame_time = 5
 vs_warpfire_thrower.shoot_warpfire_attack_range = 10
 vs_warpfire_thrower.shoot_warpfire_close_attack_range = 7
 vs_warpfire_thrower.shoot_warpfire_close_attack_cooldown = 0.2
@@ -189,21 +189,40 @@ vs_warpfire_thrower.shoot_warpfire_close_attack_hit_radius = 1.5
 vs_warpfire_thrower.shoot_warpfire_close_attack_dot = 0.9
 vs_warpfire_thrower.shoot_warpfire_minimum_forced_cooldown = 0.6
 vs_warpfire_thrower.shoot_warpfire_long_attack_damage = {
-	2.5,
-	2.5,
-	2.5,
-	2.5,
-	2.5,
-	2.5,
+	3,
+	3,
+	3,
+	3,
+	3,
+	3,
 }
 vs_gutter_runner.max_stagger_duration = 0.4
 vs_warpfire_thrower.diff_stagger_resist = nil
-vs_warpfire_thrower.stagger_resistance = 3.5
-vs_warpfire_thrower.stagger_resistance_ranged = 7
+vs_warpfire_thrower.stagger_resistance = 5
+vs_warpfire_thrower.stagger_resistance_ranged = 8
 vs_warpfire_thrower.stagger_threshold_light = 1
 vs_warpfire_thrower.stagger_threshold_medium = 2
 vs_warpfire_thrower.stagger_threshold_heavy = 3
 vs_warpfire_thrower.stagger_threshold_explosion = 4
+
+local vs_chaos_troll = table.clone(Breeds.chaos_troll)
+
+vs_chaos_troll.animation_sync_rpc = "rpc_sync_anim_state_6"
+vs_chaos_troll.cannot_be_aggroed = true
+vs_chaos_troll.parent_breed_name = "chaos_troll"
+vs_chaos_troll.poison_resistance = 100
+vs_chaos_troll.starting_animation = "to_1h_axe"
+vs_chaos_troll.climb_type = "climb"
+vs_chaos_troll.keep_weapon_on_death = true
+vs_chaos_troll.max_vomit_distance = 7
+vs_chaos_troll.movement_speed_multiplier = 1.3125
+vs_chaos_troll.run_threshold = 4
+vs_chaos_troll.run_on_spawn = AiBreedSnippets.on_chaos_troll_spawn
+vs_chaos_troll.run_on_death = nil
+vs_chaos_troll.run_on_despawn = nil
+vs_chaos_troll.boss_blocked_sound = nil
+vs_chaos_troll.combat_music_state = "troll"
+PlayerBreeds.vs_chaos_troll = vs_chaos_troll
 PlayerBreeds.vs_gutter_runner = vs_gutter_runner
 PlayerBreeds.vs_packmaster = vs_packmaster
 PlayerBreeds.vs_poison_wind_globadier = vs_poison_wind_globadier
@@ -256,6 +275,11 @@ local spawning_action = {
 		true,
 	},
 }
+local vs_chaos_troll_action = table.clone(BreedActions.chaos_troll)
+
+vs_chaos_troll_action.climbing = climbing_action
+vs_chaos_troll_action.spawning = spawning_action
+
 local vs_warpfire_thrower_action = table.clone(BreedActions.skaven_warpfire_thrower)
 
 vs_warpfire_thrower_action.climbing = climbing_action
@@ -325,3 +349,4 @@ BreedActions.vs_packmaster = vs_packmaster_action
 BreedActions.vs_poison_wind_globadier = vs_poison_wind_globadier_action
 BreedActions.vs_ratling_gunner = vs_ratling_gunner_action
 BreedActions.vs_warpfire_thrower = vs_warpfire_thrower_action
+BreedActions.vs_chaos_troll = vs_chaos_troll_action

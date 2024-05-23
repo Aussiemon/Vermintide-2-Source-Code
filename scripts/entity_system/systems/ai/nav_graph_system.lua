@@ -133,17 +133,13 @@ NavGraphSystem.init_nav_graphs = function (self, unit, smart_object_id, extensio
 
 		local navgraph = GwNavGraph.create(nav_world, is_bidirectional, control_points, debug_color, layer_id, smart_object_index)
 
-		if not use_for_versus then
-			GwNavGraph.add_to_database(navgraph)
+		if not use_for_versus and not script_data.disable_crowd_dispersion then
+			GwNavWorld.register_all_navgraphedges_for_crowd_dispersion(nav_world, navgraph, 1, 100)
 		end
 
-		if not use_for_versus then
-			if not script_data.disable_crowd_dispersion then
-				GwNavWorld.register_all_navgraphedges_for_crowd_dispersion(nav_world, navgraph, 1, 100)
-			end
+		GwNavGraph.add_to_database(navgraph)
 
-			extension.navgraphs[#extension.navgraphs + 1] = navgraph
-		end
+		extension.navgraphs[#extension.navgraphs + 1] = navgraph
 	end
 
 	if self._use_level_jumps and use_for_versus then

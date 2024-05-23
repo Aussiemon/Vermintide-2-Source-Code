@@ -82,7 +82,6 @@ PlayerBotBase.init = function (self, extension_init_context, unit, extension_ini
 		world = world,
 		unit = unit,
 		level = LevelHelper:current_level(extension_init_context.world),
-		move_orders = {},
 		nav_world = self._nav_world,
 		node_data = {},
 		running_nodes = {},

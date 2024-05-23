@@ -118,6 +118,18 @@ ActivatedAbilitySettings.vs_warpfire_thrower = {
 		ability_class = CareerAbilityWarpfireThrower,
 	},
 }
+ActivatedAbilitySettings.vs_chaos_troll = {
+	{
+		cooldown = 12,
+		description = "career_active_desc_dr_2_2",
+		display_name = "career_active_name_dr_2",
+		icon = "bardin_slayer_activated_ability",
+		input_action = "action_career",
+		name = "vomit",
+		spawn_cooldown_percent = 0,
+		ability_class = CareerAbilityChaosTrollVomit,
+	},
+}
 PassiveAbilitySettings.vs_gutter_runner = {
 	description = "career_passive_desc_dr_2a_2",
 	display_name = "career_passive_name_dr_2",
@@ -161,6 +173,13 @@ PassiveAbilitySettings.vs_warpfire_thrower = {
 	buffs = {
 		"vs_pactsworn_melee_damage_taken",
 	},
+	perks = {},
+}
+PassiveAbilitySettings.vs_chaos_troll = {
+	description = "career_passive_desc_dr_2a_2",
+	display_name = "career_passive_name_dr_2",
+	icon = "bardin_slayer_passive",
+	buffs = {},
 	perks = {},
 }
 

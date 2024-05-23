@@ -12,6 +12,9 @@ GameModeInnVs = class(GameModeInnVs, GameModeBase)
 GameModeInnVs.init = function (self, settings, world, network_server, ...)
 	GameModeInnVs.super.init(self, settings, world, network_server, ...)
 
+	self._mechanism = Managers.mechanism:game_mechanism()
+	self._adventure_profile_rules = AdventureProfileRules:new(self._profile_synchronizer, self._network_server)
+
 	if DEDICATED_SERVER then
 		self._stale_server_time = math.huge
 		self._auto_force_start_time = math.huge
@@ -19,14 +22,12 @@ GameModeInnVs.init = function (self, settings, world, network_server, ...)
 		Managers.state.event:register(self, "game_server_reserve_party_slot", "on_game_server_reserve_party_slot")
 		Managers.state.event:register(self, "game_server_unreserve_party_slot", "on_game_server_unreserve_party_slot")
 	else
-		local use_spawn_point_groups = false
+		local use_spawn_point_groups = true
 
 		self._simple_spawning = SimpleSpawning:new(self._profile_synchronizer, use_spawn_point_groups)
 
 		Managers.state.event:register(self, "level_start_local_player_spawned", "event_local_player_spawned")
 	end
-
-	self._mechanism = Managers.mechanism:game_mechanism()
 
 	if self._is_server then
 		self._lobby_host = network_server.lobby_host
@@ -135,30 +136,14 @@ end
 GameModeInnVs.player_entered_game_session = function (self, peer_id, local_player_id, wanted_party_index)
 	local current_party_id, wanted_party_id = self._mechanism:handle_party_assignment_for_joining_peer(peer_id, local_player_id, wanted_party_index)
 
+	if LAUNCH_MODE ~= "attract_benchmark" then
+		self._adventure_profile_rules:handle_profile_delegation_for_joining_player(peer_id, local_player_id)
+	end
+
 	if wanted_party_index ~= current_party_id then
 		Managers.party:request_join_party(peer_id, local_player_id, wanted_party_index)
 	elseif wanted_party_id ~= current_party_id then
 		Managers.party:request_join_party(peer_id, local_player_id, wanted_party_id)
-	end
-
-	local profile_index, career_index = self._network_server:peer_wanted_profile(peer_id, local_player_id)
-
-	if profile_index and career_index then
-		local profile_settings = SPProfiles[profile_index]
-		local careers = profile_settings.careers
-		local hero_name = profile_settings.display_name
-
-		if not careers[career_index]:is_unlocked_function(hero_name, ExperienceSettings.max_level) then
-			profile_index, career_index = self._profile_synchronizer:get_first_free_profile()
-		end
-
-		local is_bot = false
-
-		self._profile_synchronizer:assign_full_profile(peer_id, local_player_id, profile_index, career_index, is_bot)
-	end
-
-	if not DEDICATED_SERVER then
-		self._simple_spawning:setup_data(peer_id, local_player_id)
 	end
 end
 
@@ -201,16 +186,47 @@ end
 
 GameModeInnVs.hero_profile_available_for_party = function (self, party_id, profile_index, peer_id, local_player_id, ignore_bots)
 	local profile = SPProfiles[profile_index]
+	local profile_synchronizer = Managers.mechanism:profile_synchronizer()
+	local reserver_peer_id = profile_synchronizer:get_profile_index_reservation(profile_index)
 
-	if profile.affiliation ~= "heroes" then
-		return false
+	return not reserver_peer_id or reserver_peer_id == peer_id
+end
+
+GameModeInnVs.profile_available = function (self, profile_synchronizer, profile_name, career_name)
+	local profile_index = FindProfileIndex(profile_name)
+	local party = Managers.party:get_party(1)
+	local occupied_slots = party.occupied_slots
+
+	for i = 1, #occupied_slots do
+		local status = occupied_slots[i]
+		local peer_id = status.peer_id
+		local local_player_id = status.local_player_id
+		local player_profile_id, player_career_id = profile_synchronizer:profile_by_peer(peer_id, local_player_id)
+
+		if player_profile_id == profile_index then
+			return false
+		end
 	end
 
 	return true
 end
 
-GameModeInnVs.profile_available = function (self, profile_synchronizer, profile_name, career_name)
-	return true
+GameModeInnVs.get_initial_inventory = function (self, healthkit, potion, grenade, additional_items, profile)
+	local initial_inventory
+
+	if profile.affiliation == "heroes" then
+		initial_inventory = {
+			slot_packmaster_claw = "packmaster_claw",
+			slot_healthkit = healthkit,
+			slot_potion = potion,
+			slot_grenade = grenade,
+			additional_items = additional_items,
+		}
+	else
+		initial_inventory = {}
+	end
+
+	return initial_inventory
 end
 
 GameModeInnVs.profile_available_for_peer = function (self, peer_id, local_player_id, profile_name, career_name)
@@ -382,7 +398,14 @@ GameModeInnVs._set_auto_force_start_time = function (self)
 		return
 	end
 
-	self._auto_force_start_time = Managers.time:time("game") + settings.start_after_seconds
+	if self._auto_force_start_time < math.huge then
+		return
+	end
+
+	local start_after_seconds = settings.start_after_seconds
+	local t = Managers.time:time("game")
+
+	self._auto_force_start_time = t + start_after_seconds
 
 	printf("[GameModeInnVS:_set_auto_force_start_time]: Automatic force start in %s seconds if teams remain unchanged", settings.start_after_seconds)
 end

@@ -11,11 +11,11 @@ local placeholder_icon_textures = {
 	trinket = "icons_placeholder_trinket_01",
 }
 
-BackendUtils.get_loadout_item_id = function (career_name, slot_name)
+BackendUtils.get_loadout_item_id = function (career_name, slot_name, is_bot)
 	local loadout_interface = Managers.backend:get_loadout_interface_by_slot(slot_name)
 
 	if loadout_interface then
-		return loadout_interface:get_loadout_item_id(career_name, slot_name)
+		return loadout_interface:get_loadout_item_id(career_name, slot_name, is_bot)
 	end
 end
 
@@ -27,9 +27,9 @@ BackendUtils.set_loadout_item = function (backend_id, career_name, slot_name)
 	end
 end
 
-BackendUtils.get_loadout_item = function (career_name, slot)
+BackendUtils.get_loadout_item = function (career_name, slot, is_bot)
 	local backend_items = Managers.backend:get_interface("items")
-	local backend_id = BackendUtils.get_loadout_item_id(career_name, slot)
+	local backend_id = BackendUtils.get_loadout_item_id(career_name, slot, is_bot)
 
 	if not backend_id and CosmeticUtils.is_cosmetic_slot(slot) then
 		local profile = PROFILES_BY_CAREER_NAMES[career_name]

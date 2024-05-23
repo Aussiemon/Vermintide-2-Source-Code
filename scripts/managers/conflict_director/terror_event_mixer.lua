@@ -205,6 +205,15 @@ TerrorEventMixer.init_functions = {
 
 		return true
 	end,
+	vs_assign_boss_profile = function (event, element, t)
+		local game_mode = Managers.state.game_mode:game_mode()
+
+		game_mode:set_playable_boss_can_be_picked(true)
+
+		if script_data.debug_playable_boss then
+			-- Nothing
+		end
+	end,
 	spawn_around_origin_unit_staggered = function (event, element, t)
 		return TerrorEventMixer.init_functions.spawn_around_origin_unit(event, element, t)
 	end,
@@ -608,6 +617,9 @@ TerrorEventMixer.init_functions = {
 	end,
 }
 TerrorEventMixer.run_functions = {
+	vs_assign_boss_profile = function (event, element, t, dt)
+		return
+	end,
 	spawn = function (event, element, t, dt)
 		local data = event.data
 		local optional_data = element.optional_data and table.clone(element.optional_data)
@@ -1386,6 +1398,9 @@ TerrorEventMixer.run_functions = {
 	end,
 }
 TerrorEventMixer.debug_functions = {
+	vs_assign_boss_profile = function (event, element, t, dt)
+		return "vs_assign_boss_profile"
+	end,
 	control_pacing = function (event, element, t, dt)
 		return element.enable and "enable" or "disable"
 	end,

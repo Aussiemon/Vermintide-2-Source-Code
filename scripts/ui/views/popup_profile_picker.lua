@@ -111,7 +111,7 @@ PopupProfilePicker._INPUT_DEVICES = {
 	"mouse",
 }
 
-PopupProfilePicker.show = function (self, current_profile_index, current_career_index, time_until_cancel, join_by_lobby_browser, _difficulty, lobby_data, optional_locked_profile_index)
+PopupProfilePicker.show = function (self, current_profile_index, current_career_index, time_until_cancel, join_by_lobby_browser, _difficulty, lobby_data, optional_locked_profile_index, override_occupied_profile_indices)
 	self._join_lobby_result = nil
 	self._lobby_data = lobby_data
 
@@ -126,6 +126,7 @@ PopupProfilePicker.show = function (self, current_profile_index, current_career_
 
 	self._cancel_timer = time_until_cancel
 	self._optional_locked_profile_index = optional_locked_profile_index
+	self._override_occupied_profile_indices = override_occupied_profile_indices
 
 	local input_manager = self._input_manager
 
@@ -408,8 +409,14 @@ PopupProfilePicker._update_occupied_profiles = function (self)
 	local is_button_enabled = false
 
 	for i = 1, #hero_icon_widgets do
+		local occupied
 		local profile_index = ProfilePriority[i]
-		local occupied = self._lobby_data and not ProfileSynchronizer.is_free_in_lobby(profile_index, lobby_data)
+
+		if self._override_occupied_profile_indices then
+			occupied = table.contains(self._override_occupied_profile_indices, profile_index)
+		else
+			occupied = self._lobby_data and not ProfileSynchronizer.is_free_in_lobby(profile_index, lobby_data)
+		end
 
 		occupied = self._optional_locked_profile_index == profile_index or occupied
 
@@ -421,7 +428,13 @@ PopupProfilePicker._update_occupied_profiles = function (self)
 	end
 
 	if self._lobby_data then
-		local taken = not ProfileSynchronizer.is_free_in_lobby(self._selected_profile_index, lobby_data)
+		local taken
+
+		if self._override_occupied_profile_indices then
+			taken = table.contains(self._override_occupied_profile_indices, self._selected_profile_index)
+		else
+			taken = not ProfileSynchronizer.is_free_in_lobby(self._selected_profile_index, lobby_data)
+		end
 
 		taken = self._optional_locked_profile_index == self._selected_profile_index or taken
 

@@ -255,6 +255,10 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 
 			mm_printf("Connected, requesting to join game...")
 
+			if HAS_STEAM and self.lobby_client.set_steam_lobby_reconnectable then
+				self.lobby_client:set_steam_lobby_reconnectable(false)
+			end
+
 			local friend_join = false
 
 			if IS_PS4 then
@@ -326,12 +330,6 @@ MatchmakingStateRequestJoinGame._join_game_success = function (self, t)
 	if join_method == "party" then
 		return MatchmakingStatePartyJoins, self.state_context
 	else
-		if Managers.mechanism:current_mechanism_name() == "versus" then
-			self.state_context.profiles_data = {}
-
-			return MatchmakingStateJoinGame, self.state_context
-		end
-
 		return MatchmakingStateRequestProfiles, self.state_context
 	end
 end
@@ -364,9 +362,9 @@ MatchmakingStateRequestJoinGame._join_game_failed = function (self, reason, t, i
 		self._matchmaking_manager:send_system_chat_message(status_message)
 	end
 
-	local join_by_lobby_browser = self.state_context.join_by_lobby_browser
+	local cancel_matchmaking = self.state_context.join_by_lobby_browser
 
-	if join_by_lobby_browser then
+	if cancel_matchmaking then
 		self._matchmaking_manager:cancel_join_lobby(reason, reason_variable)
 
 		return MatchmakingStateIdle, self.state_context

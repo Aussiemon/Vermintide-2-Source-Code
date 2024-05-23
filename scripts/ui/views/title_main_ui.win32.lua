@@ -1,6 +1,7 @@
 ﻿-- chunkname: @scripts/ui/views/title_main_ui.win32.lua
 
 require("scripts/ui/ui_animations")
+local_require("scripts/ui/views/menu_information_slate_ui")
 
 local definitions = local_require("scripts/ui/views/title_main_ui_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
@@ -598,6 +599,10 @@ TitleMainUI._draw = function (self, dt, t, render_background_only)
 	self:_draw_menu_background(dt, t, ui_renderer, ui_scenegraph, input_service, render_settings)
 	self:_draw_video(dt, t)
 
+	if self._show_menu and self._information_slate_ui then
+		self._information_slate_ui:update(dt, t)
+	end
+
 	if render_background_only then
 		return
 	end
@@ -607,6 +612,10 @@ TitleMainUI._draw = function (self, dt, t, render_background_only)
 end
 
 TitleMainUI.destroy = function (self)
+	if self._information_slate_ui then
+		self._information_slate_ui:destroy()
+	end
+
 	GarbageLeakDetector.register_object(self, "TitleMainUI")
 	UIRenderer.destroy(self._ui_renderer, self._world)
 	self:_destroy_video_players()
@@ -624,6 +633,12 @@ TitleMainUI.show_menu = function (self, show)
 		self._ui_animations.sidebar = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.sidebar.position, 1, -544, 0, 0.5, math.easeCubic)
 		self._ui_animations.alpha_multiplier = UIAnimation.init(UIAnimation.function_by_time, self, "_alpha_multiplier", 0, 1, 0.5, math.easeCubic)
 		self._draw_information_text = false
+
+		self._ui_animation_callbacks.alpha_multiplier = function ()
+			local input_service = Managers.input:get_service("main_menu")
+
+			self._information_slate_ui = MenuInformationSlateUI:new(self._ui_renderer, input_service)
+		end
 	else
 		local current_menu_index = self._current_menu_index
 
@@ -639,6 +654,7 @@ TitleMainUI.show_menu = function (self, show)
 
 		self._ui_scenegraph.sidebar.size[1] = 544
 		self._ui_scenegraph.sidebar.position[1] = -800
+		self._information_slate_ui = nil
 
 		table.clear(self._ui_animations)
 		table.clear(self._ui_animation_callbacks)
@@ -790,8 +806,16 @@ TitleMainUI.view_activated = function (self, activated)
 	if activated then
 		self._ui_animations.sidebar = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.sidebar.size, 1, 544, 1920, 0.5, math.easeCubic)
 		self._ui_animations.alpha_multiplier = UIAnimation.init(UIAnimation.function_by_time, self, "_alpha_multiplier", 1, 0, 0.5, math.easeCubic)
+
+		if self._information_slate_ui then
+			self._information_slate_ui:hide()
+		end
 	else
 		self._ui_animations.sidebar = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.sidebar.size, 1, 1920, 544, 0.5, math.easeCubic)
 		self._ui_animations.alpha_multiplier = UIAnimation.init(UIAnimation.function_by_time, self, "_alpha_multiplier", 0, 1, 0.5, math.easeCubic)
+
+		if self._information_slate_ui then
+			self._information_slate_ui:show()
+		end
 	end
 end

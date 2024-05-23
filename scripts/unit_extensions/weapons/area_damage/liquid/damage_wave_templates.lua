@@ -292,8 +292,12 @@ DamageWaveTemplates.templates.sienna_adept_ability_trail = {
 	add_buff_func = function (damage_wave_ext, target_unit, buff_template_name, attacker_unit, source_unit)
 		if Unit.alive(target_unit) then
 			local buff_system = Managers.state.entity:system("buff_system")
+			local params = FrameTable.alloc_table()
 
-			buff_system:add_buff(target_unit, buff_template_name, attacker_unit, false, nil, source_unit)
+			params.attacker_unit = attacker_unit
+			params.source_attacker_unit = source_unit
+
+			buff_system:add_buff_synced(target_unit, buff_template_name, BuffSyncType.All, params)
 		end
 	end,
 	leave_area_func = function (unit)

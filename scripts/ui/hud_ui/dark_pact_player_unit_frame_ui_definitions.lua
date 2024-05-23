@@ -3,8 +3,21 @@
 local SIZE_X, SIZE_Y = 1920, 1080
 local RETAINED_MODE_ENABLED = true
 local portrait_scale = 1
+local HP_BAR_SIZE = {
+	156,
+	16,
+}
+local HP_BAR_BG_SIZE = {
+	191,
+	54,
+}
 local HP_BAR = {
-	x = -276.5,
+	y = 35,
+	z = -8,
+	x = -(HP_BAR_SIZE[1] + 100),
+}
+local BOSS_HP_BAR = {
+	x = -186,
 	y = 35,
 	z = -8,
 }
@@ -23,6 +36,20 @@ local scenegraph_definition = {
 	},
 	pivot = {
 		horizontal_alignment = "center",
+		parent = "root",
+		vertical_alignment = "bottom",
+		position = {
+			0,
+			0,
+			5,
+		},
+		size = {
+			0,
+			0,
+		},
+	},
+	dp_health_pivot = {
+		horizontal_alignment = "right",
 		parent = "root",
 		vertical_alignment = "bottom",
 		position = {
@@ -126,26 +153,27 @@ local function create_static_widget()
 					texture_id = "hp_bar_frame",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
-						return content.show_health_bar
+						return content.show_health_bar and not content.is_playing_boss
 					end,
 				},
 				{
 					pass_type = "texture",
-					style_id = "hp_bar_bg",
-					texture_id = "hp_bar_bg",
+					style_id = "boss_hp_bar_frame",
+					texture_id = "boss_hp_bar_frame",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
-						return content.show_health_bar
+						return content.show_health_bar and content.is_playing_boss
 					end,
 				},
 			},
 		},
 		content = {
+			boss_hp_bar_frame = "health_bar_big_background",
 			character_portrait = "unit_frame_portrait_default",
 			host_icon = "host_icon",
-			hp_bar_bg = "console_hp_bar_background",
-			hp_bar_frame = "console_hp_bar_frame",
+			hp_bar_frame = "health_bar_small_background",
 			is_host = false,
+			is_playing_boss = false,
 			player_level = "",
 			show_health_bar = true,
 		},
@@ -199,10 +227,10 @@ local function create_static_widget()
 				},
 			},
 			hp_bar_frame = {
-				scenegraph_id = "pivot",
+				scenegraph_id = "dp_health_pivot",
 				size = {
-					576,
-					36,
+					191,
+					54,
 				},
 				color = {
 					255,
@@ -212,15 +240,15 @@ local function create_static_widget()
 				},
 				offset = {
 					HP_BAR.x - 11,
-					HP_BAR.y - 14,
-					HP_BAR.z + 10,
+					HP_BAR.y,
+					HP_BAR.z + 1,
 				},
 			},
-			hp_bar_bg = {
+			boss_hp_bar_frame = {
 				scenegraph_id = "pivot",
 				size = {
-					560,
-					19,
+					372,
+					104,
 				},
 				color = {
 					255,
@@ -229,9 +257,9 @@ local function create_static_widget()
 					255,
 				},
 				offset = {
-					HP_BAR.x - 3,
-					HP_BAR.y - 1,
-					HP_BAR.z,
+					BOSS_HP_BAR.x - 11,
+					BOSS_HP_BAR.y,
+					BOSS_HP_BAR.z + 1,
 				},
 			},
 		},
@@ -504,7 +532,7 @@ end
 
 local function create_dynamic_health_widget()
 	return {
-		scenegraph_id = "pivot",
+		scenegraph_id = "dp_health_pivot",
 		element = {
 			passes = {
 				{
@@ -513,7 +541,7 @@ local function create_dynamic_health_widget()
 					texture_id = "hp_bar_highlight",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
-						return not content.has_shield
+						return not content.has_shield and not content.is_playing_boss
 					end,
 				},
 				{
@@ -527,7 +555,7 @@ local function create_dynamic_health_widget()
 						local actual_active_percentage = content.actual_active_percentage or 1
 						local grim_progress = math.max(internal_bar_value, actual_active_percentage)
 
-						return grim_progress < 1
+						return grim_progress < 1 and not content.is_playing_boss
 					end,
 					content_change_function = function (content, style)
 						local hp_bar_content = content.hp_bar
@@ -546,7 +574,7 @@ local function create_dynamic_health_widget()
 					texture_id = "texture_id",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content)
-						return content.draw_health_bar
+						return not content.has_shield and not content.is_playing_boss
 					end,
 				},
 				{
@@ -556,7 +584,7 @@ local function create_dynamic_health_widget()
 					texture_id = "texture_id",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content)
-						return content.draw_health_bar
+						return not content.has_shield and not content.is_playing_boss
 					end,
 				},
 				{
@@ -580,24 +608,54 @@ local function create_dynamic_health_widget()
 						offset[1] = 2 + HP_BAR.x + bar_length * grim_progress
 					end,
 				},
+				{
+					pass_type = "texture",
+					style_id = "boss_hp_bar_highlight",
+					texture_id = "hp_bar_highlight",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return not content.has_shield and content.is_playing_boss
+					end,
+				},
+				{
+					content_id = "boss_hp_bar",
+					pass_type = "gradient_mask_texture",
+					style_id = "boss_hp_bar",
+					texture_id = "texture_id",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content)
+						return content.draw_health_bar and content.parent.is_playing_boss
+					end,
+				},
+				{
+					content_id = "boss_total_health_bar",
+					pass_type = "gradient_mask_texture",
+					style_id = "boss_total_health_bar",
+					texture_id = "texture_id",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content)
+						return content.draw_health_bar and content.parent.is_playing_boss
+					end,
+				},
 			},
 		},
 		content = {
 			bar_start_side = "left",
 			grimoire_debuff_divider = "hud_player_hp_bar_grim_divider",
 			hp_bar_highlight = "hud_player_hp_bar_highlight",
+			is_playing_boss = false,
 			visible = true,
 			hp_bar = {
 				bar_value = 1,
 				draw_health_bar = true,
 				internal_bar_value = 0,
-				texture_id = "player_hp_bar_color_tint",
+				texture_id = "dark_pact_player_hp_bar_color_tint",
 			},
 			total_health_bar = {
 				bar_value = 1,
 				draw_health_bar = true,
 				internal_bar_value = 0,
-				texture_id = "player_hp_bar",
+				texture_id = "dark_pact_player_hp_bar",
 			},
 			grimoire_bar = {
 				texture_id = "hud_panel_hp_bar_bg_grimoire",
@@ -612,13 +670,25 @@ local function create_dynamic_health_widget()
 					},
 				},
 			},
+			boss_hp_bar = {
+				bar_value = 1,
+				draw_health_bar = true,
+				internal_bar_value = 0,
+				texture_id = "dark_pact_boss_player_hp_bar_color_tint",
+			},
+			boss_total_health_bar = {
+				bar_value = 1,
+				draw_health_bar = true,
+				internal_bar_value = 0,
+				texture_id = "dark_pact_boss_player_hp_bar",
+			},
 		},
 		style = {
 			total_health_bar = {
 				gradient_threshold = 1,
 				size = {
-					553,
-					18,
+					156,
+					16,
 				},
 				color = {
 					255,
@@ -627,16 +697,16 @@ local function create_dynamic_health_widget()
 					255,
 				},
 				offset = {
-					HP_BAR.x,
-					HP_BAR.y,
+					HP_BAR.x + 1,
+					HP_BAR.y + 27 - 2,
 					HP_BAR.z + 2,
 				},
 			},
 			hp_bar = {
 				gradient_threshold = 1,
 				size = {
-					553,
-					18,
+					156,
+					16,
 				},
 				color = {
 					255,
@@ -645,8 +715,8 @@ local function create_dynamic_health_widget()
 					255,
 				},
 				offset = {
-					HP_BAR.x,
-					HP_BAR.y,
+					HP_BAR.x + 1,
+					HP_BAR.y + 27 - 2,
 					HP_BAR.z + 3,
 				},
 			},
@@ -686,13 +756,69 @@ local function create_dynamic_health_widget()
 			},
 			hp_bar_highlight = {
 				size = {
-					553,
-					30,
+					156,
+					16,
 				},
 				offset = {
-					HP_BAR.x,
-					HP_BAR.y - 4,
+					HP_BAR.x + 1,
+					HP_BAR.y + 27 - 2,
 					HP_BAR.z + 5,
+				},
+				color = {
+					0,
+					255,
+					255,
+					255,
+				},
+			},
+			boss_total_health_bar = {
+				gradient_threshold = 1,
+				scenegraph_id = "pivot",
+				size = {
+					324,
+					16,
+				},
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+				offset = {
+					BOSS_HP_BAR.x + 12,
+					BOSS_HP_BAR.y + 52 - 10,
+					BOSS_HP_BAR.z + 2,
+				},
+			},
+			boss_hp_bar = {
+				gradient_threshold = 1,
+				scenegraph_id = "pivot",
+				size = {
+					324,
+					16,
+				},
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+				offset = {
+					BOSS_HP_BAR.x + 12,
+					BOSS_HP_BAR.y + 52 - 10,
+					BOSS_HP_BAR.z + 3,
+				},
+			},
+			boss_hp_bar_highlight = {
+				scenegraph_id = "pivot",
+				size = {
+					324,
+					16,
+				},
+				offset = {
+					BOSS_HP_BAR.x + 12,
+					BOSS_HP_BAR.y + 52 - 10,
+					BOSS_HP_BAR.z + 5,
 				},
 				color = {
 					0,

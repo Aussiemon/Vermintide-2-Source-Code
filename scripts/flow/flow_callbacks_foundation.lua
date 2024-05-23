@@ -242,6 +242,48 @@ function flow_callback_set_numeric_w_out(params)
 	return ret
 end
 
+function flow_callback_switch_event_to_number_0(params)
+	return {
+		out_number = 0,
+	}
+end
+
+function flow_callback_switch_event_to_number_1(params)
+	return {
+		out_number = 1,
+	}
+end
+
+function flow_callback_switch_event_to_number_2(params)
+	return {
+		out_number = 2,
+	}
+end
+
+function flow_callback_switch_event_to_number_3(params)
+	return {
+		out_number = 3,
+	}
+end
+
+function flow_callback_switch_event_to_number_4(params)
+	return {
+		out_number = 4,
+	}
+end
+
+function flow_callback_switch_event_to_number_5(params)
+	return {
+		out_number = 5,
+	}
+end
+
+function flow_callback_switch_event_to_number_6(params)
+	return {
+		out_number = 6,
+	}
+end
+
 function flow_callback_math_addition(params)
 	local term_one = params.term_one
 	local term_two = params.term_two

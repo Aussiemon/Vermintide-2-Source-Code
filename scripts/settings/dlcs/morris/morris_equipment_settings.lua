@@ -256,6 +256,13 @@ settings.projectiles = {
 		rotation_speed = 10,
 		show_warning_icon = true,
 		trajectory_template_name = "throw_trajectory",
+		rotation_on_hit = function (unit)
+			local go_id = Managers.state.network.unit_storage:go_id(unit)
+			local _, rnd = Math.next_random(go_id)
+			local rotation = Quaternion.axis_angle(Vector3.right(), rnd * math.pi * 0.15)
+
+			return Quaternion.multiply(Quaternion.axis_angle(Vector3.up(), math.random() * math.tau), rotation)
+		end,
 	},
 }
 settings.default_items = {

@@ -10,11 +10,9 @@ local on_damage_taken_damage_type = 3
 
 settings.buff_templates = {
 	victor_priest_activated_ability_invincibility = {
-		activation_sound = "career_ability_priest_buff_shield",
 		buffs = {
 			{
 				apply_buff_func = "victor_priest_on_career_skill_applied",
-				duration = 5,
 				icon = "victor_priest_activated_ability",
 				max_stacks = 1,
 				name = "victor_priest_activated_ability_invincibility",
@@ -23,13 +21,18 @@ settings.buff_templates = {
 				refresh_durations = true,
 				remove_buff_func = "victor_priest_on_career_skill_removed",
 				update_func = "victor_priest_on_career_skill_update",
+				duration = CareerConstants.wh_priest.ability_base_duration,
+				mechanism_overrides = {
+					versus = {
+						duration = CareerConstants.wh_priest.ability_base_duration_versus,
+					},
+				},
 				perks = {
 					buff_perks.invulnerable,
 				},
 			},
 			{
 				buff_func = "victor_priest_6_1_pulse_attack",
-				duration = 5,
 				event = "on_melee_hit",
 				name = "victor_priest_6_1_pulse_attack",
 				push_radius = 3.5,
@@ -48,6 +51,12 @@ settings.buff_templates = {
 
 					return true
 				end,
+				duration = CareerConstants.wh_priest.ability_base_duration,
+				mechanism_overrides = {
+					versus = {
+						duration = CareerConstants.wh_priest.ability_base_duration_versus,
+					},
+				},
 				stagger_impact = {
 					stagger_types.medium,
 					stagger_types.none,
@@ -64,13 +73,18 @@ settings.buff_templates = {
 		buffs = {
 			{
 				apply_buff_func = "victor_priest_activated_ability_nuke_start",
-				duration = 5,
 				max_stacks = 1,
 				name = "victor_priest_activated_ability_nuke",
 				priority_buff = true,
 				reapply_buff_func = "victor_priest_activated_ability_nuke_start",
 				refresh_durations = true,
 				remove_buff_func = "victor_priest_activated_ability_nuke",
+				duration = CareerConstants.wh_priest.ability_base_duration,
+				mechanism_overrides = {
+					versus = {
+						duration = CareerConstants.wh_priest.ability_base_duration_versus,
+					},
+				},
 			},
 		},
 	},
@@ -78,7 +92,6 @@ settings.buff_templates = {
 		buffs = {
 			{
 				apply_buff_func = "victor_priest_activated_noclip_apply",
-				duration = 5,
 				max_stacks = 1,
 				name = "victor_priest_activated_noclip",
 				push_cooldown = 1,
@@ -88,6 +101,12 @@ settings.buff_templates = {
 				stagger_distance = 1,
 				update_frequency = 0.1,
 				update_func = "victor_priest_activated_noclip_update",
+				duration = CareerConstants.wh_priest.ability_base_duration,
+				mechanism_overrides = {
+					versus = {
+						duration = CareerConstants.wh_priest.ability_base_duration_versus,
+					},
+				},
 				perks = {
 					buff_perks.no_ranged_knockback,
 				},
@@ -122,6 +141,11 @@ settings.buff_templates = {
 				update_start_delay = 0.7,
 				perks = {
 					buff_perks.burning,
+				},
+				mechanism_overrides = {
+					versus = {
+						damage_profile = "victor_priest_nuke_dot_vs",
+					},
 				},
 			},
 		},

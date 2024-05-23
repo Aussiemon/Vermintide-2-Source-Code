@@ -13,6 +13,11 @@ end
 BuffAreaHelper.update_range_check = function (unit, buff, params, world)
 	local buff_template = buff.template
 	local range_check_template = buff_template.range_check
+
+	if range_check_template.server_only and not Managers.state.network.is_server then
+		return
+	end
+
 	local range_check_state = buff.range_check
 
 	if range_check_state.update_time < params.t then
@@ -26,13 +31,13 @@ BuffAreaHelper.update_range_check = function (unit, buff, params, world)
 		local initial_length_temp_new_units_in_range = #temp_new_units_in_range
 		local position = POSITION_LOOKUP[unit] or Unit.world_position(unit, 0)
 		local num_hits = 0
+		local side = Managers.state.side.side_by_unit[unit] or Managers.state.side:get_side_from_name("heroes")
 
 		if not range_check_template.only_players then
-			num_hits = AiUtils.broadphase_query(position, radius, temp_new_units_in_range)
+			num_hits = AiUtils.broadphase_query(position, radius, temp_new_units_in_range, side.enemy_broadphase_categories)
 		end
 
 		if not range_check_template.only_ai then
-			local side = Managers.state.side:get_side_from_name("heroes")
 			local other_player_positions = side.PLAYER_AND_BOT_POSITIONS
 
 			for i = 1, #other_player_positions do

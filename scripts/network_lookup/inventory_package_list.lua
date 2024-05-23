@@ -987,8 +987,6 @@ return {
 	"units/weapons/player/wpn_emp_grenade_03_t1/wpn_emp_grenade_03_t1_3p",
 	"units/weapons/player/wpn_emp_grenade_03_t2/wpn_emp_grenade_03_t2",
 	"units/weapons/player/wpn_emp_grenade_03_t2/wpn_emp_grenade_03_t2_3p",
-	"units/weapons/player/wpn_emp_handcannon/wpn_emp_handcannon",
-	"units/weapons/player/wpn_emp_handcannon/wpn_emp_handcannon_3p",
 	"units/weapons/player/wpn_emp_handgun_repeater_t1/wpn_emp_handgun_repeater_t1",
 	"units/weapons/player/wpn_emp_handgun_repeater_t1/wpn_emp_handgun_repeater_t1_3p",
 	"units/weapons/player/wpn_emp_handgun_repeater_t2/wpn_emp_handgun_repeater_t2",

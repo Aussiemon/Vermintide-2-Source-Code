@@ -13,6 +13,8 @@ local function create_menu_layout(self)
 					text = "tutorial_intro_adventure",
 					video = "adventure",
 					callback = function ()
+						Managers.music:trigger_event("Stop_menu_screen_music")
+
 						local hub_level = AdventureMechanism.get_starting_level()
 
 						self:_start_game(hub_level)
@@ -25,6 +27,8 @@ local function create_menu_layout(self)
 					text = "area_selection_morris_name",
 					video = "chaos_wastes",
 					callback = function ()
+						Managers.music:trigger_event("Stop_menu_screen_music")
+
 						local hub_level = DeusMechanism.get_starting_level()
 
 						self:_start_game(hub_level)
@@ -37,6 +41,8 @@ local function create_menu_layout(self)
 					text = "vs_ui_versus_tag",
 					video = "versus",
 					conditional_func = function ()
+						Managers.music:trigger_event("Stop_menu_screen_music")
+
 						if not GameSettingsDevelopment.use_backend then
 							return true
 						end

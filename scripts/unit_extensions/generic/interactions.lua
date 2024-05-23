@@ -778,7 +778,9 @@ InteractionDefinitions.smartobject = {
 
 			data.start_time = nil
 
-			Unit.animation_event(interactor_unit, "interaction_end")
+			if Unit.has_animation_event(interactor_unit, "interaction_end") then
+				Unit.animation_event(interactor_unit, "interaction_end")
+			end
 
 			if result == InteractionResult.SUCCESS and Unit.get_data(interactable_unit, "interaction_data", "only_once") then
 				Unit.set_data(interactable_unit, "interaction_data", "used", true)
@@ -1101,19 +1103,21 @@ InteractionDefinitions.pickup_object = {
 					end
 				end
 
-				if local_bot_or_human then
+				if data.is_server then
+					local pickup_name = Unit.get_data(interactable_unit, "interaction_data", "item_name")
 					local dialogue_input = ScriptUnit.extension_input(interactor_unit, "dialogue_system")
 					local event_data = FrameTable.alloc_table()
 
-					event_data.pickup_name = Unit.get_data(interactable_unit, "interaction_data", "hud_description")
+					event_data.pickup_name = pickup_name
 
 					dialogue_input:trigger_dialogue_event("on_pickup", event_data)
 
-					local pickup_name = Unit.get_data(interactable_unit, "interaction_data", "hud_description")
 					local target_name = ScriptUnit.extension(interactor_unit, "dialogue_system").context.player_profile
 
 					SurroundingAwareSystem.add_event(interactor_unit, "on_other_pickup", DialogueSettings.default_view_distance, "pickup_name", pickup_name, "target_name", target_name)
+				end
 
+				if local_bot_or_human then
 					local buff_extension = ScriptUnit.extension(interactor_unit, "buff_system")
 
 					if pickup_settings.consumable_item and not data.is_server then

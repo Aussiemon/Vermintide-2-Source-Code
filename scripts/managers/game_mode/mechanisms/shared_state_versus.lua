@@ -100,3 +100,16 @@ SharedStateVersus.get_party_won_early = function (self)
 
 	return self._shared_state:get_server(key)
 end
+
+SharedStateVersus.generate_match_id = function (self)
+	local match_id = Application.guid()
+	local key = self._shared_state:get_key("match_id")
+
+	self._shared_state:set_server(key, match_id)
+end
+
+SharedStateVersus.get_match_id = function (self)
+	local match_id = self._shared_state:get_key("match_id")
+
+	return self._shared_state:get_server(match_id)
+end

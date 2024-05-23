@@ -13,6 +13,7 @@ GameModeBase.init = function (self, settings, world, network_server, is_server, 
 	self._lose_condition_disabled = script_data.lose_condition_disabled or false
 	self._end_level_areas = {}
 	self._debug_end_level_areas = {}
+	self._is_about_to_end_game_early = false
 	self._initial_peers_ready = false
 	self._level_key = level_key
 	self._statistics_db = statistics_db
@@ -253,35 +254,42 @@ GameModeBase.mutators = function (self)
 		table.append(mutators_list, weekly_events_game_mode_data.mutators)
 	end
 
-	local level_setting = LevelSettings[self._level_key]
-	local is_hub_level = level_setting and level_setting.hub_level
+	self:append_live_event_mutators(mutators_list)
 
-	if not is_hub_level then
-		local live_event_interface = Managers.backend:get_interface("live_events")
-		local special_events = live_event_interface:get_special_events()
+	return mutators_list
+end
 
-		if special_events then
-			for i = 1, #special_events do
-				local special_event_data = special_events[i]
-				local valid_levels = special_event_data.level_keys
+GameModeBase.append_live_event_mutators = function (self, mutators_list)
+	local level_settings = LevelSettings[self._level_key]
 
-				if not valid_levels or table.is_empty(valid_levels) or table.contains(valid_levels, self._level_key) then
-					local weekly_override_type = special_event_data.weekly_event
+	if not level_settings or level_settings.hub_level or level_settings.tutorial_level then
+		return
+	end
 
-					if weekly_override_type then
-						if weekly_override_type == "override" then
-							table.clear(mutators_list)
-							table.append(mutators_list, special_event_data.mutators)
-						elseif weekly_override_type == "append" then
-							table.append(mutators_list, special_event_data.mutators)
-						end
-					end
+	local live_event_interface = Managers.backend:get_interface("live_events")
+	local special_events = live_event_interface:get_special_events()
+
+	if not special_events then
+		return
+	end
+
+	for i = 1, #special_events do
+		local special_event_data = special_events[i]
+		local valid_levels = special_event_data.level_keys
+
+		if not valid_levels or table.is_empty(valid_levels) or table.contains(valid_levels, self._level_key) then
+			local weekly_override_type = special_event_data.weekly_event
+
+			if weekly_override_type then
+				if weekly_override_type == "override" then
+					table.clear(mutators_list)
+					table.append(mutators_list, special_event_data.mutators)
+				elseif weekly_override_type == "append" then
+					table.append(mutators_list, special_event_data.mutators)
 				end
 			end
 		end
 	end
-
-	return mutators_list
 end
 
 GameModeBase.spawning_update = function (self)
@@ -526,8 +534,12 @@ GameModeBase.local_player_game_starts = function (self, player, loading_context)
 	return
 end
 
-GameModeBase.is_about_to_lose = function (self)
-	return self.about_to_lose
+GameModeBase.is_about_to_end_game_early = function (self)
+	return self._about_to_end_game_early
+end
+
+GameModeBase.set_about_to_end_game_early = function (self, about_to_end_game_early)
+	self._about_to_end_game_early = about_to_end_game_early
 end
 
 GameModeBase.game_mode_hud_disabled = function (self)

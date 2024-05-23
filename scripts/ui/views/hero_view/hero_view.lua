@@ -304,6 +304,37 @@ HeroView.on_enter = function (self, params)
 	self._draw_loading = false
 
 	self:_handle_new_ui_disclaimer()
+	self:_fetch_initial_loadout_index(params)
+end
+
+HeroView._fetch_initial_loadout_index = function (self, params)
+	local ingame_ui_context = self._state_machine_params.ingame_ui_context
+
+	self._is_in_tutorial = ingame_ui_context.is_in_tutorial
+
+	if self._is_in_tutorial then
+		return
+	end
+
+	self._peer_id = ingame_ui_context.peer_id
+	self._local_player_id = ingame_ui_context.local_player_id
+
+	local network_handler = ingame_ui_context.network_server or ingame_ui_context.network_client
+
+	self._profile_requester = network_handler:profile_requester()
+	self._profile_synchronizer = ingame_ui_context.profile_synchronizer
+
+	local profile_index, career_index = self._profile_synchronizer:profile_by_peer(self._peer_id, self._local_player_id)
+	local profile = SPProfiles[profile_index]
+	local career_data = profile.careers[career_index]
+	local career_name = career_data.name
+
+	self._profile_name = profile.display_name
+	self._career_name = career_name
+
+	local item_interface = Managers.backend:get_interface("items")
+
+	self._initial_loadout_index = item_interface:get_selected_career_loadout(career_name)
 end
 
 HeroView._handle_new_ui_disclaimer = function (self)
@@ -500,6 +531,16 @@ HeroView.on_exit = function (self)
 	Managers.music:unduck_sounds()
 
 	self._draw_loading = false
+
+	if not self._is_in_tutorial and self._loadout_dirty then
+		local force_respawn = true
+
+		self._profile_requester:request_profile(self._peer_id, self._local_player_id, self._profile_name, self._career_name, force_respawn)
+	end
+end
+
+HeroView.set_loadout_dirty = function (self)
+	self._loadout_dirty = true
 end
 
 HeroView._handle_view_popups = function (self)

@@ -7,7 +7,6 @@ local unit_templates_vs = {
 		self_owned_extensions = {
 			"DarkPactStatusExtension",
 			"DialogueActorExtension",
-			"HealthTriggerExtension",
 			"GenericDialogueContextExtension",
 			"PlayerProximityExtension",
 			"SurroundingObserverExtension",
@@ -27,7 +26,6 @@ local unit_templates_vs = {
 		husk_extensions = {
 			"DarkPactStatusExtension",
 			"DialogueActorExtension",
-			"HealthTriggerExtension",
 			"GenericDialogueContextExtension",
 			"PlayerProximityExtension",
 			"SurroundingObserverExtension",

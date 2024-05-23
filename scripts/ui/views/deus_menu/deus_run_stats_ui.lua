@@ -272,6 +272,38 @@ DeusRunStatsUi._populate_power_up = function (self, power_up_name, power_up_rari
 
 	style.rarity_text.text_color = rarity_color
 	power_up_description_widget.content.visible = true
+
+	local power_up_sets = DeusPowerUpSetLookup[rarity] and DeusPowerUpSetLookup[rarity][power_up.name]
+	local is_part_of_set = false
+
+	if power_up_sets then
+		local set = power_up_sets[1]
+		local piece_count = 0
+		local pieces = set.pieces
+		local mechanism = Managers.mechanism:game_mechanism()
+		local deus_run_controller = mechanism:get_deus_run_controller()
+
+		for _, piece in ipairs(pieces) do
+			local name, rarity = piece.name, piece.rarity
+			local local_peer_id = deus_run_controller:get_own_peer_id()
+
+			if deus_run_controller:has_power_up_by_name(local_peer_id, name, rarity) then
+				piece_count = piece_count + 1
+			end
+		end
+
+		is_part_of_set = true
+
+		local num_required_pieces = set.num_required_pieces or #pieces
+
+		content.set_progression = string.format(Localize("set_counter_boons"), piece_count, num_required_pieces)
+
+		if #pieces == piece_count then
+			style.set_progression.text_color = style.set_progression.progression_colors.complete
+		end
+	end
+
+	content.is_part_of_set = is_part_of_set
 end
 
 DeusRunStatsUi._draw_reminder = function (self, dt, t)

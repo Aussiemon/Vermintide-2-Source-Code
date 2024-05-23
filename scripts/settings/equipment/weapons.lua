@@ -119,13 +119,12 @@ end
 
 Dots = {
 	poison_dot = function (dot_template_name, damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, source_attacker_unit)
-		if not damage_profile then
-			return
+		local target_settings
+
+		if damage_profile then
+			target_settings = damage_profile.targets[target_index] or damage_profile.default_target
+			dot_template_name = dot_template_name or target_settings.dot_template_name or damage_profile.dot_template_name
 		end
-
-		local target_settings = damage_profile.targets[target_index] or damage_profile.default_target
-
-		dot_template_name = dot_template_name or target_settings.dot_template_name or damage_profile.dot_template_name
 
 		if not dot_template_name then
 			return false
@@ -136,7 +135,7 @@ Dots = {
 		local armor_override = Unit.get_data(target_unit, "armor")
 		local breed_armor = ActionUtils.get_target_armor(hit_zone_name, breed, armor_override)
 
-		if breed_armor == 2 then
+		if target_settings and breed_armor == 2 then
 			local boost_curve = BoostCurves[target_settings.boost_curve_type]
 			local predicted_damage = DamageUtils.calculate_damage(DamageOutput, target_unit, attacker_unit, hit_zone_name, power_level, boost_curve, boost_curve_multiplier, is_critical_strike, damage_profile, target_index, false, damage_source)
 
@@ -146,11 +145,7 @@ Dots = {
 		end
 
 		if do_dot then
-			if target_settings.network_sync_dot then
-				add_dot_network_synced(dot_template_name, target_unit, attacker_unit, damage_source, power_level, source_attacker_unit)
-			else
-				add_dot(dot_template_name, target_unit, attacker_unit, damage_source, power_level, source_attacker_unit)
-			end
+			add_dot(dot_template_name, target_unit, attacker_unit, damage_source, power_level, source_attacker_unit)
 		end
 
 		return do_dot
@@ -211,7 +206,6 @@ DotTypeLookup = DotTypeLookup or {
 	burning_dot_unchained_push = "burning_dot",
 	burning_flamethrower_dot = "burning_dot",
 	chaos_zombie_explosion = "poison_dot",
-	corpse_explosion_default = "poison_dot",
 	death_staff_dot = "burning_dot",
 	sienna_necromancer_4_3_dot = "burning_dot",
 	vs_ratling_gunner_slow = "burning_dot",
@@ -233,6 +227,7 @@ local checked_templates = {
 	vs_gutter_runner = {},
 	vs_ratling_gunner = {},
 	vs_warpfire_thrower = {},
+	vs_chaos_troll = {},
 }
 
 for _, item in pairs(ItemMasterList) do

@@ -10,8 +10,7 @@ GameModeAdventure = class(GameModeAdventure, GameModeBase)
 GameModeAdventure.init = function (self, settings, world, ...)
 	GameModeAdventure.super.init(self, settings, world, ...)
 
-	self.about_to_lose = false
-	self.lost_condition_timer = nil
+	self._lost_condition_timer = nil
 	self._adventure_profile_rules = AdventureProfileRules:new(self._profile_synchronizer, self._network_server)
 
 	local hero_side = Managers.state.side:get_side_from_name("heroes")
@@ -96,28 +95,29 @@ GameModeAdventure.evaluate_end_conditions = function (self, round_started, dt, t
 	local mutator_lost, mutator_lost_delay = mutator_handler:evaluate_lose_conditions()
 	local lost = not self._lose_condition_disabled and self._local_player_spawned and (mutator_lost or humans_dead or players_disabled or self._level_failed or self:_is_time_up())
 
-	if self.about_to_lose then
+	if self:is_about_to_end_game_early() then
 		if lost then
-			if t > self.lost_condition_timer then
+			if t > self._lost_condition_timer then
 				return true, "lost"
 			else
 				return false
 			end
 		else
-			self.about_to_lose = nil
-			self.lost_condition_timer = nil
+			self:set_about_to_end_game_early(false)
+
+			self._lost_condition_timer = nil
 		end
 	end
 
 	if lost then
-		self.about_to_lose = true
+		self:set_about_to_end_game_early(true)
 
 		if mutator_lost and mutator_lost_delay then
-			self.lost_condition_timer = t + mutator_lost_delay
+			self._lost_condition_timer = t + mutator_lost_delay
 		elseif humans_dead then
-			self.lost_condition_timer = t + GameModeSettings.adventure.lose_condition_time_dead
+			self._lost_condition_timer = t + GameModeSettings.adventure.lose_condition_time_dead
 		else
-			self.lost_condition_timer = t + GameModeSettings.adventure.lose_condition_time
+			self._lost_condition_timer = t + GameModeSettings.adventure.lose_condition_time
 		end
 	elseif self:update_end_level_areas() then
 		return true, "won"

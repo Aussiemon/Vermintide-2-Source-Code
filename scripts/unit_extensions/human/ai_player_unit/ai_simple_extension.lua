@@ -37,7 +37,6 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 	blackboard.world = extension_init_context.world
 	blackboard.unit = unit
 	blackboard.level = LevelHelper:current_level(extension_init_context.world)
-	blackboard.move_orders = {}
 	blackboard.nav_world = self._nav_world
 	blackboard.node_data = {}
 	blackboard.running_nodes = {}
@@ -137,7 +136,6 @@ STATIC_BLACKBOARD_KEYS = STATIC_BLACKBOARD_KEYS or {
 	lean_unit_list = true,
 	level = true,
 	locomotion_extension = true,
-	move_orders = true,
 	nav_world = true,
 	navigation_extension = true,
 	next_lean_index = true,
@@ -182,7 +180,6 @@ AISimpleExtension.unfreeze = function (self, unit, data)
 
 	local side = Managers.state.side:add_unit_to_side(self._unit, side_id)
 
-	table.clear(blackboard.move_orders)
 	table.clear(blackboard.node_data)
 	table.clear(blackboard.running_nodes)
 	table.clear(blackboard.override_targets)

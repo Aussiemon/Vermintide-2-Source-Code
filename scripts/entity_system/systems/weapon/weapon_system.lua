@@ -210,12 +210,11 @@ WeaponSystem.rpc_attack_hit = function (self, channel_id, damage_source_id, atta
 		return
 	end
 
-	if self._player_damage_forbidden then
-		local player_manager = Managers.player
+	local player_manager = Managers.player
+	local player_hitting_player = player_manager:is_player_unit(hit_unit) and player_manager:is_player_unit(attacker_unit)
 
-		if player_manager:is_player_unit(hit_unit) and player_manager:is_player_unit(attacker_unit) then
-			return
-		end
+	if self._player_damage_forbidden and player_hitting_player then
+		return
 	end
 
 	local damage_source = NetworkLookup.damage_sources[damage_source_id]
@@ -236,6 +235,27 @@ WeaponSystem.rpc_attack_hit = function (self, channel_id, damage_source_id, atta
 
 	if target_index == 0 then
 		target_index = nil
+	end
+
+	if player_hitting_player and blocking then
+		local hit_status_extension = ScriptUnit.has_extension(hit_unit, "status_system")
+		local fatigue_type = damage_profile.fatigue_type
+		local fatigue_point_costs_multiplier = 1
+		local improved_block = true
+		local enemy_weapon_direction = "left"
+		local network_manager = Managers.state.network
+
+		if DEDICATED_SERVER then
+			local fatigue_type_id = NetworkLookup.fatigue_types[fatigue_type]
+
+			network_manager.network_transmit:send_rpc_clients("rpc_player_blocked_attack", hit_unit_id, fatigue_type_id, attacker_unit_id, fatigue_point_costs_multiplier, improved_block, enemy_weapon_direction, attacker_is_level_unit)
+		elseif Managers.player.is_server then
+			local fatigue_type_id = NetworkLookup.fatigue_types[fatigue_type]
+
+			network_manager.network_transmit:send_rpc_server("rpc_player_blocked_attack", hit_unit_id, fatigue_type_id, attacker_unit_id, fatigue_point_costs_multiplier, improved_block, enemy_weapon_direction, attacker_is_level_unit)
+		else
+			hit_status_extension:blocked_attack(fatigue_type, attacker_unit, fatigue_point_costs_multiplier, improved_block, enemy_weapon_direction)
+		end
 	end
 
 	local optional_predicted_damage

@@ -33,3 +33,11 @@ WeaponMaterialSettingsTemplates.life_green = {
 		z = 0.1,
 	},
 }
+WeaponMaterialSettingsTemplates.lileath = {
+	rune_emissive_color = {
+		type = "vector3",
+		x = 5.8,
+		y = 6.3,
+		z = 9,
+	},
+}

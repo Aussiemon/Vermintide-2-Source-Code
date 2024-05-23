@@ -32,10 +32,6 @@ ActionWarpfireThrower.client_owner_start_action = function (self, new_action, t,
 	self.current_action = new_action
 	self.power_level = power_level
 	self.state = "waiting_to_shoot"
-
-	local value, threshold, max_value = self.overcharge_extension:current_overcharge_status()
-
-	self.time1 = t
 	self.time_to_shoot = t + new_action.fire_time
 	self.overcharge_timer = 0
 	self.damage_timer = 1
@@ -52,61 +48,10 @@ ActionWarpfireThrower.client_owner_post_update = function (self, dt, t, world, c
 	end
 
 	local owner_unit = self.owner_unit
-	local first_person_unit = self.first_person_unit
 	local current_action = self.current_action
-	local owner_player = self.owner_player
-	local bot_player = owner_player.bot_player
-	local network_transmit = self.network_transmit
-	local is_server = self.is_server
 
 	if self.state == "waiting_to_shoot" and t >= self.time_to_shoot then
 		self.state = "shooting"
-
-		local muzzle_unit = current_action.first_person_muzzle and first_person_unit or self.weapon_unit
-		local muzzle_node_name = self.muzzle_node_name
-		local go_id = self.unit_id
-		local muzzle_node = Unit.node(muzzle_unit, muzzle_node_name)
-		local muzzle_position = Unit.world_position(muzzle_unit, muzzle_node)
-		local muzzle_rotation = Unit.world_rotation(muzzle_unit, muzzle_node)
-		local flamethrower_effect = current_action.particle_effect_flames
-		local flamethrower_effect_3p = current_action.particle_effect_flames_3p
-		local flamethrower_effect_3p_id = NetworkLookup.effects[flamethrower_effect_3p]
-
-		if not bot_player then
-			self._flamethrower_effect = World.create_particles(world, flamethrower_effect, muzzle_position, muzzle_rotation)
-
-			World.link_particles(world, self._flamethrower_effect, muzzle_unit, muzzle_node, Matrix4x4.identity(), "destroy")
-		end
-
-		if not current_action.first_person_muzzle then
-			if is_server or LEVEL_EDITOR_TEST then
-				if bot_player then
-					network_transmit:send_rpc_all("rpc_start_flamethrower", go_id, flamethrower_effect_3p_id)
-				else
-					network_transmit:send_rpc_clients("rpc_start_flamethrower", go_id, flamethrower_effect_3p_id)
-				end
-			else
-				network_transmit:send_rpc_server("rpc_start_flamethrower", go_id, flamethrower_effect_3p_id)
-			end
-		end
-
-		if current_action.fire_sound_event then
-			if self._source_id then
-				local owner = self.owner_player
-				local is_husk = not owner.local_player
-
-				WwiseWorld.set_switch(self.wwise_world, "husk", is_husk and "true" or "false", self._source_id)
-				WwiseWorld.trigger_event(self.wwise_world, self.stop_sound_event, self._source_id)
-			else
-				self._source_id = WwiseWorld.make_auto_source(self.wwise_world, self.weapon_unit)
-			end
-
-			local owner = self.owner_player
-			local is_husk = not owner.local_player
-
-			WwiseWorld.set_switch(self.wwise_world, "husk", is_husk and "true" or "false", self._source_id)
-			WwiseWorld.trigger_event(self.wwise_world, current_action.fire_sound_event, self._source_id)
-		end
 	end
 
 	self.overcharge_timer = self.overcharge_timer + dt
@@ -124,9 +69,6 @@ ActionWarpfireThrower.client_owner_post_update = function (self, dt, t, world, c
 	local is_max_overcharge = max_overcharge <= current_overcharge_value
 
 	if self.state == "shooting" and not is_max_overcharge then
-		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-		local player_position = first_person_extension:current_position()
-
 		if not Managers.player:owner(owner_unit).bot_player and not self._rumble_effect_id then
 			self._rumble_effect_id = Managers.state.controller_features:add_effect("persistent_rumble", {
 				rumble_effect = "reload_start",
@@ -135,14 +77,11 @@ ActionWarpfireThrower.client_owner_post_update = function (self, dt, t, world, c
 	elseif is_max_overcharge and self.state == "shooting" then
 		self.state = "shot"
 
-		self:_stop_fx()
 		self.weapon_extension:stop_action("action_complete")
 	end
 end
 
 ActionWarpfireThrower.finish = function (self, reason, data)
-	print(Managers.time:time("game") - self.time1)
-
 	if self.state == "wait_for_overcharge" then
 		return
 	end
@@ -150,43 +89,11 @@ ActionWarpfireThrower.finish = function (self, reason, data)
 	if self.state ~= "shot" then
 		self:_proc_spell_used(self.buff_extension)
 	end
-
-	self:_stop_fx()
 end
 
 ActionWarpfireThrower._stop_fx = function (self)
 	if self._fx_stopped then
 		return
-	end
-
-	if self._flamethrower_effect then
-		World.stop_spawning_particles(self.world, self._flamethrower_effect)
-
-		self._flamethrower_effect = nil
-	end
-
-	local go_id = self.unit_id
-
-	if self.is_server or LEVEL_EDITOR_TEST then
-		if self.owner_player.bot_player then
-			self.network_transmit:send_rpc_all("rpc_end_flamethrower", go_id)
-		else
-			self.network_transmit:send_rpc_clients("rpc_end_flamethrower", go_id)
-		end
-	else
-		self.network_transmit:send_rpc_server("rpc_end_flamethrower", go_id)
-	end
-
-	local source_id = self._source_id
-
-	if source_id then
-		local owner = self.owner_player
-		local is_husk = not owner.local_player
-
-		WwiseWorld.set_switch(self.wwise_world, "husk", is_husk and "true" or "false", source_id)
-		WwiseWorld.trigger_event(self.wwise_world, self.stop_sound_event, source_id)
-
-		self._source_id = nil
 	end
 
 	local hud_extension = ScriptUnit.has_extension(self.owner_unit, "hud_system")

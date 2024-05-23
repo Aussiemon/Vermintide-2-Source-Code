@@ -422,6 +422,17 @@ GenericAmmoUserExtension.use_ammo = function (self, ammo_used, given, check_ammo
 	local infinite_ammo = false
 
 	if buff_extension then
+		local extra_ammo_used = math.round(ammo_used * buff_extension:apply_buffs_to_value(1, "ammo_used_multiplier")) - ammo_used
+
+		if ammo_used + extra_ammo_used > self:ammo_count() then
+			local spillover = ammo_used + extra_ammo_used - self:ammo_count()
+
+			extra_ammo_used = extra_ammo_used - spillover
+
+			self:remove_ammo(math.min(spillover), self:remaining_ammo())
+		end
+
+		ammo_used = ammo_used + extra_ammo_used
 		infinite_ammo = buff_extension:has_buff_perk("infinite_ammo")
 	end
 

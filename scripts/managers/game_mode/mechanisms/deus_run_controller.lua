@@ -204,8 +204,8 @@ local function calculate_next_shop_heal(current_health, current_coins, default_h
 	return heal_amount, heal_cost
 end
 
-DeusRunController.init = function (self, run_id, is_server, network_handler, server_peer_id, own_peer_id, own_initial_loadout, own_initial_talents, weapon_group_whitelist)
-	self._run_state = DeusRunState:new(run_id, is_server, network_handler, server_peer_id, own_peer_id, own_initial_loadout, own_initial_talents, weapon_group_whitelist)
+DeusRunController.init = function (self, run_id, is_server, network_handler, server_peer_id, own_peer_id, own_initial_loadout, own_initial_talents, own_initial_bot_loadout, own_initial_bot_talents, weapon_group_whitelist)
+	self._run_state = DeusRunState:new(run_id, is_server, network_handler, server_peer_id, own_peer_id, own_initial_loadout, own_initial_talents, own_initial_bot_loadout, own_initial_bot_talents, weapon_group_whitelist)
 	self._network_handler = network_handler
 end
 
@@ -269,12 +269,14 @@ DeusRunController.handle_run_ended = function (self)
 	self._run_state:set_run_ended(true)
 end
 
-DeusRunController.setup_run = function (self, run_seed, difficulty, journey_name, dominant_god, initial_own_soft_currency, telemetry_id, with_belakor)
+DeusRunController.setup_run = function (self, run_seed, difficulty, journey_name, dominant_god, initial_own_soft_currency, telemetry_id, with_belakor, mutators, boons)
 	self._run_state:set_run_seed(run_seed)
 	self._run_state:set_run_difficulty(difficulty)
 	self._run_state:set_journey_name(journey_name)
 	self._run_state:set_dominant_god(dominant_god)
 	self._run_state:set_belakor_enabled(with_belakor)
+	self._run_state:set_event_mutators(mutators)
+	self._run_state:set_event_boons(boons)
 
 	local populate_config = DEUS_MAP_POPULATE_SETTINGS[journey_name] or DEUS_MAP_POPULATE_SETTINGS.default
 
@@ -313,12 +315,12 @@ DeusRunController.setup_run = function (self, run_seed, difficulty, journey_name
 		self._run_state:set_peer_initialized(own_peer_id, true)
 
 		if profile_index ~= 0 then
-			self:_add_initial_talents_as_power_ups(own_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, initial_talents_for_career)
+			self:_add_initial_power_ups(own_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, initial_talents_for_career)
 			self:_add_initial_weapons_to_loadout(own_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, melee_item_string, ranged_item_string)
 			self._run_state:set_profile_initialized(own_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, true)
 		end
 
-		Managers.telemetry_events:deus_run_started(run_id, journey_name, run_seed, dominant_god, difficulty)
+		Managers.telemetry_events:deus_run_started(run_id, journey_name, run_seed, dominant_god, difficulty, #mutators > 0, mutators, boons)
 		self:_add_coin_tracking_entry(own_peer_id, REAL_PLAYER_LOCAL_ID, initial_own_soft_currency, "set initial soft currency")
 	else
 		local server_peer_id = self._run_state:get_server_peer_id()
@@ -327,13 +329,17 @@ DeusRunController.setup_run = function (self, run_seed, difficulty, journey_name
 		RPC.rpc_deus_set_initial_soft_currency(server_channel_id, initial_own_soft_currency)
 
 		if profile_index ~= 0 then
-			self:_add_initial_talents_as_power_ups(own_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, initial_talents_for_career)
+			self:_add_initial_power_ups(own_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, initial_talents_for_career)
 			self:_add_initial_weapons_to_loadout(own_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, melee_item_string, ranged_item_string)
 			RPC.rpc_deus_set_initial_setup(server_channel_id, profile_index, career_index, initial_talents_for_career, melee_item_string, ranged_item_string)
 		end
 	end
 
 	print(sprintf("starting <%s> with seed <%s> on difficulty <%s> and dominant god <%s> with belakor <%s>", journey_name, run_seed, difficulty, dominant_god, with_belakor))
+end
+
+DeusRunController.is_weekly_event_packages_loaded = function (self)
+	return self._run_state:is_weekly_event_packages_loaded()
 end
 
 DeusRunController.get_state_revision = function (self)
@@ -380,7 +386,7 @@ DeusRunController.rpc_deus_set_initial_setup = function (self, sender_channel_id
 	local sender = CHANNEL_TO_PEER_ID[sender_channel_id]
 
 	if not self._run_state:get_profile_initialized(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index) then
-		self:_add_initial_talents_as_power_ups(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index, initial_talents_for_career)
+		self:_add_initial_power_ups(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index, initial_talents_for_career)
 		self:_add_initial_weapons_to_loadout(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index, melee_item_string, ranged_item_string)
 		self._run_state:set_profile_initialized(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index, true)
 	end
@@ -427,27 +433,27 @@ DeusRunController.rpc_deus_grant_end_of_level_power_ups = function (self, sender
 	RPC.rpc_deus_add_power_ups(server_channel_id, new_power_ups_string, granted_by_end_of_level_node_key)
 end
 
-DeusRunController.profile_changed = function (self, peer_id, local_player_id, profile_index, career_index)
+DeusRunController.profile_changed = function (self, peer_id, local_player_id, profile_index, career_index, is_bot)
 	if self._run_state:get_own_peer_id() ~= peer_id then
 		return
 	end
 
-	if self._run_state:get_profile_initialized(peer_id, local_player_id, profile_index, career_index) then
+	if self._run_state:get_profile_initialized(peer_id, local_player_id, profile_index, career_index, is_bot) then
 		return
 	end
 
-	local initial_talents = self._run_state:get_own_initial_talents()
+	local initial_talents = is_bot and self._run_state:get_own_initial_bot_talents() or self._run_state:get_own_initial_talents()
 	local profile = SPProfiles[profile_index]
 	local career_name = profile.careers[career_index].name
 	local initial_talents_for_career = initial_talents[career_name]
-	local initial_loadout = self._run_state:get_own_initial_loadout()
+	local initial_loadout = is_bot and self._run_state:get_own_initial_bot_loadout() or self._run_state:get_own_initial_loadout()
 	local initial_loadout_for_career = initial_loadout[career_name]
 	local melee_item = initial_loadout_for_career.slot_melee
 	local ranged_item = initial_loadout_for_career.slot_ranged
 	local melee_item_string = DeusWeaponGeneration.serialize_weapon(melee_item)
 	local ranged_item_string = DeusWeaponGeneration.serialize_weapon(ranged_item)
 
-	self:_add_initial_talents_as_power_ups(peer_id, local_player_id, profile_index, career_index, initial_talents_for_career)
+	self:_add_initial_power_ups(peer_id, local_player_id, profile_index, career_index, initial_talents_for_career)
 	self:_add_initial_weapons_to_loadout(peer_id, local_player_id, profile_index, career_index, melee_item_string, ranged_item_string)
 
 	if self._run_state:is_server() then
@@ -461,7 +467,7 @@ DeusRunController.profile_changed = function (self, peer_id, local_player_id, pr
 	end
 end
 
-DeusRunController._add_initial_talents_as_power_ups = function (self, peer_id, local_player_id, profile_index, career_index, initial_talents_for_career)
+DeusRunController._add_initial_power_ups = function (self, peer_id, local_player_id, profile_index, career_index, initial_talents_for_career)
 	local talent_power_ups = {}
 
 	for tier = 1, #initial_talents_for_career do
@@ -479,6 +485,10 @@ DeusRunController._add_initial_talents_as_power_ups = function (self, peer_id, l
 	local new_power_ups = table.clone(existing_power_ups, skip_metatable)
 
 	table.append(new_power_ups, talent_power_ups)
+
+	local event_boons = self._run_state:get_event_boons()
+
+	table.append(new_power_ups, event_boons)
 	self._run_state:set_player_power_ups(peer_id, local_player_id, profile_index, career_index, new_power_ups)
 end
 
@@ -505,6 +515,14 @@ end
 
 DeusRunController.get_dominant_god = function (self)
 	return self._run_state:get_dominant_god()
+end
+
+DeusRunController.get_event_boons = function (self)
+	return self._run_state:get_event_boons()
+end
+
+DeusRunController.get_event_mutators = function (self)
+	return self._run_state:get_event_mutators()
 end
 
 DeusRunController.handle_level_won = function (self)
@@ -813,10 +831,9 @@ DeusRunController.set_own_player_avatar_info = function (self, level, name, fram
 end
 
 DeusRunController.get_own_loadout = function (self)
-	local local_peer_id = self._run_state:get_own_peer_id()
-	local profile_index, career_index = self._run_state:get_player_profile(local_peer_id, REAL_PLAYER_LOCAL_ID)
-
 	if self._destroyed then
+		local local_peer_id = self._run_state:get_own_peer_id()
+		local profile_index, career_index = self._run_state:get_player_profile(local_peer_id, REAL_PLAYER_LOCAL_ID)
 		local profile = SPProfiles[profile_index]
 		local career_name = profile.careers[career_index].name
 		local initial_loadout = self._run_state:get_own_initial_loadout()
@@ -826,13 +843,21 @@ DeusRunController.get_own_loadout = function (self)
 
 		return melee_item, ranged_item
 	else
-		local melee_item_string = self._run_state:get_player_loadout(local_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, "slot_melee")
-		local ranged_item_string = self._run_state:get_player_loadout(local_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, "slot_ranged")
+		local melee_item_string, ranged_item_string = self:get_own_loadout_serialized()
 		local melee_item = DeusWeaponGeneration.deserialize_weapon(melee_item_string)
 		local ranged_item = DeusWeaponGeneration.deserialize_weapon(ranged_item_string)
 
 		return melee_item, ranged_item
 	end
+end
+
+DeusRunController.get_own_loadout_serialized = function (self)
+	local local_peer_id = self._run_state:get_own_peer_id()
+	local profile_index, career_index = self._run_state:get_player_profile(local_peer_id, REAL_PLAYER_LOCAL_ID)
+	local melee_item_string = self._run_state:get_player_loadout(local_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, "slot_melee")
+	local ranged_item_string = self._run_state:get_player_loadout(local_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, "slot_ranged")
+
+	return melee_item_string, ranged_item_string
 end
 
 DeusRunController.get_loadout = function (self, peer_id, local_player_id, profile_index, career_index)
@@ -960,6 +985,12 @@ DeusRunController.shop_buy_power_up = function (self, power_up, discount)
 
 		RPC.rpc_deus_shop_power_up_bought(server_channel_id, power_up.rarity, power_up.name, power_up.client_id, math.round(discount * DISCOUNT_CONVERSION_EPSILON))
 	end
+
+	if success then
+		local local_peer_id = self._run_state:get_own_peer_id()
+
+		self:_check_set_completed(power_up, true, local_peer_id, REAL_PLAYER_LOCAL_ID)
+	end
 end
 
 DeusRunController._try_buy_health = function (self, peer_id)
@@ -1076,7 +1107,13 @@ DeusRunController.generate_random_power_ups = function (self, count, availabilit
 	return new_power_ups
 end
 
-DeusRunController.add_power_ups = function (self, new_power_ups, local_player_id)
+local function is_reward_of_set(set, power_up)
+	return table.find_func(set.rewards, function (_, reward)
+		return reward.name == power_up.name and reward.rarity == power_up.rarity
+	end)
+end
+
+DeusRunController.add_power_ups = function (self, new_power_ups, local_player_id, present)
 	if #new_power_ups == 0 then
 		return
 	end
@@ -1100,6 +1137,86 @@ DeusRunController.add_power_ups = function (self, new_power_ups, local_player_id
 		local granted_by_end_of_level_node_key = ""
 
 		RPC.rpc_deus_add_power_ups(server_channel_id, new_power_ups_string, granted_by_end_of_level_node_key)
+	end
+
+	local player = Managers.player:player(local_peer_id, local_player_id)
+
+	if player then
+		local buff_extension = ScriptUnit.has_extension(player.player_unit, "buff_system")
+
+		if buff_extension then
+			buff_extension:trigger_procs("on_boon_granted")
+		end
+	end
+
+	local player = Managers.player:player(local_peer_id, local_player_id)
+	local player_unit = player and player.player_unit
+
+	if player_unit then
+		local buff_system = Managers.state.entity:system("buff_system")
+		local talent_interface = Managers.backend:get_talents_interface()
+		local deus_backend = Managers.backend:get_interface("deus")
+		local profile_index = player and player:profile_index()
+		local career_index = player and player:career_index()
+
+		for i = 1, #new_power_ups do
+			local power_up = new_power_ups[i]
+
+			DeusPowerUpUtils.activate_deus_power_up(power_up, buff_system, talent_interface, deus_backend, self, player_unit, profile_index, career_index)
+
+			if present then
+				Managers.state.event:trigger("present_rewards", {
+					{
+						type = "deus_power_up",
+						power_up = power_up,
+					},
+				})
+			end
+		end
+	end
+
+	for i = 1, #new_power_ups do
+		local power_up = new_power_ups[i]
+
+		self:_check_set_completed(power_up, present, local_peer_id, local_player_id)
+	end
+end
+
+DeusRunController._check_set_completed = function (self, added_power_up, present, local_peer_id, local_player_id)
+	local related_sets = DeusPowerUpSetLookup[added_power_up.rarity] and DeusPowerUpSetLookup[added_power_up.rarity][added_power_up.name]
+
+	if not related_sets then
+		return
+	end
+
+	for set_i = 1, #related_sets do
+		repeat
+			local set = related_sets[set_i]
+
+			if is_reward_of_set(set, added_power_up) then
+				break
+			end
+
+			local num_set_pieces = 0
+
+			for piece_i = 1, #set.pieces do
+				local piece = set.pieces[piece_i]
+
+				if self:has_power_up_by_name(local_peer_id, piece.name, piece.rarity) then
+					num_set_pieces = num_set_pieces + 1
+				end
+			end
+
+			local num_required_pieces = set.num_required_pieces or #set.pieces
+
+			if num_set_pieces == num_required_pieces then
+				local reward_power_ups = table.select_array(set.rewards, function (_, reward)
+					return DeusPowerUpUtils.generate_specific_power_up(reward.name, reward.rarity)
+				end)
+
+				self:add_power_ups(reward_power_ups, local_player_id, present)
+			end
+		until true
 	end
 end
 
@@ -1141,6 +1258,12 @@ DeusRunController.try_grant_end_of_level_deus_power_ups = function (self)
 			local granted_by_end_of_level_node_key = current_node_key
 
 			RPC.rpc_deus_add_power_ups(server_channel_id, new_power_ups_string, granted_by_end_of_level_node_key)
+		end
+
+		for i = 1, #new_power_ups do
+			local power_up = new_power_ups[i]
+
+			self:_check_set_completed(power_up, true, local_peer_id, REAL_PLAYER_LOCAL_ID)
 		end
 
 		return new_power_ups
@@ -1193,6 +1316,16 @@ DeusRunController.rpc_deus_add_power_ups = function (self, sender_channel_id, po
 		granted_non_party_end_of_level_power_ups[#granted_non_party_end_of_level_power_ups + 1] = granted_by_end_of_level_node_key
 
 		self._run_state:set_granted_non_party_end_of_level_power_ups(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index, granted_non_party_end_of_level_power_ups)
+	end
+
+	local player = Managers.player:player(sender, REAL_PLAYER_LOCAL_ID)
+
+	if player then
+		local buff_extension = ScriptUnit.has_extension(player.player_unit, "buff_system")
+
+		if buff_extension then
+			buff_extension:trigger_procs("on_boon_granted")
+		end
 	end
 end
 
@@ -1256,6 +1389,21 @@ DeusRunController.has_power_up = function (self, peer_id, power_up_client_id)
 
 	for _, power_up in ipairs(power_ups) do
 		if power_up.client_id == power_up_client_id then
+			return true
+		end
+	end
+
+	return false
+end
+
+DeusRunController.has_power_up_by_name = function (self, peer_id, power_up_name, power_up_rarity)
+	local profile_index, career_index = self._run_state:get_player_profile(peer_id, REAL_PLAYER_LOCAL_ID)
+	local power_ups = self._run_state:get_player_power_ups(peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index)
+
+	for i = 1, #power_ups do
+		local power_up = power_ups[i]
+
+		if power_up.name == power_up_name and power_up.rarity == power_up_rarity then
 			return true
 		end
 	end

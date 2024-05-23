@@ -992,6 +992,12 @@ CameraEffectSettings = {
 			octaves = 6,
 			persistance = 1,
 		},
+		damaged_boss = {
+			amplitude = 0.1,
+			duration = 0.13,
+			octaves = 6,
+			persistance = 1,
+		},
 		damaged_front_up = {
 			amplitude = 0,
 			duration = 0,

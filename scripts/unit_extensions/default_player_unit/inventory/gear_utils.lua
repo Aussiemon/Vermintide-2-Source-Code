@@ -169,6 +169,8 @@ GearUtils.apply_material_settings = function (unit, material_settings)
 			else
 				Unit.set_vector4_for_materials(unit, variable_name, Quaternion(data.x, data.y, data.z, data.w))
 			end
+		elseif data.type == "texture" and Application.can_get("texture", data.texture) then
+			Unit.set_texture_for_materials(unit, variable_name, data.texture)
 		end
 	end
 end

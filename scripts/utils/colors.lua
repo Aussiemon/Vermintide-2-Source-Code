@@ -898,6 +898,12 @@ Colors.color_definitions = {
 		31,
 		135,
 	},
+	event = {
+		255,
+		140,
+		31,
+		135,
+	},
 	card_plentiful = {
 		255,
 		255,
@@ -1227,6 +1233,12 @@ Colors.color_definitions = {
 		255,
 		192,
 		203,
+	},
+	vs_chaos_troll = {
+		255,
+		55,
+		123,
+		44,
 	},
 	vs_undecided = {
 		255,

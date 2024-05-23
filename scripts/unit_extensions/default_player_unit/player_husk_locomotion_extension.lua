@@ -94,7 +94,7 @@ end
 
 PlayerHuskLocomotionExtension.set_forced_velocity = function (self, velocity_forced)
 	if not self.disabled then
-		if self.is_server then
+		if self.is_server or DEDICATED_SERVER then
 			Managers.state.network.network_transmit:send_rpc("rpc_set_forced_velocity", self.player:network_id(), self.id, velocity_forced)
 		else
 			Managers.state.network.network_transmit:send_rpc_server("rpc_set_forced_velocity", self.id, velocity_forced)

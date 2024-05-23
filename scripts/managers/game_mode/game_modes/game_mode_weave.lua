@@ -12,8 +12,7 @@ local FAIL_LEVEL_VAR = false
 GameModeWeave.init = function (self, settings, world, network_server, is_server, profile_synchronizer, level_key, statistics_db, game_mode_settings)
 	GameModeWeave.super.init(self, settings, world, network_server, is_server, profile_synchronizer, level_key, statistics_db, game_mode_settings)
 
-	self.about_to_lose = false
-	self.lost_condition_timer = nil
+	self._lost_condition_timer = nil
 	self.about_to_win = false
 	self.win_condition_timer = nil
 	self._adventure_profile_rules = AdventureProfileRules:new(self._profile_synchronizer, self._network_server)
@@ -31,6 +30,7 @@ GameModeWeave.init = function (self, settings, world, network_server, is_server,
 
 	self._local_player_spawned = false
 	self._quick_play = Managers.matchmaking:is_quick_game()
+	self._has_locked_party_size = Managers.matchmaking:is_game_private()
 
 	local event_manager = Managers.state.event
 
@@ -73,45 +73,50 @@ GameModeWeave.evaluate_end_conditions = function (self, round_started, dt, t, mu
 	local players_disabled = GameModeHelper.side_is_disabled("heroes") and not GameModeHelper.side_delaying_loss("heroes")
 	local mutator_lost = mutator_handler:evaluate_lose_conditions()
 	local time_up = self:_is_time_up(t)
-	local lost = not self._lose_condition_disabled and (mutator_lost or humans_dead or players_disabled or self._level_failed or time_up)
+	local lost = not self._lose_condition_disabled and (mutator_lost or humans_dead or players_disabled or self._level_failed)
 
 	if self._about_to_win then
 		if t > self.win_condition_timer then
 			return true, "won"
+		elseif time_up then
+			return true, "lost"
 		else
 			return false
 		end
 	end
 
-	if self.about_to_lose then
+	if self:is_about_to_end_game_early() then
 		if lost then
-			if t > self.lost_condition_timer then
+			if t > self._lost_condition_timer then
 				return true, "lost"
 			else
 				return false
 			end
 		else
-			self.about_to_lose = nil
-			self.lost_condition_timer = nil
+			self:set_about_to_end_game_early(false)
+
+			self._lost_condition_timer = nil
 		end
 	end
 
 	if lost then
-		self.about_to_lose = true
+		self:set_about_to_end_game_early(true)
 
 		if humans_dead then
-			self.lost_condition_timer = t + GameModeSettings.weave.lose_condition_time_dead
-		elseif time_up then
-			self.lost_condition_timer = t + GameModeSettings.weave.lose_condition_time_time_up
+			self._lost_condition_timer = t + GameModeSettings.weave.lose_condition_time_dead
 		else
-			self.lost_condition_timer = t + GameModeSettings.weave.lose_condition_time
+			self._lost_condition_timer = t + GameModeSettings.weave.lose_condition_time
 		end
 	elseif self._level_completed and not self._about_to_win then
 		local weave_manager = Managers.weave
 		local next_objective_index = weave_manager:calculate_next_objective_index()
 
 		if next_objective_index then
-			return true, "won"
+			if time_up then
+				return true, "won"
+			else
+				return true, "won"
+			end
 		else
 			self._about_to_win = true
 			self.win_condition_timer = t + 6
@@ -338,7 +343,12 @@ GameModeWeave.get_end_screen_config = function (self, game_won, game_lost, playe
 			}
 		end
 	else
-		screen_name = "defeat"
+		local weave_manager = Managers.weave
+		local next_objective_index = weave_manager:calculate_next_objective_index()
+
+		if not next_objective_index then
+			screen_name = "defeat"
+		end
 	end
 
 	return screen_name, screen_config
@@ -446,7 +456,7 @@ GameModeWeave._handle_bots = function (self, t, dt)
 		return
 	end
 
-	local can_spawn_bots = Development.parameter("enable_bots_in_weaves") or self._quick_play
+	local can_spawn_bots = Development.parameter("enable_bots_in_weaves") or not self._has_locked_party_size
 
 	if script_data.ai_bots_disabled or not can_spawn_bots then
 		if #self._bot_players > 0 then

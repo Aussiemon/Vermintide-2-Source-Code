@@ -1115,6 +1115,11 @@ local full_access_layout = {
 		disable_for_mechanism = default_disable_for_mechanism,
 	},
 	{
+		display_name = "menu_return_to_title_screen",
+		fade = false,
+		transition = "return_to_title_screen_hero_view",
+	},
+	{
 		display_name = "leave_game_menu_button_name",
 		fade = false,
 		transition = "leave_group_hero_view",

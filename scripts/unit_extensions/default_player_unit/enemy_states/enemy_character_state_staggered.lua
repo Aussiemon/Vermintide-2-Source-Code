@@ -138,6 +138,12 @@ EnemyCharacterStateStaggered.on_enter = function (self, unit, input, dt, context
 	if not was_already_in_stagger then
 		self._locomotion_extension:enable_animation_driven_movement(false)
 	end
+
+	if self._breed.boss and self._stagger_type > 1 then
+		local buff_system = Managers.state.entity:system("buff_system")
+
+		buff_system:add_buff_synced(unit, "vs_boss_stagger_immune", BuffSyncType.Server)
+	end
 end
 
 EnemyCharacterStateStaggered.on_exit = function (self, unit, input, dt, context, t, next_state)

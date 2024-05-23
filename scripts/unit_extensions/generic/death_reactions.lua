@@ -622,6 +622,34 @@ local function vs_trigger_player_killing_blow_player(killed_unit, killing_blow, 
 	end
 end
 
+local function check_trigger_team_wipe_vo(killed_unit)
+	if not Managers.state.network.is_server then
+		return
+	end
+
+	local side_manager = Managers.state.side
+
+	if side_manager:versus_is_dark_pact(killed_unit) then
+		local any_player_alive = false
+		local owner_side = side_manager.side_by_unit[killed_unit]
+		local side_players = owner_side.PLAYER_UNITS
+
+		for i = 1, #side_players do
+			if HEALTH_ALIVE[side_players[i]] then
+				any_player_alive = true
+
+				break
+			end
+		end
+
+		if not any_player_alive then
+			local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+			dialogue_system:trigger_mission_giver_event("vs_mg_pactsworn_wipe")
+		end
+	end
+end
+
 local function trigger_player_killing_blow_ai_buffs(ai_unit, killing_blow)
 	local attacker_unit = killing_blow[DamageDataIndex.SOURCE_ATTACKER_UNIT] or killing_blow[DamageDataIndex.ATTACKER]
 
@@ -1486,6 +1514,7 @@ DeathReactions.templates = {
 				Managers.telemetry_events:player_died(player, damage_type, damage_source, position)
 			end,
 			start = function (unit, context, t, killing_blow, is_server)
+				check_trigger_team_wipe_vo(unit)
 				trigger_player_killing_blow_ai_buffs(unit, killing_blow, true)
 				StatisticsUtil.register_kill(unit, killing_blow, context.statistics_db, true)
 				Unit.flow_event(unit, "lua_on_death")

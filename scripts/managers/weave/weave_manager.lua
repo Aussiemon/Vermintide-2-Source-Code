@@ -302,8 +302,11 @@ WeaveManager.store_player_ids = function (self)
 	end
 
 	local matchmaking = lobby:lobby_data("matchmaking")
+	local is_private = lobby:lobby_data("is_private")
 
 	if matchmaking == "true" then
+		self._num_players = 4
+	elseif is_private == "false" then
 		self._num_players = 4
 	else
 		self._num_players = table.size(self._player_ids)
@@ -746,8 +749,9 @@ WeaveManager._objective_completed = function (self)
 	local template = WeaveSettings.templates[self._active_weave_name]
 	local objectives = template.objectives
 	local bonus_time = objective_template.bonus_time_on_complete
+	local time_is_up = self:get_time_left() <= 0
 
-	if bonus_time and self._is_server then
+	if not time_is_up and bonus_time and self._is_server then
 		self._remaining_time = self._remaining_time + bonus_time
 	end
 

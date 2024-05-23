@@ -23,21 +23,25 @@ if not StoreLayoutConfig then
 		cosmetics = {
 			bardin = {
 				ranger = {
+					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				ironbreaker = {
+					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				slayer = {
+					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				engineer = {
+					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
@@ -45,21 +49,25 @@ if not StoreLayoutConfig then
 			},
 			kruber = {
 				mercenary = {
+					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				huntsman = {
+					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				knight = {
+					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				questingknight = {
+					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
@@ -67,16 +75,19 @@ if not StoreLayoutConfig then
 			},
 			kerillian = {
 				waywatcher = {
+					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				maidenguard = {
+					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				shade = {
+					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
@@ -84,21 +95,25 @@ if not StoreLayoutConfig then
 			},
 			victor = {
 				captain = {
+					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				bountyhunter = {
+					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				zealot = {
+					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				priest = {
+					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
@@ -106,20 +121,29 @@ if not StoreLayoutConfig then
 			},
 			sienna = {
 				scholar = {
+					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				adept = {
+					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				unchained = {
+					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
+			},
+			event = {
+				frames = "item_details",
+				hats = "item_details",
+				skins = "item_details",
+				weapon_skins = "item_details",
 			},
 		},
 	}
@@ -240,6 +264,24 @@ if not StoreLayoutConfig then
 		item_filter = "item_type == weapon_skin",
 		layout = "item_list",
 		sort_order = 3,
+		sound_event_enter = "Play_hud_store_category_button",
+		type = "item",
+	}
+	StoreLayoutConfig.pages.frames = {
+		category_button_texture = "store_category_icon_portrait_frames",
+		display_name = "frame",
+		item_filter = "item_type == frame",
+		layout = "item_list",
+		sort_order = 4,
+		sound_event_enter = "Play_hud_store_category_button",
+		type = "item",
+	}
+	StoreLayoutConfig.pages.event = {
+		category_button_texture = "store_category_icon_portrait_frames",
+		display_name = "achv_menu_event_category_title",
+		item_filter = "is_event_item",
+		layout = "item_list",
+		sort_order = 100,
 		sound_event_enter = "Play_hud_store_category_button",
 		type = "item",
 	}
@@ -452,16 +494,6 @@ if not StoreLayoutConfig then
 		end
 	end
 end
-
-local ORDER_RARITY = {
-	common = 2,
-	exotic = 4,
-	magic = 5,
-	plentiful = 1,
-	promo = 7,
-	rare = 3,
-	unique = 6,
-}
 
 StoreLayoutConfig.make_sort_key = function (item)
 	local backend_items = Managers.backend:get_interface("items")

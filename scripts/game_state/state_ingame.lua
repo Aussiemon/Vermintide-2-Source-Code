@@ -1482,7 +1482,7 @@ StateIngame._check_exit = function (self, t)
 		end
 
 		if self.exit_type then
-			if self.is_server and not self.is_in_inn and self.exit_type ~= "reload_level" and Managers.matchmaking and Managers.matchmaking:game_mode_event_data() then
+			if self.is_server and not self.is_in_inn and self.exit_type ~= "reload_level" and Managers.matchmaking and Managers.matchmaking:game_mode_event_data() and Managers.mechanism:game_mechanism():is_venture_over() then
 				Managers.matchmaking:clear_game_mode_event_data()
 			end
 

@@ -9,6 +9,11 @@ BackendInterfaceItemPlayfab.init = function (self, backend_mirror)
 	self._items = {}
 	self._game_mode_specific_items = {}
 	self._backend_mirror = backend_mirror
+	self._career_loadouts = {}
+	self._default_loadouts = {}
+	self._default_loadout_overrides = {}
+	self._selected_career_custom_loadouts = {}
+	self._bot_loadouts = {}
 	self._modified_templates = {}
 	self._last_id = 0
 	self._delete_deeds_request = {}
@@ -29,8 +34,18 @@ local loadout_slots = {
 }
 
 BackendInterfaceItemPlayfab._refresh = function (self)
+	if not DEDICATED_SERVER then
+		self:_refresh_career_loadouts()
+		self:_refresh_default_loadouts()
+		self:_setup_default_overrides()
+	end
+
 	self:_refresh_items()
 	self:_refresh_loadouts()
+
+	if not DEDICATED_SERVER then
+		self:refresh_bot_loadouts()
+	end
 
 	self._dirty = false
 
@@ -105,6 +120,161 @@ BackendInterfaceItemPlayfab._refresh_loadouts = function (self)
 			end
 		end
 	end
+end
+
+local EMPTY_TABLE = {}
+
+BackendInterfaceItemPlayfab.refresh_bot_loadouts = function (self)
+	self._bot_loadouts = table.clone(self._loadouts)
+
+	local loadouts = self._bot_loadouts
+	local backend_mirror = self._backend_mirror
+	local loadout_selection = PlayerData.loadout_selection or EMPTY_TABLE
+	local bot_equipment = loadout_selection.bot_equipment or EMPTY_TABLE
+
+	for career_name, settings in pairs(CareerSettings) do
+		if settings.playfab_name then
+			local bot_loadout_index = bot_equipment[career_name]
+
+			if bot_loadout_index then
+				for i = 1, #loadout_slots do
+					local slot_name = loadout_slots[i]
+					local item_id = backend_mirror:get_character_data(career_name, slot_name, bot_loadout_index)
+
+					loadouts[career_name] = loadouts[career_name] or {}
+					loadouts[career_name][slot_name] = item_id
+				end
+			end
+		end
+	end
+
+	print("[BackendInterfaceItemPlayfab] Refreshing bot loadout")
+end
+
+BackendInterfaceItemPlayfab._refresh_career_loadouts = function (self)
+	local all_career_loadouts = self._career_loadouts
+	local backend_mirror = self._backend_mirror
+
+	table.clear(all_career_loadouts)
+
+	for career_name, settings in pairs(CareerSettings) do
+		if settings.playfab_name then
+			all_career_loadouts[career_name] = all_career_loadouts[career_name] or {}
+
+			local current_career_loadouts = all_career_loadouts[career_name]
+			local selected_loadout, career_loadouts = backend_mirror:get_career_loadouts(career_name)
+
+			self._selected_career_custom_loadouts[career_name] = selected_loadout
+
+			if career_loadouts then
+				for i = 1, #career_loadouts do
+					current_career_loadouts[i] = current_career_loadouts[i] or {}
+
+					local current_career_loadout = current_career_loadouts[i]
+					local career_loadout = career_loadouts[i]
+
+					for j = 1, #loadout_slots do
+						local slot_name = loadout_slots[j]
+						local item_id = career_loadout[slot_name]
+
+						current_career_loadout[slot_name] = item_id
+					end
+				end
+			end
+		end
+	end
+end
+
+BackendInterfaceItemPlayfab._refresh_default_loadouts = function (self)
+	local all_career_default_loadouts = self._default_loadouts
+	local backend_mirror = self._backend_mirror
+
+	table.clear(all_career_default_loadouts)
+
+	for career_name, settings in pairs(CareerSettings) do
+		if settings.playfab_name then
+			all_career_default_loadouts[career_name] = all_career_default_loadouts[career_name] or {}
+
+			local current_career_loadouts = all_career_default_loadouts[career_name]
+			local career_loadouts = backend_mirror:get_default_loadouts(career_name)
+
+			if career_loadouts then
+				for i = 1, #career_loadouts do
+					current_career_loadouts[i] = current_career_loadouts[i] or {}
+
+					local current_career_loadout = current_career_loadouts[i]
+					local career_loadout = career_loadouts[i]
+
+					for j = 1, #loadout_slots do
+						local slot_name = loadout_slots[j]
+						local item_id = career_loadout[slot_name]
+
+						current_career_loadout[slot_name] = item_id
+					end
+				end
+			end
+		end
+	end
+end
+
+BackendInterfaceItemPlayfab._setup_default_overrides = function (self)
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+	local loadout_selection = PlayerData.loadout_selection and PlayerData.loadout_selection[mechanism_name]
+
+	table.clear(self._default_loadout_overrides)
+
+	if not loadout_selection then
+		return
+	end
+
+	local game_mode_key = Managers.state.game_mode and Managers.state.game_mode:game_mode_key()
+
+	if not game_mode_key or not InventorySettings.default_loadout_allowed_game_modes[game_mode_key] then
+		return
+	end
+
+	for career_name, settings in pairs(CareerSettings) do
+		local loadout_index = loadout_selection[career_name]
+
+		if loadout_index then
+			local loadout_settings = InventorySettings.loadouts[loadout_index]
+
+			if loadout_settings.loadout_type == "default" then
+				self:set_default_override(career_name, loadout_index)
+			end
+		end
+	end
+end
+
+BackendInterfaceItemPlayfab.set_loadout_index = function (self, career_name, loadout_index)
+	self._backend_mirror:set_loadout_index(career_name, loadout_index)
+	Managers.telemetry_events:loadout_equipped()
+end
+
+BackendInterfaceItemPlayfab.add_loadout = function (self, career_name)
+	self._backend_mirror:add_loadout(career_name)
+
+	local career_loadouts = self:get_career_loadouts(career_name)
+
+	Managers.telemetry_events:loadout_created(#career_loadouts, InventorySettings.MAX_NUM_CUSTOM_LOADOUTS)
+end
+
+BackendInterfaceItemPlayfab.delete_loadout = function (self, career_name, loadout_index)
+	self._backend_mirror:delete_loadout(career_name, loadout_index)
+
+	local career_loadouts = self:get_career_loadouts(career_name)
+
+	Managers.telemetry_events:loadout_deleted(#career_loadouts, InventorySettings.MAX_NUM_CUSTOM_LOADOUTS)
+end
+
+BackendInterfaceItemPlayfab.set_default_override = function (self, career_name, loadout_index)
+	local default_career_default_loadouts = self._default_loadouts[career_name]
+
+	self._default_loadout_overrides[career_name] = default_career_default_loadouts and default_career_default_loadouts[loadout_index]
+end
+
+BackendInterfaceItemPlayfab.get_default_override = function (self, career_name)
+	return self._default_loadout_overrides[career_name]
 end
 
 BackendInterfaceItemPlayfab.ready = function (self)
@@ -290,23 +460,63 @@ BackendInterfaceItemPlayfab.get_loadout = function (self)
 		self:_refresh()
 	end
 
-	local loadouts = self._loadouts
+	local loadouts = table.clone(self._loadouts)
+
+	for career_name, career_loadout in pairs(self._default_loadout_overrides) do
+		loadouts[career_name] = career_loadout
+	end
 
 	return loadouts
 end
 
-BackendInterfaceItemPlayfab.get_loadout_by_career_name = function (self, career_name)
+BackendInterfaceItemPlayfab.get_bot_loadout = function (self)
 	if self._dirty then
 		self:_refresh()
 	end
 
-	local loadouts = self:get_loadout()
+	return self._bot_loadouts
+end
+
+BackendInterfaceItemPlayfab.get_career_loadouts = function (self, career_name)
+	if self._dirty then
+		self:_refresh()
+	end
+
+	return self._career_loadouts[career_name]
+end
+
+BackendInterfaceItemPlayfab.get_selected_career_loadout = function (self, career_name)
+	if self._dirty then
+		self:_refresh()
+	end
+
+	return self._selected_career_custom_loadouts[career_name]
+end
+
+BackendInterfaceItemPlayfab.get_default_loadouts = function (self, career_name)
+	if self._dirty then
+		self:_refresh()
+	end
+
+	return self._default_loadouts[career_name]
+end
+
+BackendInterfaceItemPlayfab.get_loadout_by_career_name = function (self, career_name, is_bot)
+	if self._dirty then
+		self:_refresh()
+	end
+
+	local game_mode_key = Managers.state.game_mode and Managers.state.game_mode:game_mode_key()
+	local bot_loadout_allowed = InventorySettings.bot_loadout_allowed_game_modes[game_mode_key]
+	local loadouts = bot_loadout_allowed and is_bot and self:get_bot_loadout() or self:get_loadout()
 
 	return loadouts[career_name]
 end
 
-BackendInterfaceItemPlayfab.get_loadout_item_id = function (self, career_name, slot_name)
-	local loadouts = self:get_loadout()
+BackendInterfaceItemPlayfab.get_loadout_item_id = function (self, career_name, slot_name, is_bot)
+	local game_mode_key = Managers.state.game_mode and Managers.state.game_mode:game_mode_key()
+	local bot_loadout_allowed = InventorySettings.bot_loadout_allowed_game_modes[game_mode_key]
+	local loadouts = bot_loadout_allowed and is_bot and self:get_bot_loadout() or self:get_loadout()
 	local loadout = loadouts[career_name]
 	local item_id = loadout and loadout[slot_name]
 
@@ -319,8 +529,10 @@ BackendInterfaceItemPlayfab.get_loadout_item_id = function (self, career_name, s
 	return loadout and loadout[slot_name]
 end
 
-BackendInterfaceItemPlayfab.get_cosmetic_loadout = function (self, career_name)
-	local loadouts = self:get_loadout()
+BackendInterfaceItemPlayfab.get_cosmetic_loadout = function (self, career_name, is_bot)
+	local game_mode_key = Managers.state.game_mode and Managers.state.game_mode:game_mode_key()
+	local bot_loadout_allowed = InventorySettings.bot_loadout_allowed_game_modes[game_mode_key]
+	local loadouts = bot_loadout_allowed and is_bot and self:get_bot_loadout() or self:get_loadout()
 	local career_loadout = loadouts[career_name]
 
 	return career_loadout.slot_hat, career_loadout.slot_skin, career_loadout.slot_frame

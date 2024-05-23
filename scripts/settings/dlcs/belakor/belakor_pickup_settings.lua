@@ -4,13 +4,20 @@ require("scripts/settings/dlcs/belakor/belakor_balancing")
 
 local settings = DLCSettings.belakor
 
-local function can_spawn_deus_belakor_unit(params, is_debug_spawn)
+local function can_spawn_deus_belakor_skulls_unit(params, is_debug_spawn)
 	if Managers.mechanism:current_mechanism_name() == "deus" then
 		local mechanism = Managers.mechanism:game_mechanism()
 		local deus_run_controller = mechanism:get_deus_run_controller()
 
 		if not deus_run_controller then
 			return false
+		end
+
+		local game_mode_manager = Managers.state.game_mode
+		local has_skulls_mutator = game_mode_manager and game_mode_manager:has_mutator("curse_shadow_homing_skulls")
+
+		if has_skulls_mutator then
+			return true
 		end
 
 		local current_node = deus_run_controller:get_current_node()
@@ -273,7 +280,7 @@ settings.pickups = {
 			type = "deus_04",
 			unit_name = "units/props/blk/blk_curse_shadow_homing_skulls_spawner_01",
 			unit_template_name = "shadow_homing_skulls_spawner",
-			can_spawn_func = can_spawn_deus_belakor_unit,
+			can_spawn_func = can_spawn_deus_belakor_skulls_unit,
 		},
 	},
 	belakor_crystal = {

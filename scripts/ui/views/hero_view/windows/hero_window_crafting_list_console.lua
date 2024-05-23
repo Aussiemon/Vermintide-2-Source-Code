@@ -165,7 +165,7 @@ HeroWindowCraftingListConsole.create_ui_elements = function (self, params, offse
 	end
 
 	local input_service = Managers.input:get_service("hero_view")
-	local gui_layer = UILayer.default + 30
+	local gui_layer = UILayer.default + 300
 
 	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 4, gui_layer, generic_input_actions.default, true)
 

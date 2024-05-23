@@ -5,6 +5,11 @@ require("scripts/settings/profiles/career_constants")
 local spell_params = {}
 local spell_params_improved = {
 	external_optional_duration = CareerConstants.wh_priest.talent_6_1_improved_ability_duration,
+	mechanism_overrides = {
+		versus = {
+			external_optional_duration = CareerConstants.wh_priest.talent_6_1_improved_ability_duration_versus,
+		},
+	},
 }
 local spell_buffs = {
 	"victor_priest_activated_ability_invincibility",
@@ -67,7 +72,7 @@ ActionCareerWHPriestUtility._add_buffs_to_target = function (target_unit, warrio
 	local talent_extension = ScriptUnit.extension(warrior_priest_unit, "talent_system")
 
 	if talent_extension:has_talent("victor_priest_6_1") then
-		params = spell_params_improved
+		params = MechanismOverrides.get(spell_params_improved)
 	end
 
 	params.attacker_unit = warrior_priest_unit

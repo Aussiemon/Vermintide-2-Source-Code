@@ -181,8 +181,8 @@ local skins = {
 	{
 		name = "es_sword_shield_breton_skin_04_magic_01_magic_01",
 		data = {
-			description = "es_sword_shield_breton_skin_04_magic_01_description",
-			display_name = "es_sword_shield_breton_skin_04_magic_01_name",
+			description = "es_sword_shield_breton_skin_05_magic_01_description",
+			display_name = "es_sword_shield_breton_skin_05_magic_01_name",
 			display_unit = "units/weapons/weapon_display/display_shield_sword",
 			hud_icon = "weapon_generic_icon_staff_3",
 			inventory_icon = "icon_wpn_emp_gk_sword_02_t2_wpn_emp_gk_shield_01_magic_01",

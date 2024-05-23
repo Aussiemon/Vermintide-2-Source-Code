@@ -849,8 +849,12 @@ DamageWaveExtension.update_blob_overlaps = function (self)
 
 		for i = 1, #enemy_player_and_bot_units do
 			local target_unit = enemy_player_and_bot_units[i]
+			local ghost_mode_extension = ScriptUnit.has_extension(target_unit, "ghost_mode_system")
+			local do_check = not ghost_mode_extension or not ghost_mode_extension:is_in_ghost_mode()
 
-			self:check_overlap(unit, target_unit, wave_radius, first_blob_position, last_blob_position, buff_system, num_blobs)
+			if do_check then
+				self:check_overlap(unit, target_unit, wave_radius, first_blob_position, last_blob_position, buff_system, num_blobs)
+			end
 		end
 	end
 

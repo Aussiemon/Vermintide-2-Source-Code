@@ -64,6 +64,7 @@ settings.start_game_windows = {
 	"scripts/ui/dlc_morris/views/start_game_view/windows/start_game_window_deus_lobby_browser",
 	"scripts/ui/dlc_morris/views/start_game_view/windows/start_game_window_deus_additional_settings",
 	"scripts/ui/dlc_morris/views/start_game_view/windows/start_game_window_deus_chaos_god_information",
+	"scripts/ui/dlc_morris/views/start_game_view/windows/start_game_window_deus_weekly_event",
 	"scripts/ui/dlc_morris/views/start_game_view/windows/start_game_window_deus_journey_selection",
 }
 settings.start_game_save_data_table_map = {
@@ -125,6 +126,11 @@ settings.start_game_window_layout_console = {
 			class_name = "StartGameWindowDeusChaosGodInformation",
 			ignore_alignment = true,
 			name = "deus_chaos_god_information",
+		},
+		deus_weekly_event = {
+			class_name = "StartGameWindowDeusWeeklyEvent",
+			ignore_alignment = true,
+			name = "deus_weekly_event",
 		},
 	},
 	window_layouts = {
@@ -193,6 +199,35 @@ settings.start_game_window_layout_console = {
 			end,
 			should_draw_god_info = function (ingame_ui_context)
 				return ingame_ui_context.is_server
+			end,
+			save_data_table = deus_save_data_table_map_console.twitch,
+		},
+		{
+			background_flow_event = "custom_game_chaos_wastes",
+			background_object_set = "custom_game_chaos_wastes",
+			close_on_exit = true,
+			display_name = "cw_weekly_expedition_name_long",
+			game_mode_option = true,
+			input_focus_window = "deus_weekly_event",
+			name = "deus_weekly_event",
+			panel_sorting = 25,
+			sound_event_enter = "hud_morris_start_menu_category",
+			windows = {
+				deus_background = 2,
+				deus_panel = 1,
+				deus_weekly_event = 3,
+			},
+			can_add_function = function (overview)
+				local offline_mode = Managers.account:offline_mode()
+
+				if offline_mode then
+					return false
+				end
+
+				local live_event_interface = Managers.backend:get_interface("live_events")
+				local game_mode_data = live_event_interface:get_weekly_chaos_wastes_game_mode_data()
+
+				return overview:is_in_mechanism("deus") and not table.is_empty(game_mode_data)
 			end,
 			save_data_table = deus_save_data_table_map_console.twitch,
 		},

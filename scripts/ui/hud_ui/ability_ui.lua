@@ -19,6 +19,7 @@ AbilityUI.init = function (self, parent, ingame_ui_context)
 	self._spectated_player = nil
 	self._spectated_player_unit = nil
 	self._hide_effects = false
+	self._ability_charge_widgets = {}
 
 	local event_manager = Managers.state.event
 
@@ -63,6 +64,9 @@ AbilityUI._update_ability_widget = function (self, dt, t)
 		hide_effects = ability_1.hide_ability_ui_effects
 		self._hide_effects = hide_effects
 		self._career_name = career_name
+		self._ability_cooldowns = nil
+
+		table.clear(self._ability_charge_widgets)
 	end
 
 	local career_data = UISettings.ability_ui_data[career_name] or UISettings.ability_ui_data.default
@@ -159,6 +163,10 @@ end
 AbilityUI._smudge = function (self)
 	UIUtils.mark_dirty(self._widgets)
 
+	if self._ability_charge_widgets and not table.is_empty(self._ability_charge_widgets) then
+		UIUtils.mark_dirty(self._ability_charge_widgets)
+	end
+
 	self._dirty = true
 end
 
@@ -206,6 +214,10 @@ AbilityUI.update = function (self, dt, t)
 		do_smudge = true
 	end
 
+	if self:_update_ability_charges_widgets(dt, t) then
+		do_smudge = true
+	end
+
 	if do_smudge then
 		self:_smudge()
 	end
@@ -223,6 +235,11 @@ AbilityUI.draw = function (self, dt, t)
 
 	UIRenderer.begin_pass(ui_renderer, self._ui_scenegraph, FAKE_INPUT_SERVICE, dt, nil, self._render_settings)
 	UIRenderer.draw_all_widgets(ui_renderer, self._widgets)
+
+	if self._ability_charge_widgets and not table.is_empty(self._ability_charge_widgets) and self._ability_cooldowns > 1 then
+		UIRenderer.draw_all_widgets(ui_renderer, self._ability_charge_widgets)
+	end
+
 	UIRenderer.end_pass(ui_renderer)
 
 	self._dirty = false
@@ -309,4 +326,68 @@ AbilityUI._update_numeric_ui_ability_cooldown = function (self)
 	widget.content.ability_cooldown = UIUtils.format_time(ability_cooldown)
 
 	self:_smudge()
+end
+
+AbilityUI._update_ability_charges_widgets = function (self, dt, t)
+	local do_smudge = false
+	local player, player_unit = self:_get_player_unit()
+
+	if not player_unit then
+		return do_smudge
+	end
+
+	local career_extension = ScriptUnit.extension(player_unit, "career_system")
+	local ability_cooldowns = career_extension:get_number_of_ability_cooldowns()
+
+	if self._ability_cooldowns ~= ability_cooldowns then
+		if not self._ability_cooldowns then
+			for i = 1, ability_cooldowns do
+				if not self._ability_charge_widgets[i] then
+					local offset = {
+						0,
+						(i - 1) * 22,
+						1,
+					}
+					local widget_definition = UIWidgets.create_ability_charges_widget("ability_charges", nil, offset)
+					local widget = UIWidget.init(widget_definition)
+
+					self._ability_charge_widgets[#self._ability_charge_widgets + 1] = widget
+				end
+			end
+		elseif self._ability_cooldowns and ability_cooldowns < self._ability_cooldowns then
+			self._ability_charge_widgets[#self._ability_charge_widgets] = nil
+		elseif self._ability_cooldowns and ability_cooldowns > self._ability_cooldowns then
+			local difference = ability_cooldowns - self._ability_cooldowns
+
+			for i = 1, difference do
+				local offset = {
+					0,
+					(self._ability_cooldowns + (i - 1)) * 22,
+					1,
+				}
+				local widget_definition = UIWidgets.create_ability_charges_widget("ability_charges", nil, offset)
+				local widget = UIWidget.init(widget_definition)
+
+				self._ability_charge_widgets[#self._ability_charge_widgets + 1] = widget
+			end
+		end
+
+		self._ability_cooldowns = ability_cooldowns
+		do_smudge = true
+	end
+
+	local charges_ready = career_extension:num_charges_ready()
+
+	if self._charges_ready ~= charges_ready then
+		for i = self._ability_cooldowns, 1, -1 do
+			local w = self._ability_charge_widgets[i]
+
+			w.content.ready = charges_ready ~= 0 and i <= charges_ready
+		end
+
+		self._charges_ready = charges_ready
+		do_smudge = true
+	end
+
+	return do_smudge
 end

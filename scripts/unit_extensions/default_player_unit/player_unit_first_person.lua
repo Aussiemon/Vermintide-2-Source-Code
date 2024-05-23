@@ -1336,29 +1336,29 @@ end
 
 local weapon_sway_lerp_variables = {
 	vs_packmaster = {
-		0.05,
-		0.05,
-		0.05,
+		5,
+		5,
+		5,
 	},
 	vs_gutter_runner = {
-		0.05,
-		0.05,
-		0.05,
+		5,
+		5,
+		5,
 	},
 	vs_poison_wind_globadier = {
-		0.05,
-		0.05,
-		0.05,
+		5,
+		5,
+		5,
 	},
 	vs_warpfire_thrower = {
-		0.05,
-		0.05,
-		0.05,
+		5,
+		5,
+		5,
 	},
 	vs_ratling_gunner = {
-		0.05,
-		0.05,
-		0.05,
+		5,
+		5,
+		5,
 	},
 }
 local math_min = math.min
@@ -1432,7 +1432,7 @@ PlayerUnitFirstPerson._update_state_machine_variables = function (self, dt, t)
 	local move_z = current_velocity.z
 	local profile = self.profile
 	local profile_name = profile.display_name
-	local lerp_move_x, lerp_move_y, lerp_move_z = 0.05, 0.05, 0.05
+	local lerp_move_x, lerp_move_y, lerp_move_z = 5, 5, 5
 	local lerp_variables = weapon_sway_lerp_variables[profile_name]
 
 	if lerp_variables then
@@ -1442,20 +1442,20 @@ PlayerUnitFirstPerson._update_state_machine_variables = function (self, dt, t)
 	end
 
 	if move_x <= 0.3 then
-		lerp_move_x = 0.075
+		lerp_move_x = 7.5
 	end
 
 	if move_y <= 0.3 then
-		lerp_move_y = 0.075
+		lerp_move_y = 7.5
 	end
 
 	if move_z <= 0.3 then
-		lerp_move_z = 0.075
+		lerp_move_z = 7.5
 	end
 
-	move_y = math.clamp(math.lerp(self._move_x, move_x, lerp_move_x), -1, 1)
-	move_x = math.clamp(math.lerp(self._move_y, move_y, lerp_move_y), -1, 1)
-	move_z = math.clamp(math.lerp(self._move_z, move_z, lerp_move_z), -1, 1)
+	move_y = math.clamp(math.lerp(self._move_x, move_x, lerp_move_x * dt), -1, 1)
+	move_x = math.clamp(math.lerp(self._move_y, move_y, lerp_move_y * dt), -1, 1)
+	move_z = math.clamp(math.lerp(self._move_z, move_z, lerp_move_z * dt), -1, 1)
 	self._move_y = move_y
 	self._move_x = move_x
 	self._move_z = move_z

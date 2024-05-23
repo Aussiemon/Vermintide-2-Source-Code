@@ -179,13 +179,7 @@ local StateInGameTestify = {
 
 			deus_run_controller:add_power_ups({
 				power_up,
-			}, local_player_id)
-
-			local bot_unit = bot.player_unit
-			local profile_index = bot:profile_index()
-			local career_index = bot:career_index()
-
-			DeusPowerUpUtils.activate_deus_power_up(power_up, buff_system, talent_interface, deus_backend, deus_run_controller, bot_unit, profile_index, career_index)
+			}, local_player_id, false)
 		end
 	end,
 	activate_player_deus_power_up = function (_, request_parameter)
@@ -199,16 +193,7 @@ local StateInGameTestify = {
 
 		deus_run_controller:add_power_ups({
 			power_up,
-		}, local_player_id)
-
-		local buff_system = Managers.state.entity:system("buff_system")
-		local talent_interface = Managers.backend:get_talents_interface()
-		local deus_backend = Managers.backend:get_interface("deus")
-		local local_player_unit = local_player.player_unit
-		local profile_index = local_player:profile_index()
-		local career_index = local_player:career_index()
-
-		DeusPowerUpUtils.activate_deus_power_up(power_up, buff_system, talent_interface, deus_backend, deus_run_controller, local_player_unit, profile_index, career_index)
+		}, local_player_id, false)
 	end,
 	reset_deus_power_ups = function ()
 		local mechanism = Managers.mechanism:game_mechanism()

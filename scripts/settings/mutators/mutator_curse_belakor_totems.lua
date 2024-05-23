@@ -163,10 +163,12 @@ end
 local TOTEM_COUNT = 1
 
 return {
-	curse_package_name = "resource_packages/mutators/mutator_curse_belakor_totems",
 	description = "curse_belakor_totems_desc",
 	display_name = "curse_belakor_totems_name",
 	icon = "deus_curse_belakor_01",
+	packages = {
+		"resource_packages/mutators/mutator_curse_belakor_totems",
+	},
 	server_start_function = function (context, data)
 		local totems = {}
 

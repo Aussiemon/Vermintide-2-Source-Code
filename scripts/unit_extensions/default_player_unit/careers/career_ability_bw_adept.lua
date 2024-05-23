@@ -354,6 +354,7 @@ CareerAbilityBWAdept._run_ability = function (self)
 		else
 			buff_extension:add_buff("sienna_adept_ability_trail_double")
 			career_extension:set_abilities_always_usable(true, "sienna_adept_ability_trail_double")
+			career_extension:start_activated_ability_cooldown()
 		end
 	else
 		career_extension:start_activated_ability_cooldown()

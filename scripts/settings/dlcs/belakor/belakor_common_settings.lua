@@ -647,12 +647,6 @@ settings.mutators = {
 	"curse_belakor_totems",
 	"curse_grey_wings",
 }
-settings.network_packages = {
-	"resource_packages/mutators/mutator_curse_shadow_daggers",
-	"resource_packages/mutators/mutator_curse_shadow_homing_skulls",
-	"resource_packages/mutators/mutator_curse_belakor_totems",
-	"resource_packages/mutators/mutator_curse_grey_wings",
-}
 settings.effects = {
 	"fx/cursed_chest_spawn_01_portal",
 	"fx/blk_grey_wings_01",

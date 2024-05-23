@@ -39,7 +39,7 @@ HeroWindowCharacterSelectionConsole.on_enter = function (self, params, offset)
 	self._peer_id = local_player:network_id()
 	self._local_player_id = local_player:local_player_id()
 
-	local gui_layer = UILayer.default + 30
+	local gui_layer = UILayer.default + 300
 	local input_description_input_service = self._parent:window_input_service()
 
 	self._menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self._ui_top_renderer, input_description_input_service, 4, gui_layer + 100, generic_input_actions.default, true)

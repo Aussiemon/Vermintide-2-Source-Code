@@ -428,7 +428,7 @@ LevelEndViewBase._get_event_rewards = function (self)
 	local event_rewards = {}
 
 	for reward_name, item in pairs(end_of_level_rewards) do
-		if string.find(reward_name, "event_reward") == 1 then
+		if string.find(reward_name, "event_reward") then
 			event_rewards[#event_rewards + 1] = item
 		end
 	end
@@ -675,30 +675,25 @@ LevelEndViewBase.present_additional_rewards = function (self)
 		local presentation_data = {}
 
 		for _, item in ipairs(keep_decoration_rewards) do
-			local entry = {}
-			local backend_id = item.backend_id
-			local reward_item = item_interface:get_item_from_id(backend_id)
-			local item_data = item_interface:get_item_masterlist_data(backend_id)
-			local item_type = item_data.item_type
-			local description = {}
-			local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
-
-			if item_type == "keep_decoration_painting" then
-				description[1] = Localize(display_name)
-				description[2] = Localize("keep_decoration_painting_recieved")
-			end
-
-			if description then
-				entry[#entry + 1] = {
+			local keep_decoration_name = item.keep_decoration_name
+			local painting_data = Paintings[keep_decoration_name]
+			local display_name = painting_data.display_name
+			local icon = painting_data.icon
+			local description = {
+				Localize(display_name),
+				Localize("end_screen_you_received"),
+			}
+			local entry = {
+				{
 					widget_type = "description",
 					value = description,
-				}
-			end
-
-			entry[#entry + 1] = {
-				widget_type = "item",
-				value = item,
+				},
+				{
+					widget_type = "icon",
+					value = icon,
+				},
 			}
+
 			presentation_data[#presentation_data + 1] = entry
 		end
 

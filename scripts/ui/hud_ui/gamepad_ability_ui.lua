@@ -2,6 +2,7 @@
 
 local definitions = local_require("scripts/ui/hud_ui/gamepad_ability_ui_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
+local create_ability_charges_widget = definitions.create_ability_charges_widget
 
 GamePadAbilityUI = class(GamePadAbilityUI)
 
@@ -16,6 +17,8 @@ GamePadAbilityUI.init = function (self, parent, ingame_ui_context)
 	}
 
 	self:_create_ui_elements()
+
+	self._ability_charge_widgets = {}
 
 	local event_manager = Managers.state.event
 
@@ -230,6 +233,10 @@ GamePadAbilityUI.update = function (self, dt, t)
 			dirty = self:_update_ability_animations(dt, t)
 		end
 
+		if self:_update_ability_charges_widgets(dt, t) then
+			dirty = true
+		end
+
 		if dirty then
 			self:set_dirty()
 		end
@@ -262,6 +269,11 @@ end
 GamePadAbilityUI._handle_resolution_modified = function (self)
 	if RESOLUTION_LOOKUP.modified then
 		UIUtils.mark_dirty(self._widgets)
+
+		if not table.is_empty(self._ability_charge_widgets) then
+			UIUtils.mark_dirty(self._ability_charge_widgets)
+		end
+
 		self:set_dirty()
 	end
 end
@@ -283,6 +295,10 @@ GamePadAbilityUI.draw = function (self, dt)
 
 	for _, widget in ipairs(self._widgets) do
 		UIRenderer.draw_widget(ui_renderer, widget)
+	end
+
+	if self._ability_charge_widgets and not table.is_empty(self._ability_charge_widgets) and self._ability_cooldowns > 1 then
+		UIRenderer.draw_all_widgets(ui_renderer, self._ability_charge_widgets)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
@@ -446,4 +462,69 @@ GamePadAbilityUI._update_muneric_ui_ability_cooldown = function (self)
 	widget.content.ability_cooldown = UIUtils.format_time(ability_cooldown)
 
 	self:_set_widget_dirty(widget)
+end
+
+GamePadAbilityUI._update_ability_charges_widgets = function (self, dt, t)
+	local dirty = false
+	local player = self._player
+	local player_unit = player.player_unit
+
+	if not player_unit then
+		return dirty
+	end
+
+	local career_extension = ScriptUnit.extension(player_unit, "career_system")
+	local ability_cooldowns = career_extension:get_number_of_ability_cooldowns()
+
+	if self._ability_cooldowns ~= ability_cooldowns then
+		if not self._ability_cooldowns then
+			for i = 1, ability_cooldowns do
+				if not self._ability_charge_widgets[i] then
+					local offset = {
+						0,
+						(i - 1) * 22,
+						1,
+					}
+					local widget_definition = UIWidgets.create_ability_charges_widget("ability_charges", nil, offset)
+					local widget = UIWidget.init(widget_definition)
+
+					self._ability_charge_widgets[#self._ability_charge_widgets + 1] = widget
+				end
+			end
+		elseif self._ability_cooldowns and ability_cooldowns < self._ability_cooldowns then
+			self._ability_charge_widgets[#self._ability_charge_widgets] = nil
+		elseif self._ability_cooldowns and ability_cooldowns > self._ability_cooldowns then
+			local difference = ability_cooldowns - self._ability_cooldowns
+
+			for i = 1, difference do
+				local offset = {
+					0,
+					(self._ability_cooldowns + (i - 1)) * 22,
+					1,
+				}
+				local widget_definition = UIWidgets.create_ability_charges_widget("ability_charges", nil, offset)
+				local widget = UIWidget.init(widget_definition)
+
+				self._ability_charge_widgets[#self._ability_charge_widgets + 1] = widget
+			end
+		end
+
+		self._ability_cooldowns = ability_cooldowns
+		dirty = true
+	end
+
+	local charges_ready = career_extension:num_charges_ready()
+
+	if self._charges_ready ~= charges_ready then
+		for i = self._ability_cooldowns, 1, -1 do
+			local w = self._ability_charge_widgets[i]
+
+			w.content.ready = charges_ready ~= 0 and i <= charges_ready
+		end
+
+		self._charges_ready = charges_ready
+		dirty = true
+	end
+
+	return dirty
 end

@@ -3,7 +3,7 @@
 local settings = DLCSettings.skulls_2023
 local BUFF_DURATION = 20
 local MAX_STACKS = 5
-local BUFF_REFRESH_STACKS = 5
+local BUFF_REFRESH_STACKS = 1
 local buff_order = {
 	"skulls_2023_buff_power_level",
 	"skulls_2023_buff_attack_speed",
@@ -238,12 +238,15 @@ settings.buff_function_templates = {
 		if not is_bot(unit) then
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 			local effect_id = first_person_extension:create_screen_particles("fx/skulls_2023/screenspace_skulls_2023_buff")
-			local effect_lerp = (num_buff_stacks - 1) / (MAX_STACKS - 1)
-			local effect_strength = math.lerp(-0.55, 0.4, effect_lerp)
 
-			World.set_particles_material_scalar(world, effect_id, "overlay", "shadow_amount", effect_strength)
+			if effect_id then
+				local effect_lerp = (num_buff_stacks - 1) / (MAX_STACKS - 1)
+				local effect_strength = math.lerp(-0.55, 0.4, effect_lerp)
 
-			buff.effect_id = effect_id
+				World.set_particles_material_scalar(world, effect_id, "overlay", "shadow_amount", effect_strength)
+
+				buff.effect_id = effect_id
+			end
 
 			first_person_extension:play_hud_sound_event("Play_skulls_event_buff_on")
 		end
@@ -261,10 +264,13 @@ settings.buff_function_templates = {
 
 		if not is_bot(unit) then
 			local effect_id = buff.effect_id
-			local effect_lerp = (num_buff_stacks - 1) / (MAX_STACKS - 1)
-			local effect_strength = math.lerp(-0.55, 0.4, effect_lerp)
 
-			World.set_particles_material_scalar(world, effect_id, "overlay", "shadow_amount", effect_strength)
+			if effect_id then
+				local effect_lerp = (num_buff_stacks - 1) / (MAX_STACKS - 1)
+				local effect_strength = math.lerp(-0.55, 0.4, effect_lerp)
+
+				World.set_particles_material_scalar(world, effect_id, "overlay", "shadow_amount", effect_strength)
+			end
 
 			if num_buff_stacks >= MAX_STACKS and not buff.sound_played then
 				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
@@ -397,14 +403,9 @@ settings.proc_functions = {
 		local breed_killed = params[2]
 
 		if breed_killed then
-			local value = breed_killed.threat_value
-			local buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
+			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 
-			if buff_extension then
-				for i = 1, math.floor(value) do
-					buff_extension:add_buff("skulls_2023_buff_refresh")
-				end
-			end
+			buff_extension:add_buff("skulls_2023_buff_refresh")
 		end
 	end,
 }

@@ -206,6 +206,14 @@ local spec = {
 				peer_id = true,
 			},
 		},
+		peer_hot_join_synced = {
+			clear_when_peer_id_leaves = true,
+			default_value = false,
+			type = "boolean",
+			composite_keys = {
+				peer_id = true,
+			},
+		},
 		profile_index_reservation = {
 			default_value = "",
 			type = "string",

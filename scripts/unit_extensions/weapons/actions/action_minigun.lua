@@ -120,7 +120,7 @@ ActionMinigun._shoot = function (self, dt, t)
 		local current_cooldown, max_cooldown = self.career_extension:current_ability_cooldown(1)
 		local ability_charge = max_cooldown - current_cooldown
 
-		max_shots = ability_charge / self._shot_cost
+		max_shots = ability_charge / self:_buffed_shot_cost()
 	else
 		max_shots = self.ammo_extension:ammo_count()
 	end
@@ -239,7 +239,7 @@ ActionMinigun.apply_shot_cost = function (self, t)
 			projectiles_per_shot = math.max(projectiles_per_shot - self._num_extra_shots, 1)
 		end
 
-		self.career_extension:reduce_activated_ability_cooldown(-self._shot_cost * projectiles_per_shot)
+		self.career_extension:reduce_activated_ability_cooldown(-self:_buffed_shot_cost() * projectiles_per_shot)
 
 		self.extra_buff_shot = false
 		self._num_extra_shots = 0
@@ -254,7 +254,7 @@ ActionMinigun._has_ammo = function (self)
 	if self._use_ability_as_ammo then
 		local ability_cooldown, max_cooldown = self.career_extension:current_ability_cooldown(1)
 
-		return max_cooldown - ability_cooldown >= self._shot_cost
+		return max_cooldown - ability_cooldown >= self:_buffed_shot_cost()
 	else
 		return self.ammo_extension:ammo_count() > 0
 	end
@@ -306,18 +306,34 @@ ActionMinigun._fake_activate_ability = function (self, t)
 	local buff_extension = self.buff_extension
 
 	if buff_extension then
-		self._ammo_expended = self._ammo_expended + self._shot_cost * self._num_projectiles_per_shot
+		local ability_id = 1
+		local trigger_ability = false
+
+		self._ammo_expended = self._ammo_expended + self:_buffed_shot_cost() * self._num_projectiles_per_shot
 
 		if buff_extension:has_buff_perk(buff_perks.free_ability) then
-			buff_extension:trigger_procs("on_ability_activated", self.owner_unit, 1)
-			buff_extension:trigger_procs("on_ability_cooldown_started")
-
 			self._free_ammo_t = t + FREE_ABILITY_AMMO_TIME
+			trigger_ability = true
 		elseif self._ammo_expended > self.career_extension:get_max_ability_cooldown() / 2 then
-			buff_extension:trigger_procs("on_ability_activated", self.owner_unit, 1)
+			self._ammo_expended = 0
+			trigger_ability = true
+		end
+
+		if trigger_ability then
+			buff_extension:trigger_procs("on_ability_activated", self.owner_unit, ability_id)
 			buff_extension:trigger_procs("on_ability_cooldown_started")
 
-			self._ammo_expended = 0
+			local network_manager = Managers.state.network
+			local unit_id = network_manager:unit_game_object_id(self.owner_unit)
+			local game = network_manager:game()
+
+			if game then
+				if self.is_server then
+					network_manager.network_transmit:send_rpc_clients("rpc_ability_activated", unit_id, ability_id)
+				else
+					network_manager.network_transmit:send_rpc_server("rpc_ability_activated", unit_id, ability_id)
+				end
+			end
 		end
 	end
 end
@@ -339,4 +355,16 @@ ActionMinigun._update_near_wall = function (self)
 		first_person_extension:animation_set_variable("disable_shooting", near_wall and 1 or 0)
 		CharacterStateHelper.play_animation_event_first_person(first_person_extension, "near_wall_updated")
 	end
+end
+
+ActionMinigun._buffed_shot_cost = function (self)
+	local buff_extension = self.buff_extension
+
+	if buff_extension then
+		local shot_cost = buff_extension:apply_buffs_to_value(self._shot_cost, "ammo_used_multiplier")
+
+		return shot_cost
+	end
+
+	return self._shot_cost
 end

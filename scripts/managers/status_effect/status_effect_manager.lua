@@ -183,3 +183,14 @@ StatusEffectManager._cleanup_unit = function (self, unit)
 
 	self._blacklisted_units[unit] = nil
 end
+
+StatusEffectManager.unit_is_burning = function (self, unit)
+	local burning_normal, applied_this_frame_normal = self:has_status(unit, StatusEffectNames.burning)
+	local burning_balefire, applied_this_frame_balefire = self:has_status(unit, StatusEffectNames.burning_balefire)
+	local burning_elven, applied_this_frame_elven = self:has_status(unit, StatusEffectNames.burning_elven_magic)
+	local burning_warpfire, applied_this_frame_warpfire = self:has_status(unit, StatusEffectNames.burning_warpfire)
+	local burning = burning_normal or burning_balefire or burning_elven or burning_warpfire
+	local applied_this_frame = burning and (not burning_normal or applied_this_frame_normal) and (not burning_balefire or applied_this_frame_balefire) and (not burning_elven or applied_this_frame_elven) and (not burning_warpfire or applied_this_frame_warpfire)
+
+	return burning, applied_this_frame
+end

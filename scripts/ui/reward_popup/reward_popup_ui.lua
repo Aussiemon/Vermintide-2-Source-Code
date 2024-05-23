@@ -455,6 +455,38 @@ RewardPopupUI._setup_entry_widget = function (self, entry_data, index)
 		local rarity_color = Colors.get_table(rarity)
 
 		style.rarity_text.text_color = rarity_color
+
+		local power_up_sets = DeusPowerUpSetLookup[power_up.rarity] and DeusPowerUpSetLookup[power_up.rarity][power_up.name]
+		local is_part_of_set = false
+
+		if power_up_sets then
+			local set = power_up_sets[1]
+			local piece_count = 0
+			local pieces = set.pieces
+			local mechanism = Managers.mechanism:game_mechanism()
+			local deus_run_controller = mechanism:get_deus_run_controller()
+
+			for _, piece in ipairs(pieces) do
+				local name, rarity = piece.name, piece.rarity
+				local local_peer_id = deus_run_controller:get_own_peer_id()
+
+				if deus_run_controller:has_power_up_by_name(local_peer_id, name, rarity) then
+					piece_count = piece_count + 1
+				end
+			end
+
+			is_part_of_set = true
+
+			local num_required_pieces = set.num_required_pieces or #pieces
+
+			widget.content.set_progression = Localize("set_bonus_boons") .. " " .. string.format(Localize("set_counter_boons"), piece_count, num_required_pieces)
+
+			if #pieces == piece_count then
+				style.set_progression.text_color = style.set_progression.progression_colors.complete
+			end
+		end
+
+		widget.content.is_part_of_set = is_part_of_set
 		widget_height = 160
 	elseif widget_type == "loot_chest" then
 		local item_template = ItemMasterList[value]

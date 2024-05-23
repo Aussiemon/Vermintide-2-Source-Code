@@ -768,14 +768,17 @@ GameMechanismManager.setting = function (self, key)
 	return MechanismSettings[self._mechanism_key][key]
 end
 
-GameMechanismManager.progress_state = function (self)
+GameMechanismManager.progress_state = function (self, skip_sync)
 	local new_state = self._game_mechanism:progress_state()
 	local settings = MechanismSettings[self._mechanism_key]
 	local states = settings.states
 	local state_id = table.find(states, new_state)
 
 	fassert(state_id, "State not found in mechanism settings")
-	self:send_rpc_clients("rpc_set_current_mechanism_state", state_id)
+
+	if not skip_sync then
+		self:send_rpc_clients("rpc_set_current_mechanism_state", state_id)
+	end
 end
 
 GameMechanismManager.get_starting_level = function (self)
@@ -1232,5 +1235,11 @@ GameMechanismManager.update_testify = function (self, dt, t)
 
 	if self._game_mechanism.update_testify then
 		self._game_mechanism:update_testify(dt, t)
+	end
+end
+
+GameMechanismManager.player_joined_party = function (self, peer_id, local_player_id, party_id, slot_id)
+	if self._game_mechanism.player_joined_party then
+		self._game_mechanism:player_joined_party(peer_id, local_player_id, party_id, slot_id)
 	end
 end

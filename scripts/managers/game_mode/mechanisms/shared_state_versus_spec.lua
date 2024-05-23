@@ -103,6 +103,11 @@ local spec = {
 			type = "boolean",
 			composite_keys = {},
 		},
+		match_id = {
+			default_value = "missing id",
+			type = "string",
+			composite_keys = {},
+		},
 	},
 	peer = {
 		hero_cosmetics = {

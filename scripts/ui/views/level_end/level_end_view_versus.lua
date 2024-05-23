@@ -61,8 +61,8 @@ LevelEndViewVersus.start = function (self)
 	print("[LevelEndView] Started LevelEndViewVersus")
 	LevelEndViewVersus.super.start(self)
 
-	self._start_music_event = "menu_versus_character_amb_loop_start"
-	self._stop_music_event = "menu_versus_character_amb_loop_stop"
+	self._start_music_event = "menu_versus_score_screen_amb_loop_start"
+	self._stop_music_event = "menu_versus_score_screen_amb_loop_stop"
 	self._playing_music = nil
 end
 

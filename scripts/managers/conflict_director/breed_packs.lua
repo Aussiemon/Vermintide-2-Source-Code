@@ -4916,14 +4916,6 @@ BreedPacks = {
 					},
 					{
 						{
-							2,
-							3,
-						},
-						"chaos_bulwark",
-						Breeds.chaos_marauder,
-					},
-					{
-						{
 							6,
 							8,
 						},

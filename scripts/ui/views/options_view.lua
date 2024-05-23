@@ -797,6 +797,13 @@ end
 
 OptionsView.destroy = function (self)
 	self:cleanup_popups()
+
+	if self._cursor_pushed then
+		ShowCursorStack.pop()
+
+		self._cursor_pushed = nil
+	end
+
 	self.menu_input_description:destroy()
 
 	self.menu_input_description = nil
@@ -1568,6 +1575,9 @@ end
 
 OptionsView.on_enter = function (self, params)
 	ShowCursorStack.push()
+
+	self._cursor_pushed = true
+
 	self:_setup_text_buttons_width()
 	self:set_original_settings()
 	self:reset_changed_settings()
@@ -1631,6 +1641,9 @@ OptionsView.on_exit = function (self)
 
 	self:cleanup_popups()
 	ShowCursorStack.pop()
+
+	self._cursor_pushed = nil
+
 	self.input_manager:device_unblock_all_services("keyboard", 1)
 	self.input_manager:device_unblock_all_services("mouse", 1)
 	self.input_manager:device_unblock_all_services("gamepad", 1)
@@ -3350,7 +3363,7 @@ OptionsView.update_settings_list = function (self, settings_list, ui_renderer, u
 
 	local scenegraph_id_start = settings_list.scenegraph_id_start
 	local list_position = UISceneGraph.get_world_position(ui_scenegraph, scenegraph_id_start)
-	local mask_pos = Vector3.deprecated_copy(UISceneGraph.get_world_position(ui_scenegraph, "list_mask"))
+	local mask_pos = UISceneGraph.get_world_position(ui_scenegraph, "list_mask")
 	local mask_size = UISceneGraph.get_size(ui_scenegraph, "list_mask")
 	local selected_widget = self.selected_widget
 	local gamepad_active = Managers.input:is_device_active("gamepad")
@@ -4443,6 +4456,67 @@ OptionsView.cb_hud_clamp_ui_scaling = function (self, content)
 	local force_update = true
 
 	UPDATE_RESOLUTION_LOOKUP(force_update)
+end
+
+OptionsView.cb_vs_floating_damage = function (self, content)
+	local options_values = content.options_values
+	local current_selection = content.current_selection
+
+	self.changed_user_settings.vs_floating_damage = options_values[current_selection]
+end
+
+OptionsView.cb_vs_floating_damage_setup = function (self)
+	local options = {
+		{
+			value = "none",
+			text = Localize("menu_settings_crosshair_none"),
+		},
+		{
+			value = "floating",
+			text = Localize("menu_settings_floating_damage"),
+		},
+		{
+			value = "streak",
+			text = Localize("menu_settings_streak_damage"),
+		},
+		{
+			value = "both",
+			text = Localize("menu_settings_both"),
+		},
+	}
+	local default_value = DefaultUserSettings.get("user_settings", "vs_floating_damage")
+	local user_settings_value = Application.user_setting("vs_floating_damage")
+	local default_option, selected_option
+
+	for i, option in ipairs(options) do
+		if option.value == user_settings_value then
+			selected_option = i
+		end
+
+		if option.value == default_value then
+			default_option = i
+		end
+	end
+
+	fassert(default_option, "default option %i does not exist in cb_enabled_crosshairs_setup options table", default_value)
+
+	return selected_option or default_option, options, "menu_settings_vs_floating_damage", default_option
+end
+
+OptionsView.cb_vs_floating_damage_saved_value = function (self, widget)
+	local value = assigned(self.changed_user_settings.vs_floating_damage, Application.user_setting("vs_floating_damage")) or DefaultUserSettings.get("user_settings", "vs_floating_damage")
+	local options_values = widget.content.options_values
+	local selected_option = 1
+
+	for i = 1, #options_values do
+		if value == options_values[i] then
+			selected_option = i
+
+			break
+		end
+	end
+
+	widget.content.current_selection = selected_option
 end
 
 OptionsView.cb_vs_hud_damage_feedback_in_world_setup = function (self)

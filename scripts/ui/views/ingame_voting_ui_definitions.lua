@@ -446,6 +446,7 @@ local widget_definitions = {
 				},
 			},
 			info_text = {
+				dynamic_font_size_word_wrap = true,
 				font_size = 32,
 				font_type = "hell_shark_header",
 				horizontal_alignment = "center",
@@ -463,8 +464,13 @@ local widget_definitions = {
 					-14,
 					3,
 				},
+				area_size = {
+					350,
+					85,
+				},
 			},
 			info_text_shadow = {
+				dynamic_font_size_word_wrap = true,
 				font_size = 32,
 				font_type = "hell_shark_header",
 				horizontal_alignment = "center",
@@ -477,6 +483,10 @@ local widget_definitions = {
 					2,
 					-16,
 					2,
+				},
+				area_size = {
+					350,
+					85,
 				},
 			},
 			time_text = {

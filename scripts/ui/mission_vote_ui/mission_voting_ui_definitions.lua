@@ -709,6 +709,50 @@ local scenegraph_definition = {
 			1,
 		},
 	},
+	game_option_deus_weekly_event = {
+		horizontal_alignment = "center",
+		parent = "game_option_1",
+		vertical_alignment = "bottom",
+		size = {
+			game_option_size[1],
+			449,
+		},
+		position = {
+			0,
+			-465,
+			0,
+		},
+	},
+	game_option_deus_weekly = {
+		horizontal_alignment = "center",
+		parent = "game_option_1",
+		vertical_alignment = "bottom",
+		size = {
+			game_option_size[1] - 50,
+			439,
+		},
+		position = {
+			0,
+			-465,
+			0,
+		},
+	},
+	game_option_deus_weekly_anchor = {
+		parent = "game_option_deus_weekly",
+		vertical_alignment = "center",
+	},
+	scrollbar_window = {
+		parent = "game_option_deus_weekly",
+		position = {
+			-45,
+			12.5,
+			0,
+		},
+		size = {
+			game_option_size[1],
+			424,
+		},
+	},
 }
 local title_text_style = {
 	dynamic_font_size = true,
@@ -726,6 +770,231 @@ local title_text_style = {
 		2,
 	},
 }
+
+local function deus_weekly_event_create_header(header, offset_y, header_type)
+	local widget_definition = {}
+	local element = {}
+	local passes = {}
+	local content = {}
+	local style = {}
+
+	passes[#passes + 1] = {
+		pass_type = "text",
+		style_id = "header",
+		text_id = "header",
+	}
+	passes[#passes + 1] = {
+		pass_type = "texture",
+		style_id = "plus_horizontal",
+		texture_id = "masked_rect",
+		content_check_function = function (content, style)
+			return header_type and header_type == "boon"
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "texture",
+		style_id = "plus_vertical",
+		texture_id = "masked_rect",
+		content_check_function = function (content, style)
+			return header_type and header_type == "boon"
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "texture",
+		style_id = "minus",
+		texture_id = "masked_rect",
+		content_check_function = function (content, style)
+			return header_type and header_type == "curse"
+		end,
+	}
+	content.header = header
+	content.masked_rect = "rect_masked"
+
+	local font_size = 32
+
+	style.header = {
+		font_type = "hell_shark_header_masked",
+		horizontal_alignment = "left",
+		localize = true,
+		upper_case = true,
+		vertical_alignment = "top",
+		font_size = font_size,
+		text_color = Colors.get_color_table_with_alpha("white", 255),
+		offset = {
+			header_type and 25 or 0,
+			0,
+			2,
+		},
+	}
+	style.plus_horizontal = {
+		horizontal_alignment = "left",
+		vertical_alignment = "top",
+		color = {
+			255,
+			255,
+			255,
+			0,
+		},
+		texture_size = {
+			20,
+			4,
+		},
+		offset = {
+			0,
+			-14,
+			0,
+		},
+	}
+	style.plus_vertical = {
+		horizontal_alignment = "left",
+		vertical_alignment = "top",
+		color = {
+			255,
+			255,
+			255,
+			0,
+		},
+		texture_size = {
+			4,
+			20,
+		},
+		offset = {
+			8,
+			-6,
+			0,
+		},
+	}
+	style.minus = {
+		horizontal_alignment = "left",
+		vertical_alignment = "top",
+		color = {
+			255,
+			255,
+			0,
+			0,
+		},
+		texture_size = {
+			20,
+			4,
+		},
+		offset = {
+			0,
+			-14,
+			0,
+		},
+	}
+	element.passes = passes
+	widget_definition.element = element
+	widget_definition.content = content
+	widget_definition.style = style
+	widget_definition.scenegraph_id = "game_option_deus_weekly_anchor"
+	widget_definition.offset = {
+		0,
+		offset_y,
+		2,
+	}
+
+	return widget_definition
+end
+
+local function deus_weekly_event_create_entry_widget(icon, title, description, offset_y)
+	local widget_definition = {}
+	local element = {}
+	local passes = {}
+	local content = {}
+	local style = {}
+
+	passes[#passes + 1] = {
+		pass_type = "text",
+		style_id = "title",
+		text_id = "title",
+	}
+	passes[#passes + 1] = {
+		pass_type = "text",
+		style_id = "desc",
+		text_id = "desc",
+	}
+	passes[#passes + 1] = {
+		pass_type = "texture",
+		style_id = "icon",
+		texture_id = "icon",
+	}
+	content.title = title
+	content.desc = description
+	content.icon = icon
+
+	local indentation = 10
+
+	style.title = {
+		dynamic_font_size_word_wrap = true,
+		font_size = 22,
+		font_type = "hell_shark_masked",
+		horizontal_alignment = "left",
+		localize = true,
+		vertical_alignment = "top",
+		word_wrap = true,
+		text_color = Colors.get_color_table_with_alpha("font_title", 255),
+		offset = {
+			35 + indentation,
+			-3,
+			2,
+		},
+		area_size = {
+			scenegraph_definition.game_option_deus_weekly.size[1] - 35 - indentation,
+			50,
+		},
+	}
+	style.desc = {
+		font_size = 22,
+		font_type = "hell_shark_masked",
+		horizontal_alignment = "left",
+		localize = false,
+		vertical_alignment = "top",
+		word_wrap = true,
+		text_color = Colors.get_color_table_with_alpha("font_default", 255),
+		offset = {
+			35 + indentation,
+			-30,
+			2,
+		},
+		area_size = {
+			scenegraph_definition.game_option_deus_weekly.size[1] - 35 - indentation,
+			50,
+		},
+	}
+	style.icon = {
+		horizontal_alignment = "left",
+		masked = true,
+		vertical_alignment = "top",
+		color = {
+			255,
+			255,
+			255,
+			255,
+		},
+		texture_size = {
+			25,
+			25,
+		},
+		offset = {
+			indentation,
+			-5,
+			0,
+		},
+	}
+	element.passes = passes
+	widget_definition.element = element
+	widget_definition.content = content
+	widget_definition.style = style
+	widget_definition.scenegraph_id = "game_option_deus_weekly_anchor"
+	widget_definition.offset = {
+		0,
+		offset_y,
+		2,
+	}
+
+	return widget_definition
+end
 
 local function create_settings_option(scenegraph_id, size, title_text, icon_texture, background_texture, icon_visible)
 	icon_texture = icon_texture or "map_frame_fade"
@@ -1270,6 +1539,354 @@ local function create_settings_option_deus(scenegraph_id, size, title_text, icon
 				offset = {
 					frame_width + 5 + 2,
 					-57,
+					9,
+				},
+			},
+		},
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			0,
+		},
+	}
+
+	return widget
+end
+
+local function create_settings_option_deus_weekly_event(scenegraph_id, size, title_text, icon_texture, background_texture, icon_visible)
+	icon_texture = icon_texture or "map_frame_fade"
+
+	local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(icon_texture)
+	local icon_texture_size = icon_texture_settings and icon_texture_settings.size or {
+		150,
+		150,
+	}
+
+	icon_visible = icon_visible == nil or icon_visible
+
+	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name("vote_background_morris")
+	local frame_settings = UIFrameSettings.menu_frame_02_morris
+	local frame_width = frame_settings.texture_sizes.corner[1]
+	local widget = {
+		element = {
+			passes = {
+				{
+					content_id = "background",
+					pass_type = "texture",
+					style_id = "background",
+				},
+				{
+					pass_type = "texture_frame",
+					style_id = "frame",
+					texture_id = "frame",
+				},
+				{
+					pass_type = "rotated_texture",
+					style_id = "icon_mask",
+					texture_id = "icon_mask",
+					content_check_function = function (content)
+						return content.icon_visible
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "icon",
+					texture_id = "icon",
+					content_check_function = function (content)
+						return content.icon_visible
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "journey_border",
+					texture_id = "journey_border",
+					content_check_function = function (content)
+						return content.icon_visible and content.show_journey_border and not content.with_belakor
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "belakor_journey_border",
+					texture_id = "belakor_journey_border",
+					content_check_function = function (content)
+						return content.icon_visible and content.show_journey_border and content.with_belakor
+					end,
+				},
+				{
+					pass_type = "text",
+					style_id = "title_text",
+					text_id = "title_text",
+				},
+				{
+					pass_type = "text",
+					style_id = "title_text_shadow",
+					text_id = "title_text",
+				},
+				{
+					pass_type = "text",
+					style_id = "difficulty_text",
+					text_id = "difficulty_text",
+				},
+				{
+					pass_type = "text",
+					style_id = "difficulty_text_shadow",
+					text_id = "difficulty_text",
+				},
+				{
+					pass_type = "text",
+					style_id = "difficulty_title_text",
+					text_id = "difficulty_title_text",
+				},
+				{
+					pass_type = "text",
+					style_id = "difficulty_title_text_shadow",
+					text_id = "difficulty_title_text",
+				},
+				{
+					pass_type = "texture",
+					style_id = "difficulty_icon",
+					texture_id = "difficulty_icon",
+				},
+			},
+		},
+		content = {
+			belakor_journey_border = "vote_icon_border_belakor",
+			difficulty_icon = "icons_placeholder",
+			difficulty_text = "",
+			icon_mask = "mask_rect",
+			journey_border = "vote_expedition_border",
+			option_text = "",
+			show_journey_border = false,
+			with_belakor = false,
+			frame = frame_settings.texture,
+			title_text = title_text or "n/a",
+			icon = icon_texture,
+			icon_visible = icon_visible,
+			difficulty_title_text = Localize("start_game_window_difficulty"),
+			background = {
+				uvs = {
+					{
+						0,
+						1 - math.min(size[2] / background_texture_settings.size[2], 1),
+					},
+					{
+						math.min(size[1] / background_texture_settings.size[1], 1),
+						1,
+					},
+				},
+				texture_id = background_texture_settings.texture_name,
+			},
+		},
+		style = {
+			frame = {
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+				offset = {
+					0,
+					0,
+					10,
+				},
+				size = size,
+				texture_size = frame_settings.texture_size,
+				texture_sizes = frame_settings.texture_sizes,
+			},
+			background = {
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+				offset = {
+					0,
+					0,
+					0,
+				},
+			},
+			icon_mask = {
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+				texture_size = {
+					117,
+					117,
+				},
+				angle = math.degrees_to_radians(45),
+				pivot = {
+					58.5,
+					58.5,
+				},
+				offset = {
+					size[1] / 2 - 120,
+					0,
+					5,
+				},
+			},
+			icon = {
+				horizontal_alignment = "center",
+				masked = true,
+				vertical_alignment = "center",
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+				texture_size = icon_texture_size,
+				offset = {
+					size[1] / 2 - 120,
+					0,
+					5,
+				},
+			},
+			journey_border = {
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				texture_size = {
+					180,
+					180,
+				},
+				offset = {
+					size[1] / 2 - 120,
+					0,
+					6,
+				},
+			},
+			belakor_journey_border = {
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				texture_size = {
+					210,
+					210,
+				},
+				offset = {
+					size[1] / 2 - 120,
+					0,
+					6,
+				},
+			},
+			title_text = {
+				font_size = 32,
+				font_type = "hell_shark_header",
+				horizontal_alignment = "left",
+				localize = false,
+				upper_case = true,
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				default_text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				offset = {
+					frame_width + 5,
+					-frame_width - 5,
+					10,
+				},
+			},
+			title_text_shadow = {
+				font_size = 32,
+				font_type = "hell_shark_header",
+				horizontal_alignment = "left",
+				localize = false,
+				upper_case = true,
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				default_text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					frame_width + 5 + 2,
+					-(frame_width + 2) - 5,
+					9,
+				},
+			},
+			difficulty_icon = {
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+				texture_size = {
+					40,
+					40,
+				},
+				offset = {
+					frame_width,
+					-135,
+					5,
+				},
+			},
+			difficulty_title_text = {
+				font_size = 28,
+				font_type = "hell_shark_header",
+				horizontal_alignment = "left",
+				localize = false,
+				upper_case = false,
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				default_text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				offset = {
+					frame_width + 5 + 40,
+					-135,
+					10,
+				},
+			},
+			difficulty_title_text_shadow = {
+				font_size = 28,
+				font_type = "hell_shark_header",
+				horizontal_alignment = "left",
+				localize = false,
+				upper_case = false,
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				default_text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					frame_width + 5 + 2 + 40,
+					-137,
+					9,
+				},
+			},
+			difficulty_text = {
+				font_size = 28,
+				font_type = "hell_shark_header",
+				horizontal_alignment = "left",
+				localize = false,
+				upper_case = false,
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				default_text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				offset = {
+					frame_width + 5 + 40,
+					-165,
+					10,
+				},
+			},
+			difficulty_text_shadow = {
+				font_size = 28,
+				font_type = "hell_shark_header",
+				horizontal_alignment = "left",
+				localize = false,
+				upper_case = false,
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				default_text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					frame_width + 5 + 2 + 40,
+					-167,
 					9,
 				},
 			},
@@ -3883,6 +4500,24 @@ local deus_custom_widget = {
 		description = Localize("start_game_window_other_options_strict_matchmaking_description"),
 	}, nil, "menu_frame_03_morris"),
 }
+local deus_window_frame = "menu_frame_01_morris"
+local deus_weekly_event_widgets = {
+	game_option_1 = create_settings_option_deus_weekly_event("game_option_1", scenegraph_definition.game_option_1.size, Localize("cw_weekly_expedition_name_long"), nil, true),
+	journey_name = UIWidgets.create_simple_text("n/a", "journey_name", nil, nil, journey_name_text_style),
+	journey_theme = create_modifier_info("journey_theme"),
+	mask = UIWidgets.create_simple_texture("mask_rect", "game_option_deus_weekly", nil, nil, {
+		255,
+		255,
+		255,
+		255,
+	}),
+	deus_weekly_event_frame = UIWidgets.create_background_with_frame("game_option_deus_weekly_event", scenegraph_definition.game_option_deus_weekly_event.size, "vote_switch_mechanism_morris_background", "menu_frame_08", true, {
+		255,
+		50,
+		50,
+		50,
+	}),
+}
 local versus_quickplay_widgets = {
 	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size, Localize("start_game_window_difficulty"), "difficulty_option_1", "game_options_bg_02"),
 	reward_presentation = create_reward_presentation("reward_presentation", scenegraph_definition.reward_presentation.size),
@@ -3947,4 +4582,7 @@ return {
 	versus_custom_widgets = versus_custom_widgets,
 	widgets = widgets,
 	widgets_deus = widgets_deus,
+	deus_weekly_event_create_header = deus_weekly_event_create_header,
+	deus_weekly_event_create_entry_widget = deus_weekly_event_create_entry_widget,
+	deus_weekly_event_widgets = deus_weekly_event_widgets,
 }

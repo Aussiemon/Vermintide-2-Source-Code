@@ -60,6 +60,7 @@ TwitchSettings = TwitchSettings or {
 			deus_custom = true,
 			deus_quickplay = true,
 			deus_twitch = true,
+			deus_weekly = true,
 			event = true,
 			twitch = true,
 			versus = true,

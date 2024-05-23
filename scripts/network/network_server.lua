@@ -46,7 +46,7 @@ NetworkServer.init = function (self, player_manager, lobby_host, wanted_profile_
 	end
 
 	self.peers_added_to_gamesession = {}
-	self.peers_completed_game_object_sync = {}
+	self._peers_completed_game_object_sync = {}
 	self.player_manager = player_manager
 	self.lobby_host = lobby_host
 	self.peer_state_machines = {}
@@ -58,6 +58,7 @@ NetworkServer.init = function (self, player_manager, lobby_host, wanted_profile_
 	self._shared_states = {}
 	self._network_state = NetworkState:new(true, self, my_peer_id, my_peer_id)
 
+	self._network_state:set_peer_hot_join_synced(my_peer_id, true)
 	Managers.level_transition_handler:register_network_state(self._network_state)
 
 	local is_server = true
@@ -293,8 +294,7 @@ NetworkServer.on_game_entered = function (self, game_network_manager)
 	Managers.account:update_presence()
 
 	if not DEDICATED_SERVER then
-		self.peers_completed_game_object_sync[self.my_peer_id] = true
-
+		self:set_peer_synced_game_objects(self.my_peer_id, true)
 		self.peer_state_machines[self.my_peer_id].rpc_is_ingame()
 	end
 end
@@ -415,7 +415,7 @@ NetworkServer.register_rpcs = function (self, network_event_delegate, network_tr
 end
 
 NetworkServer.on_level_exit = function (self)
-	table.clear(self.peers_completed_game_object_sync)
+	table.clear(self._peers_completed_game_object_sync)
 
 	local peer_state_machines = self.peer_state_machines
 
@@ -610,10 +610,9 @@ end
 
 NetworkServer.game_object_sync_done = function (self, peer_id)
 	network_printf("Game_object_sync_done for peer %s", peer_id)
-
-	self.peers_completed_game_object_sync[peer_id] = true
-
-	self.game_network_manager:_hot_join_sync(peer_id)
+	self:set_peer_synced_game_objects(peer_id, true)
+	self.game_network_manager:hot_join_sync(peer_id)
+	self._network_state:set_peer_hot_join_synced(peer_id, true)
 
 	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
@@ -625,6 +624,14 @@ NetworkServer.game_object_sync_done = function (self, peer_id)
 	else
 		RPC.rpc_set_migration_host(channel_id, self.host_to_migrate_to or "", self.host_to_migrate_to and true or false)
 	end
+end
+
+NetworkServer.has_peer_synced_game_objects = function (self, peer_id)
+	return self._peers_completed_game_object_sync[peer_id]
+end
+
+NetworkServer.set_peer_synced_game_objects = function (self, peer_id, synced)
+	self._peers_completed_game_object_sync[peer_id] = synced or nil
 end
 
 NetworkServer.approve_channel = function (self, channel_id, peer_id, instance_id)
@@ -984,8 +991,13 @@ NetworkServer.eac_check_peer = function (self, peer_id)
 	local server_state, peer_state
 
 	if DEDICATED_SERVER then
-		server_state = "trusted"
-		peer_state = "trusted"
+		if BUILD == "release" then
+			server_state = EACServer.state(self._eac_server, self.my_peer_id)
+			peer_state = EACServer.state(self._eac_server, peer_id)
+		else
+			server_state = EACServer.state(self._eac_server, self.my_peer_id)
+			peer_state = EACServer.state(self._eac_server, peer_id)
+		end
 	else
 		local host = self.lobby_host
 

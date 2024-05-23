@@ -325,7 +325,7 @@ VersusMissionObjectiveUI._set_pre_round_timer = function (self, time_left)
 
 	widget.content.pre_round_timer = time_left
 
-	if time_left <= 5 then
+	if time_left <= 10 then
 		self:_play_sound("versus_round_start_safe_zone_countdown_tick")
 	end
 

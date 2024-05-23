@@ -200,17 +200,24 @@ PlayerUnitGhostModeExtension.get_distance_from_players = function (self, unit)
 	local enemy_positions = side.ENEMY_PLAYER_AND_BOT_POSITIONS
 	local unit_position = POSITION_LOOKUP[unit]
 	local distance_to_spawn = math.huge
+	local profile_index = Managers.player:owner(unit):profile_index()
+	local profile = SPProfiles[profile_index]
+	local min_dist = GameModeSettings.versus.dark_pact_minimum_spawn_distance
+
+	if profile.enemy_role and profile.enemy_role == "boss" then
+		min_dist = GameModeSettings.versus.boss_minimum_spawn_distance
+	end
 
 	for i = 1, #enemy_positions do
 		local enemy_position = enemy_positions[i]
 		local distance = Vector3.distance(enemy_position, unit_position)
 
-		if distance < self._minimum_spawn_distance and distance < distance_to_spawn then
-			distance_to_spawn = self._minimum_spawn_distance - distance
+		if distance < min_dist and distance < distance_to_spawn then
+			distance_to_spawn = min_dist - distance
 		end
 	end
 
-	if distance_to_spawn < 0 or distance_to_spawn > self._minimum_spawn_distance then
+	if distance_to_spawn < 0 or min_dist < distance_to_spawn then
 		return 0
 	else
 		return distance_to_spawn
@@ -346,6 +353,10 @@ PlayerUnitGhostModeExtension._enter_ghost_mode = function (self, ignore_send, te
 	Managers.state.event:trigger("enter_ghostmode", true, self._unit)
 	Managers.state.event:trigger("set_new_enemy_role")
 	self:_play_sound("versus_enter_ghost_mode")
+
+	local dialogue_context_system = Managers.state.entity:system("dialogue_context_system")
+
+	dialogue_context_system:set_context_value(self._unit, "is_in_ghost_mode", true)
 end
 
 PlayerUnitGhostModeExtension._leave_ghost_mode = function (self)
@@ -402,6 +413,10 @@ PlayerUnitGhostModeExtension._leave_ghost_mode = function (self)
 	else
 		self._network_transmit:send_rpc_server("rpc_left_ghost_mode", unit_go_id)
 	end
+
+	local dialogue_context_system = Managers.state.entity:system("dialogue_context_system")
+
+	dialogue_context_system:set_context_value(player_unit, "is_in_ghost_mode", false)
 end
 
 PlayerUnitGhostModeExtension.try_enter_ghost_mode = function (self)

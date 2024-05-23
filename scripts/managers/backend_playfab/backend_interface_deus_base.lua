@@ -16,6 +16,7 @@ BackendInterfaceDeusBase.init = function (self)
 	self._extra_deus_inventory = {}
 	self._loadouts = {}
 	self._talent_ids = {}
+	self._bot_loadouts = {}
 
 	local valid_loadout_slots = {}
 
@@ -41,8 +42,13 @@ BackendInterfaceDeusBase.set_deus_loadout = function (self, loadout)
 	self._loadouts = loadout
 end
 
+BackendInterfaceDeusBase.set_deus_bot_loadout = function (self, bot_loadout)
+	self._bot_loadouts = bot_loadout
+end
+
 BackendInterfaceDeusBase.reset_deus_inventory = function (self)
 	self._loadouts = nil
+	self._bot_loadouts = nil
 
 	table.clear(self._extra_deus_inventory)
 end
@@ -92,10 +98,13 @@ BackendInterfaceDeusBase.grant_deus_weapon = function (self, item)
 	return item.backend_id
 end
 
-BackendInterfaceDeusBase.get_loadout_item_id = function (self, career_name, slot_name)
+BackendInterfaceDeusBase.get_loadout_item_id = function (self, career_name, slot_name, is_bot)
 	fassert(self._valid_loadout_slots[slot_name], "[BackendInterfaceDeusBase] Loadout in slot %q shouldn't be fetched from the deus interface", tostring(slot_name))
 
-	local loadout = self._loadouts[career_name]
+	local game_mode_key = Managers.state.game_mode and Managers.state.game_mode:game_mode_key()
+	local bot_loadout_allowed = InventorySettings.bot_loadout_allowed_game_modes[game_mode_key]
+	local loadouts = is_bot and self._bot_loadouts or self._loadouts
+	local loadout = loadouts[career_name]
 	local item_backend_id = loadout[slot_name]
 
 	return item_backend_id
@@ -113,6 +122,10 @@ BackendInterfaceDeusBase.set_loadout_item = function (self, item_backend_id, car
 	if loadout[slot_name] ~= item_backend_id then
 		loadout[slot_name] = item_backend_id
 	end
+end
+
+BackendInterfaceDeusBase.get_loadout_item = function (self, item_backend_id)
+	return self._extra_deus_inventory[item_backend_id]
 end
 
 BackendInterfaceDeusBase.get_total_power_level = function (self, profile_name, career_name)

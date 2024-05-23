@@ -27,6 +27,13 @@ GhostModeUtils.in_range_of_enemies = function (unit)
 	local unit_position = POSITION_LOOKUP[unit]
 	local min_dist = GameModeSettings.versus.dark_pact_minimum_spawn_distance
 	local min_dist_vertical = GameModeSettings.versus.dark_pact_minimum_spawn_distance_vertical
+	local profile_index = Managers.player:owner(unit):profile_index()
+	local profile = SPProfiles[profile_index]
+
+	if profile.enemy_role and profile.enemy_role == "boss" then
+		min_dist = GameModeSettings.versus.boss_minimum_spawn_distance
+	end
+
 	local min_dist_sq = min_dist^2
 
 	for i = 1, #enemy_positions do

@@ -259,6 +259,7 @@ end
 StateTitleScreenMainMenu._init_menu_views = function (self)
 	local ui_renderer = self._title_start_ui:get_ui_renderer()
 	local view_context = {
+		in_title_screen = true,
 		ui_renderer = ui_renderer,
 		ui_top_renderer = ui_renderer,
 		input_manager = Managers.input,

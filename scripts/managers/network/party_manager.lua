@@ -214,6 +214,18 @@ PartyManager.register_parties = function (self, party_definitions)
 		end
 	end
 
+	local consecutive_game_participating = true
+
+	for i = 1, self._num_parties do
+		local party = self._parties[i]
+
+		if party.game_participating then
+			assert(consecutive_game_participating, "Game participating parties may not be separated by non participating ones.")
+		else
+			consecutive_game_participating = false
+		end
+	end
+
 	self._cleared = false
 end
 
@@ -337,6 +349,21 @@ PartyManager.request_join_party = function (self, peer_id, local_player_id, part
 		end
 
 		if slot_empty then
+			local mechanism_slot_id = Managers.mechanism:preferred_slot_id(party_id, peer_id, local_player_id)
+
+			if mechanism_slot_id then
+				if self:is_slot_bot(party, mechanism_slot_id) then
+					local bot_peer_id, bot_local_player_id = self:slot_peer_id(party, mechanism_slot_id)
+					local status = Managers.party:get_player_status(bot_peer_id, bot_local_player_id)
+
+					self:remove_peer_from_party(status.peer_id, status.local_player_id, status.party_id)
+
+					optional_slot_id = mechanism_slot_id
+				elseif self:is_slot_empty(party, mechanism_slot_id) then
+					optional_slot_id = mechanism_slot_id
+				end
+			end
+
 			local is_bot = false
 
 			if party.num_used_slots < party.num_slots then
@@ -481,13 +508,12 @@ PartyManager.assign_peer_to_party = function (self, peer_id, local_player_id, wa
 
 	debug_printf("Player (%s:%d) was put into party %s (%d)", peer_id, local_player_id, party.name, party_id)
 
-	local slot_id = optional_slot_id or Managers.mechanism:preferred_slot_id(party_id, peer_id, local_player_id)
+	local slot_id = optional_slot_id or self:find_first_empty_slot_id(party)
 
 	if PartyManager._find_slot_index(party, slot_id) then
 		slot_id = nil
 	end
 
-	slot_id = slot_id or self:find_first_empty_slot_id(party)
 	party.slots[slot_id] = player_status
 	party.occupied_slots[#party.occupied_slots + 1] = player_status
 	player_status.party_id = party_id
@@ -517,6 +543,8 @@ PartyManager.assign_peer_to_party = function (self, peer_id, local_player_id, wa
 	if Managers.state.event then
 		Managers.state.event:trigger("on_player_joined_party", peer_id, local_player_id, party_id, slot_id)
 	end
+
+	Managers.mechanism:player_joined_party(peer_id, local_player_id, party_id, slot_id)
 
 	return player_status
 end
@@ -621,6 +649,16 @@ PartyManager.is_slot_bot = function (self, party, slot_id)
 	local slot = party.slots[slot_id]
 
 	return slot and slot.is_bot
+end
+
+PartyManager.slot_peer_id = function (self, party, slot_id)
+	local slot = party.slots[slot_id]
+
+	if slot then
+		return slot.peer_id, slot.local_player_id
+	end
+
+	return nil, nil
 end
 
 PartyManager.find_first_empty_slot_id = function (self, party)
@@ -1251,11 +1289,8 @@ PartyManager._server_set_client_friend_party = function (self, friend_party_id)
 
 	local max_friend_party_size = 4
 	local friend_party_peers = Script.new_array(max_friend_party_size)
-
-	table.fill(friend_party_peers, max_friend_party_size, "")
-
 	local peers = friend_party.peers
-	local num_party_peers = peers
+	local num_party_peers = #peers
 
 	if max_friend_party_size < num_party_peers then
 		table.dump(peers, "friend party peers")
@@ -1280,6 +1315,10 @@ PartyManager._server_set_client_friend_party = function (self, friend_party_id)
 
 			self:server_remove_friend_party_peer(peer)
 		end
+	end
+
+	for i = #friend_party_peers + 1, max_friend_party_size do
+		friend_party_peers[i] = ""
 	end
 
 	self:_server_send_rpc_to_friend_party("rpc_set_client_friend_party", friend_party_id, friend_party_peers)

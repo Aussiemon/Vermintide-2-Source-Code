@@ -324,6 +324,7 @@ Rewards._generate_end_of_level_loot = function (self, game_won, hero_name, start
 
 	self._end_of_level_loot_id = loot_interface:generate_end_of_level_loot(game_won, quickplay, difficulty, self._level_key, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id, self._game_mode_key, game_time, end_of_level_rewards_arguments)
 	self._end_of_level_rewards_arguments = end_of_level_rewards_arguments
+	self._is_loot_handled = false
 end
 
 Rewards.cb_deed_consumed = function (self)
@@ -358,6 +359,21 @@ Rewards.rewards_generated = function (self)
 				deed_manager:consume_deed()
 
 				self._sent_consuming_deed = true
+			end
+
+			if not self._is_loot_handled then
+				local rewards = loot_interface:get_loot(loot_id)
+
+				for k, v in pairs(rewards) do
+					if string.find(k, "experience_reward") == 1 then
+						self._mission_results[#self._mission_results + 1] = {
+							text = "bonus_experience_earned",
+							experience = v.amount,
+						}
+					end
+				end
+
+				self._is_loot_handled = true
 			end
 		end
 

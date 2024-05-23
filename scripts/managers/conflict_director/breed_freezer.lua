@@ -241,7 +241,11 @@ BreedFreezer.try_mark_unit_for_freeze = function (self, breed, unit)
 
 	for i = 1, #units_to_freeze do
 		if units_to_freeze[i] == unit then
-			print("ERROR: Tried to freeze unit twice in the same frame.")
+			rawset(_G, "DoubleFreezeContext", {})
+
+			DoubleFreezeContext[unit] = true
+
+			print("ERROR: Tried to freeze unit twice in the same frame.", Script.callstack())
 
 			return false
 		end

@@ -31,12 +31,13 @@ PlayerUnitAttachmentExtension.extensions_ready = function (self, world, unit)
 	local attachment_slots = InventorySettings.attachment_slots
 	local slots_n = #attachment_slots
 	local career_name = self.career_extension:career_name()
+	local is_bot = self._player.bot_player
 
 	for i = 1, slots_n do
 		repeat
 			local slot = attachment_slots[i]
 			local slot_name = slot.name
-			local item = BackendUtils.get_loadout_item(career_name, slot_name)
+			local item = BackendUtils.get_loadout_item(career_name, slot_name, is_bot)
 
 			if item then
 				local item_data = table.clone(item.data)

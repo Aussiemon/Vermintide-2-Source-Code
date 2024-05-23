@@ -511,14 +511,17 @@ StoreWindowCategoryList._setup_list_elements = function (self)
 
 	for page_name, _ in pairs(path_structure) do
 		local page = pages[page_name]
-		local entry = {
-			display_name = page.display_name,
-			page_name = page_name,
-			sort_order = page.sort_order,
-			category_texture = page.category_button_texture,
-		}
 
-		categories[#categories + 1] = entry
+		if self:_valid_category(page.item_filter) then
+			local entry = {
+				display_name = page.display_name,
+				page_name = page_name,
+				sort_order = page.sort_order,
+				category_texture = page.category_button_texture,
+			}
+
+			categories[#categories + 1] = entry
+		end
 	end
 
 	table.sort(categories, sort_categories_by_order)
@@ -526,6 +529,12 @@ StoreWindowCategoryList._setup_list_elements = function (self)
 
 	self._layout = categories
 	self._list_initialized = true
+end
+
+StoreWindowCategoryList._valid_category = function (self, filter)
+	local items = self:_get_items_by_filter(filter)
+
+	return #items ~= 0
 end
 
 StoreWindowCategoryList._on_list_index_pressed = function (self, index)

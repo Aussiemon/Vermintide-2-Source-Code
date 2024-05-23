@@ -14,11 +14,14 @@ PackageManager.init = function (self)
 	self._references = {}
 	self._queued_async_packages = {}
 	self._queue_order = {}
+	self._delayed_packages_to_remove = {}
 end
 
 PackageManager.load = function (self, package_name, reference_name, callback, asynchronous, prioritize)
 	debug_print("Load:  %s, %s, %s, %s", package_name, reference_name, asynchronous and "async-read" or "sync-read", prioritize and "prioritized" or "")
 	assert(reference_name ~= nil, "No reference name passed when loading package")
+
+	self._delayed_packages_to_remove[package_name] = nil
 
 	if self._references[package_name] then
 		self._references[package_name][reference_name] = (self._references[package_name][reference_name] or 0) + 1
@@ -207,8 +210,18 @@ PackageManager.unload = function (self, package_name, reference_name)
 		local resource_handle = self:_get_async_handle(package_name, true) or self._packages[package_name]
 
 		if resource_handle then
-			ResourcePackage.unload(resource_handle)
-			Application.release_resource_package(resource_handle)
+			if self:can_unload(package_name) then
+				ResourcePackage.unload(resource_handle)
+				Application.release_resource_package(resource_handle)
+
+				self._delayed_packages_to_remove[package_name] = nil
+
+				debug_print("Unload:  %s, %s", package_name, reference_name)
+			else
+				self._delayed_packages_to_remove[package_name] = resource_handle
+
+				debug_print("Delayed Unload of:  %s, %s", package_name, reference_name)
+			end
 		end
 
 		self._packages[package_name] = nil
@@ -219,8 +232,6 @@ PackageManager.unload = function (self, package_name, reference_name)
 		if table.is_empty(self._asynch_packages) then
 			self:_pop_queue()
 		end
-
-		debug_print("Unload:  %s, %s", package_name, reference_name)
 	else
 		debug_print("Unload:  %s, %s -> Package still referenced, NOT unloaded:", package_name, reference_name)
 	end
@@ -260,6 +271,12 @@ PackageManager.destroy = function (self)
 			end
 		end
 	end
+
+	for package_name, resource_handle in pairs(self._delayed_packages_to_remove) do
+		debug_print("We have delayed packages during destroy. This will likely crash during unload. Unloading delayed package:  %s", package_name)
+		ResourcePackage.unload(resource_handle)
+		Application.release_resource_package(resource_handle)
+	end
 end
 
 PackageManager.is_loading = function (self, package, optional_reference_name)
@@ -295,6 +312,16 @@ PackageManager.update = function (self, dt)
 			self:force_load(package_name)
 
 			break
+		end
+	end
+
+	for package_name, resource_handle in pairs(self._delayed_packages_to_remove) do
+		if ResourcePackage.can_unload(resource_handle) then
+			debug_print("Unloading delayed package:  %s", package_name)
+			ResourcePackage.unload(resource_handle)
+			Application.release_resource_package(resource_handle)
+
+			self._delayed_packages_to_remove[package_name] = nil
 		end
 	end
 

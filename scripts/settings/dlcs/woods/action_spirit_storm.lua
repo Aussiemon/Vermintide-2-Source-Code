@@ -73,7 +73,11 @@ ActionSpiritStorm.fire = function (self, reason)
 		local target_breed = Unit.get_data(target_unit, "breed")
 
 		if target_breed and target_breed.is_player then
-			overcharge = current_action.overcharge_amount_player_target
+			overcharge = current_action.overcharge_amount_player_target or overcharge
+
+			if current_action.player_target_buff then
+				self.owner_buff_extension:add_buff(current_action.player_target_buff)
+			end
 		end
 	end
 

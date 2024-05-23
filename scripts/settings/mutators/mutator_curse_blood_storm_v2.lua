@@ -228,10 +228,12 @@ local MAX_DISTANCE = 30
 local DISTANCE_TO_FORBIDDEN_POSITION_LIST = 10
 
 return {
-	curse_package_name = "resource_packages/mutators/mutator_curse_blood_storm",
 	description = "curse_blood_storm_desc",
 	display_name = "curse_blood_storm_name",
 	icon = "deus_curse_khorne_01",
+	packages = {
+		"resource_packages/mutators/mutator_curse_blood_storm",
+	},
 	server_start_function = function (context, data)
 		local storms = {}
 

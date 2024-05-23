@@ -139,7 +139,7 @@ end
 StateTitleScreenMainMenu.update = function (self, dt, t)
 	local active_view = self._active_view
 
-	if self._auto_start and (Development.parameter("auto_host_level") or Development.parameter("auto_join")) then
+	if self._auto_start and (Development.parameter("auto_host_level") or Development.parameter("auto_join") or Development.parameter("deus_auto_host")) then
 		self._input_disabled = true
 
 		Managers.transition:show_loading_icon(false)

@@ -53,6 +53,16 @@ GenericTerrorEvents = {
 			},
 		},
 	},
+	playable_boss_chaos_troll = {
+		{
+			"vs_assign_boss_profile",
+			breed_name = "chaos_troll",
+		},
+		{
+			"vs_assign_boss_profile",
+			breed_name = "chaos_troll",
+		},
+	},
 	boss_event_rat_ogre = {
 		{
 			"create_boss_door_group",

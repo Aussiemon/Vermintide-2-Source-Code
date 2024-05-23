@@ -51,6 +51,7 @@ DeusCostSettings = DeusCostSettings or {
 			blessing_rally_flag = 200,
 		},
 		power_ups = {
+			event = 100,
 			exotic = 250,
 			rare = 200,
 			uncommon = 100,

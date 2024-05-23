@@ -1497,6 +1497,10 @@ DialogueSystem.tagquery_loader = function (self)
 	return self._tagquery_loader
 end
 
+DialogueSystem.tagquery_database = function (self)
+	return self._tagquery_database
+end
+
 DialogueSystem.reset_memory_time = function (self, memory, name, unit)
 	local newtime = LOCAL_GAMETIME - 2000
 	local extension = self._unit_extension_data[unit]

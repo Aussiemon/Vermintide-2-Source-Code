@@ -3512,7 +3512,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 
 		selected_level_name = Localize(level_settings.display_name or "UNKNOWN")
 	elseif mechanism == "versus" then
-		if selected_mission_id ~= "any" then
+		if selected_mission_id and selected_mission_id ~= "any" then
 			local level_settings = LevelSettings[selected_mission_id]
 
 			selected_level_name = Localize(level_settings.display_name or "UNKNOWN")

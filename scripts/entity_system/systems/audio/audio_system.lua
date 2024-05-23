@@ -83,6 +83,12 @@ AudioSystem._update_global_parameters = function (self, dt)
 	end
 end
 
+AudioSystem.play_sound_local = function (self, event)
+	local wwise_world = Managers.world:wwise_world(self.world)
+
+	WwiseWorld.trigger_event(wwise_world, event)
+end
+
 AudioSystem.play_2d_audio_event = function (self, event)
 	if not DEDICATED_SERVER then
 		local wwise_world = Managers.world:wwise_world(self.world)

@@ -66,6 +66,11 @@ local windows = {
 		ignore_alignment = true,
 		name = "hero_power",
 	},
+	loadout_selection = {
+		class_name = "HeroWindowLoadoutSelectionConsole",
+		ignore_alignment = true,
+		name = "loadout_selection",
+	},
 	ingame_view = {
 		class_name = "HeroWindowIngameView",
 		ignore_alignment = true,
@@ -93,6 +98,7 @@ local window_layouts = {
 			character_info = 3,
 			hero_power = 5,
 			loadout = 4,
+			loadout_selection = 6,
 			panel = 1,
 		},
 	},
@@ -104,6 +110,7 @@ local window_layouts = {
 		windows = {
 			background = 2,
 			character_info = 3,
+			loadout_selection = 5,
 			panel = 1,
 			talents = 4,
 		},
@@ -133,6 +140,7 @@ local window_layouts = {
 			character_info = 4,
 			cosmetics_loadout = 3,
 			hero_power = 5,
+			loadout_selection = 6,
 			panel = 1,
 		},
 	},

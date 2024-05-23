@@ -13,13 +13,10 @@ BuffAreaExtension.init = function (self, extension_init_context, unit, extension
 	Unit.set_unit_visibility(self._unit, false)
 
 	local t = Managers.time:time("game")
-
-	self.removal_proc_function_name = extension_init_data.removal_proc_function_name
-	self.add_proc_function_name = extension_init_data.add_proc_function_name
-	self._duration = t + (extension_init_data.duration or math.huge)
-
 	local template = extension_init_data.sub_buff_template
 
+	self._duration = t + (template.duration or math.huge)
+	self.sub_buff_id = extension_init_data.sub_buff_id
 	self.template = template
 
 	local radius = extension_init_data.radius
@@ -37,22 +34,55 @@ BuffAreaExtension.init = function (self, extension_init_context, unit, extension
 	self._buff_allies = template.buff_allies
 	self._buff_enemies = template.buff_enemies
 	self._buff_self = template.buff_self
+	self._wwise_world = Managers.world:wwise_world(world)
+	self._area_start_sfx = template.area_start_sfx
+	self._area_end_sfx = template.area_end_sfx
+	self._enter_area_sfx = template.enter_area_sfx
+	self._leave_area_sfx = template.leave_area_sfx
 
-	self:_spawn_los_blocker()
+	if template.area_start_sfx then
+		self:_play_unit_audio()
+	end
+
+	self:_spawn_particles()
+
+	self._is_server = Managers.state.network.is_server
+
+	if self._is_server then
+		self:_spawn_los_blocker()
+	end
+
+	self._buff_ids = {}
+end
+
+BuffAreaExtension.game_object_initialized = function (self, unit, go_id)
+	self._is_owner = GameSession.game_object_owned(Managers.state.network:game(), go_id)
 end
 
 BuffAreaExtension.destroy = function (self)
-	if Unit.alive(self._los_blocker_unit) then
+	if self._is_server and Unit.alive(self._los_blocker_unit) then
 		self._unit_spawner:mark_for_deletion(self._los_blocker_unit)
 
 		self._los_blocker_unit = nil
 	end
 
-	local game = Managers.state.network:game()
+	if self._is_owner then
+		local game = Managers.state.network:game()
 
-	if game then
-		self:_cleanup_inside_units()
+		if game then
+			self:_cleanup_inside_units()
+		end
 	end
+
+	if self._leave_area_sfx then
+		self:play_leave_buff_zone_sfx()
+	end
+
+	if self._area_end_sfx then
+		self:_stop_unit_audio()
+	end
+
+	self:_destroy_particles()
 end
 
 BuffAreaExtension._cleanup_inside_units = function (self)
@@ -71,6 +101,10 @@ BuffAreaExtension._cleanup_inside_units = function (self)
 end
 
 BuffAreaExtension.update = function (self, unit, input, dt, context, t)
+	if not self._is_owner then
+		return
+	end
+
 	if self._duration and t > self._duration then
 		self:_remove_unit()
 		self:_cleanup_inside_units()
@@ -192,14 +226,49 @@ BuffAreaExtension.set_duration = function (self, duration)
 	self._duration = t + duration
 end
 
-BuffAreaExtension._leave_func = function (self, unit)
+BuffAreaExtension._leave_func = function (self, leaving_unit)
 	if not self._unlimited then
-		ProcFunctions[self.removal_proc_function_name](unit, self.owner_unit, self.template, self._unit, self.source_unit)
+		local buff_system = Managers.state.entity:system("buff_system")
+		local area_buff_id = self._buff_ids[leaving_unit]
+
+		buff_system:remove_buff_synced(leaving_unit, area_buff_id)
+
+		self._buff_ids[leaving_unit] = nil
+	end
+
+	local player_owner = Managers.player:owner(leaving_unit)
+	local peer_id = player_owner and player_owner:network_id()
+	local go_id = self._unit and Managers.state.unit_storage:go_id(self._unit)
+
+	if self._leave_area_sfx and peer_id and go_id then
+		Managers.state.network.network_transmit:send_rpc("rpc_play_leave_buff_zone_sfx", peer_id, go_id)
 	end
 end
 
-BuffAreaExtension._enter_func = function (self, unit)
-	ProcFunctions[self.add_proc_function_name](unit, self.owner_unit, self.template, self._unit, self.source_unit)
+BuffAreaExtension._enter_func = function (self, entering_unit)
+	local buff_system = Managers.state.entity:system("buff_system")
+	local template = self.template
+	local buff_name = template.buff_area_buff
+	local sync_type = template.buff_sync_type or BuffSyncType.Local
+	local params = FrameTable.alloc_table()
+	local source_unit = self.source_unit
+
+	params.attacker_unit = source_unit
+	params.source_attacker_unit = source_unit
+
+	local player_owner = Managers.player:owner(entering_unit)
+	local peer_id = player_owner and player_owner:network_id()
+	local go_id = self._unit and Managers.state.unit_storage:go_id(self._unit)
+
+	if self._leave_area_sfx and peer_id and go_id then
+		Managers.state.network.network_transmit:send_rpc("rpc_play_enter_buff_zone_sfx", peer_id, go_id)
+	end
+
+	if (sync_type == BuffSyncType.Client or sync_type == BuffSyncType.ClientAndServer) and not peer_id then
+		return
+	end
+
+	self._buff_ids[entering_unit] = buff_system:add_buff_synced(entering_unit, buff_name, sync_type, params, peer_id)
 end
 
 BuffAreaExtension._remove_unit = function (self)
@@ -247,5 +316,55 @@ BuffAreaExtension._set_not_inside = function (self, inside_table, unit)
 
 			self:_leave_func(unit)
 		end
+	end
+end
+
+BuffAreaExtension._spawn_particles = function (self)
+	local template = self.template
+	local particles = template.buff_area_particles
+
+	if not particles then
+		return
+	end
+
+	local is_first_person = false
+
+	self._particle_datas = BuffUtils.create_attached_particles(self._world, particles, self._unit, is_first_person)
+end
+
+BuffAreaExtension._destroy_particles = function (self)
+	local particle_datas = self._particle_data
+
+	if not particle_datas then
+		return
+	end
+
+	BuffUtils.destroy_attached_particles(self._world, particle_datas)
+end
+
+BuffAreaExtension._play_unit_audio = function (self)
+	self._unit_source_id = WwiseWorld.make_manual_source(self._wwise_world, POSITION_LOOKUP[self._unit])
+
+	WwiseWorld.trigger_event(self._wwise_world, self._area_start_sfx, self._unit_source_id)
+end
+
+BuffAreaExtension._stop_unit_audio = function (self)
+	if self._unit_source_id then
+		WwiseWorld.trigger_event(self._wwise_world, self._area_end_sfx, true, self._unit_source_id)
+		WwiseWorld.destroy_manual_source(self._wwise_world, self._unit_source_id)
+	end
+end
+
+BuffAreaExtension.play_enter_buff_zone_sfx = function (self)
+	self._inside_zone_audio_id = WwiseUtils.make_unit_auto_source(self._world, self._unit)
+
+	WwiseWorld.trigger_event(self._wwise_world, self._enter_area_sfx, true, self._inside_zone_audio_id)
+end
+
+BuffAreaExtension.play_leave_buff_zone_sfx = function (self)
+	if self._inside_zone_audio_id then
+		WwiseWorld.trigger_event(self._wwise_world, self._leave_area_sfx, true, self._inside_zone_audio_id)
+
+		self._inside_zone_audio_id = nil
 	end
 end

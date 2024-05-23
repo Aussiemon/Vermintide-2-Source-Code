@@ -11,7 +11,9 @@ end
 local base_nurgle_storm = require("scripts/settings/mutators/mutator_nurgle_storm")
 local curse_blood_storm = table.clone(base_nurgle_storm)
 
-curse_blood_storm.curse_package_name = "resource_packages/mutators/mutator_curse_blood_storm"
+curse_blood_storm.packages = {
+	"resource_packages/mutators/mutator_curse_blood_storm",
+}
 curse_blood_storm.display_name = "curse_blood_storm_name"
 curse_blood_storm.description = "curse_blood_storm_desc"
 curse_blood_storm.icon = "deus_curse_khorne_01"

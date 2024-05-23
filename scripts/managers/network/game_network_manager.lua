@@ -806,7 +806,7 @@ GameNetworkManager.set_peer_synchronizing = function (self, peer_id)
 	self.network_transmit:add_peer_ignore(peer_id)
 end
 
-GameNetworkManager._hot_join_sync = function (self, peer_id)
+GameNetworkManager.hot_join_sync = function (self, peer_id)
 	if Managers.state.debug then
 		Managers.state.debug:hot_join_sync(peer_id)
 	end

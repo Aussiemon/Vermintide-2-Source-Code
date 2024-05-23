@@ -471,10 +471,37 @@ MusicManager._update_boss_state = function (self, conflict_director)
 		return
 	end
 
-	local angry_boss = conflict_director:angry_boss() or conflict_director:boss_event_running()
-	local state = angry_boss and self:_get_combat_music_state(conflict_director) or "no_boss"
+	local is_versus = Managers.mechanism:current_mechanism_name() == "versus"
+	local state
+
+	if not is_versus then
+		local angry_boss = conflict_director:angry_boss() or conflict_director:boss_event_running()
+
+		state = angry_boss and self:_get_combat_music_state(conflict_director) or "no_boss"
+	else
+		state = self:_get_versus_combat_music_state()
+	end
 
 	self:set_music_group_state("combat_music", "boss_state", state)
+end
+
+MusicManager._get_versus_combat_music_state = function (self)
+	local side_manager = Managers.state.side
+	local side = side_manager:get_side(2)
+	local players_and_bots = side.PLAYER_AND_BOT_UNITS
+	local breed_combat_music = "no_boss"
+
+	for i = 1, #players_and_bots do
+		local player_breed = Unit.get_data(players_and_bots[i], "breed")
+
+		if player_breed.boss then
+			breed_combat_music = player_breed.combat_music_state
+
+			break
+		end
+	end
+
+	return breed_combat_music
 end
 
 MusicManager._get_combat_music_state = function (self, conflict_director)
@@ -646,7 +673,7 @@ end
 
 MusicManager._get_game_state_for_player = function (self, dt, t, conflict_director, party_id, old_state, player)
 	local game_mode_manager = Managers.state.game_mode
-	local round_about_to_end = game_mode_manager:game_mode().about_to_lose
+	local round_about_to_end = game_mode_manager:game_mode():is_about_to_end_game_early()
 	local game_mode_key = game_mode_manager:game_mode_key()
 	local is_survival = game_mode_key == "survival"
 
@@ -766,7 +793,7 @@ MusicManager._update_player_state = function (self, dt, t)
 		if Unit.alive(player_unit) then
 			local status_ext = ScriptUnit.extension(player_unit, "status_system")
 
-			state = Managers.state.game_mode:game_mode().about_to_lose and "normal" or status_ext:is_ready_for_assisted_respawn() and "normal" or status_ext:is_dead() and "dead" or status_ext:is_knocked_down() and "knocked_down" or status_ext:is_in_vortex() and "normal" or status_ext:is_disabled() and not status_ext:is_grabbed_by_chaos_spawn() and not status_ext:is_grabbed_by_corruptor() and "need_help" or self.last_man_standing and "last_man_standing" or status_ext.get_in_ghost_mode and status_ext:get_in_ghost_mode() and "ghost" or "normal"
+			state = Managers.state.game_mode:game_mode():is_about_to_end_game_early() and "normal" or status_ext:is_ready_for_assisted_respawn() and "normal" or status_ext:is_dead() and "dead" or status_ext:is_knocked_down() and "knocked_down" or status_ext:is_in_vortex() and "normal" or status_ext:is_disabled() and not status_ext:is_grabbed_by_chaos_spawn() and not status_ext:is_grabbed_by_corruptor() and "need_help" or self.last_man_standing and "last_man_standing" or status_ext.get_in_ghost_mode and status_ext:get_in_ghost_mode() and "ghost" or "normal"
 
 			music_player:set_group_state("player_state", state)
 		else

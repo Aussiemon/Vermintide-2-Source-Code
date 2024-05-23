@@ -1873,7 +1873,7 @@ Talents.wood_elf = {
 		},
 	},
 	{
-		buffer = "server",
+		buffer = "client",
 		description = "kerillian_maidenguard_crit_chance_desc",
 		icon = "kerillian_maidenguard_damage_reduction_on_last_standing",
 		name = "kerillian_maidenguard_crit_chance",

@@ -106,6 +106,21 @@ TelemetryEvents.versus_match_ended = function (self, match_id, is_draw, winning_
 	self._manager:register_event(event)
 end
 
+TelemetryEvents.versus_pactsworn_picking = function (self, match_id, player_id, career_options, selected_career, career_selection_time_elapsed, platform, build)
+	local event = self:_create_event("versus_pactsworn_picking")
+
+	event:set_data({
+		match_id = match_id,
+		player_id = player_id,
+		career_options = career_options,
+		selected_career = selected_career,
+		career_selection_time_elapsed = career_selection_time_elapsed,
+		platform = platform,
+		build = build,
+	})
+	self._manager:register_event(event)
+end
+
 TelemetryEvents.versus_objective_started = function (self, match_id, objective_id, round_id, objective_name)
 	local event = self:_create_event("versus_objective_started")
 
@@ -874,7 +889,7 @@ TelemetryEvents.player_left = function (self, player, num_human_players)
 	self._manager:register_event(event)
 end
 
-TelemetryEvents.deus_run_started = function (self, run_id, journey_name, run_seed, dominant_god, difficulty)
+TelemetryEvents.deus_run_started = function (self, run_id, journey_name, run_seed, dominant_god, difficulty, is_weekly_expedition, event_mutators, event_boons)
 	local event = self:_create_event("deus_run_started")
 
 	event:set_data({
@@ -883,6 +898,9 @@ TelemetryEvents.deus_run_started = function (self, run_id, journey_name, run_see
 		run_seed = run_seed,
 		dominant_god = dominant_god,
 		difficulty = difficulty,
+		is_weekly_expedition = is_weekly_expedition,
+		event_mutators = event_mutators,
+		event_boons = event_boons,
 	})
 	self._manager:register_event(event)
 end
@@ -919,6 +937,27 @@ TelemetryEvents.deus_coins_changed = function (self, telemetry_id, run_id, coin_
 		coin_delta = coin_delta,
 		coin_description = coin_description,
 	})
+	self._manager:register_event(event)
+end
+
+TelemetryEvents.deus_altar_passed = function (self, data)
+	local event = self:_create_event("deus_altar_passed")
+
+	event:set_data(data)
+	self._manager:register_event(event)
+end
+
+TelemetryEvents.cursed_chest_passed = function (self, data)
+	local event = self:_create_event("cursed_chest_passed")
+
+	event:set_data(data)
+	self._manager:register_event(event)
+end
+
+TelemetryEvents.store_node_traversed = function (self, data)
+	local event = self:_create_event("store_node_traversed")
+
+	event:set_data(data)
 	self._manager:register_event(event)
 end
 
@@ -1036,5 +1075,31 @@ TelemetryEvents.geheimnisnacht_hard_mode_toggled = function (self, activated)
 	event:set_data({
 		state = state,
 	})
+	self._manager:register_event(event)
+end
+
+TelemetryEvents.loadout_created = function (self, num_loadouts, max_num_loadouts)
+	local event = self:_create_event("loadout_created")
+
+	event:set_data({
+		num_loadouts = num_loadouts,
+		max_num_loadouts = max_num_loadouts,
+	})
+	self._manager:register_event(event)
+end
+
+TelemetryEvents.loadout_deleted = function (self, num_loadouts, max_num_loadouts)
+	local event = self:_create_event("loadout_deleted")
+
+	event:set_data({
+		num_loadouts = num_loadouts,
+		max_num_loadouts = max_num_loadouts,
+	})
+	self._manager:register_event(event)
+end
+
+TelemetryEvents.loadout_equipped = function (self)
+	local event = self:_create_event("loadout_equipped")
+
 	self._manager:register_event(event)
 end

@@ -186,6 +186,25 @@ NetworkTransmit.send_rpc_server = function (self, rpc_name, ...)
 	end
 end
 
+NetworkTransmit.send_rpc_dedicated_server = function (self, rpc_name, ...)
+	local rpc = RPC[rpc_name]
+
+	fassert(rpc, "[NetworkTransmit:send_rpc_server()] rpc does not exist %q", rpc_name)
+
+	local dedicated_server_peer_id = Managers.mechanism:dedicated_server_peer_id()
+
+	fassert(dedicated_server_peer_id, "Failed to get peer id for dedicated server")
+
+	if self.peer_id == dedicated_server_peer_id then
+		self:queue_local_rpc(rpc_name, ...)
+	else
+		local channel_id = PEER_ID_TO_CHANNEL[dedicated_server_peer_id]
+
+		fassert(channel_id, "Failed to find channel_id for dedicated server")
+		rpc(channel_id, ...)
+	end
+end
+
 NetworkTransmit.send_rpc_party_clients = function (self, rpc_name, party, include_spectators, ...)
 	fassert(self.is_server, "Trying to send rpc %q on client to clients which is wrong. Only servers should use this function.", rpc_name)
 

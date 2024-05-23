@@ -315,7 +315,7 @@ StartGameWindowDeusQuickplay._option_selected = function (self, widget_name, but
 	if widget_name == "difficulty_stepper" then
 		local difficulty_key = self._current_difficulty
 		local difficulty_list = GameModeSettings.deus.difficulties
-		local current_difficulty_index = table.find(difficulty_list, difficulty_key)
+		local current_difficulty_index = table.find(difficulty_list, difficulty_key) or 1
 		local new_current_index = 0
 
 		if button_name == "left_arrow" then

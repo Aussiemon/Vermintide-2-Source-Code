@@ -21,13 +21,13 @@ local RPCS = {
 	"rpc_sync_next_horde_time",
 	"rpc_selectable_careers_request",
 	"rpc_selectable_careers_response",
+	"rpc_set_playable_boss_can_be_picked",
 }
 
 GameModeVersus.init = function (self, settings, world, ...)
 	GameModeVersus.super.init(self, settings, world, ...)
 
-	self.about_to_lose = false
-	self._lost_condition_timer = nil
+	self._game_end_condition_timer = nil
 	self._round_id = nil
 	self._objectives_completed = nil
 	self._total_main_objectives = nil
@@ -42,7 +42,6 @@ GameModeVersus.init = function (self, settings, world, ...)
 	self._mechanism = Managers.mechanism:game_mechanism()
 	self._current_mechanism_state = self._mechanism:get_state()
 	self._adventure_spawning = AdventureSpawning:new(self._profile_synchronizer, hero_side, self._is_server, self._network_server)
-	self._dark_pact_career_delegator = VersusDarkPactCareerDelegator:new()
 	self._versus_spawning = VersusSpawning:new(self._profile_synchronizer, dark_pact_side.available_profiles, self._is_server, settings, self._dark_pact_career_delegator)
 	self.pactsworn_video_transition_view = PactswornVideoTransitionView:new(self._world)
 
@@ -68,7 +67,7 @@ GameModeVersus.init = function (self, settings, world, ...)
 
 	local event_manager = Managers.state.event
 
-	event_manager:register(self, "level_start_local_player_spawned", "event_local_player_spawned", "gm_event_initial_peers_spawned", "gm_event_initial_peers_spawned", "end_screen_ui_complete", "event_end_screen_ui_complete", "round_over", "on_round_over", "event_set_loadout_items", "event_set_loadout_items")
+	event_manager:register(self, "level_start_local_player_spawned", "event_local_player_spawned", "gm_event_initial_peers_spawned", "gm_event_initial_peers_spawned", "end_screen_ui_complete", "event_end_screen_ui_complete", "event_set_loadout_items", "event_set_loadout_items")
 
 	local mechanism = Managers.mechanism:game_mechanism()
 
@@ -79,6 +78,8 @@ GameModeVersus.init = function (self, settings, world, ...)
 	self._win_conditions:setup_next_round(self._is_server, level_settings)
 
 	if self._is_server then
+		self._dark_pact_career_delegator = VersusDarkPactCareerDelegator:new()
+
 		self:_create_game_mode_data_game_object()
 
 		self._lobby_host = self._network_server.lobby_host
@@ -96,6 +97,7 @@ GameModeVersus.init = function (self, settings, world, ...)
 		self._horde_surge_handler = HordeSurgeHandler:new(self._is_server, world, surge_events, seed)
 	end
 
+	self._boss_has_been_played = false
 	self._initial_peers_spawned = false
 	self._local_player_spawned = false
 	self.pre_round_start_timer = math.huge
@@ -236,6 +238,7 @@ GameModeVersus.destroy = function (self)
 		local dp_party = Managers.state.side:get_party_from_side_name("dark_pact")
 
 		self:_clear_profile_reservations_for_party(dp_party)
+		self._dark_pact_career_delegator:destroy()
 	end
 
 	if self._versus_party_selection_logic then
@@ -250,7 +253,6 @@ GameModeVersus.destroy = function (self)
 		event_manager:unregister("level_start_local_player_spawned", self)
 		event_manager:unregister("gm_event_initial_peers_spawned", self)
 		event_manager:unregister("end_screen_ui_complete", self)
-		event_manager:unregister("round_over", self)
 		event_manager:unregister("event_set_loadout_items", self)
 	end
 end
@@ -265,57 +267,73 @@ GameModeVersus.evaluate_end_conditions = function (self, round_started, dt, t)
 	end
 
 	local ignore_bots = true
-	local humans_dead = GameModeHelper.side_is_dead("heroes", ignore_bots)
-	local heroes_disabled = GameModeHelper.side_is_disabled("heroes")
-	local all_heroes_disabled
-
-	if heroes_disabled then
-		if self._heroes_disabled_timer then
-			if t > self._heroes_disabled_timer then
-				all_heroes_disabled = true
-			end
-		else
-			self._heroes_disabled_timer = t + 7
-
-			local audio_system = Managers.state.entity:system("audio_system")
-
-			audio_system:play_2d_audio_event("Play_versus_hud_last_hero_down_riser")
-		end
-	else
-		if not heroes_disabled and self._heroes_disabled_timer then
-			all_heroes_disabled = false
-
-			local audio_system = Managers.state.entity:system("audio_system")
-
-			audio_system:play_2d_audio_event("Stop_versus_hud_last_hero_down_riser")
-		end
-
-		self._heroes_disabled_timer = nil
-	end
-
 	local round_ended = false
 	local round_timer_over = self._win_conditions:is_round_timer_over()
 	local all_objectives_completed = self._objective_system:all_objectives_completed()
 	local party_won_early_data = self._win_conditions.party_won_early
-	local heroes_dead_or_disabled = humans_dead or all_heroes_disabled
+	local humans_dead = GameModeHelper.side_is_dead("heroes", ignore_bots)
+	local heroes_disabled = GameModeHelper.side_is_disabled("heroes")
+	local heroes_dead_or_disabled = humans_dead or heroes_disabled
 
 	if script_data.disable_gamemode_end_hero_check then
 		heroes_dead_or_disabled = false
 	end
 
-	local lost = not self._lose_condition_disabled and (heroes_dead_or_disabled or self._level_failed) or round_timer_over or all_objectives_completed or party_won_early_data
+	local game_should_end_early = not self._lose_condition_disabled and (heroes_dead_or_disabled or self._level_failed) or round_timer_over or all_objectives_completed or party_won_early_data
 
-	if self.about_to_lose then
-		if lost and self._lost_condition_timer then
-			if t > self._lost_condition_timer then
+	if self._level_completed then
+		self._level_complete_timer = self._level_complete_timer or t + 0.4
+		round_ended = t >= self._level_complete_timer
+	elseif self:is_about_to_end_game_early() then
+		if game_should_end_early and self._game_end_condition_timer then
+			if t > self._game_end_condition_timer then
 				round_ended = true
 			end
 		else
-			self.about_to_lose = nil
-			self._lost_condition_timer = nil
+			if self._last_hero_down_riser_played then
+				local audio_system = Managers.state.entity:system("audio_system")
+
+				audio_system:play_2d_audio_event("Stop_versus_hud_last_hero_down_riser")
+
+				self._last_hero_down_riser_played = false
+			end
+
+			self:set_about_to_end_game_early(nil)
+
+			self._game_end_condition_timer = nil
 		end
-	elseif lost then
-		self.about_to_lose = true
+	elseif game_should_end_early then
+		self:set_about_to_end_game_early(true)
+
+		if heroes_dead_or_disabled then
+			local audio_system = Managers.state.entity:system("audio_system")
+
+			audio_system:play_2d_audio_event("Play_versus_hud_last_hero_down_riser")
+
+			self._last_hero_down_riser_played = true
+		end
+
+		if humans_dead then
+			self._game_end_condition_timer = t + GameModeSettings.versus.lose_condition_time_dead
+		else
+			self._game_end_condition_timer = t + GameModeSettings.versus.lose_condition_time
+		end
+	end
+
+	if round_ended then
+		self:_round_end_telemetry()
+
+		local hero_party_id = Managers.state.side:get_side_from_name("heroes").party.party_id
+		local heroes_won_early = party_won_early_data and party_won_early_data.party_id == hero_party_id or false
+		local heroes_won = all_objectives_completed or heroes_won_early
+
+		self:_server_on_round_over(heroes_won)
+
+		if not heroes_won then
+			local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+			dialogue_system:trigger_mission_giver_event("vs_mg_heroes_team_wipe")
+		end
 
 		self._mechanism:server_decide_side_order()
 
@@ -323,34 +341,8 @@ GameModeVersus.evaluate_end_conditions = function (self, round_started, dt, t)
 			Managers.party:server_update_all_client_friend_parties()
 		end
 
-		local hero_party_id = Managers.state.side:get_side_from_name("heroes").party.party_id
-		local heroes_won_early = party_won_early_data and party_won_early_data.party_id == hero_party_id or false
-		local heroes_won = all_objectives_completed or heroes_won_early
-
-		self._network_transmit:send_rpc_clients("rpc_trigger_round_over", heroes_won)
-
-		if not DEDICATED_SERVER then
-			Managers.state.event:trigger("round_over", heroes_won)
-		end
-
-		if humans_dead then
-			self._lost_condition_timer = t + GameModeSettings.versus.lose_condition_time_dead
-		else
-			self._lost_condition_timer = t + GameModeSettings.versus.lose_condition_time
-		end
-
-		self:_round_end_telemetry()
-	else
-		if self._level_completed and not self._level_complete_timer then
-			self._level_complete_timer = t + 0.4
-		end
-
-		round_ended = self._level_completed and t >= self._level_complete_timer
-	end
-
-	if round_ended then
 		self._level_complete_timer = nil
-		self._lost_condition_timer = nil
+		self._game_end_condition_timer = nil
 		self._round_timer = nil
 
 		local reason = "round_end"
@@ -435,7 +427,9 @@ GameModeVersus.pre_update = function (self, t, dt)
 end
 
 GameModeVersus.update = function (self, t, dt)
-	if not self._is_server then
+	if self._is_server then
+		self._dark_pact_career_delegator:update()
+	else
 		self:_client_update(t, dt)
 	end
 
@@ -511,6 +505,7 @@ GameModeVersus._game_mode_state_changed = function (self, state_name, old_state_
 	elseif state_name == "character_selection_state" then
 		self._versus_party_selection_logic = VersusPartySelectionLogic:new(self._is_server, self._settings, self._network_server, self._network_event_delegate, self._network_transmit)
 
+		self._mechanism:make_profiles_reservable()
 		Managers.ui:handle_transition("versus_party_char_selection_view", {
 			menu_state_name = "character",
 		})
@@ -636,7 +631,11 @@ GameModeVersus.assign_temporary_dark_pact_profile = function (self, status)
 end
 
 GameModeVersus.round_started = function (self)
-	return
+	if self._is_server then
+		local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+		dialogue_system:trigger_mission_giver_event("vs_mg_heroes_left_safe_room")
+	end
 end
 
 GameModeVersus.server_update = function (self, t, dt)
@@ -717,10 +716,6 @@ GameModeVersus.server_update = function (self, t, dt)
 			self:change_game_mode_state("pre_start_round_state")
 		end
 	elseif state == "pre_start_round_state" then
-		if DEDICATED_SERVER and self._settings.allow_hotjoining_ongoing_game then
-			self._mechanism:signal_reservers_to_join(t, self._network_server)
-		end
-
 		self._adventure_spawning:server_update(t, dt)
 		self._versus_spawning:update(t, dt, "dark_pact")
 
@@ -729,6 +724,16 @@ GameModeVersus.server_update = function (self, t, dt)
 		if self._initial_peers_spawned then
 			if not self._time_left then
 				self._time_left = time_left
+			end
+
+			if self._is_server and not self._pre_round_start_vo then
+				local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+				if dialogue_system:has_local_player_moved_from_start_position() then
+					self._pre_round_start_vo = true
+
+					dialogue_system:trigger_mission_giver_event("vs_mg_round_start")
+				end
 			end
 
 			if self._time_left and time_left < self._time_left then
@@ -761,10 +766,6 @@ GameModeVersus.server_update = function (self, t, dt)
 			self._time_left = nil
 		end
 	elseif state == "match_running_state" then
-		if DEDICATED_SERVER and self._settings.allow_hotjoining_ongoing_game then
-			self._mechanism:signal_reservers_to_join(t, self._network_server)
-		end
-
 		self._adventure_spawning:server_update(t, dt)
 		self._versus_spawning:update(t, dt, "dark_pact")
 
@@ -775,6 +776,10 @@ GameModeVersus.server_update = function (self, t, dt)
 		-- Nothing
 	else
 		fassert(false, "Unknown state", state)
+	end
+
+	if DEDICATED_SERVER and self._settings.allow_hotjoining_ongoing_game and self._settings.allowed_hotjoin_states[state] then
+		self._mechanism:signal_reservers_to_join(t, self._network_server)
 	end
 
 	local state = self._transition_state
@@ -958,7 +963,7 @@ GameModeVersus._player_entered_party = function (self, party, side, player)
 end
 
 GameModeVersus.player_entered_game_session = function (self, peer_id, local_player_id, wanted_party_index)
-	printf("player_entered_game_session: %s %s", peer_id, local_player_id)
+	printf("player_entered_game_session: %s:%s, party_id: %s", peer_id, local_player_id, wanted_party_index)
 	GameModeVersus.super.player_entered_game_session(self, peer_id, local_player_id, wanted_party_index)
 
 	local party_manager = Managers.party
@@ -1026,10 +1031,6 @@ GameModeVersus.set_profile = function (self, status, profile_index, career_index
 	end
 
 	if profile.affiliation == "heroes" then
-		if status.peer_id ~= Network.peer_id() then
-			self._profile_synchronizer:resync_loadout(status.peer_id, status.local_player_id)
-		end
-
 		assert(self._is_server, "[GameModeVersus] Setting hero profile here is server only due to 'set_saved_hero'")
 		self._mechanism:set_saved_hero(status.peer_id, status.local_player_id, status.party_id, profile_index, career_index)
 	end
@@ -1170,8 +1171,6 @@ GameModeVersus.display_debug_horde_timer_pactsworn = function (self, t, dt)
 end
 
 GameModeVersus.players_left_safe_zone = function (self)
-	Managers.music:trigger_event("versus_heroes_left_safe_zone")
-
 	if self._horde_surge_handler then
 		self._horde_surge_handler:activate()
 	end
@@ -1422,7 +1421,7 @@ GameModeVersus._add_bot = function (self, bot_players, party_id)
 	local slot_id = Managers.party:find_first_empty_slot_id(party)
 	local profile_index, career_index = self._mechanism:get_saved_bot(party_id, slot_id)
 
-	profile_index, career_index = self._mechanism:parse_hero_profile_availability(profile_index, career_index, party_id, nil, nil, false)
+	profile_index = self._mechanism:parse_hero_profile_availability(profile_index, party_id, nil, nil, false)
 
 	if not profile_index then
 		profile_index, career_index = self:_get_first_available_bot_profile(party_id)
@@ -1558,7 +1557,7 @@ GameModeVersus.hero_profile_available_for_party = function (self, party_id, prof
 
 	local party = Managers.party:get_party(party_id)
 
-	if not party or party_id == 0 then
+	if not party or not party.game_participating then
 		return true
 	end
 
@@ -1612,7 +1611,7 @@ GameModeVersus.hero_profile_available_for_party = function (self, party_id, prof
 			local is_remote_player = not peer_id or peer_id ~= status.peer_id or local_player_id ~= status.local_player_id
 
 			if is_remote_player then
-				return false, "vs_profile_selection_profile_already_taken"
+				return false, "vs_profile_selection_profile_already_taken", string.format("Occupying peer status: %s", table.tostring(status))
 			end
 		until true
 	end
@@ -1667,11 +1666,13 @@ GameModeVersus.get_end_screen_config = function (self, game_won, game_lost, play
 		screen_config = {
 			objectives_completed = self._objectives_completed,
 			total_main_objectives = self._total_main_objectives,
+			display_screen_delay = self._settings.end_of_match_view_display_screen_delay,
 		}
 	elseif ended_early or mechanism_state == "round_2" then
 		screen_name = game_won and "victory" or game_lost and "defeat" or "carousel_draw"
 		screen_config = {
 			show_act_presentation = false,
+			display_screen_delay = self._settings.end_of_match_view_display_screen_delay,
 		}
 		params = {
 			reason = reason,
@@ -1776,10 +1777,11 @@ GameModeVersus.play_sound = function (self, event)
 	WwiseWorld.trigger_event(wwise_world, event)
 end
 
-GameModeVersus.on_round_over = function (self, heroes_win)
+GameModeVersus._server_on_round_over = function (self, heroes_win)
+	local audio_system = Managers.state.entity:system("audio_system")
 	local round_over_sfx = heroes_win and "Play_versus_hud_round_end_heroes_win" or "Play_versus_hud_round_end_heroes_fail"
 
-	self:play_sound(round_over_sfx)
+	audio_system:play_2d_audio_event(round_over_sfx)
 end
 
 GameModeVersus.pick_pactsworn_spawn_category = function (self, profile_synchronizer, party)
@@ -1797,19 +1799,6 @@ GameModeVersus.pick_pactsworn_spawn_category = function (self, profile_synchroni
 	assert(#available_roles ~= 0, "unable to pick pactsworn spawn category, no categories available")
 
 	return available_roles[Math.random(1, #available_roles)]
-end
-
-GameModeVersus.pick_pactsworn_spawn_options = function (self, profile_synchronizer, party)
-	local dark_pact_picking_rules = self._settings.dark_pact_picking_rules
-	local num_picks = dark_pact_picking_rules.special_pick_options
-	local available_pick = table.shallow_copy(self._settings.dark_pact_profile_order)
-	local randomed_picks = {}
-
-	for i = 1, num_picks do
-		randomed_picks[#randomed_picks + 1] = table.remove(available_pick, Math.random(1, #available_pick))
-	end
-
-	return randomed_picks
 end
 
 GameModeVersus._round_start_telemetry = function (self)
@@ -1901,7 +1890,7 @@ GameModeVersus.rpc_selectable_careers_request = function (self, channel_id)
 		return
 	end
 
-	local profiles, enemy_role = self._dark_pact_career_delegator:request_careers()
+	local profiles, enemy_role = self._dark_pact_career_delegator:request_careers(peer_id)
 	local enemy_role_id = NetworkLookup.versus_dark_pact_profile_rules[enemy_role]
 
 	for i = 1, #profiles do
@@ -1925,8 +1914,37 @@ GameModeVersus.rpc_selectable_careers_response = function (self, channel_id, ene
 	Managers.state.event:trigger("versus_received_selectable_careers_response", enemy_role, profile_ids)
 end
 
-GameModeVersus.set_is_playable_boss_next = function (self, bool)
-	self._dark_pact_career_delegator:set_is_playable_boss_next(bool)
+GameModeVersus.increment_num_picks_for_career = function (self)
+	self._dark_pact_career_delegator:increment_num_picks_for_career()
+end
+
+GameModeVersus.decrement_num_picks_for_career = function (self)
+	self._dark_pact_career_delegator:decrement_num_picks_for_career()
+end
+
+GameModeVersus.set_playable_boss_can_be_picked = function (self, bool)
+	if self._boss_has_been_played then
+		return
+	end
+
+	if self._is_server then
+		printf("[VS BOSS] trigger playable boss")
+
+		self._boss_has_been_played = true
+
+		self._dark_pact_career_delegator:set_playable_boss_can_be_picked(bool)
+	else
+		printf("[VS BOSS] trigger playable boss")
+		self._network_transmit:send_rpc_server("rpc_set_playable_boss_can_be_picked", bool)
+	end
+end
+
+GameModeVersus.rpc_set_playable_boss_can_be_picked = function (self, bool)
+	assert(self._is_server, "[Trying to set the boss to be pickable by client, it should only happen on server]")
+
+	self._boss_has_been_played = true
+
+	self._dark_pact_career_delegator:set_playable_boss_can_be_picked(bool)
 end
 
 GameModeVersus._get_parading_screen_duration = function (self)

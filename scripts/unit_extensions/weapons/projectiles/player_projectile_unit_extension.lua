@@ -217,6 +217,12 @@ PlayerProjectileUnitExtension.stop = function (self, hit_unit, hit_zone_name, hi
 		unit_set_local_rotation(unit, 0, real_rot)
 	end
 
+	if self.projectile_info.rotation_on_hit then
+		local rotation = self.projectile_info.rotation_on_hit(unit)
+
+		unit_set_local_rotation(unit, 0, rotation)
+	end
+
 	local timed_data = self._timed_data
 	local activate_life_time_on_impact = timed_data and timed_data.activate_life_time_on_impact
 

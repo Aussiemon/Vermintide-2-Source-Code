@@ -290,6 +290,10 @@ DLCSettings = DLCSettings or {
 			quest = "scripts/settings/dlcs/skulls_2023/skulls_2023_quest_settings",
 		},
 	},
+	skulls_2024 = {
+		localization = "localization/skulls_2024",
+		additional_settings = {},
+	},
 	fall_collection_2021 = {
 		package_name = "resource_packages/dlcs/fall_collection_2021",
 		additional_settings = {

@@ -1,6 +1,34 @@
 ﻿-- chunkname: @scripts/ui/atlas_settings/gui_start_screen_atlas.lua
 
 start_screen_atlas = {
+	dot = {
+		size = {
+			44,
+			44,
+		},
+		uv00 = {
+			0.206055,
+			0.414063,
+		},
+		uv11 = {
+			0.249023,
+			0.5,
+		},
+	},
+	dot_glow = {
+		size = {
+			44,
+			44,
+		},
+		uv00 = {
+			0.389648,
+			0.292969,
+		},
+		uv11 = {
+			0.432617,
+			0.378906,
+		},
+	},
 	ps4_button_icon_cross_large = {
 		size = {
 			50,

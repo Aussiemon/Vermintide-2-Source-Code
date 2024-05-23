@@ -95,7 +95,7 @@ GutterRunnerStateFoff.foff = function (self)
 		local first_person_extension = self._first_person_extension
 		local career_extension = ScriptUnit.extension(unit, "career_system")
 
-		first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_enter")
+		first_person_extension:play_unit_sound_event("Play_versus_gutterrunner_vanish_fps", unit, 0)
 		career_extension:set_state("vs_gutter_runner_smoke_bomb_invisible")
 
 		MOOD_BLACKBOARD.gutter_runner_f = true

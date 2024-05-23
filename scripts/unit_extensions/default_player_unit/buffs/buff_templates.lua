@@ -25,6 +25,7 @@ RangedAttackTypes = {
 }
 StatBuffApplicationMethods = {
 	activated_cooldown = "stacking_multiplier",
+	ammo_used_multiplier = "stacking_multiplier",
 	applied_stagger_distance = "stacking_multiplier",
 	attack_intensity_decay = "stacking_multiplier",
 	attack_intensity_reset = "stacking_multiplier",
@@ -39,6 +40,7 @@ StatBuffApplicationMethods = {
 	coop_stamina = "proc",
 	counter_push_power = "stacking_multiplier",
 	critical_strike_chance = "stacking_bonus",
+	critical_strike_chance_heavy = "stacking_bonus",
 	critical_strike_chance_melee = "stacking_bonus",
 	critical_strike_chance_ranged = "stacking_bonus",
 	critical_strike_effectiveness = "stacking_multiplier",
@@ -54,7 +56,9 @@ StatBuffApplicationMethods = {
 	debuff_armoured = "stacking_bonus",
 	deus_coins_greed = "stacking_multiplier",
 	dummy_stagger = "stacking_bonus",
+	explosion_damage = "stacking_multiplier",
 	explosion_radius = "stacking_multiplier",
+	extra_ability_charges = "stacking_bonus",
 	extra_shot = "stacking_bonus",
 	extra_wounds = "stacking_bonus",
 	faster_respawn = "stacking_multiplier",
@@ -65,6 +69,7 @@ StatBuffApplicationMethods = {
 	full_charge_boost = "stacking_multiplier",
 	grenade_extra_shot = "stacking_bonus",
 	grenade_radius = "stacking_multiplier",
+	grenade_throw_range = "stacking_multiplier",
 	grimoire_max_health = "stacking_multiplier",
 	gromril_cooldown = "stacking_bonus",
 	headshot_damage = "stacking_multiplier",
@@ -81,6 +86,7 @@ StatBuffApplicationMethods = {
 	increased_balefire_dot_duration = "stacking_multiplier",
 	increased_burn_dot_damage = "stacking_multiplier",
 	increased_damage_to_balefire = "stacking_multiplier",
+	increased_drone_count = "stacking_bonus",
 	increased_max_targets = "stacking_bonus",
 	increased_move_speed_while_aiming = "stacking_multiplier",
 	increased_weapon_damage = "stacking_multiplier",
@@ -188,7 +194,6 @@ ProcEvents = {
 	"on_ping_target_killed",
 	"on_block",
 	"on_block_broken",
-	"on_timed_block",
 	"on_knocked_down",
 	"on_ledge_hang_start",
 	"on_player_disabled",
@@ -237,8 +242,8 @@ ProcEvents = {
 	"on_controlled_unit_added",
 	"on_controlled_unit_removed",
 	"on_controlled_unit_death",
+	"on_boon_granted",
 	"on_death",
-	"on_attack_blocked",
 	"on_damage_dealt",
 	"on_push_used",
 	"on_backstab",
@@ -256,9 +261,16 @@ ProcEvents = {
 	"on_ability_cooldown_started",
 	"on_extra_ability_consumed",
 	"on_crouch",
+	"on_timed_block",
+	"on_wield",
 	"on_gromril_armour_removed",
 	"on_broke_shield",
 	"on_pet_spawned",
+	"cursed_chest_running",
+	"stagger_calculation_started",
+	"stagger_calculation_ended",
+	"damage_calculation_started",
+	"damage_calculation_ended",
 	"minion_attack_used",
 }
 
@@ -2543,31 +2555,6 @@ ProcFunctions = {
 				buff_extension:remove_buff(huntsman_activated_ability_buff.id)
 			end
 		end
-	end,
-	exit_buff_area = function (leaving_unit, owner_unit, template, buff_area_unit, source_unit)
-		local buff_name = template.buff_area_buff
-		local buff_extension = ScriptUnit.has_extension(leaving_unit, "buff_system")
-
-		if buff_extension then
-			local area_buff = buff_extension:get_buff_type(buff_name)
-
-			if area_buff then
-				local buff_system = Managers.state.entity:system("buff_system")
-
-				buff_system:remove_buff_synced(leaving_unit, area_buff.id)
-			end
-		end
-	end,
-	enter_buff_area = function (entering_unit, owner_unit, template, buff_area_unit, source_unit)
-		local buff_system = Managers.state.entity:system("buff_system")
-		local buff_name = template.buff_area_buff
-		local sync_type = template.buff_sync_type or BuffSyncType.Local
-		local params = FrameTable.alloc_table()
-
-		params.attacker_unit = source_unit
-		params.source_attacker_unit = source_unit
-
-		buff_system:add_buff_synced(entering_unit, buff_name, sync_type, params)
 	end,
 	increased_movement_speed = function (owner_unit, buff, params)
 		if ALIVE[owner_unit] then
@@ -8550,124 +8537,6 @@ BuffTemplates = {
 				remove_buff_func = "remove_chaos_zombie_explosion_in_face",
 				stat_buff = "damage_taken",
 				update_func = "update_chaos_zombie_explosion_in_face",
-			},
-		},
-	},
-	corpse_explosion_default = {
-		buffs = {
-			{
-				apply_buff_func = "apply_vomit_in_face",
-				damage_type = "vomit_face",
-				debuff = true,
-				duration = 2,
-				fatigue_type = "vomit_face",
-				icon = "troll_vomit_debuff",
-				max_stacks = 1,
-				name = "corpse_explosion_default",
-				push_speed = 6,
-				refresh_durations = true,
-				remove_buff_func = "remove_vomit_in_face",
-				slowdown_buff_name = "bile_troll_vomit_face_slowdown",
-				time_between_dot_damages = 0.65,
-				update_func = "update_vomit_in_face",
-				difficulty_damage = {
-					easy = {
-						1,
-						1,
-						0,
-						0.5,
-						1,
-					},
-					normal = {
-						1,
-						1,
-						0,
-						1,
-						1,
-					},
-					hard = {
-						1,
-						1,
-						0,
-						1,
-						1,
-					},
-					harder = {
-						1,
-						1,
-						0,
-						2,
-						1,
-					},
-					hardest = {
-						1,
-						1,
-						0,
-						4,
-						1,
-					},
-					cataclysm = {
-						1,
-						1,
-						0,
-						1,
-						1,
-					},
-					cataclysm_2 = {
-						1,
-						1,
-						0,
-						2,
-						1,
-					},
-					cataclysm_3 = {
-						1,
-						1,
-						0,
-						4,
-						1,
-					},
-					versus_base = {
-						1,
-						1,
-						0,
-						1,
-						1,
-					},
-				},
-			},
-			{
-				apply_buff_func = "apply_movement_buff",
-				duration = 2,
-				multiplier = 0.3,
-				name = "decrease_jump_speed",
-				remove_buff_func = "remove_movement_buff",
-				path_to_movement_setting_to_modify = {
-					"jump",
-					"initial_vertical_speed",
-				},
-			},
-			{
-				apply_buff_func = "apply_movement_buff",
-				duration = 2,
-				multiplier = 0.3,
-				name = "decrease_dodge_speed",
-				remove_buff_func = "remove_movement_buff",
-				path_to_movement_setting_to_modify = {
-					"dodging",
-					"speed_modifier",
-				},
-			},
-			{
-				apply_buff_func = "apply_movement_buff",
-				duration = 2,
-				multiplier = 0.3,
-				name = "decrease_dodge_distance",
-				remove_buff_func = "remove_movement_buff",
-				path_to_movement_setting_to_modify = {
-					"dodging",
-					"distance_modifier",
-				},
 			},
 		},
 	},

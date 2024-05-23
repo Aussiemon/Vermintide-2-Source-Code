@@ -69,7 +69,7 @@ end
 local _combined_requires_packages = {}
 local EMPTY_TABLE = {}
 
-local function profile_packages(profile_index, career_index, is_first_person)
+local function profile_packages(profile_index, career_index, is_first_person, is_bot)
 	local profile = SPProfiles[profile_index]
 	local careers = profile.careers
 	local career = careers[career_index]
@@ -80,7 +80,7 @@ local function profile_packages(profile_index, career_index, is_first_person)
 	for i = 1, slots_n do
 		local slot = InventorySettings.slots[i]
 		local slot_name = slot.name
-		local item = BackendUtils.get_loadout_item(career_name, slot_name)
+		local item = BackendUtils.get_loadout_item(career_name, slot_name, is_bot)
 
 		if item then
 			local item_data = item.data
@@ -91,7 +91,7 @@ local function profile_packages(profile_index, career_index, is_first_person)
 	end
 
 	local base_skin_name = career.base_skin
-	local skin_item = BackendUtils.get_loadout_item(career_name, "slot_skin")
+	local skin_item = BackendUtils.get_loadout_item(career_name, "slot_skin", is_bot)
 	local skin_name = skin_item and skin_item.data.name or base_skin_name
 	local skin_packages = CosmeticsUtils.retrieve_skin_packages(skin_name, is_first_person)
 
@@ -116,7 +116,7 @@ local function profile_packages(profile_index, career_index, is_first_person)
 	else
 		local talent_interface = Managers.backend:get_talents_interface()
 
-		talent_ids = talent_interface:get_talent_ids(career_name)
+		talent_ids = talent_interface:get_talent_ids(career_name, nil, is_bot)
 	end
 
 	do
@@ -161,20 +161,21 @@ local function profile_packages(profile_index, career_index, is_first_person)
 	return packages_list
 end
 
-local function build_inventory_lists(profile_index, career_index)
+local function build_inventory_lists(profile_index, career_index, is_bot)
 	if not profile_index or profile_index == 0 then
 		return {}, {}
 	end
 
-	local inventory_list = profile_packages(profile_index, career_index, false)
-	local inventory_list_first_player = profile_packages(profile_index, career_index, true)
+	local inventory_list = profile_packages(profile_index, career_index, false, is_bot)
+	local inventory_list_first_player = profile_packages(profile_index, career_index, true, is_bot)
 
 	return inventory_list, inventory_list_first_player
 end
 
-local function update_inventory_data(state, peer_id, local_player_id, profile_index, career_index)
-	local inventory_list, inventory_list_first_person = build_inventory_lists(profile_index, career_index)
-	local inventory_id = math.random(1, 2147483647)
+local function update_inventory_data(state, peer_id, local_player_id, profile_index, career_index, is_bot)
+	local inventory_list, inventory_list_first_person = build_inventory_lists(profile_index, career_index, is_bot)
+	local existing_inventory_data = state:get_inventory_data(peer_id, local_player_id)
+	local inventory_id = math.wrap_index_between(existing_inventory_data.inventory_id + 1, 1, 2147483647)
 
 	state:set_inventory_data(peer_id, local_player_id, {
 		inventory_id = inventory_id,
@@ -183,6 +184,17 @@ local function update_inventory_data(state, peer_id, local_player_id, profile_in
 	})
 
 	return inventory_id
+end
+
+local function predict_invalidate_inventory_data(state, peer_id, local_player_id, profile_index, career_index)
+	assert(peer_id ~= Network.peer_id(), "This function is meant to be called remotely, together with a request for the peer to update their inventory data.")
+
+	local existing_inventory_data = state:get_inventory_data(peer_id, local_player_id)
+
+	existing_inventory_data.inventory_id = 0
+
+	state:set_inventory_data(peer_id, local_player_id, existing_inventory_data)
+	state:set_own_loaded_inventory_id(peer_id, local_player_id, 0)
 end
 
 local function are_all_synced_for_peer(state, peer_id, local_player_id, ignore_loading_peers)
@@ -198,7 +210,7 @@ local function are_all_synced_for_peer(state, peer_id, local_player_id, ignore_l
 	for _, other_peer in ipairs(peers_with_full_profiles) do
 		local other_peer_id = other_peer.peer_id
 
-		if not ignore_loading_peers or state:is_peer_ingame(other_peer_id) then
+		if not ignore_loading_peers or state:is_peer_hot_join_synced(other_peer_id) then
 			local loaded_inventory_id = state:get_loaded_inventory_id(other_peer_id, peer_id, local_player_id)
 
 			if inventory_id ~= loaded_inventory_id then
@@ -644,8 +656,12 @@ ProfileSynchronizer._assign_peer_to_profile = function (self, peer_id, local_pla
 			hero_attributes:set(hero_name, "career", career_index)
 		end
 
-		update_inventory_data(self._state, peer_id, local_player_id, profile_index, career_index)
+		update_inventory_data(self._state, peer_id, local_player_id, profile_index, career_index, is_bot)
+	elseif peer_id ~= self._state:get_server_peer_id() and self._state:is_peer_hot_join_synced(Network.peer_id()) then
+		predict_invalidate_inventory_data(self._state, peer_id, local_player_id, profile_index, career_index)
 	end
+
+	Managers.state.event:trigger("player_profile_assigned", peer_id, local_player_id, profile_index, career_index)
 end
 
 local INVALID_PEER = "0"

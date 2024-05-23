@@ -10,6 +10,11 @@ ActivatedAbilitySettings.wh_priest = {
 		display_name = "career_active_name_wh_priest",
 		icon = "victor_priest_activated_ability",
 		weapon_name = "wh_priest_career_skill_weapon",
+		mechanism_overrides = {
+			versus = {
+				cooldown = 100,
+			},
+		},
 	},
 }
 PassiveAbilitySettings.wh_priest = {
@@ -53,9 +58,9 @@ PassiveAbilitySettings.wh_priest = {
 					mechanism_overrides = {
 						versus = {
 							on_boss = 200,
-							on_elite = 16,
-							on_normal = 4,
-							on_special = 32,
+							on_elite = 12,
+							on_normal = 2,
+							on_special = 16,
 						},
 					},
 				},

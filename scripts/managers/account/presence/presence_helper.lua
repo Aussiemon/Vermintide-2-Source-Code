@@ -26,9 +26,9 @@ PresenceHelper.get_hub_presence = function ()
 end
 
 PresenceHelper.lobby_gamemode = function (lobby_data)
-	local mechanism = lobby_data.mechanism
-	local is_in_prologue = lobby_data.mission_id == "prologue"
-	local is_in_plaza = lobby_data.mission_id == "plaza"
+	local mechanism = Managers.mechanism:current_mechanism_name()
+	local is_in_prologue = Managers.level_transition_handler:get_current_level_key() == "prologue"
+	local is_in_plaza = Managers.level_transition_handler:get_current_level_key() == "plaza"
 	local matchmakin_type = lobby_data.matchmaking_type
 	local quick_game = to_boolean(lobby_data.quick_game)
 	local is_weekly_event = tonumber(matchmakin_type) == NetworkLookup.matchmaking_types.event
@@ -59,16 +59,6 @@ PresenceHelper.lobby_gamemode = function (lobby_data)
 		else
 			return "gamemode_deus_none"
 		end
-	elseif mechanism == "versus" then
-		local state = Managers.mechanism:get_state()
-
-		if state == "round_1" then
-			return "gamemode_versus_round_1"
-		elseif state == "round_2" then
-			return "gamemode_versus_round_2"
-		end
-
-		return "gamemode_versus_none"
 	elseif is_twitch_enabled then
 		return "gamemode_twitch"
 	elseif is_quick_game then

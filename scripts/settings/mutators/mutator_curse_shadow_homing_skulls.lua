@@ -43,10 +43,12 @@ local STATES = {
 }
 
 return {
-	curse_package_name = "resource_packages/mutators/mutator_curse_shadow_homing_skulls",
 	description = "curse_shadow_homing_skulls_desc",
 	display_name = "curse_shadow_homing_skulls_name",
 	icon = "deus_curse_belakor_01",
+	packages = {
+		"resource_packages/mutators/mutator_curse_shadow_homing_skulls",
+	},
 	server_start_function = function (context, data)
 		data.conflict_director = Managers.state.conflict
 		data.physics_world = World.physics_world(context.world)

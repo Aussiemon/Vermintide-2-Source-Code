@@ -1643,7 +1643,7 @@ StoreItemPurchasePopup._populate_item_widget = function (self, widget, item, pro
 
 	local type_tag_icon
 
-	if item_type == "hat" or item_type == "skin" or item_type == "weapon_skin" then
+	if item_type == "hat" or item_type == "skin" or item_type == "weapon_skin" or item_type == "frame" then
 		type_tag_icon = item_type_store_icons[item_type]
 
 		if rarity and rarity ~= "default" then

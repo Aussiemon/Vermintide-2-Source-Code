@@ -1039,6 +1039,14 @@ local function create_power_up(scenegraph_id)
 					style_id = "description_text_shadow",
 					text_id = "description_text",
 				},
+				{
+					pass_type = "text",
+					style_id = "set_progression",
+					text_id = "set_progression",
+					content_check_function = function (content)
+						return content.is_part_of_set
+					end,
+				},
 			},
 		},
 		content = {
@@ -1046,6 +1054,7 @@ local function create_power_up(scenegraph_id)
 			icon_frame = "weapon_icon_glow_white",
 			icon_glow = "popup_icon_glow_white",
 			rarity_text = "",
+			set_progression = "%d/%d",
 			shrine_bg = "shrine_blessing_bg_hover",
 			title_text = "",
 			visible = true,
@@ -1281,6 +1290,24 @@ local function create_power_up(scenegraph_id)
 					62,
 					-62,
 					2,
+				},
+			},
+			set_progression = {
+				font_size = 20,
+				font_type = "hell_shark",
+				horizontal_alignment = "right",
+				upper_case = false,
+				vertical_alignment = "bottom",
+				word_wrap = false,
+				progression_colors = {
+					incomplete = Colors.get_color_table_with_alpha("font_default", 255),
+					complete = Colors.get_color_table_with_alpha("lime_green", 255),
+				},
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				offset = {
+					52,
+					14,
+					5,
 				},
 			},
 		},

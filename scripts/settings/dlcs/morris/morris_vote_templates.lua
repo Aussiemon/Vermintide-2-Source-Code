@@ -83,6 +83,12 @@ VoteTemplates.deus_settings_vote = {
 			local matchmaking_manager = Managers.matchmaking
 
 			matchmaking_manager:find_game(search_config)
+
+			if matchmaking_type == "event" then
+				local event_data = data.event_data
+
+				matchmaking_manager:set_game_mode_event_data(event_data)
+			end
 		end
 	end,
 	pack_sync_data = function (data)
@@ -117,6 +123,31 @@ VoteTemplates.deus_settings_vote = {
 			dominant_god and NetworkLookup.deus_themes[dominant_god],
 		}
 
+		if matchmaking_type == "event" then
+			local event_data = data.event_data
+			local mutators = event_data.mutators or {}
+
+			sync_data[#sync_data + 1] = #mutators
+
+			for i = 1, #mutators do
+				local mutator_name = mutators[i]
+				local mutator_id = NetworkLookup.mutator_templates[mutator_name]
+
+				sync_data[#sync_data + 1] = mutator_id
+			end
+
+			local boons = event_data.boons or {}
+
+			sync_data[#sync_data + 1] = #boons
+
+			for i = 1, #boons do
+				local boon_name = boons[i]
+				local boon = DeusPowerUpsLookup[boon_name]
+
+				sync_data[#sync_data + 1] = boon.lookup_id
+			end
+		end
+
 		return sync_data
 	end,
 	extract_sync_data = function (sync_data)
@@ -147,10 +178,43 @@ VoteTemplates.deus_settings_vote = {
 		local matchmaking_type = NetworkLookup.matchmaking_types[matchmaking_type_id]
 		local dominant_god = dominant_god_id and NetworkLookup.deus_themes[dominant_god_id]
 		local mechanism = NetworkLookup.mechanisms[mechanism_id]
+		local mutators, boons
+
+		if matchmaking_type == "event" then
+			mutators = {}
+
+			local num_mutator_index = 12
+			local mutator_start_index = num_mutator_index + 1
+			local num_mutators = sync_data[num_mutator_index]
+
+			for i = mutator_start_index, mutator_start_index + num_mutators - 1 do
+				local mutator_id = sync_data[i]
+
+				mutators[#mutators + 1] = NetworkLookup.mutator_templates[mutator_id]
+			end
+
+			boons = {}
+
+			local num_boon_index = mutator_start_index + num_mutators
+			local boon_start_index = num_boon_index + 1
+			local num_boons = sync_data[num_boon_index]
+
+			for i = boon_start_index, boon_start_index + num_boons - 1 do
+				local boon_id = sync_data[i]
+				local boon = DeusPowerUpsLookup[boon_id]
+
+				boons[#boons + 1] = boon.name
+			end
+		end
+
 		local data = {
 			mission_id = mission_id,
 			act_key = act_key,
 			difficulty = difficulty,
+			event_data = (mutators or boons) and {
+				mutators = mutators,
+				boons = boons,
+			},
 			dominant_god = dominant_god,
 			quick_game = quick_game_id == 1,
 			private_game = private_game_id == 1,

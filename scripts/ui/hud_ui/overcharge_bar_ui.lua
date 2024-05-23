@@ -144,9 +144,9 @@ OverchargeBarUI.create_ui_elements = function (self)
 
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 
-	local widget_definitions = definitions.inventory_entry_definitions
+	local widget_definition = UIWidgets.create_overcharge_bar_widget("charge_bar", nil, nil, nil, nil, definitions.DEFAULT_BAR_SIZE)
 
-	self.charge_bar = UIWidget.init(definitions.widget_definitions.charge_bar)
+	self.charge_bar = UIWidget.init(widget_definition)
 end
 
 local customizer_data = {
@@ -197,14 +197,24 @@ OverchargeBarUI.update_bar_size = function (self, max_overcharge_value, min_thre
 
 	local style = widget.style
 
-	style.frame.size[1] = new_width
+	if style.frame then
+		style.frame.size[1] = new_width
+	end
+
 	style.bar_1.size[1] = new_width - 6
 	style.icon.offset[1] = new_width
 	style.icon_shadow.offset[1] = new_width + 2
-	style.bar_bg.size[1] = new_width - 6
+
+	if style.bar_bg then
+		style.bar_bg.size[1] = new_width - 6
+	end
+
 	style.bar_fg.size[1] = new_width
-	style.min_threshold.offset[1] = 3 + min_threshold_fraction * new_width
-	style.max_threshold.offset[1] = 3 + max_threshold_fraction * new_width
+
+	if style.min_threshold or style.max_threshold then
+		style.min_threshold.offset[1] = 3 + min_threshold_fraction * new_width
+		style.max_threshold.offset[1] = 3 + max_threshold_fraction * new_width
+	end
 
 	local scene_graph = self.ui_scenegraph
 
@@ -250,7 +260,10 @@ OverchargeBarUI.set_charge_bar_fraction = function (self, player, overcharge_fra
 	local pulse_fraction = 0.5 + math.sin(Managers.time:time("ui") * pulse_speed) * 0.5
 	local pulse_alpha = (100 + pulse_fraction * 155) * pulse_global_fraction
 
-	style.frame.color[1] = pulse_alpha
+	if style.frame then
+		style.frame.color[1] = pulse_alpha
+	end
+
 	icon_color[1] = pulse_alpha
 	icon_color[2] = color[2]
 	icon_color[3] = color[3]

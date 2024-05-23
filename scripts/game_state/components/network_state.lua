@@ -215,6 +215,18 @@ NetworkState.set_peer_ingame = function (self, peer_id, ingame)
 	self._shared_state:set_server(key, ingame)
 end
 
+NetworkState.is_peer_hot_join_synced = function (self, peer_id)
+	local key = self._shared_state:get_key("peer_hot_join_synced", peer_id)
+
+	return self._shared_state:get_server(key)
+end
+
+NetworkState.set_peer_hot_join_synced = function (self, peer_id, synced)
+	local key = self._shared_state:get_key("peer_hot_join_synced", peer_id)
+
+	return self._shared_state:set_server(key, synced)
+end
+
 NetworkState.get_loaded_or_loading_packages = function (self)
 	return self._loaded_or_loading_packages
 end

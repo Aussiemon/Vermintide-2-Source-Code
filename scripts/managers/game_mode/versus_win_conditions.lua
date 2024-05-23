@@ -586,7 +586,7 @@ end
 VersusWinConditions.get_current_score = function (self, party_id)
 	local set_data = self:current_set_data(party_id)
 
-	return set_data.claimed_points
+	return set_data and set_data.claimed_points or 0
 end
 
 VersusWinConditions.get_total_score = function (self, party_id)

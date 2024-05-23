@@ -95,7 +95,7 @@ ServerSearchUtils.filter_game_server_search = function (servers, network_options
 		table.array_remove_if(servers, function (server)
 			local allowed_states = Managers.state.game_mode:setting("allowed_hotjoin_states")
 
-			if table.contains(allowed_states, server.game_state) then
+			if allowed_states[server.game_state] then
 				return false
 			end
 

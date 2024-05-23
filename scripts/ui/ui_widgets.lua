@@ -5197,7 +5197,7 @@ UIWidgets.create_simple_two_state_button = function (scenegraph_id, normal_textu
 	}
 end
 
-UIWidgets.create_simple_rect = function (scenegraph_id, color, layer, offset)
+UIWidgets.create_simple_rect = function (scenegraph_id, color, layer, offset, rect_size)
 	return {
 		element = {
 			passes = {
@@ -5210,6 +5210,7 @@ UIWidgets.create_simple_rect = function (scenegraph_id, color, layer, offset)
 		content = {},
 		style = {
 			rect = {
+				vertical_alignment = "top",
 				color = color or {
 					255,
 					255,
@@ -5221,6 +5222,7 @@ UIWidgets.create_simple_rect = function (scenegraph_id, color, layer, offset)
 					0,
 					layer or 0,
 				},
+				texture_size = rect_size,
 			},
 		},
 		offset = {

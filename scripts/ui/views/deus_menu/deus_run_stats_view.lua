@@ -76,7 +76,9 @@ DeusRunStatsView._handle_input = function (self, dt, t)
 		end
 	end
 
-	self._ui:set_active(self._ui:locked() or new_active)
+	local is_locked = self._ui:locked() and not Managers.ui:end_screen_active()
+
+	self._ui:set_active(is_locked or new_active)
 end
 
 DeusRunStatsView.destroy = function (self)

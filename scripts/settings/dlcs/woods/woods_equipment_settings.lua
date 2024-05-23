@@ -384,8 +384,8 @@ settings.vortex_templates = {
 			8,
 		},
 		time_of_life_player_target = {
-			3.5,
-			3.5,
+			2,
+			2,
 		},
 		reduce_duration_per_breed = {
 			chaos_warrior = 0.5,

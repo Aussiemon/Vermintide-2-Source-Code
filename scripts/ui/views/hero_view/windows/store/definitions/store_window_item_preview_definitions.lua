@@ -347,11 +347,11 @@ local scenegraph_definition = {
 		vertical_alignment = "bottom",
 		size = {
 			700,
-			30,
+			45,
 		},
 		position = {
 			0,
-			-25,
+			-40,
 			1,
 		},
 	},
@@ -478,7 +478,7 @@ local type_title_text_style = {
 	},
 }
 local career_title_text_style = {
-	dynamic_font_size = true,
+	dynamic_font_size_word_wrap = true,
 	font_size = 24,
 	font_type = "hell_shark",
 	horizontal_alignment = "left",
@@ -486,7 +486,7 @@ local career_title_text_style = {
 	upper_case = false,
 	use_shadow = true,
 	vertical_alignment = "top",
-	word_wrap = false,
+	word_wrap = true,
 	text_color = {
 		255,
 		120,

@@ -22,8 +22,6 @@ GameModeTutorial.init = function (self, settings, world, ...)
 
 	event_manager:register(self, "level_start_local_player_spawned", "event_local_player_spawned")
 
-	self.about_to_lose = false
-	self.lost_condition_timer = nil
 	self._hud_disabled = false
 	self._bot_players = {}
 end

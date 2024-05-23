@@ -2141,7 +2141,6 @@ local info_frame_text_title_style = {
 	},
 }
 local info_frame_text_style = {
-	dynamic_font_size = true,
 	font_size = 16,
 	font_type = "arial",
 	horizontal_alignment = "right",
@@ -2157,6 +2156,27 @@ local info_frame_text_style = {
 	},
 	size = {
 		200,
+		16,
+	},
+}
+local info_frame_level_name_text_style = {
+	dynamic_font_size_word_wrap = true,
+	font_size = 16,
+	font_type = "arial",
+	horizontal_alignment = "right",
+	localize = false,
+	upper_case = true,
+	use_shadow = true,
+	vertical_alignment = "center",
+	word_wrap = true,
+	text_color = Colors.get_color_table_with_alpha("white", 255),
+	offset = {
+		30,
+		0,
+		2,
+	},
+	size = {
+		250,
 		16,
 	},
 }
@@ -2251,7 +2271,7 @@ local widgets = {
 		info_frame_host_title = UIWidgets.create_simple_text(Localize("lb_host") .. ":", "lobby_info_box_host_lobbies", nil, nil, info_frame_text_title_style),
 		info_frame_host_text = UIWidgets.create_simple_text("host", "lobby_info_box_host_lobbies", nil, nil, info_frame_text_style),
 		info_frame_level_name_title = UIWidgets.create_simple_text(Localize("lb_level") .. ":", "lobby_info_box_level_name_lobbies", nil, nil, info_frame_text_title_style),
-		info_frame_level_name_text = UIWidgets.create_simple_text("level_name", "lobby_info_box_level_name_lobbies", nil, nil, info_frame_text_style),
+		info_frame_level_name_text = UIWidgets.create_simple_text("level_name", "lobby_info_box_level_name_lobbies", nil, nil, info_frame_level_name_text_style),
 		info_frame_difficulty_title = UIWidgets.create_simple_text(Localize("lb_difficulty") .. ":", "lobby_info_box_difficulty_lobbies", nil, nil, info_frame_text_title_style),
 		info_frame_difficulty_text = UIWidgets.create_simple_text("difficulty", "lobby_info_box_difficulty_lobbies", nil, nil, info_frame_text_style),
 		info_frame_players_title = UIWidgets.create_simple_text(Localize("lb_players") .. ":", "lobby_info_box_players_lobbies", nil, nil, info_frame_text_title_style),
@@ -2267,7 +2287,7 @@ local widgets = {
 		info_frame_host_title = UIWidgets.create_simple_text(Localize("lb_host") .. ":", "lobby_info_box_host_lobbies", nil, nil, info_frame_text_title_style),
 		info_frame_host_text = UIWidgets.create_simple_text("host", "lobby_info_box_host_lobbies", nil, nil, info_frame_text_style),
 		info_frame_level_name_title = UIWidgets.create_simple_text(Localize("lb_level") .. ":", "lobby_info_box_level_name_lobbies", nil, nil, info_frame_text_title_style),
-		info_frame_level_name_text = UIWidgets.create_simple_text("level_name", "lobby_info_box_level_name_lobbies", nil, nil, info_frame_text_style),
+		info_frame_level_name_text = UIWidgets.create_simple_text("level_name", "lobby_info_box_level_name_lobbies", nil, nil, info_frame_level_name_text_style),
 		info_frame_difficulty_title = UIWidgets.create_simple_text(Localize("lb_difficulty") .. ":", "lobby_info_box_difficulty_lobbies", nil, nil, info_frame_text_title_style),
 		info_frame_difficulty_text = UIWidgets.create_simple_text("difficulty", "lobby_info_box_difficulty_lobbies", nil, nil, info_frame_text_style),
 		info_frame_players_title = UIWidgets.create_simple_text(Localize("lb_players") .. ":", "lobby_info_box_players_lobbies", nil, nil, info_frame_text_title_style),
@@ -2291,7 +2311,7 @@ local widgets = {
 		info_frame_favorite_title = UIWidgets.create_simple_text(Localize("lb_favorite") .. ":", "lobby_info_box_favorite_servers", nil, nil, info_frame_text_title_style),
 		info_frame_favorite_text = UIWidgets.create_simple_text("Yes", "lobby_info_box_favorite_servers", nil, nil, info_frame_text_style),
 		info_frame_level_name_title = UIWidgets.create_simple_text(Localize("lb_level") .. ":", "lobby_info_box_level_name_servers", nil, nil, info_frame_text_title_style),
-		info_frame_level_name_text = UIWidgets.create_simple_text("level_name", "lobby_info_box_level_name_servers", nil, nil, info_frame_text_style),
+		info_frame_level_name_text = UIWidgets.create_simple_text("level_name", "lobby_info_box_level_name_servers", nil, nil, info_frame_level_name_text_style),
 		info_frame_difficulty_title = UIWidgets.create_simple_text(Localize("lb_difficulty") .. ":", "lobby_info_box_difficulty_servers", nil, nil, info_frame_text_title_style),
 		info_frame_difficulty_text = UIWidgets.create_simple_text("difficulty", "lobby_info_box_difficulty_servers", nil, nil, info_frame_text_style),
 		info_frame_players_title = UIWidgets.create_simple_text(Localize("lb_players") .. ":", "lobby_info_box_players_servers", nil, nil, info_frame_text_title_style),

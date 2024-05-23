@@ -85,12 +85,6 @@ MatchmakingStatePartyJoins.update = function (self, dt, t)
 	if self:_all_clients_have_left_lobby() then
 		mm_printf("Clients have left the party lobby")
 
-		if Managers.mechanism:current_mechanism_name() == "versus" then
-			self._state_context.profiles_data = {}
-
-			return MatchmakingStateJoinGame, self._state_context
-		end
-
 		return MatchmakingStateRequestProfiles, self._state_context
 	end
 

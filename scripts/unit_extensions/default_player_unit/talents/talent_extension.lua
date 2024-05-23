@@ -250,7 +250,8 @@ end
 TalentExtension.get_talent_ids = function (self)
 	local talent_interface = Managers.backend:get_talents_interface()
 	local career_name = self._career_name
-	local talent_ids = talent_interface:get_talent_ids(career_name)
+	local is_bot = self.player.bot_player
+	local talent_ids = talent_interface:get_talent_ids(career_name, nil, is_bot)
 
 	return talent_ids
 end

@@ -45,6 +45,10 @@ GameServerLobbyClient.destroy = function (self)
 
 		PEER_ID_TO_CHANNEL[host] = nil
 		CHANNEL_TO_PEER_ID[channel_id] = nil
+
+		if Managers.mechanism:dedicated_server_peer_id() == host then
+			Managers.mechanism:reset_dedicated_server_peer_id()
+		end
 	end
 
 	Presence.stop_advertise_playing()

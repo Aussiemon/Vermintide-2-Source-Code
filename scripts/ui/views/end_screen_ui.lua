@@ -68,8 +68,6 @@ EndScreenUI.on_enter = function (self, screen_name, screen_context, screen_param
 
 	fassert(screen_definition, "Unknown screen name: %s", screen_name)
 
-	self.is_active = true
-
 	local input_manager = self.input_manager
 
 	if not Managers.chat:chat_is_focused() then
@@ -78,8 +76,25 @@ EndScreenUI.on_enter = function (self, screen_name, screen_context, screen_param
 		input_manager:block_device_except_service("end_screen_ui", "gamepad", 1)
 	end
 
-	self:_fade_in_background()
 	self:play_sound("mute_all_world_sounds")
+	Wwise.set_state("override", "false")
+
+	if screen_context and screen_context.display_screen_delay then
+		self._delayed_screen_data = {
+			display_t = Managers.time:time("ui") + screen_context.display_screen_delay,
+			screen_definition = screen_definition,
+			screen_context = screen_context,
+			screen_params = screen_params,
+		}
+	else
+		self:_create_screen(screen_definition, screen_context, screen_params)
+	end
+end
+
+EndScreenUI._create_screen = function (self, screen_definition, screen_context, screen_params)
+	self.is_active = true
+
+	self:_fade_in_background()
 
 	local input_service = self:input_service()
 	local class_name = screen_definition.class_name
@@ -88,7 +103,6 @@ EndScreenUI.on_enter = function (self, screen_name, screen_context, screen_param
 	self._screen = screen_class:new(self._ingame_ui_context, input_service, screen_context, screen_params)
 
 	self._screen:on_fade_in()
-	Wwise.set_state("override", "false")
 end
 
 EndScreenUI.on_exit = function (self)
@@ -124,6 +138,18 @@ end
 EndScreenUI.update = function (self, dt, t)
 	if DO_RELOAD then
 		self:create_ui_elements()
+	end
+
+	local delayed_screen_data = self._delayed_screen_data
+
+	if delayed_screen_data then
+		if t > delayed_screen_data.display_t then
+			self._delayed_screen_data = nil
+
+			self:_create_screen(delayed_screen_data.screen_definition, delayed_screen_data.screen_context, delayed_screen_data.screen_params)
+		end
+
+		return
 	end
 
 	if not self.is_active then

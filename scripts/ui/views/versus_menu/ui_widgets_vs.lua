@@ -5188,3 +5188,614 @@ UIWidgets.create_parading_screen_divider = function (scenegraph_id, size, offset
 		},
 	}
 end
+
+UIWidgets.create_dark_pact_onboarding_tutorial_widget = function (scenegraph_id, size, offset)
+	local size = size or {
+		400,
+		300,
+	}
+
+	return {
+		element = {
+			passes = {
+				{
+					pass_type = "rotated_texture",
+					style_id = "top_detail",
+					texture_id = "detail",
+				},
+				{
+					pass_type = "rotated_texture",
+					style_id = "bottom_detail",
+					texture_id = "detail",
+				},
+				{
+					content_id = "background",
+					pass_type = "texture_uv",
+					style_id = "background",
+				},
+				{
+					pass_type = "text",
+					style_id = "hero_text",
+					text_id = "hero_text",
+				},
+				{
+					pass_type = "text",
+					style_id = "description",
+					text_id = "description",
+				},
+				{
+					pass_type = "text",
+					style_id = "abilities_tooltip",
+					text_id = "abilities_tooltip",
+				},
+			},
+		},
+		content = {
+			abilities_tooltip = "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+			description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+			detail = "radial_chat_bg_line",
+			hero_text = "RATLING GUNNER",
+			background = {
+				texture_id = "headline_bg_60",
+				uvs = {
+					{
+						1,
+						1,
+					},
+					{
+						0,
+						0,
+					},
+				},
+			},
+		},
+		style = {
+			top_detail = {
+				angle = math.degrees_to_radians(-90),
+				offset = {
+					200,
+					60,
+					4,
+				},
+				pivot = {
+					2,
+					200,
+				},
+				texture_size = {
+					4,
+					400,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+			},
+			bottom_detail = {
+				angle = math.degrees_to_radians(-90),
+				offset = {
+					200,
+					-size[2] + 60,
+					4,
+				},
+				pivot = {
+					2,
+					200,
+				},
+				texture_size = {
+					4,
+					400,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+			},
+			background = {
+				vertical_alignment = "center",
+				size = {
+					size[1] + 20,
+					size[2],
+				},
+				offset = {
+					-20,
+					0,
+					1,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+			},
+			hero_text = {
+				font_size = 40,
+				font_type = "hell_shark_header",
+				horizontal_alignment = "left",
+				localize = false,
+				upper_case = true,
+				use_shadow = false,
+				vertical_alignment = "top",
+				word_wrap = false,
+				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				offset = {
+					10,
+					-10,
+					4,
+				},
+			},
+			description = {
+				dynamic_font_size_word_wrap = true,
+				font_size = 18,
+				font_type = "hell_shark",
+				horizontal_alignment = "left",
+				localize = false,
+				upper_case = false,
+				use_shadow = false,
+				vertical_alignment = "top",
+				word_wrap = true,
+				size = {
+					380,
+					120,
+				},
+				text_color = Colors.get_color_table_with_alpha("light_gray", 255),
+				offset = {
+					10,
+					92,
+					4,
+				},
+			},
+			abilities_tooltip = {
+				dynamic_font_size_word_wrap = true,
+				font_size = 20,
+				font_type = "hell_shark",
+				horizontal_alignment = "left",
+				vertical_alignment = "bottom",
+				word_wrap = true,
+				size = {
+					380,
+					120,
+				},
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					10,
+					8,
+					4,
+				},
+			},
+		},
+		scenegraph_id = scenegraph_id,
+		offset = offset or {
+			0,
+			0,
+			1,
+		},
+	}
+end
+
+UIWidgets.create_hero_onboarding_tutorial_widget = function (scenegraph_id, size, offset)
+	local size = size or {
+		400,
+		300,
+	}
+	local icon_size_multiplier = 1.25
+
+	return {
+		element = {
+			passes = {
+				{
+					pass_type = "rotated_texture",
+					style_id = "top_detail",
+					texture_id = "detail",
+				},
+				{
+					pass_type = "rotated_texture",
+					style_id = "bottom_detail",
+					texture_id = "detail",
+				},
+				{
+					content_id = "background",
+					pass_type = "texture_uv",
+					style_id = "background",
+				},
+				{
+					pass_type = "text",
+					style_id = "hero_text",
+					text_id = "hero_text",
+				},
+				{
+					pass_type = "texture",
+					style_id = "career_icon",
+					texture_id = "career_icon",
+				},
+				{
+					pass_type = "texture",
+					style_id = "ability_1_icon",
+					texture_id = "ability_1_icon",
+				},
+				{
+					pass_type = "texture",
+					style_id = "ability_1_icon_frame",
+					texture_id = "icon_frame",
+				},
+				{
+					pass_type = "text",
+					style_id = "ability_1_name",
+					text_id = "ability_1_name",
+				},
+				{
+					pass_type = "text",
+					style_id = "ability_1_description",
+					text_id = "ability_1_description",
+				},
+				{
+					pass_type = "texture",
+					style_id = "ability_2_icon",
+					texture_id = "ability_2_icon",
+				},
+				{
+					pass_type = "texture",
+					style_id = "ability_2_icon_frame",
+					texture_id = "icon_frame",
+				},
+				{
+					pass_type = "text",
+					style_id = "ability_2_name",
+					text_id = "ability_2_name",
+				},
+				{
+					pass_type = "text",
+					style_id = "ability_2_description",
+					text_id = "ability_2_description",
+				},
+			},
+		},
+		content = {
+			ability_1_description = "n/a",
+			ability_1_icon = "icons_placeholder",
+			ability_1_name = "n/a",
+			ability_2_description = "n/a",
+			ability_2_icon = "icons_placeholder",
+			ability_2_name = "n/a",
+			career_icon = "simple_rect_texture",
+			detail = "radial_chat_bg_line",
+			hero_text = "HERO_TEXT",
+			icon_frame = "icon_talent_frame",
+			background = {
+				texture_id = "headline_bg_60",
+				uvs = {
+					{
+						1,
+						1,
+					},
+					{
+						0,
+						0,
+					},
+				},
+			},
+		},
+		style = {
+			top_detail = {
+				angle = math.degrees_to_radians(-90),
+				offset = {
+					200,
+					160,
+					4,
+				},
+				pivot = {
+					2,
+					200,
+				},
+				texture_size = {
+					4,
+					400,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+			},
+			bottom_detail = {
+				angle = math.degrees_to_radians(-90),
+				offset = {
+					200,
+					-size[2] + 160,
+					4,
+				},
+				pivot = {
+					2,
+					200,
+				},
+				texture_size = {
+					4,
+					400,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+			},
+			background = {
+				vertical_alignment = "center",
+				size = {
+					size[1] + 20,
+					size[2],
+				},
+				offset = {
+					-20,
+					0,
+					1,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+			},
+			hero_text = {
+				dynamic_font_size = true,
+				font_size = 58,
+				font_type = "hell_shark_header",
+				horizontal_alignment = "right",
+				localize = false,
+				upper_case = true,
+				use_shadow = false,
+				vertical_alignment = "top",
+				word_wrap = false,
+				size = {
+					size[1],
+					50,
+				},
+				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				offset = {
+					-25,
+					size[2] - 60,
+					4,
+				},
+			},
+			career_icon = {
+				size = {
+					64,
+					64,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					0,
+					size[2] - 70,
+					5,
+				},
+			},
+			ability_1_icon = {
+				size = {
+					64 * icon_size_multiplier,
+					64 * icon_size_multiplier,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					size[1] - (64 * icon_size_multiplier + 20),
+					size[2] - (64 * icon_size_multiplier + 80),
+					5,
+				},
+			},
+			ability_1_icon_frame = {
+				size = {
+					64 * icon_size_multiplier,
+					64 * icon_size_multiplier,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					size[1] - (64 * icon_size_multiplier + 20),
+					size[2] - (64 * icon_size_multiplier + 80),
+					6,
+				},
+			},
+			ability_1_name = {
+				font_size = 30,
+				font_type = "hell_shark",
+				horizontal_alignment = "right",
+				localize = false,
+				upper_case = true,
+				use_shadow = true,
+				vertical_alignment = "center",
+				word_wrap = false,
+				size = {
+					size[1] - (64 * icon_size_multiplier + 25),
+					25,
+				},
+				text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				offset = {
+					0,
+					size[2] - 110,
+					2,
+				},
+			},
+			ability_1_description = {
+				dynamic_font_size_word_wrap = true,
+				font_size = 24,
+				font_type = "hell_shark",
+				horizontal_alignment = "right",
+				localize = false,
+				use_shadow = true,
+				vertical_alignment = "top",
+				word_wrap = true,
+				size = {
+					size[1] - (64 * icon_size_multiplier + 25),
+					80,
+				},
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				offset = {
+					0,
+					size[2] - (64 * icon_size_multiplier + 60 + 50),
+					2,
+				},
+			},
+			ability_2_icon = {
+				size = {
+					64 * icon_size_multiplier,
+					64 * icon_size_multiplier,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					size[1] - (64 * icon_size_multiplier + 20),
+					size[2] - (64 * icon_size_multiplier + 220),
+					5,
+				},
+			},
+			ability_2_icon_frame = {
+				size = {
+					64 * icon_size_multiplier,
+					64 * icon_size_multiplier,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					size[1] - (64 * icon_size_multiplier + 20),
+					size[2] - (64 * icon_size_multiplier + 220),
+					6,
+				},
+			},
+			ability_2_name = {
+				font_size = 30,
+				font_type = "hell_shark",
+				horizontal_alignment = "right",
+				localize = false,
+				upper_case = true,
+				use_shadow = true,
+				vertical_alignment = "center",
+				word_wrap = false,
+				size = {
+					size[1] - (64 * icon_size_multiplier + 25),
+					25,
+				},
+				text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				offset = {
+					0,
+					size[2] - 245,
+					2,
+				},
+			},
+			ability_2_description = {
+				dynamic_font_size_word_wrap = true,
+				font_size = 24,
+				font_type = "hell_shark",
+				horizontal_alignment = "right",
+				localize = false,
+				use_shadow = true,
+				vertical_alignment = "top",
+				word_wrap = true,
+				size = {
+					size[1] - (64 * icon_size_multiplier + 25),
+					80,
+				},
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				offset = {
+					0,
+					30,
+					2,
+				},
+			},
+		},
+		scenegraph_id = scenegraph_id,
+		offset = offset or {
+			0,
+			0,
+			1,
+		},
+	}
+end
+
+UIWidgets.create_dark_pact_overcharge_bar_widget = function (scenegraph_id, overcharge_bar, bar_foreground, glow_frame, hazard_icon, size, offset)
+	local size = size or {
+		250,
+		56,
+	}
+
+	return {
+		element = {
+			passes = {
+				{
+					pass_type = "texture",
+					style_id = "icon",
+					texture_id = "icon",
+				},
+				{
+					pass_type = "texture",
+					style_id = "icon_shadow",
+					texture_id = "icon",
+				},
+				{
+					pass_type = "texture",
+					style_id = "bar_fg",
+					texture_id = "bar_fg",
+				},
+				{
+					pass_type = "gradient_mask_texture",
+					style_id = "bar_1",
+					texture_id = "bar_1",
+				},
+			},
+		},
+		content = {
+			icon = hazard_icon or "tabs_icon_all_selected",
+			bar_1 = overcharge_bar or "dark_pact_overcharge_bar",
+			bar_fg = bar_foreground or "circular_bar_background",
+			size = {
+				size[1] - 6,
+				size[2],
+			},
+		},
+		style = {
+			bar_1 = {
+				gradient_threshold = 0,
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+				offset = {
+					3,
+					-1,
+					4,
+				},
+				size = {
+					size[1],
+					size[2],
+				},
+			},
+			icon = {
+				size = {
+					34,
+					34,
+				},
+				offset = {
+					size[1],
+					size[2] / 2,
+					5,
+				},
+				color = {
+					100,
+					0,
+					0,
+					1,
+				},
+			},
+			icon_shadow = {
+				size = {
+					34,
+					34,
+				},
+				offset = {
+					size[1] + 2,
+					size[2] / 2 - 2,
+					5,
+				},
+				color = {
+					0,
+					0,
+					0,
+					0,
+				},
+			},
+			bar_fg = {
+				offset = {
+					0,
+					0,
+					5,
+				},
+				color = {
+					204,
+					255,
+					255,
+					255,
+				},
+				size = size,
+			},
+		},
+		offset = offset or {
+			0,
+			0,
+			0,
+		},
+		scenegraph_id = scenegraph_id,
+	}
+end

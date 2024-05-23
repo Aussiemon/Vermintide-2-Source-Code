@@ -685,7 +685,7 @@ local crafting_recipes = {
 		display_icon_console = "console_crafting_recipe_icon_apply",
 		display_name = "crafting_recipe_apply_weapon_skin",
 		hero_specific_filter = true,
-		item_filter = "can_apply_skin and item_rarity ~= magic",
+		item_filter = "can_apply_skin",
 		lore_text = "crafting_recipe_reroll_apply_weapon_skin",
 		name = "apply_weapon_skin",
 		result_function = "apply_weapon_skin_result_func",

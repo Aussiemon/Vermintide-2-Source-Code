@@ -29,10 +29,12 @@ local breed_additional_spawn_chance = {
 }
 
 return {
-	curse_package_name = "resource_packages/mutators/mutator_curse_skulls_of_fury",
 	description = "curse_skulls_of_fury_desc",
 	display_name = "curse_skulls_of_fury_name",
 	icon = "deus_curse_khorne_01",
+	packages = {
+		"resource_packages/mutators/mutator_curse_skulls_of_fury",
+	},
 	server_start_function = function (context, data)
 		data.seed = Managers.mechanism:get_level_seed("mutator")
 		data.unit_extension_template = "buffed_timed_explosion_unit"

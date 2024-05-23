@@ -23,6 +23,16 @@ HuskWeaponUnitExtension.init = function (self, extension_init_context, unit, ext
 	end
 end
 
+HuskWeaponUnitExtension.destroy = function (self)
+	if self._synced_weapon_states then
+		for synced_state, weapon_state in pairs(self._synced_weapon_states) do
+			if weapon_state.leave then
+				weapon_state:leave(self.owner_unit, self.unit, self._synced_weapon_state_data, self:_is_local_player(), self.world, nil, true)
+			end
+		end
+	end
+end
+
 HuskWeaponUnitExtension.update = function (self, unit, input, dt, context, t)
 	if self._synced_weapon_state then
 		local weapon_state = self._synced_weapon_states[self._synced_weapon_state]
@@ -42,7 +52,7 @@ HuskWeaponUnitExtension.change_synced_state = function (self, state_name)
 		local weapon_state = self._synced_weapon_states[self._synced_weapon_state]
 
 		if weapon_state.leave then
-			weapon_state:leave(self.owner_unit, self.unit, self._synced_weapon_state_data, false, self.world, state_name)
+			weapon_state:leave(self.owner_unit, self.unit, self._synced_weapon_state_data, false, self.world, state_name, false)
 		end
 	end
 

@@ -111,6 +111,7 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 	local profile = SPProfiles[profile_index]
 	local career_index = self:career_index()
 	local career = profile.careers[career_index]
+	local is_bot = true
 
 	fassert(profile, "[SpawnManager] Trying to spawn with profile %q that doesn't exist in %q.", profile_index, "SPProfiles")
 
@@ -131,10 +132,10 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 	local base_skin = career.base_skin
 	local base_frame = "default"
 	local career_name = career.name
-	local skin_item = BackendUtils.get_loadout_item(career_name, "slot_skin")
+	local skin_item = BackendUtils.get_loadout_item(career_name, "slot_skin", is_bot)
 	local skin_name = skin_item and skin_item.data.name or base_skin
 	local skin_data = Cosmetics[skin_name]
-	local frame_item = BackendUtils.get_loadout_item(career_name, "slot_frame")
+	local frame_item = BackendUtils.get_loadout_item(career_name, "slot_frame", is_bot)
 	local frame_name = frame_item and frame_item.data.name or base_frame
 	local overcharge_data = OverchargeData[career_name] or {}
 	local energy_data = EnergyData[career_name] or {}
@@ -231,6 +232,7 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 		},
 		buff_system = {
 			is_husk = false,
+			breed = breed,
 		},
 		statistics_system = {
 			template = "player",

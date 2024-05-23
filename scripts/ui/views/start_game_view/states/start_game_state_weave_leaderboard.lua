@@ -80,12 +80,12 @@ StartGameStateWeaveLeaderboard.on_enter = function (self, params)
 
 	local leaderboard_tab_data = {
 		{
-			value = "global",
-			text = Localize("menu_weave_leaderboard_filter_option_global"),
-		},
-		{
 			value = "friends",
 			text = Localize("menu_weave_leaderboard_filter_option_friends"),
+		},
+		{
+			value = "global",
+			text = Localize("menu_weave_leaderboard_filter_option_global"),
 		},
 	}
 	local filter_data = {

@@ -29,6 +29,20 @@ local scenegraph_definition = {
 			1,
 		},
 	},
+	horde_ability_root = {
+		horizontal_alignment = "right",
+		parent = "screen",
+		vertical_alignment = "bottom",
+		position = {
+			-360,
+			40,
+			10,
+		},
+		size = {
+			1,
+			1,
+		},
+	},
 	crosshair_root = {
 		horizontal_alignment = "center",
 		parent = "screen",
@@ -445,138 +459,168 @@ local function create_widget_priming()
 			passes = {
 				{
 					pass_type = "texture",
-					style_id = "cooldown_mask",
-					texture_id = "cooldown_mask",
-				},
-				{
-					content_id = "cooldown",
-					pass_type = "texture_uv",
-					style_id = "cooldown",
-				},
-				{
-					pass_type = "texture",
 					style_id = "background",
 					texture_id = "background",
-					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content)
-						local progress = content.progress
-
-						return progress > 0
+						return content.progress > 0
 					end,
 				},
 				{
-					pass_type = "texture",
-					style_id = "ring",
-					texture_id = "ring",
-					retained_mode = RETAINED_MODE_ENABLED,
+					content_id = "progress_1",
+					pass_type = "texture_uv",
+					style_id = "progress_1",
 					content_check_function = function (content)
-						local draw_ring = content.draw_ring
-
-						return not draw_ring
+						return content.parent.progress > 0
+					end,
+					content_change_function = function (content, style)
+						content.uvs = {
+							{
+								0,
+								1 - content.parent.progress,
+							},
+							{
+								1,
+								1,
+							},
+						}
+						style.texture_size[2] = 100 * content.parent.progress
+					end,
+				},
+				{
+					content_id = "progress_2",
+					pass_type = "texture_uv",
+					style_id = "progress_2",
+					content_check_function = function (content)
+						return content.parent.progress > 0
+					end,
+					content_change_function = function (content, style)
+						content.uvs = {
+							{
+								0,
+								1 - content.parent.progress,
+							},
+							{
+								1,
+								1,
+							},
+						}
+						style.texture_size[2] = 100 * content.parent.progress
+					end,
+				},
+				{
+					content_id = "progress_3",
+					pass_type = "texture_uv",
+					style_id = "progress_3",
+					content_check_function = function (content)
+						return content.parent.progress > 0
+					end,
+					content_change_function = function (content, style)
+						content.uvs = {
+							{
+								0,
+								1 - content.parent.progress,
+							},
+							{
+								1,
+								1,
+							},
+						}
+						style.texture_size[2] = 100 * content.parent.progress
 					end,
 				},
 			},
 		},
 		content = {
-			background = "versus_crosshair_crosshair_bg",
-			cooldown_mask = "hud_ability_cooldown_mask",
-			draw_ring = false,
+			background = "pounce_background",
 			progress = 0,
-			ring = "versus_crosshair_crosshair_ring",
-			cooldown = {
-				texture_id = "versus_crosshair_crosshair_fill",
+			progress_1 = {
+				texture_id = "pounce_01",
 				uvs = {
 					{
 						0,
-						0,
+						1,
 					},
 					{
 						1,
+						0,
+					},
+				},
+			},
+			progress_2 = {
+				texture_id = "pounce_02",
+				uvs = {
+					{
+						0,
 						1,
+					},
+					{
+						1,
+						0,
+					},
+				},
+			},
+			progress_3 = {
+				texture_id = "pounce_03",
+				uvs = {
+					{
+						0,
+						1,
+					},
+					{
+						1,
+						0,
 					},
 				},
 			},
 		},
 		style = {
-			ring = {
-				horizontal_alignment = "center",
-				vertical_alignment = "center",
-				texture_size = {
-					80,
-					80,
-				},
-				offset = {
-					0,
-					0,
-					2,
-				},
-				color = {
-					255,
-					255,
-					255,
-					255,
-				},
-			},
 			background = {
-				horizontal_alignment = "center",
-				vertical_alignment = "center",
 				texture_size = {
-					80,
-					80,
+					108,
+					100,
 				},
 				offset = {
-					0,
-					0,
-					0,
-				},
-				color = {
-					255,
-					255,
-					255,
-					255,
-				},
-			},
-			cooldown = {
-				horizontal_alignment = "center",
-				masked = true,
-				vertical_alignment = "center",
-				default_size = {
-					80,
-					80,
-				},
-				texture_size = {
-					80,
-					80,
-				},
-				color = Colors.get_color_table_with_alpha("orange", 255),
-				offset = {
-					0,
-					0,
+					-54,
+					-110,
 					1,
 				},
+				color = Colors.get_color_table_with_alpha("white", 255),
 			},
-			cooldown_mask = {
-				horizontal_alignment = "center",
-				vertical_alignment = "center",
-				default_size = {
-					80,
-					80,
-				},
+			progress_1 = {
 				texture_size = {
-					80,
-					80,
-				},
-				color = {
-					0,
-					255,
-					255,
-					255,
+					108,
+					100,
 				},
 				offset = {
-					0,
-					0,
+					-54,
+					-110,
+					2,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+			},
+			progress_2 = {
+				texture_size = {
+					108,
+					100,
+				},
+				offset = {
+					-54,
+					-110,
 					3,
 				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+			},
+			progress_3 = {
+				texture_size = {
+					108,
+					100,
+				},
+				offset = {
+					-54,
+					-110,
+					4,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
 			},
 		},
 		offset = {
@@ -949,6 +993,110 @@ local function create_widget_ammo()
 	}
 end
 
+local function create_dark_pact_ability_widget()
+	return {
+		scenegraph_id = "horde_ability_root",
+		element = {
+			passes = {
+				{
+					pass_type = "texture",
+					style_id = "background",
+					texture_id = "background",
+				},
+				{
+					pass_type = "texture",
+					style_id = "ability_progress",
+					texture_id = "ability_progress",
+				},
+				{
+					pass_type = "texture",
+					style_id = "ability_effect",
+					texture_id = "ability_effect",
+					content_check_function = function (content)
+						return content.ready
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "ability_effect_top",
+					texture_id = "ability_effect_top",
+					content_check_function = function (content)
+						return content.ready
+					end,
+				},
+			},
+		},
+		content = {
+			ability_effect = "dark_pact_ability_effect",
+			ability_effect_top = "dark_pact_ability_effect_top",
+			ability_progress = "dark_pact_ability_progress_bar",
+			background = "horde_bar_background",
+			ready = false,
+		},
+		style = {
+			background = {
+				size = {
+					356,
+					160,
+				},
+				offset = {
+					0,
+					0,
+					1,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+			},
+			ability_progress = {
+				gradient_threshold = 0,
+				size = {
+					356,
+					160,
+				},
+				offset = {
+					0,
+					0,
+					2,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+			},
+			ability_effect = {
+				size = {
+					152,
+					180,
+				},
+				offset = {
+					223,
+					-15,
+					3,
+				},
+				color = {
+					255,
+					252,
+					60,
+					60,
+				},
+			},
+			ability_effect_top = {
+				size = {
+					152,
+					180,
+				},
+				offset = {
+					223,
+					-15,
+					4,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+			},
+		},
+		offset = {
+			0,
+			0,
+			10,
+		},
+	}
+end
+
 local pre_defined_widgets = {
 	packmaster_reload = {
 		definition = create_widget_reload(),
@@ -1096,13 +1244,8 @@ local pre_defined_widgets = {
 			local priming_progress = ability_data.priming_progress or 0
 			local content = widget.content
 			local style = widget.style
-
-			style.cooldown_mask.color[1] = 255 * priming_progress or 0
-
 			local stored_ability_cooldown = content.ability_cooldown or 0
-			local on_cooldown = ability_cooldown < stored_ability_cooldown
 
-			content.draw_ring = on_cooldown
 			content.progress = priming_progress
 
 			if uses_cooldown and stored_ability_cooldown <= ability_cooldown then
@@ -1244,8 +1387,76 @@ local pre_defined_widgets = {
 			UIRenderer.draw_widget(ui_renderer, widget)
 		end,
 	},
+	ability = {
+		definition = create_dark_pact_ability_widget(),
+		update_function = function (dt, t, ui_renderer, career_extension, ability_id, widget, is_player_dead)
+			if is_player_dead then
+				return
+			end
+
+			local ability_cooldown, max_cooldown = career_extension:current_ability_cooldown(ability_id)
+			local uses_cooldown = career_extension:uses_cooldown(ability_id)
+			local num_extra_current, num_extra_total = career_extension:get_extra_ability_uses()
+			local num_total_stacks = 1 + num_extra_total
+			local num_current_stacks = num_extra_current
+
+			if ability_cooldown <= 0 then
+				num_current_stacks = num_current_stacks + 1
+
+				if num_extra_total > 0 then
+					ability_cooldown, max_cooldown = career_extension:get_extra_ability_charge()
+					ability_cooldown = max_cooldown - ability_cooldown
+				end
+			end
+
+			local display_on_cooldown = false
+			local content = widget.content
+			local style = widget.style
+			local stored_ability_cooldown = content.ability_cooldown or 0
+			local cooldown_fraction = 0
+
+			if uses_cooldown then
+				if ability_cooldown < stored_ability_cooldown then
+					display_on_cooldown = true
+					cooldown_fraction = ability_cooldown / stored_ability_cooldown
+				else
+					content.ability_cooldown = ability_cooldown
+				end
+
+				if not ability_cooldown or ability_cooldown <= 0 then
+					content.ability_cooldown = 0
+				end
+			end
+
+			local cooldown_fraction = 1 - cooldown_fraction
+
+			if content.actual_cooldown ~= cooldown_fraction then
+				local detail_value = 0 + 0.2 * cooldown_fraction
+				local material_name = widget.content.ability_progress
+				local material = Gui.material(ui_renderer.gui, material_name)
+
+				Material.set_scalar(material, "detail_offset", detail_value)
+				Material.set_scalar(material, "gradient_threshold", cooldown_fraction)
+
+				content.ready = cooldown_fraction == 1
+				content.actual_cooldown = cooldown_fraction
+			end
+
+			UIRenderer.draw_widget(ui_renderer, widget)
+		end,
+	},
 }
 local profile_ability_templates = {
+	vs_chaos_troll = {
+		vomit = {
+			widget_definitions = {
+				reload = pre_defined_widgets.ability.definition,
+			},
+			update_functions = {
+				reload = pre_defined_widgets.ability.update_function,
+			},
+		},
+	},
 	vs_gutter_runner = {
 		pounce = {
 			widget_definitions = {

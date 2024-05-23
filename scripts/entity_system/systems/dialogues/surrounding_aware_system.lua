@@ -9,6 +9,7 @@ local extensions = {
 }
 local GLOBAL_CONCEPT_NAMES = {
 	heard_speak = true,
+	player_death = true,
 }
 
 SurroundingAwareSystem = class(SurroundingAwareSystem, ExtensionSystemBase)
@@ -615,7 +616,7 @@ SurroundingAwareSystem.update_events = function (self, context, t)
 				for observer_unit, _ in pairs(self.global_observers) do
 					local dialogue_extension = ScriptUnit.extension(observer_unit, "dialogue_system")
 					local dialogue_input = dialogue_extension.input
-					local is_source = unit ~= observer_unit
+					local is_source = unit == observer_unit
 
 					if not is_source then
 						dialogue_input:trigger_dialogue_event(event_name, event_data)

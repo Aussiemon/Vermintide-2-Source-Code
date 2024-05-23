@@ -23,10 +23,12 @@ local MAX_DISTANCE = 20
 local DISTANCE_TO_FORBIDDEN_POSITION_LIST = 10
 
 return {
-	curse_package_name = "resource_packages/mutators/mutator_curse_grey_wings",
 	description = "curse_grey_wings_desc",
 	display_name = "curse_grey_wings_name",
 	icon = "deus_curse_belakor_01",
+	packages = {
+		"resource_packages/mutators/mutator_curse_grey_wings",
+	},
 	server_start_function = function (context, data)
 		data.conflict_director = Managers.state.conflict
 		data.seed = Managers.mechanism:get_level_seed("mutator")

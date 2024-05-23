@@ -22,6 +22,7 @@ require("scripts/ui/views/hero_view/windows/hero_window_crafting_inventory_conso
 require("scripts/ui/views/hero_view/windows/hero_window_hero_power_console")
 require("scripts/ui/views/hero_view/windows/hero_window_cosmetics_loadout_console")
 require("scripts/ui/views/hero_view/windows/hero_window_cosmetics_loadout_inventory_console")
+require("scripts/ui/views/hero_view/windows/hero_window_loadout_selection_console")
 require("scripts/ui/views/hero_view/windows/hero_window_ingame_view")
 require("scripts/ui/views/hero_view/windows/hero_window_character_preview")
 require("scripts/ui/views/hero_view/windows/hero_window_item_customization")
@@ -1144,4 +1145,8 @@ HeroViewStateOverview._get_slot_by_type = function (self, slot_type)
 			return slot
 		end
 	end
+end
+
+HeroViewStateOverview.set_loadout_dirty = function (self)
+	self.parent:set_loadout_dirty()
 end

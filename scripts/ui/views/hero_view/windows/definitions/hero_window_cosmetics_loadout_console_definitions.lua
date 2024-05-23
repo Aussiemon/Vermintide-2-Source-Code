@@ -43,19 +43,31 @@ local generic_input_actions = {
 			priority = 1,
 		},
 		{
+			description_text = "input_description_select_loadout",
+			ignore_keybinding = true,
+			input_action = "l2_r2",
+			priority = 2,
+		},
+		{
+			description_text = "input_description_manage_loadouts",
+			ignore_keybinding = false,
+			input_action = "right_stick_press",
+			priority = 3,
+		},
+		{
 			description_text = "start_menu_switch_hero",
 			input_action = "show_gamercard",
-			priority = 2,
+			priority = 4,
 		},
 		{
 			description_text = "input_description_select",
 			input_action = "confirm",
-			priority = 4,
+			priority = 5,
 		},
 		{
 			description_text = "input_description_close",
 			input_action = "back",
-			priority = 5,
+			priority = 6,
 		},
 	},
 	details = {

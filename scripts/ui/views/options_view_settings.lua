@@ -2092,6 +2092,13 @@ local versus_settings_definition = {
 		widget_type = "title",
 	},
 	{
+		callback = "cb_vs_floating_damage",
+		saved_value = "cb_vs_floating_damage_saved_value",
+		setup = "cb_vs_floating_damage_setup",
+		tooltip_text = "tooltip_vs_floating_damage",
+		widget_type = "stepper",
+	},
+	{
 		callback = "cb_vs_hud_damage_feedback_in_world",
 		saved_value = "cb_vs_hud_damage_feedback_in_world_saved_value",
 		setup = "cb_vs_hud_damage_feedback_in_world_setup",
@@ -2111,6 +2118,28 @@ local versus_settings_definition = {
 		setup = "cb_vs_hud_damage_feedback_on_teammates_setup",
 		tooltip_text = "tooltip_vs_hud_damage_feedback_on_teammates",
 		widget_type = "stepper",
+	},
+	{
+		size_y = 30,
+		widget_type = "empty",
+	},
+	{
+		text = "settings_view_header_hud_customization",
+		widget_type = "title",
+	},
+	{
+		setting_name = "toggle_pactsworn_help_ui",
+		widget_type = "stepper",
+		options = {
+			{
+				value = true,
+				text = Localize("menu_settings_on"),
+			},
+			{
+				value = false,
+				text = Localize("menu_settings_off"),
+			},
+		},
 	},
 }
 

@@ -330,6 +330,7 @@ VersusObjectiveSettings = {
 						description = "level_objective_description_military_05",
 						play_arrive_vo = true,
 						play_complete_vo = true,
+						score_for_completion = 10,
 						objective_type = ObjectiveTypes.objective_survive,
 						sub_objectives = {
 							versus_mission_objective_survive_courtyard_01 = {
@@ -543,10 +544,6 @@ VersusObjectiveSettings = {
 								mission_name = "versus_mission_survive_temple_02",
 								score_for_completion = 10,
 							},
-							versus_mission_objective_survive_temple_02_B = {
-								mission_name = "versus_mission_survive_temple_02_B",
-								score_for_completion = 10,
-							},
 							versus_mission_objective_survive_temple_03 = {
 								mission_name = "versus_mission_survive_temple_03",
 								score_for_completion = 10,
@@ -591,6 +588,714 @@ VersusObjectiveSettings = {
 						volume_name = "versus_military_reach_09",
 						volume_type = "all_alive",
 						objective_type = ObjectiveTypes.objective_safehouse,
+					},
+				},
+			},
+		},
+	},
+	farmlands_pvp = {
+		num_sets = 2,
+		round_timer = 1800,
+		objective_lists = {
+			{
+				{
+					versus_volume_objective_farmlands_sz_01 = {
+						description = "level_objective_description_vs_safe_zone",
+						score_for_completion = 0,
+						volume_name = "volume_versus_reach_sz_01",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_volume_objective_farmlands_01 = {
+						description = "level_objective_description_farmlands_01",
+						score_for_completion = 10,
+						volume_name = "volume_versus_reach_001",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_volume_objective_farmlands_01_farm = {
+						description = "level_objective_description_farmlands_01_farm",
+						score_for_completion = 5,
+						volume_name = "versus_reach_001_farm",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_volume_objective_farmlands_02_road = {
+						description = "level_objective_description_farmlands_02_road",
+						score_for_completion = 10,
+						volume_name = "versus_reach_02_road",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_volume_objective_farmlands_02 = {
+						description = "level_objective_description_farmlands_03",
+						score_for_completion = 5,
+						volume_name = "volume_versus_reach_002",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					sub_objective_container_01 = {
+						description = "level_objective_description_farmlands_04",
+						play_arrive_vo = true,
+						play_complete_vo = true,
+						objective_type = ObjectiveTypes.objective_target,
+						almost_done = function (self, main_objectives, sub_objectives, shared_objective_data)
+							local objective_system = Managers.state.entity:system("versus_objective_system")
+							local num_total = objective_system:num_current_sub_objectives()
+							local num_completed = objective_system:num_current_completed_sub_objectives()
+
+							if num_total - num_completed <= 1 then
+								return true
+							end
+						end,
+						sub_objectives = {
+							sub_sub_objective_container_01 = {
+								description = "level_objective_description_farmlands_04",
+								score_for_completion = 10,
+								sub_objectives = {
+									versus_target_objective_001 = {},
+								},
+							},
+							sub_sub_objective_container_02 = {
+								description = "level_objective_description_farmlands_04",
+								score_for_completion = 10,
+								sub_objectives = {
+									versus_target_objective_002 = {},
+								},
+							},
+							sub_sub_objective_container_03 = {
+								description = "level_objective_description_farmlands_04",
+								score_for_completion = 10,
+								sub_objectives = {
+									versus_target_objective_003 = {},
+								},
+							},
+							sub_sub_objective_container_04 = {
+								description = "level_objective_description_farmlands_04",
+								score_for_completion = 10,
+								sub_objectives = {
+									versus_target_objective_004 = {},
+								},
+							},
+							sub_sub_objective_container_05 = {
+								description = "level_objective_description_farmlands_04",
+								score_for_completion = 10,
+								sub_objectives = {
+									versus_target_objective_005 = {},
+								},
+							},
+							sub_sub_objective_container_06 = {
+								description = "level_objective_description_farmlands_04",
+								score_for_completion = 10,
+								sub_objectives = {
+									versus_target_objective_006 = {},
+								},
+							},
+						},
+					},
+				},
+				{
+					versus_volume_objective_farmlands_03 = {
+						description = "level_objective_description_farmlands_05",
+						score_for_completion = 10,
+						volume_name = "volume_versus_reach_003",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_volume_objective_farmlands_04 = {
+						description = "level_objective_description_farmlands_06",
+						score_for_completion = 10,
+						volume_name = "volume_versus_reach_004",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_mission_objective_farmlands_key = {
+						description = "level_objective_description_farmlands_07",
+						mission_name = "versus_mission_farmlands_key",
+						score_for_completion = 10,
+						objective_type = ObjectiveTypes.objective_target,
+					},
+				},
+				{
+					versus_mission_objective_open_barn = {
+						description = "level_objective_description_farmlands_08",
+						mission_name = "versus_mission_objective_barn",
+						score_for_completion = 5,
+						objective_type = ObjectiveTypes.objective_target,
+					},
+				},
+				{
+					versus_mission_objective_monster = {
+						description = "level_objective_description_farmlands_09",
+						mission_name = "versus_mission_monster",
+						score_for_completion = 30,
+						objective_type = ObjectiveTypes.objective_survive,
+					},
+				},
+				{
+					versus_socket_objective_01 = {
+						description = "level_objective_description_farmlands_09_B",
+						num_sockets = 1,
+						play_arrive_vo = true,
+						play_complete_vo = true,
+						score_per_socket = 5,
+						objective_type = ObjectiveTypes.objective_socket,
+						almost_done = function (self, main_objectives, sub_objectives, shared_objective_data)
+							local num_sockets = self.num_sockets
+							local objective_extension = main_objectives[1]
+
+							if objective_extension:get_percentage_done() >= (num_sockets - 1.5) / num_sockets then
+								return true
+							end
+						end,
+					},
+				},
+				{
+					versus_volume_objective_farmlands_05 = {
+						description = "level_objective_description_farmlands_10",
+						play_waystone_vo = true,
+						score_for_each_player_inside = 5,
+						volume_name = "volume_versus_reach_005",
+						volume_type = "all_alive",
+						objective_type = ObjectiveTypes.objective_safehouse,
+					},
+				},
+			},
+			{
+				{
+					versus_volume_objective_farmlands_sz_02 = {
+						description = "level_objective_description_vs_safe_zone",
+						score_for_completion = 0,
+						volume_name = "volume_versus_reach_sz_02",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_volume_objective_farmlands_06 = {
+						description = "level_objective_description_farmlands_11",
+						score_for_completion = 15,
+						volume_name = "volume_versus_reach_006",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_volume_objective_farmlands_06_B = {
+						description = "level_objective_description_farmlands_11_B",
+						score_for_completion = 10,
+						volume_name = "volume_versus_reach_006_B",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_volume_objective_farmlands_07 = {
+						description = "level_objective_description_farmlands_13",
+						score_for_completion = 20,
+						volume_name = "volume_versus_reach_007",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_volume_objective_farmlands_08 = {
+						description = "level_objective_description_farmlands_14",
+						score_for_completion = 10,
+						volume_name = "volume_versus_reach_008",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_mission_objective_farmlands_prisoners_01 = {
+						description = "level_objective_description_farmlands_15",
+						mission_name = "farmlands_free_prisoners_01",
+						score_for_completion = 15,
+						objective_type = ObjectiveTypes.objective_interact,
+					},
+				},
+				{
+					versus_mission_objective_farmlands_prisoners_02 = {
+						description = "level_objective_description_farmlands_16",
+						mission_name = "farmlands_free_prisoners_02",
+						score_for_completion = 60,
+						objective_type = ObjectiveTypes.objective_interact,
+					},
+				},
+				{
+					versus_mission_objective_farmlands_prisoners_03 = {
+						description = "level_objective_description_farmlands_17",
+						mission_name = "farmlands_free_prisoners_03",
+						score_for_completion = 30,
+						objective_type = ObjectiveTypes.objective_interact,
+					},
+				},
+				{
+					versus_mission_objective_farmlands_prisoners_04 = {
+						description = "level_objective_description_farmlands_18",
+						mission_name = "farmlands_free_prisoners_04",
+						score_for_completion = 60,
+						objective_type = ObjectiveTypes.objective_interact,
+					},
+				},
+				{
+					versus_volume_objective_farmlands_end = {
+						description = "level_objective_description_farmlands_19",
+						play_waystone_vo = true,
+						score_for_each_player_inside = 10,
+						volume_name = "volume_versus_reach_009",
+						volume_type = "all_alive",
+						objective_type = ObjectiveTypes.objective_safehouse,
+					},
+				},
+			},
+		},
+	},
+	fort_pvp = {
+		num_sets = 3,
+		round_timer = 1800,
+		objective_lists = {
+			{
+				{
+					versus_volume_objective_001 = {
+						description = "level_objective_description_vs_safe_zone",
+						score_for_completion = 0,
+						volume_name = "versus_reach_001",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_volume_objective_002 = {
+						description = "level_objective_description_fort_01",
+						score_for_completion = 10,
+						volume_name = "versus_reach_002",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_capture_point_objective_001 = {
+						capture_time = 150,
+						description = "level_objective_description_fort_02",
+						num_sections = 30,
+						play_arrive_vo = true,
+						play_complete_vo = true,
+						score_per_section = 1,
+						objective_type = ObjectiveTypes.objective_capture_point,
+						almost_done = function (self, main_objectives, sub_objectives, shared_objective_data)
+							local objective_extension = main_objectives[1]
+
+							if objective_extension:get_percentage_done() > 0.75 then
+								return true
+							end
+						end,
+					},
+				},
+				{
+					versus_volume_objective_003 = {
+						description = "level_objective_description_fort_03",
+						score_for_completion = 10,
+						volume_name = "versus_reach_003",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_payload_objective_01 = {
+						close_to_win_type = "section",
+						description = "level_objective_description_fort_04",
+						num_sections = 25,
+						play_arrive_vo = true,
+						score_per_section = 1,
+						objective_type = ObjectiveTypes.objective_payload,
+						almost_done = function (self, main_objectives, sub_objectives, shared_objective_data)
+							local objective_extension = main_objectives[1]
+
+							if objective_extension:get_percentage_done() > 0.8 then
+								return true
+							end
+						end,
+					},
+				},
+				{
+					versus_volume_objective_004 = {
+						description = "level_objective_description_fort_05",
+						score_for_completion = 10,
+						volume_name = "versus_reach_004",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_volume_objective_005 = {
+						description = "level_objective_description_fort_06",
+						play_waystone_vo = true,
+						score_for_each_player_inside = 5,
+						volume_name = "versus_reach_005",
+						volume_type = "all_alive",
+						objective_type = ObjectiveTypes.objective_safehouse,
+					},
+				},
+			},
+			{
+				{
+					versus_volume_objective_006 = {
+						description = "level_objective_description_vs_safe_zone",
+						score_for_completion = 0,
+						volume_name = "versus_reach_006",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_volume_objective_007 = {
+						description = "level_objective_description_fort_08",
+						score_for_completion = 10,
+						volume_name = "versus_reach_007",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_mission_objective_beacons_001 = {
+						description = "level_objective_description_fort_09",
+						mission_name = "mission_fort_bonfire_001",
+						play_arrive_vo = true,
+						play_complete_vo = true,
+						score_for_completion = 50,
+						objective_type = ObjectiveTypes.objective_interact,
+						almost_done = function (self, main_objectives, sub_objectives, shared_objective_data)
+							local objective_system = Managers.state.entity:system("versus_objective_system")
+							local num_total = objective_system:num_current_sub_objectives()
+							local num_completed = objective_system:num_current_completed_sub_objectives()
+
+							if num_total - num_completed <= 1 then
+								return true
+							end
+						end,
+					},
+				},
+				{
+					versus_volume_objective_008 = {
+						description = "level_objective_description_fort_10",
+						score_for_completion = 10,
+						volume_name = "versus_reach_008",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_volume_objective_009 = {
+						description = "level_objective_description_fort_11",
+						score_for_completion = 10,
+						volume_name = "versus_reach_009",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_payload_objective_02 = {
+						close_to_win_type = "section",
+						description = "level_objective_description_fort_12",
+						num_sections = 30,
+						play_arrive_vo = true,
+						score_per_section = 1,
+						objective_type = ObjectiveTypes.objective_payload,
+						almost_done = function (self, main_objectives, sub_objectives, shared_objective_data)
+							local objective_extension = main_objectives[1]
+
+							if objective_extension:get_percentage_done() > 0.8 then
+								return true
+							end
+						end,
+					},
+				},
+				{
+					versus_mission_objective_breach_wall = {
+						description = "level_objective_description_fort_13",
+						mission_name = "mission_fort_breach_wall",
+						score_for_completion = 10,
+						objective_type = ObjectiveTypes.objective_interact,
+					},
+				},
+				{
+					versus_volume_objective_010 = {
+						description = "level_objective_description_fort_14",
+						play_waystone_vo = true,
+						score_for_each_player_inside = 5,
+						volume_name = "versus_reach_010",
+						volume_type = "all_alive",
+						objective_type = ObjectiveTypes.objective_safehouse,
+					},
+				},
+			},
+			{
+				{
+					versus_volume_objective_011 = {
+						description = "level_objective_description_vs_safe_zone",
+						score_for_completion = 0,
+						volume_name = "versus_reach_011",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_volume_objective_012 = {
+						description = "level_objective_description_fort_16",
+						score_for_completion = 5,
+						volume_name = "versus_reach_012",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_mission_objective_cannon_balls = {
+						description = "level_objective_description_fort_17",
+						play_arrive_vo = true,
+						play_complete_vo = true,
+						objective_type = ObjectiveTypes.objective_socket,
+						sub_objectives = {
+							versus_socket_objective_01 = {
+								num_sockets = 1,
+								score_per_socket = 10,
+							},
+							versus_socket_objective_02 = {
+								num_sockets = 1,
+								score_per_socket = 10,
+							},
+						},
+						almost_done = function (self, main_objectives, sub_objectives, shared_objective_data)
+							local objective_system = Managers.state.entity:system("versus_objective_system")
+							local num_total = objective_system:num_current_sub_objectives()
+							local num_completed = objective_system:num_current_completed_sub_objectives()
+
+							if num_total - num_completed <= 1 then
+								return true
+							end
+						end,
+					},
+				},
+				{
+					versus_mission_objective_secret_elevator = {
+						description = "level_objective_description_fort_18",
+						mission_name = "versus_fort_secret_elevator",
+						score_for_completion = 10,
+						objective_type = ObjectiveTypes.objective_interact,
+					},
+				},
+				{
+					versus_volume_objective_013 = {
+						description = "level_objective_description_fort_19",
+						score_for_completion = 5,
+						volume_name = "versus_reach_013",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_volume_objective_014 = {
+						description = "level_objective_description_fort_20",
+						score_for_completion = 10,
+						volume_name = "versus_reach_014",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_mission_objective_fort_002 = {
+						description = "level_objective_description_fort_21",
+						mission_name = "versus_fort_open_portcullis",
+						score_for_completion = 20,
+						objective_type = ObjectiveTypes.objective_interact,
+					},
+				},
+				{
+					versus_capture_point_001 = {
+						capture_time = 180,
+						close_to_win_type = "section",
+						description = "level_objective_description_fort_22",
+						num_sections = 40,
+						play_arrive_vo = true,
+						play_complete_vo = true,
+						score_per_section = 1,
+						objective_type = ObjectiveTypes.objective_capture_point,
+						almost_done = function (self, main_objectives, sub_objectives, shared_objective_data)
+							local objective_extension = main_objectives[1]
+
+							if objective_extension:get_percentage_done() > 0.75 then
+								return true
+							end
+						end,
+					},
+				},
+				{
+					versus_mission_objective_end_cannon_01 = {
+						description = "level_objective_description_fort_23",
+						mission_name = "fort_use_cannon_01",
+						score_for_completion = 10,
+						objective_type = ObjectiveTypes.objective_interact,
+					},
+				},
+				{
+					versus_mission_objective_end_cannon_02 = {
+						description = "level_objective_description_fort_24",
+						mission_name = "fort_use_cannon_02",
+						score_for_completion = 10,
+						objective_type = ObjectiveTypes.objective_interact,
+					},
+				},
+				{
+					versus_mission_objective_end_cannon_03 = {
+						description = "level_objective_description_fort_25",
+						mission_name = "fort_use_cannon_03",
+						score_for_completion = 10,
+						objective_type = ObjectiveTypes.objective_interact,
+					},
+				},
+				{
+					versus_socket_objective_cannon_01 = {
+						description = "level_objective_description_fort_26",
+						num_sockets = 1,
+						play_arrive_vo = true,
+						play_complete_vo = true,
+						score_per_socket = 10,
+						objective_type = ObjectiveTypes.objective_socket,
+						almost_done = function (self, main_objectives, sub_objectives, shared_objective_data)
+							local num_sockets = self.num_sockets
+							local objective_extension = main_objectives[1]
+
+							if objective_extension:get_percentage_done() >= (num_sockets - 1.5) / num_sockets then
+								return true
+							end
+						end,
+					},
+				},
+				{
+					versus_mission_objective_end_cannon_04 = {
+						description = "level_objective_description_fort_27",
+						mission_name = "fort_use_cannon_04",
+						score_for_completion = 10,
+						objective_type = ObjectiveTypes.objective_interact,
+					},
+				},
+				{
+					versus_volume_objective_015 = {
+						description = "level_objective_description_fort_28",
+						play_waystone_vo = true,
+						score_for_each_player_inside = 10,
+						volume_name = "volume_versus_reach_end_dome",
+						volume_type = "all_alive",
+						objective_type = ObjectiveTypes.objective_safehouse,
+					},
+				},
+			},
+		},
+	},
+	carousel_test_range = {
+		num_sets = 3,
+		round_timer = 1800,
+		objective_lists = {
+			{
+				{
+					versus_volume_objective_001 = {
+						description = "level_objective_description_test_range_01",
+						score_for_completion = 1,
+						volume_name = "versus_test_range_reach_001",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_capture_point_objective_001 = {
+						capture_time = 120,
+						description = "level_objective_description_test_range_02",
+						num_sections = 2,
+						score_per_section = 10,
+						objective_type = ObjectiveTypes.objective_capture_point,
+					},
+				},
+				{
+					versus_volume_objective_002 = {
+						description = "level_objective_description_test_range_03",
+						score_for_each_player_inside = 1,
+						volume_name = "versus_test_range_reach_002",
+						volume_type = "all_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+			},
+			{
+				{
+					versus_volume_objective_003 = {
+						description = "level_objective_description_test_range_04",
+						score_for_completion = 1,
+						volume_name = "versus_test_range_reach_003",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_capture_point_objective_002 = {
+						capture_time = 150,
+						description = "level_objective_description_test_range_05",
+						num_sections = 3,
+						score_per_section = 1,
+						objective_type = ObjectiveTypes.objective_capture_point,
+					},
+				},
+				{
+					versus_volume_objective_004 = {
+						description = "level_objective_description_test_range_06",
+						score_for_each_player_inside = 1,
+						volume_name = "versus_test_range_reach_004",
+						volume_type = "all_alive",
+						objective_type = ObjectiveTypes.objective_safehouse,
+					},
+				},
+			},
+			{
+				{
+					versus_volume_objective_005 = {
+						description = "level_objective_description_test_range_07",
+						score_for_completion = 1,
+						volume_name = "versus_test_range_reach_005",
+						volume_type = "any_alive",
+						objective_type = ObjectiveTypes.objective_reach,
+					},
+				},
+				{
+					versus_capture_point_objective_003 = {
+						capture_time = 180,
+						description = "level_objective_description_test_range_08",
+						num_sections = 4,
+						score_per_section = 1,
+						objective_type = ObjectiveTypes.objective_capture_point,
+					},
+				},
+				{
+					versus_volume_objective_006 = {
+						description = "level_objective_description_test_range_09",
+						play_safehouse_vo = true,
+						score_for_each_player_inside = 1,
+						volume_name = "versus_test_range_reach_006",
+						volume_type = "all_alive",
+						objective_type = ObjectiveTypes.objective_reach,
 					},
 				},
 			},

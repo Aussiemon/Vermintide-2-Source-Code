@@ -889,6 +889,7 @@ BackendInterfaceWeavesPlayFab.buy_magic_item_cb = function (self, external_cb, r
 
 	local grant_results = function_result.item_grant_results
 	local new_essence = function_result.new_essence
+	local new_weapon_skins = function_result.new_weapon_skins
 	local backend_mirror = self._backend_mirror
 
 	for i = 1, #grant_results do
@@ -901,6 +902,14 @@ BackendInterfaceWeavesPlayFab.buy_magic_item_cb = function (self, external_cb, r
 	end
 
 	backend_mirror:set_essence(new_essence)
+
+	if new_weapon_skins then
+		for i = 1, #new_weapon_skins do
+			local weapon_skin_name = new_weapon_skins[i]
+
+			backend_mirror:add_unlocked_weapon_skin(weapon_skin_name)
+		end
+	end
 
 	if external_cb then
 		external_cb(true)

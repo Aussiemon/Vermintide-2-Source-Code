@@ -4,9 +4,6 @@ local settings = DLCSettings.skulls_2023
 
 settings.live_events_packages = {
 	skulls_2023 = {
-		resource_packages = {
-			"resource_packages/dlcs/skulls_2023_event",
-		},
 		dialogues = {
 			adventure = {
 				"dialogues/generated/npc_dlc_event_skulls",
@@ -19,6 +16,9 @@ settings.effects = {}
 settings.unlock_settings = {}
 settings.dialogue_lookup = {
 	"dialogues/generated/lookup_npc_dlc_event_skulls",
+}
+settings.dialogue_events = {
+	"deus_using_a_weapon_shrine",
 }
 settings.dialogue_settings = {}
 settings.auto_load_files = {}
@@ -40,9 +40,11 @@ settings.missions = {}
 settings.network_go_types = {}
 settings.item_master_list_file_names = {
 	"scripts/settings/dlcs/skulls_2023/item_master_list_skulls_2023",
+	"scripts/settings/dlcs/morris_2024/item_master_list_morris_2024",
 }
 settings.weapon_skins_file_names = {
 	"scripts/settings/dlcs/skulls_2023/weapon_skins_skulls_2023",
+	"scripts/settings/dlcs/morris_2024/weapon_skins_morris_2024",
 }
 settings.pickups = {
 	level_events = {

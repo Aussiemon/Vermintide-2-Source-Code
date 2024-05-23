@@ -56,6 +56,7 @@ ActionTrueFlightBowAim.client_owner_start_action = function (self, new_action, t
 
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 
+	self._ignored_breeds = new_action.ignored_breeds or {}
 	self.charge_time = buff_extension:apply_buffs_to_value(new_action.charge_time or 0, "reduced_ranged_charge_time")
 	self.overcharge_timer = 0
 	self.zoom_condition_function = new_action.zoom_condition_function
@@ -197,6 +198,13 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 			results, num_results = PhysicsWorld.immediate_raycast_actors(physics_world, player_position, direction, "dynamic_collision_filter", "filter_ray_true_flight_ai_only", "dynamic_collision_filter", "filter_ray_true_flight_hitbox_only")
 		end
 
+		local can_target_players = true
+
+		if current_action.can_target_players then
+			can_target_players = current_action.can_target_players(self.owner_unit)
+		end
+
+		local ignored_breeds = self._ignored_breeds
 		local side_manager = Managers.state.side
 		local side_by_unit = side_manager.side_by_unit
 		local hit_unit
@@ -220,16 +228,19 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 						if not hit_unit_side or side_manager:is_enemy_by_side(side, hit_unit_side) then
 							local node = actor_node(hit_actor)
 							local breed = AiUtils.unit_breed(unit)
-							local hit_zone = breed and breed.hit_zones_lookup[node]
 
-							if hit_zone and hit_zone.name ~= "afro" and not breed.no_autoaim and (not ignore_bosses or not breed.boss) then
-								local priority = prio_breeds[breed.name] or -1
+							if not ignored_breeds[breed and breed.name] and (not breed or not breed.is_player or can_target_players) then
+								local hit_zone = breed and breed.hit_zones_lookup[node]
 
-								if priority > 0 and higest_priority < priority then
-									hit_unit = unit
-									higest_priority = priority
-								else
-									hit_unit = hit_unit or unit
+								if hit_zone and hit_zone.name ~= "afro" and not breed.no_autoaim and (not ignore_bosses or not breed.boss) then
+									local priority = prio_breeds[breed.name] or -1
+
+									if priority > 0 and higest_priority < priority then
+										hit_unit = unit
+										higest_priority = priority
+									else
+										hit_unit = hit_unit or unit
+									end
 								end
 							end
 						end

@@ -1172,6 +1172,12 @@ AiBreedSnippets.reward_boss_kill_loot = function (unit, blackboard)
 	local position = POSITION_LOOKUP[unit]
 	local below = 1
 	local above = 1
+	local mechanism = Managers.mechanism:current_mechanism_name()
+
+	if mechanism == "versus" then
+		nav_world = Managers.state.entity:system("ai_system"):nav_world()
+	end
+
 	local wanted_drop_position
 	local is_on_navmesh, altitude = GwNavQueries.triangle_from_position(nav_world, position, above, below)
 

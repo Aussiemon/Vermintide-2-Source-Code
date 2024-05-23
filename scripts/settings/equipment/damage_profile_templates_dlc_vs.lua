@@ -31,6 +31,214 @@ local drop_off_ranges = {
 	},
 }
 local damage_templates = {
+	playable_boss_melee_fury_light_vs = {
+		charge_value = "light_attack",
+		fatigue_type = "chaos_cleave",
+		critical_strike = {},
+		armor_modifier = {
+			attack = {
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+			},
+			impact = {
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+			},
+		},
+		cleave_distribution = {
+			attack = 0.25,
+			impact = 0.2,
+		},
+		targets = {
+			{
+				attack_template = "slashing_linesman",
+				boost_curve_coefficient = 2,
+				boost_curve_type = "linesman_curve",
+				power_distribution = {
+					attack = 0.6,
+					impact = 0.6,
+				},
+			},
+			{
+				attack_template = "light_slashing_linesman",
+				boost_curve_coefficient = 2,
+				boost_curve_type = "linesman_curve",
+				power_distribution = {
+					attack = 0.4,
+					impact = 0.4,
+				},
+			},
+		},
+		default_target = {
+			attack_template = "light_slashing_linesman",
+			boost_curve_coefficient = 2,
+			boost_curve_type = "linesman_curve",
+			power_distribution = {
+				attack = 0.1,
+				impact = 0.1,
+			},
+		},
+	},
+	playable_boss_melee_fury_heavy_vs = {
+		charge_value = "heavy_attack",
+		fatigue_type = "chaos_cleave",
+		critical_strike = {},
+		armor_modifier = {
+			attack = {
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+			},
+			impact = {
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+			},
+		},
+		cleave_distribution = {
+			attack = 0.35,
+			impact = 0.35,
+		},
+		targets = {
+			{
+				attack_template = "heavy_slashing_linesman",
+				boost_curve_coefficient = 2,
+				boost_curve_type = "linesman_curve",
+				power_distribution = {
+					attack = 1,
+					impact = 1,
+				},
+			},
+			{
+				attack_template = "slashing_linesman",
+				boost_curve_coefficient = 2,
+				boost_curve_type = "linesman_curve",
+				power_distribution = {
+					attack = 0.5,
+					impact = 0.5,
+				},
+			},
+		},
+		default_target = {
+			attack_template = "light_slashing_linesman",
+			boost_curve_coefficient = 2,
+			boost_curve_type = "linesman_curve",
+			power_distribution = {
+				attack = 0.25,
+				impact = 0.25,
+			},
+		},
+	},
+	playable_boss_melee_scrambler_light_vs = {
+		charge_value = "light_attack",
+		damage_type = "push",
+		fatigue_type = "ogre_shove",
+		critical_strike = {},
+		armor_modifier = {
+			attack = {
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+			},
+			impact = {
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+			},
+		},
+		cleave_distribution = {
+			attack = 0.25,
+			impact = 0.2,
+		},
+		targets = {
+			{
+				attack_template = "basic_sweep_push",
+				boost_curve_coefficient = 2,
+				boost_curve_type = "default",
+				power_distribution = {
+					attack = 0.2,
+					impact = 1,
+				},
+			},
+		},
+		default_target = {
+			attack_template = "basic_sweep_push",
+			boost_curve_coefficient = 2,
+			boost_curve_type = "default",
+			power_distribution = {
+				attack = 0.1,
+				impact = 1,
+			},
+		},
+	},
+	playable_boss_melee_scrambler_heavy_vs = {
+		charge_value = "light_attack",
+		damage_type = "push",
+		fatigue_type = "ogre_shove",
+		critical_strike = {},
+		armor_modifier = {
+			attack = {
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+			},
+			impact = {
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+			},
+		},
+		cleave_distribution = {
+			attack = 0.25,
+			impact = 0.2,
+		},
+		targets = {
+			{
+				attack_template = "basic_sweep_push",
+				boost_curve_coefficient = 2,
+				boost_curve_type = "default",
+				power_distribution = {
+					attack = 0.8,
+					impact = 1,
+				},
+			},
+		},
+		default_target = {
+			attack_template = "basic_sweep_push",
+			boost_curve_coefficient = 2,
+			boost_curve_type = "default",
+			power_distribution = {
+				attack = 0.5,
+				impact = 1,
+			},
+		},
+	},
 	ratling_gunner_vs = {
 		charge_value = "projectile",
 		dot_template_name = "vs_ratling_gunner_slow",
@@ -290,6 +498,44 @@ local damage_templates = {
 			},
 		},
 	},
+	victor_priest_nuke_dot_vs = {
+		charge_value = "n/a",
+		damage_type = "burninating",
+		is_dot = true,
+		no_stagger = true,
+		no_stagger_damage_reduction_ranged = true,
+		cleave_distribution = {
+			attack = 0.25,
+			impact = 0.25,
+		},
+		armor_modifier = {
+			attack = {
+				0.7,
+				0.5,
+				3,
+				0.7,
+				0.7,
+				0.3,
+			},
+			impact = {
+				1,
+				0,
+				0,
+				1,
+				1,
+				0,
+			},
+		},
+		default_target = {
+			attack_template = "light_blunt_tank",
+			boost_curve_coefficient = 0.2,
+			boost_curve_type = "tank_curve",
+			power_distribution = {
+				attack = 0.07,
+				impact = 0.05,
+			},
+		},
+	},
 	shot_shotgun_vs = {
 		charge_value = "instant_projectile",
 		no_stagger_damage_reduction_ranged = true,
@@ -496,11 +742,11 @@ local damage_templates = {
 			boost_curve_coefficient_headshot = 2.5,
 			boost_curve_type = "smiter_curve",
 			power_distribution_near = {
-				attack = 1,
+				attack = 0.7,
 				impact = 0.4,
 			},
 			power_distribution_far = {
-				attack = 0.8,
+				attack = 0.6,
 				impact = 0.3,
 			},
 			range_modifier_settings = drop_off_ranges.sniper_dropoff_ranges,
@@ -573,12 +819,12 @@ local damage_templates = {
 			boost_curve_coefficient_headshot = 1.5,
 			boost_curve_type = "smiter_curve",
 			power_distribution_near = {
-				attack = 0.475,
-				impact = 0.35,
+				attack = 0.375,
+				impact = 0.25,
 			},
 			power_distribution_far = {
-				attack = 0.35,
-				impact = 0.25,
+				attack = 0.25,
+				impact = 0.15,
 			},
 			range_modifier_settings = drop_off_ranges.carbine_dropoff_ranges,
 		},
@@ -1011,5 +1257,9 @@ local damage_templates = {
 		},
 	},
 }
+
+damage_templates.bile_troll_sweep = table.clone(damage_templates.playable_boss_melee_fury_light_vs)
+damage_templates.bile_troll_shove = table.clone(damage_templates.playable_boss_melee_fury_light_vs)
+damage_templates.bile_troll_smiter = table.clone(damage_templates.playable_boss_melee_scrambler_heavy_vs)
 
 return damage_templates

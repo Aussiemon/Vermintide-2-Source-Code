@@ -11,9 +11,12 @@ AISpawner.init = function (self, world, unit)
 	self._breed_list = {}
 	self._world = world
 	self._unit = unit
-	self._spawned_units = 0
+	self._num_queued_units = 0
 	self._next_spawn = 0
 	self._max_amount = 0
+	self._spawned_units = {}
+	self._spawned_unit_handles = {}
+	self._activate_version = 0
 
 	if Unit.has_data(unit, "spawner_settings") then
 		local spawner_name = self:check_for_enabled()
@@ -71,6 +74,11 @@ AISpawner.check_for_enabled = function (self)
 end
 
 AISpawner.on_activate = function (self, breed_list, side_id, group_template, optional_data)
+	table.clear(self._spawned_unit_handles)
+	table.clear(self._spawned_units)
+
+	self._activate_version = self._activate_version + 1
+
 	local spawn_data = {
 		side_id,
 		group_template,
@@ -93,7 +101,7 @@ end
 
 AISpawner.on_deactivate = function (self)
 	self._max_amount = 0
-	self._spawned_units = 0
+	self._num_queued_units = 0
 
 	self._spawner_system:deactivate_spawner(self._unit)
 	table.clear(self._breed_list)
@@ -101,14 +109,23 @@ end
 
 AISpawner.update = function (self, unit, input, dt, context, t)
 	if t > self._next_spawn then
-		if self._spawned_units < self._max_amount then
+		if self._num_queued_units < self._max_amount then
 			self:spawn_unit()
 
 			self._next_spawn = t + 1 / self._config.spawn_rate
-		else
+		elseif self:done_spawning() then
+			Unit.flow_event(self._unit, "lua_all_units_spawned")
 			self:on_deactivate()
 		end
 	end
+end
+
+AISpawner.done_spawning = function (self)
+	return #self._spawned_units == self._max_amount
+end
+
+AISpawner.spawned_units = function (self)
+	return self._spawned_units
 end
 
 AISpawner.spawn_rate = function (self)
@@ -153,12 +170,25 @@ AISpawner.spawn_unit = function (self)
 
 	optional_data.side_id = side_id
 
+	local activate_version = self._activate_version
+	local spawned_func = optional_data.spawned_func
+
+	if spawned_func then
+		optional_data.spawned_func = function (spawned_unit, ...)
+			spawned_func(spawned_unit, ...)
+
+			if activate_version == self._activate_version then
+				self._spawned_units[#self._spawned_units + 1] = spawned_unit
+			end
+		end
+	end
+
 	local group_template = spawn_data[2]
 
-	conflict_director:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(spawn_rotation), spawn_category, spawn_animation, spawn_type, optional_data, group_template)
-	conflict_director:add_horde(1)
+	self._num_queued_units = self._num_queued_units + 1
+	self._spawned_unit_handles[self._num_queued_units] = conflict_director:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(spawn_rotation), spawn_category, spawn_animation, spawn_type, optional_data, group_template)
 
-	self._spawned_units = self._spawned_units + 1
+	conflict_director:add_horde(1)
 end
 
 AISpawner.spawn_rotation = function (self)

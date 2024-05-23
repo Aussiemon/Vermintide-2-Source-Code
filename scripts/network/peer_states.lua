@@ -333,7 +333,7 @@ PeerStates.WaitingForGameObjectSync = {
 	update = function (self, dt)
 		local peer_id = self.peer_id
 
-		if self.server.peers_completed_game_object_sync[peer_id] then
+		if self.server:has_peer_synced_game_objects(peer_id) then
 			if not self.game_started then
 				if IS_XB1 then
 					self.server.network_transmit:send_rpc("rpc_game_started", self.peer_id, Managers.account:round_id() or "")
@@ -478,8 +478,7 @@ PeerStates.Disconnecting = {
 		end
 
 		Managers.party:server_peer_left_session(peer_id, previous_state.approved_for_joining, previous_state.state_name)
-
-		server.peers_completed_game_object_sync[peer_id] = nil
+		server:set_peer_synced_game_objects(peer_id, false)
 	end,
 	update = function (self, dt)
 		local peer_id = self.peer_id

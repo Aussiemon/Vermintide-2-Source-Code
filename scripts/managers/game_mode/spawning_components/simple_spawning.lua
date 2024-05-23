@@ -16,8 +16,11 @@ SimpleSpawning.setup_data = function (self, peer_id, local_player_id)
 	status.game_mode_data = {
 		health_percentage = 1,
 		health_state = "alive",
+		spawn_pos_stored = false,
 		spawn_state = "not_spawned",
 		temporary_health_percentage = 0,
+		position = Vector3Box(),
+		rotation = QuaternionBox(),
 		ammo = {
 			slot_melee = 1,
 			slot_ranged = 1,
@@ -63,7 +66,10 @@ SimpleSpawning.update = function (self, t, dt, party)
 				if player and profile_index and career_index and profile_synchronizer:all_synced() then
 					local position, rotation
 
-					if self._use_spawn_point_groups then
+					if data.spawn_pos_stored then
+						position = data.position:unbox()
+						rotation = data.rotation:unbox()
+					elseif self._use_spawn_point_groups then
 						position, rotation = self:_get_free_spawn_point(party.party_id, i)
 					else
 						position, rotation = self:_get_random_spawn_point()
@@ -91,9 +97,17 @@ SimpleSpawning.update = function (self, t, dt, party)
 				local peer_id = status.peer_id
 				local local_player_id = status.local_player_id
 				local player = player_manager:player(peer_id, local_player_id)
+				local player_unit = player.player_unit
 
-				if not player.player_unit then
+				if not player_unit then
 					data.spawn_state = "not_spawned"
+				else
+					local safe_position = ScriptUnit.extension(player_unit, "locomotion_system"):last_position_on_navmesh()
+
+					data.position:store(safe_position)
+					data.rotation:store(Unit.local_rotation(player_unit, 0))
+
+					data.spawn_pos_stored = true
 				end
 			end
 		end

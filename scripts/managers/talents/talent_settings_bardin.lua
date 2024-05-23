@@ -22,6 +22,19 @@ local buff_tweak_data = {
 	},
 	bardin_ironbreaker_gromril_delay = {
 		duration = 20,
+		duration_modifier_func = function (unit, sub_buff_template, duration, buff_extension, params)
+			local mechanism_name = Managers.mechanism:current_mechanism_name()
+
+			if mechanism_name == "versus" then
+				local talent_extension = ScriptUnit.extension(unit, "talent_system")
+
+				if talent_extension:has_talent("bardin_ironbreaker_gromril_stagger") then
+					duration = 30
+				end
+			end
+
+			return duration
+		end,
 	},
 	bardin_ironbreaker_gromril_antistun = {
 		multiplier = -0.5,
@@ -1064,8 +1077,6 @@ TalentBuffTemplates.dwarf_ranger = {
 				buff_area = true,
 				buff_area_buff = "bardin_ranger_activated_ability_buff",
 				buff_self = true,
-				enter_area_func = "enter_buff_area",
-				exit_area_func = "exit_buff_area",
 				icon = "bardin_ranger_activated_ability",
 				name = "bardin_ranger_activated_ability",
 				shared_area = true,
@@ -1233,8 +1244,6 @@ TalentBuffTemplates.dwarf_ranger = {
 				buff_area = true,
 				buff_area_buff = "bardin_ranger_smoke_attack_buff",
 				buff_self = true,
-				enter_area_func = "enter_buff_area",
-				exit_area_func = "exit_buff_area",
 				name = "bardin_ranger_activated_ability_attack",
 				shared_area = true,
 				buff_sync_type = BuffSyncType.All,
@@ -1268,8 +1277,6 @@ TalentBuffTemplates.dwarf_ranger = {
 				buff_area = true,
 				buff_area_buff = "bardin_ranger_smoke_heal_buff",
 				buff_self = true,
-				enter_area_func = "enter_buff_area",
-				exit_area_func = "exit_buff_area",
 				name = "bardin_ranger_activated_ability_heal",
 				shared_area = true,
 				buff_sync_type = BuffSyncType.LocalAndServer,

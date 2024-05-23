@@ -94,6 +94,7 @@ local default_user_settings = {
 	tobii_fire_at_gaze = true,
 	toggle_alternate_attack = false,
 	toggle_crouch = false,
+	toggle_pactsworn_help_ui = true,
 	toggle_stationary_dodge = false,
 	tutorials_enabled = true,
 	twitch_difficulty = 50,

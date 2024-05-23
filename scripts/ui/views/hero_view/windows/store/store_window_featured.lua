@@ -42,6 +42,10 @@ local GRID_SIZE_BY_TYPE = {
 		1,
 		1,
 	},
+	frame = {
+		1,
+		1,
+	},
 }
 local BACKFILL_ITEM_ORDER = {
 	"dlc",

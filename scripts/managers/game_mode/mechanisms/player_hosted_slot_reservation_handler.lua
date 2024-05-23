@@ -155,3 +155,13 @@ end
 PlayerHostedSlotReservationHandler.get_group_leaders = function (self)
 	return table.keys(self._group_leaders)
 end
+
+PlayerHostedSlotReservationHandler.peers = function (self)
+	return table.keys(self._peer_id_to_party_id)
+end
+
+PlayerHostedSlotReservationHandler.party_peers = function (self, party_id)
+	return table.keys_if(self._peer_id_to_party_id, nil, function (_, peer_party_id)
+		return party_id == peer_party_id
+	end)
+end

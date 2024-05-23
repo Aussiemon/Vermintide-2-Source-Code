@@ -82,9 +82,21 @@ DeusChestExtension.extensions_ready = function (self, world, unit)
 	self._deus_run_controller = mechanism:get_deus_run_controller()
 
 	fassert(self._deus_run_controller, "deus pickup unit can only be used in a deus run")
+
+	self._telemetry_data = {
+		activated = false,
+		altar_type = "n/a",
+		currency_when_found = -1,
+		level_count = self._deus_run_controller:get_completed_level_count() + 1,
+		run_id = self._deus_run_controller:get_run_id(),
+	}
 end
 
 DeusChestExtension.destroy = function (self)
+	if self._telemetry_data.currency_when_found ~= -1 then
+		Managers.telemetry_events:deus_altar_passed(self._telemetry_data)
+	end
+
 	self:unregister_rpcs()
 end
 
@@ -182,6 +194,8 @@ DeusChestExtension.update = function (self, unit, input, dt, context, t)
 	if self._animation_state ~= "looted" then
 		self:_update_chest_animation_and_sound_state(unit)
 	end
+
+	self:_update_telemetry(unit)
 end
 
 DeusChestExtension._update_chest_interaction_time = function (self)
@@ -518,19 +532,16 @@ end
 DeusChestExtension.open_chest = function (self)
 	local run_controller = self._deus_run_controller
 
+	self._telemetry_data.currency_when_found = run_controller:get_player_soft_currency(run_controller:get_own_peer_id())
+	self._telemetry_data.activated = true
+
 	if self._chest_type == DEUS_CHEST_TYPES.power_up then
 		local power_up = self._stored_purchase
 		local player_unit = self._player_unit
 
 		run_controller:add_power_ups({
 			power_up,
-		}, REAL_PLAYER_LOCAL_ID)
-
-		local buff_system = Managers.state.entity:system("buff_system")
-		local talent_interface = Managers.backend:get_talents_interface()
-		local deus_backend = Managers.backend:get_interface("deus")
-
-		DeusPowerUpUtils.activate_deus_power_up(power_up, buff_system, talent_interface, deus_backend, run_controller, player_unit, self._profile_index, self._career_index)
+		}, REAL_PLAYER_LOCAL_ID, true)
 		self:_play_sound(sound_events.unlock_power_up)
 		self:_post_chest_unlock(self._stored_purchase)
 	else
@@ -547,6 +558,12 @@ DeusChestExtension.open_chest = function (self)
 
 		if rarity_sound then
 			self:_play_sound(rarity_sound)
+		end
+
+		if self._chest_type == DEUS_CHEST_TYPES.swap_ranged or self._chest_type == DEUS_CHEST_TYPES.swap_melee then
+			local dialogue_input = ScriptUnit.extension_input(self._player_unit, "dialogue_system")
+
+			dialogue_input:trigger_networked_dialogue_event("deus_using_a_weapon_shrine")
 		end
 
 		self:_post_chest_unlock(self._stored_purchase)
@@ -620,22 +637,13 @@ DeusChestExtension._post_chest_unlock = function (self, store_purchase)
 
 	Managers.state.event:trigger("player_pickup_deus_weapon_chest", player)
 
-	if store_purchase then
-		if self._chest_type == DEUS_CHEST_TYPES.power_up then
-			Managers.state.event:trigger("present_rewards", {
-				{
-					type = "deus_power_up",
-					power_up = store_purchase,
-				},
-			})
-		else
-			Managers.state.event:trigger("present_rewards", {
-				{
-					type = "deus_item_tooltip",
-					backend_id = store_purchase.backend_id,
-				},
-			})
-		end
+	if store_purchase and self._chest_type ~= DEUS_CHEST_TYPES.power_up then
+		Managers.state.event:trigger("present_rewards", {
+			{
+				type = "deus_item_tooltip",
+				backend_id = store_purchase.backend_id,
+			},
+		})
 	end
 
 	StatisticsUtil.register_open_shrine(self._chest_type)
@@ -686,6 +694,33 @@ DeusChestExtension._update_chest_animation_and_sound_state = function (self, che
 		Unit.flow_event(chest_unit, sound_state_interact)
 
 		self._sound_state_interact = sound_state_interact
+	end
+end
+
+DeusChestExtension._update_telemetry = function (self, chest_unit)
+	local player_unit = self._player_unit
+	local local_player_pos = POSITION_LOOKUP[player_unit]
+
+	if not local_player_pos then
+		return
+	end
+
+	local telemetry_data = self._telemetry_data
+
+	if telemetry_data.altar_type == "n/a" then
+		telemetry_data.altar_type = self:_get_server_chest_type() or "n/a"
+	end
+
+	if telemetry_data.currency_when_found == -1 then
+		local chest_unit_pos = POSITION_LOOKUP[chest_unit]
+		local distance_squared = Vector3.distance_squared(local_player_pos, chest_unit_pos)
+
+		if distance_squared < 625 then
+			local deus_run_controller = self._deus_run_controller
+			local own_peer_id = deus_run_controller:get_own_peer_id()
+
+			telemetry_data.currency_when_found = deus_run_controller:get_player_soft_currency(own_peer_id)
+		end
 	end
 end
 

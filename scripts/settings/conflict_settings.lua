@@ -2866,6 +2866,39 @@ BossSettings = {
 			},
 		},
 	},
+	versus_playable_boss = {
+		disabled = false,
+		boss_events = {
+			chance_of_encampment = 0,
+			debug_color = "deep_sky_blue",
+			name = "boss_events",
+			terror_events_using_packs = false,
+			events = {
+				"event_boss",
+				"nothing",
+			},
+			event_lookup = {
+				event_boss = {
+					"boss_event_chaos_troll",
+				},
+				event_patrol = {
+					"boss_event_spline_patrol",
+				},
+			},
+		},
+		rare_events = {
+			debug_color = "deep_pink",
+			name = "rare_events",
+			events = {
+				"event_boss",
+			},
+			event_lookup = {
+				event_boss = {
+					"rare_event_loot_rat",
+				},
+			},
+		},
+	},
 }
 IntensitySettings = {
 	default = {

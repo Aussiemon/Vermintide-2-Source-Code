@@ -900,6 +900,122 @@ local damage_templates = {
 			},
 		},
 	},
+	deus_damage_drone = {
+		charge_value = "projectile",
+		no_stagger_damage_reduction_ranged = true,
+		armor_modifier = {
+			attack = {
+				0.2,
+				0.1,
+				0.4,
+				0.2,
+				0.4,
+				0.05,
+			},
+			impact = {
+				0,
+				0,
+				0,
+				0,
+				0,
+			},
+		},
+		default_target = {
+			attack_template = "bolt_sniper",
+			boost_curve_coefficient = 1,
+			boost_curve_type = "smiter_curve",
+			power_distribution = {
+				attack = 0.3,
+				impact = 0,
+			},
+		},
+	},
+	boon_career_ability_lightning_aoe = {
+		charge_value = "light_attack",
+		no_stagger = true,
+		no_stagger_damage_reduction_ranged = true,
+		cleave_distribution = {
+			attack = 0.25,
+			impact = 0.25,
+		},
+		armor_modifier = {
+			attack = {
+				0.45,
+				0.45,
+				0.45,
+				0.45,
+				0.45,
+				0.45,
+			},
+			impact = {
+				0.45,
+				0.45,
+				0.45,
+				0.45,
+				0.45,
+				0.45,
+			},
+		},
+		default_target = {
+			attack_template = "armor_breaker",
+			damage_type = "buff",
+		},
+	},
+	periodic_aoe_stagger = {
+		charge_value = "ability",
+		cleave_distribution = "cleave_distribution_push_default",
+		default_target = "target_push_Ability",
+		is_explosion = true,
+		no_damage = true,
+		no_friendly_fire = true,
+		armor_modifier = {
+			attack = {
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+			},
+			impact = {
+				0.07,
+				0.3,
+				2,
+				0.3,
+				1,
+				1,
+			},
+		},
+	},
+	boon_skulls_03 = {
+		charge_value = "ability",
+		default_target = "target_push_Ability",
+		is_explosion = true,
+		no_damage = true,
+		no_friendly_fire = true,
+		armor_modifier = {
+			attack = {
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+			},
+			impact = {
+				1,
+				1,
+				15,
+				1,
+				1,
+				1,
+			},
+		},
+		cleave_distribution = {
+			atack = 0,
+			impact = 2,
+		},
+	},
 }
 
 damage_templates.we_deus_01_special_charged = table.clone(damage_templates.we_deus_01_fast)

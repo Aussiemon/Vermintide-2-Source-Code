@@ -73,6 +73,8 @@ if HAS_STEAM then
 	end
 end
 
+MagicItemByUnlockName = {}
+
 for item_name, item_data in pairs(ItemMasterList) do
 	if item_data.matching_item_key then
 		local matching_item = ItemMasterList[item_data.matching_item_key]
@@ -88,6 +90,12 @@ for item_name, item_data in pairs(ItemMasterList) do
 		end
 	elseif item_data.slot_type == "weapon_skin" and string.find(item_name, "_runed_") then
 		item_data.item_preview_object_set_name = "flow_rune_weapon_lights"
+	end
+
+	if item_data.rarity == "magic" and item_data.required_unlock_item and item_data.item_type ~= "weapon_skin" then
+		local required_unlock_key = item_data.required_unlock_item
+
+		MagicItemByUnlockName[required_unlock_key] = item_name
 	end
 end
 

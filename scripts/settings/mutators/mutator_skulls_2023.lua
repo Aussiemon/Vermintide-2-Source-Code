@@ -10,6 +10,9 @@ return {
 	description = "description_mutator_skulls_2023",
 	display_name = "display_name_mutator_skulls_2023",
 	icon = "mutator_icon_skulls_2023",
+	packages = {
+		"resource_packages/dlcs/skulls_2023_event",
+	},
 	server_start_function = function (context, data)
 		local pickup_system = Managers.state.entity:system("pickup_system")
 		local pickup_units = {}

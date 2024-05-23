@@ -117,6 +117,12 @@ local function spawn_barrel(item_name, position, rotation, velocity, explode_tim
 	Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, position, rotation)
 end
 
+local function spawn_damage_drones(owner_unit, num_drones, radius, damage_profile_name)
+	local projectile_system = Managers.state.entity:system("projectile_system")
+
+	projectile_system:spawn_drones(owner_unit, "deus_damage_drone", num_drones, radius, SideRelations.enemy, damage_profile_name)
+end
+
 dlc_settings.buff_function_templates = {
 	update_stockpile_buff = function (unit, buff, params, world)
 		if buff.buffs_applied then
@@ -1802,6 +1808,297 @@ dlc_settings.buff_function_templates = {
 			buff.full_heal_perk_buff_id = buff_extension:add_buff(full_heal_buff)
 		end
 	end,
+	boon_skulls_04_regen_update = function (unit, buff, params)
+		local thp_added = buff.thp_added or 0
+		local total_thp = MorrisBuffTweakData.boon_skulls_04_data.thp_per_second * MorrisBuffTweakData.boon_skulls_04_data.proc_duration
+
+		if total_thp <= thp_added then
+			return
+		end
+
+		local thp_per_second = MorrisBuffTweakData.boon_skulls_04_data.thp_per_second
+		local network_manager = Managers.state.network
+		local owner_unit_id = network_manager:unit_game_object_id(unit)
+		local heal_type_id = NetworkLookup.heal_types.heal_from_proc
+
+		network_manager.network_transmit:send_rpc_server("rpc_request_heal", owner_unit_id, thp_per_second, heal_type_id)
+
+		buff.thp_added = thp_added + thp_per_second
+	end,
+	boon_skulls_04_regen_remove = function (unit, buff, params)
+		if not HEALTH_ALIVE[unit] then
+			return
+		end
+
+		if not Network.game_session() then
+			return
+		end
+
+		local thp_added = buff.thp_added or 0
+		local total_thp = MorrisBuffTweakData.boon_skulls_04_data.thp_per_second * MorrisBuffTweakData.boon_skulls_04_data.proc_duration
+
+		if thp_added < total_thp then
+			local network_manager = Managers.state.network
+			local owner_unit_id = network_manager:unit_game_object_id(unit)
+			local heal_type_id = NetworkLookup.heal_types.heal_from_proc
+
+			network_manager.network_transmit:send_rpc_server("rpc_request_heal", owner_unit_id, total_thp - thp_added, heal_type_id)
+		end
+
+		BuffFunctionTemplates.functions.skulls_event_boon_surge_removed(unit, buff, params)
+	end,
+	skulls_event_boon_surge_applied = function (unit, buff, params, world)
+		if is_local(unit) and not is_bot(unit) then
+			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+			local buff_extension = ScriptUnit.extension(unit, "buff_system")
+			local skulls_boons_tracker_buff = buff_extension:get_buff_type("skulls_boon_buffs_tracker")
+
+			if not skulls_boons_tracker_buff then
+				local id = buff_extension:add_buff("skulls_boon_buffs_tracker")
+
+				skulls_boons_tracker_buff = buff_extension:get_buff_by_id(id)
+
+				local effect_id = first_person_extension:create_screen_particles("fx/skulls_2023/screenspace_skulls_2023_buff")
+
+				if effect_id then
+					local effect_lerp = 0
+					local effect_strength = math.lerp(-0.55, 0.4, effect_lerp)
+
+					World.set_particles_material_scalar(world, effect_id, "overlay", "shadow_amount", effect_strength)
+
+					skulls_boons_tracker_buff.effect_id = effect_id
+				end
+
+				skulls_boons_tracker_buff.num_buffs = 1
+
+				first_person_extension:play_hud_sound_event("Play_skulls_event_buff_on")
+			else
+				local num_buffs = skulls_boons_tracker_buff.num_buffs
+				local num_possible_buffs = skulls_boons_tracker_buff.num_possible_buffs
+
+				if not num_possible_buffs then
+					num_possible_buffs = 0
+
+					for i = 1, #DeusPowerUpsArray do
+						if table.contains(DeusPowerUpsArray[i].mutators, "skulls_2023") then
+							num_possible_buffs = num_possible_buffs + 1
+						end
+					end
+
+					skulls_boons_tracker_buff.num_possible_buffs = num_possible_buffs
+				end
+
+				local effect_id = skulls_boons_tracker_buff.effect_id
+
+				if effect_id then
+					local effect_lerp = num_possible_buffs > 1 and (num_buffs - 1) / (num_possible_buffs - 1) or 1
+					local effect_strength = math.lerp(-0.55, 0.4, effect_lerp)
+
+					World.set_particles_material_scalar(world, effect_id, "overlay", "shadow_amount", effect_strength)
+				end
+
+				if num_possible_buffs <= num_buffs and not skulls_boons_tracker_buff.sound_played then
+					first_person_extension:play_hud_sound_event("Play_skulls_event_buff_max_stacks")
+
+					skulls_boons_tracker_buff.sound_played = true
+				end
+
+				skulls_boons_tracker_buff.num_buffs = num_buffs + 1
+			end
+		end
+	end,
+	skulls_event_boon_surge_removed = function (unit, buff, params)
+		if is_local(unit) and not is_bot(unit) then
+			local buff_extension = ScriptUnit.extension(unit, "buff_system")
+			local skulls_boons_tracker_buff = buff_extension:get_buff_type("skulls_boon_buffs_tracker")
+			local num_buffs = skulls_boons_tracker_buff.num_buffs - 1
+
+			skulls_boons_tracker_buff.num_buffs = num_buffs
+
+			if num_buffs == 0 then
+				local effect_id = skulls_boons_tracker_buff.effect_id
+				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+
+				if effect_id then
+					first_person_extension:stop_spawning_screen_particles(effect_id)
+				end
+
+				buff_extension:remove_buff(skulls_boons_tracker_buff.id)
+				first_person_extension:play_hud_sound_event("Play_skulls_event_buff_off")
+			end
+		end
+	end,
+	periodic_aoe_stagger = function (unit, buff, params)
+		if not is_server() then
+			return
+		end
+
+		local position = POSITION_LOOKUP[unit]
+		local explosion_template_name = buff.template.explosion_template_name
+		local explosion_template = ExplosionTemplates[explosion_template_name]
+		local radius = explosion_template.explosion.radius
+		local side = Managers.state.side.side_by_unit[unit]
+		local num_nearby_units = AiUtils.broadphase_query(position, radius, FrameTable.alloc_table(), side.enemy_broadphase_categories)
+
+		if num_nearby_units <= 0 then
+			return
+		end
+
+		local career_extension = ScriptUnit.has_extension(unit, "career_system")
+		local power_level = career_extension and career_extension:get_career_power_level() or DefaultPowerLevel
+		local scale = 1
+		local damage_source = "buff"
+		local rotation = Quaternion.identity()
+
+		DamageUtils.create_explosion(Unit.world(unit), unit, position, rotation, explosion_template, scale, damage_source, true, false, unit, power_level, false, unit)
+
+		local owner_unit_go_id = Managers.state.network:unit_game_object_id(unit)
+		local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]
+		local damage_source_id = NetworkLookup.damage_sources[damage_source]
+		local network_transmit = Managers.state.network.network_transmit
+
+		network_transmit:send_rpc_clients("rpc_create_explosion", owner_unit_go_id, false, position, rotation, explosion_template_id, scale, damage_source_id, power_level, false, owner_unit_go_id)
+	end,
+	teammates_extra_damage_aura_enter = function (unit, buffer_unit, buff, params)
+		local buff_ext = ScriptUnit.has_extension(unit, "buff_system")
+
+		if buff_ext then
+			buff.cached_params = buff.cached_params or {
+				attacker_unit = buffer_unit,
+			}
+
+			return buff_ext:add_buff("deus_extra_damage_aura_debuff", buff.cached_params)
+		end
+
+		return -1
+	end,
+	teammates_extra_damage_aura_leave = function (unit, data, buffer_unit, buff, params)
+		if data == -1 then
+			return
+		end
+
+		local buff_ext = ScriptUnit.has_extension(unit, "buff_system")
+
+		if buff_ext then
+			return buff_ext:remove_buff(data)
+		end
+	end,
+	teammates_extra_stagger_aura_enter = function (unit, buffer_unit, buff, params)
+		local buff_ext = ScriptUnit.has_extension(unit, "buff_system")
+
+		if buff_ext then
+			buff.cached_params = buff.cached_params or {
+				attacker_unit = buffer_unit,
+			}
+
+			return buff_ext:add_buff("deus_extra_stagger_aura_debuff", buff.cached_params)
+		end
+
+		return -1
+	end,
+	teammates_extra_stagger_aura_leave = function (unit, data, buffer_unit, buff, params)
+		if data == -1 then
+			return
+		end
+
+		local buff_ext = ScriptUnit.has_extension(unit, "buff_system")
+
+		if buff_ext then
+			return buff_ext:remove_buff(data)
+		end
+	end,
+	boon_meta_01_apply = function (unit, buff, params)
+		local player = Managers.player:owner(unit)
+
+		if not player then
+			return
+		end
+
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local deus_run_controller = Managers.mechanism:game_mechanism():get_deus_run_controller()
+		local num_boons = #deus_run_controller:get_player_power_ups(player:network_id(), player:local_player_id())
+
+		for i = 1, num_boons do
+			buff_extension:add_buff("boon_meta_01_stack")
+		end
+	end,
+	boon_weaponrarity_01_apply = function (unit, buff, params)
+		local player = Managers.player:owner(unit)
+
+		if not player or player:network_id() ~= Network.peer_id() then
+			return
+		end
+
+		local career_extension = ScriptUnit.extension(unit, "career_system")
+		local career_name = career_extension:career_name()
+		local deus_backend = Managers.backend:get_interface("deus")
+		local melee_item_id = deus_backend:get_loadout_item_id(career_name, "slot_melee")
+		local melee_item = deus_backend:get_loadout_item(melee_item_id)
+		local melee_rarity_level = ORDER_RARITY[melee_item and melee_item.rarity] or 1
+		local ranged_item_id = deus_backend:get_loadout_item_id(career_name, "slot_ranged")
+		local ranged_item = deus_backend:get_loadout_item(ranged_item_id)
+		local ranged_rarity_level = ORDER_RARITY[ranged_item and ranged_item.rarity] or 1
+		local highest_rarity_level = math.max(melee_rarity_level, ranged_rarity_level)
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local num_existing_stacks = buff_extension:num_buff_stacks("boon_weaponrarity_01_debuff")
+
+		for i = num_existing_stacks + 2, highest_rarity_level do
+			buff_extension:add_buff("boon_weaponrarity_01_debuff")
+		end
+	end,
+	boon_weaponrarity_02_apply = function (unit, buff, params)
+		local player = Managers.player:owner(unit)
+
+		if not player or player:network_id() ~= Network.peer_id() then
+			return
+		end
+
+		local career_extension = ScriptUnit.extension(unit, "career_system")
+		local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
+		local career_name = career_extension:career_name()
+		local wielded_slot_name = inventory_extension:get_wielded_slot_name()
+		local deus_backend = Managers.backend:get_interface("deus")
+		local wielded_item_id = deus_backend:get_loadout_item_id(career_name, wielded_slot_name)
+		local wielded_item = deus_backend:get_loadout_item(wielded_item_id)
+
+		if not wielded_item then
+			return
+		end
+
+		local wielded_item_rarity = wielded_item.rarity
+		local rarity_level = ORDER_RARITY[wielded_item_rarity]
+
+		if not rarity_level then
+			return
+		end
+
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local num_existing_stacks = buff_extension:num_buff_stacks("boon_weaponrarity_02_debuff")
+
+		for i = num_existing_stacks + 2, rarity_level do
+			buff_extension:add_buff("boon_weaponrarity_02_debuff")
+		end
+	end,
+	boon_range_02_buff_adder_add_buff = function (unit, buff, params)
+		if HEALTH_ALIVE[unit] then
+			local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+			local existing_buffs = buff_extension:get_stacking_buff("boon_range_02_increased_damage_tracker")
+
+			if existing_buffs then
+				for i = 1, #existing_buffs do
+					local existing_buff = existing_buffs[i]
+
+					if existing_buff.attacker_unit == params.attacker_unit then
+						buff_extension:remove_buff(existing_buff.id)
+					end
+				end
+			end
+
+			buff_extension:add_buff("boon_range_02_increased_damage_tracker", {
+				attacker_unit = buff.attacker_unit,
+			})
+		end
+	end,
 }
 dlc_settings.proc_functions = {
 	stockpile_refresh_ammo_buffs = function (owner_unit, buff, params)
@@ -2786,6 +3083,104 @@ dlc_settings.proc_functions = {
 			end
 		end
 	end,
+	grenade_explode_buff_area = function (owner_unit, buff, params)
+		if not is_server() then
+			return
+		end
+
+		local position = params[2]
+		local buff_params = FrameTable.alloc_table()
+
+		buff_params.buff_area_position = position
+
+		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
+		buff_extension:add_buff(buff.template.buff_to_add, buff_params)
+	end,
+	cursed_chest_area_buff = function (owner_unit, buff, params)
+		if not is_server() then
+			return
+		end
+
+		local position = Unit.world_position(params[1], 0)
+		local buff_params = FrameTable.alloc_table()
+
+		buff_params.buff_area_position = position
+
+		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
+		buff_extension:add_buff(buff.template.buff_to_add, buff_params)
+	end,
+	spawn_drones_proc = function (owner_unit, buff, params)
+		local num_drones = buff.template.num_drones
+		local radius = buff.template.radius
+		local damage_profile_name = buff.template.damage_profile_name
+
+		spawn_damage_drones(owner_unit, num_drones, radius, damage_profile_name)
+	end,
+	spawn_drones_proc_headshot = function (owner_unit, buff, params)
+		local hit_zone_name = params[4]
+
+		if hit_zone_name ~= "head" then
+			return
+		end
+
+		ProcFunctions.spawn_drones_proc(owner_unit, buff, params)
+	end,
+	boon_range_02_delayed_add_on_hit = function (owner_unit, buff, params)
+		local hit_unit = params[1]
+		local buff_ext = ScriptUnit.has_extension(hit_unit, "buff_system")
+
+		if buff_ext then
+			buff.cached_params = buff.cached_params or {
+				attacker_unit = owner_unit,
+			}
+
+			buff_ext:add_buff("boon_range_02_buff_adder", buff.cached_params)
+		end
+	end,
+	boon_range_02_damage_check = function (owner_unit, buff, params)
+		local hit_unit = params[1]
+		local buff_ext = ScriptUnit.has_extension(hit_unit, "buff_system")
+
+		if buff_ext then
+			local extra_damage_buffs = buff_ext:get_stacking_buff("boon_range_02_increased_damage_tracker")
+
+			if extra_damage_buffs then
+				for i = 1, #extra_damage_buffs do
+					local extra_damage_buff = extra_damage_buffs[i]
+
+					if extra_damage_buff.attacker_unit == owner_unit then
+						buff.cached_params = buff.cached_params or {
+							attacker_unit = owner_unit,
+						}
+
+						buff_ext:add_buff("boon_range_02_damage_amplifier", buff.cached_params)
+
+						break
+					end
+				end
+			end
+		end
+	end,
+	boon_range_02_damage_cleanup = function (owner_unit, buff, params)
+		local hit_unit = params[1]
+		local buff_ext = ScriptUnit.has_extension(hit_unit, "buff_system")
+
+		if buff_ext then
+			local damage_amplifiers = buff_ext:get_stacking_buff("boon_range_02_damage_amplifier")
+
+			if damage_amplifiers then
+				for i = 1, #damage_amplifiers do
+					local damage_amplifier = damage_amplifiers[i]
+
+					if damage_amplifier.attacker_unit == owner_unit then
+						buff_ext:remove_buff(damage_amplifier.id)
+					end
+				end
+			end
+		end
+	end,
 	deus_big_swing_stagger_on_hit = function (owner_unit, buff, params, world)
 		if ALIVE[owner_unit] then
 			local target_num = params[4]
@@ -3230,6 +3625,129 @@ dlc_settings.proc_functions = {
 				end
 			end
 		end
+	end,
+	apply_dot_to_adjecent_enemies = function (owner_unit, buff, params)
+		assert(is_server(), "'apply_dot_to_adjecent_enemies' is a server only buff func")
+
+		local template = buff.template
+
+		buff.params = buff.params or {}
+		buff.params.attacker_unit = owner_unit
+		buff.cached_broadphase = buff.cached_broadphase or {}
+
+		local side = Managers.state.side.side_by_unit[owner_unit]
+		local num_nearby_enemies = AiUtils.broadphase_query(POSITION_LOOKUP[owner_unit], template.area_radius, buff.cached_broadphase, side.enemy_broadphase_categories)
+		local hit_zone_name = "full"
+		local damage_source = "buff"
+		local damage_profile, target_index, power_level, boost_curve_multiplier, is_critical_strike, aoe_data
+
+		buff.cached_custom_dot = buff.cached_custom_dot or {
+			dot_template_name = template.dot_template_name,
+		}
+
+		for i = 1, num_nearby_enemies do
+			local target_unit = buff.cached_broadphase[i]
+
+			DamageUtils.apply_dot(damage_profile, target_index, power_level, target_unit, owner_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, aoe_data, owner_unit, buff.cached_custom_dot)
+		end
+	end,
+	boon_dot_burning_01_spread = function (owner_unit, buff, params)
+		local killed_unit = params[3]
+		local is_burning = Managers.state.status_effect:unit_is_burning(killed_unit)
+
+		if not is_burning then
+			return
+		end
+
+		local template = buff.template
+
+		buff.cached_broadphase = buff.cached_broadphase or {}
+
+		local side = Managers.state.side.side_by_unit[owner_unit]
+		local num_nearby_enemies = AiUtils.broadphase_query(POSITION_LOOKUP[killed_unit], template.area_radius, buff.cached_broadphase, side.enemy_broadphase_categories)
+		local hit_zone_name = "full"
+		local damage_source = "buff"
+		local damage_profile, target_index, power_level, boost_curve_multiplier, is_critical_strike, aoe_data
+
+		buff.cached_custom_dot = buff.cached_custom_dot or {
+			dot_template_name = template.dot_template_name,
+		}
+
+		for i = 1, num_nearby_enemies do
+			local target_unit = buff.cached_broadphase[i]
+
+			if target_unit ~= killed_unit then
+				DamageUtils.apply_dot(damage_profile, target_index, power_level, target_unit, owner_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, aoe_data, owner_unit, buff.cached_custom_dot)
+			end
+		end
+	end,
+	lightning_adjecent_enemies = function (owner_unit, buff, params)
+		local triggering_unit = params[1]
+
+		if not is_local(owner_unit) or not ALIVE[owner_unit] or owner_unit ~= triggering_unit then
+			return
+		end
+
+		local template = buff.template
+		local nearby_enemy_units = FrameTable.alloc_table()
+		local side = Managers.state.side.side_by_unit[owner_unit]
+		local num_nearby_enemies = AiUtils.broadphase_query(POSITION_LOOKUP[owner_unit], template.area_radius, nearby_enemy_units, side.enemy_broadphase_categories)
+
+		for i = 1, num_nearby_enemies do
+			local hit_unit = nearby_enemy_units[i]
+			local hit_zone_name = template.hit_zone or buff.hit_zone_name or "full"
+			local damage_source = template.damage_source or "buff"
+			local power_level = buff.power_level or DefaultPowerLevel
+			local damage_profile_name = template.damage_profile_name or "default"
+			local damage_profile = DamageProfileTemplates[damage_profile_name]
+			local target_index
+			local is_critical_strike = false
+			local backstab_multiplier, boost_damage_multiplier
+			local target_settings = damage_profile.targets and damage_profile.targets[target_index] or damage_profile.default_target
+			local damage_type = target_settings.damage_type
+			local boost_curve = BoostCurves[target_settings.boost_curve_type]
+			local damage = DamageUtils.calculate_damage(DamageOutput, hit_unit, owner_unit, hit_zone_name, power_level, boost_curve, boost_damage_multiplier, is_critical_strike, damage_profile, target_index, backstab_multiplier, damage_source)
+
+			DamageUtils.add_damage_network(hit_unit, owner_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
+
+			local area_damage_system = Managers.state.entity:system("area_damage_system")
+			local position = POSITION_LOOKUP[hit_unit]
+			local rotation = Quaternion.identity()
+			local explosion_template = template.explosion_template
+			local scale = 1
+
+			area_damage_system:create_explosion(owner_unit, position, rotation, explosion_template, scale, damage_source, power_level, is_critical_strike)
+
+			local beam_effect = NetworkLookup.effects[template.fx]
+			local start_point = POSITION_LOOKUP[owner_unit] + 0.5 * Vector3.up()
+			local end_point
+			local spine_node = Unit.has_node(hit_unit, "j_spine") and Unit.node(hit_unit, "j_spine")
+
+			if spine_node then
+				end_point = Unit.world_position(hit_unit, spine_node)
+			else
+				end_point = POSITION_LOOKUP[hit_unit] + 0.5 * Vector3.up()
+			end
+
+			local distance_flat = Vector3.distance(end_point, start_point)
+			local distance = Vector3(1, distance_flat, 0)
+			local rotation = Quaternion.look(end_point - start_point)
+
+			if is_server() then
+				Managers.state.network:rpc_play_particle_effect_with_variable(nil, beam_effect, start_point, rotation, "distance", distance)
+			else
+				Managers.state.network.network_transmit:send_rpc_server("rpc_play_particle_effect_with_variable", beam_effect, start_point, rotation, "distance", distance)
+			end
+		end
+
+		if num_nearby_enemies > 0 then
+			local audio_system = Managers.state.entity:system("audio_system")
+			local sound_event = template.sound_event
+
+			audio_system:play_audio_unit_event(sound_event, owner_unit)
+		end
+
+		return true
 	end,
 	reduce_activated_ability_cooldown_on_block = function (owner_unit, buff, params)
 		if ALIVE[owner_unit] then
@@ -4021,6 +4539,364 @@ dlc_settings.proc_functions = {
 			buff_system:add_buff(owner_unit, actual_buff, owner_unit)
 		end
 	end,
+	boon_skulls_01_on_hit = function (owner_unit, buff, params)
+		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
+		if buff_extension:get_buff_type("boon_skulls_01_surge") then
+			return
+		end
+
+		buff_extension:add_buff(buff.template.buff_to_add)
+	end,
+	boon_skulls_02_on_kill = function (owner_unit, buff, params)
+		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
+		if buff_extension:get_buff_type("boon_skulls_02_surge") then
+			return
+		end
+
+		local buff_system = Managers.state.entity:system("buff_system")
+
+		buff_system:add_buff_synced(owner_unit, buff.template.buff_to_add, BuffSyncType.LocalAndServer)
+	end,
+	boon_skulls_03_on_parry = function (owner_unit, buff, params)
+		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
+		if buff_extension:num_buff_stacks("boon_skulls_03_cooldown") > 0 then
+			return
+		end
+
+		local position = POSITION_LOOKUP[owner_unit]
+		local explosion_template_name = buff.template.explosion_template_name
+		local explosion_template = ExplosionTemplates[explosion_template_name]
+		local career_extension = ScriptUnit.has_extension(owner_unit, "career_system")
+		local power_level = career_extension and career_extension:get_career_power_level() or DefaultPowerLevel
+		local scale = 1
+		local damage_source = "buff"
+		local rotation = Quaternion.identity()
+
+		if not is_server() then
+			DamageUtils.create_explosion(Unit.world(owner_unit), owner_unit, position, rotation, explosion_template, scale, damage_source, false, true, owner_unit, power_level, false, owner_unit)
+		end
+
+		local owner_unit_go_id = Managers.state.network:unit_game_object_id(owner_unit)
+		local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]
+		local damage_source_id = NetworkLookup.damage_sources[damage_source]
+		local network_transmit = Managers.state.network.network_transmit
+
+		network_transmit:send_rpc_server("rpc_create_explosion", owner_unit_go_id, false, position, rotation, explosion_template_id, scale, damage_source_id, power_level, false, owner_unit_go_id)
+		buff_extension:add_buff("boon_skulls_03_cooldown")
+	end,
+	boon_skulls_04_on_hit = function (owner_unit, buff, params)
+		local player = Managers.player:owner(owner_unit)
+
+		if not player or player:network_id() ~= Network.peer_id() then
+			return
+		end
+
+		local target_num = params[4]
+		local attack_type = params[2] == "light_attack" or params[2] == "heavy_attack"
+
+		if target_num > 1 or not attack_type then
+			return
+		end
+
+		local health_extension = ScriptUnit.extension(owner_unit, "health_system")
+		local temporary_health = health_extension:current_temporary_health()
+
+		if temporary_health <= 0 then
+			return
+		end
+
+		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
+		if buff_extension:get_buff_type("boon_skulls_04_regen") then
+			return
+		end
+
+		local hp_to_consume = math.min(temporary_health, MorrisBuffTweakData.boon_skulls_04_data.thp_on_hit)
+		local current_health = health_extension:current_health()
+
+		hp_to_consume = math.clamp(hp_to_consume, 0, math.max(current_health - 0.25, 0))
+		hp_to_consume = math.floor(DamageUtils.networkify_damage(hp_to_consume))
+
+		local num_stacks = buff_extension:num_buff_stacks("boon_skulls_04_stack")
+
+		if num_stacks + hp_to_consume >= MorrisBuffTweakData.boon_skulls_04_data.total_thp_to_consume then
+			hp_to_consume = MorrisBuffTweakData.boon_skulls_04_data.total_thp_to_consume - num_stacks
+
+			local buffs = buff_extension:get_stacking_buff("boon_skulls_04_stack")
+
+			for i = num_stacks, 1, -1 do
+				buff_extension:remove_buff(buffs[i].id)
+			end
+
+			buff_extension:add_buff("boon_skulls_04_regen")
+		else
+			for i = 1, hp_to_consume do
+				buff_extension:add_buff("boon_skulls_04_stack")
+			end
+		end
+
+		if hp_to_consume > 0 then
+			DamageUtils.add_damage_network(owner_unit, owner_unit, hp_to_consume, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, owner_unit)
+		end
+	end,
+	boon_skulls_05_on_hit = function (owner_unit, buff, params)
+		local player = Managers.player:owner(owner_unit)
+
+		if not player or player:network_id() ~= Network.peer_id() then
+			return
+		end
+
+		local target_num = params[4]
+		local attack_type = params[2] == "heavy_attack"
+
+		if target_num > 1 or not attack_type then
+			return
+		end
+
+		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
+		if buff_extension:get_buff_type("boon_skulls_05_surge") then
+			return
+		end
+
+		local buff_system = Managers.state.entity:system("buff_system")
+
+		buff_system:add_buff_synced(owner_unit, buff.template.buff_to_add, BuffSyncType.LocalAndServer)
+	end,
+	teammates_extra_damage_aura_reduce_own_damage = function (unit, buff, params)
+		local target_unit = params[1]
+		local target_buff_ext = ScriptUnit.has_extension(target_unit, "buff_system")
+		local has_applied = false
+		local debuffs = target_buff_ext and target_buff_ext:get_stacking_buff("deus_extra_damage_aura_debuff")
+
+		if debuffs then
+			for i = 1, #debuffs do
+				if debuffs[i].attacker_unit == unit then
+					has_applied = true
+
+					break
+				end
+			end
+		end
+
+		if not has_applied then
+			return
+		end
+
+		local own_buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local _, _, counteract_buff = own_buff_extension:add_buff("teammates_extra_damage_counteract_buff")
+
+		counteract_buff.source_buff_id = buff.id
+	end,
+	teammates_extra_damage_aura_revert_own_damage = function (unit, buff, params)
+		local own_buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local counteract_buffs = own_buff_extension:get_stacking_buff("teammates_extra_damage_counteract_buff")
+
+		if counteract_buffs then
+			local source_buff_id = buff.id
+
+			for i = 1, #counteract_buffs do
+				if counteract_buffs[i].source_buff_id == source_buff_id then
+					own_buff_extension:remove_buff(counteract_buffs[i].id)
+
+					return
+				end
+			end
+		end
+	end,
+	teammates_extra_stagger_aura_reduce_own_stagger = function (unit, buff, params)
+		local target_unit = params[1]
+		local target_buff_ext = ScriptUnit.has_extension(target_unit, "buff_system")
+		local has_applied = false
+		local debuffs = target_buff_ext and target_buff_ext:get_stacking_buff("deus_extra_stagger_aura_debuff")
+
+		if debuffs then
+			for i = 1, #debuffs do
+				if debuffs[i].attacker_unit == unit then
+					has_applied = true
+
+					break
+				end
+			end
+		end
+
+		if not has_applied then
+			return
+		end
+
+		local own_buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local _, _, counteract_buff = own_buff_extension:add_buff("teammates_extra_stagger_counteract_buff")
+
+		counteract_buff.source_buff_id = buff.id
+	end,
+	teammates_extra_stagger_aura_revert_own_stagger = function (unit, buff, params)
+		local own_buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local counteract_buffs = own_buff_extension:get_stacking_buff("teammates_extra_stagger_counteract_buff")
+
+		if counteract_buffs then
+			local source_buff_id = buff.id
+
+			for i = 1, #counteract_buffs do
+				if counteract_buffs[i].source_buff_id == source_buff_id then
+					own_buff_extension:remove_buff(counteract_buffs[i].id)
+
+					return
+				end
+			end
+		end
+	end,
+	extra_stagger_near_teammates_check = function (unit, buff, params)
+		local target_unit = params[1]
+		local target_pos = Unit.local_position(target_unit, 1)
+		local distance_from_allies = buff.template.distance_from_allies
+		local distance_from_allies_sq = distance_from_allies * distance_from_allies
+		local side = Managers.state.side.side_by_unit[unit]
+		local allies = side.PLAYER_AND_BOT_UNITS
+
+		for i = 1, #allies do
+			local ally_unit = allies[i]
+
+			if ally_unit ~= unit then
+				local ally_pos = POSITION_LOOKUP[ally_unit]
+
+				if ally_pos and distance_from_allies_sq >= Vector3.distance_squared(target_pos, ally_pos) then
+					local buff_extension = ScriptUnit.extension(unit, "buff_system")
+
+					buff_extension:add_buff("boon_teamaura_02_stagger_buff")
+
+					break
+				end
+			end
+		end
+	end,
+	extra_stagger_near_teammates_cleanup = function (unit, buff, params)
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local stagger_buffs = buff_extension:get_stacking_buff("boon_teamaura_02_stagger_buff")
+
+		if stagger_buffs and #stagger_buffs > 0 then
+			buff_extension:remove_buff(stagger_buffs[1].id)
+		end
+	end,
+	extra_damage_near_teammates_check = function (unit, buff, params)
+		local target_unit = params[1]
+		local target_pos = Unit.local_position(target_unit, 1)
+		local distance_from_allies = buff.template.distance_from_allies
+		local distance_from_allies_sq = distance_from_allies * distance_from_allies
+		local side = Managers.state.side.side_by_unit[unit]
+		local allies = side.PLAYER_AND_BOT_UNITS
+
+		for i = 1, #allies do
+			local ally_unit = allies[i]
+
+			if ally_unit ~= unit then
+				local ally_pos = POSITION_LOOKUP[ally_unit]
+
+				if ally_pos and distance_from_allies_sq >= Vector3.distance_squared(target_pos, ally_pos) then
+					local buff_extension = ScriptUnit.extension(unit, "buff_system")
+
+					buff_extension:add_buff("boon_teamaura_01_damage_buff")
+
+					break
+				end
+			end
+		end
+	end,
+	extra_damage_near_teammates_cleanup = function (unit, buff, params)
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local damage_buffs = buff_extension:get_stacking_buff("boon_teamaura_01_damage_buff")
+
+		if damage_buffs and #damage_buffs > 0 then
+			buff_extension:remove_buff(damage_buffs[1].id)
+		end
+	end,
+	boon_meta_01_boon_granted = function (unit, buff, params)
+		local player = Managers.player:owner(unit)
+
+		if not player then
+			return
+		end
+
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local num_existing_stacks = buff_extension:num_buff_stacks("boon_meta_01_stack")
+		local deus_run_controller = Managers.mechanism:game_mechanism():get_deus_run_controller()
+		local num_boons = #deus_run_controller:get_player_power_ups(player:network_id(), player:local_player_id())
+
+		for i = num_existing_stacks + 1, num_boons do
+			buff_extension:add_buff("boon_meta_01_stack")
+		end
+
+		local existing_stacks = buff_extension:get_stacking_buff("boon_meta_01_stack")
+
+		for i = 1, num_existing_stacks - num_boons do
+			local last_buff = existing_stacks[num_existing_stacks - i + 1]
+
+			buff_extension:remove_buff(last_buff.id)
+		end
+	end,
+	boon_weaponrarity_02_weapon_wielded = function (unit, buff, params)
+		local career_extension = ScriptUnit.extension(unit, "career_system")
+		local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
+		local career_name = career_extension:career_name()
+		local wielded_slot_name = inventory_extension:get_wielded_slot_name()
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local num_existing_stacks = buff_extension:num_buff_stacks("boon_weaponrarity_02_debuff")
+		local rarity_level = ORDER_RARITY.unique
+
+		if wielded_slot_name == "slot_melee" or wielded_slot_name == "slot_ranged" then
+			local deus_backend = Managers.backend:get_interface("deus")
+			local wielded_item_id = deus_backend:get_loadout_item_id(career_name, wielded_slot_name)
+			local wielded_item = deus_backend:get_loadout_item(wielded_item_id)
+
+			if not wielded_item then
+				return
+			end
+
+			local wielded_item_rarity = wielded_item.rarity
+
+			rarity_level = ORDER_RARITY[wielded_item_rarity] or ORDER_RARITY.unique
+		end
+
+		for i = num_existing_stacks + 2, rarity_level do
+			buff_extension:add_buff("boon_weaponrarity_02_debuff")
+		end
+
+		local existing_stacks = buff_extension:get_stacking_buff("boon_weaponrarity_02_debuff")
+
+		for i = rarity_level, num_existing_stacks do
+			local last_buff = existing_stacks[num_existing_stacks - i + 1]
+
+			buff_extension:remove_buff(last_buff.id)
+		end
+	end,
+	boon_weaponrarity_01_weapon_wielded = function (unit, buff, params)
+		local career_extension = ScriptUnit.extension(unit, "career_system")
+		local career_name = career_extension:career_name()
+		local deus_backend = Managers.backend:get_interface("deus")
+		local melee_item_id = deus_backend:get_loadout_item_id(career_name, "slot_melee")
+		local melee_item = deus_backend:get_loadout_item(melee_item_id)
+		local melee_rarity_level = ORDER_RARITY[melee_item and melee_item.rarity] or 1
+		local ranged_item_id = deus_backend:get_loadout_item_id(career_name, "slot_ranged")
+		local ranged_item = deus_backend:get_loadout_item(ranged_item_id)
+		local ranged_rarity_level = ORDER_RARITY[ranged_item and ranged_item.rarity] or 1
+		local highest_rarity_level = math.max(melee_rarity_level, ranged_rarity_level)
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local num_existing_stacks = buff_extension:num_buff_stacks("boon_weaponrarity_01_debuff")
+
+		for i = num_existing_stacks + 2, highest_rarity_level do
+			buff_extension:add_buff("boon_weaponrarity_01_debuff")
+		end
+
+		local existing_stacks = buff_extension:get_stacking_buff("boon_weaponrarity_01_debuff")
+
+		for i = highest_rarity_level, num_existing_stacks do
+			local last_buff = existing_stacks[num_existing_stacks - i + 1]
+
+			buff_extension:remove_buff(last_buff.id)
+		end
+	end,
 }
 dlc_settings.explosion_templates = {
 	stagger_aoe_on_crit = {
@@ -4505,6 +5381,31 @@ dlc_settings.explosion_templates = {
 			no_friendly_fire = true,
 			no_prop_damage = true,
 			radius = 1,
+			use_attacker_power_level = true,
+		},
+	},
+	periodic_aoe_stagger = {
+		name = "periodic_aoe_stagger",
+		explosion = {
+			attack_template = "drakegun",
+			damage_profile = "periodic_aoe_stagger",
+			effect_name = "fx/chr_kruber_shockwave",
+			max_damage_radius = 0,
+			no_friendly_fire = true,
+			no_prop_damage = true,
+			radius = 3,
+			use_attacker_power_level = true,
+		},
+	},
+	boon_skulls_03 = {
+		name = "boon_skulls_03",
+		explosion = {
+			attack_template = "drakegun",
+			damage_profile = "boon_skulls_03",
+			max_damage_radius = 0,
+			no_friendly_fire = true,
+			no_prop_damage = true,
+			radius = 5,
 			use_attacker_power_level = true,
 		},
 	},
@@ -6152,6 +7053,135 @@ dlc_settings.buff_templates = {
 				perks = {
 					buff_perks.full_health_revive,
 				},
+			},
+		},
+	},
+	deus_extra_damage_aura_debuff = {
+		buffs = {
+			{
+				name = "deus_extra_damage_aura_debuff",
+				stat_buff = "damage_taken",
+				multiplier = MorrisBuffTweakData.boon_aura_01.multiplier,
+				max_stacks = math.huge,
+			},
+		},
+	},
+	teammates_extra_damage_counteract_buff = {
+		buffs = {
+			{
+				duration = 0,
+				name = "teammates_extra_damage_counteract_buff",
+				stat_buff = "damage_dealt",
+				multiplier = 1 / (1 + MorrisBuffTweakData.boon_aura_01.multiplier) - 1,
+				max_stacks = math.huge,
+			},
+		},
+	},
+	deus_extra_stagger_aura_debuff = {
+		buffs = {
+			{
+				name = "deus_extra_stagger_aura_debuff",
+				stat_buff = "impact_vulnerability",
+				multiplier = MorrisBuffTweakData.boon_aura_02.multiplier,
+				max_stacks = math.huge,
+			},
+		},
+	},
+	teammates_extra_stagger_counteract_buff = {
+		buffs = {
+			{
+				duration = 0,
+				name = "teammates_extra_stagger_counteract_buff",
+				stat_buff = "power_level_impact",
+				multiplier = 1 / (1 + MorrisBuffTweakData.boon_aura_02.multiplier) - 1,
+				max_stacks = math.huge,
+			},
+		},
+	},
+	boon_teamaura_02_stagger_buff = {
+		buffs = {
+			{
+				duration = 0,
+				name = "boon_teamaura_02_stagger_buff",
+				stat_buff = "power_level_impact",
+				multiplier = MorrisBuffTweakData.boon_teamaura_02_data.multiplier,
+				max_stacks = math.huge,
+			},
+		},
+	},
+	boon_teamaura_01_damage_buff = {
+		buffs = {
+			{
+				duration = 0,
+				name = "boon_teamaura_01_damage_buff",
+				stat_buff = "damage_dealt",
+				multiplier = MorrisBuffTweakData.boon_teamaura_01_data.multiplier,
+				max_stacks = math.huge,
+			},
+		},
+	},
+	boon_meta_01_stack = {
+		buffs = {
+			{
+				name = "boon_meta_01_stack",
+				stat_buff = "damage_dealt",
+				multiplier = MorrisBuffTweakData.boon_meta_01_data.damage_multiplier_per_stack,
+				max_stacks = math.huge,
+			},
+			{
+				name = "boon_meta_01_stack_atk_speed",
+				stat_buff = "attack_speed",
+				multiplier = MorrisBuffTweakData.boon_meta_01_data.attack_speed_multiplier_per_stack,
+				max_stacks = math.huge,
+			},
+		},
+	},
+	boon_weaponrarity_01_debuff = {
+		buffs = {
+			{
+				name = "boon_weaponrarity_01_debuff",
+				stat_buff = "cooldown_regen",
+				multiplier = MorrisBuffTweakData.boon_weaponrarity_01_data.multiplier_per_rarity,
+				max_stacks = math.huge,
+			},
+		},
+	},
+	boon_weaponrarity_02_debuff = {
+		buffs = {
+			{
+				name = "boon_weaponrarity_02_debuff",
+				stat_buff = "critical_strike_chance",
+				bonus = MorrisBuffTweakData.boon_weaponrarity_02_data.bonus_per_rarity,
+				max_stacks = math.huge,
+			},
+		},
+	},
+	boon_range_02_buff_adder = {
+		buffs = {
+			{
+				duration = 0,
+				name = "boon_range_02_buff_adder",
+				remove_buff_func = "boon_range_02_buff_adder_add_buff",
+			},
+		},
+	},
+	boon_range_02_increased_damage_tracker = {
+		buffs = {
+			{
+				name = "boon_range_02_increased_damage_tracker",
+				duration = MorrisBuffTweakData.boon_range_02_data.duration,
+				max_stacks = math.huge,
+			},
+		},
+	},
+	boon_range_02_damage_amplifier = {
+		buffs = {
+			{
+				duration = 0,
+				name = "boon_range_02_damage_amplifier",
+				stat_buff = "damage_taken",
+				max_stacks = math.huge,
+				multiplier = MorrisBuffTweakData.boon_range_02_data.multiplier,
 			},
 		},
 	},

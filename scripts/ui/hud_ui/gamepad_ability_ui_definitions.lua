@@ -19,13 +19,27 @@ local scenegraph_definition = {
 		horizontal_alignment = "right",
 		parent = "root",
 		vertical_alignment = "bottom",
+		position = {
+			0,
+			60,
+			0,
+		},
 		size = {
 			0,
 			0,
 		},
+	},
+	ability_charges = {
+		horizontal_alignment = "left",
+		parent = "ability_root",
+		vertical_alignment = "top",
 		position = {
+			-134,
+			92,
+			11,
+		},
+		size = {
 			0,
-			60,
 			0,
 		},
 	},

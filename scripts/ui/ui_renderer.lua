@@ -644,6 +644,14 @@ UIRenderer.draw_triangle = function (self, lower_left_corner, size, ui_style, re
 		pos1 = base_pos + Vector3(0, 0, size[2])
 		pos2 = base_pos + Vector3(size[1] * 0.5, 0, 0)
 		pos3 = base_pos + Vector3(size[1], 0, size[2])
+	elseif ui_style.triangle_alignment == "left" then
+		pos1 = base_pos + Vector3(0, 0, size[2] * 0.5)
+		pos2 = base_pos + Vector3(size[1], 0, 0)
+		pos3 = base_pos + Vector3(0, 0, size[2])
+	elseif ui_style.triangle_alignment == "right" then
+		pos1 = base_pos + Vector3(0, 0, size[2])
+		pos2 = base_pos + Vector3(size[1], 0, size[2] * 0.5)
+		pos3 = base_pos + Vector3(0, 0, 0)
 	else
 		pos1 = base_pos
 		pos2 = base_pos + Vector3(size[1], 0, 0)

@@ -2,7 +2,7 @@
 
 local GameModeVersusTestify = {
 	versus_has_lost = function (game_mode_versus)
-		return game_mode_versus.about_to_lose
+		return game_mode_versus:is_about_to_end_game_early()
 	end,
 	versus_wait_for_local_player_hero_picking_turn = function (game_mode_versus)
 		local party_selection_logic = game_mode_versus:party_selection_logic()

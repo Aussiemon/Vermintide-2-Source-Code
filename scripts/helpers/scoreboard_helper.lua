@@ -28,6 +28,10 @@ ScoreboardHelper.scoreboard_topic_stats = {
 			},
 			{
 				"kills_per_breed",
+				"chaos_bulwark",
+			},
+			{
+				"kills_per_breed",
 				"chaos_berzerker",
 			},
 			{

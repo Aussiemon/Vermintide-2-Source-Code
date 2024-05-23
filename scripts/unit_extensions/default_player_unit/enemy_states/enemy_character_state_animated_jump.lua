@@ -96,6 +96,7 @@ EnemyCharacterStateAnimatedJump.on_enter = function (self, unit, input, dt, cont
 		local blackboard = BLACKBOARDS[unit]
 
 		blackboard.jump_start_finished = nil
+		blackboard.jump_climb_finished = nil
 	end
 
 	CharacterStateHelper.look(input_extension, self._player.viewport_name, first_person_extension, status_extension, inventory_extension)

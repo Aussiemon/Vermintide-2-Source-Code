@@ -3,6 +3,13 @@
 MatchmakingStateJoinGame = class(MatchmakingStateJoinGame)
 MatchmakingStateJoinGame.NAME = "MatchmakingStateJoinGame"
 
+local vs_temp_picker_rewrite = 0
+local vs_future_picker_rewrite = 0
+
+vs_temp_picker_rewrite = 1
+
+assert(vs_temp_picker_rewrite + vs_future_picker_rewrite < 2, "May not use these flags simultaneously")
+
 MatchmakingStateJoinGame.init = function (self, params)
 	self._lobby = params.lobby
 	self._network_transmit = params.network_transmit
@@ -37,7 +44,11 @@ MatchmakingStateJoinGame.on_enter = function (self, state_context)
 
 		fassert(hero_index, "no hero index? this is wrong")
 
-		if matchmaking_manager:hero_available_in_lobby_data(hero_index, self._lobby_data) and not Application.user_setting("always_ask_hero_when_joining") then
+		if self._join_lobby_data.mechanism == "versus" then
+			self._selected_hero_name = hero_name
+
+			self:_request_profile_from_host_versus(hero_index)
+		elseif matchmaking_manager:hero_available_in_lobby_data(hero_index, self._lobby_data) and not Application.user_setting("always_ask_hero_when_joining") then
 			self._selected_hero_name = hero_name
 
 			self:_request_profile_from_host(hero_index)
@@ -208,7 +219,11 @@ MatchmakingStateJoinGame._handle_popup_result = function (self, result, t)
 		self._selected_hero_name = selected_hero_name
 		self._selected_career_name = result.selected_career_name
 
-		self:_request_profile_from_host(hero_index)
+		if self._join_lobby_data.mechanism == "versus" then
+			self:_request_profile_from_host_versus(hero_index)
+		else
+			self:_request_profile_from_host(hero_index)
+		end
 	else
 		mm_printf_force("Popup cancelled")
 
@@ -233,12 +248,6 @@ MatchmakingStateJoinGame._handle_popup_result = function (self, result, t)
 	Managers.ui:close_popup("profile_picker")
 
 	return cancel
-end
-
-MatchmakingStateJoinGame._update_profiles_data = function (self, profile_array, player_id_array)
-	ProfileSynchronizer.unpack_lobby_profile_slots(profile_array, player_id_array, self._lobby_data)
-
-	self._matchmaking_manager.debug.profiles_data = self._lobby_data
 end
 
 MatchmakingStateJoinGame.get_transition = function (self)
@@ -274,7 +283,7 @@ MatchmakingStateJoinGame._spawn_join_popup = function (self, dt, t)
 		optional_locked_profile_index = profile_index
 	end
 
-	Managers.ui:open_popup("profile_picker", profile_index, career_index, auto_cancel_time, join_by_lobby_browser, difficulty, self._lobby_data, optional_locked_profile_index)
+	Managers.ui:open_popup("profile_picker", profile_index, career_index, auto_cancel_time, join_by_lobby_browser, difficulty, self._lobby_data, optional_locked_profile_index, self._occupied_profile_indices)
 
 	self._profile_picker_shown = true
 
@@ -315,14 +324,34 @@ MatchmakingStateJoinGame._request_profile_from_host = function (self, hero_index
 	self._matchmaking_manager.debug.level = lobby_client:lobby_data("selected_mission_id")
 end
 
-MatchmakingStateJoinGame.rpc_matchmaking_request_profile_reply = function (self, channel_id, profile, reply_id)
+MatchmakingStateJoinGame._request_profile_from_host_versus = function (self, hero_index)
+	local lobby_client = self.lobby_client
+	local host = lobby_client:lobby_host()
+
+	self._matchmaking_manager.selected_profile_index = hero_index
+
+	RPC.rpc_matchmaking_request_profile_versus(PEER_ID_TO_CHANNEL[host], hero_index)
+
+	local host_name = host
+
+	if rawget(_G, "Steam") and GameSettingsDevelopment.network_mode == "steam" then
+		host_name = Steam.user_name(host)
+	end
+
+	self._matchmaking_manager.debug.text = "requesting_profile"
+	self._matchmaking_manager.debug.state = "hosted by: " .. (host_name or "unknown")
+	self._matchmaking_manager.debug.level = lobby_client:lobby_data("selected_mission_id")
+end
+
+MatchmakingStateJoinGame.rpc_matchmaking_request_profile_reply = function (self, channel_id, profile, reply_id, occupied_profile_indices)
 	local reply = NetworkLookup.request_profile_replies[reply_id]
 	local selected_hero_name = self._selected_hero_name
 	local selected_hero_index = FindProfileIndex(selected_hero_name)
 
 	self._denied_reason = nil
+	self._occupied_profile_indices = occupied_profile_indices
 
-	fassert(profile == selected_hero_index, "wrong profile in rpc_matchmaking_request_profile_reply")
+	fassert(profile == selected_hero_index or reply == "previous_profile_accepted", "wrong profile in rpc_matchmaking_request_profile_reply")
 
 	if reply == "profile_accepted" then
 		self._matchmaking_manager.debug.text = reply
@@ -336,6 +365,11 @@ MatchmakingStateJoinGame.rpc_matchmaking_request_profile_reply = function (self,
 		end
 
 		self:_set_state_to_start_lobby()
+	elseif reply == "previous_profile_accepted" then
+		self._matchmaking_manager.debug.text = reply
+		self._denied_reason = reply
+
+		self:_set_state_to_start_lobby()
 	elseif reply == "profile_declined" then
 		self._denied_reason = reply
 		self._matchmaking_manager.debug.text = reply
@@ -345,9 +379,6 @@ MatchmakingStateJoinGame.rpc_matchmaking_request_profile_reply = function (self,
 		self._matchmaking_manager.debug.text = reply
 		self._show_popup = true
 	end
-
-	local player = Managers.player:local_player(1)
-	local time_taken = self._selected_hero_at_t and self._selected_hero_at_t - self._hero_popup_at_t or 0
 end
 
 MatchmakingStateJoinGame._current_hero = function (self)

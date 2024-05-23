@@ -10,9 +10,6 @@ local FAIL_LEVEL_VAR = false
 
 GameModeDemo.init = function (self, settings, world, ...)
 	GameModeDemo.super.init(self, settings, world, ...)
-
-	self.about_to_lose = false
-	self.lost_condition_timer = nil
 end
 
 GameModeDemo.evaluate_end_conditions = function (self, round_started, dt, t)

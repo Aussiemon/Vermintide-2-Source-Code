@@ -189,7 +189,7 @@ StatusUtils.set_catapulted_network = function (unit, catapulted, velocity)
 		local status_extension = ScriptUnit.extension(unit, "status_system")
 
 		status_extension:set_catapulted(catapulted, velocity)
-	elseif player_manager.is_server then
+	elseif player_manager.is_server or DEDICATED_SERVER then
 		local network_manager = Managers.state.network
 		local go_id = network_manager:unit_game_object_id(unit)
 		local peer_id = player:network_id()
@@ -199,6 +199,15 @@ StatusUtils.set_catapulted_network = function (unit, catapulted, velocity)
 		end
 
 		network_manager.network_transmit:send_rpc("rpc_set_catapulted", peer_id, go_id, catapulted, velocity or Vector.zero())
+	else
+		local network_manager = Managers.state.network
+		local go_id = network_manager:unit_game_object_id(unit)
+
+		if not go_id then
+			return
+		end
+
+		network_manager.network_transmit:send_rpc_server("rpc_set_catapulted", go_id, catapulted, velocity or Vector.zero())
 	end
 end
 

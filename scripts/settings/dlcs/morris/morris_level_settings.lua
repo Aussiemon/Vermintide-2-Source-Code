@@ -284,6 +284,11 @@ settings.missions = {
 		mission_template_name = "simple",
 		text = "cursed_chest_challenge_chaos_warrior",
 	},
+	cursed_chest_challenge_chaos_bulwark = {
+		disable_rewards = true,
+		mission_template_name = "simple",
+		text = "cursed_chest_challenge_chaos_bulwark",
+	},
 	cursed_chest_challenge_chaos_vortex_sorcerer = {
 		disable_rewards = true,
 		mission_template_name = "simple",

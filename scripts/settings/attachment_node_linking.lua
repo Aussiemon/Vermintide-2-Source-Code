@@ -6480,6 +6480,14 @@ AttachmentNodeLinking = {
 				source = "j_leftweaponattach",
 				target = 0,
 			},
+			{
+				source = "j_leftweaponattach",
+				target = "j_hose_start",
+			},
+			{
+				source = "j_ammo_attach",
+				target = "j_hose_end",
+			},
 		},
 		unwielded = {
 			{
@@ -8858,6 +8866,12 @@ AttachmentNodeLinking = {
 		{
 			source = "j_rightlowereyelash_03",
 			target = "j_rightlowereyelash_04",
+		},
+	},
+	ui_portrait_frame = {
+		{
+			source = "j_rightweaponattach",
+			target = 0,
 		},
 	},
 }

@@ -151,6 +151,24 @@ IngamePlayerListUI._create_ui_elements = function (self)
 		mutators = {},
 	}
 
+	local mutator_summary4_widget = widgets_by_name.mutator_summary4
+
+	mutator_summary4_widget.content.item = {
+		mutators = {},
+	}
+
+	local mutator_summary5_widget = widgets_by_name.mutator_summary5
+
+	mutator_summary5_widget.content.item = {
+		mutators = {},
+	}
+
+	local mutator_summary6_widget = widgets_by_name.mutator_summary6
+
+	mutator_summary6_widget.content.item = {
+		mutators = {},
+	}
+
 	local specific_widget_definitions = definitions.specific_widget_definitions
 
 	self._input_description_text_widget = UIWidget.init(specific_widget_definitions.input_description_text)
@@ -193,7 +211,7 @@ IngamePlayerListUI._create_ui_elements = function (self)
 end
 
 local MUTATORS_PER_COLUMN = 1
-local MUTATOR_ROWS = 3
+local MUTATOR_ROWS = 6
 local MAX_MUTATORS = MUTATORS_PER_COLUMN * MUTATOR_ROWS
 
 IngamePlayerListUI._setup_mutator_data = function (self)
@@ -223,10 +241,28 @@ IngamePlayerListUI._setup_mutator_data = function (self)
 
 	table.clear(mutator_storage3)
 
+	local mutator_summary_widget4 = widgets_by_name.mutator_summary4
+	local mutator_storage4 = mutator_summary_widget4.content.item.mutators
+
+	table.clear(mutator_storage4)
+
+	local mutator_summary_widget5 = widgets_by_name.mutator_summary5
+	local mutator_storage5 = mutator_summary_widget5.content.item.mutators
+
+	table.clear(mutator_storage5)
+
+	local mutator_summary_widget6 = widgets_by_name.mutator_summary6
+	local mutator_storage6 = mutator_summary_widget6.content.item.mutators
+
+	table.clear(mutator_storage6)
+
 	local mutator_storage = {
 		mutator_storage1,
 		mutator_storage2,
 		mutator_storage3,
+		mutator_storage4,
+		mutator_storage5,
+		mutator_storage6,
 	}
 
 	if mutators then
@@ -335,6 +371,7 @@ IngamePlayerListUI._setup_chaos_wastes_info = function (self)
 	end
 
 	self._node_info_widget = widget
+	widget.offset[2] = self._num_mutators * -100 - 30
 end
 
 IngamePlayerListUI._setup_deed_reward_data = function (self, deed_reward_data)
@@ -999,7 +1036,7 @@ IngamePlayerListUI.update = function (self, dt, t)
 					self._cursor_active = true
 				end
 			end
-		elseif input_service:get("ingame_player_list_pressed") then
+		elseif input_service:get("ingame_player_list_pressed") and not self:_is_in_deus_map_view() then
 			if not self._active then
 				self:_set_active(true)
 			end
@@ -1730,4 +1767,16 @@ IngamePlayerListUI._has_client_duplicate = function (self, player_list, peer_id)
 	else
 		return false
 	end
+end
+
+IngamePlayerListUI._is_in_deus_map_view = function (self)
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+
+	if mechanism_name ~= "deus" then
+		return false
+	end
+
+	local current_mechanism_state = Managers.mechanism:get_state()
+
+	return current_mechanism_state == "map_deus"
 end

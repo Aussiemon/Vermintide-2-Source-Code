@@ -15,9 +15,6 @@ settings.unlock_settings = {}
 settings.dialogue_lookup = {}
 settings.dialogue_settings = {}
 settings.auto_load_files = {}
-settings.network_packages = {
-	"resource_packages/dlcs/geheimnisnacht_2021_event",
-}
 settings.network_sound_events = {
 	"enemy_skaven_halloween_ritual_loop",
 	"enemy_skaven_halloween_ritual_loop_stop",

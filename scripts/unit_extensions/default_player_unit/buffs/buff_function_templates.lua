@@ -75,6 +75,20 @@ local function is_husk(unit)
 end
 
 BuffFunctionTemplates.functions = {
+	heal_owner = function (unit, buff, params)
+		local heal_amount = buff.template.heal_amount
+		local heal_type = buff.template.heal_type
+
+		if is_server() then
+			DamageUtils.heal_network(unit, unit, heal_amount, heal_type)
+		else
+			local network_manager = Managers.state.network
+			local owner_unit_id = network_manager:unit_game_object_id(unit)
+			local heal_type_id = NetworkLookup.heal_types[heal_type]
+
+			network_manager.network_transmit:send_rpc_server("rpc_request_heal", owner_unit_id, heal_amount, heal_type_id)
+		end
+	end,
 	apply_action_lerp_movement_buff = function (unit, buff, params)
 		local bonus = params.bonus
 		local multiplier = params.multiplier
@@ -1899,6 +1913,14 @@ BuffFunctionTemplates.functions = {
 			return
 		end
 
+		if template.ignore_if_not_local then
+			local player = Managers.player:owner(unit)
+
+			if not player or player:network_id() ~= Network.peer_id() then
+				return
+			end
+		end
+
 		local sync_type = template.sync_type
 		local peer_id
 
@@ -2007,20 +2029,11 @@ BuffFunctionTemplates.functions = {
 
 				if buffs_to_add then
 					local buff_system = Managers.state.entity:system("buff_system")
-					local link_buffs = add_buffs_data.link_buffs
-					local params
-
-					if link_buffs then
-						params = {
-							parent_id = buff.id,
-						}
-					end
-
 					local sync_buffs = add_buffs_data.sync_buffs
 					local sync_type = sync_buffs and BuffSyncType.LocalAndServer or BuffSyncType.Local
 
 					for i = 1, #buffs_to_add do
-						buff_system:add_buff_synced(unit, buffs_to_add[i], sync_type, params)
+						buff_system:add_buff_synced(unit, buffs_to_add[i], sync_type)
 					end
 				end
 			end

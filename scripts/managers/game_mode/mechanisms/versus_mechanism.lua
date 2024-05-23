@@ -145,7 +145,7 @@ VersusMechanism._reset = function (self, settings, on_init)
 	self._settings = settings
 	self._level_override_key = nil
 	self._total_rounds_started = 0
-	self._match_id = Application.guid()
+	self._profiles_reservable = false
 
 	local changing_to_inn = self._state ~= "inn"
 
@@ -212,6 +212,10 @@ VersusMechanism.setup_mechanism_parties = function (self)
 			slot_human_character = {},
 		}
 	end
+end
+
+VersusMechanism.make_profiles_reservable = function (self)
+	self._profiles_reservable = true
 end
 
 VersusMechanism.network_context_created = function (self, lobby, server_peer_id, own_peer_id, is_server, network_handler)
@@ -646,6 +650,14 @@ VersusMechanism.generate_level_seed = function (self)
 	return Managers.mechanism:get_level_seed()
 end
 
+VersusMechanism.get_end_of_level_rewards_arguments = function (self, game_won, quickplay, statistics_db, stats_id)
+	local kill_count = statistics_db:get_stat(stats_id, "kills_total")
+
+	return {
+		kill_count = kill_count,
+	}
+end
+
 VersusMechanism.get_hub_level_key = function (self)
 	return HUB_LEVEL_NAME
 end
@@ -657,7 +669,7 @@ end
 VersusMechanism.is_final_round = function (self)
 	local is_final_round = self._win_conditions:is_final_round()
 
-	return is_final_round or self._shared_state:get_party_won_early() or self:match_ended_early()
+	return is_final_round or self._shared_state and self._shared_state:get_party_won_early() or self:match_ended_early()
 end
 
 VersusMechanism.get_level_end_view = function (self)
@@ -726,13 +738,14 @@ VersusMechanism.game_round_ended = function (self, t, dt, reason, reason_data)
 		level_transition_handler:set_next_level(level_key, environment_variation_id, level_seed)
 	elseif reason == "start_game" then
 		level_transition_handler:promote_next_level_data()
-		self:_setup_match()
 	elseif reason == "reload" then
 		local network_manager = Managers.state.network
-		local reserved_peer_ids = self._slot_reservation_handler:reservers()
+		local peer_ids = self._slot_reservation_handler:peers()
 
-		for _, peer_id in pairs(reserved_peer_ids) do
-			network_manager.network_server:kick_peer(peer_id)
+		for _, peer_id in pairs(peer_ids) do
+			if PEER_ID_TO_CHANNEL[peer_id] then
+				network_manager.network_server:kick_peer(peer_id)
+			end
 		end
 
 		local game_server_manager = Managers.game_server
@@ -897,46 +910,57 @@ VersusMechanism.hero_profile_available_for_party = function (self, party_id, pro
 	local game_mode = game_mode_manager and game_mode_manager:game_mode()
 
 	if game_mode then
-		local available, reason = game_mode:hero_profile_available_for_party(party_id, profile_index, peer_id, local_player_id, ignore_bots)
+		local available, reason, debug_context = game_mode:hero_profile_available_for_party(party_id, profile_index, peer_id, local_player_id, ignore_bots)
 
-		return available, reason
+		return available, reason, debug_context
 	end
 
-	if not party_id or party_id == 0 then
-		return
+	local party = Managers.party:get_party(party_id)
+
+	if not party or not party.game_participating then
+		return true
 	end
 
-	local saved_hero_profiles = self._saved_hero_profiles.party_id[party_id]
-	local human_profiles = saved_hero_profiles.slot_human_character
+	local peers = self._slot_reservation_handler:party_peers()
 
-	for slot_id, character in pairs(human_profiles) do
-		if character.profile_index == profile_index and (character.peer_id ~= peer_id or character.local_player_id ~= local_player_id) then
-			return false, "profile_already_taken"
+	for i = 1, #peers do
+		local other_peer_id = peers[i]
+
+		if other_peer_id ~= peer_id then
+			local other_profile_index = self:get_saved_hero(other_peer_id, 1)
+
+			if other_profile_index == profile_index then
+				return false, "profile_already_taken", string.format("Occupying peer_id: %s", other_peer_id)
+			end
 		end
 	end
+
+	return true
 end
 
 VersusMechanism.update_wanted_hero_character = function (self, peer_id, local_player_id, party_id)
 	local status = Managers.party:get_player_status(peer_id, local_player_id)
 	local ignore_bots = true
-	local profile_index, career_index = self:get_saved_hero(peer_id, local_player_id)
-
-	profile_index, career_index = self:parse_hero_profile_availability(profile_index, career_index, party_id, peer_id, local_player_id, ignore_bots)
-
+	local saved_profile_index, career_index = self:get_saved_hero(peer_id, local_player_id)
+	local profile_index, unavailable_reason, debug_context = self:parse_hero_profile_availability(saved_profile_index, party_id, peer_id, local_player_id, ignore_bots)
 	local reason = "saved"
+
+	if saved_profile_index and profile_index ~= saved_profile_index then
+		printf("[VersusMechanism] Saved profile %s no longer available: %s, %s", saved_profile_index, unavailable_reason, debug_context)
+	end
 
 	if not profile_index then
 		local network_server = Managers.mechanism:network_server()
 
 		profile_index, career_index = network_server:peer_wanted_profile(peer_id, local_player_id)
-		profile_index, career_index = self:parse_hero_profile_availability(profile_index, career_index, party_id, peer_id, local_player_id, ignore_bots)
+		profile_index = self:parse_hero_profile_availability(profile_index, party_id, peer_id, local_player_id, ignore_bots)
 		reason = "wanted"
 	end
 
 	if not profile_index then
 		profile_index = status.profile_index or status.preferred_profile_index
 		career_index = status.career_index or status.preferred_career_index
-		profile_index, career_index = self:parse_hero_profile_availability(profile_index, career_index, party_id, peer_id, local_player_id, ignore_bots)
+		profile_index = self:parse_hero_profile_availability(profile_index, party_id, peer_id, local_player_id, ignore_bots)
 		reason = "status_fallback"
 	end
 
@@ -951,7 +975,7 @@ VersusMechanism.update_wanted_hero_character = function (self, peer_id, local_pl
 			end
 		end
 
-		profile_index, career_index = self:parse_hero_profile_availability(profile_index, career_index, party_id, peer_id, local_player_id, ignore_bots)
+		profile_index = self:parse_hero_profile_availability(profile_index, party_id, peer_id, local_player_id, ignore_bots)
 		reason = "bot_fallback"
 	end
 
@@ -962,32 +986,32 @@ VersusMechanism.update_wanted_hero_character = function (self, peer_id, local_pl
 
 	assert(profile_index and career_index, "[VersusMechanism] A profile could not be found in party")
 
-	if reason ~= "saved" then
-		printf("update profile, reason: %s, %d, %d ", reason, profile_index, career_index)
+	if reason ~= "saved" and self._profiles_reservable then
+		printf("[VersusMechanism] update profile, reason: %s, %d, %d ", reason, profile_index, career_index)
 		self:set_saved_hero(peer_id, local_player_id, party_id, profile_index, career_index)
 	end
 
 	return profile_index, career_index, reason
 end
 
-VersusMechanism.parse_hero_profile_availability = function (self, profile_index, career_index, party_id, peer_id, local_player_id, ignore_bots)
-	if not profile_index or not career_index then
-		return
+VersusMechanism.parse_hero_profile_availability = function (self, profile_index, party_id, peer_id, local_player_id, ignore_bots)
+	if not profile_index or profile_index == 0 then
+		return nil, nil, "invalid_profile"
 	end
 
 	local profile = SPProfiles[profile_index]
 
 	if profile.affiliation ~= "heroes" then
-		return
+		return nil, nil, "not_a_hero"
 	end
 
-	local available, reason = self:hero_profile_available_for_party(party_id, profile_index, peer_id, local_player_id, ignore_bots)
+	local available, reason, debug_context = self:hero_profile_available_for_party(party_id, profile_index, peer_id, local_player_id, ignore_bots)
 
 	if not available then
-		return nil, nil, reason
+		return nil, nil, reason, debug_context
 	end
 
-	return profile_index, career_index
+	return profile_index
 end
 
 VersusMechanism.profile_available_for_peer = function (self, profile_synchronizer, peer_id, local_player_id, profile_name, career_name)
@@ -1152,7 +1176,6 @@ VersusMechanism.unregister_chats = function (self)
 end
 
 VersusMechanism.try_reserve_game_server_slots = function (self, reserver, peers, invitee)
-	local was_empty = self._slot_reservation_handler:is_empty()
 	local success = self._slot_reservation_handler:try_reserve_slots(reserver, peers, invitee)
 
 	if not success then
@@ -1284,8 +1307,12 @@ VersusMechanism.switch_level_dedicated_server = function (self, level_key, from_
 	end
 end
 
-VersusMechanism.handle_ingame_enter = function (self)
-	return
+VersusMechanism.handle_ingame_enter = function (self, game_mode)
+	local level_settings = LevelSettings[Managers.level_transition_handler:get_current_level_key()]
+
+	if not self._shared_state and not level_settings.hub_level and Managers.mechanism:is_server() then
+		self:_setup_match()
+	end
 end
 
 VersusMechanism.get_level_override_key = function (self)
@@ -1324,10 +1351,10 @@ VersusMechanism.handle_party_assignment_for_joining_peer = function (self, peer_
 	if DEDICATED_SERVER then
 		local reserved_party_id = self._slot_reservation_handler:party_id(peer_id)
 
-		if requested_party_id > 0 and not party_manager:is_party_full(requested_party_id) then
-			wanted_party_id = requested_party_id
-		elseif reserved_party_id then
+		if reserved_party_id then
 			wanted_party_id = reserved_party_id
+		elseif requested_party_id > 0 and not party_manager:is_party_full(requested_party_id) then
+			wanted_party_id = requested_party_id
 		else
 			local ignore_bots, ignore_none_game_participating_party = true, true
 			local _, party_id = party_manager:get_least_filled_party(ignore_bots, ignore_none_game_participating_party)
@@ -1340,10 +1367,10 @@ VersusMechanism.handle_party_assignment_for_joining_peer = function (self, peer_
 		local party_assignment_order = GameModeSettings.versus.fill_party_distribution
 		local reserved_party_id = self._slot_reservation_handler:party_id(peer_id)
 
-		if requested_party_id > 0 and not party_manager:is_party_full(requested_party_id) then
-			wanted_party_id = requested_party_id
-		elseif reserved_party_id then
+		if reserved_party_id then
 			wanted_party_id = reserved_party_id
+		elseif requested_party_id > 0 and not party_manager:is_party_full(requested_party_id) then
+			wanted_party_id = requested_party_id
 		else
 			wanted_party_id = not party_manager:is_party_full(1) and 1 or 2
 		end
@@ -1510,7 +1537,7 @@ VersusMechanism.total_rounds_started = function (self)
 end
 
 VersusMechanism.match_id = function (self)
-	return self._match_id
+	return self._shared_state:get_match_id()
 end
 
 VersusMechanism.get_players_session_score = function (self, statistics_db, profile_synchronizer, saved_scoreboard_stats)
@@ -1608,15 +1635,16 @@ VersusMechanism.set_saved_hero = function (self, peer_id, local_player_id, party
 			other_saved_profiles.slot_human_character[existing_hero_data.slot_id] = nil
 		end
 
-		printf("[VersusMechanism](set_saved_hero) Player was assigned saved hero %s, %s", profile_index, career_index)
 		self._shared_state:set_saved_hero(peer_id, local_player_id, party_id, slot_id, profile_index, career_index)
 
-		if peer_id == Network.peer_id() then
-			self:rpc_request_sync_hero_cosmetics()
-		else
-			local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+		if profile_index ~= 0 and career_index ~= 0 then
+			if peer_id == Network.peer_id() then
+				self:rpc_request_sync_hero_cosmetics()
+			else
+				local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-			RPC.rpc_request_sync_hero_cosmetics(channel_id)
+				RPC.rpc_request_sync_hero_cosmetics(channel_id)
+			end
 		end
 	end
 
@@ -1631,6 +1659,16 @@ VersusMechanism.set_saved_hero = function (self, peer_id, local_player_id, party
 			peer_id = peer_id,
 			local_player_id = local_player_id,
 		}
+	end
+end
+
+VersusMechanism.reserve_saved_hero = function (self, peer_id, local_player_id, party_id, profile_index)
+	local existing_profile = self:get_saved_hero(peer_id, local_player_id)
+
+	if existing_profile ~= profile_index then
+		local unreserved_career_index = 0
+
+		self:set_saved_hero(peer_id, local_player_id, party_id, profile_index, unreserved_career_index)
 	end
 end
 
@@ -1666,13 +1704,13 @@ end
 
 VersusMechanism.get_saved_hero = function (self, peer_id, local_player_id)
 	if not self._shared_state then
-		return nil, nil
+		return nil, nil, nil
 	end
 
 	local saved_hero_data = self._shared_state:get_saved_hero(peer_id, local_player_id)
 
 	if saved_hero_data.profile_index ~= 0 then
-		return saved_hero_data.profile_index, saved_hero_data.career_index
+		return saved_hero_data.profile_index, saved_hero_data.career_index, saved_hero_data.party_id
 	end
 end
 
@@ -1802,6 +1840,7 @@ VersusMechanism._setup_match = function (self)
 	self._shared_state = SharedStateVersus:new(is_server, network_handler, dedicated_server_peer_id or server_peer_id, own_peer_id)
 
 	self._shared_state:register_rpcs(self._network_event_delegate)
+	self._shared_state:generate_match_id()
 	self._shared_state:full_sync()
 end
 
@@ -1860,4 +1899,48 @@ VersusMechanism.update_local_hero_cosmetics = function (self)
 	if weapon ~= existing_weapon or hero_skin ~= existing_hero_skin or hat ~= existing_hat then
 		self:set_hero_cosmetics(peer_id, local_player_id, weapon_slot, weapon, hero_skin, hat)
 	end
+end
+
+VersusMechanism.player_joined_party = function (self, peer_id, local_player_id, party_id, slot_id)
+	if Managers.mechanism:is_server() and self._slot_reservation_handler.player_joined_party then
+		self._slot_reservation_handler:player_joined_party(peer_id, local_player_id, party_id, slot_id)
+	end
+end
+
+VersusMechanism.try_reserve_profile_for_peer = function (self, peer_id, profile_index)
+	local profile = SPProfiles[profile_index]
+
+	if profile.affiliation ~= "heroes" then
+		return true
+	end
+
+	if self._state == "inn" then
+		return Managers.state.network.profile_synchronizer:try_reserve_profile_for_peer(peer_id, profile_index), 1
+	elseif not self._profiles_reservable then
+		return true
+	end
+
+	local human_local_player_id = 1
+	local party_id = self._slot_reservation_handler:party_id(peer_id)
+	local peers = self._slot_reservation_handler:party_peers(party_id)
+
+	for i = 1, #peers do
+		local other_peer_id = peers[i]
+
+		if other_peer_id ~= peer_id then
+			local hero_profile_index = self:get_saved_hero(other_peer_id, human_local_player_id)
+
+			if profile_index == hero_profile_index then
+				return false, party_id
+			end
+		end
+	end
+
+	self:reserve_saved_hero(peer_id, human_local_player_id, party_id, profile_index)
+
+	return true, party_id
+end
+
+VersusMechanism.reserved_peers_in_party = function (self, party_id)
+	return self._slot_reservation_handler:party_peers(party_id)
 end

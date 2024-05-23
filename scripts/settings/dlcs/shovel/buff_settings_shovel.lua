@@ -612,8 +612,6 @@ settings.buff_templates = {
 				buff_area = true,
 				buff_area_buff = "sienna_necromancer_career_skill_on_hit_damage",
 				buff_enemies = true,
-				enter_area_func = "enter_buff_area",
-				exit_area_func = "exit_buff_area",
 				name = "raise_dead_ability_curse_aura",
 				apply_condition = function (owner_unit, template, params)
 					local talent_ext = ScriptUnit.has_extension(params.source_attacker_unit, "talent_system")
@@ -1691,6 +1689,7 @@ settings.buff_function_templates = {
 		end
 
 		for skull_unit, data in pairs(buff.skulls) do
+			Managers.level_transition_handler.transient_package_loader:remove_unit(skull_unit)
 			World.destroy_unit(world, skull_unit)
 		end
 	end,
@@ -1721,6 +1720,8 @@ settings.buff_function_templates = {
 			local unit_name = "units/beings/player/bright_wizard_necromancer/talents/trapped_soul_skull"
 			local skull_unit = World.spawn_unit(world, unit_name, owner_pos + rel_pos, unit_rot)
 
+			Managers.level_transition_handler.transient_package_loader:add_unit(skull_unit, unit_name)
+
 			buff.skulls[skull_unit] = {
 				start_t = t,
 				level_out_height = Math.random_range(1, 1),
@@ -1736,6 +1737,7 @@ settings.buff_function_templates = {
 			local elapsed_t = t - data.start_t
 
 			if elapsed_t > 4 then
+				Managers.level_transition_handler.transient_package_loader:remove_unit(skull_unit)
 				World.destroy_unit(world, skull_unit)
 
 				buff.skulls[skull_unit] = nil

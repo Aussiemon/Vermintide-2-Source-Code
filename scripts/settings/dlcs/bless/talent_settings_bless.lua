@@ -625,6 +625,15 @@ local talents = {
 				value = CareerConstants.wh_priest.talent_6_1_improved_ability_duration,
 			},
 		},
+		mechanism_overrides = {
+			versus = {
+				description_values = {
+					{
+						value = CareerConstants.wh_priest.talent_6_1_improved_ability_duration_versus,
+					},
+				},
+			},
+		},
 		buffs = {},
 	},
 	{

@@ -25,3 +25,11 @@ WeaveUtils.magic_level_to_power_level = function (magic_level)
 
 	return math.min(math.ceil(settings.starting_power_level + magic_level * settings.power_level_per_magic_level), settings.max_power_level)
 end
+
+WeaveUtils.weave_equivalent_item_unlocked = function (base_item_key)
+	local weaves_item_name = MagicItemByUnlockName[base_item_key]
+	local backend_interface_items = Managers.backend:get_interface("items")
+	local weave_item = backend_interface_items:get_item_from_key(weaves_item_name)
+
+	return weave_item and weave_item.backend_id
+end

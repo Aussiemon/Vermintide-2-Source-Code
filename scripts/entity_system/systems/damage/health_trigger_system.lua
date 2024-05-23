@@ -40,6 +40,8 @@ HealthTriggerSystem.on_remove_extension = function (self, unit, extension_name)
 end
 
 HealthTriggerSystem.extensions_ready = function (self, world, unit, extension_name)
+	assert(self.is_server, "[HealthTriggerSystem] Clients should not hold health trigger extensions")
+
 	local extension = self.unit_extensions[unit]
 
 	extension.health_extension = ScriptUnit.extension(unit, "health_system")

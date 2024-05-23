@@ -162,6 +162,36 @@ DeusCursedChestView._init_power_up_widget = function (self, widget, power_up_ins
 	content.current_value_text = nil
 
 	local style = widget.style
+	local power_up_sets = DeusPowerUpSetLookup[power_up_instance.rarity] and DeusPowerUpSetLookup[power_up_instance.rarity][power_up_instance.name]
+	local is_part_of_set = false
+
+	if power_up_sets then
+		local set = power_up_sets[1]
+		local piece_count = 0
+		local pieces = set.pieces
+
+		for _, piece in ipairs(pieces) do
+			local name, rarity = piece.name, piece.rarity
+			local local_peer_id = self._deus_run_controller:get_own_peer_id()
+
+			if self._deus_run_controller:has_power_up_by_name(local_peer_id, name, rarity) then
+				piece_count = piece_count + 1
+			end
+		end
+
+		is_part_of_set = true
+
+		local num_required_pieces = set.num_required_pieces or #pieces
+
+		content.set_progression = string.format(Localize("set_counter_boons"), piece_count, num_required_pieces)
+
+		if #pieces == piece_count then
+			style.set_progression.text_color = widget.style.set_progression.progression_colors.complete
+		end
+	end
+
+	content.is_part_of_set = is_part_of_set
+
 	local rarity_color = Colors.get_table(rarity)
 
 	style.rarity_text.text_color = rarity_color
@@ -271,18 +301,8 @@ DeusCursedChestView._handle_input = function (self, dt)
 			local run_controller = self._deus_run_controller
 
 			run_controller:add_power_ups({
-				power_up_data.power_up,
-			}, REAL_PLAYER_LOCAL_ID)
-
-			local buff_system = Managers.state.entity:system("buff_system")
-			local talent_interface = Managers.backend:get_talents_interface()
-			local deus_backend = Managers.backend:get_interface("deus")
-			local local_player = Managers.player:local_player()
-			local player_unit = local_player.player_unit
-			local own_peer_id = self._deus_run_controller:get_own_peer_id()
-			local profile_index, career_index = run_controller:get_player_profile(own_peer_id, REAL_PLAYER_LOCAL_ID)
-
-			DeusPowerUpUtils.activate_deus_power_up(power_up, buff_system, talent_interface, deus_backend, run_controller, player_unit, profile_index, career_index)
+				power_up,
+			}, REAL_PLAYER_LOCAL_ID, true)
 
 			self._circle_max_speed_modifier = POWER_UP_SELECTED_CIRCLE_SPEED
 
@@ -291,15 +311,9 @@ DeusCursedChestView._handle_input = function (self, dt)
 			local deus_cursed_chest_extension = ScriptUnit.has_extension(self._interactable, "deus_cursed_chest_system")
 
 			if deus_cursed_chest_extension then
-				deus_cursed_chest_extension:on_reward_collected()
+				deus_cursed_chest_extension:on_reward_collected(power_up)
 			end
 
-			Managers.state.event:trigger("present_rewards", {
-				{
-					type = "deus_power_up",
-					power_up = power_up,
-				},
-			})
 			self:_close()
 		end
 

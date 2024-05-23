@@ -11,7 +11,7 @@ local spawn_unit_templates_vs = {
 				local extension_init_data = {
 					area_damage_system = {
 						flow_dir = dir,
-						liquid_template = state_int == 1 and "bile_troll_vomit_near" or "bile_troll_vomit",
+						liquid_template = state_int == 1 and "vs_bile_troll_vomit_near" or "vs_bile_troll_vomit",
 						source_unit = source_unit,
 					},
 				}

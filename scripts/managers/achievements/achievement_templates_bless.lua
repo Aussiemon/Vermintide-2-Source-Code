@@ -340,7 +340,7 @@ achievements.bless_unbreakable_damage_block = {
 			return
 		end
 
-		if not (buff_extension:num_buff_stacks("victor_priest_activated_ability_invincibility") > 0) and not (buff_extension:num_buff_stacks("victor_priest_activated_ability_invincibility_improved") > 0) then
+		if buff_extension:num_buff_stacks("victor_priest_activated_ability_invincibility") <= 0 then
 			return
 		end
 
@@ -482,7 +482,7 @@ achievements.bless_cluch_revive = {
 			return
 		end
 
-		if not (buff_extension:num_buff_stacks("victor_priest_activated_ability_invincibility") > 0) and not (buff_extension:num_buff_stacks("victor_priest_activated_ability_invincibility_improved") > 0) then
+		if buff_extension:num_buff_stacks("victor_priest_activated_ability_invincibility") <= 0 then
 			return
 		end
 
@@ -561,7 +561,7 @@ achievements.bless_ranged_raki = {
 			return
 		end
 
-		local current_buff = buff_extension:get_buff_type("victor_priest_activated_ability_invincibility") or buff_extension:get_buff_type("victor_priest_activated_ability_invincibility_improved")
+		local current_buff = buff_extension:get_buff_type("victor_priest_activated_ability_invincibility")
 
 		if current_buff then
 			if not template_data.last_buff_id or not current_buff or template_data.last_buff_id ~= current_buff.id then
@@ -980,7 +980,7 @@ achievements.bless_block_attacks = {
 			return
 		end
 
-		local current_buff = buff_extension:get_buff_type("victor_priest_activated_ability_invincibility") or buff_extension:get_buff_type("victor_priest_activated_ability_invincibility_improved")
+		local current_buff = buff_extension:get_buff_type("victor_priest_activated_ability_invincibility")
 
 		if not current_buff then
 			return
@@ -1152,7 +1152,7 @@ achievements.bless_protected_killing = {
 		local buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
 
 		if buff_extension then
-			local buff = buff_extension:get_buff_type("victor_priest_activated_ability_invincibility") or buff_extension:get_buff_type("victor_priest_activated_ability_invincibility_improved")
+			local buff = buff_extension:get_buff_type("victor_priest_activated_ability_invincibility")
 
 			if buff then
 				buff._bless_protected_killing_count = (buff._bless_protected_killing_count or 0) + 1

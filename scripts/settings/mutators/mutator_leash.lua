@@ -234,9 +234,11 @@ return {
 							sound_value = math.auto_lerp(0, min_damage_distance, 0, 1, distance)
 						end
 
-						local audio_system = Managers.state.entity:system("audio_system")
+						if template.damage_sound_global_parameter then
+							local audio_system = Managers.state.entity:system("audio_system")
 
-						audio_system:set_global_parameter(template.damage_sound_global_parameter, sound_value)
+							audio_system:set_global_parameter(template.damage_sound_global_parameter, sound_value)
+						end
 					end
 				end
 			end

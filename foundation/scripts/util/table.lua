@@ -210,6 +210,17 @@ table.append = function (dest, source)
 	return dest
 end
 
+table.append_unique = function (dest, source)
+	local dest_size = #dest
+
+	for i = 1, #source do
+		if not table.contains(dest, source[i]) then
+			dest_size = dest_size + 1
+			dest[dest_size] = source[i]
+		end
+	end
+end
+
 table.append_non_indexed = function (dest, source)
 	local dest_size = #dest
 

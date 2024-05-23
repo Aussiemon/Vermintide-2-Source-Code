@@ -81,6 +81,27 @@ ItemMasterList.vs_warpfire_thrower_gun = {
 		"versus",
 	},
 }
+ItemMasterList.vs_chaos_troll_axe = {
+	description = "dw_1h_axe_skin_01_description",
+	display_name = "dw_1h_axe_skin_01_name",
+	has_power_level = true,
+	hud_icon = "weapon_generic_icon_axe1h",
+	inventory_icon = "icon_wpn_dw_axe_01_t1",
+	item_type = "dr_1h_axes",
+	left_hand_unit = "units/weapons/player/dark_pact/wpn_chaos_troll/wpn_chaos_troll_01",
+	property_table_name = "melee",
+	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_invisible_weapon",
+	slot_type = "melee",
+	template = "vs_chaos_troll_axe",
+	trait_table_name = "melee",
+	can_wield = {
+		"vs_chaos_troll",
+	},
+	mechanisms = {
+		"versus",
+	},
+}
 ItemMasterList.vs_gutter_runner_claws = {
 	description = "dw_1h_axe_skin_01_description",
 	display_name = "dw_1h_axe_skin_01_name",
@@ -2082,18 +2103,18 @@ ItemMasterList.skaven_gutter_runner_skin_0000 = {
 		"vs_gutter_runner",
 	},
 }
-ItemMasterList.skaven_packmaster_skin_0000 = {
+ItemMasterList.skaven_pack_master_skin_0000 = {
 	description = "description_skaven_packmaster_skin_0000",
 	display_name = "skaven_packmaster_skin_0000",
 	hud_icon = "unit_frame_portrait_witch_hunter",
 	information_text = "information_text_character_skin",
 	inventory_icon = "icon_skin_zealot_original",
 	item_type = "skin",
-	name = "skaven_packmaster_skin_0000",
+	name = "skaven_pack_master_skin_0000",
 	rarity = "plentiful",
 	skin_type = "unit",
 	slot_type = "skin",
-	temporary_template = "skaven_packmaster_skin_0000",
+	temporary_template = "skaven_pack_master_skin_0000",
 	can_wield = {
 		"vs_packmaster",
 	},
@@ -2146,9 +2167,26 @@ ItemMasterList.skaven_warpfire_thrower_skin_0000 = {
 		"vs_warpfire_thrower",
 	},
 }
+ItemMasterList.chaos_troll_skin_0000 = {
+	description = "description_chaos_troll_skin_0000",
+	display_name = "chaos_troll_skin_0000",
+	hud_icon = "unit_frame_portrait_witch_hunter",
+	information_text = "information_text_character_skin",
+	inventory_icon = "icon_skin_zealot_original",
+	item_type = "skin",
+	name = "chaos_troll_skin_0000",
+	rarity = "plentiful",
+	skin_type = "unit",
+	slot_type = "skin",
+	temporary_template = "chaos_troll_skin_0000",
+	can_wield = {
+		"vs_chaos_troll",
+	},
+}
 
 UpdateItemMasterList({}, "vs_warpfire_thrower")
 UpdateItemMasterList({}, "vs_packmaster")
 UpdateItemMasterList({}, "vs_ratling_gunner")
 UpdateItemMasterList({}, "vs_poison_wind_globadier")
 UpdateItemMasterList({}, "vs_gutter_runner")
+UpdateItemMasterList({}, "vs_chaos_troll")

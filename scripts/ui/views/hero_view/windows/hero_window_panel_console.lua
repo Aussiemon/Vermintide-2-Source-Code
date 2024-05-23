@@ -541,6 +541,10 @@ HeroWindowPanelConsole._sync_news = function (self, dt, t)
 end
 
 HeroWindowPanelConsole._setup_input_buttons = function (self)
+	if self.parent:input_blocked() then
+		return
+	end
+
 	local input_service = self.parent:window_input_service()
 	local input_1_texture_data = UISettings.get_gamepad_input_texture_data(input_service, INPUT_ACTION_PREVIOUS, true)
 	local input_2_texture_data = UISettings.get_gamepad_input_texture_data(input_service, INPUT_ACTION_NEXT, true)

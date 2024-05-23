@@ -190,6 +190,10 @@ PlayerCharacterStateGrabbedByPackMaster.states = {
 
 			if position then
 				parent.locomotion_extension:teleport_to(position)
+
+				if script_data.vs_debug_hoist then
+					QuickDrawerStay:sphere(position, 0.5, Colors.get("yellow"))
+				end
 			end
 		end,
 	},
@@ -442,6 +446,13 @@ PlayerCharacterStateGrabbedByPackMaster.update = function (self, unit, input, dt
 
 	Unit.set_local_rotation(unit, 0, rotation)
 	self.locomotion_extension:set_wanted_pos(wanted_position)
+
+	if script_data.vs_debug_hoist then
+		QuickDrawer:sphere(wanted_position, 0.5, Colors.get("green"))
+		QuickDrawer:sphere(hand_pos, 0.5, Colors.get("blue"))
+		QuickDrawer:line(hand_pos, hand_pos + hand_to_neck_vec, Colors.get("blue"))
+		QuickDrawer:sphere(new_neck_pos, 0.5, Colors.get("yellow"))
+	end
 
 	local physics_world = World.get_data(self.world, "physics_world")
 	local radius = 0.9

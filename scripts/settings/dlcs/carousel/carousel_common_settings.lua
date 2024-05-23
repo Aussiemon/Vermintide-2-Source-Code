@@ -6,6 +6,8 @@ require("scripts/unit_extensions/weapons/area_damage/area_damage_templates_vs")
 
 settings.mechanism_settings = {
 	versus = {
+		always_spawn_a_boss = true,
+		check_matchmaking_hero_availability = true,
 		class_name = "VersusMechanism",
 		disadvantaged_team_starts = true,
 		display_name = "area_selection_carousel_name",
@@ -19,6 +21,7 @@ settings.mechanism_settings = {
 		server_port = 27017,
 		server_universe = "carousel",
 		social_wheel = "VersusSocialWheelUI",
+		spawn_boss_every_section = true,
 		steam_port = 8766,
 		sync_backend_id = true,
 		use_gamepad_layout = true,
@@ -38,6 +41,11 @@ settings.mechanism_settings = {
 			dark_pact = true,
 		},
 		override_career_availability = {},
+		playable_boss_terror_events = {
+			vs_chaos_troll = {
+				"playable_boss_chaos_troll",
+			},
+		},
 		override_item_availability = {},
 		override_career_talents = {},
 		map_pool = {
@@ -219,6 +227,9 @@ settings.anim_lookup = {
 	"equip",
 	"cooldown_ready",
 	"to_armed",
+	"swing_left",
+	"slam",
+	"attack_cleave_charge",
 	"death_dissolve",
 	"death_crawl",
 }

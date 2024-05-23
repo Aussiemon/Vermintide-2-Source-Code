@@ -213,6 +213,8 @@ PlayerManager.relinquish_unit_ownership = function (self, unit)
 		Managers.state.side:remove_player_unit_from_side(unit)
 
 		self._player_units_owners[unit] = nil
+
+		Managers.state.event:trigger("player_unit_relinquished", player_unit_owner, unit, player_unit_owner:unique_id())
 	end
 
 	self._unit_owners[unit] = nil

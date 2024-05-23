@@ -5,8 +5,8 @@ GameModeSettings.versus.key = "versus"
 GameModeSettings.versus.class_name = "GameModeVersus"
 GameModeSettings.versus.display_name = "dlc1_2_map_game_mode_versus"
 GameModeSettings.versus.description_text = "game_mode_description_versus"
-GameModeSettings.versus.lose_condition_time_dead = 4
-GameModeSettings.versus.lose_condition_time = 4
+GameModeSettings.versus.lose_condition_time_dead = 7.5
+GameModeSettings.versus.lose_condition_time = 7.5
 GameModeSettings.versus.ai_specials_spawning_disabled = true
 GameModeSettings.versus.horde_spawning_disabled = false
 GameModeSettings.versus.show_horde_timer_pactsworn = true
@@ -247,6 +247,62 @@ GameModeSettings.versus.surge_events = {
 				},
 			},
 		},
+		farmlands_pvp = {
+			{
+				time = 60,
+				terror_events = {
+					"farmlands_pvp_event_su01_01",
+					"farmlands_pvp_event_su01_02",
+					"farmlands_pvp_event_su01_03",
+					"farmlands_pvp_event_su01_04",
+				},
+			},
+			{
+				time = 55,
+				terror_events = {
+					"farmlands_pvp_event_su02_01",
+					"farmlands_pvp_event_su02_02",
+					"farmlands_pvp_event_su02_03",
+					"farmlands_pvp_event_su02_04",
+				},
+			},
+			{
+				time = 55,
+				terror_events = {
+					"farmlands_pvp_event_su03_01",
+					"farmlands_pvp_event_su03_02",
+					"farmlands_pvp_event_su03_03",
+					"farmlands_pvp_event_su03_04",
+				},
+			},
+			{
+				time = 50,
+				terror_events = {
+					"farmlands_pvp_event_su04_01",
+					"farmlands_pvp_event_su04_02",
+					"farmlands_pvp_event_su04_03",
+					"farmlands_pvp_event_su04_04",
+				},
+			},
+			{
+				time = 45,
+				terror_events = {
+					"farmlands_pvp_event_su05_01",
+					"farmlands_pvp_event_su05_02",
+					"farmlands_pvp_event_su05_03",
+					"farmlands_pvp_event_su05_04",
+				},
+			},
+			{
+				time = 45,
+				terror_events = {
+					"farmlands_pvp_event_su06_01",
+					"farmlands_pvp_event_su06_02",
+					"farmlands_pvp_event_su06_03",
+					"farmlands_pvp_event_su06_04",
+				},
+			},
+		},
 	},
 }
 GameModeSettings.versus.move_dead_players_after_objective_completed = true
@@ -264,7 +320,11 @@ GameModeSettings.versus.dark_pact_profile_order = {
 	"vs_ratling_gunner",
 	"vs_warpfire_thrower",
 }
+GameModeSettings.versus.dark_pact_boss_profiles = {
+	"vs_chaos_troll",
+}
 GameModeSettings.versus.dark_pact_player_profile_to_ai_breed = {
+	vs_chaos_troll = "chaos_troll",
 	vs_gutter_runner = "skaven_gutter_runner",
 	vs_packmaster = "skaven_pack_master",
 	vs_poison_wind_globadier = "skaven_poison_wind_globadier",
@@ -285,12 +345,12 @@ GameModeSettings.versus.dark_pact_picking_rules = {
 GameModeSettings.versus.duplicate_hero_profiles_allowed = false
 GameModeSettings.versus.duplicate_hero_careers_allowed = false
 GameModeSettings.versus.allow_hotjoining_ongoing_game = true
-GameModeSettings.versus.allowed_hotjoin_states = {
+GameModeSettings.versus.allowed_hotjoin_states = table.set({
 	"match_running_state",
 	"pre_start_round_state",
 	"party_lobby",
 	"dedicated_server_waiting_for_fully_reserved",
-}
+})
 GameModeSettings.versus.disable_host_migration = true
 GameModeSettings.versus.shuffle_character_picking_order = "players_first"
 GameModeSettings.versus.character_picking_settings = {
@@ -300,6 +360,7 @@ GameModeSettings.versus.character_picking_settings = {
 	startup_time = 10,
 }
 GameModeSettings.versus.display_end_of_match_score_view = true
+GameModeSettings.versus.end_of_match_view_display_screen_delay = 3
 GameModeSettings.versus.display_parading_view = true
 GameModeSettings.versus.parading_times = {
 	local_player = 5,
@@ -391,6 +452,7 @@ GameModeSettings.versus.dark_pact_bot_respawn_timers = {
 }
 GameModeSettings.versus.dark_pact_catch_up_distance = 30
 GameModeSettings.versus.dark_pact_minimum_spawn_distance = 10
+GameModeSettings.versus.boss_minimum_spawn_distance = 20
 GameModeSettings.versus.dark_pact_minimum_spawn_distance_vertical = 3.5
 GameModeSettings.versus.forced_difficulty = "versus_base"
 GameModeSettings.versus.difficulties = {}
@@ -471,7 +533,12 @@ GameModeSettings.versus.experience = {
 	lose_match = 0,
 	win_match = 150,
 }
-GameModeSettings.versus.mission_givers = {}
+GameModeSettings.versus.mission_givers = {
+	{
+		dialogue_profile = "vs_pactsworn_mission_giver",
+		side_name = "dark_pact",
+	},
+}
 GameModeSettings.inn_vs = table.clone(GameModeSettings.versus)
 GameModeSettings.inn_vs.disable_achievements = false
 GameModeSettings.inn_vs.key = "inn_vs"

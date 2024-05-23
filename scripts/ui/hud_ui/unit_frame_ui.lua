@@ -720,7 +720,9 @@ UnitFrameUI.set_health_percentage = function (self, health_percentage, health_mu
 
 	widget_content.actual_health_percent = health_percentage
 
-	self:_on_player_health_changed("health", widget, health_percentage * health_multiplier)
+	local name = widget_content.is_playing_boss and "boss_health" or "health"
+
+	self:_on_player_health_changed(name, widget, health_percentage * health_multiplier)
 	self:_set_widget_dirty(widget)
 end
 
@@ -730,7 +732,9 @@ UnitFrameUI.set_total_health_percentage = function (self, total_health_percentag
 
 	widget_content.actual_total_health_percent = total_health_percentage
 
-	self:_on_player_total_health_changed("total_health", widget, total_health_percentage * health_multiplier)
+	local name = widget_content.is_playing_boss and "boss_total_health" or "total_health"
+
+	self:_on_player_total_health_changed(name, widget, total_health_percentage * health_multiplier)
 	self:_set_widget_dirty(widget)
 end
 
@@ -741,6 +745,16 @@ UnitFrameUI.set_health_bar_status = function (self, show_health_bar, is_knocked_
 	local total_health_bar_content = widget_content.total_health_bar
 	local hp_bar_content = widget_content.hp_bar
 	local total_health_bar_style = widget_style.total_health_bar
+
+	if widget_content.is_playing_boss then
+		total_health_bar_content = widget_content.boss_total_health_bar
+		hp_bar_content = widget_content.boss_hp_bar
+		total_health_bar_style = widget_style.boss_total_health_bar
+	end
+
+	if not total_health_bar_content then
+		return
+	end
 
 	total_health_bar_content.draw_health_bar = show_health_bar
 	total_health_bar_content.is_knocked_down = is_knocked_down
@@ -857,7 +871,7 @@ end
 UnitFrameUI._update_health_bar_animation = function (self, dt, t)
 	local widget = self:_widget_by_feature("health", "dynamic")
 	local widget_content = widget.content
-	local content = widget_content.hp_bar
+	local content = widget_content.is_playing_boss and widget_content.boss_hp_bar or widget_content.hp_bar
 	local bar_value = content.bar_value
 
 	if bar_value ~= content.internal_bar_value then
@@ -870,7 +884,7 @@ end
 UnitFrameUI._update_total_health_bar_animation = function (self, dt, t)
 	local widget = self:_widget_by_feature("health", "dynamic")
 	local widget_content = widget.content
-	local content = widget_content.total_health_bar
+	local content = widget_content.is_playing_boss and widget_content.boss_total_health_bar or widget_content.total_health_bar
 	local bar_value = content.bar_value
 
 	if bar_value ~= content.internal_bar_value then
@@ -1162,8 +1176,12 @@ UnitFrameUI._on_player_health_changed = function (self, name, widget, health_per
 	bar_animation.current_health = health_percent
 
 	if health_percent <= 1 and health_percent ~= health_percent_current then
-		local is_knocked_down = widget.content.hp_bar.is_knocked_down
-		local current_bar_health = widget.content.hp_bar.bar_value
+		local widget_content = widget.content
+		local widget_style = widget.style
+		local hp_bar_content = widget_content.is_playing_boss and widget_content.boss_hp_bar or widget_content.hp_bar
+		local hp_bar_style = widget_content.is_playing_boss and widget_style.boss_hp_bar or widget_style.hp_bar
+		local is_knocked_down = hp_bar_content.is_knocked_down
+		local current_bar_health = hp_bar_content.bar_value
 		local lerp_time = UISettings.unit_frames.health_bar_lerp_time
 		local anim_time
 
@@ -1182,8 +1200,8 @@ UnitFrameUI._on_player_health_changed = function (self, name, widget, health_per
 		bar_animation.time = 0
 		bar_animation.total_time = anim_time
 		bar_animation.widget = widget
-		bar_animation.content = widget.content.hp_bar
-		bar_animation.style = widget.style.hp_bar
+		bar_animation.content = hp_bar_content
+		bar_animation.style = hp_bar_style
 
 		return true
 	end
@@ -1199,8 +1217,12 @@ UnitFrameUI._on_player_total_health_changed = function (self, name, widget, tota
 	bar_animation.current_health = total_health_percent
 
 	if total_health_percent <= 1 and total_health_percent ~= total_health_percent_current then
-		local is_knocked_down = widget.content.hp_bar.is_knocked_down
-		local current_bar_total_health = widget.content.total_health_bar.bar_value
+		local widget_content = widget.content
+		local widget_style = widget.style
+		local total_health_bar_content = widget_content.is_playing_boss and widget_content.boss_total_health_bar or widget_content.total_health_bar
+		local total_health_bar_style = widget_content.is_playing_boss and widget_style.boss_total_health_bar or widget_style.total_health_bar
+		local is_knocked_down = total_health_bar_content.is_knocked_down
+		local current_bar_total_health = total_health_bar_content.bar_value
 		local lerp_time = UISettings.unit_frames.health_bar_lerp_time
 		local anim_time
 
@@ -1219,8 +1241,8 @@ UnitFrameUI._on_player_total_health_changed = function (self, name, widget, tota
 		bar_animation.time = 0
 		bar_animation.total_time = anim_time
 		bar_animation.widget = widget
-		bar_animation.content = widget.content.total_health_bar
-		bar_animation.style = widget.style.total_health_bar
+		bar_animation.content = total_health_bar_content
+		bar_animation.style = total_health_bar_style
 
 		return true
 	end
@@ -1313,8 +1335,10 @@ UnitFrameUI._update_damage_highlight = function (self, widget, time, dt)
 		local progress = math.min(time / total_time, 1)
 		local catmullrom_value = math.catmullrom(progress, -8, 0, 0, -8)
 		local highlight_alpha = 255 * catmullrom_value
+		local content = widget.content
+		local highlight_style = content.is_playing_boss and style.boss_hp_bar_highlight or style.hp_bar_highlight
 
-		style.hp_bar_highlight.color[1] = highlight_alpha
+		highlight_style.color[1] = highlight_alpha
 
 		self:_set_widget_dirty(widget)
 
@@ -1584,6 +1608,14 @@ UnitFrameUI.update_numeric_ui_career_ability = function (self, game, go_id, play
 	self:_set_widget_dirty(widget)
 end
 
+UnitFrameUI.set_is_playing_dark_pact_boss = function (self, value)
+	local widget = self:_widget_by_name("health_dynamic")
+	local content = widget.content
+
+	content.is_playing_boss = value
+	self._widgets.default_static.content.is_playing_boss = value
+end
+
 local pop_time_between_dmg = 0.01
 local pop_dmg_time = 0.7
 local pop_dmg_life_time = 2
@@ -1592,12 +1624,14 @@ local dmg_lookup1 = {
 	[25] = ".25",
 	[50] = ".50",
 	[75] = ".75",
+	[100] = ".00",
 }
 local dmg_lookup2 = {
 	[0] = " ",
-	[5] = "½",
 	[25] = "¼",
+	[50] = "½",
 	[75] = "¾",
+	[100] = " ",
 }
 local dmg_decimals_lookup = dmg_lookup1
 local MAX_NUMBER_OF_DAMAGE_MESSAGES = 4
@@ -1659,7 +1693,7 @@ UnitFrameUI.add_damage_feedback = function (self, hash, is_local_player, event_t
 
 	local integer = math.floor(damage_amount)
 	local dec = damage_amount - integer
-	local dec_lookup = math.floor(dec * 100 + 0.5)
+	local dec_lookup = math.floor((dec + 0.125) * 4) * 25
 	local parts = dmg_decimals_lookup[dec_lookup] or "  "
 	local damage_amount_txt = integer .. parts
 
@@ -1787,7 +1821,7 @@ UnitFrameUI._update_damage_feedback = function (self, dt, t)
 			event.old_shown_amount_decimal = event.shown_amount_decimal
 
 			local dec = event.shown_amount - math.floor(event.shown_amount)
-			local dec_lookup = math.floor(dec * 100 + 0.5)
+			local dec_lookup = math.floor((dec + 0.125) * 4) * 25
 
 			event.shown_amount_decimal = dmg_decimals_lookup[dec_lookup] or ".??"
 

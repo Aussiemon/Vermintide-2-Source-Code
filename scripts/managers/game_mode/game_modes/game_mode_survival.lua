@@ -11,8 +11,7 @@ local FAIL_LEVEL_VAR = false
 GameModeSurvival.init = function (self, settings, world, ...)
 	GameModeSurvival.super.init(self, settings, world, ...)
 
-	self.about_to_lose = false
-	self.lost_condition_timer = nil
+	self._lost_condition_timer = nil
 end
 
 GameModeSurvival.evaluate_end_conditions = function (self, round_started, dt, t)
@@ -25,9 +24,9 @@ GameModeSurvival.evaluate_end_conditions = function (self, round_started, dt, t)
 	local players_disabled = GameModeHelper.side_is_disabled("heroes")
 	local lost = not self._lose_condition_disabled and (humans_dead or players_disabled or self._level_failed or self:_is_time_up())
 
-	if self.about_to_lose then
+	if self:is_about_to_end_game_early() then
 		if lost then
-			if t > self.lost_condition_timer then
+			if t > self._lost_condition_timer then
 				local mission_system = Managers.state.entity:system("mission_system")
 				local active_missions, completed_missions = mission_system:get_missions()
 
@@ -48,8 +47,9 @@ GameModeSurvival.evaluate_end_conditions = function (self, round_started, dt, t)
 				return false
 			end
 		else
-			self.about_to_lose = nil
-			self.lost_condition_timer = nil
+			self:set_about_to_end_game_early(false)
+
+			self._lost_condition_timer = nil
 		end
 	end
 
@@ -66,12 +66,12 @@ GameModeSurvival.evaluate_end_conditions = function (self, round_started, dt, t)
 	end
 
 	if lost then
-		self.about_to_lose = true
+		self:set_about_to_end_game_early(true)
 
 		if humans_dead then
-			self.lost_condition_timer = t + GameModeSettings.survival.lose_condition_time_dead
+			self._lost_condition_timer = t + GameModeSettings.survival.lose_condition_time_dead
 		else
-			self.lost_condition_timer = t + GameModeSettings.survival.lose_condition_time
+			self._lost_condition_timer = t + GameModeSettings.survival.lose_condition_time
 		end
 	elseif self._level_completed or self:update_end_level_areas() then
 		return true, "won"

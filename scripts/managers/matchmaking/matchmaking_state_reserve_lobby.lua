@@ -10,6 +10,7 @@ MatchmakingStateReserveLobby.NAME = "MatchmakingStateReserveLobby"
 
 MatchmakingStateReserveLobby.init = function (self, params)
 	self._network_options = params.network_options
+	self._network_transmit = params.network_transmit
 	self._reserver = nil
 	self._state = nil
 	self._wait_for_join_message = nil
@@ -25,6 +26,9 @@ end
 MatchmakingStateReserveLobby.terminate = function (self)
 	if self._reserved_lobby_client then
 		self._reserved_lobby_client:destroy()
+
+		self._reserved_lobby_client = nil
+		self._game_server_lobby = nil
 	end
 end
 
@@ -109,18 +113,7 @@ MatchmakingStateReserveLobby.update = function (self, dt, t)
 		local engine_lobby = self._reserved_lobby_client.lobby
 
 		if SteamGameServerLobby.state(engine_lobby) == "failed" then
-			local fail_reason = SteamGameServerLobby.fail_reason(engine_lobby)
-			local mechanism = Managers.mechanism:game_mechanism()
-
-			if mechanism.reset_dedicated_slots_count and mechanism.reset_party_info then
-				mechanism:reset_dedicated_slots_count()
-				mechanism:reset_party_info()
-			end
-
-			self._reserved_lobby_client:destroy()
-
-			self._reserved_lobby_client = nil
-			self._join_lobby_data = nil
+			self:_reset()
 
 			local party_lobby_host = self._party_lobby_host
 			local lobby_members = party_lobby_host:members()
@@ -129,6 +122,24 @@ MatchmakingStateReserveLobby.update = function (self, dt, t)
 			self:_start_search(party_members, self._optional_filters)
 		end
 	end
+end
+
+MatchmakingStateReserveLobby._reset = function (self)
+	local mechanism = Managers.mechanism:game_mechanism()
+
+	if mechanism.reset_dedicated_slots_count and mechanism.reset_party_info then
+		mechanism:reset_dedicated_slots_count()
+		mechanism:reset_party_info()
+	end
+
+	if self._reserved_lobby_client then
+		self._reserved_lobby_client:destroy()
+
+		self._reserved_lobby_client = nil
+		self._game_server_lobby = nil
+	end
+
+	self._join_lobby_data = nil
 end
 
 MatchmakingStateReserveLobby.rpc_join_reserved_game_server = function (self, channel_id)
@@ -188,6 +199,7 @@ MatchmakingStateReserveLobby._claim_reservation = function (self, state_context)
 	self._reserved_lobby_client:claim_reserved()
 
 	self._reserved_lobby_client = nil
+	self._game_server_lobby = nil
 	self._join_lobby_data = nil
 end
 

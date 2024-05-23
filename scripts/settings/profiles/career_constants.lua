@@ -19,10 +19,13 @@ CareerConstants = {
 		talent_4_3_stack_duration = 1.5,
 	},
 	wh_priest = {
+		ability_base_duration = 5,
+		ability_base_duration_versus = 2,
 		talent_4_1_fury_gain_mult = 0.6,
 		talent_4_2_fury_to_gain_percent = 0.6,
 		talent_4_2_smite_improved_damage = 0.4,
 		talent_6_1_improved_ability_duration = 10,
+		talent_6_1_improved_ability_duration_versus = 5,
 	},
 	bw_scholar = {
 		perk_3_max_overcharge = 0.5,

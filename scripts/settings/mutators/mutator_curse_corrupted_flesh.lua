@@ -42,6 +42,8 @@ local mutator = mutator_base_curse_marked_enemies("curse_corrupted_flesh_name", 
 	skaven_storm_vermin_with_shield = true,
 })
 
-mutator.curse_package_name = "resource_packages/mutators/mutator_curse_corrupted_flesh"
+mutator.packages = {
+	"resource_packages/mutators/mutator_curse_corrupted_flesh",
+}
 
 return mutator

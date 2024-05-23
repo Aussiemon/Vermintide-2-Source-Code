@@ -74,7 +74,6 @@ local context_indexes = table.mirror_array_inplace({
 	"user_memory",
 	"faction_memory",
 })
-local DEBUG_VO_RULE
 
 TagQueryDatabase.define_rule = function (self, rule_definition)
 	local dialogue_name = rule_definition.name

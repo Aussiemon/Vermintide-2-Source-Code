@@ -27,8 +27,7 @@ GameModeDeus.init = function (self, settings, world, network_server, is_server, 
 	fassert(game_mode_settings, "game mode settings can not be nil")
 	fassert(game_mode_settings.deus_run_controller, "game mode settings must provide a deus run controller")
 
-	self.about_to_lose = false
-	self.lost_condition_timer = nil
+	self._lost_condition_timer = nil
 	self._adventure_profile_rules = AdventureProfileRules:new(self._profile_synchronizer, self._network_server)
 
 	local hero_side = Managers.state.side:get_side_from_name("heroes")
@@ -125,30 +124,31 @@ GameModeDeus.evaluate_end_conditions = function (self, round_started, dt, t, mut
 	local mutator_lost, mutator_lost_delay = mutator_handler:evaluate_lose_conditions()
 	local lost = not self._lose_condition_disabled and (mutator_lost or humans_dead or players_disabled or self._level_failed or self:_is_time_up())
 
-	if self.about_to_lose then
+	if self:is_about_to_end_game_early() then
 		if lost then
-			if t > self.lost_condition_timer then
+			if t > self._lost_condition_timer then
 				return true, "lost"
 			else
 				return false
 			end
 		else
-			self.about_to_lose = nil
-			self.lost_condition_timer = nil
+			self:set_about_to_end_game_early(false)
+
+			self._lost_condition_timer = nil
 		end
 	end
 
 	local won = false
 
 	if lost then
-		self.about_to_lose = true
+		self:set_about_to_end_game_early(true)
 
 		if mutator_lost and mutator_lost_delay then
-			self.lost_condition_timer = t + mutator_lost_delay
+			self._lost_condition_timer = t + mutator_lost_delay
 		elseif humans_dead then
-			self.lost_condition_timer = t + GameModeSettings.adventure.lose_condition_time_dead
+			self._lost_condition_timer = t + GameModeSettings.adventure.lose_condition_time_dead
 		else
-			self.lost_condition_timer = t + GameModeSettings.adventure.lose_condition_time
+			self._lost_condition_timer = t + GameModeSettings.adventure.lose_condition_time
 		end
 
 		return false
@@ -649,7 +649,25 @@ GameModeDeus.get_player_wounds = function (self, profile)
 end
 
 GameModeDeus.mutators = function (self)
-	return self._mutators
+	local mutators_list = table.shallow_copy(self._mutators)
+
+	self:append_live_event_mutators(mutators_list)
+
+	local event_mutators = self._deus_run_controller:get_event_mutators()
+
+	if event_mutators then
+		local mutators_list_keys = table.set(mutators_list)
+
+		for i = 1, #event_mutators do
+			local event_mutator = event_mutators[i]
+
+			if not mutators_list_keys[event_mutator] then
+				mutators_list[#mutators_list + 1] = event_mutator
+			end
+		end
+	end
+
+	return mutators_list
 end
 
 GameModeDeus.on_picked_up_soft_currency = function (self, interactable_unit, interactor_unit)

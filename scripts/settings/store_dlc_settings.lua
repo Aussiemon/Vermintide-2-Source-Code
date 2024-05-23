@@ -2,7 +2,6 @@
 
 StoreDlcSettings = {
 	{
-		dlc_name = "premium_career_bundle",
 		information_text = "description_five_premium_career_bundle",
 		name = "display_name_premium_career_bundle",
 		prio = 10,
@@ -12,10 +11,9 @@ StoreDlcSettings = {
 		store_page_url = "https://store.steampowered.com/bundle/38849",
 		store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_premium_career_bundle",
 		store_texture_package = "resource_packages/store/dlc_icons/premium_career_bundle/premium_career_bundle",
+		dlc_name = not IS_CONSOLE and "premium_career_bundle",
 		available_platforms = {
 			"win32",
-			"xb1",
-			"ps4",
 		},
 		layout = {
 			{
@@ -301,7 +299,6 @@ StoreDlcSettings = {
 		},
 	},
 	{
-		dlc_name = "premium_career_bundle_upgrade",
 		information_text = "description_premium_career_bundle_upgrade",
 		name = "display_name_premium_career_bundle_upgrade",
 		prio = 10,
@@ -311,8 +308,11 @@ StoreDlcSettings = {
 		store_page_url = "https://store.steampowered.com/bundle/38850",
 		store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_premium_career_bundle_upgrade",
 		store_texture_package = "resource_packages/store/dlc_icons/premium_career_bundle/premium_career_bundle",
+		dlc_name = IS_CONSOLE and "premium_career_bundle" or "premium_career_bundle_upgrade",
 		available_platforms = {
 			"win32",
+			"xb1",
+			"ps4",
 		},
 		layout = {
 			{

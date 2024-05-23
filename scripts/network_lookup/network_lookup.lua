@@ -22,6 +22,7 @@ require("scripts/settings/survival_settings")
 require("scripts/settings/spawn_unit_templates")
 require("scripts/unit_extensions/weaves/weave_item_templates")
 require("scripts/settings/unlock_settings")
+require("scripts/entity_system/systems/projectile/drone_templates")
 DLCUtils.require_list("statistics_database")
 require("scripts/settings/twitch_settings")
 require("scripts/unit_extensions/weapons/area_damage/liquid/damage_blob_templates")
@@ -293,7 +294,6 @@ local damage_sources = {
 	"career_ability",
 	"charge_ability_hit",
 	"charge_ability_hit_blast",
-	"corpse_explosion",
 	"buff",
 	"life_tap",
 }
@@ -422,7 +422,6 @@ NetworkLookup.husks = {
 	"units/weapons/projectile/strike_missile_drachenfels/strike_missile_drachenfels",
 	"units/weapons/projectile/warp_lightning_bolt/warp_lightning_bolt",
 	"units/weapons/enemy/wpn_overpowering_blob/wpn_overpowering_blob",
-	"units/weapons/player/wpn_dwarf_smoke_grenade_01/wpn_dwarf_smoke_grenade_01_3p",
 	"units/weapons/player/pup_potion/pup_potion_t1",
 	"units/weapons/player/pup_potion/pup_potion_buff",
 	"units/weapons/player/pup_first_aid_kit/pup_first_aid_kit",
@@ -1598,6 +1597,11 @@ NetworkLookup.sound_events = {
 	"Stop_versus_hud_last_hero_down_riser",
 	"Play_enemy_chaos_bulwark_stagger",
 	"Play_enemy_chaos_bulwark_stagger_break",
+	"Play_boon_aoe_zone_explode_attackspeed",
+	"Play_boon_aoe_zone_explode_cooldown",
+	"Play_boon_aoe_zone_explode_crit",
+	"Play_boon_aoe_zone_explode_healing",
+	"Play_boon_aoe_zone_explode_power",
 }
 
 do
@@ -2177,22 +2181,17 @@ NetworkLookup.challenge_categories = {}
 
 DLCUtils.append("challenge_categories", NetworkLookup.challenge_categories)
 
+NetworkLookup.drone_templates = create_lookup({}, DroneTemplates)
 NetworkLookup.boon_consume_types = {
 	"time",
 	"venture",
 	"charges",
 }
-NetworkLookup.network_log_levels = {
-	"silent",
-	"warnings",
-	"info",
-	"messages",
-	"spew",
-}
 NetworkLookup.request_profile_replies = {
 	"profile_declined",
 	"profile_accepted",
 	"profile_locked",
+	"previous_profile_accepted",
 }
 
 local function is_sync_statistics(stat)
@@ -2275,6 +2274,12 @@ DLCUtils.append("inventory_package_list", NetworkLookup.inventory_packages)
 
 NetworkLookup.network_packages = {}
 
+for _, mutator_template in pairs(MutatorTemplates) do
+	if mutator_template.packages then
+		table.append(NetworkLookup.network_packages, mutator_template.packages)
+	end
+end
+
 DLCUtils.append("network_packages", NetworkLookup.network_packages)
 
 local NETWORK_LOOKUP_DUPLICATES_ALLOWED = {
@@ -2305,7 +2310,12 @@ local DialogueLookup = DialogueLookup
 NetworkLookup.dialogues = DialogueLookup
 NetworkLookup.dialogue_profiles = {
 	"inn_keeper",
+	"vs_pactsworn_mission_giver",
 }
+
+table.append_unique(NetworkLookup.dialogue_profiles, table.values(table.select_map(SPProfiles, function (_, profile)
+	return profile.character_vo
+end)))
 
 local MarkerLookup = MarkerLookup
 

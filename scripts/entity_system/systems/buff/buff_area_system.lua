@@ -4,6 +4,10 @@ require("scripts/unit_extensions/default_player_unit/buffs/buff_area_extension")
 
 BuffAreaSystem = class(BuffAreaSystem, ExtensionSystemBase)
 
+local RPCS = {
+	"rpc_play_enter_buff_zone_sfx",
+	"rpc_play_leave_buff_zone_sfx",
+}
 local extensions = {
 	"BuffAreaExtension",
 }
@@ -13,6 +17,17 @@ BuffAreaSystem.init = function (self, entity_system_creation_context, system_nam
 
 	self._inside_by_side_and_template = {}
 	self._inside_by_area = {}
+	self._buff_area_extensions = {}
+
+	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
+	self.network_event_delegate = network_event_delegate
+
+	network_event_delegate:register(self, unpack(RPCS))
+end
+
+BuffAreaSystem.destroy = function (self)
+	self.network_event_delegate:unregister(self)
 end
 
 BuffAreaSystem.on_add_extension = function (self, world, unit, extension_name, ...)
@@ -37,6 +52,8 @@ BuffAreaSystem.on_add_extension = function (self, world, unit, extension_name, .
 		}
 	end
 
+	self._buff_area_extensions[unit] = buff_area_extension
+
 	return buff_area_extension
 end
 
@@ -50,5 +67,23 @@ BuffAreaSystem.inside_by_area = function (self, buff_area_extension)
 		return self._inside_by_side_and_template[side][name]
 	else
 		return self._inside_by_area[buff_area_extension]
+	end
+end
+
+BuffAreaSystem.rpc_play_enter_buff_zone_sfx = function (self, channel_id, go_id)
+	local unit = Managers.state.unit_storage:unit(go_id)
+	local extension = self._buff_area_extensions[unit]
+
+	if extension then
+		extension:play_enter_buff_zone_sfx()
+	end
+end
+
+BuffAreaSystem.rpc_play_leave_buff_zone_sfx = function (self, channel_id, go_id)
+	local unit = Managers.state.unit_storage:unit(go_id)
+	local extension = self._buff_area_extensions[unit]
+
+	if extension then
+		extension:play_leave_buff_zone_sfx()
 	end
 end

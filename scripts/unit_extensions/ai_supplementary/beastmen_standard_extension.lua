@@ -84,10 +84,16 @@ BeastmenStandardExtension.init = function (self, extension_init_context, unit, e
 	end
 
 	local sfx_placed = standard_template.sfx_placed
+
+	if sfx_placed then
+		WwiseUtils.trigger_unit_event(world, sfx_placed, unit, 0)
+	end
+
 	local sfx_loop = standard_template.sfx_loop
 
-	WwiseUtils.trigger_unit_event(world, sfx_placed, unit, 0)
-	WwiseUtils.trigger_unit_event(world, sfx_loop, unit, 0)
+	if sfx_loop then
+		WwiseUtils.trigger_unit_event(world, sfx_loop, unit, 0)
+	end
 end
 
 BeastmenStandardExtension.destroy = function (self)
@@ -164,10 +170,16 @@ BeastmenStandardExtension.on_death = function (self, killer_unit)
 	end
 
 	local sfx_loop_stop = self.standard_template.sfx_loop_stop
+
+	if sfx_loop_stop then
+		WwiseUtils.trigger_unit_event(self.world, sfx_loop_stop, self.unit, 0)
+	end
+
 	local sfx_destroyed = self.standard_template.sfx_destroyed
 
-	WwiseUtils.trigger_unit_event(self.world, sfx_loop_stop, self.unit, 0)
-	WwiseUtils.trigger_unit_event(self.world, sfx_destroyed, self.unit, 0)
+	if sfx_destroyed then
+		WwiseUtils.trigger_unit_event(self.world, sfx_destroyed, self.unit, 0)
+	end
 
 	self.world = nil
 	self.self_position_boxed = nil

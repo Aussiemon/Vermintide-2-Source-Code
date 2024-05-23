@@ -102,9 +102,10 @@ LevelTransitionHandler.reload_level = function (self, optional_checkpoint_data, 
 
 	self._checkpoint_data = optional_checkpoint_data
 
+	local skip_metatable = true
 	local level_transition_type = "reload_level"
 
-	self:_set_next_level(level_transition_type, self:get_current_level_key(), self:get_current_environment_variation_id(), optional_level_seed or self:get_current_level_seed(), self:get_current_mechanism(), self:get_current_game_mode(), self:get_current_conflict_director(), self:get_current_locked_director_functions(), self:get_current_difficulty(), self:get_current_difficulty_tweak(), self:get_current_extra_packages())
+	self:_set_next_level(level_transition_type, self:get_current_level_key(), self:get_current_environment_variation_id(), optional_level_seed or self:get_current_level_seed(), self:get_current_mechanism(), self:get_current_game_mode(), self:get_current_conflict_director(), self:get_current_locked_director_functions(), self:get_current_difficulty(), self:get_current_difficulty_tweak(), table.shallow_copy(self:get_current_extra_packages(), skip_metatable))
 end
 
 LevelTransitionHandler.get_checkpoint_data = function (self)
@@ -432,10 +433,9 @@ LevelTransitionHandler._set_next_level = function (self, level_transition_type, 
 end
 
 LevelTransitionHandler._append_event_packages = function (self, level_key, extra_packages)
-	local level_setting = LevelSettings[level_key]
-	local is_hub_level = level_setting and level_setting.hub_level
+	local level_settings = LevelSettings[level_key]
 
-	if is_hub_level then
+	if not level_settings or level_settings.hub_level or level_settings.tutorial_level then
 		return
 	end
 
@@ -466,12 +466,18 @@ LevelTransitionHandler._append_event_packages = function (self, level_key, extra
 		end
 	end
 
-	for i = 1, #mutators_list do
-		local mutator_name = mutators_list[i]
+	for mutator_i = 1, #mutators_list do
+		local mutator_name = mutators_list[mutator_i]
 		local mutator_packages = MutatorTemplates[mutator_name].packages
 
 		if mutator_packages then
-			table.append(extra_packages, mutator_packages)
+			for package_i = 1, #mutator_packages do
+				local mutator_package = mutator_packages[package_i]
+
+				if not table.contains(extra_packages, mutator_package) then
+					table.insert(extra_packages, mutator_package)
+				end
+			end
 		end
 	end
 end

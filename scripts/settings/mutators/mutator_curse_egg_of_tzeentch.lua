@@ -141,10 +141,12 @@ local function is_valid_spawn_distance(ahead_player_travel_dist, egg_spawn_dista
 end
 
 return {
-	curse_package_name = "resource_packages/mutators/mutator_curse_egg_of_tzeentch",
 	description = "curse_egg_of_tzeentch_desc",
 	display_name = "curse_egg_of_tzeentch_name",
 	icon = "deus_curse_tzeentch_01",
+	packages = {
+		"resource_packages/mutators/mutator_curse_egg_of_tzeentch",
+	},
 	client_start_function = function (context, data)
 		data.vfx_ids = {}
 		data.wwise_world = Managers.world:wwise_world(context.world)

@@ -1229,25 +1229,6 @@ ExplosionTemplates.chaos_vortex_dummy_missile = {
 		radius = 0.1,
 	},
 }
-ExplosionTemplates.corpse_explosion_default = {
-	time_to_explode = 1,
-	explosion = {
-		alert_enemies = true,
-		alert_enemies_radius = 20,
-		allow_friendly_fire_override = true,
-		damage_interval = 0,
-		damage_profile = "corpse_explosion_default",
-		effect_name = "fx/chr_nurgle_explosion_01",
-		max_damage_radius_max = 2,
-		max_damage_radius_min = 0.5,
-		power_level = 500,
-		radius = 3.2,
-		sound_event_name = "Play_enemy_chaos_warrior_transform_explode",
-		immune_breeds = {
-			all = true,
-		},
-	},
-}
 ExplosionTemplates.lightning_strike = {
 	explosion = {
 		alert_enemies = true,

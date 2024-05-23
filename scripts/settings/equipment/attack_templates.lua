@@ -694,11 +694,6 @@ AttackTemplates.chaos_magic_missile = {
 		1,
 	},
 }
-AttackTemplates.corpse_explosion_default = {
-	damage_type = "buff",
-	sound_type = "medium",
-	stagger_type = "ai_stagger",
-}
 AttackTemplates.death_explosion = {
 	damage_type = "death_explosion",
 	stagger_value = 1,

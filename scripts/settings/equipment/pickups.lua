@@ -144,7 +144,7 @@ Pickups.level_events.training_dummy_bob = {
 				ai_system:set_attribute(ai_unit, "armor", "training_dummy", false)
 			end,
 		}
-		local unit = Managers.state.conflict:_spawn_unit(breed, spawn_pos, spawn_rot, "pickup", nil, nil, optional_data)
+		local unit = Managers.state.conflict:spawn_unit_immediate(breed, spawn_pos, spawn_rot, "pickup", nil, nil, optional_data)
 
 		return unit
 	end,
@@ -176,7 +176,7 @@ Pickups.level_events.training_dummy_armored_bob = {
 				ai_system:set_attribute(ai_unit, "armor", "training_dummy", true)
 			end,
 		}
-		local unit = Managers.state.conflict:_spawn_unit(breed, spawn_pos, spawn_rot, "pickup", nil, nil, optional_data)
+		local unit = Managers.state.conflict:spawn_unit_immediate(breed, spawn_pos, spawn_rot, "pickup", nil, nil, optional_data)
 
 		return unit
 	end,

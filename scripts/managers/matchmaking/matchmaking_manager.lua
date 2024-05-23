@@ -77,12 +77,14 @@ local RPCS = {
 	"rpc_matchmaking_request_profiles_data",
 	"rpc_matchmaking_request_join_lobby",
 	"rpc_matchmaking_request_profile",
+	"rpc_matchmaking_request_profile_versus",
 	"rpc_set_matchmaking",
 	"rpc_cancel_matchmaking",
 	"rpc_matchmaking_request_join_lobby_reply",
 	"rpc_notify_connected",
 	"rpc_matchmaking_join_game",
 	"rpc_matchmaking_request_profile_reply",
+	"rpc_matchmaking_request_profile_reply_versus",
 	"rpc_matchmaking_request_profiles_data_reply",
 	"rpc_matchmaking_request_selected_level",
 	"rpc_matchmaking_request_selected_level_reply",
@@ -1341,7 +1343,7 @@ MatchmakingManager.rpc_matchmaking_request_join_lobby = function (self, channel_
 	local is_friend = false
 
 	if not DEDICATED_SERVER then
-		is_friend = LobbyInternal.is_friend(peer_id) or friend_join
+		is_friend = IS_CONSOLE and true or LobbyInternal.is_friend(peer_id) or friend_join
 	end
 
 	local user_blocked
@@ -1407,7 +1409,16 @@ end
 
 MatchmakingManager.rpc_matchmaking_request_profile = function (self, channel_id, profile)
 	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
-	local reply = self.profile_synchronizer:try_reserve_profile_for_peer(peer_id, profile) and "profile_accepted" or "profile_declined"
+	local reply
+	local mechanism = Managers.mechanism:game_mechanism()
+
+	if mechanism.try_reserve_profile_for_peer then
+		reply = mechanism:try_reserve_profile_for_peer(peer_id, profile)
+	else
+		reply = self.profile_synchronizer:try_reserve_profile_for_peer(peer_id, profile)
+	end
+
+	reply = reply and "profile_accepted" or "profile_declined"
 
 	if Managers.state.game_mode and Managers.state.game_mode:hero_is_locked(profile) then
 		reply = "profile_locked"
@@ -1416,6 +1427,54 @@ MatchmakingManager.rpc_matchmaking_request_profile = function (self, channel_id,
 	local reply_id = NetworkLookup.request_profile_replies[reply]
 
 	self.network_transmit:send_rpc("rpc_matchmaking_request_profile_reply", peer_id, profile, reply_id)
+end
+
+MatchmakingManager.rpc_matchmaking_request_profile_versus = function (self, channel_id, profile)
+	local mechanism = Managers.mechanism:game_mechanism()
+
+	if mechanism:get_state() == "inn" then
+		return self:rpc_matchmaking_request_profile(channel_id, profile)
+	end
+
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+	local occupied_profile_indices = {}
+	local success, party_id, reply
+	local saved_profile_idx = mechanism:get_saved_hero(peer_id, 1)
+
+	if saved_profile_idx and mechanism:try_reserve_profile_for_peer(peer_id, saved_profile_idx) then
+		success = true
+		profile = saved_profile_idx
+		reply = "previous_profile_accepted"
+	else
+		success, party_id = mechanism:try_reserve_profile_for_peer(peer_id, profile)
+	end
+
+	reply = reply or success and "profile_accepted" or "profile_declined"
+
+	if Managers.state.game_mode and Managers.state.game_mode:hero_is_locked(profile) then
+		reply = "profile_locked"
+		success = false
+	end
+
+	if not success and party_id and party_id > 0 then
+		local peers_in_party = mechanism:reserved_peers_in_party(party_id)
+
+		for i = 1, #peers_in_party do
+			local other_peer = peers_in_party[i]
+
+			if other_peer ~= peer_id then
+				local profile_index = mechanism:get_saved_hero(peers_in_party[i], 1)
+
+				if profile_index then
+					occupied_profile_indices[#occupied_profile_indices + 1] = profile_index
+				end
+			end
+		end
+	end
+
+	local reply_id = NetworkLookup.request_profile_replies[reply]
+
+	self.network_transmit:send_rpc("rpc_matchmaking_request_profile_reply_versus", peer_id, profile, reply_id, occupied_profile_indices)
 end
 
 MatchmakingManager.current_state = function (self)
@@ -1690,6 +1749,16 @@ end
 MatchmakingManager.rpc_matchmaking_request_profile_reply = function (self, channel_id, profile, reply)
 	if self._state and self._state.NAME == "MatchmakingStateJoinGame" then
 		self._state:rpc_matchmaking_request_profile_reply(channel_id, profile, reply)
+	else
+		local state_name = self._state and self._state.NAME or "none"
+
+		mm_printf_force("rpc_matchmaking_request_profile_reply, got this in wrong state current_state:%s", state_name)
+	end
+end
+
+MatchmakingManager.rpc_matchmaking_request_profile_reply_versus = function (self, channel_id, profile, reply, occupied_profile_indices)
+	if self._state and self._state.NAME == "MatchmakingStateJoinGame" then
+		self._state:rpc_matchmaking_request_profile_reply(channel_id, profile, reply, occupied_profile_indices)
 	else
 		local state_name = self._state and self._state.NAME or "none"
 

@@ -122,6 +122,7 @@ ConflictDirector.init = function (self, world, level_key, network_event_delegate
 	self.spawn_queue_size = 0
 	self.spawn_queue_id = 0
 	self.main_path_player_info = {}
+	self._spawn_queue_id_lut = Script.new_array(1024)
 
 	self:_setup_sides_to_update_recycler()
 
@@ -1773,6 +1774,10 @@ ConflictDirector.spawn_queued_unit = function (self, breed, boxed_spawn_pos, box
 	return self.spawn_queue_id
 end
 
+ConflictDirector.get_spawned_unit = function (self, spawn_queue_id)
+	return self._spawn_queue_id_lut[spawn_queue_id]
+end
+
 ConflictDirector.remove_queued_unit = function (self, queue_id)
 	local spawn_queue = self.spawn_queue
 	local first_spawn_index = self.first_spawn_index
@@ -1840,7 +1845,7 @@ ConflictDirector.update_spawn_queue = function (self, t)
 		local breed = BLACKBOARDS[unit].breed
 		local go_id = Managers.state.unit_storage:go_id(unit)
 
-		self:_post_spawn_unit(unit, go_id, breed, d[2]:unbox(), d[4], d[5], d[7], d[6])
+		self:_post_spawn_unit(unit, go_id, breed, d[2]:unbox(), d[4], d[5], d[7], d[6], d[10])
 	else
 		unit = self:_spawn_unit(d[1], d[2]:unbox(), d[3]:unbox(), d[4], d[5], d[6], d[7], d[8], d[10])
 	end
@@ -1866,6 +1871,12 @@ ConflictDirector.update_spawn_queue = function (self, t)
 	if self.spawn_queue_size == 0 then
 		self.first_spawn_index = 1
 	end
+end
+
+ConflictDirector.spawn_unit_immediate = function (self, breed, spawn_pos, spawn_rot, spawn_category, spawn_animation, spawn_type, optional_data, group_data)
+	self.spawn_queue_id = self.spawn_queue_id + 1
+
+	self:_spawn_unit(breed, spawn_pos, spawn_rot, spawn_category, spawn_animation, spawn_type, optional_data, group_data, self.spawn_queue_id)
 end
 
 local dialogue_system_init_data = {
@@ -1990,12 +2001,14 @@ ConflictDirector._spawn_unit = function (self, breed, spawn_pos, spawn_rot, spaw
 
 	local ai_unit, go_id = Managers.state.unit_spawner:spawn_network_unit(base_unit_name, unit_template, extension_init_data, spawn_pose)
 
-	self:_post_spawn_unit(ai_unit, go_id, breed, spawn_pos, spawn_category, spawn_animation, optional_data, spawn_type)
+	self:_post_spawn_unit(ai_unit, go_id, breed, spawn_pos, spawn_category, spawn_animation, optional_data, spawn_type, spawn_index)
 
 	return ai_unit, go_id
 end
 
-ConflictDirector._post_spawn_unit = function (self, ai_unit, go_id, breed, spawn_pos, spawn_category, spawn_animation, optional_data, spawn_type)
+ConflictDirector._post_spawn_unit = function (self, ai_unit, go_id, breed, spawn_pos, spawn_category, spawn_animation, optional_data, spawn_type, spawn_queue_id)
+	self._spawn_queue_id_lut[spawn_queue_id] = ai_unit
+	self._spawn_queue_id_lut[ai_unit] = spawn_queue_id
 	optional_data = optional_data or {}
 
 	Managers.state.game_mode:post_ai_spawned(ai_unit, breed, optional_data)
@@ -2076,6 +2089,12 @@ ConflictDirector._post_spawn_unit = function (self, ai_unit, go_id, breed, spawn
 	if USE_ENGINE_SLOID_SYSTEM then
 		EngineOptimized.add_static_unit_data(ai_unit, 2.2, optional_data.side_id)
 	end
+
+	if breed.boss then
+		local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+		dialogue_system:trigger_mission_giver_event("vs_mg_new_spawn_monster")
+	end
 end
 
 ConflictDirector.set_disabled = function (self, state)
@@ -2154,6 +2173,13 @@ ConflictDirector._remove_unit_from_spawned = function (self, unit, blackboard, d
 
 	if not index then
 		return
+	end
+
+	local spawn_id = self._spawn_queue_id_lut[unit]
+
+	if spawn_id then
+		self._spawn_queue_id_lut[unit] = nil
+		self._spawn_queue_id_lut[spawn_id] = nil
 	end
 
 	local breed = blackboard.breed
@@ -4048,6 +4074,10 @@ ConflictDirector.debug_spawn_variant = function (self, breed_name, enhancement_s
 	end
 
 	return breed
+end
+
+ConflictDirector.world = function (self)
+	return self._world
 end
 
 ConflictDirector.debug_spawn_encampment = function (self, encampment_id)

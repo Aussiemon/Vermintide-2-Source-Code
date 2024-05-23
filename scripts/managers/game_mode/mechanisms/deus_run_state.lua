@@ -7,18 +7,21 @@ local shared_state_spec = require("scripts/managers/game_mode/mechanisms/deus_ru
 
 DeusRunState = class(DeusRunState)
 
-DeusRunState.init = function (self, run_id, is_server, network_handler, server_peer_id, own_peer_id, own_initial_loadout, own_initial_talents, weapon_group_whitelist)
+DeusRunState.init = function (self, run_id, is_server, network_handler, server_peer_id, own_peer_id, own_initial_loadout, own_initial_talents, own_initial_bot_loadout, own_initial_bot_talents, weapon_group_whitelist)
 	self._run_id = run_id
 	self._is_server = is_server
 	self._server_peer_id = server_peer_id
 	self._own_peer_id = own_peer_id
 	self._network_handler = network_handler
+	self._event_mutator_packages = {}
 
 	local run_state_id_key = "deus_run_state_" .. run_id
 
 	self._shared_state = SharedState:new(run_state_id_key, shared_state_spec, is_server, network_handler, server_peer_id, own_peer_id)
 	self._own_initial_loadout = own_initial_loadout
 	self._own_initial_talents = own_initial_talents
+	self._own_initial_bot_loadout = own_initial_bot_loadout
+	self._own_initial_bot_talents = own_initial_bot_talents
 	self._weapon_group_whitelist = weapon_group_whitelist
 end
 
@@ -45,6 +48,10 @@ end
 DeusRunState.destroy = function (self)
 	self:unregister_rpcs()
 	self._shared_state:destroy()
+
+	for _, package_name in ipairs(self._event_mutator_packages) do
+		Managers.package:unload(package_name, "deus_run_state_mutator_package")
+	end
 end
 
 DeusRunState.get_revision = function (self)
@@ -69,6 +76,14 @@ end
 
 DeusRunState.get_own_initial_talents = function (self)
 	return self._own_initial_talents
+end
+
+DeusRunState.get_own_initial_bot_loadout = function (self)
+	return self._own_initial_bot_loadout
+end
+
+DeusRunState.get_own_initial_bot_talents = function (self)
+	return self._own_initial_bot_talents
 end
 
 DeusRunState.get_weapon_group_whitelist = function (self)
@@ -414,6 +429,55 @@ DeusRunState.set_seen_arena_belakor_node = function (self, peer_id, value)
 	local key = self._shared_state:get_key("seen_arena_belakor_node", peer_id)
 
 	self._shared_state:set_server(key, value)
+end
+
+DeusRunState.set_event_mutators = function (self, mutators)
+	self._event_mutators = mutators
+
+	for _, mutator_name in ipairs(mutators) do
+		local mutator = MutatorTemplates[mutator_name]
+		local packages = mutator.packages
+
+		if packages then
+			table.append(self._event_mutator_packages, packages)
+		end
+	end
+
+	for _, package_name in ipairs(self._event_mutator_packages) do
+		Managers.package:load(package_name, "deus_run_state_mutator_package", nil, true)
+	end
+end
+
+DeusRunState.get_event_mutators = function (self, mutators)
+	return self._event_mutators
+end
+
+DeusRunState.is_weekly_event_packages_loaded = function (self)
+	for _, package_name in ipairs(self._event_mutator_packages) do
+		if not Managers.package:has_loaded(package_name, "deus_run_state_mutator_package") then
+			return false
+		end
+	end
+
+	return true
+end
+
+DeusRunState.set_event_boons = function (self, boons)
+	local event_boons = {}
+
+	for i = 1, #boons do
+		local boon_name = boons[i]
+		local boon = DeusPowerUpsLookup[boon_name]
+		local rarity = boon.rarity
+
+		event_boons[#event_boons + 1] = DeusPowerUpUtils.generate_specific_power_up(boon_name, rarity)
+	end
+
+	self._event_boons = event_boons
+end
+
+DeusRunState.get_event_boons = function (self, boons)
+	return self._event_boons
 end
 
 DeusRunState.get_granted_non_party_end_of_level_power_ups = function (self, peer_id, local_player_id, profile_index, career_index)

@@ -263,7 +263,7 @@ StatusSystem.rpc_set_catapulted = function (self, channel_id, unit_id, catapulte
 
 	status_extension:set_catapulted(catapulted, velocity)
 
-	if Managers.player.is_server then
+	if Managers.player.is_server or DEDICATED_SERVER then
 		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
 		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_set_catapulted", peer_id, unit_id, catapulted, velocity)

@@ -4,7 +4,9 @@ local base_lighting_strike = require("scripts/settings/mutators/mutator_lightnin
 local bolt_of_change = table.clone(base_lighting_strike)
 local STOP_SPAWN_DISTANCE = 5
 
-bolt_of_change.curse_package_name = "resource_packages/mutators/mutator_curse_bolt_of_change"
+bolt_of_change.packages = {
+	"resource_packages/mutators/mutator_curse_bolt_of_change",
+}
 bolt_of_change.display_name = "curse_bolt_of_change_name"
 bolt_of_change.description = "curse_bolt_of_change_desc"
 bolt_of_change.icon = "deus_curse_tzeentch_01"

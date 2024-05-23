@@ -84,7 +84,7 @@ HeroWindowCosmeticsLoadoutConsole.create_ui_elements = function (self, params, o
 	end
 
 	local input_service = Managers.input:get_service("hero_view")
-	local gui_layer = UILayer.default + 30
+	local gui_layer = UILayer.default + 300
 
 	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 6, gui_layer, generic_input_actions.default, true)
 
@@ -298,7 +298,7 @@ HeroWindowCosmeticsLoadoutConsole.draw = function (self, dt)
 
 	UIRenderer.end_pass(ui_top_renderer)
 
-	if gamepad_active and self._menu_input_description then
+	if gamepad_active and self._menu_input_description and not self.parent:input_blocked() then
 		self._menu_input_description:draw(ui_top_renderer, dt)
 	end
 end

@@ -4741,42 +4741,6 @@ DamageProfileTemplates.bloodlust_debuff.default_target.power_distribution = {
 	attack = 0.5,
 	impact = 0.075,
 }
-DamageProfileTemplates.corpse_explosion_default = {
-	charge_value = "n/a",
-	no_stagger = false,
-	no_stagger_damage_reduction_ranged = true,
-	cleave_distribution = {
-		attack = 0.25,
-		impact = 0.25,
-	},
-	armor_modifier = {
-		attack = {
-			1,
-			1,
-			3,
-			1,
-			0.5,
-			0.2,
-		},
-		impact = {
-			1,
-			1,
-			3,
-			1,
-			0.5,
-			0,
-		},
-	},
-	default_target = {
-		attack_template = "corpse_explosion_default",
-		dot_template_name = "corpse_explosion_default",
-		network_sync_dot = true,
-		power_distribution = {
-			attack = 0.035,
-			impact = 0,
-		},
-	},
-}
 DamageProfileTemplates.sienna_adept_blink = {
 	charge_value = "aoe",
 	dot_template_name = "burning_dot_1tick",

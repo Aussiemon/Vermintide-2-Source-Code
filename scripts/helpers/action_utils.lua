@@ -742,6 +742,12 @@ ActionUtils.get_critical_strike_chance = function (unit, action, overrides)
 		crit_chance = buff_extension:apply_buffs_to_value(crit_chance, "critical_strike_chance_ranged")
 	end
 
+	local any_damage_profile = DamageProfileTemplates[action.damage_profile] or DamageProfileTemplates[action.damage_profile_left] or DamageProfileTemplates[action.damage_profile_right]
+
+	if any_damage_profile and any_damage_profile.charge_value == "heavy_attack" then
+		crit_chance = buff_extension:apply_buffs_to_value(crit_chance, "critical_strike_chance_heavy")
+	end
+
 	crit_chance = buff_extension:apply_buffs_to_value(crit_chance, "critical_strike_chance")
 
 	return crit_chance

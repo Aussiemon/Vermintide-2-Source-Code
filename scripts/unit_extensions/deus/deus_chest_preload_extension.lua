@@ -3,14 +3,6 @@
 DeusChestPreloadExtension = class(DeusChestPreloadExtension)
 
 local REAL_PLAYER_LOCAL_ID = 1
-local package_exclusion_list = {
-	["units/weapons/player/wpn_bw_deus_01/wpn_bw_deus_01_3p"] = true,
-	["units/weapons/player/wpn_bw_deus_01/wpn_bw_deus_01_magic_3p"] = true,
-	["units/weapons/player/wpn_bw_deus_01/wpn_bw_deus_01_runed_3p"] = true,
-	["units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_3p"] = true,
-	["units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_magic_3p"] = true,
-	["units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_runed_3p"] = true,
-}
 
 local function get_weapon_packages(stored_purchase, career_name)
 	local item_data = stored_purchase.data
@@ -18,18 +10,8 @@ local function get_weapon_packages(stored_purchase, career_name)
 	local skin = stored_purchase.skin
 	local item_template = BackendUtils.get_item_template(item_data, backend_id)
 	local item_units = BackendUtils.get_item_units(item_data, backend_id, skin, career_name)
-	local packages = WeaponUtils.get_weapon_packages(item_template, item_units, false)
-	local filtered_packages = {}
 
-	for i = 1, #packages do
-		local package = packages[i]
-
-		if not package_exclusion_list[package] then
-			filtered_packages[#filtered_packages + 1] = package
-		end
-	end
-
-	return filtered_packages
+	return WeaponUtils.get_weapon_packages(item_template, item_units, false)
 end
 
 DeusChestPreloadExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -98,24 +80,26 @@ end
 
 DeusChestPreloadExtension._generate_upgraded_weapon_packages = function (self)
 	local deus_run_controller = self._deus_run_controller
-	local melee_weapon, ranged_weapon = deus_run_controller:get_own_loadout()
 	local own_peer_id = deus_run_controller:get_own_peer_id()
 	local profile_index, career_index = deus_run_controller:get_player_profile(own_peer_id, REAL_PLAYER_LOCAL_ID)
-	local melee_weapon_changed = melee_weapon ~= self._previous_melee_weapon
-	local ranged_weapon_changed = ranged_weapon ~= self._previous_ranged_weapon
-	local rarity = self._pickup_extension:get_rarity()
-
-	if melee_weapon_changed then
-		self._stored_melee_upgrade = self:_generate_upgraded_weapon(melee_weapon, rarity, self._go_id, profile_index, career_index)
-		self._previous_melee_weapon = melee_weapon
-	end
-
-	if ranged_weapon_changed then
-		self._stored_ranged_upgrade = self:_generate_upgraded_weapon(ranged_weapon, rarity, self._go_id, profile_index, career_index)
-		self._previous_ranged_weapon = ranged_weapon
-	end
+	local melee_weapon_serialized, ranged_weapon_serialized = deus_run_controller:get_own_loadout_serialized()
+	local melee_weapon_changed = melee_weapon_serialized ~= self._previous_melee_weapon
+	local ranged_weapon_changed = ranged_weapon_serialized ~= self._previous_ranged_weapon
 
 	if melee_weapon_changed or ranged_weapon_changed then
+		local melee_weapon, ranged_weapon = deus_run_controller:get_own_loadout()
+		local rarity = self._pickup_extension:get_rarity()
+
+		if melee_weapon_changed then
+			self._stored_melee_upgrade = self:_generate_upgraded_weapon(melee_weapon, rarity, self._go_id, profile_index, career_index)
+			self._previous_melee_weapon = melee_weapon_serialized
+		end
+
+		if ranged_weapon_changed then
+			self._stored_ranged_upgrade = self:_generate_upgraded_weapon(ranged_weapon, rarity, self._go_id, profile_index, career_index)
+			self._previous_ranged_weapon = ranged_weapon_serialized
+		end
+
 		local weapon_preload_packages = self._weapon_preload_packages
 
 		table.clear(weapon_preload_packages)

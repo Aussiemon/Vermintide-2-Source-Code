@@ -479,6 +479,35 @@ HordeCompositions = {
 				},
 			},
 		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_gor",
+					{
+						6,
+						7,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"beastmen_ungor",
+					{
+						2,
+						3,
+					},
+					"beastmen_gor",
+					{
+						3,
+						4,
+					},
+				},
+			},
+		},
 	},
 	event_medium_beastmen = {
 		{
@@ -924,6 +953,35 @@ HordeCompositions = {
 				},
 			},
 		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						6,
+						7,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						2,
+						3,
+					},
+					"chaos_marauder",
+					{
+						3,
+						4,
+					},
+				},
+			},
+		},
 	},
 	event_medium_chaos = {
 		{
@@ -1351,6 +1409,45 @@ HordeCompositions = {
 					{
 						2,
 						3,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						10,
+						11,
+					},
+					"chaos_fanatic",
+					{
+						11,
+						13,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						3,
+						4,
+					},
+					"chaos_marauder",
+					{
+						6,
+						7,
+					},
+					"chaos_fanatic",
+					{
+						11,
+						13,
 					},
 				},
 			},
@@ -1786,6 +1883,45 @@ HordeCompositions = {
 				},
 			},
 		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						13,
+						14,
+					},
+					"chaos_fanatic",
+					{
+						16,
+						18,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						4,
+						5,
+					},
+					"chaos_marauder",
+					{
+						7,
+						8,
+					},
+					"chaos_fanatic",
+					{
+						14,
+						16,
+					},
+				},
+			},
+		},
 	},
 	event_smaller = {
 		{
@@ -1991,6 +2127,35 @@ HordeCompositions = {
 				},
 			},
 		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"skaven_slave",
+					{
+						9,
+						11,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					{
+						5,
+						6,
+					},
+					"skaven_clan_rat",
+					{
+						2,
+						3,
+					},
+				},
+			},
+		},
 	},
 	event_small = {
 		{
@@ -2192,6 +2357,35 @@ HordeCompositions = {
 					{
 						11,
 						12,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"skaven_slave",
+					{
+						14,
+						16,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					{
+						10,
+						12,
+					},
+					"skaven_clan_rat",
+					{
+						3,
+						5,
 					},
 				},
 			},
@@ -2490,6 +2684,35 @@ HordeCompositions = {
 					{
 						2,
 						3,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"skaven_slave",
+					{
+						33,
+						34,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					{
+						22,
+						24,
+					},
+					"skaven_clan_rat",
+					{
+						6,
+						7,
 					},
 				},
 			},
@@ -2955,6 +3178,35 @@ HordeCompositions = {
 				},
 			},
 		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"skaven_slave",
+					{
+						43,
+						46,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					{
+						37,
+						39,
+					},
+					"skaven_clan_rat",
+					{
+						7,
+						8,
+					},
+				},
+			},
+		},
 	},
 	event_extra_spice_small = {
 		{
@@ -3142,6 +3394,32 @@ HordeCompositions = {
 					},
 					"skaven_storm_vermin_commander",
 					3,
+				},
+			},
+		},
+		{
+			{
+				name = "few_clanrats",
+				weight = 25,
+				breeds = {
+					"skaven_clan_rat",
+					{
+						5,
+						6,
+					},
+				},
+			},
+			{
+				name = "storm_clanrats",
+				weight = 2,
+				breeds = {
+					"skaven_clan_rat",
+					{
+						3,
+						4,
+					},
+					"skaven_storm_vermin_commander",
+					1,
 				},
 			},
 		},
@@ -3369,6 +3647,35 @@ HordeCompositions = {
 				},
 			},
 		},
+		{
+			{
+				name = "few_clanrats",
+				weight = 10,
+				breeds = {
+					"skaven_clan_rat",
+					{
+						6,
+						8,
+					},
+				},
+			},
+			{
+				name = "storm_clanrats",
+				weight = 3,
+				breeds = {
+					"skaven_clan_rat",
+					{
+						4,
+						6,
+					},
+					"skaven_storm_vermin_commander",
+					{
+						1,
+						2,
+					},
+				},
+			},
+		},
 	},
 	event_extra_spice_large = {
 		{
@@ -3589,6 +3896,35 @@ HordeCompositions = {
 					{
 						8,
 						9,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 10,
+				breeds = {
+					"skaven_clan_rat",
+					{
+						18,
+						20,
+					},
+				},
+			},
+			{
+				name = "lotsofvermin",
+				weight = 3,
+				breeds = {
+					"skaven_clan_rat",
+					{
+						5,
+						6,
+					},
+					"skaven_storm_vermin_commander",
+					{
+						2,
+						3,
 					},
 				},
 			},
@@ -4193,6 +4529,19 @@ HordeCompositions = {
 				},
 			},
 		},
+		{
+			{
+				name = "raiders",
+				weight = 3,
+				breeds = {
+					"chaos_raider",
+					{
+						3,
+						4,
+					},
+				},
+			},
+		},
 	},
 	chaos_shields = {
 		{
@@ -4472,6 +4821,19 @@ HordeCompositions = {
 				},
 			},
 		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_berzerker",
+					{
+						3,
+						4,
+					},
+				},
+			},
+		},
 	},
 	chaos_warriors = {
 		{
@@ -4556,6 +4918,16 @@ HordeCompositions = {
 						4,
 						5,
 					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_warrior",
+					2,
 				},
 			},
 		},
@@ -4736,6 +5108,19 @@ HordeCompositions = {
 				},
 			},
 		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+		},
 	},
 	plague_monks_small = {
 		{
@@ -4825,6 +5210,19 @@ HordeCompositions = {
 					{
 						6,
 						7,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "mines_plague_monks",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					{
+						3,
+						4,
 					},
 				},
 			},
@@ -4922,6 +5320,19 @@ HordeCompositions = {
 				},
 			},
 		},
+		{
+			{
+				name = "mines_plague_monks",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					{
+						4,
+						5,
+					},
+				},
+			},
+		},
 	},
 	storm_vermin_small = {
 		{
@@ -5011,6 +5422,19 @@ HordeCompositions = {
 					{
 						8,
 						9,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					{
+						2,
+						3,
 					},
 				},
 			},
@@ -5375,6 +5799,19 @@ HordeCompositions = {
 				},
 			},
 		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_ungor_archer",
+					{
+						6,
+						7,
+					},
+				},
+			},
+		},
 	},
 	bestigors = {
 		{
@@ -5462,6 +5899,16 @@ HordeCompositions = {
 						5,
 						6,
 					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_bestigor",
+					2,
 				},
 			},
 		},
@@ -5952,6 +6399,24 @@ HordeCompositions = {
 				},
 			},
 		},
+		{
+			{
+				name = "mixed",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					{
+						4,
+						5,
+					},
+					"skaven_clan_rat",
+					{
+						4,
+						6,
+					},
+				},
+			},
+		},
 	},
 	military_end_event_chaos_01 = {
 		{
@@ -6242,6 +6707,45 @@ HordeCompositions = {
 				},
 			},
 		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						8,
+						9,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						2,
+						3,
+					},
+					"chaos_marauder",
+					{
+						4,
+						5,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+		},
 	},
 	military_end_event_berzerkers = {
 		{
@@ -6325,6 +6829,18 @@ HordeCompositions = {
 					6,
 					"chaos_marauder_with_shield",
 					6,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_berzerker",
+					3,
+					"chaos_marauder_with_shield",
+					5,
 				},
 			},
 		},
@@ -19427,6 +19943,40 @@ HordeCompositions = {
 				},
 			},
 		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_gor",
+					{
+						3,
+						4,
+					},
+					"beastmen_ungor",
+					{
+						2,
+						3,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"beastmen_gor",
+					{
+						2,
+						3,
+					},
+					"beastmen_ungor",
+					{
+						4,
+						5,
+					},
+				},
+			},
+		},
 	},
 	end_event_crater_small = {
 		{
@@ -19721,6 +20271,19 @@ HordeCompositions = {
 					{
 						6,
 						7,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "ambestigor",
+				weight = 3,
+				breeds = {
+					"beastmen_gor",
+					{
+						3,
+						4,
 					},
 				},
 			},

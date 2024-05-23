@@ -139,6 +139,7 @@ local item_master_list = {
 	},
 	dr_deus_01_skin_magic = {
 		description = "dr_deus_01_magic_description",
+		display_name = "dr_deus_01_magic_name",
 		hud_icon = "weapon_generic_icon_staff_3",
 		inventory_icon = "icon_wpn_dw_trollhammer_t1",
 		item_type = "weapon_skin",
@@ -155,6 +156,7 @@ local item_master_list = {
 	},
 	dr_deus_02_skin_magic = {
 		description = "dr_deus_01_magic_description",
+		display_name = "dr_deus_01_magic_name",
 		hud_icon = "weapon_generic_icon_staff_3",
 		inventory_icon = "icon_wpn_dw_trollhammer_t2",
 		item_type = "weapon_skin",
@@ -370,10 +372,11 @@ local item_master_list = {
 	},
 	es_deus_01_skin_magic = {
 		description = "es_deus_01_magic_description",
+		display_name = "es_deus_01_magic_name",
 		hud_icon = "weapon_generic_icon_staff_3",
 		inventory_icon = "icon_wpn_empire_spearshield_t1",
 		item_type = "weapon_skin",
-		left_hand_unit = "units/weapons/player/wpn_es_deus_shield_02/wpn_es_deus_shield_02_magic_3p",
+		left_hand_unit = "units/weapons/player/wpn_es_deus_shield_02/wpn_es_deus_shield_02_magic",
 		matching_item_key = "es_deus_01",
 		rarity = "magic",
 		required_dlc = "grass",
@@ -388,6 +391,7 @@ local item_master_list = {
 	},
 	es_deus_02_skin_magic = {
 		description = "es_deus_01_magic_description",
+		display_name = "es_deus_01_magic_name",
 		hud_icon = "weapon_generic_icon_staff_3",
 		inventory_icon = "icon_wpn_empire_spearshield_t1",
 		item_type = "weapon_skin",
@@ -550,7 +554,8 @@ local item_master_list = {
 		},
 	},
 	we_deus_01_skin_magic = {
-		description = "we_deus_01_description",
+		description = "we_deus_01_magic_description",
+		display_name = "we_deus_01_magic_name",
 		hud_icon = "weapon_generic_icon_bow",
 		inventory_icon = "icon_wpn_we_moonfire_t1",
 		item_type = "weapon_skin",
@@ -593,8 +598,8 @@ local item_master_list = {
 	we_deus_02_skin_magic = {
 		ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_02",
 		ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_02_3p",
-		description = "we_deus_01_magic_description",
-		display_name = "we_deus_01_magic_name",
+		description = "we_deus_01_description",
+		display_name = "we_deus_01_name",
 		hud_icon = "weapon_generic_icon_bow",
 		inventory_icon = "icon_wpn_we_moonfire_t2_magic",
 		item_type = "weapon_skin",
@@ -782,6 +787,7 @@ local item_master_list = {
 	},
 	bw_deus_01_skin_magic = {
 		description = "bw_deus_01_magic_description",
+		display_name = "bw_deus_01_magic_name",
 		hud_icon = "weapon_generic_icon_staff_3",
 		inventory_icon = "icon_wpn_brw_magmastaff_t1",
 		item_type = "weapon_skin",
@@ -800,8 +806,9 @@ local item_master_list = {
 	},
 	bw_deus_02_skin_magic = {
 		description = "bw_deus_01_magic_description",
+		display_name = "bw_deus_01_magic_name",
 		hud_icon = "weapon_generic_icon_staff_3",
-		inventory_icon = "icon_wpn_brw_magmastaff_t2",
+		inventory_icon = "icon_wpn_brw_magmastaff_t2_magic",
 		item_type = "weapon_skin",
 		left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
 		matching_item_key = "bw_deus_01",
@@ -1070,7 +1077,8 @@ local item_master_list = {
 		},
 	},
 	wh_deus_02_skin_magic = {
-		description = "wh_deus_01_magic_desciption",
+		description = "wh_deus_01_magic_description",
+		display_name = "wh_deus_01_magic_name",
 		hud_icon = "weapon_generic_icon_bow",
 		inventory_icon = "icon_wpn_emp_duckfoot_t1",
 		item_type = "weapon_skin",
@@ -1088,7 +1096,8 @@ local item_master_list = {
 		},
 	},
 	wh_deus_01_skin_magic = {
-		description = "wh_deus_01_magic_desciption",
+		description = "wh_deus_01_magic_description",
+		display_name = "wh_deus_01_magic_name",
 		hud_icon = "weapon_generic_icon_bow",
 		inventory_icon = "icon_wpn_emp_duckfoot_t1",
 		item_type = "weapon_skin",

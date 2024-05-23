@@ -621,14 +621,6 @@ local function buff_param_unpack_unit(input, ctx)
 	return ctx.unit_storage:unit(input)
 end
 
-local function buff_param_pack_parent_id(input, ctx, unit)
-	return ScriptUnit.extension(unit, "buff_system"):id_to_sync_id(input) or 0
-end
-
-local function buff_param_unpack_parent_id(input, ctx, unit)
-	return ScriptUnit.extension(unit, "buff_system"):sync_id_to_id(input) or 0
-end
-
 local buff_param_packing_methods = {
 	attacker_unit = {
 		pack = buff_param_pack_unit,

@@ -95,9 +95,9 @@ EnemyCharacterStateDead.on_exit = function (self, unit, input, dt, context, t, n
 	local game_mode = Managers.state.game_mode:game_mode()
 
 	if game_mode then
-		local about_to_lose = game_mode.is_about_to_lose and game_mode:is_about_to_lose()
+		local about_to_end_game_early = game_mode:is_about_to_end_game_early()
 
-		if not about_to_lose then
+		if not about_to_end_game_early then
 			local camera_params = {
 				allow_camera_movement = true,
 				follow_unit_rotation = false,

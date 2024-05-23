@@ -278,6 +278,31 @@ local settings_by_screen = {
 			return false
 		end,
 	},
+	{
+		description = "Change loadout here",
+		display_name = "LOADOUTS",
+		draw_background_world = true,
+		name = "loadouts",
+		state_name = "CharacterSelectionStateVersusLoadouts",
+		tab_screen = false,
+		icons = {
+			normal = "tabs_icon_prestige",
+			selected = "tabs_icon_prestige_glow",
+		},
+		camera_position = {
+			0,
+			0,
+			-0.3,
+		},
+		camera_rotation = {
+			0,
+			0,
+			-0.1,
+		},
+		contains_new_content = function ()
+			return false
+		end,
+	},
 }
 local title_text_style = {
 	font_size = 36,

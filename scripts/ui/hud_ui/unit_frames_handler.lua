@@ -1059,6 +1059,22 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 		dirty = true
 	end
 
+	local is_playing_boss = false
+
+	if self._is_dark_pact then
+		local profile_settings = SPProfiles[profile_index]
+
+		is_playing_boss = profile_settings.role == "boss"
+	end
+
+	if data.is_playing_boss ~= is_playing_boss then
+		data.is_playing_boss = is_playing_boss
+
+		widget:set_is_playing_dark_pact_boss(is_playing_boss)
+
+		dirty = true
+	end
+
 	if dirty then
 		widget:set_dirty()
 

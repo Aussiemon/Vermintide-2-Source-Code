@@ -15,6 +15,9 @@ local twitch_mode_widget_funcs = definitions.twitch_mode_widget_funcs
 local switch_mechanism_widget_definitions = definitions.switch_mechanism_widgets
 local versus_quickplay_widget_definitions = definitions.versus_quickplay_widgets
 local versus_custom_widget_definitions = definitions.versus_custom_widgets
+local deus_weekly_event_widget_definitions = definitions.deus_weekly_event_widgets
+local deus_weekly_event_create_header = definitions.deus_weekly_event_create_header
+local deus_weekly_event_create_entry_widget = definitions.deus_weekly_event_create_entry_widget
 
 MissionVotingUI = class(MissionVotingUI)
 
@@ -70,6 +73,7 @@ MissionVotingUI.create_ui_elements = function (self)
 	self._switch_mechanism_widgets, self._switch_mechanism_widgets_by_name = UIUtils.create_widgets(switch_mechanism_widget_definitions)
 	self._versus_quickplay_widgets, self._versus_quickplay_widgets_by_name = UIUtils.create_widgets(versus_quickplay_widget_definitions)
 	self._versus_custom_widgets, self._versus_custom_widgets_by_name = UIUtils.create_widgets(versus_custom_widget_definitions)
+	self._deus_weekly_event_widgets, self._deus_weekly_event_widgets_by_name = UIUtils.create_widgets(deus_weekly_event_widget_definitions)
 
 	local twitch_widgets, twitch_widgets_by_name = {}, {}
 	local is_server = self._is_server
@@ -126,6 +130,7 @@ end
 
 MissionVotingUI.start_vote = function (self, active_voting)
 	self.render_settings.alpha_multiplier = 0
+	self._scrollbar_ui = nil
 
 	local vote_template = active_voting.template
 
@@ -153,19 +158,6 @@ MissionVotingUI.start_vote = function (self, active_voting)
 
 	if switch_mechanism then
 		self:_set_switch_mechanism_presentation(vote_data)
-	elseif matchmaking_type == "deed" then
-		local item_name = vote_data.item_name
-		local mission_id = vote_data.mission_id
-		local difficulty = vote_data.difficulty
-
-		self:_set_deed_presentation(item_name, mission_id, difficulty)
-	elseif matchmaking_type == "event" then
-		local event_data = vote_data.event_data
-		local mission_id = vote_data.mission_id
-		local difficulty = vote_data.difficulty
-		local mutators = event_data and event_data.mutators or {}
-
-		self:_set_event_game_presentation(difficulty, mission_id, mutators)
 	elseif mechanism == "weave" then
 		local quick_game = vote_data.quick_game
 
@@ -187,6 +179,18 @@ MissionVotingUI.start_vote = function (self, active_voting)
 			local difficulty = vote_data.difficulty
 
 			self:_set_deus_quickplay_presentation(difficulty)
+		elseif matchmaking_type == "event" then
+			local journey_name = vote_data.mission_id
+			local difficulty = vote_data.difficulty
+			local private_game = vote_data.private_game
+			local always_host = vote_data.always_host
+			local strict_matchmaking = vote_data.strict_matchmaking
+			local theme = vote_data.dominant_god
+			local event_data = vote_data.event_data
+			local mutators = event_data and event_data.mutators or {}
+			local boons = event_data and event_data.boons or {}
+
+			self:_set_deus_weekly_expedition_presentation(difficulty, journey_name, private_game, always_host, strict_matchmaking, theme, mutators, boons)
 		else
 			local journey_name = vote_data.mission_id
 			local difficulty = vote_data.difficulty
@@ -213,6 +217,20 @@ MissionVotingUI.start_vote = function (self, active_voting)
 
 			self:_set_versus_custom_game_presentation(difficulty, mission_id, player_hosted, dedicated_servers_win, dedicated_servers_aws)
 		end
+	elseif matchmaking_type == "deed" then
+		local item_name = vote_data.item_name
+		local mission_id = vote_data.mission_id
+		local difficulty = vote_data.difficulty
+
+		self:_set_deed_presentation(item_name, mission_id, difficulty)
+	elseif matchmaking_type == "event" then
+		local event_data = vote_data.event_data
+		local mission_id = vote_data.mission_id
+		local difficulty = vote_data.difficulty
+		local mutators = event_data and event_data.mutators or {}
+		local boons = event_data and event_data.boons or {}
+
+		self:_set_event_game_presentation(difficulty, mission_id, mutators)
 	else
 		local quick_game = vote_data.quick_game
 
@@ -612,6 +630,167 @@ MissionVotingUI._set_deus_quickplay_presentation = function (self, difficulty)
 	self._presentation_type = "deus_quickplay"
 end
 
+MissionVotingUI._set_deus_weekly_expedition_presentation = function (self, difficulty, journey_name, private_game, always_host, strict_matchmaking, theme, mutators, boons)
+	self._presentation_type = "deus_weekly"
+
+	local deus_weekly_widgets_by_name = self._deus_weekly_event_widgets_by_name
+	local game_option_1 = deus_weekly_widgets_by_name.game_option_1
+	local game_option_1_content = game_option_1.content
+	local journey_settings = DeusJourneySettings[journey_name]
+	local journey_display_name = journey_settings.display_name
+	local level_image = journey_settings.level_image
+	local level_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(level_image)
+
+	game_option_1_content.icon = level_image
+	game_option_1_content.show_journey_border = true
+
+	local deus_backend = Managers.backend:get_interface("deus")
+
+	game_option_1_content.with_belakor = deus_backend:deus_journey_with_belakor(journey_name)
+
+	local level_texture_size = game_option_1.style.icon.texture_size
+
+	level_texture_size[1] = level_texture_settings.size[1]
+	level_texture_size[2] = level_texture_settings.size[2]
+
+	local journey_name_widget = deus_weekly_widgets_by_name.journey_name
+
+	journey_name_widget.content.text = journey_display_name
+
+	local theme_settings = DeusThemeSettings[theme]
+
+	game_option_1_content.theme_icon = theme_settings.icon
+
+	local theme_widget = deus_weekly_widgets_by_name.journey_theme
+
+	theme_widget.content.text = theme_settings.journey_title
+	theme_widget.content.icon = theme_settings.text_icon
+	theme_widget.style.text.text_color = theme_settings.color
+	theme_widget.style.icon.color = theme_settings.color
+
+	local difficulty_settings = DifficultySettings[difficulty]
+	local difficulty_display_name = difficulty_settings.display_name
+	local difficulty_display_image = difficulty_settings.display_image
+
+	game_option_1.content.difficulty_text = Localize(difficulty_display_name)
+	game_option_1.content.difficulty_icon = difficulty_display_image
+
+	local spacing = 10
+	local offset_y = 0
+
+	offset_y = self:_setup_curses(mutators, spacing, offset_y)
+	offset_y = self:_setup_boons(boons, spacing, offset_y)
+
+	local excess_area = math.abs(self.scenegraph_definition.game_option_deus_weekly.size[2] - math.abs(offset_y))
+
+	if excess_area > 0 then
+		local ui_scenegraph = self.ui_scenegraph
+		local scroll_area_scenegraph_id = "game_option_deus_weekly_anchor"
+		local scroll_area_anchor_scenegraph_id = "scrollbar_window"
+		local enable_auto_scroll = true
+		local optional_scroll_area_hotspot_widget, horizontal_scrollbar
+
+		self._scrollbar_ui = ScrollbarUI:new(ui_scenegraph, scroll_area_scenegraph_id, scroll_area_anchor_scenegraph_id, excess_area, enable_auto_scroll, optional_scroll_area_hotspot_widget, horizontal_scrollbar)
+	end
+end
+
+local EMPTY_TABLE = {}
+
+MissionVotingUI._setup_curses = function (self, mutators, spacing, offset_y)
+	local header_type = "curse"
+	local widget_definition = deus_weekly_event_create_header("cw_weekly_expedition_modifier_negative", offset_y, header_type)
+	local widget = UIWidget.init(widget_definition)
+
+	self._deus_weekly_event_widgets[#self._deus_weekly_event_widgets + 1] = widget
+	self._deus_weekly_event_widgets_by_name.curse_header = widget
+	offset_y = offset_y - 40 - spacing
+
+	local mutators = mutators or EMPTY_TABLE
+	local inv_scale = RESOLUTION_LOOKUP.inv_scale
+
+	for idx, mutator_name in ipairs(mutators) do
+		local mutator_template = MutatorTemplates[mutator_name]
+		local title = mutator_template.display_name
+		local icon = mutator_template.icon
+		local desc = Localize(mutator_template.description)
+		local widget_definition = deus_weekly_event_create_entry_widget(icon, title, desc, offset_y, spacing)
+		local widget = UIWidget.init(widget_definition)
+
+		self._deus_weekly_event_widgets[#self._deus_weekly_event_widgets + 1] = widget
+		self._deus_weekly_event_widgets_by_name["curse_" .. idx] = widget
+
+		local text_style = widget.style.desc
+		local font, size_of_font = UIFontByResolution(text_style)
+		local font_material, font_size = font[1], size_of_font
+		local gui = self.ui_top_renderer.gui
+		local _, font_min, font_max = UIGetFontHeight(gui, text_style.font_type, font_size)
+		local full_font_height = (font_max - font_min) * inv_scale
+		local rows, return_indices = UIRenderer.word_wrap(self.ui_top_renderer, desc, font_material, font_size, text_style.area_size[1])
+
+		offset_y = offset_y - full_font_height * #rows
+
+		local text_style = widget.style.title
+		local font, size_of_font = UIFontByResolution(text_style)
+		local font_material, font_size = font[1], size_of_font
+		local _, font_min, font_max = UIGetFontHeight(gui, text_style.font_type, font_size)
+		local full_font_height = (font_max - font_min) * inv_scale
+		local rows, return_indices = UIRenderer.word_wrap(self.ui_top_renderer, Localize(title), font_material, font_size, text_style.area_size[1])
+
+		offset_y = offset_y - full_font_height * #rows - spacing
+	end
+
+	return offset_y - spacing
+end
+
+MissionVotingUI._setup_boons = function (self, boons, spacing, offset_y)
+	local header_type = "boon"
+	local widget_definition = deus_weekly_event_create_header("cw_weekly_expedition_modifier_positive", offset_y, header_type)
+	local widget = UIWidget.init(widget_definition)
+
+	self._deus_weekly_event_widgets[#self._deus_weekly_event_widgets + 1] = widget
+	self._deus_weekly_event_widgets_by_name.boon_header = widget
+	offset_y = offset_y - 40 - spacing
+
+	local player = Managers.player:local_player()
+	local profile_index = player:profile_index()
+	local career_index = player:career_index()
+	local boons = boons or EMPTY_TABLE
+	local inv_scale = RESOLUTION_LOOKUP.inv_scale
+
+	for idx, boon_name in ipairs(boons) do
+		local power_up = DeusPowerUpsLookup[boon_name]
+		local title = power_up.display_name
+		local icon = DeusPowerUpUtils.get_power_up_icon(power_up, profile_index, career_index)
+		local desc = DeusPowerUpUtils.get_power_up_description(power_up, profile_index, career_index)
+		local widget_definition = deus_weekly_event_create_entry_widget(icon, title, desc, offset_y)
+		local widget = UIWidget.init(widget_definition)
+
+		self._deus_weekly_event_widgets[#self._deus_weekly_event_widgets + 1] = widget
+		self._deus_weekly_event_widgets_by_name["boon_" .. idx] = widget
+
+		local text_style = widget.style.desc
+		local font, size_of_font = UIFontByResolution(text_style)
+		local font_material, font_size = font[1], size_of_font
+		local gui = self.ui_top_renderer.gui
+		local _, font_min, font_max = UIGetFontHeight(gui, text_style.font_type, font_size)
+		local full_font_height = (font_max - font_min) * inv_scale
+		local rows, return_indices = UIRenderer.word_wrap(self.ui_top_renderer, desc, font_material, font_size, text_style.area_size[1])
+
+		offset_y = offset_y - full_font_height * #rows
+
+		local text_style = widget.style.title
+		local font, size_of_font = UIFontByResolution(text_style)
+		local font_material, font_size = font[1], size_of_font
+		local _, font_min, font_max = UIGetFontHeight(gui, text_style.font_type, font_size)
+		local full_font_height = (font_max - font_min) * inv_scale
+		local rows, return_indices = UIRenderer.word_wrap(self.ui_top_renderer, Localize(title), font_material, font_size, text_style.area_size[1])
+
+		offset_y = offset_y - full_font_height * #rows - spacing
+	end
+
+	return offset_y - spacing
+end
+
 MissionVotingUI._set_deus_custom_game_presentation = function (self, difficulty, journey_name, private_game, always_host, strict_matchmaking, theme)
 	self._presentation_type = "deus_custom"
 
@@ -856,11 +1035,11 @@ MissionVotingUI.update = function (self, dt, t)
 	end
 
 	if self.vote_started and not self.has_voted then
-		self:draw(dt)
+		self:draw(dt, t)
 	end
 end
 
-MissionVotingUI.draw = function (self, dt)
+MissionVotingUI.draw = function (self, dt, t)
 	self:_update_pulse_animations(dt)
 
 	local ui_top_renderer = self.ui_top_renderer
@@ -1072,6 +1251,20 @@ MissionVotingUI.draw = function (self, dt)
 
 				render_settings.snap_pixel_positions = snap_pixel_positions
 			end
+		elseif presentation_type == "deus_weekly" then
+			local deus_weekly_widgets = self._deus_weekly_event_widgets
+
+			for i = 1, #deus_weekly_widgets do
+				local widget = deus_weekly_widgets[i]
+
+				if widget.snap_pixel_positions ~= nil then
+					render_settings.snap_pixel_positions = widget.snap_pixel_positions
+				end
+
+				UIRenderer.draw_widget(ui_top_renderer, widget)
+
+				render_settings.snap_pixel_positions = snap_pixel_positions
+			end
 		end
 	end
 
@@ -1081,6 +1274,10 @@ MissionVotingUI.draw = function (self, dt)
 
 	if gamepad_active then
 		self._menu_input_description:draw(ui_top_renderer, dt)
+	end
+
+	if self._scrollbar_ui then
+		self._scrollbar_ui:update(dt, t, ui_top_renderer, input_service, render_settings)
 	end
 end
 

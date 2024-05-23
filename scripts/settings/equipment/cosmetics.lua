@@ -2987,6 +2987,21 @@ Cosmetics.frame_celebration_06 = {
 }
 Cosmetics.frame_skulls_2023 = {
 	icon = "unit_frame_02",
+	texture_package_name = "resource_packages/store/item_icons/store_item_icon_frame_skulls_2023",
+	unit = "",
+	attachment_node = {
+		unit = "units/ui/ui_portrait_frame",
+		attachment_node = AttachmentNodeLinking.ui_portrait_frame,
+	},
+	material_settings = {
+		portrait_frame = {
+			texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_skulls_2023/store_item_icon_frame_skulls_2023",
+			type = "texture",
+		},
+	},
+}
+Cosmetics.frame_skulls_2024 = {
+	icon = "unit_frame_02",
 }
 Cosmetics.frame_karak_01 = {
 	icon = "unit_frame_02",

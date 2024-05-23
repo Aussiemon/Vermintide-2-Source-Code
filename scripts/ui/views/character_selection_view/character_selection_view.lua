@@ -2,6 +2,7 @@
 
 require("scripts/ui/views/hero_view/item_grid_ui")
 require("scripts/ui/views/character_selection_view/states/character_selection_state_character")
+require("scripts/ui/views/character_selection_view/states/character_selection_state_versus_loadouts")
 require("scripts/ui/views/menu_world_previewer")
 
 local definitions = local_require("scripts/ui/views/character_selection_view/character_selection_view_definitions")

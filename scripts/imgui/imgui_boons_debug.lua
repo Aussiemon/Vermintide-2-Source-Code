@@ -62,7 +62,7 @@ ImguiBoonsDebug.is_persistent = function (self)
 end
 
 ImguiBoonsDebug.draw = function (self, is_open)
-	local do_close = Imgui.begin_window("Boons Debug")
+	local do_close = Imgui.begin_window("Boons Debug", "always_auto_resize")
 
 	self:_update_controls()
 	Imgui.end_window()
@@ -71,6 +71,14 @@ ImguiBoonsDebug.draw = function (self, is_open)
 end
 
 ImguiBoonsDebug._update_controls = function (self)
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+
+	if mechanism_name ~= "deus" then
+		Imgui.text("This UI only works when playing with the deus mechanism.")
+
+		return
+	end
+
 	self._selected_boon_id, self._filtered_boon_list, self._filter_text = ImguiX.combo_search(self._selected_boon_id, self._filtered_boon_list, self._filter_text, self._boon_list)
 
 	if Imgui.button("Add", 100, 20) then
@@ -112,21 +120,6 @@ ImguiBoonsDebug._update_controls = function (self)
 
 		deus_run_controller:add_power_ups({
 			power_up,
-		}, local_player_id)
-
-		local buff_system = Managers.state.entity:system("buff_system")
-		local talent_interface = Managers.backend:get_talents_interface()
-		local deus_backend = Managers.backend:get_interface("deus")
-		local player_unit = local_player.player_unit
-		local profile_index = local_player:profile_index()
-		local career_index = local_player:career_index()
-
-		DeusPowerUpUtils.activate_deus_power_up(power_up, buff_system, talent_interface, deus_backend, deus_run_controller, player_unit, profile_index, career_index)
-		Managers.state.event:trigger("present_rewards", {
-			{
-				type = "deus_power_up",
-				power_up = power_up,
-			},
-		})
+		}, local_player_id, true)
 	end
 end

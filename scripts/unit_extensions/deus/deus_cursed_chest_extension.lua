@@ -36,12 +36,33 @@ DeusCursedChestExtension.game_object_initialized = function (self, unit, go_id)
 	self:_set_state(STATES.WAITING)
 end
 
+DeusCursedChestExtension.extensions_ready = function (self, world, unit)
+	local mechanism = Managers.mechanism:game_mechanism()
+
+	self._deus_run_controller = mechanism:get_deus_run_controller()
+
+	fassert(self._deus_run_controller, "deus pickup unit can only be used in a deus run")
+
+	self._telemetry_data = {
+		activated = "not_found",
+		challenge_name = "n/a",
+		chosen_boon = "n/a",
+		success = false,
+		level_count = self._deus_run_controller:get_completed_level_count() + 1,
+		run_id = self._deus_run_controller:get_run_id(),
+	}
+end
+
 DeusCursedChestExtension.destroy = function (self)
 	if self._objective_unit then
 		self:_clear_objective_unit()
 	end
 
 	self:unregister_rpcs()
+
+	if self._telemetry_data.activated ~= "not_found" and not self._telemetry_data.hotjoined_late then
+		Managers.telemetry_events:cursed_chest_passed(self._telemetry_data)
+	end
 end
 
 DeusCursedChestExtension.register_rpcs = function (self, network_event_delegate)
@@ -66,10 +87,37 @@ DeusCursedChestExtension.update = function (self, unit, input, dt, context, t)
 		elseif current_state == STATES.RUNNING then
 			Unit.flow_event(self._unit, "state_RUNNING")
 
+			if prev_state == STATES.INITIALIZING then
+				local mission_system = Managers.state.entity:system("mission_system")
+				local active_missions = mission_system:get_missions()
+				local challenge_name = table.find_func(active_missions, function (mission_name)
+					return string.sub(mission_name, 1, string.len("cursed_chest_challenge")) == "cursed_chest_challenge"
+				end)
+
+				self._telemetry_data.challenge_name = challenge_name or "hotjoin"
+			else
+				Managers.state.event:register(self, "ui_event_add_mission_objective", "_ui_event_add_mission_objective")
+			end
+
+			self._telemetry_data.activated = true
+
 			if self._is_server then
+				self._terror_event_name = "cursed_chest_prototype"
+
 				local seed = Managers.mechanism:get_level_seed()
 
-				Managers.state.conflict:start_terror_event("cursed_chest_prototype", seed, unit)
+				Managers.state.conflict:start_terror_event(self._terror_event_name, seed, unit)
+
+				local side = Managers.state.side:get_side_from_name("heroes")
+				local player_units = side.PLAYER_UNITS
+
+				for i = 1, #player_units do
+					if ALIVE[player_units[i]] then
+						local buff_extension = ScriptUnit.extension(player_units[i], "buff_system")
+
+						buff_extension:trigger_procs("cursed_chest_running", self._unit)
+					end
+				end
 			end
 
 			local position = POSITION_LOOKUP[self._unit]
@@ -79,6 +127,7 @@ DeusCursedChestExtension.update = function (self, unit, input, dt, context, t)
 			Unit.flow_event(self._unit, "state_HOTJOIN_OPEN")
 
 			self._reward_collected = true
+			self._telemetry_data.hotjoined_late = true
 		elseif current_state == STATES.OPEN then
 			if self._is_server then
 				local deus_run_controller = Managers.mechanism:game_mechanism():get_deus_run_controller()
@@ -112,6 +161,8 @@ DeusCursedChestExtension.update = function (self, unit, input, dt, context, t)
 			local player = Managers.player:local_player()
 
 			Managers.state.event:trigger("player_cleansed_deus_cursed_chest", player)
+
+			self._telemetry_data.success = true
 		end
 
 		if current_state == STATES.HOTJOIN_OPEN then
@@ -119,7 +170,7 @@ DeusCursedChestExtension.update = function (self, unit, input, dt, context, t)
 		else
 			self._prev_state = current_state
 		end
-	elseif current_state == STATES.RUNNING and self._is_server and not TerrorEventMixer.find_event("cursed_chest_prototype") then
+	elseif current_state == STATES.RUNNING and self._is_server and not TerrorEventMixer.find_event(self._terror_event_name) then
 		self:_set_state(STATES.OPEN)
 	end
 
@@ -165,9 +216,11 @@ DeusCursedChestExtension.update = function (self, unit, input, dt, context, t)
 			dialogue_input:trigger_dialogue_event("cursed_chest_purified", event_data)
 		end
 	end
+
+	self:_update_telemetry(unit)
 end
 
-DeusCursedChestExtension.on_reward_collected = function (self)
+DeusCursedChestExtension.on_reward_collected = function (self, power_up)
 	if self._objective_unit then
 		self:_clear_objective_unit()
 	end
@@ -181,6 +234,8 @@ DeusCursedChestExtension.on_reward_collected = function (self)
 
 		Managers.state.network.network_transmit:send_rpc_server("rpc_deus_chest_looted", go_id)
 	end
+
+	self._telemetry_data.chosen_boon = power_up.name
 end
 
 DeusCursedChestExtension._clear_objective_unit = function (self)
@@ -243,6 +298,9 @@ DeusCursedChestExtension.on_server_interact = function (self, world, interactor_
 	local state = self:_get_state()
 
 	if state == STATES.WAITING then
+		local dialogue_input = ScriptUnit.extension_input(interactor_unit, "dialogue_system")
+
+		dialogue_input:trigger_networked_dialogue_event("deus_cursed_chest_activated")
 		self:_set_state(STATES.RUNNING)
 	end
 end
@@ -281,6 +339,33 @@ DeusCursedChestExtension._get_state = function (self)
 	end
 
 	return GameSession.game_object_field(game_session, go_id, "deus_cursed_chest_state")
+end
+
+DeusCursedChestExtension._update_telemetry = function (self, chest_unit)
+	local player = Managers.player:local_player()
+	local player_unit = player and player.player_unit
+	local local_player_pos = POSITION_LOOKUP[player_unit]
+
+	if not local_player_pos then
+		return
+	end
+
+	local telemetry_data = self._telemetry_data
+
+	if telemetry_data.activated == "not_found" then
+		local chest_unit_pos = POSITION_LOOKUP[chest_unit]
+		local distance_squared = Vector3.distance_squared(local_player_pos, chest_unit_pos)
+
+		if distance_squared < 625 then
+			telemetry_data.activated = false
+		end
+	end
+end
+
+DeusCursedChestExtension._ui_event_add_mission_objective = function (self, mission_name)
+	self._telemetry_data.challenge_name = mission_name
+
+	Managers.state.event:unregister("ui_event_add_mission_objective", self)
 end
 
 DeusCursedChestExtension._set_state = function (self, state)

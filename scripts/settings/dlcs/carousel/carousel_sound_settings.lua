@@ -15,6 +15,8 @@ settings.auto_load_files = {
 settings.network_sound_events = {
 	"menu_wind_countdown_warning",
 	"Play_hud_versus_objective_start",
+	"Play_versus_hud_round_end_heroes_fail",
+	"Play_versus_hud_round_end_heroes_win",
 }
 settings.blocked_auto_load_files = {
 	carousel_hub = true,

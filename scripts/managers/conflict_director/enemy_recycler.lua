@@ -1090,6 +1090,10 @@ EnemyRecycler.far_off_despawn = function (self, t, dt, player_positions, spawned
 		local pos = position_lookup[unit]
 		local blackboard = BLACKBOARDS[unit]
 
+		if not blackboard then
+			print("is related to freezing: ", not not (rawget(_G, "DoubleFreezeContext") or {})[unit])
+		end
+
 		if t > blackboard.stuck_check_time then
 			if not blackboard.far_off_despawn_immunity then
 				local navigation_extension = blackboard.navigation_extension

@@ -356,6 +356,10 @@ ObjectiveSystem._update_server = function (self, dt, t)
 	local objects_to_remove = {}
 	local parent_objectives_to_remove = {}
 
+	if self._update_objective_vo then
+		self:_update_objective_vo()
+	end
+
 	for idx, extension in ipairs(main_objectives) do
 		extension:update(dt, t)
 
@@ -482,6 +486,10 @@ ObjectiveSystem._update_activate_objectives = function (self)
 		end
 	end
 
+	if self._is_server and self._current_objective_index > 0 and self._check_trigger_complete_vo then
+		self:_check_trigger_complete_vo()
+	end
+
 	local next_objective_index = self._current_objective_index + 1
 	local next_objectives = self._objective_lists[next_objective_index]
 
@@ -492,6 +500,10 @@ ObjectiveSystem._update_activate_objectives = function (self)
 
 		self._current_objective_index = next_objective_index
 		self._main_objective_scratch = {}
+
+		if self._is_server and self._check_trigger_start_vo then
+			self:_check_trigger_start_vo()
+		end
 
 		if self.objective_started_telemetry then
 			self:objective_started_telemetry(self._current_objective_index)
@@ -513,9 +525,9 @@ ObjectiveSystem._complete_objective = function (self, id, extension, objects_to_
 		LevelHelper:flow_event(self._world, "sub_objective_completed")
 		Managers.state.event:trigger("obj_sub_objective_completed", self._num_completed_main_objectives, self._current_num_completed_main_objectives, extension)
 
-		local num_left = self._current_num_completed_sub_objectives - self._current_num_sub_objectives
+		local num_left = self._current_num_sub_objectives - self._current_num_completed_sub_objectives
 
-		if num_left == 0 then
+		if num_left <= 0 then
 			self:_complete_main_objective(extension)
 		end
 	end

@@ -188,9 +188,27 @@ local terror_event_blueprints = {
 	},
 	canyon_ogre_boss = {
 		{
+			"set_master_event_running",
+			name = "canyon_ogre_boss",
+		},
+		{
+			"set_freeze_condition",
+			max_active_enemies = 100,
+		},
+		{
 			"spawn_at_raw",
-			breed_name = "skaven_rat_ogre",
+			breed_name = "skaven_clan_rat_with_shield",
 			spawner_id = "canyon_ogre_boss",
+		},
+		{
+			"event_horde",
+			composition_type = "event_extra_spice_small",
+			spawner_id = "canyon_bell_end_guards",
+		},
+		{
+			"event_horde",
+			composition_type = "plague_monks_small",
+			spawner_id = "canyon_bell_end_elite_guards",
 		},
 	},
 	canyon_escape_event = {

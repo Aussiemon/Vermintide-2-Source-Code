@@ -330,6 +330,12 @@ local filter_macros = {
 
 		return rarity == "magic"
 	end,
+	is_event = function (item, backend_id)
+		local backend_items = Managers.backend:get_interface("items")
+		local rarity = backend_items:get_item_rarity(backend_id)
+
+		return rarity == "event"
+	end,
 	can_wield_bright_wizard = make_filter_macro_can_wield_profile("bright_wizard"),
 	can_wield_bw_scholar = make_filter_macro_can_wield_career("bw_scholar"),
 	can_wield_bw_adept = make_filter_macro_can_wield_career("bw_adept"),
@@ -539,6 +545,12 @@ local filter_macros = {
 		if fake_items[backend_id] then
 			return true
 		end
+	end,
+	is_event_item = function (item, backend_id)
+		local item_data = item.data
+		local event_bound = item_data.event_item
+
+		return event_bound
 	end,
 }
 

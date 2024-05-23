@@ -2626,6 +2626,8 @@ StateLoading.set_lobby_host_data = function (self, level_key)
 			stored_lobby_host_data.matchmaking_type = IS_PS4 and "custom" or NetworkLookup.matchmaking_types.custom
 		elseif Managers.level_transition_handler:get_current_mechanism() == "versus" then
 			stored_lobby_host_data.matchmaking_type = IS_PS4 and "versus" or NetworkLookup.matchmaking_types.versus
+		elseif matchmaking_type == "event" then
+			stored_lobby_host_data.matchmaking_type = IS_PS4 and "event" or NetworkLookup.matchmaking_types.event
 		elseif Development.parameter("auto_host_level") then
 			stored_lobby_host_data.matchmaking_type = IS_PS4 and "custom" or NetworkLookup.matchmaking_types.custom
 		end

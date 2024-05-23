@@ -516,17 +516,8 @@ achievements.cog_bomb_grind = {
 			return false
 		end
 
-		if damage_type == "burninating" or damage_type == "burn" then
-			local attacker = damage_data[DamageDataIndex.ATTACKER]
-			local liquid_extension = ScriptUnit.has_extension(attacker, "area_damage_system")
-
-			if not liquid_extension then
-				return false
-			end
-
-			if liquid_extension.explosion_template_name ~= "fire_grenade" or liquid_extension.explosion_template_name ~= "frag_fire_grenade" then
-				return false
-			end
+		if (damage_type == "burninating" or damage_type == "burn") and not DamageUtils.attacker_is_fire_bomb(attacker_unit) then
+			return
 		end
 
 		local damage_source = damage_data[DamageDataIndex.DAMAGE_SOURCE_NAME]

@@ -369,7 +369,7 @@ UIWidgets.create_simple_item_tooltip = function (scenegraph_id, tooltip_passes)
 	}
 end
 
-UIWidgets.create_simple_item_presentation = function (scenegraph_id, tooltip_passes, force_equipped, pass_styles)
+UIWidgets.create_simple_item_presentation = function (scenegraph_id, tooltip_passes, force_equipped, pass_styles, disable_unsupported)
 	return {
 		element = {
 			passes = {
@@ -378,6 +378,7 @@ UIWidgets.create_simple_item_presentation = function (scenegraph_id, tooltip_pas
 					pass_type = "item_presentation",
 					style_id = "item",
 					content_passes = tooltip_passes,
+					disable_unsupported = disable_unsupported,
 					content_check_function = function (content)
 						return content.item
 					end,
@@ -3530,7 +3531,7 @@ UIWidgets.create_weapon_statistics = function (scenegraph_id, size)
 	return widget
 end
 
-UIWidgets.create_background_with_frame = function (scenegraph_id, size, background_texture, frame_style, bottom_aligned)
+UIWidgets.create_background_with_frame = function (scenegraph_id, size, background_texture, frame_style, bottom_aligned, background_color)
 	background_texture = background_texture or "menu_frame_bg_01"
 
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
@@ -3586,7 +3587,7 @@ UIWidgets.create_background_with_frame = function (scenegraph_id, size, backgrou
 	}
 	local style = {
 		background = {
-			color = {
+			color = background_color or {
 				255,
 				255,
 				255,
@@ -8033,6 +8034,8 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 		},
 		style = {
 			background = {
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
 				color = {
 					255,
 					150,
@@ -8045,6 +8048,10 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 					0,
 				},
 				masked = masked,
+				texture_size = fit_background_texture and {
+					size[1] * 0.7,
+					size[2] * 0.7,
+				} or nil,
 			},
 			background_fade = {
 				color = {
@@ -9414,7 +9421,7 @@ UIWidgets.create_default_checkbox_button = function (scenegraph_id, size, text, 
 	return widget
 end
 
-UIWidgets.create_default_checkbox_button_console = function (scenegraph_id, size, text, font_size, tooltip_info, checkbox_frame_settings_name)
+UIWidgets.create_default_checkbox_button_console = function (scenegraph_id, size, text, font_size, tooltip_info, checkbox_frame_settings_name, disable_background_glow)
 	local background_texture = "button_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local widget = {
@@ -9444,12 +9451,15 @@ UIWidgets.create_default_checkbox_button_console = function (scenegraph_id, size
 	local hotspot_content = content[hotspot_name]
 	local hover_glow_name = "hover_glow"
 
-	passes[#passes + 1] = {
-		pass_type = "texture",
-		content_id = hotspot_name,
-		texture_id = hover_glow_name,
-		style_id = hover_glow_name,
-	}
+	if not disable_background_glow then
+		passes[#passes + 1] = {
+			pass_type = "texture",
+			content_id = hotspot_name,
+			texture_id = hover_glow_name,
+			style_id = hover_glow_name,
+		}
+	end
+
 	style[hover_glow_name] = {
 		size = {
 			size[1],
@@ -9516,12 +9526,12 @@ UIWidgets.create_default_checkbox_button_console = function (scenegraph_id, size
 		end,
 	}
 	style[text_name] = {
-		font_size = 24,
 		font_type = "hell_shark",
 		horizontal_alignment = "left",
 		upper_case = true,
 		vertical_alignment = "center",
 		word_wrap = true,
+		font_size = font_size or 24,
 		text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 		default_text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 		select_text_color = Colors.get_color_table_with_alpha("white", 255),
@@ -9546,12 +9556,12 @@ UIWidgets.create_default_checkbox_button_console = function (scenegraph_id, size
 		end,
 	}
 	style[text_disabled_name] = {
-		font_size = 24,
 		font_type = "hell_shark",
 		horizontal_alignment = "left",
 		upper_case = true,
 		vertical_alignment = "center",
 		word_wrap = true,
+		font_size = font_size or 24,
 		text_color = Colors.get_color_table_with_alpha("gray", 255),
 		default_text_color = Colors.get_color_table_with_alpha("gray", 255),
 		offset = {
@@ -9571,12 +9581,12 @@ UIWidgets.create_default_checkbox_button_console = function (scenegraph_id, size
 		style_id = text_shadow_name,
 	}
 	style[text_shadow_name] = {
-		font_size = 24,
 		font_type = "hell_shark",
 		horizontal_alignment = "left",
 		upper_case = true,
 		vertical_alignment = "center",
 		word_wrap = true,
+		font_size = font_size or 24,
 		text_color = Colors.get_color_table_with_alpha("black", 255),
 		offset = {
 			text_base_offset[1] + 2,
@@ -23456,7 +23466,7 @@ UIWidgets.create_system_button = function (scenegraph_id)
 	return widget
 end
 
-UIWidgets.create_rounded_rect_with_text = function (scenegraph_id, text, text_style, background_color, offset)
+UIWidgets.create_rounded_rect_with_text = function (scenegraph_id, text, text_style, background_color, offset, optional_fixed_size)
 	text_style = text_style or {
 		font_size = 22,
 		font_type = "hell_shark",
@@ -23518,8 +23528,8 @@ UIWidgets.create_rounded_rect_with_text = function (scenegraph_id, text, text_st
 	}
 	content.text = text
 	content.size = {
-		width + scaled_font_size * 0.5,
-		height + scaled_font_size * 0.5,
+		optional_fixed_size[1] or width + scaled_font_size * 0.5,
+		optional_fixed_size[2] or height + scaled_font_size * 0.5,
 	}
 	style.background = {
 		corner_radius = 10,
@@ -23532,8 +23542,8 @@ UIWidgets.create_rounded_rect_with_text = function (scenegraph_id, text, text_st
 			71,
 		},
 		rect_size = {
-			width + scaled_font_size * 0.5,
-			height + scaled_font_size * 0.5,
+			optional_fixed_size[1] or width + scaled_font_size * 0.5,
+			optional_fixed_size[2] or height + scaled_font_size * 0.5,
 		},
 		offset = {
 			0,
@@ -23554,4 +23564,256 @@ UIWidgets.create_rounded_rect_with_text = function (scenegraph_id, text, text_st
 	}
 
 	return widget_def
+end
+
+UIWidgets.create_simple_triangle = function (scenegraph_id, color, triangle_alignment, size, disable_with_gamepad)
+	local widget_def = {}
+	local element = {
+		passes = {},
+	}
+	local passes = element.passes
+	local content = {}
+	local style = {}
+
+	passes[#passes + 1] = {
+		pass_type = "triangle",
+		style_id = "triangle",
+	}
+	style.triangle = {
+		horizontal_alignment = "center",
+		vertical_alignment = "center",
+		triangle_alignment = triangle_alignment,
+		texture_size = size,
+		color = color,
+	}
+	content.disable_with_gamepad = disable_with_gamepad
+	widget_def.element = element
+	widget_def.content = content
+	widget_def.style = style
+	widget_def.scenegraph_id = scenegraph_id
+	widget_def.offset = {
+		0,
+		0,
+		0,
+	}
+
+	return widget_def
+end
+
+UIWidgets.create_overcharge_bar_widget = function (scenegraph_id, overcharge_bar, bar_foreground, glow_frame, hazard_icon, size, offset)
+	local size = size or {
+		250,
+		16,
+	}
+	local frame_settings = glow_frame and UIFrameSettings[glow_frame] or UIFrameSettings.frame_outer_glow_01
+	local frame_corner = frame_settings.texture_sizes.corner
+	local frame_width = frame_corner[1]
+	local widget = {
+		element = {
+			passes = {
+				{
+					pass_type = "texture_frame",
+					style_id = "frame",
+					texture_id = "frame",
+				},
+				{
+					pass_type = "texture",
+					style_id = "icon",
+					texture_id = "icon",
+				},
+				{
+					pass_type = "texture",
+					style_id = "icon_shadow",
+					texture_id = "icon",
+				},
+				{
+					pass_type = "texture",
+					style_id = "bar_fg",
+					texture_id = "bar_fg",
+				},
+				{
+					pass_type = "rect",
+					style_id = "bar_bg",
+				},
+				{
+					pass_type = "gradient_mask_texture",
+					style_id = "bar_1",
+					texture_id = "bar_1",
+				},
+				{
+					pass_type = "rect",
+					style_id = "min_threshold",
+				},
+				{
+					pass_type = "rect",
+					style_id = "max_threshold",
+				},
+			},
+		},
+		content = {
+			icon = hazard_icon or "tabs_icon_all_selected",
+			bar_1 = overcharge_bar or "overcharge_bar",
+			bar_fg = bar_foreground or "overcharge_frame",
+			size = {
+				size[1] - 6,
+				size[2],
+			},
+			frame = frame_settings.texture,
+		},
+		style = {
+			frame = {
+				frame_margins = {
+					-(frame_width - 1),
+					-(frame_width - 1),
+				},
+				texture_size = frame_settings.texture_size,
+				texture_sizes = frame_settings.texture_sizes,
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+				offset = {
+					0,
+					0,
+					0,
+				},
+				size = size,
+			},
+			bar_1 = {
+				gradient_threshold = 0,
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+				offset = {
+					3,
+					3,
+					3,
+				},
+				size = {
+					size[1] - 6,
+					size[2] - 6,
+				},
+			},
+			icon = {
+				size = {
+					34,
+					34,
+				},
+				offset = {
+					size[1],
+					size[2] / 2 - 17,
+					5,
+				},
+				color = {
+					100,
+					0,
+					0,
+					1,
+				},
+			},
+			icon_shadow = {
+				size = {
+					34,
+					34,
+				},
+				offset = {
+					size[1] + 2,
+					size[2] / 2 - 17 - 2,
+					5,
+				},
+				color = {
+					0,
+					0,
+					0,
+					0,
+				},
+			},
+			bar_fg = {
+				offset = {
+					0,
+					0,
+					5,
+				},
+				color = {
+					204,
+					255,
+					255,
+					255,
+				},
+				size = size,
+			},
+			bar_bg = {
+				size = {
+					size[1] - 6,
+					size[2] - 5,
+				},
+				offset = {
+					3,
+					3,
+					0,
+				},
+				color = {
+					100,
+					0,
+					0,
+					0,
+				},
+			},
+			min_threshold = {
+				pivot = {
+					0,
+					0,
+				},
+				offset = {
+					0,
+					3,
+					4,
+				},
+				color = {
+					204,
+					0,
+					0,
+					0,
+				},
+				size = {
+					2,
+					size[2] - 6,
+				},
+			},
+			max_threshold = {
+				pivot = {
+					0,
+					0,
+				},
+				offset = {
+					0,
+					3,
+					4,
+				},
+				color = {
+					204,
+					0,
+					0,
+					0,
+				},
+				size = {
+					2,
+					size[2] - 6,
+				},
+			},
+		},
+		offset = offset or {
+			0,
+			0,
+			0,
+		},
+		scenegraph_id = scenegraph_id,
+	}
+
+	return widget
 end

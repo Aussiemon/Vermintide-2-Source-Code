@@ -128,6 +128,32 @@ RewardsPopupUI.present_rewards = function (self, rewards)
 				presentation_data.animation_data = animation_data
 				presentation_data.keep_input = true
 				presentation_data.skip_blur = true
+
+				local rarity, name = deus_power_up.rarity, deus_power_up.name
+				local power_up_sets = DeusPowerUpSetLookup[rarity][name]
+
+				if power_up_sets then
+					for set_i = 1, #power_up_sets do
+						local power_up_set = power_up_sets[set_i]
+
+						if power_up_set.progress_sfx and table.find_func(power_up_set.pieces, function (_, piece)
+							return piece.name == name and piece.rarity == rarity
+						end) then
+							sounds = sounds and table.shallow_copy(sounds) or {}
+							sounds[#sounds + 1] = power_up_set.progress_sfx
+
+							break
+						elseif power_up_set.completed_sfx and table.find_func(power_up_set.rewards, function (_, piece)
+							return piece.name == name and piece.rarity == rarity
+						end) then
+							sounds = sounds and table.shallow_copy(sounds) or {}
+							sounds[#sounds + 1] = power_up_set.completed_sfx
+
+							break
+						end
+					end
+				end
+
 				presentation_data.sounds = sounds
 			elseif reward_type == "deus_power_up_end_of_level" then
 				local deus_power_up = data.power_up

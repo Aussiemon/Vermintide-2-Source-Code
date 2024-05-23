@@ -47,6 +47,7 @@ DeusShopView = class(DeusShopView)
 local REAL_PLAYER_LOCAL_ID = 1
 local SELECT_COUNTDOWN = 60
 local FINAL_COUNTDOWN = 5
+local HURRY_UP_TIME = 15
 local states = {
 	FINISHED = 5,
 	FINISHING = 4,
@@ -117,6 +118,8 @@ DeusShopView.init = function (self, context)
 
 	if self._is_server then
 		self._shared_state:set_server(self._shared_state:get_key("shop_state"), states.INITIALIZED)
+
+		self._human_player_vo_units = {}
 	end
 
 	local event = Managers.state.event
@@ -149,6 +152,26 @@ DeusShopView.start = function (self, params)
 
 	if self._is_server then
 		self._shared_state:set_server(self._shared_state:get_key("shop_state"), states.STARTING)
+
+		local peers = self._deus_run_controller:get_peers()
+
+		for _, peer_id in pairs(peers) do
+			local profile_index = self._deus_run_controller:get_player_profile(peer_id, REAL_PLAYER_LOCAL_ID)
+
+			if profile_index then
+				local profile = SPProfiles[profile_index]
+				local character_vo = profile.character_vo
+
+				if character_vo then
+					self._human_player_vo_units[peer_id] = Managers.state.unit_spawner:spawn_network_unit("units/hub_elements/empty", "dialogue_node", {
+						dialogue_system = {
+							faction = "player",
+							dialogue_profile = character_vo,
+						},
+					})
+				end
+			end
+		end
 	end
 
 	local current_node = self._deus_run_controller:get_current_node()
@@ -169,6 +192,14 @@ DeusShopView.start = function (self, params)
 	local event_data = FrameTable.alloc_table()
 
 	dialogue_input:trigger_dialogue_event("deus_shrine_tutorial", event_data)
+
+	self._telemetry_data = {
+		store_type = self._shop_type,
+		purchased_blessings = {},
+		purchased_boons = {},
+		currency_when_entered = self._deus_run_controller:get_player_soft_currency(own_peer_id),
+		run_id = self._deus_run_controller:get_run_id(),
+	}
 end
 
 DeusShopView.register_rpcs = function (self, network_event_delegate, network_transmit)
@@ -463,6 +494,7 @@ DeusShopView._finish = function (self, data)
 
 	self:_release_input()
 	self:_set_camera_node("first_person_node")
+	Managers.telemetry_events:store_node_traversed(self._telemetry_data)
 end
 
 DeusShopView._init_power_up_widget = function (self, widget, power_up_instance, discount, current_value, max_value, profile_index, career_index)
@@ -503,6 +535,36 @@ DeusShopView._init_power_up_widget = function (self, widget, power_up_instance, 
 		style.price_text_shadow.offset[2] = style.price_text_shadow.offset[2] + offset_y
 		style.price_text_disabled.offset[2] = style.price_text_disabled.offset[2] + offset_y
 	end
+
+	local power_up_sets = DeusPowerUpSetLookup[power_up_instance.rarity] and DeusPowerUpSetLookup[power_up_instance.rarity][power_up_instance.name]
+	local is_part_of_set = false
+
+	if power_up_sets then
+		local set = power_up_sets[1]
+		local piece_count = 0
+		local pieces = set.pieces
+
+		for _, piece in ipairs(pieces) do
+			local name, rarity = piece.name, piece.rarity
+			local local_peer_id = self._deus_run_controller:get_own_peer_id()
+
+			if self._deus_run_controller:has_power_up_by_name(local_peer_id, name, rarity) then
+				piece_count = piece_count + 1
+			end
+		end
+
+		is_part_of_set = true
+
+		local num_required_pieces = set.num_required_pieces or #pieces
+
+		widget.content.set_progression = string.format(Localize("set_counter_boons"), piece_count, num_required_pieces)
+
+		if #pieces == piece_count then
+			widget.style.set_progression.text_color = widget.style.set_progression.progression_colors.complete
+		end
+	end
+
+	widget.content.is_part_of_set = is_part_of_set
 end
 
 DeusShopView._init_blessing_widget = function (self, widget, blessing_name)
@@ -568,6 +630,9 @@ DeusShopView._update_during_selecting = function (self, dt, t)
 
 		new_countdown = math.max(new_countdown, 0)
 		widgets_by_name.timer_text.content.text = math.floor(new_countdown)
+
+		self:_update_vote_hurry_up(new_countdown)
+
 		self._selecting_countdown = new_countdown
 	elseif self:_did_someone_vote() then
 		self._selecting_countdown = SELECT_COUNTDOWN
@@ -575,6 +640,30 @@ DeusShopView._update_during_selecting = function (self, dt, t)
 
 	self:_update_shop_widgets()
 	self:_handle_input(dt, t)
+end
+
+DeusShopView._update_vote_hurry_up = function (self, time_left)
+	if not self._hurry_up_vo_played and self._deus_run_controller:is_server() and time_left < HURRY_UP_TIME then
+		self._hurry_up_vo_played = true
+
+		local key = self._shared_state:get_key("peer_state")
+		local ready_peers = table.select_array(self._deus_run_controller:get_peers(), function (_, peer_id)
+			local vo_unit = self._human_player_vo_units[peer_id]
+
+			if vo_unit and self._shared_state:get_peer(peer_id, key) == peer_states.DONE_BUYING then
+				return peer_id
+			end
+		end)
+
+		table.shuffle(ready_peers)
+
+		if ready_peers[1] then
+			local vo_unit = self._human_player_vo_units[ready_peers[1]]
+			local dialogue_input = ScriptUnit.extension_input(vo_unit, "dialogue_system")
+
+			dialogue_input:trigger_networked_dialogue_event("deus_shrine_hurry")
+		end
+	end
 end
 
 DeusShopView._update_during_finishing = function (self, dt, t)
@@ -629,6 +718,10 @@ DeusShopView._update_shop_widgets = function (self)
 		local buyer = blessings_with_buyer[blessing_name]
 
 		if buyer then
+			if not content.is_bought then
+				self:_blessing_bought_vo(buyer)
+			end
+
 			content.is_bought = true
 			content.button_hotspot.disable_button = true
 
@@ -698,6 +791,18 @@ DeusShopView._acquire_input = function (self, ignore_cursor_stack)
 	self._acquiring_input = true
 end
 
+DeusShopView._blessing_bought_vo = function (self, buyer_peer_id)
+	if self._deus_run_controller:is_server() then
+		local vo_unit = self._human_player_vo_units[buyer_peer_id]
+
+		if vo_unit then
+			local dialogue_input = ScriptUnit.extension_input(vo_unit, "dialogue_system")
+
+			dialogue_input:trigger_networked_dialogue_event("deus_purchasing_blessing")
+		end
+	end
+end
+
 DeusShopView._release_input = function (self, ignore_cursor_stack)
 	local input_manager = self._input_manager
 
@@ -723,10 +828,12 @@ end
 
 DeusShopView._on_blessing_bought = function (self, blessing_name)
 	self._deus_run_controller:shop_buy_blessing(blessing_name)
+	table.insert(self._telemetry_data.purchased_blessings, blessing_name)
 end
 
 DeusShopView._on_power_up_bought = function (self, power_up, discount)
 	self._deus_run_controller:shop_buy_power_up(power_up, discount)
+	table.insert(self._telemetry_data.purchased_boons, power_up.name)
 end
 
 DeusShopView._handle_input = function (self, dt, t)

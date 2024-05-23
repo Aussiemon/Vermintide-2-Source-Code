@@ -9,6 +9,7 @@ require("scripts/unit_extensions/weapons/projectiles/projectile_homing_skull_loc
 require("scripts/unit_extensions/weapons/projectiles/projectile_extrapolated_husk_locomotion_extension")
 require("scripts/unit_extensions/weapons/projectiles/projectile_ethereal_skull_locomotion_extension")
 require("scripts/settings/light_weight_projectile_effects")
+require("scripts/entity_system/systems/projectile/drone_templates")
 
 ProjectileSystem = class(ProjectileSystem, ExtensionSystemBase)
 
@@ -32,6 +33,8 @@ local RPCS = {
 	"rpc_clients_continuous_shoot_start",
 	"rpc_clients_continuous_shoot_stop",
 	"rpc_projectile_event",
+	"rpc_request_spawn_drones",
+	"rpc_spawn_drones",
 }
 local extensions = {
 	"GenericImpactProjectileUnitExtension",
@@ -88,6 +91,13 @@ ProjectileSystem.init = function (self, entity_system_creation_context, system_n
 	}
 	self._wwise_world = Managers.world:wwise_world(self.world)
 	self._projectile_linker_system = Managers.state.entity:system("projectile_linker_system")
+
+	local seed_info = Network.type_info("rnd_seed")
+
+	self._drone_seed_per_source = {
+		min_seed = seed_info.min,
+		max_seed = seed_info.max,
+	}
 end
 
 ProjectileSystem.on_add_extension = function (self, world, unit, extension_name, ...)
@@ -139,6 +149,7 @@ ProjectileSystem.update = function (self, context, t)
 	table.clear(projectile_owners)
 	self:_update_shooting(context.dt, t, self._light_weight.husk_shoot_list)
 	self:_update_light_weight_projectiles(context.dt, t, self._light_weight)
+	self:_update_drones(context.dt, t)
 end
 
 ProjectileSystem.destroy = function (self)
@@ -337,7 +348,7 @@ ProjectileSystem.spawn_globadier_globe = function (self, position, target_vector
 		if fixed_impact_data then
 			local hit_unit = fixed_impact_data.hit_unit
 
-			hit_unit_id = self.network_manager:game_object_or_level_id(hit_unit)
+			hit_unit_id = self.network_manager:level_object_id(hit_unit)
 			fixed_impact = hit_unit_id ~= nil
 		end
 
@@ -370,12 +381,20 @@ end
 ProjectileSystem.rpc_spawn_globadier_globe_fixed_impact = function (self, channel_id, position, target_vector, angle, speed, initial_radius, radius, duration, owner_unit_id, damage_source_id, aoe_dot_damage, aoe_init_damage, aoe_dot_damage_interval, create_nav_tag_volume, instant_explosion, impact_hit_unit_id, impact_position, impact_direction, impact_normal, impact_actor_index, time)
 	fassert(self.is_server, "Have to be server")
 
+	local hit_unit = Managers.state.network:game_object_or_level_unit(impact_hit_unit_id, true)
+
+	if not Unit.alive(hit_unit) then
+		self:rpc_spawn_globadier_globe(channel_id, position, target_vector, angle, speed, initial_radius, radius, duration, owner_unit_id, damage_source_id, aoe_dot_damage, aoe_init_damage, aoe_dot_damage_interval, create_nav_tag_volume, instant_explosion)
+
+		return
+	end
+
 	local owner_unit = self.unit_storage:unit(owner_unit_id)
 	local damage_source = NetworkLookup.damage_sources[damage_source_id]
 	local fixed_impact_data = {
 		position = Vector3Box(impact_position),
 		direction = Vector3Box(impact_direction),
-		hit_unit = Managers.state.network:game_object_or_level_unit(impact_hit_unit_id, true),
+		hit_unit = hit_unit,
 		actor_index = impact_actor_index,
 		hit_normal = Vector3Box(impact_normal),
 		time = time,
@@ -1184,6 +1203,354 @@ ProjectileSystem.rpc_client_create_aoe = function (self, channel_id, owner_unit_
 	local explosion_template = ExplosionUtils.get_template(explosion_template_name)
 
 	DamageUtils.create_aoe(world, owner_unit, position, damage_source, explosion_template, radius)
+end
+
+ProjectileSystem.spawn_drones = function (self, source_unit, drone_template_name, num_drones, radius, side_relation, damage_profile_name)
+	local buff_extension = ScriptUnit.has_extension(source_unit, "buff_system")
+
+	if buff_extension then
+		num_drones = buff_extension:apply_buffs_to_value(num_drones, "increased_drone_count")
+	end
+
+	local source_unit_id = self.unit_storage:go_id(source_unit)
+	local drone_template_id = NetworkLookup.drone_templates[drone_template_name]
+
+	radius = math.round(radius)
+
+	local side_relation_id = SideRelationLookup[side_relation]
+	local damage_profile_id = NetworkLookup.damage_profiles[damage_profile_name]
+
+	self.network_transmit:send_rpc_server("rpc_request_spawn_drones", source_unit_id, drone_template_id, num_drones, radius, side_relation_id, damage_profile_id)
+end
+
+local DRONE_TARGETS = {}
+
+ProjectileSystem.rpc_request_spawn_drones = function (self, channel_id, source_unit_id, drone_template_id, num_drones, radius, side_relation_id, damage_profile_id)
+	local source_unit = self.unit_storage:unit(source_unit_id)
+
+	if not Unit.alive(source_unit) then
+		return
+	end
+
+	local side = Managers.state.side.side_by_unit[source_unit]
+	local relation = SideRelationLookup[side_relation_id]
+	local broadphase_categories = side:broadphase_categories_by_relation(relation)
+	local num_ai = AiUtils.broadphase_query(Unit.local_position(source_unit, 0), radius, DRONE_TARGETS, broadphase_categories)
+	local filtered_i = 0
+
+	for i = 1, num_ai do
+		local go_id = self.unit_storage:go_id(DRONE_TARGETS[i])
+
+		if go_id then
+			filtered_i = filtered_i + 1
+			DRONE_TARGETS[filtered_i] = go_id
+		end
+	end
+
+	num_ai = math.min(filtered_i, Network.type_info("game_object_id_array_8").max_size)
+
+	if num_ai == 0 then
+		return
+	end
+
+	local drone_seeds = self._drone_seed_per_source
+	local existing_seed = drone_seeds[source_unit]
+
+	if not existing_seed then
+		drone_seeds[source_unit] = math.random(drone_seeds.min_seed, drone_seeds.max_seed)
+	else
+		drone_seeds[source_unit] = Math.next_random(existing_seed)
+	end
+
+	local picked_enemy_ids = {}
+
+	for i = 1, num_drones do
+		picked_enemy_ids[i] = DRONE_TARGETS[math.random(1, num_ai)]
+	end
+
+	self.network_transmit:send_rpc_all("rpc_spawn_drones", source_unit_id, drone_template_id, drone_seeds[source_unit], damage_profile_id, picked_enemy_ids)
+end
+
+local TIME_BETWEEN_DRONES_BASE = 0.1
+local TIME_BETWEEN_DRONES_MIN = 0.025
+local TIME_BETWEEN_DRONES_MIN_AT = 100
+local DRONE_SPEED = 5
+local DRONE_SPEED_MAX = 14
+local DRONE_SPEED_MAX_AT = 3
+local MIN_OUTWARD_ANGLE = 0
+local MAX_OUTWARD_ANGLE = math.pi * 0.18
+local MIN_OUTWARD_ANGLE_AT = 2
+local MAX_OUTWARD_ANGLE_AT = 10
+local MIN_UPWARD_ANGLE = -math.pi * 0.1
+local MAX_UPWARD_ANGLE = math.pi * 0.3
+local MIN_ANGULAR_VELOCITY = math.pi * 0.1
+local MAX_ANGULAR_VELOCITY = math.pi * 2
+local MIN_ANGULAR_VELOCITY_AT = MAX_OUTWARD_ANGLE_AT
+local MAX_ANGULAR_VELOCITY_AT = MIN_OUTWARD_ANGLE_AT
+
+ProjectileSystem.rpc_spawn_drones = function (self, channel_id, source_unit_id, drone_template_id, seed, damage_profile_id, target_units)
+	local source_unit = self.unit_storage:unit(source_unit_id)
+
+	if not Unit.alive(source_unit) then
+		return
+	end
+
+	self._drones = self._drones or {}
+
+	local drones = self._drones
+	local drone_template_name = NetworkLookup.drone_templates[drone_template_id]
+	local drone_template = DroneTemplates[drone_template_name]
+	local damage_profile_name = NetworkLookup.damage_profiles[damage_profile_id]
+	local vfx_seed = seed
+
+	for i = 1, #target_units do
+		repeat
+			vfx_seed = Math.next_random(vfx_seed)
+
+			local rnd_side
+
+			vfx_seed, rnd_side = Math.next_random(vfx_seed, 0, 1)
+
+			local rnd_upward_side = rnd_side * 2 - 1
+			local target_unit = self.unit_storage:unit(target_units[i])
+
+			if not ALIVE[target_unit] then
+				break
+			end
+
+			drones[#drones + 1] = {
+				source_unit = source_unit,
+				time_to_spawn = TIME_BETWEEN_DRONES_BASE,
+				target_unit = target_unit,
+				drone_template = drone_template,
+				last_known_target_pos = Vector3Box(POSITION_LOOKUP[target_unit]),
+				source_pos = Vector3Box(),
+				current_pos = Vector3Box(),
+				current_rot = QuaternionBox(),
+				damage_profile_name = damage_profile_name,
+				drone_group_i = i,
+				upward_side = rnd_upward_side,
+				vfx_seed = vfx_seed,
+			}
+		until true
+	end
+end
+
+local function _init_drone(drone, target_position, world)
+	local source_unit = drone.source_unit
+
+	if not Unit.alive(source_unit) then
+		return nil
+	end
+
+	local source_pos = Unit.local_position(source_unit, 0)
+	local distance_to_enemy = Vector3.length(target_position - source_pos)
+
+	if distance_to_enemy < math.epsilon then
+		return nil
+	end
+
+	local upward_side = drone.upward_side
+	local forward_dir = Vector3.normalize(target_position - source_pos)
+	local right_dir = Vector3.cross(Vector3.up(), forward_dir)
+	local source_offset = Vector3(0, 0, 1) + right_dir * 0.75 * upward_side + forward_dir * -0.5
+
+	source_pos = source_pos + source_offset
+
+	local _, upward_angle_rnd = Math.next_random(drone.vfx_seed)
+	local upward_angle = MIN_UPWARD_ANGLE + upward_angle_rnd * (MAX_UPWARD_ANGLE - MIN_UPWARD_ANGLE)
+	local outward_angle = math.remap(MIN_OUTWARD_ANGLE_AT, MAX_OUTWARD_ANGLE_AT, MIN_OUTWARD_ANGLE, MAX_OUTWARD_ANGLE, distance_to_enemy)
+	local dir = Vector3.normalize(target_position - source_pos)
+
+	dir = Quaternion.rotate(Quaternion.axis_angle(Vector3.cross(dir, Vector3.up()), upward_angle), dir)
+	dir = Quaternion.rotate(Quaternion.axis_angle(Vector3.up() * upward_side, outward_angle), dir)
+
+	local rotation = Quaternion.look(dir)
+
+	drone.source_pos:store(source_pos)
+	drone.current_pos:store(source_pos)
+	drone.current_rot:store(rotation)
+
+	local drone_template = drone.drone_template
+
+	if drone_template.spawn_sfx then
+		WwiseUtils.trigger_position_event(world, drone_template.spawn_sfx, source_pos)
+	end
+
+	if drone_template.linked_vfx then
+		return World.create_particles(world, drone_template.linked_vfx.name, source_pos, rotation)
+	else
+		return -1
+	end
+end
+
+local function _update_drone(drone, target_position, world, dt, t)
+	local source_pos = drone.source_pos:unbox()
+	local drone_pos = drone.current_pos:unbox()
+	local drone_rot = drone.current_rot:unbox()
+	local drone_point_on_line = Geometry.closest_point_on_line(drone_pos, source_pos, target_position)
+	local distance_from_drone_point = Vector3.distance(target_position, drone_point_on_line)
+	local wanted_rot
+	local angular_velocity = math.remap(MIN_ANGULAR_VELOCITY_AT, MAX_ANGULAR_VELOCITY_AT, MIN_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY, distance_from_drone_point)
+	local to_target = target_position - drone_pos
+	local rot_to_target = Quaternion.look(to_target)
+	local angle_movement = angular_velocity * dt
+	local angle_to_target = Quaternion.angle(rot_to_target, drone_rot)
+
+	if angular_velocity >= MAX_ANGULAR_VELOCITY or angle_to_target <= angle_movement * 1.05 then
+		wanted_rot = rot_to_target
+	else
+		local move_dir = Quaternion.forward(drone_rot)
+		local x_dir = Vector3.normalize(Vector3.cross(to_target, move_dir))
+
+		wanted_rot = Quaternion.multiply(Quaternion.axis_angle(x_dir, angle_movement), drone_rot)
+
+		if angle_to_target < Quaternion.angle(rot_to_target, wanted_rot) then
+			x_dir = Vector3.normalize(Vector3.cross(move_dir, to_target))
+			wanted_rot = Quaternion.multiply(Quaternion.axis_angle(x_dir, angle_movement), drone_rot)
+		end
+	end
+
+	local time_in_flight = t - drone.spawn_t
+	local drone_speed = math.lerp_clamped(DRONE_SPEED, DRONE_SPEED_MAX, time_in_flight / DRONE_SPEED_MAX_AT)
+	local movement = Quaternion.forward(wanted_rot) * drone_speed * dt / math.clamp(math.cos(angle_to_target), 0.1, 1)
+
+	if Vector3.length_squared(movement) >= distance_from_drone_point * distance_from_drone_point then
+		return true
+	end
+
+	local wanted_pos = drone_pos + movement
+
+	drone.current_pos:store(wanted_pos)
+	drone.current_rot:store(wanted_rot)
+	World.move_particles(world, drone.vfx_id, wanted_pos, wanted_rot)
+end
+
+local function _on_drone_done(drone, world, is_server)
+	local drone_template = drone.drone_template
+	local vfx_id = drone.vfx_id
+
+	if vfx_id and vfx_id >= 0 then
+		if drone_template.linked_vfx.destroy_policy == "stop" then
+			World.stop_spawning_particles(world, vfx_id)
+		else
+			World.destroy_particles(world, vfx_id)
+		end
+	end
+
+	local current_pos = drone.current_pos:unbox()
+
+	if drone_template.impact_vfx then
+		local current_rot = drone.current_rot:unbox()
+
+		World.create_particles(world, drone_template.impact_vfx, current_pos, current_rot)
+	end
+
+	if drone_template.impact_sfx then
+		WwiseUtils.trigger_position_event(world, drone_template.impact_sfx, current_pos)
+	end
+
+	if not is_server then
+		return
+	end
+
+	local damage_profile = DamageProfileTemplates[drone.damage_profile_name]
+	local target_unit = drone.target_unit
+	local source_unit = HEALTH_ALIVE[drone.source_unit] and drone.source_unit or target_unit
+
+	if HEALTH_ALIVE[target_unit] then
+		local power_level = DefaultPowerLevel
+		local career_extension = ScriptUnit.has_extension(drone.source_unit, "career_system")
+
+		if career_extension then
+			power_level = career_extension:get_career_power_level()
+		end
+
+		local hit_zone_name = "full"
+		local hit_pos = drone.current_pos:unbox()
+		local hit_direction = Quaternion.forward(drone.current_rot:unbox())
+		local damage_source = "buff"
+		local hit_ragdoll_actor = false
+		local boost_curve_multiplier
+		local is_critical_strike = false
+		local added_dot = false
+		local first_hit = false
+		local total_hits = drone.drone_group_i + 1
+		local backstab_multiplier
+
+		DamageUtils.add_damage_network_player(damage_profile, drone.drone_group_i, power_level, target_unit, source_unit, hit_zone_name, hit_pos, hit_direction, damage_source, hit_ragdoll_actor, boost_curve_multiplier, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier, source_unit)
+	end
+end
+
+ProjectileSystem._update_drones = function (self, dt, t)
+	local drones = self._drones
+
+	if not drones then
+		return
+	end
+
+	local time_between_spawns = math.remap(0, TIME_BETWEEN_DRONES_MIN_AT, TIME_BETWEEN_DRONES_BASE, TIME_BETWEEN_DRONES_MIN, math.clamp(#drones, 0, TIME_BETWEEN_DRONES_MIN_AT))
+	local dt_modifier = TIME_BETWEEN_DRONES_BASE / time_between_spawns
+	local i = 1
+
+	while i <= #drones do
+		local drone = drones[i]
+
+		if not drone.spawn_t then
+			drone.time_to_spawn = drone.time_to_spawn - dt * dt_modifier
+
+			if drone.time_to_spawn > 0 then
+				return
+			else
+				drone.spawn_t = t
+
+				local next_drone = drones[i + 1]
+
+				if next_drone then
+					local spillover = math.abs(drone.time_to_spawn)
+
+					next_drone.time_to_spawn = next_drone.time_to_spawn - spillover
+				end
+			end
+		end
+
+		local last_known_position_boxed = drone.last_known_target_pos
+		local target_unit = drone.target_unit
+
+		if ALIVE[target_unit] then
+			if Unit.has_node(target_unit, "j_spine") then
+				last_known_position_boxed:store(Unit.world_position(target_unit, Unit.node(target_unit, "j_spine")))
+			else
+				local z_offset = Unit.get_data(target_unit, "breed") and AiUtils.breed_height(target_unit) * 0.6 or 0
+
+				last_known_position_boxed:store(POSITION_LOOKUP[target_unit] + Vector3(0, 0, z_offset))
+			end
+		end
+
+		local last_known_position = last_known_position_boxed:unbox()
+
+		if not drone.vfx_id then
+			drone.vfx_id = _init_drone(drone, last_known_position, self.world)
+
+			if not drone.vfx_id then
+				_on_drone_done(drone, self.world, self.is_server)
+				table.remove(drones, i)
+
+				i = i - 1
+			end
+		else
+			local done = _update_drone(drone, last_known_position, self.world, dt, t)
+
+			if done then
+				_on_drone_done(drone, self.world, self.is_server)
+				table.remove(drones, i)
+
+				i = i - 1
+			end
+		end
+
+		i = i + 1
+	end
 end
 
 ProjectileSystem._remove_light_weight_projectile = function (self, data, index)

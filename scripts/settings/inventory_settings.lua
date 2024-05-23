@@ -135,6 +135,51 @@ InventorySettings = {
 		},
 	},
 }
+InventorySettings.loadouts = {
+	{
+		loadout_index = 1,
+		loadout_type = "default",
+	},
+	{
+		loadout_index = 2,
+		loadout_type = "default",
+	},
+	{
+		loadout_icon = "loadout_icon_1",
+		loadout_index = 1,
+		loadout_type = "custom",
+	},
+	{
+		loadout_icon = "loadout_icon_2",
+		loadout_index = 2,
+		loadout_type = "custom",
+	},
+	{
+		loadout_icon = "loadout_icon_3",
+		loadout_index = 3,
+		loadout_type = "custom",
+	},
+}
+
+local max_num_custom_loadouts = 0
+
+for _, loadout_data in ipairs(InventorySettings.loadouts) do
+	if loadout_data.loadout_type == "custom" then
+		max_num_custom_loadouts = max_num_custom_loadouts + 1
+	end
+end
+
+InventorySettings.MAX_NUM_CUSTOM_LOADOUTS = max_num_custom_loadouts
+InventorySettings.default_loadout_allowed_game_modes = {
+	versus = true,
+}
+InventorySettings.bot_loadout_allowed_game_modes = {
+	adventure = true,
+	deus = true,
+	inn = true,
+	inn_deus = true,
+	map_deus = true,
+}
 InventorySettings.weapon_slots = {}
 InventorySettings.enemy_weapon_slots = {}
 InventorySettings.attachment_slots = {}

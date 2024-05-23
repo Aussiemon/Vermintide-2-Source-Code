@@ -10,7 +10,7 @@ local DAMAGE_TYPE_BLACKLIST = {
 	temporary_health_degen = true,
 	volume_insta_kill = true,
 }
-local damage_sound_global_parameter = "leash_distance"
+local damage_sound_global_parameter
 local start_damage_sound_event = "Play_curse_empathy_loop"
 local stop_damage_sound_event = "Stop_curse_empathy_loop"
 local player_effect_name = "fx/leash_beam_player_01"
@@ -139,7 +139,9 @@ local function update_sound(data)
 
 	sound_value = math.clamp(sound_value, 0, beam_max_blink_sound)
 
-	audio_system:set_global_parameter(damage_sound_global_parameter, sound_value)
+	if damage_sound_global_parameter then
+		audio_system:set_global_parameter(damage_sound_global_parameter, sound_value)
+	end
 end
 
 local function move_player_effect(context, data, player_unit)

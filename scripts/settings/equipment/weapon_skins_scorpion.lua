@@ -190,6 +190,7 @@ local skins = {
 	{
 		name = "we_longbow_skin_02_magic_01",
 		data = {
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
 			description = "we_longbow_skin_02_magic_01_description",
 			display_name = "we_longbow_skin_02_magic_01_name",
 			display_unit = "units/weapons/weapon_display/display_bow",
@@ -310,6 +311,7 @@ local skins = {
 	{
 		name = "we_shortbow_skin_02_magic_01",
 		data = {
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
 			description = "we_shortbow_skin_02_magic_01_description",
 			display_name = "we_shortbow_skin_02_magic_01_name",
 			display_unit = "units/weapons/weapon_display/display_bow",
@@ -323,6 +325,7 @@ local skins = {
 	{
 		name = "we_shortbow_hagbane_skin_02_magic_01",
 		data = {
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_poison_arrow_t1",
 			description = "we_shortbow_hagbane_skin_02_magic_01_description",
 			display_name = "we_shortbow_hagbane_skin_02_magic_01_name",
 			display_unit = "units/weapons/weapon_display/display_bow",

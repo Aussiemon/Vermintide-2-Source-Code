@@ -224,6 +224,48 @@ function flow_callback_switchcase_unit(params)
 	return flow_return_table
 end
 
+function flow_callback_switch_event_to_number_0(params)
+	return {
+		out_number = 0,
+	}
+end
+
+function flow_callback_switch_event_to_number_1(params)
+	return {
+		out_number = 1,
+	}
+end
+
+function flow_callback_switch_event_to_number_2(params)
+	return {
+		out_number = 2,
+	}
+end
+
+function flow_callback_switch_event_to_number_3(params)
+	return {
+		out_number = 3,
+	}
+end
+
+function flow_callback_switch_event_to_number_4(params)
+	return {
+		out_number = 4,
+	}
+end
+
+function flow_callback_switch_event_to_number_5(params)
+	return {
+		out_number = 5,
+	}
+end
+
+function flow_callback_switch_event_to_number_6(params)
+	return {
+		out_number = 6,
+	}
+end
+
 function flow_callback_relay_trigger(params)
 	return {
 		out = true,
@@ -4791,6 +4833,92 @@ function flow_callback_set_player_invincibility(params)
 		fassert(health_extension, "Tried to set invincibility on unit %s from flow but the unit has no health extension", player_unit)
 
 		health_extension.is_invincible = is_invincible
+	end
+end
+
+function flow_callback_switch_player_class(params)
+	local player_unit = params.player_unit
+	local profile_name = params.profile_name
+
+	if not profile_name then
+		local player = Managers.player:unit_owner(player_unit)
+		local peer_id = player:network_id()
+		local local_player_id = player:local_player_id()
+		local party_manager = Managers.party
+		local party = party_manager:get_party_from_player_id(peer_id, local_player_id)
+		local side = Managers.state.side.side_by_party[party]
+		local available_profiles = side.available_profiles
+
+		available_profiles = available_profiles or PROFILES_BY_AFFILIATION.heroes
+
+		for k = 1, #available_profiles do
+			profile_name = available_profiles[k]
+
+			break
+		end
+	end
+
+	if profile_name then
+		local profile_index = FindProfileIndex(profile_name)
+		local careers = SPProfiles[profile_index].careers
+		local career = careers[script_data.wanted_career_index] or careers[1]
+		local force_respawn = true
+
+		if career.display_name == "vs_undecided" then
+			return
+		end
+
+		Managers.state.network:request_profile(1, profile_name, career.display_name, force_respawn)
+	end
+end
+
+function flow_callback_switch_player_party(params)
+	local party_id = params.party_id
+
+	if party_id then
+		party_id = tonumber(party_id)
+
+		local party = Managers.party:get_party(party_id)
+
+		if party and party.num_open_slots + party.num_bots > 0 then
+			print("Debug switching wanted party to:", party_id)
+
+			local player = Managers.player:local_player()
+			local local_player_id = player:local_player_id()
+			local peer_id = player:network_id()
+			local mechanism_name = Managers.mechanism:current_mechanism_name()
+			local side = Managers.state.side.side_by_party[party]
+
+			Managers.party:request_join_party(peer_id, local_player_id, party_id)
+
+			if player and player:needs_despawn() then
+				Managers.state.spawn:delayed_despawn(player)
+			end
+
+			local camera_system = Managers.state.entity:system("camera_system")
+
+			if party.name == "spectators" then
+				local profile = PROFILES_BY_NAME.spectator
+
+				camera_system:initialize_camera_states(player, profile.index, 1)
+			else
+				local profile_index = FindProfileIndex("witch_hunter")
+
+				camera_system:initialize_camera_states(player, profile_index, 1)
+			end
+
+			local sides = Managers.state.side:sides()
+			local object_set_name, enable
+
+			for i = 1, #sides do
+				local current_side = sides[i]
+
+				object_set_name = string.format("%s_%s", mechanism_name, current_side:name())
+				enable = current_side == side
+
+				Managers.state.game_mode:set_object_set_enabled(object_set_name, enable)
+			end
+		end
 	end
 end
 

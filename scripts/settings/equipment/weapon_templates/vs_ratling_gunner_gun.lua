@@ -349,18 +349,20 @@ weapon_template.synced_states = {
 
 			set_windup_progress(career_extension, weapon_unit)
 		end,
-		leave = function (self, owner_unit, weapon_unit, state_data, is_local_player, world, next_state)
+		leave = function (self, owner_unit, weapon_unit, state_data, is_local_player, world, next_state, is_destroy)
 			local wwise_world = Managers.world:wwise_world(world)
 
 			if is_local_player then
 				WwiseWorld.trigger_event(wwise_world, "Stop_player_ratling_gunner_weapon_ready", weapon_unit)
 
-				local career_extension = ScriptUnit.extension(owner_unit, "career_system")
+				if not is_destroy then
+					local career_extension = ScriptUnit.extension(owner_unit, "career_system")
 
-				set_windup_progress(career_extension, weapon_unit, 0)
+					set_windup_progress(career_extension, weapon_unit, 0)
+				end
 			end
 
-			if next_state ~= "firing" then
+			if not is_destroy and next_state ~= "firing" then
 				if is_local_player then
 					local fp_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
@@ -384,6 +386,7 @@ weapon_template.synced_states = {
 
 			if is_local_player then
 				WwiseWorld.trigger_event(wwise_world, "Play_player_ratling_gunner_shooting_loop", use_occlusion, wwise_source_id)
+				WwiseWorld.trigger_event(wwise_world, "Play_player_enemy_vce_ratling_gunner_shoot_start", use_occlusion, wwise_source_id)
 			else
 				WwiseWorld.trigger_event(wwise_world, "Play_ratling_gunner_shooting_loop", use_occlusion, wwise_source_id)
 			end
@@ -409,17 +412,19 @@ weapon_template.synced_states = {
 
 			WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, "ratling_gun_shooting_loop_parameter", time_shooting_percent)
 		end,
-		leave = function (self, owner_unit, weapon_unit, state_data, is_local_player, world, next_state)
-			if is_local_player then
-				local fp_extension = ScriptUnit.extension(owner_unit, "first_person_system")
+		leave = function (self, owner_unit, weapon_unit, state_data, is_local_player, world, next_state, is_destroy)
+			if not is_destroy then
+				if is_local_player then
+					local fp_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
-				CharacterStateHelper.play_animation_event_first_person(fp_extension, "attack_finished")
-				update_ammo(owner_unit, weapon_unit)
+					CharacterStateHelper.play_animation_event_first_person(fp_extension, "attack_finished")
+					update_ammo(owner_unit, weapon_unit)
+				end
+
+				Unit.animation_event(owner_unit, "no_anim_upperbody")
+				Unit.animation_event(owner_unit, "to_combat")
+				Unit.animation_event(owner_unit, "idle")
 			end
-
-			Unit.animation_event(owner_unit, "no_anim_upperbody")
-			Unit.animation_event(owner_unit, "to_combat")
-			Unit.animation_event(owner_unit, "idle")
 
 			local wwise_world = Managers.world:wwise_world(world)
 
@@ -451,17 +456,19 @@ weapon_template.synced_states = {
 
 			weapon_extension:set_custom_data("reload_progress", reload_fraction)
 		end,
-		leave = function (self, owner_unit, weapon_unit, state_data, is_local_player, world, next_state)
-			if is_local_player then
-				local weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
+		leave = function (self, owner_unit, weapon_unit, state_data, is_local_player, world, next_state, is_destroy)
+			if not is_destroy then
+				if is_local_player then
+					local weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
 
-				weapon_extension:set_custom_data("reload_progress", 0)
-			end
+					weapon_extension:set_custom_data("reload_progress", 0)
+				end
 
-			if not is_local_player then
-				Unit.animation_event(owner_unit, "no_anim_upperbody")
-				Unit.animation_event(owner_unit, "to_combat")
-				Unit.animation_event(owner_unit, "idle")
+				if not is_local_player then
+					Unit.animation_event(owner_unit, "no_anim_upperbody")
+					Unit.animation_event(owner_unit, "to_combat")
+					Unit.animation_event(owner_unit, "idle")
+				end
 			end
 		end,
 	},

@@ -826,6 +826,14 @@ local function create_power_up(scenegraph_id)
 						return content.extend_left
 					end,
 				},
+				{
+					pass_type = "text",
+					style_id = "set_progression",
+					text_id = "set_progression",
+					content_check_function = function (content)
+						return content.is_part_of_set
+					end,
+				},
 			},
 		},
 		content = {
@@ -835,6 +843,7 @@ local function create_power_up(scenegraph_id)
 			rarity_text = "rarity",
 			rectangular_icon_bg = "button_frame_01",
 			round_icon_bg = "button_round_bg",
+			set_progression = "%d/%d",
 			shrine_bg = "shrine_blessing_bg_hover",
 			title_text = "header",
 			visible = false,
@@ -1259,6 +1268,24 @@ local function create_power_up(scenegraph_id)
 					-318,
 					-62,
 					2,
+				},
+			},
+			set_progression = {
+				font_size = 20,
+				font_type = "hell_shark",
+				horizontal_alignment = "right",
+				upper_case = false,
+				vertical_alignment = "bottom",
+				word_wrap = false,
+				progression_colors = {
+					incomplete = Colors.get_color_table_with_alpha("font_default", 255),
+					complete = Colors.get_color_table_with_alpha("lime_green", 255),
+				},
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				offset = {
+					-488,
+					18,
+					10,
 				},
 			},
 		},

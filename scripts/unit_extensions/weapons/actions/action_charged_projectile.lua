@@ -59,10 +59,22 @@ ActionChargedProjectileUtility.fire_charged_projectile = function (projectile_co
 		end
 	end
 
+	local angle
+	local charge_level = projectile_context.charge_level
+	local speed
+
+	if action_data.charged_speed then
+		speed = math.lerp(action_data.speed, action_data.charged_speed, math.clamp(charge_level, 0, 1))
+	else
+		speed = action_data.speed
+	end
+
 	local owner_unit = projectile_context.owner_unit
 	local trigger_wield
 
 	if projectile_context.is_grenade then
+		speed = buff_extension:apply_buffs_to_value(speed, "grenade_throw_range")
+
 		local ammo_usage = action_data.ammo_usage
 
 		if not projectile_context.grenade_thrown then
@@ -89,16 +101,6 @@ ActionChargedProjectileUtility.fire_charged_projectile = function (projectile_co
 
 			trigger_wield = projectile_context.rewield_grenade and "rewield_wielded_weapon" or "wield_previous_weapon"
 		end
-	end
-
-	local angle
-	local charge_level = projectile_context.charge_level
-	local speed
-
-	if action_data.charged_speed then
-		speed = math.lerp(action_data.speed, action_data.charged_speed, math.clamp(charge_level, 0, 1))
-	else
-		speed = action_data.speed
 	end
 
 	local target_vector

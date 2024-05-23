@@ -2721,3 +2721,510 @@ MaterialEffectMappings.globadier_foot = {
 		water = {},
 	},
 }
+MaterialEffectMappings.enemy_troll_footstep_single_vs = {
+	sound = {
+		cloth = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "cloth",
+			},
+		},
+		dirt = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "dirt",
+			},
+		},
+		flesh = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "flesh",
+			},
+		},
+		forest_grass = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "forest_grass",
+			},
+		},
+		fruit = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "fruit",
+			},
+		},
+		grass = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "grass",
+			},
+		},
+		glass = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "glass",
+			},
+		},
+		hay = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "hay",
+			},
+		},
+		metal_solid = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "metal_solid",
+			},
+		},
+		metal_hollow = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "metal_hollow",
+			},
+		},
+		mud = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "mud",
+			},
+		},
+		plaster = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "stone",
+			},
+		},
+		sand = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "sand",
+			},
+		},
+		stone = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "stone",
+			},
+		},
+		stone_dirt = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "stone_dirt",
+			},
+		},
+		stone_wet = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "stone_wet",
+			},
+		},
+		water = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "water",
+			},
+		},
+		water_deep = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "water_deep",
+			},
+		},
+		wood_bridge = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "wood_bridge",
+			},
+		},
+		wood_solid = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "wood_solid",
+			},
+		},
+		wood_hollow = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "wood_hollow",
+			},
+		},
+		ice = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "ice",
+			},
+		},
+		snow = {
+			event = "Play_vs_troll_footstep_walk_1p",
+			parameters = {
+				material = "snow",
+			},
+		},
+	},
+	particles = {
+		armored = "fx/footstep_walk_dirt",
+		cloth = "fx/footstep_walk_dirt",
+		dirt = "fx/footstep_walk_dirt",
+		flesh = "fx/footstep_walk_dirt",
+		forest_grass = "fx/footstep_walk_dirt",
+		fruit = "fx/footstep_walk_dirt",
+		glass = "fx/footstep_walk_dirt",
+		grass = "fx/footstep_walk_dirt",
+		hay = "fx/footstep_walk_dirt",
+		metal_hollow = "fx/footstep_walk_dirt",
+		metal_solid = "fx/footstep_walk_dirt",
+		mud = "fx/footstep_walk_dirt",
+		plaster = "fx/footstep_walk_dirt",
+		sand = "fx/footstep_walk_dirt",
+		stone = "fx/footstep_walk_dirt",
+		stone_dirt = "fx/footstep_walk_dirt",
+		stone_wet = "fx/footstep_walk_dirt",
+		water = "fx/footstep_walk_water",
+		water_deep = "fx/footstep_walk_water",
+		wood_bridge = "fx/footstep_walk_dirt",
+		wood_hollow = "fx/footstep_walk_dirt",
+		wood_solid = "fx/footstep_walk_dirt",
+	},
+	world_interaction = {
+		water = {},
+	},
+}
+MaterialEffectMappings.enemy_troll_footstep_single_run_vs = {
+	sound = {
+		cloth = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "cloth",
+			},
+		},
+		dirt = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "dirt",
+			},
+		},
+		flesh = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "flesh",
+			},
+		},
+		forest_grass = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "forest_grass",
+			},
+		},
+		fruit = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "fruit",
+			},
+		},
+		grass = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "grass",
+			},
+		},
+		glass = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "glass",
+			},
+		},
+		hay = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "hay",
+			},
+		},
+		metal_solid = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "metal_solid",
+			},
+		},
+		metal_hollow = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "metal_hollow",
+			},
+		},
+		mud = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "mud",
+			},
+		},
+		plaster = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "stone",
+			},
+		},
+		sand = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "sand",
+			},
+		},
+		stone = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "stone",
+			},
+		},
+		stone_dirt = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "stone_dirt",
+			},
+		},
+		stone_wet = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "stone_wet",
+			},
+		},
+		water = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "water",
+			},
+		},
+		water_deep = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "water_deep",
+			},
+		},
+		wood_bridge = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "wood_bridge",
+			},
+		},
+		wood_solid = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "wood_solid",
+			},
+		},
+		wood_hollow = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "wood_hollow",
+			},
+		},
+		ice = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "ice",
+			},
+		},
+		snow = {
+			event = "Play_vs_troll_footstep_run_1p",
+			parameters = {
+				material = "snow",
+			},
+		},
+	},
+	particles = {
+		armored = "fx/footstep_walk_dirt",
+		cloth = "fx/footstep_walk_dirt",
+		dirt = "fx/footstep_walk_dirt",
+		flesh = "fx/footstep_walk_dirt",
+		forest_grass = "fx/footstep_walk_dirt",
+		fruit = "fx/footstep_walk_dirt",
+		glass = "fx/footstep_walk_dirt",
+		grass = "fx/footstep_walk_dirt",
+		hay = "fx/footstep_walk_dirt",
+		metal_hollow = "fx/footstep_walk_dirt",
+		metal_solid = "fx/footstep_walk_dirt",
+		mud = "fx/footstep_walk_dirt",
+		plaster = "fx/footstep_walk_dirt",
+		sand = "fx/footstep_walk_dirt",
+		stone = "fx/footstep_walk_dirt",
+		stone_dirt = "fx/footstep_walk_dirt",
+		stone_wet = "fx/footstep_walk_dirt",
+		water = "fx/footstep_walk_water",
+		water_deep = "fx/footstep_walk_water",
+		wood_bridge = "fx/footstep_walk_dirt",
+		wood_hollow = "fx/footstep_walk_dirt",
+		wood_solid = "fx/footstep_walk_dirt",
+	},
+	world_interaction = {
+		water = {},
+	},
+}
+MaterialEffectMappings.enemy_troll_land_death = {
+	sound = {
+		cloth = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "cloth",
+			},
+		},
+		dirt = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "dirt",
+			},
+		},
+		flesh = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "flesh",
+			},
+		},
+		forest_grass = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "forest_grass",
+			},
+		},
+		fruit = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "fruit",
+			},
+		},
+		grass = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "grass",
+			},
+		},
+		glass = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "glass",
+			},
+		},
+		hay = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "hay",
+			},
+		},
+		metal_solid = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "metal_solid",
+			},
+		},
+		metal_hollow = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "metal_hollow",
+			},
+		},
+		mud = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "mud",
+			},
+		},
+		plaster = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "stone",
+			},
+		},
+		sand = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "sand",
+			},
+		},
+		stone = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "stone",
+			},
+		},
+		stone_dirt = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "stone_dirt",
+			},
+		},
+		stone_wet = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "stone_wet",
+			},
+		},
+		water = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "water",
+			},
+		},
+		water_deep = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "water_deep",
+			},
+		},
+		wood_bridge = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "wood_bridge",
+			},
+		},
+		wood_solid = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "wood_solid",
+			},
+		},
+		wood_hollow = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "wood_hollow",
+			},
+		},
+		ice = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "ice",
+			},
+		},
+		snow = {
+			event = "enemy_troll_land_death",
+			parameters = {
+				material = "snow",
+			},
+		},
+	},
+	particles = {
+		armored = "fx/footstep_walk_dirt",
+		cloth = "fx/footstep_walk_dirt",
+		dirt = "fx/footstep_walk_dirt",
+		flesh = "fx/footstep_walk_dirt",
+		forest_grass = "fx/footstep_walk_dirt",
+		fruit = "fx/footstep_walk_dirt",
+		glass = "fx/footstep_walk_dirt",
+		grass = "fx/footstep_walk_dirt",
+		hay = "fx/footstep_walk_dirt",
+		metal_hollow = "fx/footstep_walk_dirt",
+		metal_solid = "fx/footstep_walk_dirt",
+		mud = "fx/footstep_walk_dirt",
+		plaster = "fx/footstep_walk_dirt",
+		sand = "fx/footstep_walk_dirt",
+		stone = "fx/footstep_walk_dirt",
+		stone_dirt = "fx/footstep_walk_dirt",
+		stone_wet = "fx/footstep_walk_dirt",
+		water = "fx/footstep_walk_water",
+		water_deep = "fx/footstep_walk_water",
+		wood_bridge = "fx/footstep_walk_dirt",
+		wood_hollow = "fx/footstep_walk_dirt",
+		wood_solid = "fx/footstep_walk_dirt",
+	},
+	world_interaction = {
+		water = {},
+	},
+}

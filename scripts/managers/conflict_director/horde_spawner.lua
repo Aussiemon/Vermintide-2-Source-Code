@@ -95,6 +95,14 @@ HordeSpawner._add_horde = function (self, horde)
 	local id = #hordes + 1
 
 	hordes[id] = horde
+
+	local horde_already_alive = Managers.state.conflict:is_horde_alive()
+
+	if not horde_already_alive then
+		local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+		dialogue_system:trigger_mission_giver_event("horde")
+	end
 end
 
 HordeSpawner.execute_event_horde = function (self, t, terror_event_type, side_id, composition_type, limit_spawners, silent, group_template, strictly_not_close_to_players, sound_settings, use_closest_spawners, source_unit, optional_data)

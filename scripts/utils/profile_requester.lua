@@ -64,6 +64,7 @@ ProfileRequester._request_profile = function (self, peer_id, local_player_id, re
 
 	if mechanism.name == "Versus" then
 		allowed_to_switch_to_profile = Managers.mechanism:profile_available_for_peer(peer_id, local_player_id, profile_name, career_name)
+		allowed_to_switch_to_profile = allowed_to_switch_to_profile and mechanism:try_reserve_profile_for_peer(peer_id, profile_index)
 	else
 		allowed_to_switch_to_profile = self:profile_is_specator() or Managers.mechanism:profile_available_for_peer(peer_id, local_player_id, profile_name, career_name)
 		allowed_to_switch_to_profile = allowed_to_switch_to_profile and self._profile_synchronizer:try_reserve_profile_for_peer(peer_id, profile_index)

@@ -981,6 +981,48 @@ LevelAnalysis.inject_all_bosses_into_main_path = function (self)
 	self.enemy_recycler.current_main_path_event_activation_dist = travel_dist
 end
 
+LevelAnalysis.inject_playable_boss_into_main_path = function (self)
+	local boss_waypoints = self.boss_waypoints
+
+	if not boss_waypoints then
+		return false
+	end
+
+	print("SPAWN BOSS SPLINES")
+
+	local terror_event_kind = "event_boss"
+	local terror_spawners = self.terror_spawners
+	local data = terror_spawners[terror_event_kind]
+	local spawners = data.spawners
+
+	table.clear(self.enemy_recycler.main_path_events)
+
+	for i = 1, #spawners do
+		local spawner = spawners[i]
+		local spawner_pos = Unit.local_position(spawner[1], 0)
+		local boxed_pos = Vector3Box(spawner_pos)
+		local event_data = {
+			event_kind = "event_boss",
+		}
+
+		self.enemy_recycler:add_main_path_terror_event(boxed_pos, "playable_boss_chaos_troll", 45, event_data)
+
+		local path_pos, travel_dist, move_percent, path_index, sub_index = MainPathUtils.closest_pos_at_main_path(nil, boxed_pos:unbox())
+		local activation_pos, _ = MainPathUtils.point_on_mainpath(nil, travel_dist - 45)
+
+		QuickDrawerStay:line(spawner_pos, spawner_pos + Vector3(0, 0, 15), Color(125, 255, 0))
+		QuickDrawerStay:sphere(spawner_pos, 5, Colors.get("purple"))
+		QuickDrawerStay:line(spawner_pos, activation_pos, Color(125, 255, 0))
+		QuickDrawerStay:sphere(activation_pos, 5, Colors.get("pink"))
+	end
+
+	self.enemy_recycler.current_main_path_event_id = 1
+
+	local travel_dist = self.enemy_recycler.main_path_events[1][1]
+
+	self.enemy_recycler.current_main_path_event_activation_dist = travel_dist
+end
+
 LevelAnalysis._give_events = function (self, main_paths, terror_spawners, generated_event_list, terror_event_list, conflict_director_section_list, terror_event_category)
 	local spawn_distance = 0
 	local padding = 10
@@ -1012,6 +1054,22 @@ LevelAnalysis._give_events = function (self, main_paths, terror_spawners, genera
 				spawn_distance = dist
 				override_spawn_distance = dist
 			else
+				local override_boss_events = Managers.mechanism:mechanism_setting_for_title("playable_boss_terror_events")
+
+				if override_boss_events then
+					local available_bosses_events = FrameTable.alloc_table()
+
+					for playable_boss, playable_boss_events in pairs(override_boss_events) do
+						if PlayerUtils.get_career_override(playable_boss) then
+							table.append(available_bosses_events, playable_boss_events)
+						end
+					end
+
+					if not table.is_empty(available_bosses_events) then
+						terror_event_name = table.random(available_bosses_events)
+					end
+				end
+
 				print(" ----> using boss gizmo!")
 
 				local data = terror_spawners[terror_event_kind]
@@ -1267,6 +1325,20 @@ LevelAnalysis._hand_placed_terror_creation = function (self, main_paths, terror_
 	local generated_event_list = self:_generate_event_name_list(conflict_director_section_list, max_events_of_this_kind, terror_event_category)
 
 	self:_override_generated_event_list(generated_event_list, conflict_director_section_list, terror_event_category)
+
+	local always_spawn_a_boss = Managers.mechanism:mechanism_setting_for_title("always_spawn_a_boss")
+	local spawn_boss_every_section = Managers.mechanism:mechanism_setting_for_title("spawn_boss_every_section")
+
+	if always_spawn_a_boss then
+		generated_event_list = self:_add_boss_to_generated_list(generated_event_list)
+	end
+
+	if spawn_boss_every_section then
+		for i, k in ipairs(generated_event_list) do
+			generated_event_list[i] = "event_boss"
+		end
+	end
+
 	self:_give_events(main_paths, self.terror_spawners, generated_event_list, terror_event_list, conflict_director_section_list, terror_event_category)
 end
 
@@ -2740,4 +2812,22 @@ LevelAnalysis.check_splines_integrity = function (self)
 	end
 
 	print("----> Checking splines integrity ENDS.")
+end
+
+LevelAnalysis._add_boss_to_generated_list = function (self, generated_event_list)
+	local boss_event = false
+
+	for i, k in ipairs(generated_event_list) do
+		if k == "event_boss" then
+			return generated_event_list
+		end
+	end
+
+	if not boss_event then
+		local index = math.random(1, #generated_event_list)
+
+		generated_event_list[index] = "event_boss"
+	end
+
+	return generated_event_list
 end

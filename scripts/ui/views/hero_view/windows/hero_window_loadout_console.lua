@@ -88,9 +88,9 @@ HeroWindowLoadoutConsole.create_ui_elements = function (self, params, offset)
 	end
 
 	local input_service = Managers.input:get_service("hero_view")
-	local gui_layer = UILayer.default + 30
+	local gui_layer = UILayer.default + 300
 
-	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 5, gui_layer, generic_input_actions.default, true)
+	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 7, gui_layer, generic_input_actions.default, true)
 
 	self._menu_input_description:set_input_description(nil)
 
@@ -227,7 +227,7 @@ HeroWindowLoadoutConsole._handle_gamepad_input = function (self, dt, t)
 	if input_service:get("confirm", true) then
 		self:_play_sound("play_gui_equipment_selection_click")
 		parent:set_layout_by_name("equipment_selection")
-	elseif input_service:get("refresh", true) and self:_is_selected_item_customizable() then
+	elseif input_service:get("refresh_press", true) and self:_is_selected_item_customizable() then
 		self:_play_sound("play_gui_equipment_selection_click")
 
 		local item = self:_get_selected_item()
@@ -320,7 +320,7 @@ HeroWindowLoadoutConsole.draw = function (self, dt)
 
 	UIRenderer.end_pass(ui_top_renderer)
 
-	if gamepad_active and self._menu_input_description then
+	if gamepad_active and self._menu_input_description and not self.parent:input_blocked() then
 		self._menu_input_description:draw(ui_top_renderer, dt)
 	end
 end

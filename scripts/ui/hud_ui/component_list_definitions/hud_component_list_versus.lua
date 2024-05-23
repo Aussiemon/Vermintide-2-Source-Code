@@ -29,8 +29,8 @@ end
 
 local components = {
 	{
-		class_name = "CareerHelpUI",
-		filename = "scripts/ui/hud_ui/career_help_ui_vs",
+		class_name = "VersusOnboardingUI",
+		filename = "scripts/ui/hud_ui/versus_onboarding_ui",
 		visibility_groups = {
 			"dead",
 			"alive",

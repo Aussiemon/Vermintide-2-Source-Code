@@ -39,6 +39,23 @@ local blue = 255 / unique_color[4]
 local unique_multiplier = red < green and red or green
 
 unique_multiplier = unique_multiplier < blue and unique_multiplier or blue
+
+local event_color = Colors.get_table("event")
+local red = 255 / event_color[2]
+local green = 255 / event_color[3]
+local blue = 255 / event_color[4]
+local event_multiplier = red < green and red or green
+
+event_multiplier = event_multiplier < blue and event_multiplier or blue
+ORDER_RARITY = table.mirror_array({
+	"plentiful",
+	"common",
+	"rare",
+	"exotic",
+	"unique",
+	"magic",
+	"promo",
+})
 RaritySettings = RaritySettings or {
 	plentiful = {
 		display_name = "rarity_display_name_plentiful",
@@ -98,6 +115,18 @@ RaritySettings = RaritySettings or {
 			unique_color[2] * unique_multiplier,
 			unique_color[3] * unique_multiplier,
 			unique_color[4] * unique_multiplier,
+		},
+	},
+	event = {
+		display_name = "rarity_display_name_event",
+		name = "event",
+		order = 6,
+		color = event_color,
+		frame_color = {
+			event_color[1],
+			event_color[2] * event_multiplier,
+			event_color[3] * event_multiplier,
+			event_color[4] * event_multiplier,
 		},
 	},
 }

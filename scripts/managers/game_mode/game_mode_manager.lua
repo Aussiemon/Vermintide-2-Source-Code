@@ -17,7 +17,6 @@ local RPCS = {
 	"rpc_is_ready_for_transition",
 	"rpc_apply_environment_variation",
 	"rpc_change_game_mode_state",
-	"rpc_trigger_round_over",
 	"rpc_trigger_level_event",
 }
 local game_mode_manager_testify = script_data.testify and require("scripts/managers/game_mode/game_mode_manager_testify")
@@ -1249,10 +1248,6 @@ GameModeManager.rpc_change_game_mode_state = function (self, channel_id, state_n
 	local state_name = network_lookup[state_name_id]
 
 	self._game_mode:change_game_mode_state(state_name)
-end
-
-GameModeManager.rpc_trigger_round_over = function (self, channel_id, heroes_win)
-	Managers.state.event:trigger("round_over", heroes_win)
 end
 
 GameModeManager.rpc_trigger_level_event = function (self, channel_id, event)

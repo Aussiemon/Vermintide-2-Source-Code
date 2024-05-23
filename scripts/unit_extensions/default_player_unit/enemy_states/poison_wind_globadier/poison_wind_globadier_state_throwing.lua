@@ -237,56 +237,68 @@ PoisonWindGlobadierStateThrowing._calculate_trajectory = function (self)
 	}
 	local radius = 0.05
 	local max_hits = 5
+	local network_manager = Managers.state.network
 
 	for t = interval, 10, interval do
 		local new_position = WeaponHelper:position_on_trajectory(initial_position, target_vector, speed, radians, gravity, t)
-		local result = PhysicsWorld.linear_sphere_sweep(physics_world, current_position, new_position, radius, max_hits, "collision_filter", "filter_player_ray_projectile_static_only", "report_initial_overlap")
+		local result = PhysicsWorld.linear_sphere_sweep(physics_world, current_position, new_position, radius, max_hits, "collision_filter", "filter_player_ray_projectile_static_only")
+		local num_results = result and #result or 0
 
-		if result and #result > 0 then
-			local hit = result[1]
-			local position = hit.position
-			local hit_normal = hit.normal
-			local hit_actor = hit.actor
-			local distance = hit.distance
-			local direction = Vector3.normalize(position - current_position)
+		if num_results > 0 then
+			local done = false
 
-			if distance > 0 then
-				points[#points + 1] = position
+			for i = 1, num_results do
+				local hit = result[i]
+				local position = hit.position
+				local hit_normal = hit.normal
+				local hit_actor = hit.actor
+				local distance = hit.distance
+				local direction = Vector3.normalize(position - current_position)
 
-				local next_position = WeaponHelper:position_on_trajectory(initial_position, target_vector, speed, radians, gravity, t + interval)
-				local no_impact_delta = current_position - next_position
-				local no_impact_length = Vector3.length(no_impact_delta)
-				local buffer = 0.2
-				local time = t - (interval - distance / no_impact_length * interval) + buffer
-				local impact_data = self._impact_data
-				local hit_unit = Actor.unit(hit_actor)
+				if distance > 0 then
+					local hit_unit = Actor.unit(hit_actor)
 
-				if hit_unit then
-					impact_data.position:store(position)
-					impact_data.hit_normal:store(hit_normal)
-					impact_data.direction:store(direction)
+					if network_manager:level_object_id(hit_unit) then
+						points[#points + 1] = position
 
-					impact_data.hit_unit = hit_unit
+						local next_position = WeaponHelper:position_on_trajectory(initial_position, target_vector, speed, radians, gravity, t + interval)
+						local no_impact_delta = current_position - next_position
+						local no_impact_length = Vector3.length(no_impact_delta)
+						local buffer = 0.2
+						local time = t - (interval - distance / no_impact_length * interval) + buffer
+						local impact_data = self._impact_data
 
-					local num_actors = Unit.num_actors(hit_unit)
-					local unit_actor = Unit.actor
-					local actor_index
+						impact_data.position:store(position)
+						impact_data.hit_normal:store(hit_normal)
+						impact_data.direction:store(direction)
 
-					for i = 0, num_actors - 1 do
-						local actor = unit_actor(hit_unit, i)
+						impact_data.hit_unit = hit_unit
 
-						if hit_actor == actor then
-							actor_index = i
+						local num_actors = Unit.num_actors(hit_unit)
+						local unit_actor = Unit.actor
+						local actor_index
 
-							break
+						for i = 0, num_actors - 1 do
+							local actor = unit_actor(hit_unit, i)
+
+							if hit_actor == actor then
+								actor_index = i
+
+								break
+							end
 						end
+
+						impact_data.actor_index = actor_index
+						impact_data.time = time
+						done = true
+
+						break
 					end
-
-					impact_data.actor_index = actor_index
-					impact_data.time = time
-
-					break
 				end
+			end
+
+			if done then
+				break
 			end
 		end
 

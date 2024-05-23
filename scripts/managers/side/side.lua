@@ -1,5 +1,6 @@
 ﻿-- chunkname: @scripts/managers/side/side.lua
 
+SideRelations, SideRelationLookup = table.enum_lookup("ally", "enemy", "neutral")
 Side = class(Side)
 
 Side.init = function (self, definition, side_id)
@@ -29,6 +30,11 @@ Side.init = function (self, definition, side_id)
 	self.enemy_broadphase_categories = {}
 	self.ally_broadphase_categories = {}
 	self.neutral_broadphase_categories = {}
+	self._broadphase_categories_by_relation = {
+		[SideRelations.ally] = self.ally_broadphase_categories,
+		[SideRelations.enemy] = self.enemy_broadphase_categories,
+		[SideRelations.neutral] = self.neutral_broadphase_categories,
+	}
 
 	local add_these_settings = definition.add_these_settings
 
@@ -57,15 +63,15 @@ end
 Side.set_relation = function (self, relation, sides)
 	local relation_sides, relation_side_lookup, relation_broadphase_categories
 
-	if relation == "enemy" then
+	if relation == SideRelations.enemy then
 		relation_sides = self._enemy_sides
 		relation_side_lookup = self.enemy_sides_lookup
 		relation_broadphase_categories = self.enemy_broadphase_categories
-	elseif relation == "ally" then
+	elseif relation == SideRelations.ally then
 		relation_sides = self._allied_sides
 		relation_side_lookup = self.allied_sides_lookup
 		relation_broadphase_categories = self.ally_broadphase_categories
-	elseif relation == "neutral" then
+	elseif relation == SideRelations.neutral then
 		relation_sides = self._neutral_sides
 		relation_side_lookup = self.neutral_sides_lookup
 		relation_broadphase_categories = self.neutral_broadphase_categories
@@ -118,6 +124,10 @@ Side.remove_unit = function (self, unit)
 	units[num_units] = nil
 	units_lookup[unit] = nil
 	self._num_units = num_units - 1
+end
+
+Side.broadphase_categories_by_relation = function (self, relation)
+	return self._broadphase_categories_by_relation[relation]
 end
 
 Side.add_enemy_unit = function (self, unit)

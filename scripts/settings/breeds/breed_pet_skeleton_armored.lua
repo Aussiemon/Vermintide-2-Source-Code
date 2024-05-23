@@ -8,7 +8,10 @@ local function hit_ai_func(unit, blackboard, hit_unit, action, attack)
 		local buff_extension = ScriptUnit.extension(unit, "buff_system")
 
 		buff_extension:trigger_procs("on_damage_dealt", hit_unit, unit, damage, nil, nil, nil, nil, nil, nil, nil, nil, nil)
-		Managers.state.achievement:trigger_event("on_damage_dealt", hit_unit, unit, damage, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+
+		if not Managers.state.network:in_game_session() then
+			Managers.state.achievement:trigger_event("on_damage_dealt", hit_unit, unit, damage, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+		end
 	end
 end
 
