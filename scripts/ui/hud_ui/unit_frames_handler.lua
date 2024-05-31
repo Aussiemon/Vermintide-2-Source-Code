@@ -708,6 +708,7 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 
 		cursed_health = buff_extension:apply_buffs_to_value(cursed_health, "curse_protection")
 		active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier + num_slayer_curses * slayer_curse_multiplier + num_mutator_curses * mutator_curse_multiplier + cursed_health
+		active_percentage = math.clamp(active_percentage, 0, 1)
 		equipment = inventory_extension:equipment()
 		profile_index = career_extension:profile_index()
 		career_index = career_extension:career_index()

@@ -147,9 +147,10 @@ StoreWindowItemDetails._present_item = function (self, item)
 	local item_rarity = item_data.rarity
 	local item_type = item_data.item_type
 	local can_wield = item_data.can_wield
+	local can_wield_all = table.compare(can_wield, CanWieldAllItemTemplates)
 	local profile_name, profile_index, career_name, career_index = self:_get_hero_wield_info_by_item(item)
 	local profile = SPProfiles[profile_index]
-	local hero_display_name = profile.character_name
+	local hero_display_name = can_wield_all and "store_can_be_wielded_by_all" or profile.character_name
 	local sub_title_text = ""
 
 	if item_type == "weapon_skin" then
@@ -161,7 +162,10 @@ StoreWindowItemDetails._present_item = function (self, item)
 	local inventory_icon, display_name, description = UIUtils.get_ui_information_from_item(item)
 	local title_text_color = Colors.get_color_table_with_alpha(item_rarity, 255)
 
-	self:_setup_career_icons(can_wield)
+	if not can_wield_all then
+		self:_setup_career_icons(can_wield)
+	end
+
 	self:_set_title_text(Localize(display_name))
 	self:_set_title_text_color(title_text_color)
 	self:_set_hero_text(Localize(hero_display_name))

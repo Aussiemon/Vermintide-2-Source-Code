@@ -1933,6 +1933,16 @@ dlc_settings.buff_function_templates = {
 			return
 		end
 
+		local template = buff.template
+		local max_update_frequency = template.update_frequency
+		local min_update_frequency = template.min_update_frequency
+		local min_update_frequency_at = template.min_update_frequency_at
+		local health_extension = ScriptUnit.extension(unit, "health_system")
+		local current_health_percent = health_extension:current_health_percent()
+		local wanted_update_frequency = math.remap(min_update_frequency_at, 1, min_update_frequency, max_update_frequency, current_health_percent)
+
+		buff.update_frequency = wanted_update_frequency
+
 		local position = POSITION_LOOKUP[unit]
 		local explosion_template_name = buff.template.explosion_template_name
 		local explosion_template = ExplosionTemplates[explosion_template_name]
@@ -2057,6 +2067,11 @@ dlc_settings.buff_function_templates = {
 		local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
 		local career_name = career_extension:career_name()
 		local wielded_slot_name = inventory_extension:get_wielded_slot_name()
+
+		if wielded_slot_name ~= "slot_melee" and wielded_slot_name ~= "slot_ranged" then
+			return
+		end
+
 		local deus_backend = Managers.backend:get_interface("deus")
 		local wielded_item_id = deus_backend:get_loadout_item_id(career_name, wielded_slot_name)
 		local wielded_item = deus_backend:get_loadout_item(wielded_item_id)
@@ -2085,7 +2100,7 @@ dlc_settings.buff_function_templates = {
 			local existing_buffs = buff_extension:get_stacking_buff("boon_range_02_increased_damage_tracker")
 
 			if existing_buffs then
-				for i = 1, #existing_buffs do
+				for i = #existing_buffs, 1, -1 do
 					local existing_buff = existing_buffs[i]
 
 					if existing_buff.attacker_unit == params.attacker_unit then
@@ -3171,7 +3186,7 @@ dlc_settings.proc_functions = {
 			local damage_amplifiers = buff_ext:get_stacking_buff("boon_range_02_damage_amplifier")
 
 			if damage_amplifiers then
-				for i = 1, #damage_amplifiers do
+				for i = #damage_amplifiers, 1, -1 do
 					local damage_amplifier = damage_amplifiers[i]
 
 					if damage_amplifier.attacker_unit == owner_unit then
@@ -4698,7 +4713,7 @@ dlc_settings.proc_functions = {
 		if counteract_buffs then
 			local source_buff_id = buff.id
 
-			for i = 1, #counteract_buffs do
+			for i = #counteract_buffs, 1, -1 do
 				if counteract_buffs[i].source_buff_id == source_buff_id then
 					own_buff_extension:remove_buff(counteract_buffs[i].id)
 
@@ -4739,7 +4754,7 @@ dlc_settings.proc_functions = {
 		if counteract_buffs then
 			local source_buff_id = buff.id
 
-			for i = 1, #counteract_buffs do
+			for i = #counteract_buffs, 1, -1 do
 				if counteract_buffs[i].source_buff_id == source_buff_id then
 					own_buff_extension:remove_buff(counteract_buffs[i].id)
 
@@ -4830,7 +4845,7 @@ dlc_settings.proc_functions = {
 
 		local existing_stacks = buff_extension:get_stacking_buff("boon_meta_01_stack")
 
-		for i = 1, num_existing_stacks - num_boons do
+		for i = num_existing_stacks - num_boons, 1, -1 do
 			local last_buff = existing_stacks[num_existing_stacks - i + 1]
 
 			buff_extension:remove_buff(last_buff.id)
@@ -4865,7 +4880,7 @@ dlc_settings.proc_functions = {
 
 		local existing_stacks = buff_extension:get_stacking_buff("boon_weaponrarity_02_debuff")
 
-		for i = rarity_level, num_existing_stacks do
+		for i = num_existing_stacks, rarity_level, -1 do
 			local last_buff = existing_stacks[num_existing_stacks - i + 1]
 
 			buff_extension:remove_buff(last_buff.id)
@@ -4891,7 +4906,7 @@ dlc_settings.proc_functions = {
 
 		local existing_stacks = buff_extension:get_stacking_buff("boon_weaponrarity_01_debuff")
 
-		for i = highest_rarity_level, num_existing_stacks do
+		for i = num_existing_stacks, highest_rarity_level, -1 do
 			local last_buff = existing_stacks[num_existing_stacks - i + 1]
 
 			buff_extension:remove_buff(last_buff.id)
@@ -5393,7 +5408,7 @@ dlc_settings.explosion_templates = {
 			max_damage_radius = 0,
 			no_friendly_fire = true,
 			no_prop_damage = true,
-			radius = 3,
+			radius = 5,
 			use_attacker_power_level = true,
 		},
 	},

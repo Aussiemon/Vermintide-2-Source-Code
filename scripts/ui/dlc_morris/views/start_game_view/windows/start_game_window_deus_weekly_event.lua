@@ -66,6 +66,7 @@ StartGameWindowDeusWeeklyEvent._fetch_event_data = function (self)
 	local spacing = 10
 	local offset_y = 0
 
+	self._info_box_widgets = {}
 	offset_y = self:_setup_curses(game_mode_data, spacing, offset_y)
 	offset_y = self:_setup_boons(game_mode_data, spacing, offset_y)
 	offset_y = self:_setup_rewards(rewards, spacing, offset_y)
@@ -88,7 +89,7 @@ StartGameWindowDeusWeeklyEvent._setup_curses = function (self, game_mode_data, s
 	local widget_definition = definitions.create_header("cw_weekly_expedition_modifier_negative", offset_y, header_type)
 	local widget = UIWidget.init(widget_definition)
 
-	self._widgets[#self._widgets + 1] = widget
+	self._info_box_widgets[#self._info_box_widgets + 1] = widget
 	self._widgets_by_name.curse_header = widget
 	offset_y = offset_y - 40 - spacing
 
@@ -103,7 +104,7 @@ StartGameWindowDeusWeeklyEvent._setup_curses = function (self, game_mode_data, s
 		local widget_definition = definitions.create_entry_widget(icon, title, desc, offset_y, spacing)
 		local widget = UIWidget.init(widget_definition)
 
-		self._widgets[#self._widgets + 1] = widget
+		self._info_box_widgets[#self._info_box_widgets + 1] = widget
 		self._widgets_by_name["curse_" .. idx] = widget
 
 		local text_style = widget.style.desc
@@ -134,7 +135,7 @@ StartGameWindowDeusWeeklyEvent._setup_boons = function (self, game_mode_data, sp
 	local widget_definition = definitions.create_header("cw_weekly_expedition_modifier_positive", offset_y, header_type)
 	local widget = UIWidget.init(widget_definition)
 
-	self._widgets[#self._widgets + 1] = widget
+	self._info_box_widgets[#self._info_box_widgets + 1] = widget
 	self._widgets_by_name.boon_header = widget
 	offset_y = offset_y - 40 - spacing
 
@@ -152,7 +153,7 @@ StartGameWindowDeusWeeklyEvent._setup_boons = function (self, game_mode_data, sp
 		local widget_definition = definitions.create_entry_widget(icon, title, desc, offset_y)
 		local widget = UIWidget.init(widget_definition)
 
-		self._widgets[#self._widgets + 1] = widget
+		self._info_box_widgets[#self._info_box_widgets + 1] = widget
 		self._widgets_by_name["boon_" .. idx] = widget
 
 		local text_style = widget.style.desc
@@ -185,7 +186,7 @@ StartGameWindowDeusWeeklyEvent._setup_rewards = function (self, rewards, spacing
 	local widget_style = widget.style
 
 	widget_style.header.text_color = Colors.get_color_table_with_alpha("white", 255)
-	self._widgets[#self._widgets + 1] = widget
+	self._info_box_widgets[#self._info_box_widgets + 1] = widget
 	self._widgets_by_name.rewards_header = widget
 	offset_y = offset_y - 40 - spacing
 
@@ -200,7 +201,7 @@ StartGameWindowDeusWeeklyEvent._setup_rewards = function (self, rewards, spacing
 			local widget_definition = definitions.create_reward_widget(reward_data, offset_y)
 			local widget = UIWidget.init(widget_definition)
 
-			self._widgets[#self._widgets + 1] = widget
+			self._info_box_widgets[#self._info_box_widgets + 1] = widget
 			self._widgets_by_name["reward_" .. index] = widget
 
 			local text_style = widget.style.desc
@@ -669,6 +670,28 @@ StartGameWindowDeusWeeklyEvent._update_animations = function (self, dt)
 	end
 end
 
+StartGameWindowDeusWeeklyEvent._refresh_data = function (self)
+	if self._num_requests > 0 then
+		return
+	end
+
+	local live_event_interface = Managers.backend:get_interface("live_events")
+	local cb = callback(self, "_refresh_data_cb")
+
+	live_event_interface:request_live_events(cb)
+	live_event_interface:request_weekly_event_rewards(cb)
+
+	self._num_requests = 2
+end
+
+StartGameWindowDeusWeeklyEvent._refresh_data_cb = function (self, result)
+	self._num_requests = self._num_requests - 1
+
+	if self._num_requests <= 0 then
+		self:_fetch_event_data()
+	end
+end
+
 StartGameWindowDeusWeeklyEvent._update_time_left = function (self)
 	local now = os.time(os.date("!*t"))
 	local remaining_time = self._refresh_time - now
@@ -687,6 +710,8 @@ StartGameWindowDeusWeeklyEvent._update_time_left = function (self)
 
 		if remaining_time < 0 then
 			remaining_time = 0
+
+			self:_refresh_data()
 		end
 
 		widget_content.text = string.format(fmt, remaining_time)
@@ -708,6 +733,11 @@ StartGameWindowDeusWeeklyEvent._draw = function (self, dt, t)
 
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, parent_scenegraph_id, render_settings)
 	UIRenderer.draw_all_widgets(ui_top_renderer, self._widgets)
+
+	if not table.is_empty(self._info_box_widgets) then
+		UIRenderer.draw_all_widgets(ui_top_renderer, self._info_box_widgets)
+	end
+
 	UIRenderer.end_pass(ui_top_renderer)
 
 	if self._scrollbar_ui then

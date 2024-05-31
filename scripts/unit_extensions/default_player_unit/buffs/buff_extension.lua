@@ -148,6 +148,16 @@ BuffExtension.clear = function (self)
 	self._server_sync_to_id = nil
 	self._remove_buff_queue = nil
 
+	if self._shared_buff_units then
+		for _, buff_unit in pairs(self._shared_buff_units) do
+			if ALIVE[buff_unit] then
+				Managers.state.unit_spawner:mark_for_deletion(buff_unit)
+			end
+		end
+
+		self._shared_buff_units = nil
+	end
+
 	Managers.state.entity:system("buff_system"):set_buff_ext_active(self._unit, false)
 end
 
@@ -1614,6 +1624,13 @@ BuffExtension._initalize_sync_tables = function (self)
 		self._id_to_server_sync = {}
 		self._server_sync_to_id = {}
 	end
+end
+
+BuffExtension.create_shared_lifetime_buff_unit = function (self, position)
+	self._shared_buff_units = self._shared_buff_units or {}
+	self._shared_buff_units[#self._shared_buff_units + 1] = Managers.state.unit_spawner:spawn_network_unit("units/hub_elements/empty", "buff_unit", self._buff_unit_params, position, Quaternion.identity(), nil)
+
+	return self._shared_buff_units[#self._shared_buff_units]
 end
 
 local Managers = Managers

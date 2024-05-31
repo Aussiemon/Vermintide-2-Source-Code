@@ -196,12 +196,6 @@ StartGameWindowVersusQuickplay._handle_input = function (self, dt, t)
 			end
 		end
 	end
-
-	local consume = true
-
-	if input_service:get("right_stick_press", consume) then
-		parent:set_window_input_focus("versus_additional_quickplay_settings")
-	end
 end
 
 StartGameWindowVersusQuickplay._play_sound = function (self, event)

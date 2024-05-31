@@ -76,7 +76,7 @@ DeusRunStatsView._handle_input = function (self, dt, t)
 		end
 	end
 
-	local is_locked = self._ui:locked() and not Managers.ui:end_screen_active()
+	local is_locked = self._ui:locked() and not Managers.ui:end_screen_active() and not self:_is_in_deus_map_view()
 
 	self._ui:set_active(is_locked or new_active)
 end
@@ -140,4 +140,16 @@ DeusRunStatsView._update_inventory = function (self)
 		self._grenade_slot = grenade_slot
 		self._healing_slot = healing_slot
 	end
+end
+
+DeusRunStatsView._is_in_deus_map_view = function (self)
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+
+	if mechanism_name ~= "deus" then
+		return false
+	end
+
+	local current_mechanism_state = Managers.mechanism:get_state()
+
+	return current_mechanism_state == "map_deus"
 end

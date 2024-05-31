@@ -46,6 +46,8 @@ end
 AINavigationExtension.destroy = function (self)
 	self:release_bot()
 	GwNavSmartObjectInterval.destroy(self._next_smartobject_interval)
+	self:_destroy_reusable_astars()
+	self:destroy_reusable_traverse_logic()
 end
 
 AINavigationExtension.freeze = function (self)
@@ -75,16 +77,20 @@ AINavigationExtension.set_far_pathing_allowed = function (self, far_pathing_allo
 end
 
 AINavigationExtension.release_bot = function (self)
-	if self._navtag_layer_cost_table then
-		GwNavTagLayerCostTable.destroy(self._navtag_layer_cost_table)
+	if self._navtag_layer_cost_tables then
+		for _, navtag_layer_cost_table in pairs(self._navtag_layer_cost_tables) do
+			GwNavTagLayerCostTable.destroy(navtag_layer_cost_table)
+		end
 
-		self._navtag_layer_cost_table = nil
+		self._navtag_layer_cost_tables = nil
 	end
 
-	if self._nav_cost_map_cost_table then
-		GwNavCostMap.destroy_tag_cost_table(self._nav_cost_map_cost_table)
+	if self._nav_cost_map_cost_tables then
+		for _, nav_cost_map_cost_table in pairs(self._nav_cost_map_cost_tables) do
+			GwNavCostMap.destroy_tag_cost_table(nav_cost_map_cost_table)
+		end
 
-		self._nav_cost_map_cost_table = nil
+		self._nav_cost_map_cost_tables = nil
 	end
 
 	if self._nav_bot then
@@ -125,11 +131,7 @@ AINavigationExtension.init_position = function (self)
 		table.merge(nav_cost_map_allowed_layers, breed.nav_cost_map_allowed_layers)
 	end
 
-	local nav_cost_map_cost_table = GwNavCostMap.create_tag_cost_table()
-
-	fassert(self._nav_cost_map_cost_table == nil, "Tried to create navbot cost table but already had one, freeze bug?")
-
-	self._nav_cost_map_cost_table = nav_cost_map_cost_table
+	local nav_cost_map_cost_table = self:nav_cost_map_cost_table()
 
 	AiUtils.initialize_nav_cost_map_cost_table(nav_cost_map_cost_table, nav_cost_map_allowed_layers)
 
@@ -173,10 +175,10 @@ AINavigationExtension.init_position = function (self)
 
 	table.merge(allowed_layers, NAV_TAG_VOLUME_LAYER_COST_AI)
 
-	self._navtag_layer_cost_table = GwNavTagLayerCostTable.create()
+	local navtag_layer_cost_table = self:get_navtag_layer_cost_table()
 
-	AiUtils.initialize_cost_table(self._navtag_layer_cost_table, allowed_layers)
-	GwNavBot.set_navtag_layer_cost_table(nav_bot, self._navtag_layer_cost_table)
+	AiUtils.initialize_cost_table(navtag_layer_cost_table, allowed_layers)
+	GwNavBot.set_navtag_layer_cost_table(nav_bot, navtag_layer_cost_table)
 
 	local locomotion_extension = self._blackboard.locomotion_extension
 	local engine_extension_id = locomotion_extension._engine_extension_id
@@ -497,12 +499,13 @@ AINavigationExtension.allow_layer = function (self, layer_name, layer_allowed)
 		return
 	end
 
+	local navtag_layer_cost_table = self:get_navtag_layer_cost_table()
 	local layer_id = LAYER_ID_MAPPING[layer_name]
 
 	if layer_allowed then
-		GwNavTagLayerCostTable.allow_layer(self._navtag_layer_cost_table, layer_id)
+		GwNavTagLayerCostTable.allow_layer(navtag_layer_cost_table, layer_id)
 	else
-		GwNavTagLayerCostTable.forbid_layer(self._navtag_layer_cost_table, layer_id)
+		GwNavTagLayerCostTable.forbid_layer(navtag_layer_cost_table, layer_id)
 	end
 end
 
@@ -513,11 +516,25 @@ AINavigationExtension.set_layer_cost = function (self, layer_name, layer_cost)
 
 	local layer_id = LAYER_ID_MAPPING[layer_name]
 
-	GwNavTagLayerCostTable.set_layer_cost_multiplier(self._navtag_layer_cost_table, layer_id, layer_cost)
+	GwNavTagLayerCostTable.set_layer_cost_multiplier(self:get_navtag_layer_cost_table(), layer_id, layer_cost)
 end
 
-AINavigationExtension.get_navtag_layer_cost_table = function (self)
-	return self._navtag_layer_cost_table
+AINavigationExtension.nav_cost_map_cost_table = function (self, optional_identifier)
+	local identifier = optional_identifier or "_default"
+
+	self._nav_cost_map_cost_tables = self._nav_cost_map_cost_tables or {}
+	self._nav_cost_map_cost_tables[identifier] = self._nav_cost_map_cost_tables[identifier] or GwNavCostMap.create_tag_cost_table()
+
+	return self._nav_cost_map_cost_tables[identifier]
+end
+
+AINavigationExtension.get_navtag_layer_cost_table = function (self, optional_identifier)
+	local identifier = optional_identifier or "_default"
+
+	self._navtag_layer_cost_tables = self._navtag_layer_cost_tables or {}
+	self._navtag_layer_cost_tables[identifier] = self._navtag_layer_cost_tables[identifier] or GwNavTagLayerCostTable.create()
+
+	return self._navtag_layer_cost_tables[identifier]
 end
 
 AINavigationExtension.get_current_and_next_node_positions_in_nav_path = function (self)
@@ -627,4 +644,59 @@ AINavigationExtension.get_remaining_distance_from_progress_to_end_of_path = func
 	local distance = GwNavBot.get_remaining_distance_from_progress_to_end_of_path(nav_bot)
 
 	return distance
+end
+
+AINavigationExtension.get_reusable_astar = function (self, identifier, dont_create_new)
+	if not self._reusable_astars then
+		self._reusable_astars = {}
+	end
+
+	if not dont_create_new and not self._reusable_astars[identifier] then
+		self._reusable_astars[identifier] = GwNavAStar.create()
+	end
+
+	return self._reusable_astars[identifier]
+end
+
+AINavigationExtension.destroy_reusable_astar = function (self, identifier)
+	local astar = self._reusable_astars[identifier]
+
+	if not GwNavAStar.processing_finished(astar) then
+		GwNavAStar.cancel(astar)
+	end
+
+	GwNavAStar.destroy(astar)
+
+	self._reusable_astars[identifier] = nil
+end
+
+AINavigationExtension._destroy_reusable_astars = function (self)
+	if not self._reusable_astars then
+		return
+	end
+
+	for identifier in pairs(self._reusable_astars) do
+		self:destroy_reusable_astar(identifier)
+	end
+
+	self._reusable_astars = nil
+end
+
+AINavigationExtension.get_reusable_traverse_logic = function (self, identifier, nav_cost_map)
+	self._reusable_traverse_logics = self._reusable_traverse_logics or {}
+	self._reusable_traverse_logics[identifier] = self._reusable_traverse_logics[identifier] or GwNavTraverseLogic.create(self._nav_world, nav_cost_map)
+
+	return self._reusable_traverse_logics[identifier]
+end
+
+AINavigationExtension.destroy_reusable_traverse_logic = function (self)
+	if not self._reusable_traverse_logics then
+		return
+	end
+
+	for _, traverse_logic in pairs(self._reusable_traverse_logics) do
+		GwNavTraverseLogic.destroy(traverse_logic)
+	end
+
+	self._reusable_traverse_logics = nil
 end

@@ -51,8 +51,6 @@ BuffAreaExtension.init = function (self, extension_init_context, unit, extension
 	if self._is_server then
 		self:_spawn_los_blocker()
 	end
-
-	self._buff_ids = {}
 end
 
 BuffAreaExtension.game_object_initialized = function (self, unit, go_id)
@@ -229,11 +227,12 @@ end
 BuffAreaExtension._leave_func = function (self, leaving_unit)
 	if not self._unlimited then
 		local buff_system = Managers.state.entity:system("buff_system")
-		local area_buff_id = self._buff_ids[leaving_unit]
+		local buff_ids = self._buff_area_system:inside_by_area(self).buff_ids
+		local area_buff_id = buff_ids[leaving_unit]
 
 		buff_system:remove_buff_synced(leaving_unit, area_buff_id)
 
-		self._buff_ids[leaving_unit] = nil
+		buff_ids[leaving_unit] = nil
 	end
 
 	local player_owner = Managers.player:owner(leaving_unit)
@@ -268,7 +267,9 @@ BuffAreaExtension._enter_func = function (self, entering_unit)
 		return
 	end
 
-	self._buff_ids[entering_unit] = buff_system:add_buff_synced(entering_unit, buff_name, sync_type, params, peer_id)
+	local buff_ids = self._buff_area_system:inside_by_area(self).buff_ids
+
+	buff_ids[entering_unit] = buff_system:add_buff_synced(entering_unit, buff_name, sync_type, params, peer_id)
 end
 
 BuffAreaExtension._remove_unit = function (self)

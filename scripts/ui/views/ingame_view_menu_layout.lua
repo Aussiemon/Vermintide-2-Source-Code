@@ -574,6 +574,11 @@ else
 					fade = false,
 					transition = "return_to_title_screen",
 				},
+				{
+					display_name = "quit_menu_button_name",
+					fade = false,
+					transition = "quit_game_hero_view",
+				},
 			},
 			host = {
 				{
@@ -612,6 +617,11 @@ else
 					fade = false,
 					transition = "return_to_title_screen",
 				},
+				{
+					display_name = "quit_menu_button_name",
+					fade = false,
+					transition = "quit_game_hero_view",
+				},
 			},
 			client = {
 				{
@@ -649,6 +659,11 @@ else
 					display_name = "menu_return_to_title_screen",
 					fade = false,
 					transition = "return_to_title_screen",
+				},
+				{
+					display_name = "quit_menu_button_name",
+					fade = false,
+					transition = "quit_game_hero_view",
 				},
 			},
 			demo = {
@@ -693,6 +708,11 @@ else
 					fade = false,
 					transition = "return_to_title_screen",
 				},
+				{
+					display_name = "quit_menu_button_name",
+					fade = false,
+					transition = "quit_game_hero_view",
+				},
 			},
 			host = {
 				{
@@ -715,6 +735,11 @@ else
 					display_name = "menu_return_to_title_screen",
 					fade = false,
 					transition = "return_to_title_screen",
+				},
+				{
+					display_name = "quit_menu_button_name",
+					fade = false,
+					transition = "quit_game_hero_view",
 				},
 			},
 			client = {
@@ -739,6 +764,11 @@ else
 					fade = false,
 					transition = "return_to_title_screen",
 				},
+				{
+					display_name = "quit_menu_button_name",
+					fade = false,
+					transition = "quit_game_hero_view",
+				},
 			},
 			tutorial = {
 				{
@@ -758,6 +788,11 @@ else
 					display_name = "menu_return_to_title_screen",
 					transition = "return_to_title_screen",
 				},
+				{
+					display_name = "quit_menu_button_name",
+					fade = false,
+					transition = "quit_game_hero_view",
+				},
 			},
 			demo = {
 				{
@@ -775,6 +810,11 @@ else
 				{
 					display_name = "menu_return_to_title_screen",
 					transition = "return_to_demo_title_screen",
+				},
+				{
+					display_name = "quit_menu_button_name",
+					fade = false,
+					transition = "quit_game_hero_view",
 				},
 			},
 		},

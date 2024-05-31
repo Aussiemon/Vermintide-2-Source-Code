@@ -159,6 +159,14 @@ PlayerHuskGhostModeExtension.husk_leave_ghost_mode = function (self)
 		local dialogue_input = ScriptUnit.extension_input(player_unit, "dialogue_system")
 
 		dialogue_input:trigger_dialogue_event("spawning")
+
+		if not self._has_played_boss_sound and self._breed.boss then
+			local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+			dialogue_system:trigger_mission_giver_event("vs_mg_new_spawn_monster")
+
+			self._has_played_boss_sound = true
+		end
 	end
 
 	local dialogue_context_system = Managers.state.entity:system("dialogue_context_system")

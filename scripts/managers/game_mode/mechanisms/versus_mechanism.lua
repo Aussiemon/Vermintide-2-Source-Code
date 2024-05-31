@@ -218,6 +218,10 @@ VersusMechanism.make_profiles_reservable = function (self)
 	self._profiles_reservable = true
 end
 
+VersusMechanism.profiles_reservable = function (self)
+	return self._profiles_reservable
+end
+
 VersusMechanism.network_context_created = function (self, lobby, server_peer_id, own_peer_id, is_server, network_handler)
 	if self._shared_state then
 		local level_settings = LevelSettings[Managers.level_transition_handler:get_current_level_key()]
@@ -1916,12 +1920,21 @@ VersusMechanism.try_reserve_profile_for_peer = function (self, peer_id, profile_
 
 	if self._state == "inn" then
 		return Managers.state.network.profile_synchronizer:try_reserve_profile_for_peer(peer_id, profile_index), 1
-	elseif not self._profiles_reservable then
+	end
+
+	if not self._profiles_reservable then
 		return true
 	end
 
-	local human_local_player_id = 1
 	local party_id = self._slot_reservation_handler:party_id(peer_id)
+	local game_mode = Managers.state.game_mode
+	local party_selection_logic = game_mode and game_mode.party_selection_logic and game_mode:party_selection_logic()
+
+	if party_selection_logic then
+		return true, party_id
+	end
+
+	local human_local_player_id = 1
 	local peers = self._slot_reservation_handler:party_peers(party_id)
 
 	for i = 1, #peers do

@@ -392,6 +392,7 @@ weapon_template.buff_type = "RANGED"
 weapon_template.weapon_type = "THROWING_AXE"
 weapon_template.default_projectile_action = weapon_template.actions.action_one.default
 weapon_template.dodge_count = 6
+weapon_template.destroy_indexed_projectiles = true
 weapon_template.buffs = {
 	change_dodge_distance = {
 		external_optional_multiplier = 1.2,

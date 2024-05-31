@@ -378,6 +378,15 @@ CareerExtension.start_activated_ability_cooldown = function (self, ability_id, r
 		end
 	end
 
+	local game_mode = Managers.state.game_mode and Managers.state.game_mode:game_mode()
+
+	if self.player.local_player and game_mode and game_mode.activated_ability_telemetry then
+		local ability_data = self:get_activated_ability_data(ability_id)
+		local ability_name = ability_data.display_name
+
+		game_mode:activated_ability_telemetry(ability_name, self.player)
+	end
+
 	local current_cooldown = self:current_ability_cooldown(ability_id)
 	local min_cooldown = ability.max_cooldown * (1 - ability.cost)
 

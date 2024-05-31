@@ -661,42 +661,42 @@ VersusObjectiveSettings = {
 						sub_objectives = {
 							sub_sub_objective_container_01 = {
 								description = "level_objective_description_farmlands_04",
-								score_for_completion = 10,
+								score_for_completion = 5,
 								sub_objectives = {
 									versus_target_objective_001 = {},
 								},
 							},
 							sub_sub_objective_container_02 = {
 								description = "level_objective_description_farmlands_04",
-								score_for_completion = 10,
+								score_for_completion = 5,
 								sub_objectives = {
 									versus_target_objective_002 = {},
 								},
 							},
 							sub_sub_objective_container_03 = {
 								description = "level_objective_description_farmlands_04",
-								score_for_completion = 10,
+								score_for_completion = 5,
 								sub_objectives = {
 									versus_target_objective_003 = {},
 								},
 							},
 							sub_sub_objective_container_04 = {
 								description = "level_objective_description_farmlands_04",
-								score_for_completion = 10,
+								score_for_completion = 5,
 								sub_objectives = {
 									versus_target_objective_004 = {},
 								},
 							},
 							sub_sub_objective_container_05 = {
 								description = "level_objective_description_farmlands_04",
-								score_for_completion = 10,
+								score_for_completion = 5,
 								sub_objectives = {
 									versus_target_objective_005 = {},
 								},
 							},
 							sub_sub_objective_container_06 = {
 								description = "level_objective_description_farmlands_04",
-								score_for_completion = 10,
+								score_for_completion = 5,
 								sub_objectives = {
 									versus_target_objective_006 = {},
 								},
@@ -806,7 +806,7 @@ VersusObjectiveSettings = {
 				{
 					versus_volume_objective_farmlands_07 = {
 						description = "level_objective_description_farmlands_13",
-						score_for_completion = 20,
+						score_for_completion = 15,
 						volume_name = "volume_versus_reach_007",
 						volume_type = "any_alive",
 						objective_type = ObjectiveTypes.objective_reach,
@@ -822,35 +822,107 @@ VersusObjectiveSettings = {
 					},
 				},
 				{
-					versus_mission_objective_farmlands_prisoners_01 = {
+					versus_interact_objective_prisoners_streets = {
 						description = "level_objective_description_farmlands_15",
-						mission_name = "farmlands_free_prisoners_01",
-						score_for_completion = 15,
+						score_for_completion = 10,
 						objective_type = ObjectiveTypes.objective_interact,
 					},
 				},
 				{
-					versus_mission_objective_farmlands_prisoners_02 = {
+					sub_objective_container_prisoners_01 = {
 						description = "level_objective_description_farmlands_16",
-						mission_name = "farmlands_free_prisoners_02",
-						score_for_completion = 60,
-						objective_type = ObjectiveTypes.objective_interact,
+						play_arrive_vo = true,
+						play_complete_vo = true,
+						objective_type = ObjectiveTypes.objective_target,
+						almost_done = function (self, main_objectives, sub_objectives, shared_objective_data)
+							local objective_system = Managers.state.entity:system("versus_objective_system")
+							local num_total = objective_system:num_current_sub_objectives()
+							local num_completed = objective_system:num_current_completed_sub_objectives()
+
+							if num_total - num_completed <= 1 then
+								return true
+							end
+						end,
+						sub_objectives = {
+							versus_interact_objective_prisoners_001 = {
+								description = "level_objective_description_farmlands_16",
+								score_for_completion = 10,
+							},
+							versus_interact_objective_prisoners_002 = {
+								description = "level_objective_description_farmlands_16",
+								score_for_completion = 10,
+							},
+							versus_interact_objective_prisoners_003 = {
+								description = "level_objective_description_farmlands_16",
+								score_for_completion = 10,
+							},
+							versus_interact_objective_prisoners_004 = {
+								description = "level_objective_description_farmlands_16",
+								score_for_completion = 10,
+							},
+						},
 					},
 				},
 				{
-					versus_mission_objective_farmlands_prisoners_03 = {
+					sub_objective_container_prisoners_02 = {
 						description = "level_objective_description_farmlands_17",
-						mission_name = "farmlands_free_prisoners_03",
-						score_for_completion = 30,
-						objective_type = ObjectiveTypes.objective_interact,
+						play_arrive_vo = true,
+						play_complete_vo = true,
+						objective_type = ObjectiveTypes.objective_target,
+						almost_done = function (self, main_objectives, sub_objectives, shared_objective_data)
+							local objective_system = Managers.state.entity:system("versus_objective_system")
+							local num_total = objective_system:num_current_sub_objectives()
+							local num_completed = objective_system:num_current_completed_sub_objectives()
+
+							if num_total - num_completed <= 1 then
+								return true
+							end
+						end,
+						sub_objectives = {
+							versus_interact_objective_prisoners_005 = {
+								description = "level_objective_description_farmlands_17",
+								score_for_completion = 10,
+							},
+							versus_interact_objective_prisoners_006 = {
+								description = "level_objective_description_farmlands_17",
+								score_for_completion = 10,
+							},
+						},
 					},
 				},
 				{
-					versus_mission_objective_farmlands_prisoners_04 = {
+					sub_objective_container_prisoners_03 = {
 						description = "level_objective_description_farmlands_18",
-						mission_name = "farmlands_free_prisoners_04",
-						score_for_completion = 60,
-						objective_type = ObjectiveTypes.objective_interact,
+						play_arrive_vo = true,
+						play_complete_vo = true,
+						objective_type = ObjectiveTypes.objective_target,
+						almost_done = function (self, main_objectives, sub_objectives, shared_objective_data)
+							local objective_system = Managers.state.entity:system("versus_objective_system")
+							local num_total = objective_system:num_current_sub_objectives()
+							local num_completed = objective_system:num_current_completed_sub_objectives()
+
+							if num_total - num_completed <= 1 then
+								return true
+							end
+						end,
+						sub_objectives = {
+							versus_interact_objective_prisoners_007 = {
+								description = "level_objective_description_farmlands_18",
+								score_for_completion = 10,
+							},
+							versus_interact_objective_prisoners_008 = {
+								description = "level_objective_description_farmlands_18",
+								score_for_completion = 10,
+							},
+							versus_interact_objective_prisoners_009 = {
+								description = "level_objective_description_farmlands_18",
+								score_for_completion = 10,
+							},
+							versus_interact_objective_prisoners_010 = {
+								description = "level_objective_description_farmlands_18",
+								score_for_completion = 10,
+							},
+						},
 					},
 				},
 				{

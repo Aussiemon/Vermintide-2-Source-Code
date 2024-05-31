@@ -285,6 +285,7 @@ local skins = {
 	{
 		name = "es_longbow_skin_04_magic_01",
 		data = {
+			ammo_unit = "units/weapons/player/wpn_emp_arrows/wpn_es_arrow_t1",
 			description = "es_longbow_skin_04_magic_01_description",
 			display_name = "es_longbow_skin_04_magic_01_name",
 			display_unit = "units/weapons/weapon_display/display_longbow",

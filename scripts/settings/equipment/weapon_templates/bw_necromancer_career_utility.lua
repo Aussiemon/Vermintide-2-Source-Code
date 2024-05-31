@@ -311,9 +311,6 @@ weapon_template.buffs = {
 	},
 }
 weapon_template.is_command_utility_weapon = true
-weapon_template.wwise_dep_left_hand = {
-	"wwise/two_handed_swords",
-}
 
 return {
 	bw_necromancer_career_utility_weapon = table.clone(weapon_template),

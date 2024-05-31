@@ -128,11 +128,9 @@ settings.proc_functions = {
 			local kind = params[1].charge_value
 
 			if kind and kind == "heavy_attack" then
-				local world_manager = Managers.world
-				local world = world_manager:world("level_world")
-				local wwise_world = world_manager:wwise_world(world)
+				local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
-				WwiseWorld.trigger_event(wwise_world, "talent_power_swing")
+				first_person_extension:play_hud_sound_event("talent_power_swing")
 			end
 		end
 	end,

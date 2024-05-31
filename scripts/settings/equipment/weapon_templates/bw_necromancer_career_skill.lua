@@ -111,9 +111,6 @@ weapon_template.buffs = {
 		external_optional_multiplier = 1,
 	},
 }
-weapon_template.wwise_dep_left_hand = {
-	"wwise/two_handed_swords",
-}
 
 return {
 	bw_necromancer_career_skill_weapon = table.clone(weapon_template),

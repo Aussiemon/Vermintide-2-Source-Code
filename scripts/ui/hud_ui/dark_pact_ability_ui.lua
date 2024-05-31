@@ -26,6 +26,8 @@ DarkPactAbilityUI.init = function (self, parent, ingame_ui_context)
 
 	self:_create_ui_elements()
 
+	self._ability_events = {}
+
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "input_changed", "event_input_changed")
@@ -142,6 +144,8 @@ DarkPactAbilityUI._update_abilities = function (self, dt, t)
 	local ui_renderer = self._ui_renderer
 
 	if self._career_name ~= career_name then
+		table.clear(self._widgets_by_ability_name)
+
 		self._initialized = false
 
 		return
@@ -181,6 +185,19 @@ DarkPactAbilityUI._update_abilities = function (self, dt, t)
 					local widget = UIWidget.init(definition)
 
 					widgets[widget_name] = widget
+				end
+
+				if ability_template.events then
+					local ability_events = ability_template.events
+
+					for event_name, call_back in pairs(ability_events) do
+						self._ability_events[#self._ability_events + 1] = {
+							event_name,
+							call_back,
+						}
+
+						Managers.state.event:register(self, event_name, call_back)
+					end
 				end
 			end
 
@@ -262,6 +279,11 @@ DarkPactAbilityUI.destroy = function (self)
 
 	event_manager:unregister("input_changed", self)
 	event_manager:unregister("on_spectator_target_changed", self)
+
+	for event_name, _ in pairs(self._ability_events) do
+		event_manager:unregister(event_name, self)
+	end
+
 	self:set_visible(false)
 	print("[DarkPactAbilityUI] - Destroy")
 end
@@ -293,22 +315,7 @@ DarkPactAbilityUI._set_elements_visible = function (self, visible)
 end
 
 DarkPactAbilityUI._handle_gamepad = function (self)
-	local gamepad_active = Managers.input:is_device_active("gamepad") or not IS_WINDOWS
-
-	if (gamepad_active or UISettings.use_gamepad_hud_layout == "always") and UISettings.use_gamepad_hud_layout ~= "never" then
-		if self._retained_elements_visible then
-			self:_set_elements_visible(false)
-		end
-
-		return false
-	else
-		if not self._retained_elements_visible then
-			self:_set_elements_visible(true)
-			self:event_input_changed()
-		end
-
-		return true
-	end
+	return true
 end
 
 DarkPactAbilityUI.update = function (self, dt, t)
@@ -319,6 +326,10 @@ DarkPactAbilityUI.update = function (self, dt, t)
 	local player, player_unit = self:_get_player_unit()
 	local ghost_mode_extension = ScriptUnit.has_extension(player_unit, "ghost_mode_system")
 	local is_in_ghost_mode = ghost_mode_extension and ghost_mode_extension:is_in_ghost_mode()
+
+	if is_in_ghost_mode then
+		return
+	end
 
 	if not self._initialized then
 		self:_setup_activated_ability()
@@ -534,5 +545,64 @@ DarkPactAbilityUI.on_spectator_target_changed = function (self, spectated_player
 		self:set_visible(true)
 	else
 		self:set_visible(false)
+	end
+end
+
+DarkPactAbilityUI.event_on_warpfire_thrower_ammo_changed = function (self, unit, current_firing_time)
+	local widgets = self._widgets_by_ability_name.fire
+	local widget = widgets.ammo
+	local content = widget.content
+	local style = widget.style
+
+	if not self._max_firing_time then
+		local breed = Unit.get_data(unit, "breed")
+
+		self._max_firing_time = breed.shoot_warpfire_max_flame_time
+	end
+
+	local current_firing_time_progress = current_firing_time / self._max_firing_time
+
+	if self._current_firing_time ~= current_firing_time_progress then
+		self._current_firing_time = current_firing_time_progress
+		content.progress = current_firing_time_progress
+		content.current_progress = current_firing_time_progress
+	end
+end
+
+DarkPactAbilityUI.event_on_dark_pact_ammo_changed = function (self, unit, current_ammo)
+	local widgets = self._widgets_by_ability_name.fire
+	local widget = widgets.ammo
+
+	if not current_ammo then
+		local blackboard = BLACKBOARDS[unit]
+		local data = blackboard.attack_pattern_data or {}
+
+		if data.current_ammo then
+			current_ammo = data.current_ammo
+		else
+			local breed = Unit.get_data(unit, "breed")
+
+			current_ammo = breed.max_ammo
+		end
+	end
+
+	local remaining_ammo = 0
+	local content = widget.content
+	local ammo_empty = current_ammo + remaining_ammo == 0
+	local ammo_changed = false
+
+	if self._ammo_count ~= current_ammo then
+		self._ammo_count = current_ammo
+		content.current_ammo = tostring(current_ammo)
+		ammo_changed = true
+	end
+
+	if self._remaining_ammo ~= remaining_ammo then
+		local breed = Unit.get_data(unit, "breed")
+
+		remaining_ammo = breed.max_ammo
+		self._remaining_ammo = remaining_ammo
+		content.remaining_ammo = tostring(remaining_ammo)
+		ammo_changed = true
 	end
 end

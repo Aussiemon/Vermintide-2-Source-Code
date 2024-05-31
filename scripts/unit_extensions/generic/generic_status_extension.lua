@@ -2495,6 +2495,8 @@ GenericStatusExtension._on_player_joined_party = function (self, peer_id, local_
 		local self_game_object_id = network_manager:unit_game_object_id(self.unit)
 		local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-		RPC.rpc_status_change_bool(channel_id, lookup.invisible, true, self_game_object_id, 0)
+		if self_game_object_id then
+			RPC.rpc_status_change_bool(channel_id, lookup.invisible, true, self_game_object_id, 0)
+		end
 	end
 end

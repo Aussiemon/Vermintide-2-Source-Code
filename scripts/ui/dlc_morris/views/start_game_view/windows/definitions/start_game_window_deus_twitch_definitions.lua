@@ -17,173 +17,6 @@ local journey_widget_settings = {
 	spacing_x = 40,
 	width = 72,
 }
-local animation_definitions = {
-	on_enter = {
-		{
-			end_progress = 0.3,
-			name = "fade_in",
-			start_progress = 0,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-
-				params.render_settings.alpha_multiplier = anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-		},
-	},
-	on_exit = {
-		{
-			end_progress = 0.3,
-			name = "fade_out",
-			start_progress = 0,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 1
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				params.render_settings.alpha_multiplier = 1
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-		},
-	},
-	right_arrow_flick = {
-		{
-			end_progress = 0.6,
-			name = "right_arrow_flick",
-			start_progress = 0,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				params.right_key.color[1] = 255 * (1 - math.easeOutCubic(progress))
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				widgets.content.right_arrow_pressed = false
-			end,
-		},
-	},
-	left_arrow_flick = {
-		{
-			end_progress = 0.6,
-			name = "left_arrow_flick",
-			start_progress = 0,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				params.left_key.color[1] = 255 * (1 - math.easeOutCubic(progress))
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				widgets.content.left_arrow_pressed = false
-			end,
-		},
-	},
-	gamemode_text_swap = {
-		{
-			end_progress = 0.2,
-			name = "gamemode_swap_text_fade_out",
-			start_progress = 0,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-
-				widgets.style.game_mode_text.text_color[1] = 255 * (1 - anim_progress)
-				widgets.style.press_key_text.text_color[1] = 255 * (1 - anim_progress)
-				widgets.style.expedition_highlight_text.text_color[1] = 255 * (1 - anim_progress)
-
-				if widgets.content.show_note then
-					widgets.style.note_text.text_color[1] = 255 * (1 - anim_progress)
-				end
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-		},
-		{
-			end_progress = 0.4,
-			name = "gamemode_swap_text_fade_in",
-			start_progress = 0.2,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				if widgets.content.is_showing_info then
-					widgets.content.game_mode_text = Localize("expedition_info")
-					widgets.content.show_note = true
-				else
-					widgets.content.game_mode_text = Localize("start_game_window_deus_twitch_desc")
-					widgets.content.show_note = false
-				end
-
-				widgets.style.game_mode_text.text_color[1] = 255 * math.easeOutCubic(progress)
-				widgets.style.press_key_text.text_color[1] = 255 * math.easeOutCubic(progress)
-				widgets.style.expedition_highlight_text.text_color[1] = 255 * math.easeOutCubic(progress)
-
-				if widgets.content.show_note then
-					widgets.style.note_text.text_color[1] = 255 * math.easeOutCubic(progress)
-				end
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-		},
-	},
-	difficulty_info_enter = {
-		{
-			end_progress = 0.6,
-			name = "difficulty_info_enter",
-			start_progress = 0,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				widgets.difficulty_info.content.visible = true
-
-				local diff_info_style = widgets.difficulty_info.style
-
-				diff_info_style.background.color[1] = 0
-				diff_info_style.border.color[1] = 0
-				diff_info_style.difficulty_description.text_color[1] = 0
-				diff_info_style.highest_obtainable_level.text_color[1] = 0
-				diff_info_style.difficulty_separator.color[1] = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				local diff_info = widgets.difficulty_info
-				local diff_info_style = widgets.difficulty_info.style
-				local diff_info_content = widgets.difficulty_info.content
-
-				diff_info.offset[1] = 50 * anim_progress
-				widgets.upsell_button.offset[1] = 50 * anim_progress
-
-				local alpha = 200 * anim_progress
-
-				diff_info_style.background.color[1] = alpha
-				diff_info_style.border.color[1] = alpha
-				alpha = 255 * anim_progress
-				diff_info_style.difficulty_description.text_color[1] = alpha
-				diff_info_style.highest_obtainable_level.text_color[1] = alpha
-				diff_info_style.difficulty_separator.color[1] = alpha
-
-				if diff_info_content.should_show_diff_lock_text then
-					diff_info_style.difficulty_lock_text.text_color[1] = alpha
-				end
-
-				if diff_info_content.should_show_dlc_lock then
-					diff_info_style.dlc_lock_text.text_color[1] = alpha
-				end
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-		},
-	},
-}
 local scenegraph_definition = {
 	root = {
 		is_root = true,
@@ -289,7 +122,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			80,
+			70,
 			1,
 		},
 	},
@@ -1454,6 +1287,173 @@ local selector_input_definition = {
 
 			difficulty_setting_widget.content.is_selected = false
 		end,
+	},
+}
+local animation_definitions = {
+	on_enter = {
+		{
+			end_progress = 0.3,
+			name = "fade_in",
+			start_progress = 0,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 0
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+
+				params.render_settings.alpha_multiplier = anim_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+		},
+	},
+	on_exit = {
+		{
+			end_progress = 0.3,
+			name = "fade_out",
+			start_progress = 0,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 1
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				params.render_settings.alpha_multiplier = 1
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+		},
+	},
+	right_arrow_flick = {
+		{
+			end_progress = 0.6,
+			name = "right_arrow_flick",
+			start_progress = 0,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				params.right_key.color[1] = 255 * (1 - math.easeOutCubic(progress))
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				widgets.content.right_arrow_pressed = false
+			end,
+		},
+	},
+	left_arrow_flick = {
+		{
+			end_progress = 0.6,
+			name = "left_arrow_flick",
+			start_progress = 0,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				params.left_key.color[1] = 255 * (1 - math.easeOutCubic(progress))
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				widgets.content.left_arrow_pressed = false
+			end,
+		},
+	},
+	gamemode_text_swap = {
+		{
+			end_progress = 0.2,
+			name = "gamemode_swap_text_fade_out",
+			start_progress = 0,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+
+				widgets.style.game_mode_text.text_color[1] = 255 * (1 - anim_progress)
+				widgets.style.press_key_text.text_color[1] = 255 * (1 - anim_progress)
+				widgets.style.expedition_highlight_text.text_color[1] = 255 * (1 - anim_progress)
+
+				if widgets.content.show_note then
+					widgets.style.note_text.text_color[1] = 255 * (1 - anim_progress)
+				end
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+		},
+		{
+			end_progress = 0.4,
+			name = "gamemode_swap_text_fade_in",
+			start_progress = 0.2,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				if widgets.content.is_showing_info then
+					widgets.content.game_mode_text = Localize("expedition_info")
+					widgets.content.show_note = true
+				else
+					widgets.content.game_mode_text = Localize("start_game_window_deus_twitch_desc")
+					widgets.content.show_note = false
+				end
+
+				widgets.style.game_mode_text.text_color[1] = 255 * math.easeOutCubic(progress)
+				widgets.style.press_key_text.text_color[1] = 255 * math.easeOutCubic(progress)
+				widgets.style.expedition_highlight_text.text_color[1] = 255 * math.easeOutCubic(progress)
+
+				if widgets.content.show_note then
+					widgets.style.note_text.text_color[1] = 255 * math.easeOutCubic(progress)
+				end
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+		},
+	},
+	difficulty_info_enter = {
+		{
+			end_progress = 0.6,
+			name = "difficulty_info_enter",
+			start_progress = 0,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				widgets.difficulty_info.content.visible = true
+
+				local diff_info_style = widgets.difficulty_info.style
+
+				diff_info_style.background.color[1] = 0
+				diff_info_style.border.color[1] = 0
+				diff_info_style.difficulty_description.text_color[1] = 0
+				diff_info_style.highest_obtainable_level.text_color[1] = 0
+				diff_info_style.difficulty_separator.color[1] = 0
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+				local diff_info = widgets.difficulty_info
+				local diff_info_style = widgets.difficulty_info.style
+				local diff_info_content = widgets.difficulty_info.content
+
+				diff_info.offset[1] = 50 * anim_progress
+				widgets.upsell_button.offset[1] = 50 * anim_progress
+
+				local alpha = 200 * anim_progress
+
+				diff_info_style.background.color[1] = alpha
+				diff_info_style.border.color[1] = alpha
+				alpha = 255 * anim_progress
+				diff_info_style.difficulty_description.text_color[1] = alpha
+				diff_info_style.highest_obtainable_level.text_color[1] = alpha
+				diff_info_style.difficulty_separator.color[1] = alpha
+
+				if diff_info_content.should_show_diff_lock_text then
+					diff_info_style.difficulty_lock_text.text_color[1] = alpha
+				end
+
+				if diff_info_content.should_show_dlc_lock then
+					diff_info_style.dlc_lock_text.text_color[1] = alpha
+				end
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+		},
 	},
 }
 

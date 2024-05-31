@@ -80,7 +80,7 @@ VersusTeamParadingViewV2.on_exit = function (self)
 		self._viewport_widget = nil
 	end
 
-	self:_play_sound("unmute_all_world_sounds")
+	self:_play_sound("vs_unmute_reset_all")
 end
 
 VersusTeamParadingViewV2._create_ui_elements = function (self, params)

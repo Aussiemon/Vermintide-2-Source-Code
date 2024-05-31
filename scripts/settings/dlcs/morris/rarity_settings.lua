@@ -130,3 +130,8 @@ RaritySettings = RaritySettings or {
 		},
 	},
 }
+RarityIndex = {}
+
+for rarity_name, rarity_data in pairs(RaritySettings) do
+	RarityIndex[rarity_name] = rarity_data.order
+end

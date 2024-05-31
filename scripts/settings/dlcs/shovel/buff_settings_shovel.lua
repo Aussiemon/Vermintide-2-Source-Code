@@ -1688,8 +1688,13 @@ settings.buff_function_templates = {
 			end
 		end
 
+		local is_server = Managers.state.network.is_server
+
 		for skull_unit, data in pairs(buff.skulls) do
-			Managers.level_transition_handler.transient_package_loader:remove_unit(skull_unit)
+			if is_server then
+				Managers.level_transition_handler.transient_package_loader:remove_unit(skull_unit)
+			end
+
 			World.destroy_unit(world, skull_unit)
 		end
 	end,
@@ -1720,7 +1725,9 @@ settings.buff_function_templates = {
 			local unit_name = "units/beings/player/bright_wizard_necromancer/talents/trapped_soul_skull"
 			local skull_unit = World.spawn_unit(world, unit_name, owner_pos + rel_pos, unit_rot)
 
-			Managers.level_transition_handler.transient_package_loader:add_unit(skull_unit, unit_name)
+			if Managers.state.network.is_server then
+				Managers.level_transition_handler.transient_package_loader:add_unit(skull_unit, unit_name)
+			end
 
 			buff.skulls[skull_unit] = {
 				start_t = t,
@@ -1737,7 +1744,10 @@ settings.buff_function_templates = {
 			local elapsed_t = t - data.start_t
 
 			if elapsed_t > 4 then
-				Managers.level_transition_handler.transient_package_loader:remove_unit(skull_unit)
+				if Managers.state.network.is_server then
+					Managers.level_transition_handler.transient_package_loader:remove_unit(skull_unit)
+				end
+
 				World.destroy_unit(world, skull_unit)
 
 				buff.skulls[skull_unit] = nil

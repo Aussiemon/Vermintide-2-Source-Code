@@ -1517,7 +1517,7 @@ ProjectileSystem._update_drones = function (self, dt, t)
 		local last_known_position_boxed = drone.last_known_target_pos
 		local target_unit = drone.target_unit
 
-		if ALIVE[target_unit] then
+		if Unit.alive(target_unit) then
 			if Unit.has_node(target_unit, "j_spine") then
 				last_known_position_boxed:store(Unit.world_position(target_unit, Unit.node(target_unit, "j_spine")))
 			else

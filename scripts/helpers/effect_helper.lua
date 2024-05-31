@@ -361,28 +361,15 @@ EffectHelper.play_melee_hit_effects = function (sound_event, world, hit_position
 	WwiseWorld.trigger_event(wwise_world, sound_event, source_id)
 end
 
+local burning_damage_types = table.enum_safe("burn", "burn_sniper", "burn_shotgun", "burn_carbine", "burn_machinegun", "burninating", "bleed", "burning_tank", "heavy_burning_tank", "light_burning_linesman", "burning_linesman", "burning_smiter", "burning_stab_fencer")
+local projectile_attack_types = table.enum_safe("projectile", "instant_projectile", "heavy_instant_projectile")
+
 EffectHelper.vs_play_hit_sound = function (world, victim_unit, attack_type, damage_type, damage_source_name)
 	local owner = Managers.player:owner(victim_unit)
 	local is_husk = owner.remote or owner.bot_player or false
-	local enemy_hit_sound = "sword"
+	local enemy_hit_sound
 
-	if attack_type == "projectile" then
-		enemy_hit_sound = "bullet"
-	elseif damage_type == "gas" then
-		enemy_hit_sound = "gas"
-	else
-		if damage_type ~= "burn" then
-			-- Nothing
-		end
-
-		enemy_hit_sound = "fire"
-	end
-
-	if false then
-		if damage_type == "grenade" and damage_source_name == "grenade_fire_01" then
-			enemy_hit_sound = "fire"
-		end
-	end
+	enemy_hit_sound = (burning_damage_types[damage_type] or damage_type == "grenade" and damage_source_name == "grenade_fire_01") and "fire" or projectile_attack_types[attack_type] and "bullet" or damage_type == "gas" and "gas" or "sword"
 
 	if enemy_hit_sound then
 		local source_id, wwise_world = WwiseUtils.make_unit_auto_source(world, victim_unit)

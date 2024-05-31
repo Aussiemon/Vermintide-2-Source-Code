@@ -222,6 +222,9 @@ local components = {
 			"alive",
 			"spectator",
 		},
+		validation_function = function ()
+			return not is_dark_pact_validate_function()
+		end,
 	},
 	{
 		class_name = "GamePadEquipmentUI",
@@ -230,6 +233,9 @@ local components = {
 		visibility_groups = {
 			"alive",
 		},
+		validation_function = function ()
+			return not is_dark_pact_validate_function()
+		end,
 	},
 	{
 		class_name = "AbilityUI",

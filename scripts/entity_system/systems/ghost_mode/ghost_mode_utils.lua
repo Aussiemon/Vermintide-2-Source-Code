@@ -90,15 +90,19 @@ GhostModeUtils.far_enough_to_enter_ghost_mode = function (unit)
 	local unit_pos = POSITION_LOOKUP[unit]
 	local allowed_enter_ghost_dist = GameModeSettings.versus.dark_pact_catch_up_distance
 	local side = Managers.state.side.side_by_unit[unit]
-	local enemy_positions = side.ENEMY_PLAYER_AND_BOT_POSITIONS
-	local num_enemy_positions = #enemy_positions
+	local enemy_units = side.ENEMY_PLAYER_AND_BOT_UNITS
 
-	for i = 1, num_enemy_positions do
-		local target_pos = enemy_positions[i]
-		local distance_to_hero = Vector3.distance(target_pos, unit_pos)
+	for i = 1, #enemy_units do
+		local enemy_unit = enemy_units[i]
+		local status_extension = ScriptUnit.has_extension(enemy_unit, "status_system")
 
-		if distance_to_hero < allowed_enter_ghost_dist then
-			return false
+		if not status_extension or not status_extension:is_disabled() then
+			local target_pos = POSITION_LOOKUP[enemy_unit]
+			local distance_to_hero = Vector3.distance(target_pos, unit_pos)
+
+			if distance_to_hero < allowed_enter_ghost_dist then
+				return false
+			end
 		end
 	end
 

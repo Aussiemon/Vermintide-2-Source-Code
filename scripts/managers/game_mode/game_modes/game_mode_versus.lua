@@ -486,12 +486,6 @@ GameModeVersus._game_mode_state_changed = function (self, state_name, old_state_
 		self._start_game_timeout_timer = 0
 	end
 
-	if old_state_name == "player_team_parading_state" then
-		self._versus_party_selection_logic:destroy()
-
-		self._versus_party_selection_logic = nil
-	end
-
 	if state_name == "waiting_for_players_to_join" then
 		self._mechanism:increment_total_rounds_started()
 
@@ -503,7 +497,7 @@ GameModeVersus._game_mode_state_changed = function (self, state_name, old_state_
 			end
 		end
 	elseif state_name == "character_selection_state" then
-		self._versus_party_selection_logic = VersusPartySelectionLogic:new(self._is_server, self._settings, self._network_server, self._network_event_delegate, self._network_transmit)
+		self._versus_party_selection_logic = VersusPartySelectionLogic:new(self._is_server, self._settings, self._network_server, self._profile_synchronizer, self._network_event_delegate, self._network_transmit)
 
 		self._mechanism:make_profiles_reservable()
 		Managers.ui:handle_transition("versus_party_char_selection_view", {
@@ -517,7 +511,7 @@ GameModeVersus._game_mode_state_changed = function (self, state_name, old_state_
 		local is_hot_joining = old_state_name ~= "character_selection_state"
 
 		if is_hot_joining then
-			self._versus_party_selection_logic = VersusPartySelectionLogic:new(self._is_server, self._settings, self._network_server, self._network_event_delegate, self._network_transmit)
+			self._versus_party_selection_logic = VersusPartySelectionLogic:new(self._is_server, self._settings, self._network_server, self._profile_synchronizer, self._network_event_delegate, self._network_transmit)
 		end
 
 		local duration = self:_get_parading_screen_duration()
@@ -529,6 +523,12 @@ GameModeVersus._game_mode_state_changed = function (self, state_name, old_state_
 
 		self._parading_timer = Managers.time:time("game") + duration
 	elseif state_name == "pre_start_round_state" then
+		if self._versus_party_selection_logic then
+			self._versus_party_selection_logic:destroy()
+
+			self._versus_party_selection_logic = nil
+		end
+
 		self:_update_profiles()
 		self:_spawn_pact_sworn("dark_pact")
 		self:_init_pact_sworn_camera_state()
@@ -983,7 +983,7 @@ GameModeVersus.player_entered_game_session = function (self, peer_id, local_play
 
 	if wanted_party_id ~= current_party_id then
 		party_manager:request_join_party(peer_id, local_player_id, wanted_party_id)
-	elseif wanted_party_id ~= 0 then
+	elseif wanted_party_id ~= 0 and self._mechanism:profiles_reservable() then
 		self:_update_profile_in_party(peer_id, local_player_id, wanted_party_id)
 	end
 
@@ -1070,18 +1070,20 @@ GameModeVersus.player_joined_party = function (self, peer_id, local_player_id, n
 		return
 	end
 
+	if self._versus_party_selection_logic then
+		self._versus_party_selection_logic:player_joined_party(peer_id, local_player_id, new_party_id, slot_id)
+	elseif self._is_server and self._mechanism:profiles_reservable() then
+		self:_update_profile_in_party(peer_id, local_player_id, new_party_id)
+	end
+
 	local side = Managers.state.side.side_by_party[party]
 	local side_name = side:name()
 
-	if self._is_server then
-		self:_update_profile_in_party(peer_id, local_player_id, new_party_id)
+	if self._is_server and side_name == "dark_pact" and self:is_in_round_state() then
+		local spawn_time = self._versus_spawning:get_spawn_time(party)
 
-		if side_name == "dark_pact" and self:is_in_round_state() then
-			local spawn_time = self._versus_spawning:get_spawn_time(party)
-
-			self._versus_spawning:setup_data(peer_id, local_player_id)
-			self._versus_spawning:set_spawn_state(peer_id, local_player_id, "w8_for_profile", 0, spawn_time, true)
-		end
+		self._versus_spawning:setup_data(peer_id, local_player_id)
+		self._versus_spawning:set_spawn_state(peer_id, local_player_id, "w8_for_profile", 0, spawn_time, true)
 	end
 
 	local player = status.player
@@ -1098,10 +1100,6 @@ GameModeVersus.player_joined_party = function (self, peer_id, local_player_id, n
 				input_service_name = "dark_pact_selection",
 			})
 		end
-	end
-
-	if self._versus_party_selection_logic then
-		self._versus_party_selection_logic:player_joined_party(peer_id, local_player_id, new_party_id, slot_id)
 	end
 end
 
@@ -1859,6 +1857,15 @@ GameModeVersus._match_end_telemetry = function (self, results)
 	end
 
 	Managers.telemetry_events:versus_match_ended(match_id, is_draw, winning_party)
+end
+
+GameModeVersus.activated_ability_telemetry = function (self, ability_name, player)
+	local mechanism = Managers.mechanism:game_mechanism()
+	local game_round = mechanism:total_rounds_started()
+	local match_id = mechanism:match_id()
+	local player_id = player:telemetry_id()
+
+	Managers.telemetry_events:versus_activated_ability(match_id, game_round, player_id, ability_name)
 end
 
 GameModeVersus.menu_access_allowed_in_state = function (self)

@@ -2440,9 +2440,11 @@ DamageUtils.heal_network = function (healed_unit, healer_unit, heal_amount, heal
 
 			health_extension:add_heal(healer_unit, buffed_heal_amount, nil, heal_type)
 
-			local status_extension = ScriptUnit.extension(unit, "status_system")
+			local status_extension = ScriptUnit.has_extension(unit, "status_system")
 
-			status_extension:healed(heal_type)
+			if status_extension then
+				status_extension:healed(heal_type)
+			end
 
 			local buff_extension = ScriptUnit.extension(unit, "buff_system")
 
@@ -2452,7 +2454,7 @@ DamageUtils.heal_network = function (healed_unit, healer_unit, heal_amount, heal
 				buff_extension:trigger_procs("on_healed_consumeable", healer_unit, buffed_heal_amount, heal_type)
 			end
 
-			if not LEVEL_EDITOR_TEST and status_extension:heal_can_remove_wounded(heal_type) then
+			if not LEVEL_EDITOR_TEST and status_extension and status_extension:heal_can_remove_wounded(heal_type) then
 				StatusUtils.set_wounded_network(unit, false, "healed")
 			end
 		end
@@ -2461,9 +2463,9 @@ DamageUtils.heal_network = function (healed_unit, healer_unit, heal_amount, heal
 
 		for i = 1, num_healed_units do
 			local unit = HEALED_UNITS[i]
-			local status_extension = ScriptUnit.extension(unit, "status_system")
+			local status_extension = ScriptUnit.has_extension(unit, "status_system")
 
-			if not LEVEL_EDITOR_TEST and status_extension:is_wounded() and status_extension:heal_can_remove_wounded(heal_type) then
+			if not LEVEL_EDITOR_TEST and status_extension and status_extension:is_wounded() and status_extension:heal_can_remove_wounded(heal_type) then
 				StatusUtils.set_wounded_network(unit, false, "healed")
 			end
 		end
@@ -3124,6 +3126,14 @@ DamageUtils._projectile_hit_character = function (current_action, owner_unit, ow
 
 			deal_damage = not ranged_block
 			shield_blocked = ranged_block
+
+			if ranged_block and Managers.state.side:versus_is_dark_pact(owner_unit) then
+				WwiseUtils.trigger_unit_event(world, "Play_versus_ui_damage_mitigated_indicator", hit_unit)
+			end
+		end
+
+		if breed.boss and Managers.state.side:versus_is_dark_pact(owner_unit) then
+			deal_damage = false
 		end
 
 		if deal_damage then
@@ -3255,8 +3265,9 @@ DamageUtils.process_projectile_hit = function (world, damage_source, owner_unit,
 			if is_character and owner_player then
 				local side = side_manager.side_by_unit[hit_unit]
 				local owner_side = side_manager.side_by_unit[owner_unit]
+				local units_on_same_side = side and owner_side and side.side_id == owner_side.side_id
 
-				if side and owner_side and side.side_id == owner_side.side_id then
+				if side and owner_side and units_on_same_side and not breed.boss then
 					block_processing = not allow_friendly_fire or breed.disable_friendly_fire
 				end
 			end

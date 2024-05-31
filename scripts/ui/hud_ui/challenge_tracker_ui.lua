@@ -266,7 +266,7 @@ ChallengeTrackerUI.update = function (self, dt, t)
 end
 
 ChallengeTrackerUI._draw = function (self, dt)
-	if not self._dirty and RETAINED_MODE_ENABLED then
+	if not self._dirty and RETAINED_MODE_ENABLED or not self._is_visible then
 		return
 	end
 
@@ -287,4 +287,16 @@ ChallengeTrackerUI._draw = function (self, dt)
 	UIRenderer.end_pass(ui_renderer)
 
 	self._dirty = false
+end
+
+ChallengeTrackerUI.set_visible = function (self, visible)
+	self._is_visible = visible
+
+	local ui_renderer = self._ui_renderer
+
+	for _, widget in pairs(self._data.widgets) do
+		UIRenderer.set_element_visible(ui_renderer, widget.element, visible)
+	end
+
+	self._dirty = true
 end

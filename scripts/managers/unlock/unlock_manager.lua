@@ -665,8 +665,6 @@ UnlockManager._update_backend_unlocks = function (self, t)
 				if popup_settings then
 					if (first_time or popup_settings.display_on_every_boot) and popup_settings.popup_type == "reminder" then
 						Managers.state.event:trigger("ui_show_popup", dlc_name, "reminder")
-
-						self._handled_reminders_popups = true
 					else
 						new_dlcs_unlocks[dlc_name] = false
 					end
@@ -674,6 +672,8 @@ UnlockManager._update_backend_unlocks = function (self, t)
 					new_dlcs_unlocks[dlc_name] = false
 				end
 			end
+
+			self._handled_reminders_popups = true
 		elseif not self:_has_new_dlc() then
 			self._state = "query_unlocked"
 		end

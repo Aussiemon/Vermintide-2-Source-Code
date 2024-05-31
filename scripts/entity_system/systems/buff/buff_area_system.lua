@@ -44,11 +44,13 @@ BuffAreaSystem.on_add_extension = function (self, world, unit, extension_name, .
 		inside[name] = inside[name] or {
 			by_broadphase = {},
 			by_position = {},
+			buff_ids = {},
 		}
 	else
 		self._inside_by_area[buff_area_extension] = {
 			by_broadphase = {},
 			by_position = {},
+			buff_ids = {},
 		}
 	end
 

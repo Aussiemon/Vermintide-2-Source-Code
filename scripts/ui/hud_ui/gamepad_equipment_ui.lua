@@ -38,34 +38,6 @@ local function is_dark_pact()
 	return side and side:name() == "dark_pact"
 end
 
-local function is_ratling_gunner_selected()
-	if not Managers then
-		return nil
-	end
-
-	if not Managers.player then
-		return nil
-	end
-
-	if not SPProfiles then
-		return nil
-	end
-
-	local local_player = Managers.player:local_player()
-
-	if not local_player then
-		return nil
-	end
-
-	local career_index = local_player:career_index()
-	local profile_index = local_player:profile_index()
-	local current_profile = SPProfiles[profile_index]
-	local current_career = current_profile.careers[career_index]
-	local display_name = current_career.display_name
-
-	return display_name == "vs_ratling_gunner"
-end
-
 GamePadEquipmentUI.init = function (self, parent, ingame_ui_context)
 	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
@@ -96,7 +68,6 @@ GamePadEquipmentUI.init = function (self, parent, ingame_ui_context)
 	event_manager:register(self, "input_changed", "event_input_changed")
 	event_manager:register(self, "swap_equipment_from_storage", "event_swap_equipment_from_storage")
 	event_manager:register(self, "on_game_options_changed", "_set_game_options_dirty")
-	event_manager:register(self, "on_dark_pact_ammo_changed", "_update_dark_pact_ammo_count")
 	self:_update_game_options()
 end
 
@@ -188,7 +159,6 @@ GamePadEquipmentUI._create_ui_elements = function (self)
 	self:set_dirty()
 
 	self._num_added_items = 0
-	self._is_ratling_gunnner = nil
 end
 
 GamePadEquipmentUI.event_swap_equipment_from_storage = function (self, slot_name, additional_items)
@@ -1348,7 +1318,6 @@ GamePadEquipmentUI.destroy = function (self)
 	event_manager:unregister("input_changed", self)
 	event_manager:unregister("swap_equipment_from_storage", self)
 	event_manager:unregister("on_game_options_changed", self)
-	event_manager:unregister("on_dark_pact_ammo_changed", self)
 
 	self._ui_animator = nil
 
@@ -1414,7 +1383,6 @@ GamePadEquipmentUI.update = function (self, dt, t)
 	self:_sync_player_equipment()
 	self:_show_hold_to_reload(t)
 	self:_handle_gamepad_activity()
-	self:_update_dark_pact_visibility()
 	self:draw(dt)
 	self._ui_animator:update(dt)
 end
@@ -1899,86 +1867,5 @@ GamePadEquipmentUI._update_reload_ui_state = function (self, t, item_template)
 		self._listening_timer_start = nil
 		self._reload_attempts = 0
 		self._reload_tip_text_shown = false
-	end
-end
-
-GamePadEquipmentUI._update_dark_pact_ammo_count = function (self, unit, current_ammo)
-	local widgets_by_name = self._widgets_by_name
-	local ammo_widgets_by_name = self._ammo_widgets_by_name
-
-	if not current_ammo then
-		local blackboard = BLACKBOARDS[unit]
-		local data = blackboard.attack_pattern_data or {}
-
-		if data.current_ammo then
-			current_ammo = data.current_ammo
-		else
-			local breed = Unit.get_data(unit, "breed")
-
-			current_ammo = breed.max_ammo
-		end
-	end
-
-	local remaining_ammo = 0
-	local ammo_text_clip_widget = ammo_widgets_by_name.ammo_text_clip
-	local content = ammo_text_clip_widget.content
-	local ammo_empty = current_ammo + remaining_ammo == 0
-	local ammo_changed = false
-
-	if self._ammo_count ~= current_ammo then
-		self._ammo_count = current_ammo
-
-		local widget = ammo_widgets_by_name.ammo_text_clip
-		local content = widget.content
-
-		content.text = tostring(current_ammo)
-
-		self:_set_widget_dirty(widget)
-
-		ammo_changed = true
-	end
-
-	if self._remaining_ammo ~= remaining_ammo then
-		local breed = Unit.get_data(unit, "breed")
-
-		remaining_ammo = breed.max_ammo
-		self._remaining_ammo = remaining_ammo
-
-		local widget = ammo_widgets_by_name.ammo_text_remaining
-		local content = widget.content
-
-		content.text = tostring(remaining_ammo)
-
-		self:_set_widget_dirty(widget)
-
-		ammo_changed = true
-	end
-
-	local draw_overheat = false
-
-	if self._draw_overheat ~= draw_overheat then
-		self._draw_overheat = draw_overheat
-
-		self:_show_overheat_meter(draw_overheat)
-	end
-
-	if ammo_changed then
-		self._ammo_counter_fade_delay = AMMO_PRESENTATION_DURATION
-		self._ammo_counter_fade_progress = 1
-
-		self:_set_ammo_counter_alpha(255)
-
-		local ammo_text_color = ammo_empty and ammo_colors.empty or ammo_colors.normal
-
-		self:_set_ammo_counter_color(ammo_text_color)
-		self:set_dirty()
-	end
-end
-
-GamePadEquipmentUI._update_dark_pact_visibility = function (self)
-	if is_dark_pact() and self._is_ratling_gunnner ~= is_ratling_gunner_selected() then
-		self._is_ratling_gunnner = is_ratling_gunner_selected()
-
-		self:set_visible(self._is_ratling_gunnner)
 	end
 end

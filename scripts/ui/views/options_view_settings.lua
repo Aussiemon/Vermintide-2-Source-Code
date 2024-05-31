@@ -1669,7 +1669,6 @@ local keybind_settings_definition = {
 		widget_type = "keybind",
 		actions = {
 			"hotkey_inventory",
-			"hotkey_deus_inventory",
 		},
 	},
 	{
@@ -1729,6 +1728,14 @@ local keybind_settings_definition = {
 		widget_type = "keybind",
 		actions = {
 			"hotkey_weave_leaderboard",
+		},
+	},
+	{
+		keybind_description = "hotkey_deus_inventory",
+		keymappings_key = "IngameMenuKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"hotkey_deus_inventory",
 		},
 	},
 	{

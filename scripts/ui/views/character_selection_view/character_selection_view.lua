@@ -649,6 +649,10 @@ CharacterSelectionView._handle_exit = function (self, dt, input_service)
 	end
 end
 
+CharacterSelectionView.get_exit_button_widget = function (self)
+	return self._exit_button_widget
+end
+
 CharacterSelectionView.close_menu = function (self, return_to_main_screen)
 	local return_to_game = not return_to_main_screen
 

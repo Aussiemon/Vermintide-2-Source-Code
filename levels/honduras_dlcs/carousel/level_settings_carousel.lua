@@ -188,6 +188,7 @@ LevelSettings.farmlands_pvp = {
 	loading_ui_package_name = "loading_screen_7",
 	main_game_level = false,
 	mechanism = "versus",
+	override_map_start_section = true,
 	player_aux_bus_name = "environment_reverb_outside",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	unlockable = true,

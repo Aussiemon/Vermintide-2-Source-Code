@@ -221,7 +221,7 @@ BackendInterfaceTalentsPlayfab.set_default_override = function (self, career_nam
 	self._default_talents_overrides[career_name] = default_career_talents and default_career_talents[loadout_index]
 end
 
-BackendInterfaceTalentsPlayfab._validate_talents = function (self, career_name, career_talents, talent_tree_index, skip_quipping_talents, optional_loaodut_index)
+BackendInterfaceTalentsPlayfab._validate_talents = function (self, career_name, career_talents, talent_tree_index, skip_quipping_talents, optional_loadout_index)
 	local profile = PROFILES_BY_CAREER_NAMES[career_name]
 
 	if not profile then
@@ -279,7 +279,7 @@ BackendInterfaceTalentsPlayfab.get_talent_ids = function (self, career_name, opt
 	local talent_ids = {}
 	local game_mode_key = Managers.state.game_mode and Managers.state.game_mode:game_mode_key()
 	local bot_loadout_allowed = InventorySettings.bot_loadout_allowed_game_modes[game_mode_key]
-	local talents = bot_loadout_allowed and is_bot and self:get_bot_talents(career_name) or self:get_talents(career_name)
+	local talents = bot_loadout_allowed and is_bot and self:get_bot_talents(career_name) or optional_talents or self:get_talents(career_name)
 
 	if talents then
 		for i = 1, #talents do

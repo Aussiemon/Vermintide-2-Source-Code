@@ -11,7 +11,6 @@ end
 
 ActionMinigunSpin.client_owner_start_action = function (self, new_action, t)
 	ActionMinigunSpin.super.client_owner_start_action(self, new_action, t)
-	self:start_audio_loop()
 
 	self._initial_windup = new_action.initial_windup
 	self._windup_max = new_action.windup_max
@@ -26,6 +25,8 @@ ActionMinigunSpin.client_owner_start_action = function (self, new_action, t)
 	self._last_update_t = t
 	self._audio_loop_id = new_action.audio_loop_id
 	self._fp_speed_anim_variable = new_action.fp_speed_anim_variable
+
+	self:start_audio_loop()
 end
 
 ActionMinigunSpin.client_owner_post_update = function (self, dt, t, world, can_damage)

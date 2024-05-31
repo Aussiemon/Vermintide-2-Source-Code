@@ -1877,7 +1877,9 @@ CharacterStateHelper.ghost_mode = function (ghost_mode_extension, input_extensio
 		end
 
 		if input_extension:get("ghost_mode_enter") then
-			ghost_mode_extension:teleport_player()
+			local find_furthest_player = false
+
+			ghost_mode_extension:teleport_player(find_furthest_player)
 		end
 	end
 end

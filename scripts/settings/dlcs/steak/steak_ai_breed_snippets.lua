@@ -5,8 +5,7 @@ AiBreedSnippets = AiBreedSnippets or {}
 AiBreedSnippets.on_beastmen_minotaur_spawn = function (unit, blackboard)
 	local t = Managers.time:time("game")
 
-	blackboard.charge_astar_data = {}
-	blackboard.charge_astar_data.astar_timer = t
+	blackboard.charge_astar_timer = t
 	blackboard.num_charges_targeting_target = 0
 	blackboard.target_is_charged = false
 	blackboard.aggro_list = {}
@@ -23,22 +22,19 @@ AiBreedSnippets.on_beastmen_minotaur_spawn = function (unit, blackboard)
 			planks = 1,
 			temporary_wall = 0,
 		}
-		local navtag_layer_cost_table = GwNavTagLayerCostTable.create()
+		local navigation_extension = blackboard.navigation_extension
+		local navtag_layer_cost_table = navigation_extension:get_navtag_layer_cost_table("charge")
 
 		table.merge(allowed_layers, NAV_TAG_VOLUME_LAYER_COST_AI)
 		AiUtils.initialize_cost_table(navtag_layer_cost_table, allowed_layers)
 
-		local nav_cost_map_cost_table = GwNavCostMap.create_tag_cost_table()
+		local nav_cost_map_cost_table = navigation_extension:nav_cost_map_cost_table("charge")
 
 		AiUtils.initialize_nav_cost_map_cost_table(nav_cost_map_cost_table)
 
-		local charge_traverse_logic = GwNavTraverseLogic.create(blackboard.nav_world, nav_cost_map_cost_table)
+		local charge_traverse_logic = navigation_extension:get_reusable_traverse_logic("charge", nav_cost_map_cost_table)
 
 		GwNavTraverseLogic.set_navtag_layer_cost_table(charge_traverse_logic, navtag_layer_cost_table)
-
-		blackboard.charge_nav_cost_map_cost_table = nav_cost_map_cost_table
-		blackboard.charge_traverse_logic = charge_traverse_logic
-		blackboard.charge_navtag_layer_cost_table = navtag_layer_cost_table
 	end
 
 	blackboard.aggro_list = {}
@@ -88,11 +84,18 @@ AiBreedSnippets.on_beastmen_minotaur_spawn = function (unit, blackboard)
 end
 
 AiBreedSnippets.on_beastmen_minotaur_update = function (unit, blackboard, t)
-	local traverse_logic = blackboard.charge_traverse_logic or blackboard.navigation_extension:traverse_logic()
+	local traverse_logic
 
-	if traverse_logic and blackboard.charge_astar_data and not blackboard.charge_state and Unit.alive(blackboard.target_unit) then
-		local data = blackboard.charge_astar_data
-		local astar = data.astar
+	if blackboard.breed.use_charge_nav_layers then
+		local nav_cost_map_cost_table = blackboard.navigation_extension:nav_cost_map_cost_table("charge")
+
+		traverse_logic = blackboard.navigation_extension:get_reusable_traverse_logic("charge", nav_cost_map_cost_table)
+	else
+		traverse_logic = blackboard.navigation_extension:traverse_logic()
+	end
+
+	if traverse_logic and blackboard.charge_astar_timer and not blackboard.charge_state and Unit.alive(blackboard.target_unit) then
+		local astar = blackboard.navigation_extension:get_reusable_astar("charge", true)
 
 		if astar then
 			local done = GwNavAStar.processing_finished(astar)
@@ -106,12 +109,11 @@ AiBreedSnippets.on_beastmen_minotaur_update = function (unit, blackboard, t)
 					blackboard.has_valid_astar_path = false
 				end
 
-				GwNavAStar.destroy(astar)
+				blackboard.navigation_extension:destroy_reusable_astar("charge")
 
-				data.astar = nil
-				data.astar_timer = t + 1
+				blackboard.charge_astar_timer = t + 1
 			end
-		elseif t > data.astar_timer then
+		elseif t > blackboard.charge_astar_timer then
 			local nav_world = blackboard.nav_world
 			local target_position = POSITION_LOOKUP[blackboard.target_unit]
 			local success, z = GwNavQueries.triangle_from_position(nav_world, target_position, 1, 1)
@@ -119,14 +121,13 @@ AiBreedSnippets.on_beastmen_minotaur_update = function (unit, blackboard, t)
 			if success then
 				local wanted_position = Vector3(target_position[1], target_position[2], z)
 				local width = 7
-				local new_astar = GwNavAStar.create(nav_world)
+				local new_astar = blackboard.navigation_extension:get_reusable_astar("charge")
 
 				GwNavAStar.start_with_propagation_box(new_astar, nav_world, POSITION_LOOKUP[unit], wanted_position, width, traverse_logic)
 
-				data.astar = new_astar
-				data.astar_timer = t + 1
+				blackboard.charge_astar_timer = t + 1
 			else
-				data.astar_timer = t + 0.1
+				blackboard.charge_astar_timer = t + 0.1
 			end
 		end
 	end
@@ -134,87 +135,6 @@ end
 
 AiBreedSnippets.on_beastmen_minotaur_death = function (unit, blackboard, t)
 	print("minotaur died!")
-
-	local astar_data = blackboard.charge_astar_data
-
-	if astar_data and astar_data.astar then
-		local astar = astar_data.astar
-
-		if not GwNavAStar.processing_finished(astar) then
-			GwNavAStar.cancel(astar)
-			GwNavAStar.destroy(astar)
-		else
-			GwNavAStar.destroy(astar)
-		end
-	end
-
-	blackboard.charge_astar_data = nil
-
-	if blackboard.charge_navtag_layer_cost_table then
-		GwNavTagLayerCostTable.destroy(blackboard.charge_navtag_layer_cost_table)
-
-		blackboard.charge_navtag_layer_cost_table = nil
-	end
-
-	if blackboard.charge_nav_cost_map_cost_table then
-		GwNavCostMap.destroy_tag_cost_table(blackboard.charge_nav_cost_map_cost_table)
-
-		blackboard.charge_nav_cost_map_cost_table = nil
-	end
-
-	if blackboard.charge_traverse_logic then
-		GwNavTraverseLogic.destroy(blackboard.charge_traverse_logic)
-
-		blackboard.charge_traverse_logic = nil
-	end
-
-	if not blackboard.rewarded_boss_loot then
-		AiBreedSnippets.reward_boss_kill_loot(unit, blackboard)
-	end
-
-	local conflict_director = Managers.state.conflict
-
-	if blackboard.is_angry then
-		conflict_director:add_angry_boss(-1)
-	end
-
-	conflict_director:freeze_intensity_decay(1)
-	conflict_director:remove_unit_from_bosses(unit)
-end
-
-AiBreedSnippets.on_beastmen_minotaur_despawn = function (unit, blackboard, t)
-	local astar_data = blackboard.charge_astar_data
-
-	if astar_data and astar_data.astar then
-		local astar = astar_data.astar
-
-		if not GwNavAStar.processing_finished(astar) then
-			GwNavAStar.cancel(astar)
-			GwNavAStar.destroy(astar)
-		else
-			GwNavAStar.destroy(astar)
-		end
-	end
-
-	blackboard.charge_astar_data = nil
-
-	if blackboard.charge_navtag_layer_cost_table then
-		GwNavTagLayerCostTable.destroy(blackboard.charge_navtag_layer_cost_table)
-
-		blackboard.charge_navtag_layer_cost_table = nil
-	end
-
-	if blackboard.charge_nav_cost_map_cost_table then
-		GwNavCostMap.destroy_tag_cost_table(blackboard.charge_nav_cost_map_cost_table)
-
-		blackboard.charge_nav_cost_map_cost_table = nil
-	end
-
-	if blackboard.charge_traverse_logic then
-		GwNavTraverseLogic.destroy(blackboard.charge_traverse_logic)
-
-		blackboard.charge_traverse_logic = nil
-	end
 
 	if not blackboard.rewarded_boss_loot then
 		AiBreedSnippets.reward_boss_kill_loot(unit, blackboard)

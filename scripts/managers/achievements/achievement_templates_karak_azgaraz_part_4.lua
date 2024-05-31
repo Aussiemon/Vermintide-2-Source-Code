@@ -122,6 +122,12 @@ achievements.dwarf_barrel_kill = {
 		return statistics_db:get_persistent_stat(stats_id, "dwarf_barrel_kill") >= 1
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
+		local level_key = Managers.state.game_mode:level_key()
+
+		if not level_key or level_key ~= "dlc_dwarf_whaling" then
+			return
+		end
+
 		if not template_data.current_kills then
 			template_data.current_kills = 0
 		end

@@ -373,8 +373,8 @@ GameModeSettings.versus.party_names_lookup_by_id = {
 	"team_hammers",
 	"team_skulls",
 }
-GameModeSettings.versus.pre_start_round_duration = 15
-GameModeSettings.versus.initial_set_pre_start_duration = 60
+GameModeSettings.versus.pre_start_round_duration = 30
+GameModeSettings.versus.initial_set_pre_start_duration = 45
 GameModeSettings.versus.side_settings = {
 	heroes = {
 		observe_sides = {

@@ -8,6 +8,7 @@ ChaosTrollStateVomiting.init = function (self, character_state_init_context)
 	self._vomit_ability_id = self._career_extension:ability_id("vomit")
 	self.current_movement_speed_scale = 0
 	self.last_input_direction = Vector3Box(0, 0, 0)
+	self._vomit_ability_id = self._career_extension:ability_id("vomit")
 end
 
 ChaosTrollStateVomiting.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
@@ -58,7 +59,12 @@ ChaosTrollStateVomiting.update = function (self, unit, input, dt, context, t)
 
 	Debug.text("PUKE STATE: %s", state)
 
-	if state == "init" then
+	if state == "fail" then
+		self._career_extension:reduce_activated_ability_cooldown_percent(1, self._vomit_ability_id)
+		csm:change_state("standing")
+
+		return
+	elseif state == "init" then
 		if t > self._vomit_time then
 			local function safe_navigation_callback()
 				if ALIVE[self._unit] then
@@ -82,7 +88,7 @@ ChaosTrollStateVomiting.update = function (self, unit, input, dt, context, t)
 		if t > self._vomit_end_time then
 			self._state = "done"
 		end
-	elseif state == "done" or state == "fail" then
+	elseif state == "done" then
 		csm:change_state("standing")
 
 		return
@@ -163,8 +169,9 @@ ChaosTrollStateVomiting._init_puke_attack = function (self, unit, t)
 	local vomit_animation
 	local down_dot = Vector3.dot(puke_direction, Vector3.down())
 	local near_vomit_distance = 25
+	local near_vomit_max_angle = 0.45
 	local needs_to_crouch = false
-	local use_near_vomit = down_dot >= 0.35 and puke_distance_sq < near_vomit_distance and not needs_to_crouch
+	local use_near_vomit = near_vomit_max_angle <= down_dot and puke_distance_sq < near_vomit_distance and not needs_to_crouch
 
 	if use_near_vomit then
 		vomit_animation = "attack_vomit"
@@ -192,7 +199,7 @@ ChaosTrollStateVomiting.position_on_navmesh = function (position, nav_world, abo
 		position = Vector3.copy(position)
 		position.z = z
 	else
-		position = GwNavQueries.inside_position_from_outside_position(nav_world, position, 3, 3, 1, 1)
+		position = GwNavQueries.inside_position_from_outside_position(nav_world, position, 1, 4, 3, 0.5)
 	end
 
 	return position
@@ -227,7 +234,8 @@ ChaosTrollStateVomiting._get_vomit_position = function (self, unit)
 
 		rotation = Quaternion.forward(rotation)
 		pos_to_test = position + rotation * max_dist
-		below = 20
+		below = 30
+		above = 1.5
 	end
 
 	local puke_pos = self.position_on_navmesh(pos_to_test, self._nav_world, above, below)

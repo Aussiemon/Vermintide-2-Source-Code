@@ -87,8 +87,12 @@ PlayerUnitEnergyExtension.drain = function (self, amount)
 
 	local buff_extension = ScriptUnit.has_extension(self.unit, "buff_system")
 
-	if buff_extension and buff_extension:has_buff_perk("infinite_ammo") then
-		amount = 0
+	if buff_extension then
+		if buff_extension:has_buff_perk("infinite_ammo") then
+			amount = 0
+		end
+
+		amount = amount * buff_extension:apply_buffs_to_value(1, "ammo_used_multiplier")
 	end
 
 	local energy = self._energy

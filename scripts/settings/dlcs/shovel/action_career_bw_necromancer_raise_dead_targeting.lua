@@ -145,7 +145,7 @@ ActionCareerBWNecromancerRaiseDeadTargeting.finish = function (self, reason, dat
 
 	if reason == "new_interupting_action" and self._valid and data.new_sub_action == "spawn_summon_area" then
 		local target_center = self._spawn_data.target_center:unbox()
-		local buff_unit = self._unit_spawner:spawn_network_unit("units/hub_elements/empty", "buff_unit", self._buff_unit_params, target_center, Quaternion.identity(), nil)
+		local buff_unit = self._buff_extension:create_shared_lifetime_buff_unit(target_center)
 		local params = FrameTable.alloc_table()
 
 		params.source_attacker_unit = self._owner_unit

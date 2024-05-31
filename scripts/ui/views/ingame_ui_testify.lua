@@ -39,10 +39,9 @@ local IngameUITestify = {
 			return Testify.RETRY
 		end
 
-		local profile_index, career_index = party_selection_logic:get_random_available_character(party_data.available_characters)
+		local profile_index, career_index = party_selection_logic:get_random_available_character(party_data)
 
-		current_view:_select_character(party_id, nil, profile_index, career_index)
-		current_view:_change_profile(profile_index, career_index)
+		party_selection_logic:select_character(profile_index, career_index)
 	end,
 }
 

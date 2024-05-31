@@ -90,6 +90,7 @@ VersusOnboardingUI._populate_help_widget_info = function (self, profile_settings
 	local content = widget.content
 	local style = widget.style
 	local abilities_string = ""
+	local gamepad_active = self._input_manager:is_device_active("gamepad")
 
 	for i = 1, 2 do
 		local info = info_settings[i]
@@ -101,7 +102,7 @@ VersusOnboardingUI._populate_help_widget_info = function (self, profile_settings
 				local input_action = info.keybind
 
 				if input_action then
-					input_str = self._gamepad_active and " $KEY;Player__" .. input_action .. ": " or "{#color(193,91,36)}[" .. input_action .. "]{#reset()} : "
+					input_str = gamepad_active and " $KEY;Player__" .. input_action .. ": " or "{#color(193,91,36)}[" .. input_action .. "]{#reset()} : "
 				end
 
 				content["ability_" .. i .. "_icon"] = info.icon
@@ -110,7 +111,7 @@ VersusOnboardingUI._populate_help_widget_info = function (self, profile_settings
 			else
 				local input_action
 
-				input_action = self._gamepad_active and info.gamepad_input or info.input_action
+				input_action = gamepad_active and info.gamepad_input or info.input_action
 
 				if input_action then
 					local str = " $KEY;Player__" .. input_action .. ":"

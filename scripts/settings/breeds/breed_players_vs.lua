@@ -196,6 +196,7 @@ vs_warpfire_thrower.shoot_warpfire_long_attack_damage = {
 	3,
 	3,
 }
+vs_warpfire_thrower.armor_category = 1
 vs_gutter_runner.max_stagger_duration = 0.4
 vs_warpfire_thrower.diff_stagger_resist = nil
 vs_warpfire_thrower.stagger_resistance = 5

@@ -120,7 +120,7 @@ ActivatedAbilitySettings.vs_warpfire_thrower = {
 }
 ActivatedAbilitySettings.vs_chaos_troll = {
 	{
-		cooldown = 12,
+		cooldown = 24,
 		description = "career_active_desc_dr_2_2",
 		display_name = "career_active_name_dr_2",
 		icon = "bardin_slayer_activated_ability",

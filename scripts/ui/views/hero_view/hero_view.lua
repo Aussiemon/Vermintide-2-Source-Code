@@ -297,6 +297,7 @@ HeroView.on_enter = function (self, params)
 	self:set_current_hero(profile_index)
 
 	self.waiting_for_post_update_enter = true
+	self._loadout_dirty = false
 	self._on_enter_transition_params = params
 
 	Managers.music:duck_sounds()
@@ -535,12 +536,20 @@ HeroView.on_exit = function (self)
 	if not self._is_in_tutorial and self._loadout_dirty then
 		local force_respawn = true
 
-		self._profile_requester:request_profile(self._peer_id, self._local_player_id, self._profile_name, self._career_name, force_respawn)
+		self._loadout_dirty = false
+
+		if Managers.state.network:game() then
+			self._profile_requester:request_profile(self._peer_id, self._local_player_id, self._profile_name, self._career_name, force_respawn)
+		end
 	end
 end
 
 HeroView.set_loadout_dirty = function (self)
 	self._loadout_dirty = true
+end
+
+HeroView.is_loadout_dirty = function (self)
+	return self._loadout_dirty
 end
 
 HeroView._handle_view_popups = function (self)

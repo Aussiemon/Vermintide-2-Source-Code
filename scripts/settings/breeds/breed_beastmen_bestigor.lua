@@ -162,8 +162,6 @@ local breed_data = {
 	end,
 	run_on_spawn = AiBreedSnippets.on_beastmen_bestigor_spawn,
 	run_on_update = AiBreedSnippets.on_beastmen_bestigor_update,
-	run_on_death = AiBreedSnippets.on_beastmen_bestigor_death,
-	run_on_despawn = AiBreedSnippets.on_beastmen_bestigor_death,
 	hitzone_multiplier_types = {
 		head = "headshot",
 	},

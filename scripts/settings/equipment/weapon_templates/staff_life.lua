@@ -594,9 +594,6 @@ weapon_template.tooltip_detail = {
 		action_name = "action_one",
 	},
 }
-weapon_template.wwise_dep_right_hand = {
-	"wwise/staff",
-}
 
 local staff_life_vs = table.clone(weapon_template)
 

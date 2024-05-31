@@ -1479,6 +1479,7 @@ weapon_template.state_machine = "units/beings/player/first_person_base/state_mac
 weapon_template.weapon_type = "POLEARM"
 weapon_template.default_projectile_action = weapon_template.actions.action_one.default
 weapon_template.dodge_count = 6
+weapon_template.destroy_indexed_projectiles = true
 weapon_template.buffs = {
 	change_dodge_distance = {
 		external_optional_multiplier = 1.2,

@@ -78,7 +78,7 @@ VersusPartyCharSelectionView.on_enter = function (self, params)
 	self._params = params
 	self._prev_timer_value = 0
 
-	self:play_sound("mute_all_world_sounds")
+	self:play_sound("vs_mute_all")
 	self:play_sound("menu_versus_character_amb_loop_start")
 
 	if IS_WINDOWS and not Window.has_focus() then
@@ -95,16 +95,6 @@ VersusPartyCharSelectionView._setup_roster_widgets_definitions = function (self)
 	self._hero_roster_detail_widgets_defs = hero_roster_detail_widgets_defs
 end
 
-VersusPartyCharSelectionView._select_character = function (self, party_id, temp, profile_index, career_index)
-	self._party_selection_logic:select_character(profile_index, career_index)
-
-	local peer_id = self._player:network_id()
-	local local_player_id = self._player:local_player_id()
-
-	self._profile_synchronizer:resync_loadout(peer_id, local_player_id)
-	CosmeticUtils.sync_local_player_cosmetics(self._player, profile_index, career_index)
-end
-
 VersusPartyCharSelectionView._is_hovering_item = function (self, profile_index, career_index)
 	return self._hovered_profile_index == profile_index and self._hovered_career_index == career_index
 end
@@ -116,12 +106,6 @@ VersusPartyCharSelectionView._set_item_hovered = function (self, peer_id, local_
 	self._hovered_career_index = career_index
 
 	self._party_selection_logic:sync_hovered_item(peer_id, local_player_id, profile_index, career_index)
-end
-
-VersusPartyCharSelectionView._change_profile = function (self, profile_index, career_index)
-	local profile = SPProfiles[profile_index]
-
-	self._profile_requester:request_profile(self._peer_id, 1, profile.display_name, profile.careers[career_index].display_name, true)
 end
 
 VersusPartyCharSelectionView.on_exit = function (self)
@@ -145,7 +129,7 @@ VersusPartyCharSelectionView.on_exit = function (self)
 	self.super.on_exit(self)
 
 	if not Managers.state.game_mode:setting("display_parading_view") then
-		self:play_sound("unmute_all_world_sounds")
+		self:play_sound("vs_unmute_reset_all")
 	end
 
 	self:play_sound("menu_versus_character_amb_loop_stop")
@@ -186,7 +170,7 @@ VersusPartyCharSelectionView._update_hero_picking_progress = function (self, par
 		local profile_index = status.selected_profile_index or 0
 		local career_index = status.selected_career_index or 0
 
-		if not picking_progress_data.has_picked and player_data.state == "player_has_picked_character" then
+		if not picking_progress_data.has_picked and player_data.state == "player_has_picked_character" and profile_index > 0 then
 			picking_progress_data.has_picked = true
 
 			local character_taken = false
@@ -1064,12 +1048,8 @@ VersusPartyCharSelectionView._handle_gamepad_selection = function (self)
 		if not current_content.taken and not current_content.other_picking and not current_content.locked then
 			local profile_index = current_content.profile_index
 			local career_index = current_content.career_index
-			local status = self._status
-			local party_id = self._party.party_id
-			local locked_in_character = false
 
-			self:_select_character(party_id, status.slot_id, profile_index, career_index)
-			self:_change_profile(profile_index, career_index)
+			self._party_selection_logic:select_character(profile_index, career_index)
 			self:play_sound("Play_hud_select")
 		end
 	end
@@ -1135,12 +1115,8 @@ VersusPartyCharSelectionView._handle_mouse_selection = function (self)
 					if button_hotspot.on_pressed and is_picking then
 						local profile_index = self._profile_indices[i]
 						local career_index = j
-						local status = self._status
-						local party_id = self._party.party_id
-						local locked_in_character = false
 
-						self:_select_character(party_id, status.slot_id, profile_index, career_index)
-						self:_change_profile(profile_index, career_index)
+						self._party_selection_logic:select_character(profile_index, career_index)
 						self:play_sound("Play_hud_select")
 
 						return

@@ -828,12 +828,24 @@ end
 
 DeusShopView._on_blessing_bought = function (self, blessing_name)
 	self._deus_run_controller:shop_buy_blessing(blessing_name)
-	table.insert(self._telemetry_data.purchased_blessings, blessing_name)
+
+	local cost = DeusCostSettings.shop.blessings[blessing_name]
+
+	table.insert(self._telemetry_data.purchased_blessings, {
+		name = blessing_name,
+		cost = cost,
+	})
 end
 
 DeusShopView._on_power_up_bought = function (self, power_up, discount)
 	self._deus_run_controller:shop_buy_power_up(power_up, discount)
-	table.insert(self._telemetry_data.purchased_boons, power_up.name)
+
+	local cost = self:_get_power_up_costs(power_up.rarity, discount)
+
+	table.insert(self._telemetry_data.purchased_boons, {
+		name = power_up.name,
+		cost = cost,
+	})
 end
 
 DeusShopView._handle_input = function (self, dt, t)

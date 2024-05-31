@@ -147,14 +147,13 @@ CameraStateObserver._set_observed_unit = function (self, observed_unit, observed
 	player:set_observed_unit(observed_unit)
 
 	if not self._is_server then
-		local local_player = Managers.player:local_player()
-		local local_player_go_id = local_player.game_object_id
+		local local_player_id = player:local_player_id()
 		local observed_unit_id, is_level_unit = Managers.state.network:game_object_or_level_id(observed_unit)
 
 		observed_unit_id = observed_unit_id or NetworkConstants.invalid_game_object_id
 		is_level_unit = not not is_level_unit
 
-		self._network_transmit:send_rpc_server("rpc_set_observed_unit", local_player_go_id, observed_unit_id, is_level_unit)
+		self._network_transmit:send_rpc_server("rpc_set_observed_unit", local_player_id, observed_unit_id, is_level_unit)
 	end
 
 	return true

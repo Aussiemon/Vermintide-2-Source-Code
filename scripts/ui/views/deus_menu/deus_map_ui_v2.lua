@@ -60,6 +60,23 @@ DeusMapUI._create_ui_elements = function (self)
 			local frame_settings_name = self._deus_run_controller:get_player_frame(peers[i], profile_index, career_index)
 
 			widget_definition = UIWidgets.deus_create_player_portraits_frame("player_" .. i .. "_portrait", frame_settings_name, level_text, false)
+
+			local server_peer_id = self._deus_run_controller:get_server_peer_id()
+
+			if peers[i] == server_peer_id then
+				local host_icon_widget_def = UIWidgets.create_simple_texture("host_icon", "player_" .. i .. "_portrait", nil, nil, nil, {
+					-60,
+					-8,
+					10,
+				}, {
+					40,
+					40,
+				})
+				local host_icon_widget = UIWidget.init(host_icon_widget_def)
+
+				widgets_by_name.host_icon = host_icon_widget
+				widgets[#widgets + 1] = host_icon_widget
+			end
 		else
 			widget_definition = UIWidgets.deus_create_player_portraits_frame("player_" .. i .. "_portrait", "default", " ", false)
 		end

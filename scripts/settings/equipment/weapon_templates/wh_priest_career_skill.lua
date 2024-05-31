@@ -266,9 +266,6 @@ weapon_template.buffs = {
 }
 weapon_template.particle_fx = {}
 weapon_template.particle_fx_lookup = table.mirror_array_inplace(table.keys(weapon_template.particle_fx))
-weapon_template.wwise_dep_left_hand = {
-	"wwise/two_handed_swords",
-}
 
 return {
 	wh_priest_career_skill_weapon = table.clone(weapon_template),

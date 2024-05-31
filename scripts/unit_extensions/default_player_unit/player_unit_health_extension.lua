@@ -341,6 +341,18 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 				end
 
 				if temporary_health > 0 and state == "alive" then
+					local mechanism = Managers.mechanism:current_mechanism_name()
+
+					if mechanism == "versus" then
+						local vs_multiplier = {
+							degen_amount = 1.5,
+							degen_delay = 0.8,
+						}
+
+						degen_amount = PlayerUnitStatusSettings.WOUNDED_DEGEN_AMOUNT * vs_multiplier.degen_amount
+						degen_delay = PlayerUnitStatusSettings.WOUNDED_DEGEN_DELAY * vs_multiplier.degen_delay
+					end
+
 					local new_temporary_health = temporary_health - degen_amount
 					local min_temporary_health_left = health <= 0 and 1 or 0
 					local damage = temporary_health - math.max(new_temporary_health, min_temporary_health_left)
@@ -620,17 +632,19 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 	local min_health = buff_extension:has_buff_perk("ignore_death") and 1 or 0
 
 	if damage_source_name ~= "dot_debuff" and damage_type ~= "temporary_health_degen" and damage_type ~= "overcharge" then
+		local is_enemy = Managers.state.side:is_enemy(source_attacker_unit, unit)
+		local is_player_enemy = is_enemy and DamageUtils.is_player_unit(source_attacker_unit)
+
+		if is_player_enemy then
+			EffectHelper.vs_play_hit_sound(self._world, unit, attack_type, damage_type, damage_source_name)
+		end
+
 		local ai_inventory_extension = ScriptUnit.has_extension(attacker_unit, "ai_inventory_system")
 
 		if ai_inventory_extension then
 			ai_inventory_extension:play_hit_sound(unit, damage_type)
 		elseif not self._is_husk then
-			local is_enemy = Managers.state.side:is_enemy(source_attacker_unit, unit)
-			local is_player_enemy = is_enemy and DamageUtils.is_player_unit(source_attacker_unit)
-
 			if is_player_enemy then
-				EffectHelper.vs_play_hit_sound(self._world, unit, attack_type, damage_type, damage_source_name)
-
 				local profile = SPProfiles[self._profile_index]
 
 				if HEALTH_ALIVE[unit] then
@@ -654,27 +668,29 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 
 			first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ironbreaker_hit")
 		end
-	elseif damage_source_name == "dot_debuff" and not self._is_husk then
+	elseif damage_source_name == "dot_debuff" then
 		local is_enemy = Managers.state.side:is_enemy(source_attacker_unit, unit)
 		local is_player_enemy = is_enemy and DamageUtils.is_player_unit(source_attacker_unit)
 
 		if is_player_enemy then
 			EffectHelper.vs_play_hit_sound(self._world, unit, attack_type, damage_type, damage_source_name)
 
-			local profile = SPProfiles[self._profile_index]
+			if not self._is_husk then
+				local profile = SPProfiles[self._profile_index]
 
-			if HEALTH_ALIVE[unit] then
-				local camera_manager = Managers.state.camera
+				if HEALTH_ALIVE[unit] then
+					local camera_manager = Managers.state.camera
 
-				if profile.role == "boss" then
-					camera_manager:camera_effect_shake_event("damaged_boss", Managers.time:time("game"), 2)
-				elseif profile.role ~= "boss" then
-					camera_manager:camera_effect_shake_event("damaged", Managers.time:time("game"), 2)
+					if profile.role == "boss" then
+						camera_manager:camera_effect_shake_event("damaged_boss", Managers.time:time("game"), 2)
+					elseif profile.role ~= "boss" then
+						camera_manager:camera_effect_shake_event("damaged", Managers.time:time("game"), 2)
+					end
 				end
 			end
 		end
 
-		if is_enemy then
+		if is_enemy and not self._is_husk then
 			EffectHelper.play_local_damage_taken_sound(self._world, unit, damage_source_name)
 		end
 	end

@@ -1946,8 +1946,11 @@ end
 StoreWindowItemPreview._get_can_wield_display_text = function (self, can_wield)
 	local hero_text = ""
 	local career_text = ""
+	local can_wield_all = table.compare(can_wield, CanWieldAllItemTemplates)
 
-	if can_wield then
+	if can_wield_all then
+		hero_text = Localize("store_can_be_wielded_by_all")
+	elseif can_wield then
 		local added_heroes = 0
 		local added_careers = 0
 

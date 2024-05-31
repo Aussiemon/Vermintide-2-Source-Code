@@ -1759,15 +1759,8 @@ PlayFabMirrorBase.add_loadout = function (self, career_name)
 	local selected_loadout_index, loadouts = self:get_career_loadouts(career_name)
 	local current_loadout = loadouts[selected_loadout_index]
 	local num_loadouts = #loadouts
-	local max_num_loadouts = 0
 
-	for _, loadout_data in ipairs(InventorySettings.loadouts) do
-		if loadout_data.loadout_type == "custom" then
-			max_num_loadouts = max_num_loadouts + 1
-		end
-	end
-
-	if num_loadouts < max_num_loadouts then
+	if num_loadouts < InventorySettings.MAX_NUM_CUSTOM_LOADOUTS then
 		local profile = PROFILES_BY_CAREER_NAMES[career_name]
 		local profile_index = profile.index
 		local profile_name = profile.display_name

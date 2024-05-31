@@ -252,6 +252,8 @@ WarpfireThrowerStateFiring._update_warpfire_attack = function (self, unit, t, dt
 
 		blackboard.close_attack_cooldown = t + warpfire_data.close_attack_cooldown
 	end
+
+	Managers.state.event:trigger("on_warpfire_thrower_ammo_changed", self._unit, self._current_flame_time)
 end
 
 local debug_draw = false

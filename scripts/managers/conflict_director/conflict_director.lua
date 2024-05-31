@@ -350,6 +350,24 @@ ConflictDirector.destroy = function (self)
 	if self.breed_freezer then
 		self.breed_freezer:destroy()
 	end
+
+	local main_path_player_info = self.main_path_player_info
+
+	if main_path_player_info then
+		for player_unit, data in pairs(main_path_player_info) do
+			local astar = data.astar
+
+			if astar then
+				if not GwNavAStar.processing_finished(astar) then
+					GwNavAStar.cancel(astar)
+				end
+
+				GwNavAStar.destroy(astar)
+
+				data.astar = nil
+			end
+		end
+	end
 end
 
 ConflictDirector.get_player_unit_segment = function (self, player_unit)

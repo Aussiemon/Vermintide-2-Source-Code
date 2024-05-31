@@ -754,7 +754,7 @@ UISettings.slot_icons = {
 }
 UISettings.item_type_store_icons = {
 	bundle = "store_tag_icon_bundle",
-	frame = "store_tag_icon_skin",
+	frame = "store_tag_icon_portrait_frame",
 	hat = "store_tag_icon_hat",
 	skin = "store_tag_icon_skin",
 	weapon_skin = "store_tag_icon_weapon",

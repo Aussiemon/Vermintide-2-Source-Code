@@ -16,7 +16,7 @@ VersusInteractObjectiveExtension._activate = function (self, game_object_id, obj
 end
 
 VersusInteractObjectiveExtension._server_update = function (self, dt, t)
-	if self._percentage < 1 and self._interactable_ext.interaction_result == self._wanted_interaction_result then
+	if self._percentage < 1 and self._interactable_extension.interaction_result == self._wanted_interaction_result then
 		self._percentage = 1
 
 		self:set_game_object_field("value", self._percentage * 100)
@@ -39,4 +39,8 @@ end
 
 VersusInteractObjectiveExtension.get_percentage_done = function (self)
 	return self._percentage
+end
+
+VersusInteractObjectiveExtension._deactivate = function (self)
+	return
 end

@@ -37,8 +37,11 @@ BTLootRatFleeAction.enter = function (self, unit, blackboard, t)
 	end
 
 	if not blackboard.flee_astar_data then
-		local astar = GwNavAStar.create()
 		local navigation_extension = blackboard.navigation_extension
+
+		blackboard.astar_id = "flee_astar"
+
+		local astar = navigation_extension:get_reusable_astar(blackboard.astar_id)
 		local traverse_logic = navigation_extension:traverse_logic()
 
 		blackboard.flee_astar_data = {

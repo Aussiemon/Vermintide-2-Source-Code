@@ -159,7 +159,7 @@ if has_steam and not disable_voip or DEDICATED_SERVER then
 
 			if not party then
 				print("not assigned any party yet")
-				cprintf("cant add %s to VOIP room, beacuse they dont have a party", peer_id)
+				cprintf("[Voip:vs_add_client_to_voip_room] cant add %s to VOIP room, beacuse they dont have a party", peer_id)
 
 				return
 			end
@@ -250,7 +250,7 @@ if has_steam and not disable_voip or DEDICATED_SERVER then
 
 		if mechanism.name == "Versus" and not Managers.mechanism:get_state() == "inn" or not room_id then
 			print("not assigned any party yet")
-			cprintf("cant add %s to VOIP room, beacuse they dont have a party", peer_id)
+			cprintf("[Voip:rpc_voip_room_request] cant add %s to VOIP room, beacuse they dont have a party", peer_id)
 
 			return
 		end
@@ -275,14 +275,18 @@ if has_steam and not disable_voip or DEDICATED_SERVER then
 		if self.room_id then
 			voip_warning_print("[VOIP] Received rpc 'rpc_voip_room_to_join' from host %s but we're already in a room.", peer_id)
 		else
-			voip_info_print("[VOIP] Joining room %s (host %q) as client.", room_id, peer_id)
-
 			self.room_id = room_id
 			self.room_host = peer_id
 
-			local voip_client = SteamVoip.join_room(peer_id, room_id)
+			if self._enabled and not DEDICATED_SERVER then
+				voip_info_print("[VOIP] Joining room %s (host %q) as client.", room_id, peer_id)
 
-			self.voip_client = voip_client
+				local voip_client = SteamVoip.join_room(peer_id, room_id)
+
+				self.voip_client = voip_client
+			else
+				voip_info_print("Couldn't join room because I have voip disabled")
+			end
 		end
 	end
 
@@ -358,17 +362,17 @@ if has_steam and not disable_voip or DEDICATED_SERVER then
 
 					self.added_members[peer_id] = nil
 				end
-			end
 
-			if self.push_to_talk then
-				local input_service = Managers.input:get_service("chat_input")
-				local push_to_talk_active = not not input_service:get("voip_push_to_talk")
+				if self.push_to_talk then
+					local input_service = Managers.input:get_service("chat_input")
+					local push_to_talk_active = not not input_service:get("voip_push_to_talk")
 
-				if push_to_talk_active ~= self.push_to_talk_active then
-					self.push_to_talk_active = push_to_talk_active
+					if push_to_talk_active ~= self.push_to_talk_active then
+						self.push_to_talk_active = push_to_talk_active
 
-					for index, member_peer_id in pairs(SteamVoipClient.members(self.voip_client)) do
-						SteamVoipClient.select_out(self.voip_client, push_to_talk_active, member_peer_id)
+						for index, member_peer_id in pairs(SteamVoipClient.members(self.voip_client)) do
+							SteamVoipClient.select_out(self.voip_client, push_to_talk_active, member_peer_id)
+						end
 					end
 				end
 			end

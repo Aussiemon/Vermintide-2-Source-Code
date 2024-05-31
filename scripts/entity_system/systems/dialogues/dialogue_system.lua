@@ -1699,7 +1699,8 @@ DialogueSystem.rpc_play_dialogue_event = function (self, channel_id, go_id, is_l
 	if ignore_dialogue then
 		dialogue.currently_playing_subtitle = ""
 	else
-		local ignore_subtitles = not is_ally
+		local owned_by_player = Managers.player:owner(dialogue_actor_unit)
+		local ignore_subtitles = owned_by_player and not is_ally
 
 		if ignore_subtitles then
 			dialogue.currently_playing_subtitle = ""

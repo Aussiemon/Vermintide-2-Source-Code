@@ -4057,7 +4057,7 @@ local mutator_pass_styles = {
 			word_wrap = true,
 			area_size = {
 				540,
-				100,
+				90,
 			},
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			line_colors = {
@@ -4074,7 +4074,7 @@ local mutator_pass_styles = {
 			word_wrap = true,
 			area_size = {
 				540,
-				100,
+				90,
 			},
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			offset = {

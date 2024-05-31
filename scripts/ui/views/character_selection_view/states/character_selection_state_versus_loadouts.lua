@@ -2,6 +2,8 @@
 
 local definitions = local_require("scripts/ui/views/character_selection_view/states/definitions/character_selection_state_versus_loadouts_definitions")
 local widget_definitions = definitions.widget_definitions
+local loadout_widgets_definitions = definitions.loadout_widgets_definitions
+local loadout_selection_widget_definitions = definitions.loadout_selection_widget_definitions
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local hero_icon_widget_definition = definitions.hero_icon_widget
@@ -13,6 +15,7 @@ local tag_widget_func = definitions.tag_widget_func
 local loadout_button_widget_definitions = definitions.loadout_button_widget_definitions
 local console_cursor_definition = definitions.console_cursor_definition
 local generic_input_actions = definitions.generic_input_actions
+local EMPTY_TABLE = {}
 
 CharacterSelectionStateVersusLoadouts = class(CharacterSelectionStateVersusLoadouts, CharacterSelectionStateCharacter)
 CharacterSelectionStateVersusLoadouts.NAME = "CharacterSelectionStateVersusLoadouts"
@@ -58,19 +61,24 @@ CharacterSelectionStateVersusLoadouts.on_enter = function (self, params)
 
 	self._career_index = career_index
 	self._profile_index = profile_index
+	self._hero_name = hero_name
 
 	local profile = SPProfiles[self._profile_index]
 	local career_data = profile.careers[self._career_index]
 	local career_name = career_data.name
 
+	self._career_name = career_name
 	self._render_settings = {
+		snap_pixel_positions = false,
+	}
+	self._loadout_selection_render_settings = {
 		snap_pixel_positions = false,
 	}
 	self._animations = {}
 	self._ui_animations = {}
 
-	self:_create_ui_elements(params)
 	self:_store_selected_loadout_index(career_name)
+	self:_create_ui_elements(params)
 	self:_setup_rarity_indices()
 	self:_start_animation("on_enter")
 
@@ -78,6 +86,7 @@ CharacterSelectionStateVersusLoadouts.on_enter = function (self, params)
 		local force_update = true
 
 		self:_select_hero(self._profile_index, self._career_index, true, nil, force_update)
+		self:_disable_unused_careers()
 	end
 
 	self.parent:set_input_blocked(false)
@@ -89,6 +98,18 @@ CharacterSelectionStateVersusLoadouts.on_enter = function (self, params)
 	self._menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.ui_top_renderer, input_description_input_service, 6, gui_layer, generic_input_actions.default, true)
 
 	self._menu_input_description:set_input_description(nil)
+end
+
+CharacterSelectionStateVersusLoadouts._disable_unused_careers = function (self)
+	for career_index, widget in ipairs(self._hero_widgets) do
+		local content = widget.content
+
+		content.locked = career_index ~= self._selected_career_index
+
+		local button_hotspot = content.button_hotspot
+
+		button_hotspot.disable_button = career_index ~= self._selected_career_index
+	end
 end
 
 CharacterSelectionStateVersusLoadouts.on_exit = function (self, params)
@@ -159,7 +180,28 @@ CharacterSelectionStateVersusLoadouts._create_ui_elements = function (self)
 	end
 
 	self._widgets = widgets
-	self._widgets_by_name = widgets_by_name
+
+	local widgets = {}
+
+	for name, widget_definition in pairs(loadout_widgets_definitions) do
+		local widget = UIWidget.init(widget_definition)
+
+		widgets_by_name[name] = widget
+		widgets[#widgets + 1] = widget
+	end
+
+	self._loadout_widgets = widgets
+
+	local widgets = {}
+
+	for name, widget_definition in pairs(loadout_selection_widget_definitions) do
+		local widget = UIWidget.init(widget_definition)
+
+		widgets_by_name[name] = widget
+		widgets[#widgets + 1] = widget
+	end
+
+	self._loadout_selection_widgets = widgets
 
 	local info_window_widgets = {}
 
@@ -182,6 +224,7 @@ CharacterSelectionStateVersusLoadouts._create_ui_elements = function (self)
 	end
 
 	self._loadout_button_widgets = loadout_button_widgets
+	self._widgets_by_name = widgets_by_name
 	self._console_cursor = UIWidget.init(console_cursor_definition)
 	self._additional_widgets = {}
 	self._additional_widgets_by_name = {}
@@ -197,12 +240,73 @@ CharacterSelectionStateVersusLoadouts._create_ui_elements = function (self)
 	end
 
 	fassert(self._default_loadout_index, "[CharacterSelectionStateVersusLoadouts] There is no custom loadout slots in InventorySettings.loadouts")
+	self:_setup_item_grid()
 	self:_populate_hero_info()
 	self:_populate_career_info()
 	self:_populate_loadout()
 	self:_populate_loadout_buttons()
 	self:_setup_hero_widgets()
 	self:_populate_tags()
+end
+
+CharacterSelectionStateVersusLoadouts._setup_item_grid = function (self)
+	self:_setup_item_grid_categories()
+
+	local item_grid = ItemGridUI:new(self._categories, self._widgets_by_name.item_grid, self._hero_name, self._career_index)
+
+	item_grid:mark_equipped_items(true)
+	item_grid:mark_locked_items(true)
+	item_grid:disable_locked_items(true)
+	item_grid:disable_unwieldable_items(true)
+	item_grid:disable_item_drag()
+	item_grid:change_category("slot_ranged")
+
+	self._item_grid = item_grid
+end
+
+CharacterSelectionStateVersusLoadouts._setup_item_grid_categories = function (self)
+	local career_index = self._career_index
+	local profile_index = self._profile_index
+	local profile = SPProfiles[profile_index]
+	local careers = profile.careers
+	local career = careers[career_index]
+	local item_slot_types_by_slot_name = career.item_slot_types_by_slot_name
+	local item_slot_types_by_slot_name = {
+		slot_melee = item_slot_types_by_slot_name.slot_melee,
+		slot_ranged = item_slot_types_by_slot_name.slot_ranged,
+	}
+
+	self._categories = {}
+
+	for slot_name, slot_types in pairs(item_slot_types_by_slot_name) do
+		local slot = InventorySettings.slots_by_name[slot_name]
+		local ui_slot_index = slot.ui_slot_index
+
+		if ui_slot_index then
+			local item_filter = "( "
+
+			for index, slot_type in ipairs(slot_types) do
+				item_filter = item_filter .. "slot_type == " .. slot_type
+
+				if index < #slot_types then
+					item_filter = item_filter .. " or "
+				else
+					item_filter = item_filter .. " ) and item_rarity ~= magic and can_wield_by_current_career"
+				end
+			end
+
+			local category = {
+				hero_specific_filter = true,
+				name = slot_name,
+				item_types = slot_types,
+				slot_index = ui_slot_index,
+				slot_name = slot_name,
+				item_filter = item_filter,
+			}
+
+			self._categories[ui_slot_index] = category
+		end
+	end
 end
 
 CharacterSelectionStateVersusLoadouts._setup_hero_widgets = function (self)
@@ -295,9 +399,9 @@ CharacterSelectionStateVersusLoadouts._populate_hero_info = function (self)
 	hero_level_widget.content.text = level
 end
 
-CharacterSelectionStateVersusLoadouts._start_animation = function (self, animation_name)
+CharacterSelectionStateVersusLoadouts._start_animation = function (self, animation_name, render_settings)
 	local params = {
-		render_settings = self._render_settings,
+		render_settings = render_settings or self._render_settings,
 		ui_scenegraph = self._ui_scenegraph,
 	}
 	local widgets = self._widgets_by_name
@@ -336,6 +440,64 @@ CharacterSelectionStateVersusLoadouts._update_animations = function (self, dt, t
 	local confirm_button_widget = self._widgets_by_name.confirm_button
 
 	UIWidgetUtils.animate_default_button(confirm_button_widget, dt)
+
+	if self._loadout_selection_active then
+		local back_button_widget = self._widgets_by_name.back_button
+
+		self:_animate_back_button(back_button_widget, dt)
+	end
+end
+
+CharacterSelectionStateVersusLoadouts._animate_back_button = function (self, widget, dt)
+	local content = widget.content
+	local style = widget.style
+	local hotspot = content.button_hotspot
+	local is_hover = hotspot.is_hover
+	local is_selected = hotspot.is_selected
+	local input_pressed = not is_selected and hotspot.is_clicked and hotspot.is_clicked == 0
+	local input_progress = hotspot.input_progress or 0
+	local hover_progress = hotspot.hover_progress or 0
+	local selection_progress = hotspot.selection_progress or 0
+	local speed = 8
+	local input_speed = 20
+
+	if input_pressed then
+		input_progress = math.min(input_progress + dt * input_speed, 1)
+	else
+		input_progress = math.max(input_progress - dt * input_speed, 0)
+	end
+
+	local input_easing_out_progress = math.easeOutCubic(input_progress)
+	local input_easing_in_progress = math.easeInCubic(input_progress)
+
+	if is_hover then
+		hover_progress = math.min(hover_progress + dt * speed, 1)
+	else
+		hover_progress = math.max(hover_progress - dt * speed, 0)
+	end
+
+	local hover_easing_out_progress = math.easeOutCubic(hover_progress)
+	local hover_easing_in_progress = math.easeInCubic(hover_progress)
+
+	if is_selected then
+		selection_progress = math.min(selection_progress + dt * speed, 1)
+	else
+		selection_progress = math.max(selection_progress - dt * speed, 0)
+	end
+
+	local select_easing_out_progress = math.easeOutCubic(selection_progress)
+	local select_easing_in_progress = math.easeInCubic(selection_progress)
+	local combined_progress = math.max(hover_progress, selection_progress)
+	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
+	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
+	local hover_alpha = 255 * combined_progress
+
+	style.texture_id.color[1] = 255 - hover_alpha
+	style.texture_hover_id.color[1] = hover_alpha
+	style.selected_texture.color[1] = hover_alpha
+	hotspot.hover_progress = hover_progress
+	hotspot.input_progress = input_progress
+	hotspot.selection_progress = selection_progress
 end
 
 CharacterSelectionStateVersusLoadouts.post_update = function (self, dt, t)
@@ -374,6 +536,26 @@ CharacterSelectionStateVersusLoadouts._handle_spawn = function (self, dt, t)
 		self._despawning_player_unit_career_change = nil
 		self._resyncing_loadout = nil
 
+		self.parent:close_menu()
+	end
+end
+
+CharacterSelectionStateVersusLoadouts._close_menu = function (self)
+	local exit_button_widget = self._parent:get_exit_button_widget()
+	local loadout_changed = false
+
+	loadout_changed = loadout_changed or self._items_dirty
+	loadout_changed = loadout_changed or self._talents_dirty
+
+	if loadout_changed or self._loadout_selection_changed then
+		if self._loadout_selection_active then
+			self:_enable_loadout_selection(false)
+		end
+
+		self:_confirm_loadout()
+
+		exit_button_widget.content.button_hotspot.on_release = nil
+	else
 		self.parent:close_menu()
 	end
 end
@@ -443,13 +625,27 @@ CharacterSelectionStateVersusLoadouts._handle_keyboard_selection = function (sel
 		end
 	elseif input_service:get("confirm") then
 		self:_confirm_loadout()
-	elseif input_service:get("back", true) then
-		self.parent:close_menu()
+	elseif input_service:get("toggle_menu", true) or input_service:get("back", true) then
+		if self._loadout_selection_active then
+			self:_enable_loadout_selection(false)
+		else
+			self:_close_menu()
+		end
 	end
 end
 
 CharacterSelectionStateVersusLoadouts._handle_gamepad_selection = function (self, input_service)
 	if not Managers.input:is_device_active("gamepad") then
+		return
+	end
+
+	if input_service:get("toggle_menu", true) or input_service:get("back", true) then
+		if self._loadout_selection_active then
+			self:_enable_loadout_selection(false)
+		else
+			self:_close_menu()
+		end
+
 		return
 	end
 
@@ -461,6 +657,10 @@ CharacterSelectionStateVersusLoadouts._handle_gamepad_selection = function (self
 			local loadout_button_widget = self._loadout_button_widgets[new_loadout_index]
 
 			if loadout_button_widget.content.visible then
+				if self._loadout_selection_active then
+					self:_enable_loadout_selection(false)
+				end
+
 				self:_change_loadout(new_loadout_index)
 			end
 		end
@@ -472,28 +672,98 @@ CharacterSelectionStateVersusLoadouts._handle_gamepad_selection = function (self
 			local loadout_button_widget = self._loadout_button_widgets[new_loadout_index]
 
 			if loadout_button_widget.content.visible then
+				if self._loadout_selection_active then
+					self:_enable_loadout_selection(false)
+				end
+
 				self:_change_loadout(new_loadout_index)
 			end
-		end
-	elseif input_service:get("cycle_previous") then
-		local old_career_index = self._selected_career_index
-		local new_career_index = math.clamp(self._selected_career_index - 1, 1, #self._hero_widgets)
-
-		if new_career_index ~= old_career_index then
-			self:_select_hero(self._profile_index, new_career_index)
-		end
-	elseif input_service:get("cycle_next") then
-		local old_career_index = self._selected_career_index
-		local new_career_index = math.clamp(self._selected_career_index + 1, 1, #self._hero_widgets)
-
-		if new_career_index ~= old_career_index then
-			self:_select_hero(self._profile_index, new_career_index)
 		end
 	elseif input_service:get("refresh") then
 		self:_confirm_loadout()
 	elseif input_service:get("back", true) then
-		self.parent:close_menu()
+		self:_close_menu()
 	end
+end
+
+CharacterSelectionStateVersusLoadouts._enable_loadout_selection = function (self, enable, loadout_selection_type)
+	local loadout_selection_widget_by_type = {
+		loadout_weapons = {
+			"item_grid",
+			"back_button",
+		},
+		loadout_talents = {
+			"talent_grid",
+			"back_button",
+		},
+	}
+
+	for _, widget in pairs(self._loadout_selection_widgets) do
+		widget.content.visible = false
+	end
+
+	if enable then
+		local widgets = loadout_selection_widget_by_type[loadout_selection_type]
+
+		for _, widget_name in ipairs(widgets) do
+			local widget = self._widgets_by_name[widget_name]
+
+			widget.content.visible = true
+		end
+
+		self:_start_animation("open_equipment_inventory", self._loadout_selection_render_settings)
+	elseif self._loadout_selection_active then
+		self._loadout_selection_changed = self._loadout_selection_changed or self._items_dirty or self._talents_dirty
+
+		self:_update_talents()
+		self:_update_items()
+		self:_start_animation("show_loadout", self._loadout_selection_render_settings)
+
+		self._current_weapon_slot_name = nil
+	end
+
+	self._loadout_selection_active = enable
+end
+
+CharacterSelectionStateVersusLoadouts._update_items = function (self)
+	if not self._items_dirty then
+		return
+	end
+
+	self:_populate_loadout(self._selected_profile_index, self._selected_career_index, self._selected_loadout, self._selected_loadout_talents, self._selected_loadout_settings)
+
+	self._items_dirty = false
+end
+
+CharacterSelectionStateVersusLoadouts._update_talents = function (self)
+	if not self._talents_dirty then
+		return
+	end
+
+	local current_profile_index, current_career_index = self._profile_synchronizer:profile_by_peer(self.peer_id, self._local_player_id)
+	local profile = SPProfiles[self._selected_profile_index]
+	local career_settings = profile.careers[self._selected_career_index]
+	local career_name = career_settings.name
+	local talents_interface = Managers.backend:get_interface("talents")
+
+	talents_interface:set_talents(career_name, self._selected_loadout_talents)
+
+	local player = self.local_player
+	local player_unit = player.player_unit
+
+	if Unit.alive(player_unit) then
+		local talent_extension = ScriptUnit.extension(player_unit, "talent_system")
+
+		talent_extension:talents_changed()
+
+		local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
+
+		inventory_extension:apply_buffs_to_ammo()
+	end
+
+	self:_populate_loadout(self._selected_profile_index, self._selected_career_index, self._selected_loadout, self._selected_loadout_talents, self._selected_loadout_settings)
+
+	self._talents_dirty = false
 end
 
 CharacterSelectionStateVersusLoadouts._handle_mouse_selection = function (self, input_service)
@@ -501,20 +771,69 @@ CharacterSelectionStateVersusLoadouts._handle_mouse_selection = function (self, 
 		return
 	end
 
-	for career_index, widget in ipairs(self._hero_widgets) do
-		local content = widget.content
-		local hotspot = content.button_hotspot
-
-		if hotspot and hotspot.on_pressed then
-			self:_select_hero(self._profile_index, career_index)
+	if input_service:get("toggle_menu", true) or input_service:get("back", true) then
+		if self._loadout_selection_active then
+			self:_enable_loadout_selection(false)
+		else
+			self:_close_menu()
 		end
+
+		return
 	end
 
 	for idx, button_widget in ipairs(self._loadout_button_widgets) do
 		if UIUtils.is_button_pressed(button_widget) then
+			self:_enable_loadout_selection(false)
 			self:_change_loadout(idx)
 
 			break
+		end
+	end
+
+	local loadout_settings = InventorySettings.loadouts[self._selected_loadout_index]
+
+	if self._loadout_selection_active then
+		local back_button_widget = self._widgets_by_name.back_button
+
+		if UIUtils.is_button_pressed(back_button_widget) then
+			self:_enable_loadout_selection(false)
+		end
+
+		self:_handle_talent_loadout_selection(input_service)
+		self:_handle_item_loadout_selection(input_service)
+	else
+		local loadout_type = loadout_settings.loadout_type
+
+		if loadout_type == "custom" then
+			local weapons_loadout_widget = self._widgets_by_name.loadout_weapons
+
+			for _, slot_name in ipairs(weapon_slots) do
+				if UIUtils.is_button_pressed(weapons_loadout_widget, slot_name) then
+					self._item_grid:change_category(slot_name)
+					self:_enable_loadout_selection(true, "loadout_weapons")
+
+					self._current_weapon_slot_name = slot_name
+
+					break
+				end
+			end
+		end
+
+		local loadout_type = loadout_settings.loadout_type
+
+		if loadout_type == "custom" then
+			local talents_loadout_widget = self._widgets_by_name.loadout_talents
+
+			for i = 1, MaxTalentPoints do
+				local hotspot_name = "talent_" .. i
+
+				if UIUtils.is_button_pressed(talents_loadout_widget, hotspot_name) then
+					self:_populate_talent_grid()
+					self:_enable_loadout_selection(true, "loadout_talents")
+
+					break
+				end
+			end
 		end
 	end
 
@@ -523,10 +842,131 @@ CharacterSelectionStateVersusLoadouts._handle_mouse_selection = function (self, 
 	if UIUtils.is_button_pressed(confirm_button) then
 		self:_confirm_loadout()
 	end
+
+	local exit_button_widget = self._parent:get_exit_button_widget()
+
+	if UIUtils.is_left_button_released(exit_button_widget) then
+		self:_close_menu()
+	end
+end
+
+CharacterSelectionStateVersusLoadouts._handle_item_loadout_selection = function (self, input_service)
+	local item_grid_widget = self._widgets_by_name.item_grid
+	local item_grid = self._item_grid
+	local allow_single_press = false
+	local item, is_equipped = item_grid:is_item_pressed(allow_single_press)
+
+	if item_grid:is_item_hovered() then
+		self:_play_sound("play_gui_inventory_item_hover")
+	end
+
+	if item and not is_equipped then
+		local player = Managers.player:player_from_peer_id(self.peer_id)
+		local unit = player.player_unit
+
+		if not unit or not Unit.alive(unit) then
+			return
+		end
+
+		self:_play_sound("play_gui_equipment_equip_hero")
+		self:_set_loadout_item(item, self._current_weapon_slot_name)
+		item_grid:update_items_status()
+
+		self._items_dirty = true
+	end
+end
+
+CharacterSelectionStateVersusLoadouts._set_loadout_item = function (self, item, current_weapon_slot_name)
+	local player = Managers.player:player_from_peer_id(self.peer_id)
+	local unit = player.player_unit
+
+	if not unit or not Unit.alive(unit) then
+		return
+	end
+
+	if not Managers.state.network:game() then
+		return
+	end
+
+	if LoadoutUtils.is_item_disabled(item.ItemId) then
+		return
+	end
+
+	local item_data = item.data
+	local slot, slot_type
+
+	if current_weapon_slot_name then
+		slot = InventorySettings.slots_by_name[current_weapon_slot_name]
+		slot_type = slot.type
+	else
+		slot_type = item_data.slot_type
+		slot = self:_get_slot_by_type(slot_type)
+	end
+
+	local backend_id = item.backend_id
+	local slot_name = slot.name
+	local profile_index = self._selected_profile_index or self._profile_index
+	local career_index = self._selected_career_index or self._career_index
+	local profile = SPProfiles[profile_index]
+	local career_data = profile.careers[career_index]
+	local career_name = career_data.name
+
+	BackendUtils.set_loadout_item(backend_id, career_name, slot_name)
+
+	self._selected_loadout[slot_name] = backend_id
+
+	Managers.state.event:trigger("event_set_loadout_items")
+end
+
+CharacterSelectionStateVersusLoadouts._get_slot_by_type = function (self, slot_type)
+	local slots = InventorySettings.slots_by_slot_index
+
+	for _, slot in pairs(slots) do
+		if slot_type == slot.type then
+			return slot
+		end
+	end
+end
+
+CharacterSelectionStateVersusLoadouts._handle_talent_loadout_selection = function (self, input_service)
+	local talent_grid_widget = self._widgets_by_name.talent_grid
+	local talent_grid_content = talent_grid_widget.content
+
+	for i = 1, NumTalentRows do
+		for j = 1, NumTalentColumns do
+			local talent_id = "talent_" .. i .. "_" .. j
+
+			if UIUtils.is_button_hover_enter(talent_grid_widget, talent_id) then
+				self:_play_sound("play_gui_inventory_item_hover")
+			end
+
+			local content = talent_grid_widget.content[talent_id]
+
+			if not content.disabled then
+				if UIUtils.is_button_pressed(talent_grid_widget, talent_id) then
+					self._selected_loadout_talents[i] = j
+
+					self:_populate_talent_grid()
+
+					self._talents_dirty = true
+				elseif UIUtils.is_right_button_pressed(talent_grid_widget, talent_id) then
+					self._selected_loadout_talents[i] = self._selected_loadout_talents[i] == j and 0 or self._selected_loadout_talents[i]
+
+					self:_populate_talent_grid()
+
+					self._talents_dirty = true
+				end
+			end
+		end
+	end
 end
 
 CharacterSelectionStateVersusLoadouts._confirm_loadout = function (self)
 	self:_play_sound("play_gui_start_menu_button_click")
+
+	if self._loadout_selection_active then
+		self:_enable_loadout_selection(false)
+	end
 
 	local current_profile_index, current_career_index = self._profile_synchronizer:profile_by_peer(self.peer_id, self._local_player_id)
 	local profile = SPProfiles[self._selected_profile_index]
@@ -534,6 +974,8 @@ CharacterSelectionStateVersusLoadouts._confirm_loadout = function (self)
 	local career_name = career_settings.name
 	local career_settings = CareerSettings[career_name]
 	local loadout_changed = self:_set_loadout(self._selected_loadout, self._selected_loadout_type, self._selected_loadout_index, career_name)
+
+	loadout_changed = loadout_changed or self._loadout_selection_changed
 
 	if current_profile_index ~= self._selected_profile_index or current_career_index ~= self._selected_career_index or loadout_changed then
 		local dlc_name = career_settings.required_dlc
@@ -552,6 +994,52 @@ CharacterSelectionStateVersusLoadouts._confirm_loadout = function (self)
 		self._new_loadout_confirmed = true
 	else
 		self._parent:close_menu()
+	end
+end
+
+CharacterSelectionStateVersusLoadouts._populate_talent_grid = function (self)
+	local hero_name = self._hero_name
+	local career_index = self._career_index
+	local profile_index = FindProfileIndex(hero_name)
+	local profile = SPProfiles[profile_index]
+	local career_settings = profile.careers[career_index]
+	local start_index = (career_index - 1) * NumTalentRows
+	local tree = TalentTrees[hero_name][career_settings.talent_tree_index]
+	local selected_talents = self._selected_loadout_talents
+	local override_talents = PlayerUtils.get_talent_overrides_by_career(career_settings.display_name) or EMPTY_TABLE
+	local talent_grid_widget = self._widgets_by_name.talent_grid
+	local talent_grid_widget_content = talent_grid_widget.content
+	local talent_grid_widget_style = talent_grid_widget.style
+
+	for i = 1, NumTalentRows do
+		local selected_talent = selected_talents[i]
+		local talent_row_id = "talent_row_" .. i
+
+		talent_grid_widget_content[talent_row_id .. "_name"] = " "
+
+		for j = 1, NumTalentColumns do
+			local talent_id = "talent_" .. i .. "_" .. j
+			local talent_name = tree[i][j]
+			local talent_locked = override_talents[talent_name] == false
+			local id = TalentIDLookup[talent_name].talent_id
+			local talent_data = TalentUtils.get_talent_by_id(hero_name, id)
+			local is_selected = j == selected_talent
+			local content = talent_grid_widget_content[talent_id]
+			local style = talent_grid_widget_style[talent_id]
+
+			content.icon = talent_data.icon
+			content.talent = talent_data
+			content.is_selected = is_selected
+			content.disabled = talent_locked
+			style.saturated = not is_selected or talent_locked
+			style.color = talent_locked and {
+				255,
+				60,
+				60,
+				60,
+			} or style.color
+			talent_grid_widget_content[talent_row_id .. "_name"] = is_selected and Localize(talent_name) or talent_grid_widget_content[talent_row_id .. "_name"]
+		end
 	end
 end
 
@@ -676,15 +1164,19 @@ CharacterSelectionStateVersusLoadouts._change_loadout = function (self, idx, for
 	local loadout = content.loadout
 	local talents = content.talents
 
-	self._selected_loadout = content.loadout
+	self._selected_loadout = loadout
+	self._selected_loadout_talents = talents
 	self._selected_loadout_type = content.loadout_type
 	self._selected_loadout_index = content.loadout_index
+	self._selected_loadout_settings = loadout_settings
 
 	self:_populate_tags()
-	self:_populate_loadout(self._selected_profile_index, self._selected_career_index, loadout, talents)
+	self:_populate_loadout(self._selected_profile_index, self._selected_career_index, loadout, talents, loadout_settings)
 	self:_set_loadout(self._selected_loadout, self._selected_loadout_type, self._selected_loadout_index, career_name, force_update)
 
 	self._spawn_hero = true
+
+	self:_play_sound("Play_gui_loadout_select")
 end
 
 CharacterSelectionStateVersusLoadouts._draw = function (self, dt, t)
@@ -698,6 +1190,24 @@ CharacterSelectionStateVersusLoadouts._draw = function (self, dt, t)
 
 	for _, widget in ipairs(self._widgets) do
 		UIRenderer.draw_widget(ui_renderer, widget)
+	end
+
+	if not self._loadout_selection_active then
+		for _, widget in ipairs(self._loadout_widgets) do
+			UIRenderer.draw_widget(ui_renderer, widget)
+		end
+	end
+
+	if self._loadout_selection_active then
+		local alpha_multiplier = render_settings.alpha_multiplier
+
+		render_settings.alpha_multiplier = self._loadout_selection_render_settings.alpha_multiplier
+
+		for _, widget in ipairs(self._loadout_selection_widgets) do
+			UIRenderer.draw_widget(ui_renderer, widget)
+		end
+
+		render_settings.alpha_multiplier = alpha_multiplier
 	end
 
 	for _, widget in ipairs(self._hero_widgets) do
@@ -777,8 +1287,8 @@ CharacterSelectionStateVersusLoadouts._populate_loadout_buttons = function (self
 			content.visible = loadout ~= nil
 			content.background.texture_id = loadout_ui_setting.icon
 		elseif loadout_type == "custom" then
-			local loadout = career_loadouts[loadout_index]
-			local talents = career_talents[loadout_index]
+			local loadout = career_loadouts[loadout_index] and table.clone(career_loadouts[loadout_index])
+			local talents = career_talents[loadout_index] and table.clone(career_talents[loadout_index])
 
 			content.loadout_index = i
 			content.loadout = loadout
@@ -836,15 +1346,17 @@ CharacterSelectionStateVersusLoadouts._populate_tags = function (self)
 	self._tag_widgets = tag_widgets
 end
 
-local EMPTY_TABLE = {}
-
-CharacterSelectionStateVersusLoadouts._populate_loadout = function (self, profile_index, career_index, optional_loadout, optional_talents)
+CharacterSelectionStateVersusLoadouts._populate_loadout = function (self, profile_index, career_index, optional_loadout, optional_talents, loadout_settings)
 	local profile_index = self._selected_profile_index or self._profile_index
 	local career_index = self._selected_career_index or self._career_index
 	local profile = SPProfiles[profile_index]
 	local career_settings = profile.careers[career_index]
 	local profile_name = profile.display_name
 	local career_name = career_settings.name
+	local loadout_settings = loadout_settings
+
+	loadout_settings = loadout_settings or InventorySettings.loadouts[self._stored_selected_loadout_index]
+
 	local selected_talents = EMPTY_TABLE
 	local talent_ids = EMPTY_TABLE
 	local talent_interface = Managers.backend:get_interface("talents")
@@ -883,6 +1395,8 @@ CharacterSelectionStateVersusLoadouts._populate_loadout = function (self, profil
 		end
 	end
 
+	content.locked = loadout_settings and loadout_settings.loadout_type == "default"
+
 	local item_interface = Managers.backend:get_interface("items")
 	local widget = self._widgets_by_name.loadout_weapons
 	local content = widget.content
@@ -900,7 +1414,16 @@ CharacterSelectionStateVersusLoadouts._populate_loadout = function (self, profil
 
 		content[weapon_slot].item = item
 		content[weapon_slot].icon = item.data.inventory_icon
+		content[weapon_slot].locked = loadout_settings and loadout_settings.loadout_type == "default"
 	end
+
+	local equipment_header_widget = self._widgets_by_name.weapons_header
+
+	equipment_header_widget.content.default_loadout = loadout_settings and loadout_settings.loadout_type == "default"
+
+	local talents_header_widget = self._widgets_by_name.talents_header
+
+	talents_header_widget.content.default_loadout = loadout_settings and loadout_settings.loadout_type == "default"
 end
 
 CharacterSelectionStateVersusLoadouts._populate_career_info = function (self)

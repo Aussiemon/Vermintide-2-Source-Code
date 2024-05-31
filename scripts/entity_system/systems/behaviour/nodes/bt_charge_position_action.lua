@@ -68,7 +68,7 @@ BTChargePositionAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.old_navtag_layer_cost_table = old_cost_table
 
-	local charge_navtag_layer_cost_table = blackboard.charge_navtag_layer_cost_table
+	local charge_navtag_layer_cost_table = blackboard.navigation_extension:get_navtag_layer_cost_table("charge")
 
 	if charge_navtag_layer_cost_table then
 		local traverse_logic = blackboard.navigation_extension:traverse_logic()
