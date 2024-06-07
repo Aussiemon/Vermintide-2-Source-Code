@@ -581,12 +581,12 @@ ProfileSynchronizer.is_peer_all_synced = function (self, peer_id)
 	return true
 end
 
-ProfileSynchronizer.resync_loadout = function (self, peer_id, local_player_id)
+ProfileSynchronizer.resync_loadout = function (self, peer_id, local_player_id, is_bot)
 	printf("Resyncing loadout of peer(%s:%s)", peer_id, local_player_id)
 
 	local profile_index, career_index = self:profile_by_peer(peer_id, local_player_id)
 
-	update_inventory_data(self._state, peer_id, local_player_id, profile_index, career_index)
+	update_inventory_data(self._state, peer_id, local_player_id, profile_index, career_index, is_bot)
 end
 
 ProfileSynchronizer.rpc_assign_peer_to_profile = function (self, channel_id, peer_id, local_player_id, profile_index, career_index, is_bot)

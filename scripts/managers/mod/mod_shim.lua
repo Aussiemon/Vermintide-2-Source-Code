@@ -331,16 +331,19 @@ ModShim._wedge_hook = function (self, vmf_mod, mod_name, hook_func_name, mod_wed
 	vmf_mod[hook_func_name] = hook_override
 end
 
-ModShim._mod_wedges = function (self, mod_name, last_updated)
+ModShim._mod_wedges = function (self, mod_name, timestamp)
+	if not timestamp then
+		printf("[ModShim] <%s> Wedges ignored due to not being able to deduce timestamp", mod_name)
+	end
+
 	local mod_wedges = table.select_array(ModShim.wedges, function (_, wedge)
 		if wedge.mods and not table.contains(wedge.mods, mod_name) then
 			return
 		end
 
 		local wedge_date = self:_parse_timestamp(wedge.date)
-		local last_updated_date = self:_parse_timestamp(last_updated)
 
-		if wedge_date < last_updated_date then
+		if wedge_date < timestamp then
 			printf("[ModShim] <%s> Wedge ignored due to being outdated. Wedge created '%s' (%s), mod updated '%s' (%s)", mod_name, wedge.date, wedge_date, last_updated, last_updated_date)
 
 			return
@@ -358,7 +361,7 @@ ModShim._mod_created = function (self, vmf_mod, mod_name)
 	end
 
 	local mod_data = Managers.mod:currently_loading_mod()
-	local mod_wedges = self:_mod_wedges(mod_name, mod_data.last_updated)
+	local mod_wedges = self:_mod_wedges(mod_name, mod_data.timestamp)
 
 	if script_data.debug_mod_shim then
 		printf("[ModShim] Mod created <%s>. Has shims: %s%s", mod_name, #mod_wedges > 0, #mod_wedges > 0 and "\n\t" .. table.tostring(mod_wedges) or "")
@@ -466,8 +469,7 @@ ModShim.mod_post_create = function (self, mod_data)
 
 		if vmf_mod then
 			local name = vmf_mod:get_internal_data("name")
-			local last_updated = mod_data.last_updated
-			local wedges = self:_mod_wedges(name, last_updated)
+			local wedges = self:_mod_wedges(name, mod_data.timestamp)
 
 			for i = 1, #wedges do
 				repeat

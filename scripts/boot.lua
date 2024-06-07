@@ -972,6 +972,14 @@ Game.setup = function (self)
 	Framerate.set_playing()
 	profile(p, "set frame times")
 
+	if Development.parameter("network_log_spew") then
+		Network.log("spew")
+	elseif Development.parameter("network_log_messages") then
+		Network.log("messages")
+	elseif Development.parameter("network_log_messages") then
+		Network.log("info")
+	end
+
 	if GameSettingsDevelopment.remove_debug_stuff then
 		profile(p, "remove debug stuff")
 		DebugHelper.remove_debug_stuff()

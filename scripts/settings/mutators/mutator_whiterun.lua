@@ -14,7 +14,9 @@ local function resync_loadout()
 	if talent_extension then
 		talent_extension:talents_changed()
 	else
-		profile_synchronizer:resync_loadout(local_player:network_id(), local_player:local_player_id())
+		local is_bot = local_player.bot_player
+
+		profile_synchronizer:resync_loadout(local_player:network_id(), local_player:local_player_id(), is_bot)
 	end
 end
 

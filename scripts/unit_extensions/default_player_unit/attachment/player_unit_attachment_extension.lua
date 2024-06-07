@@ -277,7 +277,9 @@ PlayerUnitAttachmentExtension.update_resync_loadout = function (self)
 	local local_player_id = self._player:local_player_id()
 
 	if self.resync_loadout_needed then
-		profile_synchronizer:resync_loadout(peer_id, local_player_id)
+		local is_bot = self._player.bot_player
+
+		profile_synchronizer:resync_loadout(peer_id, local_player_id, is_bot)
 
 		self.resync_loadout_needed = false
 	end

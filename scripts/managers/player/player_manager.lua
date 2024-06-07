@@ -544,6 +544,10 @@ PlayerManager.num_players = function (self)
 end
 
 PlayerManager.local_player = function (self, local_player_id)
+	if DEDICATED_SERVER then
+		return nil
+	end
+
 	return self:player(Network.peer_id(), local_player_id or 1)
 end
 

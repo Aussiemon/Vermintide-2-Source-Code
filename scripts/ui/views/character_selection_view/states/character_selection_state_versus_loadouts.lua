@@ -134,7 +134,7 @@ end
 CharacterSelectionStateVersusLoadouts._store_selected_loadout_index = function (self, career_name)
 	local mechanism_name = Managers.mechanism:current_mechanism_name()
 	local loadout_selection = PlayerData.loadout_selection and PlayerData.loadout_selection[mechanism_name]
-	local loadout_index = loadout_selection and loadout_selection[career_name]
+	local loadout_index = loadout_selection and loadout_selection[career_name] or 1
 	local loadout_settings = loadout_index and InventorySettings.loadouts[loadout_index]
 
 	if loadout_settings and loadout_settings.loadout_type == "default" then
@@ -1111,6 +1111,12 @@ CharacterSelectionStateVersusLoadouts._set_loadout = function (self, loadout, lo
 end
 
 CharacterSelectionStateVersusLoadouts._save_loadout_index = function (self, career_name, loadout_index)
+	local game_mode_key = Managers.state.game_mode:game_mode_key()
+
+	if not InventorySettings.save_local_loadout_selection[game_mode_key] then
+		return
+	end
+
 	local mechanism_name = Managers.mechanism:current_mechanism_name()
 
 	PlayerData.loadout_selection = PlayerData.loadout_selection or {}

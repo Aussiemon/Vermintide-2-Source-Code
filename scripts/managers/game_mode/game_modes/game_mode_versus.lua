@@ -963,7 +963,7 @@ GameModeVersus._player_entered_party = function (self, party, side, player)
 end
 
 GameModeVersus.player_entered_game_session = function (self, peer_id, local_player_id, wanted_party_index)
-	printf("player_entered_game_session: %s:%s, party_id: %s", peer_id, local_player_id, wanted_party_index)
+	printf("[GAMEMODEVERSUS] player_entered_game_session: %s:%s, party_id: %s", peer_id, local_player_id, wanted_party_index)
 	GameModeVersus.super.player_entered_game_session(self, peer_id, local_player_id, wanted_party_index)
 
 	local party_manager = Managers.party
@@ -988,7 +988,7 @@ GameModeVersus.player_entered_game_session = function (self, peer_id, local_play
 	end
 
 	if self._is_server then
-		Voip:vs_add_client_to_voip_room(peer_id, local_player_id)
+		self._network_server.voip:vs_add_client_to_voip_room(peer_id, local_player_id)
 	end
 end
 
@@ -1176,7 +1176,7 @@ end
 
 GameModeVersus.player_left_party = function (self, peer_id, local_player_id, party_id, slot_id, old_slot_data)
 	if self._is_server then
-		Voip:vs_remove_client_from_voip_room(peer_id, local_player_id, party_id)
+		self._network_server.voip:vs_remove_client_from_voip_room(peer_id, local_player_id, party_id)
 	end
 
 	if self._versus_party_selection_logic then
@@ -1590,6 +1590,8 @@ GameModeVersus.hero_profile_available_for_party = function (self, party_id, prof
 			local status = occupied_slots[i]
 			local slot_id = status.slot_id
 			local is_bot = status.is_bot
+			local occupied_peer_id = status.peer_id
+			local occupied_local_player_id = status.local_player_id
 			local occupied_profile_index
 
 			if is_bot then
@@ -1599,14 +1601,14 @@ GameModeVersus.hero_profile_available_for_party = function (self, party_id, prof
 
 				occupied_profile_index = self._mechanism:get_saved_bot(party_id, slot_id)
 			else
-				occupied_profile_index = self._mechanism:hero_data_for_party(party_id, slot_id)
+				occupied_profile_index = self._mechanism:get_saved_hero(occupied_peer_id, occupied_local_player_id)
 			end
 
 			if occupied_profile_index ~= profile_index then
 				break
 			end
 
-			local is_remote_player = not peer_id or peer_id ~= status.peer_id or local_player_id ~= status.local_player_id
+			local is_remote_player = not peer_id or peer_id ~= occupied_peer_id or local_player_id ~= occupied_local_player_id
 
 			if is_remote_player then
 				return false, "vs_profile_selection_profile_already_taken", string.format("Occupying peer status: %s", table.tostring(status))

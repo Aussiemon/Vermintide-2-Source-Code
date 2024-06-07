@@ -22,6 +22,7 @@ MenuInformationSlateUI.init = function (self, ui_renderer, input_service)
 	self._cloned_materials_by_reference = {}
 	self._material_references_to_unload = {}
 	self._scrollbar_alpha = 0
+	self._current_information_data_index = 1
 
 	self:_fetch_backend_information()
 end
@@ -48,16 +49,35 @@ MenuInformationSlateUI._start_animation = function (self, animation_name)
 end
 
 MenuInformationSlateUI.show = function (self)
+	if self._information_data and #self._information_data > 1 then
+		self:_start_animation("animate_switch_panel_in")
+	end
+
 	self:_start_animation("animate_in")
 end
 
 MenuInformationSlateUI.hide = function (self)
+	if self._information_data and #self._information_data > 1 then
+		self:_start_animation("animate_switch_panel_out")
+	end
+
 	self:_start_animation("animate_out")
 
 	self._expanded = false
 end
 
 MenuInformationSlateUI._create_ui_elements = function (self)
+	self:_reset()
+
+	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
+	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
+
+	self._ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
+	self._expanded = false
+end
+
+MenuInformationSlateUI._reset = function (self)
 	self._animations = {}
 	self._ui_animations = {}
 
@@ -74,12 +94,6 @@ MenuInformationSlateUI._create_ui_elements = function (self)
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
 	self._body_widgets = {}
-	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
-
-	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
-
-	self._ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
-	self._expanded = false
 end
 
 MenuInformationSlateUI._fetch_backend_information = function (self)
@@ -90,8 +104,21 @@ MenuInformationSlateUI._fetch_backend_information = function (self)
 		local information_data = information_data_json and cjson.decode(information_data_json)
 
 		if information_data then
+			self._information_data = information_data
+
+			local slate_data = information_data[1] or information_data
+
 			self:_create_ui_elements()
-			self:_parse_information_data(information_data)
+			self:_parse_information_data(slate_data)
+
+			if #self._information_data > 1 then
+				local next_slate_data = self._information_data[2]
+
+				self:_populate_switch_panel(next_slate_data)
+				self:_start_animation("animate_switch_panel_in")
+			end
+
+			self:_start_animation("animate_in")
 		end
 	end
 end
@@ -171,9 +198,46 @@ MenuInformationSlateUI._parse_cdn_data = function (self, info)
 	local data = json_data and cjson.decode(json_data)
 
 	if data then
+		self._information_data = data
+
+		local slate_data = data[1] or data
+
 		self:_create_ui_elements()
-		self:_parse_information_data(data)
+		self:_parse_information_data(slate_data)
+
+		if #self._information_data > 1 then
+			local next_slate_data = self._information_data[2]
+
+			self:_populate_switch_panel(next_slate_data)
+			self:_start_animation("animate_switch_panel_in")
+		end
+
+		self:_start_animation("animate_in")
 	end
+end
+
+MenuInformationSlateUI._populate_switch_panel = function (self, information_data)
+	self._ui_scenegraph.panel.local_position[2] = scenegraph_definition.panel.position[2] - 84
+
+	local alert_type = information_data.alert_name
+	local alert_color = information_data.alert_color
+	local header = information_data.header
+	local switch_panel_widget = self._widgets_by_name.switch_panel
+	local switch_panel_content = switch_panel_widget.content
+	local switch_panel_style = switch_panel_widget.style
+	local base_width = switch_panel_content.base_width
+	local text_style = switch_panel_style.header
+	local font, size_of_font = UIFontByResolution(text_style)
+	local font_material, font_size = font[1], size_of_font
+	local width = UIRenderer.text_size(self._ui_renderer, string.upper(header), font_material, font_size)
+	local total_size = base_width + width + 20
+
+	self._ui_scenegraph.switch_panel.size[1] = total_size
+	switch_panel_style.top_banner.texture_size[1] = total_size
+	switch_panel_style.background.texture_size[1] = total_size
+	switch_panel_style.top_banner.color = alert_color
+	switch_panel_style.dot_icon.color = alert_color
+	switch_panel_content.header = header
 end
 
 MenuInformationSlateUI._parse_information_data = function (self, information_data)
@@ -233,8 +297,6 @@ MenuInformationSlateUI._parse_information_data = function (self, information_dat
 	end
 
 	self._information_available = true
-
-	self:_start_animation("animate_in")
 end
 
 MenuInformationSlateUI._parse_text_data = function (self, data, idx, offset)
@@ -441,6 +503,29 @@ MenuInformationSlateUI._update_input = function (self, dt, t)
 			self._expanded = false
 
 			self:_start_animation("collapse")
+		end
+	end
+
+	if #self._information_data > 1 then
+		local widget = self._widgets_by_name.switch_panel
+
+		if UIUtils.is_button_pressed(widget, "hotspot") then
+			self._current_information_data_index = 1 + self._current_information_data_index % #self._information_data
+
+			local slate_data = self._information_data[self._current_information_data_index]
+
+			self:_reset()
+			self:_parse_information_data(slate_data)
+
+			local next_slate_data_index = 1 + self._current_information_data_index % #self._information_data
+			local next_slate_data = self._information_data[next_slate_data_index]
+
+			self:_populate_switch_panel(next_slate_data)
+
+			self._expanded = false
+
+			self:_start_animation("collapse_instantly")
+			self:_start_animation("animate_in")
 		end
 	end
 end

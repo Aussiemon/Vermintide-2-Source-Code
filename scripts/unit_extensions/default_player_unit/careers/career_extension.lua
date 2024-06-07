@@ -410,6 +410,7 @@ CareerExtension.start_activated_ability_cooldown = function (self, ability_id, r
 	buff_extension:trigger_procs("on_ability_cooldown_started")
 
 	ability.cooldown_paused = false
+	ability.cooldown_anim_started = false
 end
 
 CareerExtension.reduce_activated_ability_cooldown_percent = function (self, amount, ability_id, ignore_paused)
@@ -451,7 +452,6 @@ CareerExtension.reduce_activated_ability_cooldown = function (self, amount, abil
 	local is_ready = self:_cooldown_charge_ready(ability_id)
 
 	if not is_ready then
-		ability.cooldown_anim_started = false
 		ability.cooldown_paused = false
 	end
 
@@ -489,7 +489,6 @@ CareerExtension.increase_activated_ability_cooldown = function (self, amount, ab
 	end
 
 	if not self:_cooldown_charge_ready(ability_id) then
-		ability.cooldown_anim_started = false
 		ability.cooldown_paused = false
 	end
 end

@@ -56,6 +56,7 @@ if has_steam and not disable_voip or DEDICATED_SERVER then
 
 			self.is_server = is_server
 			self.server_check = is_server
+			self.peers_requested_room = {}
 
 			if not DEDICATED_SERVER then
 				self.room_id = SteamVoip.create_room()
@@ -154,7 +155,7 @@ if has_steam and not disable_voip or DEDICATED_SERVER then
 
 		assert(mechanism.name == "Versus", "trying to add voip client into vs team room")
 
-		if mechanism.name == "Versus" then
+		if mechanism.name == "Versus" and self.peers_requested_room[peer_id] then
 			local party = Managers.party:get_party_from_player_id(peer_id, local_peer_id)
 
 			if not party then
@@ -187,6 +188,8 @@ if has_steam and not disable_voip or DEDICATED_SERVER then
 			if not member_is_in_room then
 				cprintf("no voip room for party 0, player: %s", peer_id)
 				self:add_voip_member_to_team_room(peer_id, room_id)
+
+				self.peers_requested_room[peer_id] = false
 
 				return
 			end
@@ -222,7 +225,7 @@ if has_steam and not disable_voip or DEDICATED_SERVER then
 			local member_is_in_room = table.find(room_members, peer_id)
 
 			self:remove_member_from_team_room(peer_id, room_id)
-			print("[VOIP] remove_member_from_team_room")
+			cprintf("[VOIP][VS] remove_member_from_team_room room: %s, peer: %s", room_id, peer_id)
 		end
 	end
 
@@ -247,12 +250,33 @@ if has_steam and not disable_voip or DEDICATED_SERVER then
 		end
 
 		local mechanism = Managers.mechanism:game_mechanism()
+		local player = Managers.player:player_from_peer_id(peer_id)
+		local local_player_id = player and player:local_player_id() or 1
+		local party = Managers.party:get_party_from_player_id(peer_id, local_player_id)
 
-		if mechanism.name == "Versus" and not Managers.mechanism:get_state() == "inn" or not room_id then
+		if mechanism.name == "Versus" and not party or self.is_server and not DEDICATED_SERVER and not room_id then
 			print("not assigned any party yet")
 			cprintf("[Voip:rpc_voip_room_request] cant add %s to VOIP room, beacuse they dont have a party", peer_id)
 
+			self.peers_requested_room[peer_id] = true
+
 			return
+		elseif mechanism.name == "Versus" and Managers.mechanism:get_state() ~= "inn" and party then
+			if enter then
+				self:vs_add_client_to_voip_room(peer_id, local_player_id)
+				cprintf("[Voip:rpc_voip_room_request] Adding peer: %s to VOIP room", peer_id)
+
+				self.peers_requested_room[peer_id] = true
+
+				return
+			else
+				self:vs_remove_client_from_voip_room(peer_id, local_player_id, party.party_id)
+				cprintf("[Voip:rpc_voip_room_request] Removing peer: %s to VOIP room", peer_id)
+
+				self.peers_requested_room[peer_id] = nil
+
+				return
+			end
 		end
 
 		local room_members = SteamVoipRoom.members(room_id)
@@ -265,6 +289,8 @@ if has_steam and not disable_voip or DEDICATED_SERVER then
 		else
 			voip_warning_print("[VOIP] Got request from %s to %s room %s but member_is_in_room was %s", peer_id, enter and "enter" or "leave", self.room_id, member_is_in_room)
 		end
+
+		self.peers_requested_room[peer_id] = true
 	end
 
 	Voip.rpc_voip_room_to_join = function (self, channel_id, room_id)
@@ -278,15 +304,11 @@ if has_steam and not disable_voip or DEDICATED_SERVER then
 			self.room_id = room_id
 			self.room_host = peer_id
 
-			if self._enabled and not DEDICATED_SERVER then
-				voip_info_print("[VOIP] Joining room %s (host %q) as client.", room_id, peer_id)
+			voip_info_print("[VOIP] Joining room %s (host %q) as client.", room_id, peer_id)
 
-				local voip_client = SteamVoip.join_room(peer_id, room_id)
+			local voip_client = SteamVoip.join_room(peer_id, room_id)
 
-				self.voip_client = voip_client
-			else
-				voip_info_print("Couldn't join room because I have voip disabled")
-			end
+			self.voip_client = voip_client
 		end
 	end
 

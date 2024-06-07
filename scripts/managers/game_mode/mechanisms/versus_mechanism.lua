@@ -97,19 +97,13 @@ VersusMechanism.init = function (self, settings)
 
 	self._dark_pact_profiles = table.clone(PROFILES_BY_AFFILIATION.dark_pact)
 	self._spectator_profiles = table.clone(PROFILES_BY_AFFILIATION.spectators)
-	self._saved_hero_profiles = {}
-	self._saved_hero_profiles.party_id = {}
+	self._saved_bot_profiles = {}
 
 	local parties = Managers.party:parties()
 
 	for party_id = 1, #parties do
-		self._saved_hero_profiles.party_id[party_id] = {
-			slot_bot_character = {},
-			slot_human_character = {},
-		}
+		self._saved_bot_profiles[party_id] = {}
 	end
-
-	Network.log("warnings")
 
 	self._voip_rooms = {}
 	self._message_targets_initiated = false
@@ -162,6 +156,10 @@ VersusMechanism._reset = function (self, settings, on_init)
 			Managers.mechanism:reset_party_data(false)
 		end
 
+		if DEDICATED_SERVER and not Development.parameter("network_log_spew") and not Development.parameter("network_log_messages") and not Development.parameter("network_log_messages") then
+			Network.log("info")
+		end
+
 		self._local_match = false
 		self._private_lobby = true
 		self._using_dedicated_servers = true
@@ -174,6 +172,10 @@ VersusMechanism._reset = function (self, settings, on_init)
 	end
 
 	if not on_init then
+		if DEDICATED_SERVER and not Development.parameter("network_log_spew") and not Development.parameter("network_log_messages") and not Development.parameter("network_log_messages") then
+			Network.log("warnings")
+		end
+
 		local network_server = Managers.mechanism:network_server()
 
 		if network_server then
@@ -203,14 +205,10 @@ VersusMechanism.setup_mechanism_parties = function (self)
 		end
 	end
 
-	self._saved_hero_profiles = {}
-	self._saved_hero_profiles.party_id = {}
+	self._saved_bot_profiles = {}
 
 	for party_id = 1, #parties do
-		self._saved_hero_profiles.party_id[party_id] = {
-			slot_bot_character = {},
-			slot_human_character = {},
-		}
+		self._saved_bot_profiles[party_id] = {}
 	end
 end
 
@@ -838,48 +836,35 @@ VersusMechanism.preferred_slot_id = function (self, party_id, peer_id, local_pla
 
 	local party = Managers.party:get_party(party_id)
 	local profile_index = self:update_wanted_hero_character(peer_id, local_player_id, party_id)
-	local matching_bot_slot_id, previously_owned_slot
+	local matching_bot_slot_id
 	local num_slots = party.num_slots
 
 	for slot_id = 1, num_slots do
-		repeat
-			local player_status = party.slots[slot_id]
-			local is_bot = player_status.is_bot
+		local player_status = party.slots[slot_id]
+		local is_player = player_status.is_player
 
-			if not is_bot then
-				break
-			end
-
+		if not is_player then
 			local slot_profile_index = self:get_saved_bot(party_id, slot_id)
-			local _, _, _, left_player_peer_id, left_player_local_player_id = self:hero_data_for_party(party_id, slot_id)
 
 			if profile_index == slot_profile_index then
 				matching_bot_slot_id = slot_id
 
 				break
 			end
-
-			if left_player_peer_id == peer_id and left_player_local_player_id == local_player_id then
-				previously_owned_slot = slot_id
-			end
-		until true
+		end
 	end
 
 	if matching_bot_slot_id then
 		printf("[VersusMechanism] Looked for party slot for peer %s:%s with profile %s, and found slot with matching bot data", peer_id, local_player_id, profile_index)
 
 		return matching_bot_slot_id
-	elseif previously_owned_slot then
-		printf("[VersusMechanism] Looked for party slot for peer %s:%s with profile %s, found previously occupied slot", peer_id, local_player_id, profile_index)
-
-		return previously_owned_slot
 	end
 
 	return nil
 end
 
-VersusMechanism._get_fallback_hero_profile = function (self, party_id, ignore_bots)
-	local available_profiles = self:_find_available_hero_profiles(party_id, ignore_bots)
+VersusMechanism._get_fallback_hero_profile = function (self, party_id, peer_id, local_player_id, ignore_bots)
+	local available_profiles = self:_find_available_hero_profiles(party_id, peer_id, local_player_id, ignore_bots)
 	local index = math.random(1, #available_profiles)
 	local profile_index = available_profiles[index]
 	local career_index = PlayerUtils.get_random_enabled_non_dlc_career_index_by_profile(profile_index)
@@ -889,7 +874,7 @@ end
 
 local available_profiles = {}
 
-VersusMechanism._find_available_hero_profiles = function (self, party_id, ignore_bots)
+VersusMechanism._find_available_hero_profiles = function (self, party_id, peer_id, local_player_id, ignore_bots)
 	local party_profiles = PROFILES_BY_AFFILIATION.heroes
 
 	table.clear(available_profiles)
@@ -897,7 +882,7 @@ VersusMechanism._find_available_hero_profiles = function (self, party_id, ignore
 	for _, profile_name in ipairs(party_profiles) do
 		local profile_index = PROFILES_BY_NAME[profile_name].index
 
-		if self:hero_profile_available_for_party(party_id, profile_index, nil, nil, ignore_bots) then
+		if self:hero_profile_available_for_party(party_id, profile_index, peer_id, local_player_id, ignore_bots) then
 			available_profiles[#available_profiles + 1] = profile_index
 		end
 	end
@@ -984,7 +969,7 @@ VersusMechanism.update_wanted_hero_character = function (self, peer_id, local_pl
 	end
 
 	if not profile_index then
-		profile_index, career_index = self:_get_fallback_hero_profile(party_id, ignore_bots)
+		profile_index, career_index = self:_get_fallback_hero_profile(party_id, peer_id, local_player_id, ignore_bots)
 		reason = "available_fallback"
 	end
 
@@ -1633,12 +1618,6 @@ VersusMechanism.set_saved_hero = function (self, peer_id, local_player_id, party
 	local dirty = existing_party_id ~= party_id or existing_slot_id ~= slot_id or existing_profile_idx ~= profile_index or existing_career_idx ~= career_index
 
 	if dirty then
-		if existing_party_id ~= 0 and existing_slot_id ~= 0 then
-			local other_saved_profiles = self._saved_hero_profiles.party_id[existing_hero_data.party_id]
-
-			other_saved_profiles.slot_human_character[existing_hero_data.slot_id] = nil
-		end
-
 		self._shared_state:set_saved_hero(peer_id, local_player_id, party_id, slot_id, profile_index, career_index)
 
 		if profile_index ~= 0 and career_index ~= 0 then
@@ -1650,19 +1629,6 @@ VersusMechanism.set_saved_hero = function (self, peer_id, local_player_id, party
 				RPC.rpc_request_sync_hero_cosmetics(channel_id)
 			end
 		end
-	end
-
-	local valid_slot = slot_id ~= 0 and party_id ~= 0
-
-	if valid_slot then
-		local saved_party_profiles = self._saved_hero_profiles.party_id[party_id]
-
-		saved_party_profiles.slot_human_character[slot_id] = {
-			profile_index = profile_index,
-			career_index = career_index,
-			peer_id = peer_id,
-			local_player_id = local_player_id,
-		}
 	end
 end
 
@@ -1681,29 +1647,12 @@ VersusMechanism.set_saved_bot = function (self, party_id, slot_id, profile_index
 
 	assert(profile.affiliation == "heroes" or profile.affiliation == "spectators", "profile is not a hero")
 
-	local saved_party_profiles = self._saved_hero_profiles.party_id[party_id]
+	local saved_party_profiles = self._saved_bot_profiles[party_id]
 
-	saved_party_profiles.slot_bot_character[slot_id] = {
+	saved_party_profiles[slot_id] = {
 		profile_index = profile_index,
 		career_index = career_index,
 	}
-end
-
-VersusMechanism.hero_data_for_party = function (self, party_id, slot_id)
-	local party_profiles = self._saved_hero_profiles.party_id[party_id]
-	local saved_data = party_profiles.slot_human_character[slot_id]
-
-	if saved_data then
-		return saved_data.profile_index, saved_data.career_index, false, saved_data.peer_id, saved_data.local_player_id
-	end
-
-	local bot_data = party_profiles.slot_bot_character[slot_id]
-
-	if bot_data then
-		return bot_data.profile_index, bot_data.career_index, true
-	end
-
-	return nil, nil, false
 end
 
 VersusMechanism.get_saved_hero = function (self, peer_id, local_player_id)
@@ -1719,30 +1668,17 @@ VersusMechanism.get_saved_hero = function (self, peer_id, local_player_id)
 end
 
 VersusMechanism.get_saved_bot = function (self, party_id, slot_id)
-	local saved_party_profiles = self._saved_hero_profiles.party_id[party_id]
-	local slot_bot_character = saved_party_profiles.slot_bot_character[slot_id]
+	local saved_party_profiles = self._saved_bot_profiles[party_id]
+	local slot_bot_character = saved_party_profiles[slot_id]
 
 	if slot_bot_character then
 		return slot_bot_character.profile_index, slot_bot_character.career_index
 	end
-
-	local fallback_player_character = saved_party_profiles.slot_human_character[slot_id]
-
-	if fallback_player_character then
-		return fallback_player_character.profile_index, fallback_player_character.career_index
-	end
-end
-
-VersusMechanism.get_all_saved_heroes = function (self)
-	return self._saved_hero_profiles
 end
 
 VersusMechanism.all_peers_have_saved_hero = function (self, pick_data_per_party)
-	local saved_hero_profiles = self._saved_hero_profiles
-	local peers_without_saved_heros = {}
-
-	for i = 1, #saved_hero_profiles do
-		local picker_list = pick_data_per_party[i].picker_list
+	for party_id = 1, #pick_data_per_party do
+		local picker_list = pick_data_per_party[party_id].picker_list
 
 		for j = 1, #picker_list do
 			local picker = picker_list[j]
@@ -1753,17 +1689,13 @@ VersusMechanism.all_peers_have_saved_hero = function (self, pick_data_per_party)
 				local character_data = self:get_saved_hero(peer_id, local_player_id)
 
 				if not character_data then
-					peers_without_saved_heros[#peers_without_saved_heros + 1] = peer_id
+					return false
 				end
 			end
 		end
 	end
 
-	if table.is_empty(peers_without_saved_heros) then
-		return true, nil
-	else
-		return false, peers_without_saved_heros
-	end
+	return true
 end
 
 VersusMechanism.create_versus_migration_info = function (self, gm_event_end_conditions_met, gm_event_end_reason)
@@ -1837,7 +1769,15 @@ VersusMechanism._setup_match = function (self)
 	else
 		is_server = own_peer_id == server_peer_id
 		dedicated_server_peer_id = nil
+
+		if is_server then
+			local own_backend_id = Managers.backend:player_id()
+
+			self._peer_backend_id[own_peer_id] = own_backend_id
+		end
 	end
+
+	printf("[VersusMechanism] Setting up match. Dedicated server id: %s, server id: %s, own id: %s", dedicated_server_peer_id, server_peer_id, own_peer_id)
 
 	local network_handler = Managers.mechanism:network_handler()
 

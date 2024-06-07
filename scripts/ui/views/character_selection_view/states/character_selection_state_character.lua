@@ -1597,8 +1597,9 @@ CharacterSelectionStateCharacter._change_career = function (self, profile_index,
 
 	local peer_id = player:network_id()
 	local local_player_id = player:local_player_id()
+	local is_bot = player.bot_player
 
-	self._profile_synchronizer:resync_loadout(peer_id, local_player_id)
+	self._profile_synchronizer:resync_loadout(peer_id, local_player_id, is_bot)
 	CosmeticUtils.sync_local_player_cosmetics(player, profile_index, career_index)
 
 	self._resyncing_loadout = true

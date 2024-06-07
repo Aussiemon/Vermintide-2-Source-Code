@@ -303,20 +303,23 @@ ModManager._build_mod_table = function (self, mod_handles)
 		end
 
 		local metadata = mod_metadata[id]
+		local ok, timestamp
 
-		if enabled and metadata then
-			local ok, timestamp = SteamUGC.get_item_install_info(id)
+		if enabled then
+			ok, timestamp = SteamUGC.get_item_install_info(id)
 
-			if ok then
-				local iso8601 = os.date("!%Y%m%dT%H%M%SZ", timestamp)
+			if metadata then
+				if ok then
+					local iso8601 = os.date("!%Y%m%dT%H%M%SZ", timestamp)
 
-				if iso8601 < metadata then
+					if iso8601 < metadata then
+						enabled = false
+					end
+				else
+					printf("[ModManager] Could not get item install info for item %q", id)
+
 					enabled = false
 				end
-			else
-				printf("[ModManager] Could not get item install info for item %q", id)
-
-				enabled = false
 			end
 		end
 
@@ -326,6 +329,7 @@ ModManager._build_mod_table = function (self, mod_handles)
 			id = id,
 			name = mod_data.name,
 			enabled = enabled,
+			timestamp = timestamp,
 			handle = handle,
 			loaded_packages = {},
 			last_updated = mod_data.last_updated,

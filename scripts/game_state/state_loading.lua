@@ -1999,8 +1999,9 @@ StateLoading._update_loadout_resync = function (self)
 		if profile_synchronizer then
 			local peer_id = Network.peer_id()
 			local local_player_id = 1
+			local is_bot = false
 
-			profile_synchronizer:resync_loadout(peer_id, local_player_id)
+			profile_synchronizer:resync_loadout(peer_id, local_player_id, is_bot)
 
 			state = states.RESYNCING
 

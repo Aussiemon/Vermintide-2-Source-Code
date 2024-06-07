@@ -119,10 +119,11 @@ PlayerHuskGhostModeExtension._clear_world_marker = function (self)
 end
 
 PlayerHuskGhostModeExtension.cb_world_marker_spawned = function (self, unit, marker_id, widget)
-	local profile_index = Managers.player:owner(unit):profile_index()
+	local owner = Managers.player:owner(unit)
+	local profile_index = owner and owner:profile_index()
 	local profile = SPProfiles[profile_index]
 
-	widget.content.icon = profile.ui_portrait
+	widget.content.icon = profile and profile.ui_portrait or "unit_frame_portrait_default"
 	self._marker_id = marker_id
 end
 

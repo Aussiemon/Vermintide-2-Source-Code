@@ -266,6 +266,14 @@ DarkPactSelectionUI._show = function (self, play_speed)
 	self._show_play_speed = play_speed
 
 	self:_request_careers()
+
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+
+	if gamepad_active then
+		self:_set_selected(1, true)
+
+		self._selected_index = 1
+	end
 end
 
 DarkPactSelectionUI._hide = function (self, play_speed)
@@ -343,7 +351,7 @@ DarkPactSelectionUI.update = function (self, dt, t, player)
 
 	if self._gamepad_active ~= gamepad_active then
 		if gamepad_active then
-			self:_set_selected(self._selected_index, true)
+			self:_set_selected(1, true)
 		else
 			self:_set_selected(self._selected_index, false)
 		end

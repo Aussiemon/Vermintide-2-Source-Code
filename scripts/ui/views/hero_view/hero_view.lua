@@ -317,6 +317,12 @@ HeroView._fetch_initial_loadout_index = function (self, params)
 		return
 	end
 
+	local game_mode_key = Managers.state.game_mode:game_mode_key()
+
+	if not InventorySettings.inventory_loadout_access_supported_game_modes[game_mode_key] then
+		return
+	end
+
 	self._peer_id = ingame_ui_context.peer_id
 	self._local_player_id = ingame_ui_context.local_player_id
 

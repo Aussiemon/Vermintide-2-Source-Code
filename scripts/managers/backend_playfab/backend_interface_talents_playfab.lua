@@ -203,7 +203,7 @@ BackendInterfaceTalentsPlayfab._setup_default_overrides = function (self)
 	end
 
 	for career_name, settings in pairs(CareerSettings) do
-		local loadout_index = loadout_selection[career_name]
+		local loadout_index = loadout_selection[career_name] or 1
 
 		if loadout_index then
 			local loadout_settings = InventorySettings.loadouts[loadout_index]

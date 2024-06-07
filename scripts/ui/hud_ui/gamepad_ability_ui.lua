@@ -63,7 +63,6 @@ GamePadAbilityUI._sync_ability_cooldown = function (self)
 
 	local career_extension = ScriptUnit.extension(player_unit, "career_system")
 	local ability_cooldown, max_cooldown = career_extension:current_ability_cooldown()
-	local ability_paused = career_extension:current_ability_paused()
 	local career_index = career_extension:career_index()
 
 	if self._career_index ~= career_index then

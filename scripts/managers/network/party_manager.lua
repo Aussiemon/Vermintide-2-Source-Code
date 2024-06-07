@@ -1308,12 +1308,6 @@ PartyManager._server_set_client_friend_party = function (self, friend_party_id)
 			else
 				friend_party_peers[next_idx] = peers[i]
 			end
-		else
-			print("Straggling peer:", peer)
-
-			peers = table.shallow_copy(peers)
-
-			self:server_remove_friend_party_peer(peer)
 		end
 	end
 

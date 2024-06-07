@@ -53,7 +53,7 @@ ActionMinigun.client_owner_start_action = function (self, new_action, t, chain_a
 
 	self:_update_attack_speed(t)
 
-	self._time_to_shoot = math.max(old_time_to_shoot, t + 1 / self._current_rps)
+	self._time_to_shoot = math.max(old_time_to_shoot, t - 1 / self._current_rps)
 	self._first_shot = true
 
 	local fire_loop_start = new_action.fire_loop_start
@@ -83,7 +83,7 @@ ActionMinigun._waiting_to_shoot = function (self, dt, t)
 	end
 
 	if self._near_wall then
-		self._time_to_shoot = t + 1 / self._current_rps
+		self._time_to_shoot = t - 1 / self._current_rps
 	elseif not self._near_wall and t >= self._time_to_shoot then
 		self:_shoot(dt, t)
 	end

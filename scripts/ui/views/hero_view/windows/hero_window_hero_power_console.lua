@@ -37,6 +37,7 @@ HeroWindowHeroPowerConsole.on_enter = function (self, params, offset)
 	self.profile_index = params.profile_index
 	self._animations = {}
 	self._ui_animations = {}
+	self._hero_power_loadout_selection = {}
 
 	self:create_ui_elements(params, offset)
 	self:_start_transition_animation("on_enter")
@@ -175,16 +176,22 @@ HeroWindowHeroPowerConsole._calculate_power_level = function (self)
 	local presentable_hero_power_level = UIUtils.presentable_hero_power_level(total_power_level)
 	local widgets_by_name = self._widgets_by_name
 	local content = widgets_by_name.power_text.content
+	local selected_loadout_index = Managers.backend:get_interface("items"):get_selected_career_loadout(career_name)
 	local play_effect = content.power and presentable_hero_power_level > content.power
 
 	if play_effect then
 		self._hero_power_effect_time = HERO_POWER_EFFECT_DURATION
 
-		self:_play_sound("play_gui_equipment_power_level_increase")
+		local current_loadout_selection_index = self._hero_power_loadout_selection[career_name]
+
+		if not current_loadout_selection_index or selected_loadout_index == current_loadout_selection_index then
+			self:_play_sound("play_gui_equipment_power_level_increase")
+		end
 	end
 
 	content.power = presentable_hero_power_level
 	content.text = tostring(presentable_hero_power_level)
+	self._hero_power_loadout_selection[career_name] = selected_loadout_index
 end
 
 local power_default_color = Colors.get_color_table_with_alpha("white", 255)

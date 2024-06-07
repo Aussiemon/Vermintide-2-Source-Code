@@ -234,7 +234,7 @@ BackendInterfaceItemPlayfab._setup_default_overrides = function (self)
 	end
 
 	for career_name, settings in pairs(CareerSettings) do
-		local loadout_index = loadout_selection[career_name]
+		local loadout_index = loadout_selection[career_name] or 1
 
 		if loadout_index then
 			local loadout_settings = InventorySettings.loadouts[loadout_index]
@@ -665,6 +665,23 @@ BackendInterfaceItemPlayfab.equipped_by = function (self, backend_id)
 	end
 
 	return equipped_careers
+end
+
+BackendInterfaceItemPlayfab.is_equipped_by_any_loadout = function (self, backend_id)
+	local career_loadouts = self._career_loadouts
+	local equipped_loadouts = {}
+
+	for career_name, loadouts in pairs(career_loadouts) do
+		for index, loadout in ipairs(loadouts) do
+			for slot_name, item_id in pairs(loadout) do
+				if backend_id == item_id then
+					table.insert(equipped_loadouts, career_name .. "_" .. index)
+				end
+			end
+		end
+	end
+
+	return equipped_loadouts
 end
 
 BackendInterfaceItemPlayfab.is_equipped = function (self, backend_id, profile_name)

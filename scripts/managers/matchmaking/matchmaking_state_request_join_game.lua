@@ -354,6 +354,7 @@ MatchmakingStateRequestJoinGame._join_game_failed = function (self, reason, t, i
 
 	self._matchmaking_manager:reset_joining()
 
+	self.state_context.lobby_client = nil
 	self.state_context.join_lobby_data = nil
 
 	if reason ~= "cancelled" and not disable_chat_message then

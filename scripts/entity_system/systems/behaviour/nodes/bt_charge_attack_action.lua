@@ -602,7 +602,7 @@ BTChargeAttackAction._hit_ai = function (self, unit, hit_unit, action, blackboar
 
 			AiUtils.stagger(hit_unit, hit_unit_blackboard, unit, push_direction, push_data.stagger_distance, stagger_type, stagger_duration, nil, t, nil, nil, nil, true)
 
-			if breed_name == "chaos_warrior" then
+			if not DEDICATED_SERVER and breed_name == "chaos_warrior" then
 				local attacker_name = blackboard.breed and blackboard.breed.name
 
 				if attacker_name == "beastmen_bestigor" then

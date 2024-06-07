@@ -203,6 +203,41 @@ HeroWindowLoadoutSelectionConsole.on_exit = function (self, params)
 	print("[HeroViewWindow] Exit Substate HeroWindowLoadoutSelectionConsole")
 
 	self._ui_animator = nil
+
+	local game_mode_key = Managers.state.game_mode:game_mode_key()
+
+	if not InventorySettings.save_local_loadout_selection[game_mode_key] then
+		return
+	end
+
+	local local_player = Managers.player:local_player()
+	local career_name = local_player and local_player:career_name()
+
+	if career_name and self._selected_loadout_index then
+		local selected_loadout_index
+
+		for index, loadout_data in ipairs(InventorySettings.loadouts) do
+			local loadout_index = loadout_data.loadout_index
+
+			if loadout_data.loadout_type == "custom" and loadout_index == self._selected_loadout_index then
+				selected_loadout_index = index
+
+				break
+			end
+		end
+
+		if not selected_loadout_index then
+			return
+		end
+
+		local mechanism_name = Managers.mechanism:current_mechanism_name()
+
+		PlayerData.loadout_selection = PlayerData.loadout_selection or {}
+		PlayerData.loadout_selection[mechanism_name] = PlayerData.loadout_selection[mechanism_name] or {}
+		PlayerData.loadout_selection[mechanism_name][career_name] = selected_loadout_index
+
+		Managers.save:auto_save(SaveFileName, SaveData, nil)
+	end
 end
 
 HeroWindowLoadoutSelectionConsole.update = function (self, dt, t)

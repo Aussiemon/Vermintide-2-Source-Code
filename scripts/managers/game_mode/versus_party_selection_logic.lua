@@ -90,12 +90,9 @@ VersusPartySelectionLogic.party_states = {
 		enter = function (parent, party_data, party)
 			local duration = Managers.state.game_mode:setting("character_picking_settings").parading_duration
 			local mechanism = Managers.mechanism:game_mechanism()
-			local all_players_have_saved_hero, peers_without_saved_heros = mechanism:all_peers_have_saved_hero(parent._pick_data_per_party)
+			local all_players_have_saved_hero = mechanism:all_peers_have_saved_hero(parent._pick_data_per_party)
 
-			if not all_players_have_saved_hero then
-				assert(not peers_without_saved_heros, "[versus_party_selection_logic]some player dont have a saved hero")
-			end
-
+			print("[VersusPartySelectionLogic] Some player dont have a saved hero")
 			parent:set_timer(duration)
 		end,
 		run = function (parent, party_data, party, timer, t, dt, party_selection_logic)
@@ -476,8 +473,10 @@ VersusPartySelectionLogic.hot_join_sync = function (self, peer_id)
 
 				if is_bot then
 					profile_index, career_index = mechanism:get_saved_bot(party_id, slot_id)
-				else
+				elseif player_data.status.peer_id and player_data.status.local_player_id then
 					profile_index, career_index = mechanism:update_wanted_hero_character(player_data.status.peer_id, player_data.status.local_player_id, party_id)
+				else
+					Crashify.print_exception("VersusPartySelectionLogic", "Supposed human player missing peer_id and local_player_id. Party: %s, pick id: %s", party_id, picker_id)
 				end
 			end
 
@@ -1050,7 +1049,7 @@ VersusPartySelectionLogic.player_left_party = function (self, peer_id, local_pla
 		local new_profile_index, new_career_index = self:_ensure_picker_has_character(party_data, index, true)
 		local old_peer_id = old_slot_data.status and old_slot_data.status.peer_id
 
-		printf("[VersusPartySelectionLogic] %s in party %s left and was replaced by %s", old_peer_id or "UNKNOWN", party.party_id, SPProfiles[new_profile_index].careers[new_career_index].display_name)
+		printf("[VersusPartySelectionLogic] %s in party %s and pick id %s left and was replaced by %s", old_peer_id or "UNKNOWN", party.party_id, index, SPProfiles[new_profile_index].careers[new_career_index].display_name)
 	end
 end
 
@@ -1085,7 +1084,7 @@ VersusPartySelectionLogic._try_pick_hero = function (self, party_data, picker_in
 		local slot_already_picked = ClientStateLookup[state] > ClientStateLookup.player_picking_character
 
 		if current_profile_idx and slot_already_picked then
-			printf("[VersusPartySelectionLogic] %s %s in party %s tried to pick a hero %s %s after timer ran out. Staying as %s %s", is_bot and "BOT in slot" or "Peer", is_bot and picker_index or peer_id, party_id, profile_index, career_index, current_profile_idx, current_career_idx)
+			printf("[VersusPartySelectionLogic] %s %s in party %s and pick id %s tried to pick a hero %s %s after timer ran out. Staying as %s %s", is_bot and "BOT in slot" or "Peer", is_bot and picker_index or peer_id, party_id, picker_index, profile_index, career_index, current_profile_idx, current_career_idx)
 
 			profile_index = current_profile_idx
 			career_index = current_career_idx
@@ -1253,11 +1252,14 @@ VersusPartySelectionLogic.on_player_left_party = function (self, peer_id, local_
 	end
 
 	local pick_data = self._pick_data_per_party[party_id]
-	local picker_list = pick_data.picker_list
 
-	for i = 1, #picker_list do
-		if picker_list[i].slot_id == slot_id_player then
-			picker_list[i].is_connected = false
+	if pick_data then
+		local picker_list = pick_data.picker_list
+
+		for i = 1, #picker_list do
+			if picker_list[i].slot_id == slot_id_player then
+				picker_list[i].is_connected = false
+			end
 		end
 	end
 end

@@ -230,10 +230,12 @@ GhostModeSystem.hot_join_sync = function (self, sender)
 	for unit, extension in pairs(extensions) do
 		local unit_go_id = self.unit_storage:go_id(unit)
 
-		if extension:is_in_ghost_mode() then
-			self._network_transmit:send_rpc("rpc_entered_ghost_mode", sender, unit_go_id)
-		else
-			self._network_transmit:send_rpc("rpc_left_ghost_mode", sender, unit_go_id)
+		if unit_go_id then
+			if extension:is_in_ghost_mode() then
+				self._network_transmit:send_rpc("rpc_entered_ghost_mode", sender, unit_go_id)
+			else
+				self._network_transmit:send_rpc("rpc_left_ghost_mode", sender, unit_go_id)
+			end
 		end
 	end
 end

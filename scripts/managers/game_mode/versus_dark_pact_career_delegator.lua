@@ -18,6 +18,8 @@ VersusDarkPactCareerDelegator.init = function (self)
 
 	Managers.state.event:register(self, "on_player_left_party", "on_player_left_party")
 	Managers.state.event:register(self, "player_profile_assigned", "on_player_profile_assigned")
+
+	self._mechanism = Managers.mechanism:game_mechanism()
 end
 
 VersusDarkPactCareerDelegator.destroy = function (self)
@@ -200,12 +202,12 @@ VersusDarkPactCareerDelegator._picking_telemetry = function (self, peer_id, sele
 		return
 	end
 
-	local player_id = player:telemetry_id()
+	local player_backend_id = self._mechanism:get_peer_backend_id(peer_id) or "offline backend"
 	local career_options = table.shallow_copy(self._picks_per_player[peer_id])
 	local match_id = Managers.mechanism:game_mechanism():match_id()
 	local career_selection_time_elapsed = Managers.time:time("game") - self._rolled_careers_time_stamp[peer_id]
 	local platform = PLATFORM
 	local build = BUILD
 
-	Managers.telemetry_events:versus_pactsworn_picking(match_id, player_id, career_options, selected_career, career_selection_time_elapsed, platform, build)
+	Managers.telemetry_events:versus_pactsworn_picking(match_id, player_backend_id, career_options, selected_career, career_selection_time_elapsed, platform, build)
 end

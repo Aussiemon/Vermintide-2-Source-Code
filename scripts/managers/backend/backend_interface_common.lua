@@ -222,6 +222,17 @@ local filter_macros = {
 
 		return false
 	end,
+	is_equipped_by_any_loadout = function (item, backend_id)
+		local item_data = item.data
+		local backend_items = Managers.backend:get_interface("items")
+		local loadouts = backend_items:is_equipped_by_any_loadout(backend_id)
+
+		if #loadouts > 0 then
+			return true
+		end
+
+		return false
+	end,
 	is_equipment_slot = function (item, backend_id)
 		local item_data = item.data
 		local is_slot = false
