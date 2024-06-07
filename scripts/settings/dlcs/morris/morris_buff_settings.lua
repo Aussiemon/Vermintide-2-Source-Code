@@ -4845,8 +4845,8 @@ dlc_settings.proc_functions = {
 
 		local existing_stacks = buff_extension:get_stacking_buff("boon_meta_01_stack")
 
-		for i = num_existing_stacks - num_boons, 1, -1 do
-			local last_buff = existing_stacks[num_existing_stacks - i + 1]
+		for i = num_existing_stacks, num_boons + 1, -1 do
+			local last_buff = existing_stacks[i]
 
 			buff_extension:remove_buff(last_buff.id)
 		end
@@ -4874,14 +4874,14 @@ dlc_settings.proc_functions = {
 			rarity_level = ORDER_RARITY[wielded_item_rarity] or ORDER_RARITY.unique
 		end
 
-		for i = num_existing_stacks + 2, rarity_level do
+		for i = num_existing_stacks, rarity_level - 2 do
 			buff_extension:add_buff("boon_weaponrarity_02_debuff")
 		end
 
 		local existing_stacks = buff_extension:get_stacking_buff("boon_weaponrarity_02_debuff")
 
 		for i = num_existing_stacks, rarity_level, -1 do
-			local last_buff = existing_stacks[num_existing_stacks - i + 1]
+			local last_buff = existing_stacks[#existing_stacks]
 
 			buff_extension:remove_buff(last_buff.id)
 		end
@@ -4900,14 +4900,14 @@ dlc_settings.proc_functions = {
 		local buff_extension = ScriptUnit.extension(unit, "buff_system")
 		local num_existing_stacks = buff_extension:num_buff_stacks("boon_weaponrarity_01_debuff")
 
-		for i = num_existing_stacks + 2, highest_rarity_level do
+		for i = num_existing_stacks, highest_rarity_level - 2 do
 			buff_extension:add_buff("boon_weaponrarity_01_debuff")
 		end
 
 		local existing_stacks = buff_extension:get_stacking_buff("boon_weaponrarity_01_debuff")
 
 		for i = num_existing_stacks, highest_rarity_level, -1 do
-			local last_buff = existing_stacks[num_existing_stacks - i + 1]
+			local last_buff = existing_stacks[#existing_stacks]
 
 			buff_extension:remove_buff(last_buff.id)
 		end
