@@ -1258,6 +1258,10 @@ GameModeManager.rpc_trigger_level_event = function (self, channel_id, event)
 	end
 end
 
+GameModeManager.is_reservable = function (self)
+	return self._game_mode:is_reservable()
+end
+
 GameModeManager.is_joinable = function (self)
 	return self._game_mode:is_joinable()
 end

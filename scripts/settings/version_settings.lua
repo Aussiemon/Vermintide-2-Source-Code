@@ -1,5 +1,5 @@
 ﻿-- chunkname: @scripts/settings/version_settings.lua
 
 VersionSettings = {
-	version = "5.5.5",
+	version = "5.5.6",
 }

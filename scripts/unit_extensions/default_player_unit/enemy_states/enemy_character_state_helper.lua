@@ -144,17 +144,19 @@ EnemyCharacterStateHelper._check_within_line_of_sight_warpfire_thrower = functio
 	for i = 1, num_hit_actors do
 		local hit_actor = hit_actors[i]
 		local hit_unit = Actor.unit(hit_actor)
+		local not_same_unit_and_alive = hit_unit ~= player_unit and Unit.alive(hit_unit)
+		local not_hit_yet = not hit_units[hit_unit]
 
-		if hit_unit ~= player_unit and Unit.alive(hit_unit) and not hit_units[hit_unit] then
+		if not_same_unit_and_alive and not_hit_yet then
 			hit_units[hit_unit] = true
 
-			local is_ai_unit = DamageUtils.is_enemy(player_unit, hit_unit)
+			local is_enemy_unit = DamageUtils.is_enemy(player_unit, hit_unit)
 			local is_player_unit = DamageUtils.is_player_unit(hit_unit)
-			local unit_is_character = is_ai_unit or is_player_unit
+			local unit_is_character = is_enemy_unit or is_player_unit
 			local target_status_extension = ScriptUnit.has_extension(hit_unit, "status_system")
-			local is_valid_player_status = target_status_extension and not target_status_extension:is_invisible()
+			local is_valid_player_status = target_status_extension
 
-			if unit_is_character and is_valid_player_status then
+			if unit_is_character and is_valid_player_status and is_enemy_unit then
 				local unit_breed = Unit.get_data(hit_unit, "breed")
 				local radius, height = DamageUtils.calculate_aoe_size(hit_unit, unit_breed)
 				local vertical_offset = Vector3(0, 0, height / 2)
@@ -166,9 +168,10 @@ EnemyCharacterStateHelper._check_within_line_of_sight_warpfire_thrower = functio
 				local dot = Vector3.dot(to_target_normalized, player_direction)
 
 				if attack_cone < dot then
-					local los = not PhysicsWorld.immediate_raycast(physics_world, player_position, to_target_normalized, attack_half_range * 2, "closest", "collision_filter", "filter_ai_line_of_sight_check")
+					local hit_boss = PerceptionUtils.is_boss_in_los(player_unit, player_position, hit_unit_pos, physics_world)
+					local los = not hit_boss and PerceptionUtils.is_position_in_line_of_sight(player_unit, player_position, hit_unit_pos, physics_world, "filter_ai_line_of_sight_check")
 
-					if is_player_unit then
+					if not hit_boss and is_player_unit then
 						los = los or PerceptionUtils.is_position_in_line_of_sight(player_unit, player_position, hit_unit_pos + horizontal_offset, physics_world, "filter_ai_line_of_sight_check")
 						los = los or PerceptionUtils.is_position_in_line_of_sight(player_unit, player_position, hit_unit_pos - horizontal_offset, physics_world, "filter_ai_line_of_sight_check")
 						los = los or PerceptionUtils.is_position_in_line_of_sight(player_unit, player_position, hit_unit_pos + vertical_offset, physics_world, "filter_ai_line_of_sight_check")

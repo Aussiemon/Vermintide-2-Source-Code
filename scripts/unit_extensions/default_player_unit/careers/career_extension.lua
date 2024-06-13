@@ -842,7 +842,7 @@ CareerExtension.get_career_power_level = function (self)
 		end
 
 		if player.remote then
-			power_level = player:get_data("power_level")
+			power_level = player:get_data("power_level") or MIN_POWER_LEVEL
 		else
 			power_level = BackendUtils.get_total_power_level(profile_name, career_name)
 		end

@@ -1136,6 +1136,12 @@ PickupSystem.buff_spawn_pickup = function (self, pickup_name, position, raycast_
 end
 
 PickupSystem._spawn_pickup = function (self, pickup_settings, pickup_name, position, rotation, with_physics, spawn_type, owner_peer_id, spawn_limit, velocity, override_unit_template_name)
+	if not self.is_server then
+		Crashify.print_exception("PickupSystem", "Client tried to spawn a client owned pickup '%s'. Pickups may only be spawned by the server.", pickup_name)
+
+		return
+	end
+
 	local next_index = self._next_index
 
 	if self._taken[next_index] then

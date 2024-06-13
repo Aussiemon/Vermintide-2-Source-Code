@@ -1168,9 +1168,17 @@ VersusMechanism.try_reserve_game_server_slots = function (self, reserver, peers,
 	local success = self._slot_reservation_handler:try_reserve_slots(reserver, peers, invitee)
 
 	if not success then
-		print("Rejected game server reservation because the server is full")
+		print("[VersusMechanism] Rejected game server reservation because the server is full")
 	elseif self._state == "inn" then
-		local game_mode = Managers.state.game_mode:game_mode()
+		local game_mode_manager = Managers.state.game_mode
+
+		if not game_mode_manager then
+			print("[VersusMechanism] Rejected game server reservation because the server has not finished setting up.")
+
+			return false
+		end
+
+		local game_mode = game_mode_manager:game_mode()
 
 		if game_mode and game_mode.update_auto_force_start_conditions then
 			game_mode:update_auto_force_start_conditions()
@@ -1377,13 +1385,11 @@ VersusMechanism.win_conditions = function (self)
 end
 
 VersusMechanism.entered_mechanism_due_to_switch = function (self)
-	self:setup_chats()
 	Managers.chat:set_chat_enabled(true)
 end
 
 VersusMechanism.left_mechanism_due_to_switch = function (self)
 	Managers.chat:set_chat_enabled(false)
-	self:unregister_chats()
 end
 
 VersusMechanism.should_play_level_introduction = function (self)

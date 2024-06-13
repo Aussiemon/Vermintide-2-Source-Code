@@ -562,6 +562,10 @@ GameModeBase.projectile_hit_character = function (self, attacker_player, source_
 	return
 end
 
+GameModeBase.is_reservable = function (self)
+	return true
+end
+
 GameModeBase.is_joinable = function (self)
 	return true
 end

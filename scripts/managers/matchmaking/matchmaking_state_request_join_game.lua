@@ -364,11 +364,14 @@ MatchmakingStateRequestJoinGame._join_game_failed = function (self, reason, t, i
 	end
 
 	local cancel_matchmaking = self.state_context.join_by_lobby_browser
+	local search_config = self.state_context.search_config
 
 	if cancel_matchmaking then
 		self._matchmaking_manager:cancel_join_lobby(reason, reason_variable)
 
 		return MatchmakingStateIdle, self.state_context
+	elseif search_config and search_config.dedicated_server and search_config.join_method == "party" then
+		return MatchmakingStateReserveLobby, self.state_context
 	else
 		return MatchmakingStateSearchGame, self.state_context
 	end

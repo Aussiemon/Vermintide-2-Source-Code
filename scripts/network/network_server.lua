@@ -815,6 +815,10 @@ NetworkServer.update = function (self, dt)
 
 		if self._network_state:is_peer_ingame(peer_id) ~= ingame then
 			self._network_state:set_peer_ingame(peer_id, ingame)
+
+			if peer_id ~= Network.peer_id() and not ingame then
+				self._network_state:set_peer_hot_join_synced(peer_id, false)
+			end
 		end
 	end
 

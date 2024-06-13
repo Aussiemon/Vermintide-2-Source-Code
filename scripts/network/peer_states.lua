@@ -74,14 +74,18 @@ PeerStates.Connecting = {
 
 			if resend_rpc_notify_connected then
 				if PEER_ID_TO_CHANNEL[self.peer_id] then
-					self.server.network_transmit:send_rpc("rpc_notify_connected", self.peer_id)
+					local game_mode = Managers.state.game_mode and Managers.state.game_mode:game_mode()
+
+					if game_mode and game_mode:is_joinable() then
+						self.server.network_transmit:send_rpc("rpc_notify_connected", self.peer_id)
+
+						self.resend_timer = time_between_resend_rpc_notify_connected
+					end
 				else
 					print("PeerState.Connecting lost connection, cannot send rpc_notify_connected")
 
 					return PeerStates.Disconnecting
 				end
-
-				self.resend_timer = time_between_resend_rpc_notify_connected
 			end
 		end
 

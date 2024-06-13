@@ -23,6 +23,7 @@ MenuInformationSlateUI.init = function (self, ui_renderer, input_service)
 	self._material_references_to_unload = {}
 	self._scrollbar_alpha = 0
 	self._current_information_data_index = 1
+	self._information_data = {}
 
 	self:_fetch_backend_information()
 end
