@@ -48,6 +48,8 @@ AINavigationExtension.destroy = function (self)
 	GwNavSmartObjectInterval.destroy(self._next_smartobject_interval)
 	self:_destroy_reusable_astars()
 	self:destroy_reusable_traverse_logic()
+	self:_destroy_navtag_layer_cost_tables()
+	self:_destroy_nav_cost_map_cost_tables()
 end
 
 AINavigationExtension.freeze = function (self)
@@ -77,22 +79,6 @@ AINavigationExtension.set_far_pathing_allowed = function (self, far_pathing_allo
 end
 
 AINavigationExtension.release_bot = function (self)
-	if self._navtag_layer_cost_tables then
-		for _, navtag_layer_cost_table in pairs(self._navtag_layer_cost_tables) do
-			GwNavTagLayerCostTable.destroy(navtag_layer_cost_table)
-		end
-
-		self._navtag_layer_cost_tables = nil
-	end
-
-	if self._nav_cost_map_cost_tables then
-		for _, nav_cost_map_cost_table in pairs(self._nav_cost_map_cost_tables) do
-			GwNavCostMap.destroy_tag_cost_table(nav_cost_map_cost_table)
-		end
-
-		self._nav_cost_map_cost_tables = nil
-	end
-
 	if self._nav_bot then
 		GwNavBot.destroy(self._nav_bot)
 
@@ -680,6 +666,30 @@ AINavigationExtension._destroy_reusable_astars = function (self)
 	end
 
 	self._reusable_astars = nil
+end
+
+AINavigationExtension._destroy_navtag_layer_cost_tables = function (self)
+	if not self._navtag_layer_cost_tables then
+		return
+	end
+
+	for _, navtag_layer_cost_table in pairs(self._navtag_layer_cost_tables) do
+		GwNavTagLayerCostTable.destroy(navtag_layer_cost_table)
+	end
+
+	self._navtag_layer_cost_tables = nil
+end
+
+AINavigationExtension._destroy_nav_cost_map_cost_tables = function (self)
+	if not self._nav_cost_map_cost_tables then
+		return
+	end
+
+	for _, nav_cost_map_cost_table in pairs(self._nav_cost_map_cost_tables) do
+		GwNavCostMap.destroy_tag_cost_table(nav_cost_map_cost_table)
+	end
+
+	self._nav_cost_map_cost_tables = nil
 end
 
 AINavigationExtension.get_reusable_traverse_logic = function (self, identifier, nav_cost_map)

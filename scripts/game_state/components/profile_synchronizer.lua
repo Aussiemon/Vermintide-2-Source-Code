@@ -144,7 +144,7 @@ local function profile_packages(profile_index, career_index, is_first_person, is
 	end
 
 	if career.talent_packages then
-		career.talent_packages(talent_ids, packages_list, is_first_person)
+		career.talent_packages(talent_ids, packages_list, is_first_person, is_bot)
 	end
 
 	if career.additional_inventory then
@@ -457,7 +457,7 @@ ProfileSynchronizer.assign_full_profile = function (self, peer_id, local_player_
 	local state = self._state
 
 	fassert(state:is_server(), "Should only be called on server.")
-	printf("Assigning peer(%s:%s) to profile(%s) career(%s)", peer_id, local_player_id, profile_index, career_index)
+	printf("Assigning peer(%s:%s) to profile(%s) career(%s) is_bot(%s)", peer_id, local_player_id, profile_index, career_index, is_bot)
 	self:_unassign_profiles_of_peer(peer_id, local_player_id)
 
 	local status = Managers.party:get_player_status(peer_id, local_player_id)

@@ -1823,7 +1823,9 @@ DamageUtils.add_damage_network_player = function (damage_profile, target_index, 
 		return 0
 	end
 
-	if attacker_unit and Managers.state.side:versus_is_dark_pact(attacker_unit) and not DamageUtils.vs_dark_pact_can_damage(hit_unit) then
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+
+	if mechanism_name == "versus" and attacker_unit and Managers.state.side:versus_is_dark_pact(attacker_unit) and not DamageUtils.vs_dark_pact_can_damage(hit_unit) then
 		return 0
 	end
 

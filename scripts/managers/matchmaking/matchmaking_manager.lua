@@ -990,6 +990,8 @@ MatchmakingManager.find_game = function (self, search_config)
 				end
 			elseif search_config.matchmaking_start_state then
 				next_state = rawget(_G, search_config.matchmaking_start_state)
+			elseif search_config.dedicated_server and search_config.join_method == "party" then
+				next_state = MatchmakingStateReserveLobby
 			else
 				next_state = MatchmakingStateSearchGame
 			end

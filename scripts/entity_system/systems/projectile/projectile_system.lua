@@ -1403,11 +1403,15 @@ local function _update_drone(drone, target_position, world, dt, t)
 		local move_dir = Quaternion.forward(drone_rot)
 		local x_dir = Vector3.normalize(Vector3.cross(to_target, move_dir))
 
-		wanted_rot = Quaternion.multiply(Quaternion.axis_angle(x_dir, angle_movement), drone_rot)
-
-		if angle_to_target < Quaternion.angle(rot_to_target, wanted_rot) then
-			x_dir = Vector3.normalize(Vector3.cross(move_dir, to_target))
+		if Vector3.length_squared(x_dir) <= math.epsilon then
+			wanted_rot = Quaternion.look(to_target)
+		else
 			wanted_rot = Quaternion.multiply(Quaternion.axis_angle(x_dir, angle_movement), drone_rot)
+
+			if angle_to_target < Quaternion.angle(rot_to_target, wanted_rot) then
+				x_dir = Vector3.normalize(Vector3.cross(move_dir, to_target))
+				wanted_rot = Quaternion.multiply(Quaternion.axis_angle(x_dir, angle_movement), drone_rot)
+			end
 		end
 	end
 

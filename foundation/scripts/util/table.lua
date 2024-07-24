@@ -664,6 +664,23 @@ table.keys = function (t, out)
 	return out, n
 end
 
+table.split_unordered = function (t)
+	local t1, t2 = {}, {}
+	local state = true
+
+	for k, v in pairs(t) do
+		if state then
+			t1[k] = v
+		else
+			t2[k] = v
+		end
+
+		state = not state
+	end
+
+	return t1, t2
+end
+
 table.keys_if = function (t, out, conditional_func)
 	out = out or {}
 

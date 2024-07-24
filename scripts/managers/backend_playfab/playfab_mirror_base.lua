@@ -1846,12 +1846,15 @@ PlayFabMirrorBase._commit_user_data = function (self, new_data, commit, commit_i
 
 		PlayFabClientApi.UpdateUserData(user_data_request, cb_user_data)
 
+		self._num_items_to_load = self._num_items_to_load + 1
 		commit.status = "waiting"
 		commit.wait_for_user_data = true
 	end
 end
 
 PlayFabMirrorBase.update_user_data_cb = function (self, commit_id, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+
 	local commit = self._commits[commit_id]
 
 	commit.wait_for_user_data = false
@@ -2351,7 +2354,7 @@ PlayFabMirrorBase.commit = function (self, skip_queue, commit_complete_callback)
 			debug_printf("Unable to skip queue: commit already in progress")
 
 			id = self:_queue_commit(commit_complete_callback)
-		elseif not LobbyInternal.network_initialized() then
+		elseif not rawget(_G, "LobbyInternal") or not LobbyInternal.network_initialized() then
 			debug_printf("Unable to skip queue: Network not initialized")
 
 			id = self:_queue_commit(commit_complete_callback)
@@ -2404,6 +2407,29 @@ PlayFabMirrorBase._queue_commit = function (self, commit_complete_callback)
 	return id
 end
 
+local max_size = 25000
+
+local function split_request_data(data)
+	local total_size = 0
+	local additional_data
+
+	for k, v in pairs(data) do
+		local size = #cjson.encode(v)
+
+		assert(size <= max_size, "Exceeding max size")
+
+		if total_size + size > max_size then
+			additional_data = additional_data or {}
+			additional_data[k] = v
+			data[k] = nil
+		else
+			total_size = total_size + size
+		end
+	end
+
+	return data, additional_data
+end
+
 local new_data = {}
 
 PlayFabMirrorBase._commit_internal = function (self, queue_id, commit_complete_callbacks)
@@ -2416,6 +2442,7 @@ PlayFabMirrorBase._commit_internal = function (self, queue_id, commit_complete_c
 		updates_to_make = 0,
 		commit_complete_callbacks = commit_complete_callbacks,
 		request_queue_ids = {},
+		current_characters_data_key = self._characters_data_key,
 	}
 
 	table.clear(self._queued_commit)
@@ -2435,6 +2462,8 @@ PlayFabMirrorBase._commit_internal = function (self, queue_id, commit_complete_c
 		local success_callback = callback(self, "save_statistics_cb", commit_id, stats_to_save)
 		local id = self._request_queue:enqueue(request, success_callback, true)
 
+		self._num_items_to_load = self._num_items_to_load + 1
+
 		stats_interface:clear_saved_stats()
 
 		commit.status = "waiting"
@@ -2453,6 +2482,7 @@ PlayFabMirrorBase._commit_internal = function (self, queue_id, commit_complete_c
 			}
 			local id = self._request_queue:enqueue(weave_user_data_request, callback(self, "update_weave_user_data_cb", commit_id), true)
 
+			self._num_items_to_load = self._num_items_to_load + 1
 			commit.status = "waiting"
 			commit.wait_for_weave_user_data = true
 			commit.request_queue_ids[#commit.request_queue_ids + 1] = id
@@ -2469,10 +2499,14 @@ PlayFabMirrorBase._commit_internal = function (self, queue_id, commit_complete_c
 		new_data.keep_decorations = keep_decorations_json
 	end
 
-	local dirty, new_career_data = self:_check_career_data(self._career_data, self._career_data_mirror)
+	local dirty, new_characters_data, dirty_hero_data = self:_check_career_data(self._career_data, self._career_data_mirror)
+	local additional_data
 
 	if dirty then
-		new_data[self._characters_data_key] = cjson.encode(new_career_data)
+		local data_to_send, extra_data = split_request_data(dirty_hero_data)
+
+		new_data[self._characters_data_key] = cjson.encode(data_to_send)
+		additional_data = extra_data
 	end
 
 	if not table.is_empty(new_data) then
@@ -2482,9 +2516,10 @@ PlayFabMirrorBase._commit_internal = function (self, queue_id, commit_complete_c
 				hero_attributes = new_data,
 			},
 		}
-		local success_callback = callback(self, "update_read_only_data_request_cb", commit_id)
+		local success_callback = callback(self, "update_read_only_data_request_cb", commit_id, additional_data)
 		local id = self._request_queue:enqueue(update_read_only_data_request, success_callback, false)
 
+		self._num_items_to_load = self._num_items_to_load + 1
 		commit.status = "waiting"
 		commit.wait_for_read_only_data = true
 		commit.request_queue_ids[#commit.request_queue_ids + 1] = id
@@ -2498,6 +2533,8 @@ PlayFabMirrorBase._commit_internal = function (self, queue_id, commit_complete_c
 end
 
 PlayFabMirrorBase.update_current_win_track_cb = function (self, commit_id, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+
 	local commit = self._commits[commit_id]
 	local function_result = result.FunctionResult
 	local new_read_only_data = function_result.new_read_only_data
@@ -2512,6 +2549,8 @@ PlayFabMirrorBase.update_current_win_track_cb = function (self, commit_id, resul
 end
 
 PlayFabMirrorBase.update_current_gotwf_cb = function (self, commit_id, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+
 	local commit = self._commits[commit_id]
 	local function_result = result.FunctionResult
 	local new_read_only_data = function_result.new_read_only_data
@@ -2525,10 +2564,18 @@ PlayFabMirrorBase.update_current_gotwf_cb = function (self, commit_id, result)
 	commit.wait_for_gotwf_data = false
 end
 
-PlayFabMirrorBase.update_read_only_data_request_cb = function (self, commit_id, result)
+PlayFabMirrorBase.update_read_only_data_request_cb = function (self, commit_id, additional_data, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+
 	local commit = self._commits[commit_id]
 	local function_result = result.FunctionResult
 	local hero_attributes = function_result.hero_attributes
+
+	if commit.current_characters_data_key ~= self._characters_data_key then
+		Crashify.print_exception("PlayFabMirrorBase", "characters_data_key is not the same as when the request was sent. previous: %s, current: %s", commit.current_characters_data_key, self._characters_data_key)
+
+		return
+	end
 
 	for key, new_value in pairs(hero_attributes) do
 		local number_value = tonumber(new_value)
@@ -2546,10 +2593,34 @@ PlayFabMirrorBase.update_read_only_data_request_cb = function (self, commit_id, 
 		end
 	end
 
-	commit.wait_for_read_only_data = false
+	if additional_data then
+		local data_to_send, extra_data = split_request_data(additional_data)
+		local data = {
+			[self._characters_data_key] = cjson.encode(data_to_send),
+		}
+
+		additional_data = extra_data
+
+		local update_read_only_data_request = {
+			FunctionName = "updateHeroAttributes",
+			FunctionParameter = {
+				hero_attributes = data,
+			},
+		}
+		local success_callback = callback(self, "update_read_only_data_request_cb", commit_id, additional_data)
+		local id = self._request_queue:enqueue(update_read_only_data_request, success_callback, false)
+
+		self._num_items_to_load = self._num_items_to_load + 1
+		commit.status = "waiting"
+		commit.request_queue_ids[#commit.request_queue_ids + 1] = id
+	else
+		commit.wait_for_read_only_data = false
+	end
 end
 
 PlayFabMirrorBase.save_statistics_cb = function (self, commit_id, stats, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+
 	local commit = self._commits[commit_id]
 	local stats_interface = Managers.backend:get_interface("statistics")
 
@@ -2559,9 +2630,15 @@ PlayFabMirrorBase.save_statistics_cb = function (self, commit_id, stats, result)
 end
 
 PlayFabMirrorBase.update_weave_user_data_cb = function (self, commit_id, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+
 	local commit = self._commits[commit_id]
 
 	commit.wait_for_weave_user_data = false
+
+	if commit.current_characters_data_key ~= self._characters_data_key then
+		Crashify.print_exception("PlayFabMirrorBase", "characters_data_key is not the same as when the request was sent. previous: %s, current: %s", commit.current_characters_data_key, self._characters_data_key)
+	end
 
 	local weaves_interface = Managers.backend:get_interface("weaves")
 
@@ -2897,22 +2974,31 @@ PlayFabMirrorBase._check_career_data = function (self, careers_data, career_data
 	local characters_data = self._characters_data
 	local characters_data_mirror = self._characters_data_mirror
 	local dirty = false
+	local dirty_hero_data = {}
 	local ignore_keys = {
 		"careers",
 		"loadouts",
+		"experience",
+		"experience_pool",
+		"prestige",
 	}
 
 	for name, data in pairs(characters_data) do
-		for name_mirror, data_mirror in pairs(characters_data_mirror) do
-			if name == name_mirror then
-				dirty = not table.compare(data, data_mirror, ignore_keys)
+		local data_mirror = characters_data_mirror[name]
 
-				break
+		if data_mirror then
+			local character_dirty = not table.compare(data, data_mirror, ignore_keys)
+
+			if character_dirty then
+				dirty = true
+
+				local tbl = dirty_hero_data[name] or {
+					careers = {},
+				}
+
+				tbl.selected_career = data.career
+				dirty_hero_data[name] = tbl
 			end
-		end
-
-		if dirty then
-			break
 		end
 	end
 
@@ -2924,7 +3010,18 @@ PlayFabMirrorBase._check_career_data = function (self, careers_data, career_data
 			local loadouts_mirror = data_mirror.loadouts
 
 			if loadouts_mirror then
-				dirty = not table.compare(loadouts, loadouts_mirror)
+				local character_dirty = not table.compare(loadouts, loadouts_mirror)
+
+				if character_dirty then
+					dirty = true
+
+					local tbl = dirty_hero_data[name] or {
+						careers = {},
+					}
+
+					tbl.selected_loadouts = loadouts
+					dirty_hero_data[name] = tbl
+				end
 			else
 				dirty = true
 			end
@@ -2964,10 +3061,34 @@ PlayFabMirrorBase._check_career_data = function (self, careers_data, career_data
 								end
 
 								dirty = true
+
+								local hero_table = dirty_hero_data[profile.display_name] or {
+									careers = {},
+								}
+								local career_table = hero_table.careers[career_name] or {
+									loadouts = {},
+									deleted_loadouts = {},
+								}
+
+								hero_table.careers[career_name] = career_table
+								career_table.loadouts[tostring(i)] = loadout
+								dirty_hero_data[profile.display_name] = hero_table
 							end
 						end
 					else
 						dirty = true
+
+						local hero_table = dirty_hero_data[profile.display_name] or {
+							careers = {},
+						}
+						local career_table = hero_table.careers[career_name] or {
+							loadouts = {},
+							deleted_loadouts = {},
+						}
+
+						hero_table.careers[career_name] = career_table
+						career_table.loadouts[tostring(i)] = loadout
+						dirty_hero_data[profile.display_name] = hero_table
 					end
 				end
 			else
@@ -2976,9 +3097,34 @@ PlayFabMirrorBase._check_career_data = function (self, careers_data, career_data
 		end
 	end
 
+	for career_name, mirror_data in pairs(career_data_mirror) do
+		local career_data = careers_data[career_name]
+		local profile = PROFILES_BY_CAREER_NAMES[career_name]
+
+		if profile then
+			for i = 1, #mirror_data do
+				if not career_data[i] then
+					dirty = true
+
+					local hero_table = dirty_hero_data[profile.display_name] or {
+						careers = {},
+					}
+					local career_table = hero_table.careers[career_name] or {
+						loadouts = {},
+						deleted_loadouts = {},
+					}
+
+					hero_table.careers[career_name] = career_table
+					career_table.deleted_loadouts[#career_table.deleted_loadouts + 1] = i
+					dirty_hero_data[profile.display_name] = hero_table
+				end
+			end
+		end
+	end
+
 	dirty = dirty or Managers.account:offline_mode()
 
-	return dirty, characters_data
+	return dirty, characters_data, dirty_hero_data
 end
 
 PlayFabMirrorBase.set_career_read_only_data = function (self, character, key, value, career, set_mirror, loadout_index)

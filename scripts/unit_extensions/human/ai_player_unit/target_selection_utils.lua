@@ -1991,6 +1991,38 @@ PerceptionUtils.is_position_in_line_of_sight = function (unit, from_position, ta
 	return no_hit, hit_position
 end
 
+PerceptionUtils.is_boss_in_los = function (unit, from_position, target_position, physics_world)
+	local boss_collision_filter = "filter_player_and_enemy_hit_box_check"
+	local to_target = target_position - from_position
+	local direction = Vector3.normalize(to_target)
+	local distance = Vector3.length(to_target)
+
+	if Vector3.length(direction) <= 0 then
+		return false
+	end
+
+	local hits = PhysicsWorld.immediate_raycast(physics_world, from_position, direction, distance, "all", "collision_filter", boss_collision_filter)
+	local hit_boss = false
+	local hit_boss_pos
+
+	if hits then
+		for i = 1, #hits do
+			local hit_actor = hits[i][INDEX_ACTOR]
+			local hit_unit = Actor.unit(hit_actor)
+			local unit_breed = Unit.get_data(hit_unit, "breed")
+
+			if unit_breed and unit_breed.boss then
+				hit_boss = true
+				hit_boss_pos = hits[i][INDEX_POSITION]
+
+				break
+			end
+		end
+	end
+
+	return hit_boss, hit_boss_pos
+end
+
 PerceptionUtils.has_line_of_sight_to_any_player = function (unit, optional_z_offset)
 	local self_position = POSITION_LOOKUP[unit]
 	local blackboard = BLACKBOARDS[unit]

@@ -3,10 +3,18 @@
 VersusDarkPactCareerDelegator = class(VersusDarkPactCareerDelegator)
 
 local weights = {
-	[0] = 1,
-	0.5,
-	0.25,
-	0.125,
+	default = {
+		[0] = 1,
+		0.5,
+		0.25,
+		0.125,
+	},
+	vs_poison_wind_globadier = {
+		[0] = 0.8,
+		0.4,
+		0.2,
+		0.1,
+	},
 }
 
 VersusDarkPactCareerDelegator.init = function (self)
@@ -46,7 +54,8 @@ VersusDarkPactCareerDelegator._roll_career_options = function (self, num_career_
 		self._picks_per_career[career] = self._picks_per_career[career] or 0
 
 		local num_times_picked = self._picks_per_career[career]
-		local weighted_roll = math.random() * (weights[num_times_picked] or 0)
+		local career_weights = weights[career] or weights.default
+		local weighted_roll = math.random() * (career_weights[num_times_picked] or 0)
 		local smallest_roll = table.min(rolls)
 
 		if weighted_roll > rolls[smallest_roll] then

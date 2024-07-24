@@ -91,7 +91,7 @@ CareerSettings.dr_engineer = {
 	animation_variables = {
 		is_engineer = 1,
 	},
-	talent_packages = function (talent_ids, packages_list, is_first_person)
+	talent_packages = function (talent_ids, packages_list, is_first_person, is_bot)
 		local career_skill_index = 1
 		local career_weapon_index = 1
 

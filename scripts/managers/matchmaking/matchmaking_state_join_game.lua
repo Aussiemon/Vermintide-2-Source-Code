@@ -151,7 +151,13 @@ MatchmakingStateJoinGame.update = function (self, dt, t)
 				Managers.party:set_leader(lobby:lobby_host())
 			end
 
-			return MatchmakingStateSearchGame, self.state_context
+			local search_config = self.search_config
+
+			if search_config and search_config.dedicated_server and search_config.join_method == "party" then
+				return MatchmakingStateReserveLobby, self.state_context
+			else
+				return MatchmakingStateSearchGame, self.state_context
+			end
 		end
 	end
 

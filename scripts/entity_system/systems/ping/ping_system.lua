@@ -607,7 +607,12 @@ PingSystem._add_world_marker = function (self, pinger_unit, pinged_unit, positio
 			local event_text, localization_parameters = social_wheel_event_settings.event_text_func(pinged_unit, social_wheel_event_settings)
 
 			localization_parameters = localization_parameters and LocalizeArray(localization_parameters)
-			chat_message = string.format(Localize(event_text), localization_parameters and unpack(localization_parameters))
+
+			if localization_parameters then
+				chat_message = string.format(Localize(event_text), unpack(localization_parameters))
+			else
+				chat_message = Localize(event_text)
+			end
 		else
 			chat_message = Localize(social_wheel_event_settings.event_text)
 		end

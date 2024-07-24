@@ -2352,6 +2352,8 @@ LevelAnalysis.process_unreachable = function (work_data)
 		print("[LevelAnalysis] --> clearing up free_astars:", #free_astars)
 
 		local GwNavAStar_destroy = GwNavAStar.destroy
+		local GwNavAStar_processing_finished = GwNavAStar.processing_finished
+		local GwNavAStar_cancel = GwNavAStar.cancel
 
 		for i = 1, #free_astars do
 			GwNavAStar_destroy(free_astars[i].astar)
@@ -2360,7 +2362,13 @@ LevelAnalysis.process_unreachable = function (work_data)
 		print("[LevelAnalysis] -->clearing up running_astars:", #running_astars)
 
 		for i = 1, #running_astars do
-			GwNavAStar_destroy(running_astars[i].astar)
+			local astar = running_astars[i].astar
+
+			if not GwNavAStar_processing_finished(astar) then
+				GwNavAStar_cancel(astar)
+			end
+
+			GwNavAStar_destroy(astar)
 		end
 
 		print("[LevelAnalysis] -->bye!")

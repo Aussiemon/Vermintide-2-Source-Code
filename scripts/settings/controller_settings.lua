@@ -7628,6 +7628,185 @@ if EndLevelViewKeymapsFilters.ps_pad then
 	EndLevelViewKeymapsFilters.ps_pad.cursor = nil
 end
 
+DarkPactSelectionUIKeymaps = {}
+DarkPactSelectionUIKeymaps.win32 = InputUtils.keymaps_key_approved("win32") and {
+	switch_dark_pact_profile = {
+		"keyboard",
+		"h",
+		"pressed",
+	},
+	cursor = {
+		"mouse",
+		"cursor",
+		"axis",
+	},
+	left_release = {
+		"mouse",
+		"left",
+		"released",
+	},
+	left_hold = {
+		"mouse",
+		"left",
+		"held",
+	},
+	left_press = {
+		"mouse",
+		"left",
+		"pressed",
+	},
+	right_press = {
+		"mouse",
+		"right",
+		"pressed",
+	},
+	next_observer_target = {
+		"mouse",
+		"left",
+		"pressed",
+	},
+	previous_observer_target = {
+		"mouse",
+		"right",
+		"pressed",
+	},
+	enable_camera_movement = {
+		"keyboard",
+		"left alt",
+		"pressed",
+	},
+	camera_movement_held = {
+		"keyboard",
+		"left alt",
+		"held",
+	},
+}
+DarkPactSelectionUIKeymaps.xb1 = InputUtils.keymaps_key_approved("xb1") and {
+	confirm = {
+		"gamepad",
+		"a",
+		"released",
+	},
+	move_left = {
+		"gamepad",
+		"d_left",
+		"pressed",
+	},
+	move_right = {
+		"gamepad",
+		"d_right",
+		"pressed",
+	},
+	move_left_hold = {
+		"gamepad",
+		"d_left",
+		"held",
+	},
+	move_right_hold = {
+		"gamepad",
+		"d_right",
+		"held",
+	},
+	analog_input = {
+		"gamepad",
+		"left",
+		"axis",
+	},
+	next_observer_target = {
+		"gamepad",
+		"right_shoulder",
+		"pressed",
+	},
+	previous_observer_target = {
+		"gamepad",
+		"left_shoulder",
+		"pressed",
+	},
+}
+DarkPactSelectionUIKeymaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
+	confirm = {
+		"gamepad",
+		"cross",
+		"released",
+	},
+	move_left = {
+		"gamepad",
+		"left",
+		"pressed",
+	},
+	move_right = {
+		"gamepad",
+		"right",
+		"pressed",
+	},
+	move_left_hold = {
+		"gamepad",
+		"left",
+		"held",
+	},
+	move_right_hold = {
+		"gamepad",
+		"right",
+		"held",
+	},
+	analog_input = {
+		"gamepad",
+		"left",
+		"axis",
+	},
+	next_observer_target = {
+		"gamepad",
+		"r1",
+		"pressed",
+	},
+	previous_observer_target = {
+		"gamepad",
+		"l1",
+		"pressed",
+	},
+}
+DarkPactSelectionUIKeymaps.ps_pad = InputUtils.keymaps_key_approved("ps_pad") and {
+	confirm = {
+		"ps_pad",
+		"cross",
+		"released",
+	},
+	move_left = {
+		"ps_pad",
+		"left",
+		"pressed",
+	},
+	move_right = {
+		"ps_pad",
+		"right",
+		"pressed",
+	},
+	move_left_hold = {
+		"ps_pad",
+		"left",
+		"held",
+	},
+	move_right_hold = {
+		"ps_pad",
+		"right",
+		"held",
+	},
+	analog_input = {
+		"ps_pad",
+		"left",
+		"axis",
+	},
+	next_observer_target = {
+		"ps_pad",
+		"r1",
+		"pressed",
+	},
+	previous_observer_target = {
+		"ps_pad",
+		"l1",
+		"pressed",
+	},
+}
 GamepadSettings = {
 	menu_analog_deadzone = 0.5,
 	menu_cooldown = 0.25,

@@ -82,7 +82,7 @@ ChaosTrollStateVomiting.update = function (self, unit, input, dt, context, t)
 		end
 	elseif state == "vomiting" then
 		if t > self._check_puke_time then
-			BTVomitAction.player_vomit_hit_check(unit, self._puke_position:unbox(), self._physics_world)
+			self:player_vomit_hit_check(unit, self._puke_position:unbox(), self._physics_world)
 		end
 
 		if t > self._vomit_end_time then
@@ -190,6 +190,39 @@ ChaosTrollStateVomiting._init_puke_attack = function (self, unit, t)
 	print("INIT PUKE ATTACK DONE")
 
 	return true
+end
+
+local MAX_HITS = 10
+
+ChaosTrollStateVomiting.player_vomit_hit_check = function (self, unit, puke_pos, physics_world, blackboard)
+	local troll_head_node = Unit.node(unit, "j_head")
+	local troll_head_pos = Unit.world_position(unit, troll_head_node)
+	local offset_dir = 2 * Vector3.normalize(puke_pos - POSITION_LOOKUP[unit]) + Vector3(0, 0, 1)
+	local to_puke = puke_pos + offset_dir - troll_head_pos
+	local puke_direction = Vector3.normalize(to_puke)
+	local puke_distance = Vector3.length(to_puke)
+	local sweep_radius = self._breed.vomit_in_face_sweep_radius
+	local result = PhysicsWorld.linear_sphere_sweep(physics_world, troll_head_pos, puke_pos, sweep_radius, MAX_HITS, "collision_filter", "filter_enemy_ray_projectile", "report_initial_overlap")
+
+	if result then
+		local num_hits = #result
+		local buff_system = Managers.state.entity:system("buff_system")
+
+		for i = 1, num_hits do
+			local hit = result[i]
+			local actor = hit.actor
+			local hit_unit = Actor.unit(actor)
+			local unit_hit_is_player = DamageUtils.is_player_unit(hit_unit)
+
+			if unit_hit_is_player then
+				local buff_extension = ScriptUnit.extension(hit_unit, "buff_system")
+
+				if not buff_extension:has_buff_type("vs_troll_bile_face") then
+					buff_system:add_buff(hit_unit, "vs_bile_troll_vomit_face_base", unit)
+				end
+			end
+		end
+	end
 end
 
 ChaosTrollStateVomiting.position_on_navmesh = function (position, nav_world, above, below)

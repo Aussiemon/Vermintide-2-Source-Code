@@ -134,7 +134,11 @@ GameModeInnVs.FAIL_LEVEL = function (self)
 end
 
 GameModeInnVs.player_entered_game_session = function (self, peer_id, local_player_id, wanted_party_index)
+	wanted_party_index = 1
+
 	local current_party_id, wanted_party_id = self._mechanism:handle_party_assignment_for_joining_peer(peer_id, local_player_id, wanted_party_index)
+
+	wanted_party_id = 1
 
 	if LAUNCH_MODE ~= "attract_benchmark" then
 		self._adventure_profile_rules:handle_profile_delegation_for_joining_player(peer_id, local_player_id)
@@ -378,8 +382,12 @@ GameModeInnVs.wanted_transition = function (self)
 	end
 end
 
-GameModeInnVs.is_joinable = function (self)
+GameModeInnVs.is_reservable = function (self)
 	return not self._stale_kicking_peers
+end
+
+GameModeInnVs.is_joinable = function (self)
+	return self:is_reservable() and self:game_mode_state() ~= "dedicated_server_waiting_for_fully_reserved"
 end
 
 GameModeInnVs.update_auto_force_start_conditions = function (self)

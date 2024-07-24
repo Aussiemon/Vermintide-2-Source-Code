@@ -321,7 +321,7 @@ BackendInterfaceTalentsPlayfab.set_talents = function (self, career_name, talent
 		end
 	end
 
-	self._backend_mirror:set_character_data(career_name, "talents", talent_string, optional_loadout_index)
+	self._backend_mirror:set_character_data(career_name, "talents", talent_string, false, optional_loadout_index)
 
 	self._dirty = true
 end

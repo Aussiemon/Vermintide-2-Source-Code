@@ -1096,19 +1096,19 @@ DeusMechanism._setup_run = function (self, run_id, run_seed, is_server, server_p
 
 	local backend_items = Managers.backend:get_interface("items")
 	local talent_interface = Managers.backend:get_interface("talents")
-	local loadout = backend_items:get_loadout()
-	local initial_loadout = {}
-	local initial_talents = {}
+	local bot_loadout = backend_items:get_bot_loadout()
+	local initial_bot_loadout = {}
+	local initial_bot_talents = {}
 
 	for _, career in ipairs(DEUS_CAREERS) do
-		local talents_for_career = talent_interface:get_talents(career)
+		local talents_for_career = talent_interface:get_bot_talents(career)
 
-		initial_talents[career] = talents_for_career
+		initial_bot_talents[career] = talents_for_career
 
-		local slots = loadout[career]
+		local slots = bot_loadout[career]
 		local initial_loadout_slots = {}
 
-		initial_loadout[career] = initial_loadout_slots
+		initial_bot_loadout[career] = initial_loadout_slots
 
 		for slot, backend_id in pairs(slots) do
 			if slot == "slot_melee" or slot == "slot_ranged" then
@@ -1132,19 +1132,19 @@ DeusMechanism._setup_run = function (self, run_id, run_seed, is_server, server_p
 		end
 	end
 
-	local loadout = backend_items:get_bot_loadout()
-	local initial_bot_loadout = {}
-	local initial_bot_talents = {}
+	local hero_loadout = backend_items:get_loadout()
+	local initial_loadout = {}
+	local initial_talents = {}
 
 	for _, career in ipairs(DEUS_CAREERS) do
-		local talents_for_career = talent_interface:get_bot_talents(career)
+		local talents_for_career = talent_interface:get_talents(career)
 
-		initial_bot_talents[career] = talents_for_career
+		initial_talents[career] = talents_for_career
 
-		local slots = loadout[career]
+		local slots = hero_loadout[career]
 		local initial_loadout_slots = {}
 
-		initial_bot_loadout[career] = initial_loadout_slots
+		initial_loadout[career] = initial_loadout_slots
 
 		for slot, backend_id in pairs(slots) do
 			if slot == "slot_melee" or slot == "slot_ranged" then
@@ -1164,6 +1164,7 @@ DeusMechanism._setup_run = function (self, run_id, run_seed, is_server, server_p
 
 				item.power_level = DeusStarterWeaponPowerLevels[difficulty] or DeusStarterWeaponPowerLevels.default
 				initial_loadout_slots[slot] = item
+				initial_bot_loadout[career][slot] = initial_bot_loadout[career][slot] or item
 			end
 		end
 	end

@@ -718,12 +718,12 @@ CareerSettings = {
 		is_unlocked_function = local_is_unlocked_function,
 		is_dlc_unlocked = local_is_dlc_unlocked,
 		override_available_for_mechanism = local_override_available_for_mechanism,
-		talent_packages = function (talent_ids, packages_list, is_first_person)
+		talent_packages = function (talent_ids, packages_list, is_first_person, is_bot)
 			local weapon_name = ActivatedAbilitySettings.we_3[1].weapon_name
 			local weapon = ItemMasterList[weapon_name]
 
 			if weapon and weapon.slot_to_use then
-				local item = BackendUtils.get_loadout_item("we_waywatcher", weapon.slot_to_use)
+				local item = BackendUtils.get_loadout_item("we_waywatcher", weapon.slot_to_use, is_bot)
 				local item_data = item and rawget(ItemMasterList, item.key)
 				local item_template_name = item_data and item_data.template
 

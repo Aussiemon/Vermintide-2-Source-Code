@@ -261,22 +261,20 @@ if has_steam and not disable_voip or DEDICATED_SERVER then
 			self.peers_requested_room[peer_id] = true
 
 			return
-		elseif mechanism.name == "Versus" and Managers.mechanism:get_state() ~= "inn" and party then
+		elseif mechanism.name == "Versus" and Managers.mechanism:get_state() ~= "inn" and party or DEDICATED_SERVER then
 			if enter then
 				self:vs_add_client_to_voip_room(peer_id, local_player_id)
 				cprintf("[Voip:rpc_voip_room_request] Adding peer: %s to VOIP room", peer_id)
 
 				self.peers_requested_room[peer_id] = true
-
-				return
 			else
 				self:vs_remove_client_from_voip_room(peer_id, local_player_id, party.party_id)
 				cprintf("[Voip:rpc_voip_room_request] Removing peer: %s to VOIP room", peer_id)
 
 				self.peers_requested_room[peer_id] = nil
-
-				return
 			end
+
+			return
 		end
 
 		local room_members = SteamVoipRoom.members(room_id)
