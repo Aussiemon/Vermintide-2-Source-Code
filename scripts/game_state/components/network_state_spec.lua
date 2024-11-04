@@ -172,6 +172,32 @@ local function decode_extra_packages(string)
 	return array
 end
 
+local function encode_game_mode_event_data(data)
+	local lookup_data = table.clone(data, true)
+	local mutators = lookup_data.mutators
+
+	mutators = mutators and table.convert_lookup(mutators, NetworkLookup.mutator_templates)
+
+	local boons = lookup_data.boons
+
+	boons = boons and table.convert_lookup(boons, NetworkLookup.deus_power_up_templates)
+
+	return cjson.encode(lookup_data)
+end
+
+local function decode_game_mode_event_data(string)
+	local data = cjson.decode(string)
+	local mutators = data.mutators
+
+	mutators = mutators and table.convert_lookup(mutators, NetworkLookup.mutator_templates)
+
+	local boons = data.boons
+
+	boons = boons and table.convert_lookup(boons, NetworkLookup.deus_power_up_templates)
+
+	return data
+end
+
 local function encode_lookup(lookup_key)
 	return function (val)
 		return NetworkLookup[lookup_key][val]
@@ -309,6 +335,13 @@ local spec = {
 			default_value = 1,
 			type = "number",
 			composite_keys = {},
+		},
+		game_mode_event_data = {
+			type = "table",
+			default_value = {},
+			composite_keys = {},
+			encode = encode_game_mode_event_data,
+			decode = decode_game_mode_event_data,
 		},
 	},
 	peer = {

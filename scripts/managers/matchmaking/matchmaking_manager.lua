@@ -98,8 +98,6 @@ local RPCS = {
 	"rpc_matchmaking_broadcast_game_server_ip_address",
 	"rpc_set_quick_game",
 	"rpc_start_game_countdown_finished",
-	"rpc_set_game_mode_event_data",
-	"rpc_clear_game_mode_event_data",
 	"rpc_matchmaking_sync_quickplay_data",
 	"rpc_matchmaking_request_quickplay_data",
 	"rpc_matchmaking_verify_dlc",
@@ -163,6 +161,19 @@ MatchmakingManager.init = function (self, params)
 		self._joining_this_host_peer_id = self.lobby:lobby_host()
 
 		self:_change_state(MatchmakingStateIdle, self.params, {})
+
+		local network_client = Managers.mechanism:network_handler()
+		local network_state = network_client:get_network_state()
+
+		network_state:register_callback("server_data_updated", self, "on_client_game_mode_event_data_updated", "game_mode_event_data")
+
+		local game_mode_event_data = network_state:get_game_mode_event_data()
+
+		if not table.is_empty(game_mode_event_data) then
+			self:set_game_mode_event_data(game_mode_event_data)
+		else
+			self:clear_game_mode_event_data()
+		end
 	else
 		self:_change_state(MatchmakingStateIdle, self.params, {})
 	end
@@ -175,6 +186,10 @@ MatchmakingManager.init = function (self, params)
 	self.profile_update_time = 0
 	self._leader_peer_id = nil
 	self.countdown_has_finished = false
+
+	if params.game_mode_event_data then
+		self:set_game_mode_event_data(params.game_mode_event_data)
+	end
 end
 
 MatchmakingManager.reset_lobby_filters = function (self)
@@ -195,6 +210,10 @@ MatchmakingManager.game_mode_event_data = function (self)
 	return self._game_mode_event_data
 end
 
+MatchmakingManager.have_game_mode_event_data = function (self)
+	return self._game_mode_event_data and not table.is_empty(self._game_mode_event_data)
+end
+
 MatchmakingManager.set_game_mode_event_data = function (self, event_data)
 	self._game_mode_event_data = event_data
 
@@ -202,16 +221,7 @@ MatchmakingManager.set_game_mode_event_data = function (self, event_data)
 		local mutators = event_data.mutators
 
 		fassert(#mutators <= NetworkConstants.mutator_array.max_size, "Too many mutators defined for event! (%d|%d)", #mutators, NetworkConstants.mutator_array.max_size)
-
-		local mutator_lookup_array = {}
-
-		for i = 1, #mutators do
-			local mutator_name = mutators[i]
-
-			mutator_lookup_array[i] = NetworkLookup.mutator_templates[mutator_name]
-		end
-
-		self.network_transmit:send_rpc_clients("rpc_set_game_mode_event_data", mutator_lookup_array)
+		self.network_server:get_network_state():set_game_mode_event_data(event_data)
 	end
 end
 
@@ -219,7 +229,15 @@ MatchmakingManager.clear_game_mode_event_data = function (self)
 	self._game_mode_event_data = nil
 
 	if self.is_server then
-		self.network_transmit:send_rpc_clients("rpc_clear_game_mode_event_data")
+		self.network_server:get_network_state():set_game_mode_event_data({})
+	end
+end
+
+MatchmakingManager.on_client_game_mode_event_data_updated = function (self, key_type, peer_id, local_player_id, profile_index, career_index, party_id, value)
+	if not table.is_empty(value) then
+		self:set_game_mode_event_data(value)
+	else
+		self:clear_game_mode_event_data()
 	end
 end
 
@@ -1242,24 +1260,6 @@ MatchmakingManager.rpc_set_matchmaking = function (self, channel_id, is_matchmak
 	end
 end
 
-MatchmakingManager.rpc_set_game_mode_event_data = function (self, channel_id, mutator_lookup_array)
-	local mutators = {}
-
-	for i = 1, #mutator_lookup_array do
-		local mutator_id = mutator_lookup_array[i]
-
-		mutators[i] = NetworkLookup.mutator_templates[mutator_id]
-	end
-
-	self._game_mode_event_data = {
-		mutators = mutators,
-	}
-end
-
-MatchmakingManager.rpc_clear_game_mode_event_data = function (self, channel_id)
-	self:clear_game_mode_event_data()
-end
-
 MatchmakingManager.rpc_cancel_matchmaking = function (self, channel_id)
 	if not self.is_server then
 		return
@@ -2076,22 +2076,6 @@ MatchmakingManager.hot_join_sync = function (self, peer_id)
 	self.peers_to_sync[peer_id] = true
 
 	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
-	local game_mode_event_data = self._game_mode_event_data
-
-	if game_mode_event_data then
-		local mutators = game_mode_event_data.mutators
-		local mutator_lookup_array = {}
-
-		for i = 1, #mutators do
-			local mutator_name = mutators[i]
-
-			mutator_lookup_array[i] = NetworkLookup.mutator_templates[mutator_name]
-		end
-
-		RPC.rpc_set_game_mode_event_data(channel_id, mutator_lookup_array)
-	else
-		RPC.rpc_clear_game_mode_event_data(channel_id)
-	end
 
 	RPC.rpc_set_client_game_privacy(channel_id, self:is_game_private())
 	RPC.rpc_set_quick_game(channel_id, self:is_quick_game())

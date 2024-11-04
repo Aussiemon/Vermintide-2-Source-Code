@@ -60,13 +60,21 @@ BackendSettings.morris_casual_steam_playfab = {
 	environment = rawget(_G, "Backend") and Backend.ENV_STAGE,
 	allow_local = local_backend_available,
 }
-BackendSettings.beta_steam_playfab = {
+BackendSettings.cat_steam_playfab = {
 	allow_tutorial = true,
 	enable_sessions = false,
 	implementation = "playfab",
 	title_id = "CF97B",
 	environment = rawget(_G, "Backend") and Backend.ENV_STAGE,
 	allow_local = local_backend_available,
+}
+BackendSettings.beta_steam_playfab = {
+	allow_local = false,
+	allow_tutorial = true,
+	enable_sessions = false,
+	implementation = "playfab",
+	title_id = "471E2",
+	environment = rawget(_G, "Backend") and Backend.ENV_STAGE,
 }
 BackendSettings.stage_xbone_playfab = {
 	allow_local = false,

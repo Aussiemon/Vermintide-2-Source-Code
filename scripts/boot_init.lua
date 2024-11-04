@@ -169,7 +169,7 @@ else
 	}
 end
 
-if IS_WINDOWS and BUILD ~= "dev" and BUILD ~= "debug" and LAUNCH_MODE ~= "attract_benchmark" then
+if BUILD ~= "dev" and BUILD ~= "debug" and LAUNCH_MODE ~= "attract_benchmark" then
 	local function scrub_library(lib)
 		rawset(_G, lib, nil)
 

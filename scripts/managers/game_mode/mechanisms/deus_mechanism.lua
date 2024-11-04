@@ -281,8 +281,10 @@ DeusMechanism.create_host_migration_info = function (self, gm_event_end_conditio
 	end
 
 	local in_map = self._state == MAP_STATE
+	local game_mode_event_data = network_handler:get_network_state():get_game_mode_event_data()
 	local host_migration_info = {
 		host_to_migrate_to = new_host,
+		game_mode_event_data = not table.is_empty(game_mode_event_data) and game_mode_event_data or nil,
 	}
 	local level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, locked_director_functions, run_difficulty, difficulty_tweak, extra_packages = get_next_level_data(deus_run_controller, in_map)
 

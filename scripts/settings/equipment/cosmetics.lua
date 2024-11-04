@@ -2762,9 +2762,33 @@ Cosmetics.frame_0104 = {
 }
 Cosmetics.frame_0105 = {
 	icon = "unit_frame_02",
+	texture_package_name = "resource_packages/store/item_icons/store_item_icon_frame_0105",
+	unit = "",
+	attachment_node = {
+		unit = "units/ui/ui_portrait_frame",
+		attachment_node = AttachmentNodeLinking.ui_portrait_frame,
+	},
+	material_settings = {
+		portrait_frame = {
+			texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_0105/store_item_icon_frame_0105",
+			type = "texture",
+		},
+	},
 }
 Cosmetics.frame_0106 = {
 	icon = "unit_frame_02",
+	texture_package_name = "resource_packages/store/item_icons/store_item_icon_frame_0106",
+	unit = "",
+	attachment_node = {
+		unit = "units/ui/ui_portrait_frame",
+		attachment_node = AttachmentNodeLinking.ui_portrait_frame,
+	},
+	material_settings = {
+		portrait_frame = {
+			texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_0106/store_item_icon_frame_0106",
+			type = "texture",
+		},
+	},
 }
 Cosmetics.frame_0107 = {
 	icon = "unit_frame_02",
@@ -2777,9 +2801,33 @@ Cosmetics.frame_0109 = {
 }
 Cosmetics.frame_0110 = {
 	icon = "unit_frame_02",
+	texture_package_name = "resource_packages/store/item_icons/store_item_icon_frame_0110",
+	unit = "",
+	attachment_node = {
+		unit = "units/ui/ui_portrait_frame",
+		attachment_node = AttachmentNodeLinking.ui_portrait_frame,
+	},
+	material_settings = {
+		portrait_frame = {
+			texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_0110/store_item_icon_frame_0110",
+			type = "texture",
+		},
+	},
 }
 Cosmetics.frame_0111 = {
 	icon = "unit_frame_02",
+	texture_package_name = "resource_packages/store/item_icons/store_item_icon_frame_0111",
+	unit = "",
+	attachment_node = {
+		unit = "units/ui/ui_portrait_frame",
+		attachment_node = AttachmentNodeLinking.ui_portrait_frame,
+	},
+	material_settings = {
+		portrait_frame = {
+			texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_0111/store_item_icon_frame_0111",
+			type = "texture",
+		},
+	},
 }
 Cosmetics.frame_dev = {
 	icon = "unit_frame_02",
@@ -2807,12 +2855,36 @@ Cosmetics.frame_summer = {
 }
 Cosmetics.frame_geheimnisnacht_01 = {
 	icon = "unit_frame_02",
+	texture_package_name = "resource_packages/store/item_icons/store_item_icon_frame_geheimnisnacht_01",
+	unit = "",
+	attachment_node = {
+		unit = "units/ui/ui_portrait_frame",
+		attachment_node = AttachmentNodeLinking.ui_portrait_frame,
+	},
+	material_settings = {
+		portrait_frame = {
+			texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_geheimnisnacht_01/store_item_icon_frame_geheimnisnacht_01",
+			type = "texture",
+		},
+	},
 }
 Cosmetics.frame_geheimnisnacht_02 = {
 	icon = "unit_frame_02",
 }
 Cosmetics.frame_geheimnisnacht_03 = {
 	icon = "unit_frame_02",
+	texture_package_name = "resource_packages/store/item_icons/store_item_icon_frame_geheimnisnacht_03",
+	unit = "",
+	attachment_node = {
+		unit = "units/ui/ui_portrait_frame",
+		attachment_node = AttachmentNodeLinking.ui_portrait_frame,
+	},
+	material_settings = {
+		portrait_frame = {
+			texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_geheimnisnacht_03/store_item_icon_frame_geheimnisnacht_03",
+			type = "texture",
+		},
+	},
 }
 Cosmetics.frame_bogenhafen_01 = {
 	icon = "unit_frame_02",
@@ -2878,6 +2950,12 @@ Cosmetics.frame_celebration_03 = {
 	icon = "unit_frame_02",
 }
 Cosmetics.frame_celebration_05 = {
+	icon = "unit_frame_02",
+}
+Cosmetics.frame_beta_2024 = {
+	icon = "unit_frame_02",
+}
+Cosmetics.frame_streamer = {
 	icon = "unit_frame_02",
 }
 Cosmetics.frame_scorpion_complete_all_helmgart_levels_cataclysm = {
@@ -3029,8 +3107,35 @@ Cosmetics.frame_necromancer_03 = {
 }
 Cosmetics.frame_geheimnisnacht_04 = {
 	icon = "unit_frame_02",
+	texture_package_name = "resource_packages/store/item_icons/store_item_icon_frame_geheimnisnacht_04",
+	unit = "",
+	attachment_node = {
+		unit = "units/ui/ui_portrait_frame",
+		attachment_node = AttachmentNodeLinking.ui_portrait_frame,
+	},
+	material_settings = {
+		portrait_frame = {
+			texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_geheimnisnacht_04/store_item_icon_frame_geheimnisnacht_04",
+			type = "texture",
+		},
+	},
 }
 Cosmetics.frame_geheimnisnacht_05 = {
+	icon = "unit_frame_02",
+	texture_package_name = "resource_packages/store/item_icons/store_item_icon_frame_geheimnisnacht_05",
+	unit = "",
+	attachment_node = {
+		unit = "units/ui/ui_portrait_frame",
+		attachment_node = AttachmentNodeLinking.ui_portrait_frame,
+	},
+	material_settings = {
+		portrait_frame = {
+			texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_geheimnisnacht_05/store_item_icon_frame_geheimnisnacht_05",
+			type = "texture",
+		},
+	},
+}
+Cosmetics.frame_geheimnisnacht_2024 = {
 	icon = "unit_frame_02",
 }
 Cosmetics.frame_gotwf_01 = {

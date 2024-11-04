@@ -353,12 +353,14 @@ AchievementTemplateHelper.add_weapon_levels_challenge = function (achievements, 
 		stat_names[i] = stat_name
 	end
 
+	local difficulty_setting = DifficultySettings[difficuty]
 	local rank = DifficultySettings[difficuty].rank
 	local template = {
 		name = "achv_" .. id .. "_name",
 		desc = "achv_" .. id .. "_desc",
 		icon = icon or "achievement_trophy_" .. id,
 		required_dlc = dlc,
+		required_dlc_extra = difficulty_setting.dlc_requirement,
 		ID_XB1 = id_xb1,
 		ID_PS4 = id_ps4,
 	}
@@ -438,11 +440,14 @@ end
 
 AchievementTemplateHelper.add_levels_complete_challenge = function (achievements, id, levels, difficulty_rank, icon, dlc, id_xb1, id_ps4)
 	local num_levels = levels and #levels or 0
+	local difficulty_key = DifficultyRankLookup[difficulty_rank]
+	local difficulty_settings = DifficultySettings[difficulty_key]
 	local template = {
 		name = "achv_" .. id .. "_name",
 		desc = "achv_" .. id .. "_desc",
 		icon = icon or "achievement_trophy_" .. id,
 		required_dlc = dlc,
+		required_dlc_extra = difficulty_settings.dlc_requirement,
 		ID_XB1 = id_xb1,
 		ID_PS4 = id_ps4,
 		completed = function (statistics_db, stats_id)
@@ -497,11 +502,14 @@ AchievementTemplateHelper.add_levels_complete_per_hero_challenge = function (ach
 	fassert(CareerSettings[career_name] ~= nil, "No career with such name (%s)", career_name)
 
 	local num_levels = levels and #levels or 0
+	local difficulty_key = DifficultyRankLookup[difficulty_rank]
+	local difficulty_settings = DifficultySettings[difficulty_key]
 	local template = {
 		name = "achv_" .. id .. "_" .. career_name .. "_name",
 		desc = "achv_" .. id .. "_" .. career_name .. "_desc",
 		icon = icon or "achievement_trophy_" .. id .. "_" .. career_name,
 		required_dlc = dlc,
+		required_dlc_extra = difficulty_settings.dlc_requirement,
 		ID_XB1 = id_xb1,
 		ID_PS4 = id_ps4,
 		completed = function (statistics_db, stats_id)

@@ -2,6 +2,85 @@
 
 local skins = {
 	{
+		name = "dw_grudge_raker_skin_01_runed_03",
+		data = {
+			description = "dw_grudge_raker_skin_01_runed_03_description",
+			display_name = "dw_grudge_raker_skin_01_runed_03_name",
+			display_unit = "units/weapons/weapon_display/display_1h_grudge_raker",
+			hud_icon = "weapon_generic_icon_staff_3",
+			inventory_icon = "icon_wpn_dw_rakegun_t1_runed_03",
+			rarity = "unique",
+			right_hand_unit = "units/weapons/player/wpn_dw_rakegun_t1/wpn_dw_rakegun_t1_runed_01",
+			template = "grudge_raker_template_1",
+			material_settings = WeaponMaterialSettingsTemplates.golden_glow,
+		},
+	},
+	{
+		name = "es_handgun_skin_02_runed_03",
+		data = {
+			description = "es_handgun_skin_02_runed_03_description",
+			display_name = "es_handgun_skin_02_runed_03_name",
+			display_unit = "units/weapons/weapon_display/display_1h_handguns",
+			hud_icon = "weapon_generic_icon_staff_3",
+			inventory_icon = "icon_wpn_empire_handgun_02_t2_runed_03",
+			rarity = "unique",
+			right_hand_unit = "units/weapons/player/wpn_empire_handgun_02_t2/wpn_empire_handgun_02_t2_runed_01",
+			template = "handgun_template_1",
+			action_anim_overrides = {
+				animation_variation_id = 1,
+			},
+			material_settings = WeaponMaterialSettingsTemplates.golden_glow,
+		},
+	},
+	{
+		name = "wh_repeating_pistol_skin_02_runed_03",
+		data = {
+			description = "wh_repeating_pistol_skin_02_runed_03_description",
+			display_name = "wh_repeating_pistol_skin_02_runed_03_name",
+			display_unit = "units/weapons/weapon_display/display_repeating_handguns",
+			hud_icon = "weapon_generic_icon_repeating_pistol",
+			inventory_icon = "icon_wpn_empire_pistol_repeater_t2_runed_03",
+			rarity = "unique",
+			right_hand_unit = "units/weapons/player/wpn_empire_pistol_repeater/wpn_empire_pistol_repeater_t2_runed_01",
+			template = "repeating_pistol_template_1",
+			action_anim_overrides = {
+				animation_variation_id = 1,
+			},
+			material_settings = WeaponMaterialSettingsTemplates.golden_glow,
+		},
+	},
+	{
+		name = "bw_fireball_staff_skin_01_runed_03",
+		data = {
+			description = "bw_fireball_staff_skin_01_runed_03_description",
+			display_name = "bw_fireball_staff_skin_01_runed_03_name",
+			display_unit = "units/weapons/weapon_display/display_staff",
+			hud_icon = "weapon_generic_icon_staff_3",
+			inventory_icon = "icon_wpn_brw_staff_02_runed_03",
+			left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
+			rarity = "unique",
+			right_hand_unit = "units/weapons/player/wpn_brw_staff_02/wpn_brw_staff_02_runed_01",
+			template = "staff_fireball_fireball_template_1",
+			material_settings = WeaponMaterialSettingsTemplates.golden_glow,
+		},
+	},
+	{
+		name = "we_crossbow_skin_02_runed_03",
+		data = {
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_pile",
+			ammo_unit_3p = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_3p",
+			description = "we_crossbow_skin_02_runed_03_description",
+			display_name = "we_crossbow_skin_02_runed_03_name",
+			display_unit = "units/weapons/weapon_display/display_1h_crossbow",
+			hud_icon = "weapon_generic_icon_staff_3",
+			inventory_icon = "icon_wpn_we_repeater_crossbow_t2_runed_03",
+			left_hand_unit = "units/weapons/player/wpn_we_repeater_crossbow_t2/wpn_we_repeater_crossbow_t2_runed_01",
+			rarity = "unique",
+			template = "repeating_crossbow_elf_template",
+			material_settings = WeaponMaterialSettingsTemplates.golden_glow,
+		},
+	},
+	{
 		name = "we_longbow_skin_06_runed_03",
 		data = {
 			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
@@ -81,7 +160,7 @@ local skins = {
 			display_name = "bw_1h_flaming_sword_skin_01_runed_03_name",
 			display_unit = "units/weapons/weapon_display/display_1h_swords_wizard",
 			hud_icon = "weapon_generic_icon_staff_3",
-			inventory_icon = "icon_wpn_brw_flaming_sword_01_t1_runed_01",
+			inventory_icon = "icon_wpn_brw_flaming_sword_01_t1_runed_03",
 			rarity = "unique",
 			right_hand_unit = "units/weapons/player/wpn_brw_sword_01_t1/wpn_brw_flaming_sword_01_t1_runed_01",
 			template = "flaming_sword_template_1",
@@ -223,6 +302,31 @@ local skins = {
 	},
 }
 local skin_combinations = {
+	dr_rakegun_skins = {
+		unique = {
+			"dw_grudge_raker_skin_01_runed_03",
+		},
+	},
+	es_handgun_skins = {
+		unique = {
+			"es_handgun_skin_02_runed_03",
+		},
+	},
+	wh_repeating_pistols_skins = {
+		unique = {
+			"wh_repeating_pistol_skin_02_runed_03",
+		},
+	},
+	bw_skullstaff_fireball_skins = {
+		unique = {
+			"bw_fireball_staff_skin_01_runed_03",
+		},
+	},
+	we_crossbow_repeater_skins = {
+		unique = {
+			"we_crossbow_skin_02_runed_03",
+		},
+	},
 	we_longbow_skins = {
 		unique = {
 			"we_longbow_skin_06_runed_03",

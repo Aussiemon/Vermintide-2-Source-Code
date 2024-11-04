@@ -1375,3 +1375,7 @@ end
 NetworkServer.get_side_order_state = function (self, side_order_state)
 	return self._network_state and self._network_state:get_side_order_state()
 end
+
+NetworkServer.get_network_state = function (self)
+	return self._network_state
+end

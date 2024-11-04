@@ -183,7 +183,11 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 		mission_id = search_config.mission_id
 
 		if not quick_game then
-			private_game = true
+			if Managers.account:offline_mode() then
+				private_game = search_config.private_game
+			else
+				private_game = true
+			end
 		end
 	elseif mechanism == "versus" and mission_id == "any" then
 		local map_pool = script_data.versus_map_pool or Managers.mechanism:mechanism_setting_for_title("map_pool")

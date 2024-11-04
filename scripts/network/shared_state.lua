@@ -325,10 +325,54 @@ SharedState.init = function (self, context, spec, is_server, network_server, ser
 	end
 
 	self._key_cache = {}
+	self._callbacks = {
+		server_data_updated = {},
+		client_data_updated = {},
+		client_left = {},
+		full_sync_complete = {},
+	}
 
 	if self._is_server then
 		self._network_server:register_shared_state(self)
 	end
+end
+
+SharedState.register_callback = function (self, cb_type, obj, func_name, ...)
+	local cb_data = self._callbacks[cb_type]
+
+	fassert(cb_data, "Invalid callback type %s", cb_type)
+
+	local data = cb_data[obj]
+
+	fassert(data == nil, "Callback already registered on object for type '%s'", cb_type)
+
+	local filter
+	local num_vargs = select("#", ...)
+
+	if num_vargs > 0 then
+		filter = {}
+
+		for i = 1, num_vargs do
+			local key = select(i, ...)
+
+			filter[key] = true
+		end
+	end
+
+	cb_data[obj] = {
+		func_name = func_name,
+		filter = filter,
+	}
+end
+
+SharedState.unregister_callback = function (self, obj, cb_type)
+	local cb_data = self._callbacks[cb_type]
+
+	if not cb_data then
+		return
+	end
+
+	cb_data[obj] = nil
 end
 
 SharedState.network_context_created = function (self, lobby, server_peer_id, own_peer_id, is_server, network_server)
@@ -653,6 +697,12 @@ SharedState.rpc_shared_state_full_sync_complete = function (self, channel_id, co
 	end
 
 	self._client_full_sync_complete = true
+
+	local callbacks = self._callbacks.full_sync_complete
+
+	for obj, data in pairs(callbacks) do
+		obj[data.func_name](obj, peer_id)
+	end
 end
 
 SharedState.rpc_shared_state_set_int = function (self, channel_id, context, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
@@ -770,6 +820,14 @@ SharedState.rpc_shared_state_client_left = function (self, channel_id, context, 
 
 	dprintf("%s: <rpc client left> %s", self._original_context, peer_id)
 	self:_clear_peer_id_data(peer_id)
+
+	local callbacks = self._callbacks.client_left
+
+	for obj, data in pairs(callbacks) do
+		if not data.filter or data.filter[peer_id] then
+			obj[data.func_name](obj, peer_id)
+		end
+	end
 end
 
 SharedState._set_rpc = function (self, sender_channel_id, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
@@ -797,6 +855,14 @@ SharedState._set_rpc = function (self, sender_channel_id, owner, key_type_lookup
 	end
 
 	self:_increment_revision()
+
+	local callbacks = self._callbacks.client_data_updated
+
+	for obj, data in pairs(callbacks) do
+		if not data.filter or data.filter[key_type] then
+			obj[data.func_name](obj, owner, key_type, peer_id, local_player_id, profile_index, career_index, party_id, value)
+		end
+	end
 end
 
 SharedState._set_server_rpc = function (self, sender_channel_id, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
@@ -823,6 +889,14 @@ SharedState._set_server_rpc = function (self, sender_channel_id, key_type_lookup
 	dprintf("%s: <rpc set server> %s:%s:%d:%d:%d = %s", self._original_context, key_type, peer_id, local_player_id, profile_index, career_index, printable_value(value))
 	set_server(self._server_state, key_type, peer_id, local_player_id, profile_index, career_index, value)
 	self:_increment_revision()
+
+	local callbacks = self._callbacks.server_data_updated
+
+	for obj, data in pairs(callbacks) do
+		if not data.filter or data.filter[key_type] then
+			obj[data.func_name](obj, key_type, peer_id, local_player_id, profile_index, career_index, party_id, value)
+		end
+	end
 end
 
 SharedState._send_all = function (self, channel_id, player_id, player_state)

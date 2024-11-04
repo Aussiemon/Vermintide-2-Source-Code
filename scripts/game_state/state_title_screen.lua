@@ -418,7 +418,9 @@ StateTitleScreen.on_exit = function (self, application_shutdown)
 		self._title_start_ui = nil
 	end
 
-	self:_init_beta_overlay()
+	if not script_data.disable_beta_overlay then
+		self:_init_beta_overlay()
+	end
 
 	if application_shutdown and rawget(_G, "LobbyInternal") and LobbyInternal.client then
 		if Managers.party:has_party_lobby() then

@@ -2989,6 +2989,8 @@ PlayFabMirrorBase._check_career_data = function (self, careers_data, career_data
 		if data_mirror then
 			local character_dirty = not table.compare(data, data_mirror, ignore_keys)
 
+			character_dirty = character_dirty or table.size(data) ~= table.size(data_mirror)
+
 			if character_dirty then
 				dirty = true
 
@@ -2997,6 +2999,7 @@ PlayFabMirrorBase._check_career_data = function (self, careers_data, career_data
 				}
 
 				tbl.selected_career = data.career
+				tbl.selected_bot_career = data.bot_career
 				dirty_hero_data[name] = tbl
 			end
 		end

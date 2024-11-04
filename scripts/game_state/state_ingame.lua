@@ -268,6 +268,11 @@ StateIngame.on_enter = function (self)
 			local_quick_game = loading_context.local_quickplay_bonus,
 		}
 
+		if loading_context.host_migration_info then
+			matchmaking_params.game_mode_event_data = loading_context.host_migration_info.game_mode_event_data
+			loading_context.host_migration_info = nil
+		end
+
 		Managers.matchmaking = MatchmakingManager:new(matchmaking_params)
 	end
 
@@ -1482,7 +1487,7 @@ StateIngame._check_exit = function (self, t)
 		end
 
 		if self.exit_type then
-			if self.is_server and not self.is_in_inn and self.exit_type ~= "reload_level" and Managers.matchmaking and Managers.matchmaking:game_mode_event_data() and Managers.mechanism:game_mechanism():is_venture_over() then
+			if self.is_server and not self.is_in_inn and self.exit_type ~= "reload_level" and Managers.matchmaking and Managers.matchmaking:have_game_mode_event_data() and Managers.mechanism:game_mechanism():is_venture_over() then
 				Managers.matchmaking:clear_game_mode_event_data()
 			end
 

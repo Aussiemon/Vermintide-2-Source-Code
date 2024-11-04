@@ -1679,6 +1679,7 @@ StateLoading.on_exit = function (self, application_shutdown)
 			local_quickplay_bonus = self._local_quickplay_bonus,
 			level_end_view_wrappers = self._level_end_view_wrappers,
 			saved_scoreboard_stats = self._saved_scoreboard_stats,
+			host_migration_info = self.parent.loading_context.host_migration_info,
 		}
 
 		loading_context.ingame_world_object, self._ingame_world_object = self._ingame_world_object, loading_context.ingame_world_object

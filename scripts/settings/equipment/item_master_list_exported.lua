@@ -1743,6 +1743,8 @@ ItemMasterList.frame_skulls = {
 ItemMasterList.frame_geheimnisnacht_01 = {
 	description = "frame_geheimnisnacht_01_description",
 	display_name = "frame_geheimnisnacht_01_name",
+	display_unit = "units/weapons/weapon_display/display_portrait_frame",
+	event_item = true,
 	hud_icon = "unit_frame_02",
 	information_text = "information_text_frame",
 	inventory_icon = "icon_portrait_frame_geheimnisnacht_01",
@@ -1755,6 +1757,8 @@ ItemMasterList.frame_geheimnisnacht_01 = {
 ItemMasterList.frame_geheimnisnacht_02 = {
 	description = "frame_geheimnisnacht_02_description",
 	display_name = "frame_geheimnisnacht_02_name",
+	display_unit = "units/weapons/weapon_display/display_portrait_frame",
+	event_item = true,
 	hud_icon = "unit_frame_02",
 	information_text = "information_text_frame",
 	inventory_icon = "icon_portrait_frame_geheimnisnacht_02",
@@ -1767,6 +1771,8 @@ ItemMasterList.frame_geheimnisnacht_02 = {
 ItemMasterList.frame_geheimnisnacht_03 = {
 	description = "frame_geheimnisnacht_03_description",
 	display_name = "frame_geheimnisnacht_03_name",
+	display_unit = "units/weapons/weapon_display/display_portrait_frame",
+	event_item = true,
 	hud_icon = "unit_frame_02",
 	information_text = "information_text_frame",
 	inventory_icon = "icon_portrait_frame_geheimnisnacht_03",
@@ -13612,4 +13618,28 @@ ItemMasterList.we_spear_skin = {
 		"we_maidenguard",
 		"we_shade",
 	},
+}
+ItemMasterList.frame_beta_2024 = {
+	description = "frame_beta_2024_description",
+	display_name = "frame_beta_2024_name",
+	hud_icon = "unit_frame_02",
+	information_text = "information_text_frame",
+	inventory_icon = "icon_portrait_frame_beta_2024",
+	item_type = "frame",
+	rarity = "promo",
+	slot_type = "frame",
+	temporary_template = "frame_beta_2024",
+	can_wield = CanWieldAllItemTemplates,
+}
+ItemMasterList.frame_streamer = {
+	description = "frame_streamer_description",
+	display_name = "frame_streamer_name",
+	hud_icon = "unit_frame_02",
+	information_text = "information_text_frame",
+	inventory_icon = "icon_portrait_frame_streamer",
+	item_type = "frame",
+	rarity = "promo",
+	slot_type = "frame",
+	temporary_template = "frame_streamer",
+	can_wield = CanWieldAllItemTemplates,
 }

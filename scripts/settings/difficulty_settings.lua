@@ -380,11 +380,14 @@ ExtraDifficultyRequirements = {
 	},
 }
 DifficultyRanks = {}
+DifficultyRankLookup = {}
 MinimumDifficultyRank = math.huge
 MaximumDifficultyRank = 0
 
-for _, settings in pairs(DifficultySettings) do
+for key, settings in pairs(DifficultySettings) do
 	DifficultyRanks[#DifficultyRanks + 1] = settings.rank
+	DifficultyRankLookup[settings.rank] = key
+	DifficultyRankLookup[key] = settings.rank
 	MinimumDifficultyRank = math.min(MinimumDifficultyRank, settings.rank)
 	MaximumDifficultyRank = math.max(MaximumDifficultyRank, settings.rank)
 end

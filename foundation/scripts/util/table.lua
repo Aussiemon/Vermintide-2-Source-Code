@@ -1098,6 +1098,14 @@ table.array_average = function (t, max_num, next_val)
 	return sum / num_elements, min, max
 end
 
+table.convert_lookup = function (arr, lookup)
+	for i = 1, #arr do
+		arr[i] = lookup[arr[i]]
+	end
+
+	return arr
+end
+
 table.enum_lookup = function (...)
 	local arr = {
 		...,

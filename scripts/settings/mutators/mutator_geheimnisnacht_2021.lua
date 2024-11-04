@@ -29,52 +29,52 @@ local event_settings = {
 			},
 		},
 	},
-	warcamp = {
+	dlc_dwarf_whaling = {
 		ritual_locations = {
 			{
-				-151.1,
-				-20,
-				19.15,
+				86.355,
+				156.871,
+				2.727,
 				0,
 			},
 		},
 	},
-	nurgle = {
+	catacombs = {
 		ritual_locations = {
 			{
-				175.1,
-				-114.5,
-				2.5,
+				178.8,
+				109,
+				32,
+				50,
+			},
+		},
+	},
+	ground_zero = {
+		ritual_locations = {
+			{
+				-171.5,
+				102.7,
+				42.094002,
+				20,
+			},
+		},
+	},
+	elven_ruins = {
+		ritual_locations = {
+			{
+				37.891605,
+				-109,
+				19.562,
 				0,
 			},
 		},
 	},
-	dlc_wizards_tower = {
+	farmlands = {
 		ritual_locations = {
 			{
-				4.45,
-				36.4,
-				77.01,
-				0,
-			},
-		},
-	},
-	dlc_bastion = {
-		ritual_locations = {
-			{
-				109.6,
-				56.7,
-				-52.8,
-				0,
-			},
-		},
-	},
-	dlc_dwarf_beacons = {
-		ritual_locations = {
-			{
-				-128.2,
-				-102.8,
-				-15.3,
+				223.965363,
+				-253.689133,
+				7.712,
 				0,
 			},
 		},

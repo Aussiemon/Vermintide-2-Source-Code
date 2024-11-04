@@ -126,9 +126,11 @@ if settings.steam or Development.parameter("force_steam") then
 		elseif app_id == 552500 then
 			GameSettingsDevelopment.backend_settings = BackendSettings.prod_steam_playfab
 		elseif app_id == 1270350 then
-			GameSettingsDevelopment.backend_settings = BackendSettings.beta_steam_playfab
+			GameSettingsDevelopment.backend_settings = BackendSettings.cat_steam_playfab
 		elseif app_id == 1026050 then
 			GameSettingsDevelopment.backend_settings = BackendSettings.carousel_steam_playfab
+		elseif app_id == 2792380 then
+			GameSettingsDevelopment.backend_settings = BackendSettings.beta_steam_playfab
 		end
 	else
 		Crashify.print_exception("Game Settings", "Vermintide 2. You need to have the Steam Client running to play the game.")

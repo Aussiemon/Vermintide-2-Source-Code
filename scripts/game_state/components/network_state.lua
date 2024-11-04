@@ -27,6 +27,14 @@ NetworkState.init = function (self, is_server, network_handler, server_peer_id, 
 	end
 end
 
+NetworkState.register_callback = function (self, cb_type, obj, func_name, ...)
+	self._shared_state:register_callback(cb_type, obj, func_name, ...)
+end
+
+NetworkState.unregister_callback = function (self, obj, cb_type)
+	self._shared_state:register_callback(obj, cb_type)
+end
+
 NetworkState.full_sync = function (self)
 	self._shared_state:full_sync()
 end
@@ -360,4 +368,16 @@ NetworkState.get_side_order_state = function (self)
 	local key = self._shared_state:get_key("side_order_state")
 
 	return self._shared_state:get_server(key)
+end
+
+NetworkState.get_game_mode_event_data = function (self)
+	local key = self._shared_state:get_key("game_mode_event_data")
+
+	return self._shared_state:get_server(key)
+end
+
+NetworkState.set_game_mode_event_data = function (self, data)
+	local key = self._shared_state:get_key("game_mode_event_data")
+
+	self._shared_state:set_server(key, data)
 end

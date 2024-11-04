@@ -111,7 +111,16 @@ StateLoadingMigrateHost.update = function (self, dt, t)
 end
 
 StateLoadingMigrateHost.on_exit = function (self, application_shutdown)
-	self.parent.parent.loading_context.host_migration_info = nil
+	local host_migration_info = self.parent.parent.loading_context.host_migration_info
+	local game_mode_event_data = host_migration_info and host_migration_info.game_mode_event_data
+
+	if game_mode_event_data then
+		self.parent.parent.loading_context.host_migration_info = {
+			game_mode_event_data = game_mode_event_data,
+		}
+	else
+		self.parent.parent.loading_context.host_migration_info = nil
+	end
 end
 
 StateLoadingMigrateHost.cb_server_created = function (self)

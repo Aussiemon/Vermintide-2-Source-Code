@@ -1059,7 +1059,7 @@ StateInGameRunning.event_game_started = function (self)
 
 	self.end_conditions_met = false
 
-	if Managers.matchmaking:game_mode_event_data() then
+	if Managers.matchmaking:have_game_mode_event_data() then
 		self._is_in_event_game_mode = true
 	end
 

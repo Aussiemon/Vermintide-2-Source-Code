@@ -213,7 +213,7 @@ MatchmakingUI.update = function (self, dt, t)
 
 					matchmaking_manager:cancel_matchmaking()
 
-					if matchmaking_manager:game_mode_event_data() then
+					if matchmaking_manager:have_game_mode_event_data() then
 						matchmaking_manager:clear_game_mode_event_data()
 					end
 
@@ -433,7 +433,7 @@ MatchmakingUI._update_matchmaking_info = function (self, t)
 			cached_matchmaking_info.quick_game = quick_game
 			cached_matchmaking_info.mission_id = mission_id
 
-			local is_event_game = matchmaking_manager:game_mode_event_data()
+			local is_event_game = matchmaking_manager:have_game_mode_event_data()
 			local text
 
 			if quick_game then

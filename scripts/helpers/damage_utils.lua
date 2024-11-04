@@ -3134,7 +3134,7 @@ DamageUtils._projectile_hit_character = function (current_action, owner_unit, ow
 			end
 		end
 
-		if breed.boss and Managers.state.side:versus_is_dark_pact(owner_unit) then
+		if hit_unit_player and breed.boss and Managers.state.side:versus_is_dark_pact(owner_unit) then
 			deal_damage = false
 		end
 
