@@ -86,14 +86,14 @@ StoreWindowPathTitle._sync_layout_path = function (self)
 
 		for i, page_name in ipairs(path) do
 			local display_selected_product = page_name == "item_details"
-			local page = pages[page_name]
+			local page = pages[page_name] or self._parent:get_temporary_page(page_name)
 			local widget = self:_create_breadcrumb_widget()
 			local display_name
 
 			if display_selected_product then
 				display_name = self:_get_selected_product_display_name()
 			else
-				display_name = page.display_name
+				display_name = page and page.display_name or page_name
 			end
 
 			widget.content.text = Localize(display_name)

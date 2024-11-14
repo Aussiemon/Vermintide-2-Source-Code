@@ -16,7 +16,7 @@ end
 local _price_chunks = {}
 
 SteamItemService.parse = function (price_data_string)
-	string.split(price_data_string, ";", _price_chunks)
+	string.split_deprecated(price_data_string, ";", _price_chunks)
 
 	if _price_chunks[1] ~= "1" then
 		table.clear(_price_chunks)

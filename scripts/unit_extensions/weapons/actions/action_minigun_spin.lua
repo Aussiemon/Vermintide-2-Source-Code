@@ -77,6 +77,5 @@ ActionMinigunSpin._update_animation_speed = function (self, windup)
 end
 
 ActionMinigunSpin.finish = function (self, ...)
-	print(self.action_start_t - Managers.time:time("game"))
 	ActionMinigunSpin.super.finish(self, ...)
 end

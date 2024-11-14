@@ -31,6 +31,7 @@ PlayerUnitHealthExtension.init = function (self, extension_init_context, unit, e
 		self:create_health_game_object()
 	end
 
+	self._display_data = {}
 	self._streak_debug_duration = -10
 	self._streak_debug_damage = 0
 
@@ -46,8 +47,14 @@ PlayerUnitHealthExtension.update_options = function (self)
 
 	self._show_floating_damage = setting == "floating" or setting == "both"
 	self._show_floating_streak_damage = setting == "streak" or setting == "both"
-	self._min_streak_font_size = game_mode_settings.min_streak_font_size or 50
-	self._max_streak_font_size = game_mode_settings.max_streak_font_size or 100
+	self._min_streak_font_size = game_mode_settings.min_streak_font_size or 30
+	self._max_streak_font_size = game_mode_settings.max_streak_font_size or 60
+
+	local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
+
+	self._temp_hp_degen_delay_when_wounded = difficulty_settings.no_wound_dependent_temp_hp_degen
+	self._percent_health_on_revive = difficulty_settings.percent_health_on_revive or 0
+	self._percent_temp_health_on_revive = difficulty_settings.percent_temp_health_on_revive or 0.5
 end
 
 PlayerUnitHealthExtension.hot_join_sync = function (self, sender)
@@ -201,21 +208,52 @@ PlayerUnitHealthExtension.extensions_ready = function (self, world, unit)
 end
 
 PlayerUnitHealthExtension.knock_down = function (self, unit)
+	assert(self.is_server, "[PlayerUnitHealthExtension] 'knock_down' is a server only function")
+
 	self.state = "knocked_down"
 
 	StatusUtils.set_knocked_down_network(unit, true)
 	StatusUtils.set_wounded_network(unit, false, "knocked_down")
 
 	local recent_damages = self:recent_damages()
-	local attacker_unit = recent_damages[3]
+	local attacker_unit = recent_damages[DamageDataIndex.SOURCE_ATTACKER_UNIT] or recent_damages[DamageDataIndex.ATTACKER]
 	local attacker_player = Managers.player:owner(attacker_unit)
 
 	if attacker_player and Managers.mechanism:current_mechanism_name() == "versus" then
 		local stats_id = attacker_player:stats_id()
 		local statistics_db = Managers.player:statistics_db()
+		local horde_ability_system = Managers.state.entity:system("versus_horde_ability_system")
+
+		horde_ability_system:server_ability_recharge_boost(attacker_player.peer_id, "hero_downed")
+
 		local target_breed = Unit.get_data(unit, "breed")
 
 		statistics_db:increment_stat(stats_id, "vs_badge_knocked_down_target_per_breed", target_breed.name)
+
+		local side_manager = Managers.state.side
+		local attacker_unit_is_dark_pact = side_manager:versus_is_dark_pact(attacker_unit)
+		local killed_unit_is_hero = side_manager:versus_is_hero(unit)
+
+		if attacker_unit_is_dark_pact and killed_unit_is_hero then
+			local dialogue_input = ScriptUnit.extension_input(attacker_unit, "dialogue_system")
+			local side = side_manager.side_by_unit[unit]
+			local num_heroes_downed = 0
+			local human_and_bot_units = side.PLAYER_AND_BOT_UNITS
+
+			for i = 1, #human_and_bot_units do
+				local status_extension = ScriptUnit.has_extension(human_and_bot_units[i], "status_system")
+
+				if status_extension and status_extension:is_knocked_down() then
+					num_heroes_downed = num_heroes_downed + 1
+				end
+			end
+
+			if num_heroes_downed >= DialogueSettings.vs_many_heroes_incapacitated_num then
+				dialogue_input:trigger_dialogue_event("vs_many_heroes_incapacitated")
+			else
+				dialogue_input:trigger_dialogue_event("vs_downed_hero")
+			end
+		end
 	end
 end
 
@@ -226,8 +264,6 @@ PlayerUnitHealthExtension._revive = function (self, unit, t)
 	StatusUtils.set_wounded_network(unit, true, "revived", t)
 	StatusUtils.set_revived_network(unit, false)
 end
-
-local display_data = {}
 
 PlayerUnitHealthExtension.update = function (self, dt, context, t)
 	local status_extension = self.status_extension
@@ -283,12 +319,12 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 					local buff_extension = self.buff_extension
 					local temp_to_permanent_health = buff_extension and buff_extension:has_buff_perk("temp_to_permanent_health")
 
+					health = self._percent_health_on_revive * max_health
+					temporary_health = self._percent_temp_health_on_revive * max_health
+
 					if temp_to_permanent_health then
-						health = max_health / 2
+						health = health + temporary_health
 						temporary_health = 0
-					else
-						health = 0
-						temporary_health = max_health / 2
 					end
 
 					if buff_extension:has_buff_perk(buff_perks.full_health_revive) then
@@ -386,32 +422,19 @@ PlayerUnitHealthExtension._update_outline_color = function (self, t, dt)
 
 	local peer_id = local_player:network_id()
 	local local_player_id = local_player:local_player_id()
-	local party = Managers.party:get_party_from_player_id(peer_id, local_player_id)
-	local side = Managers.state.side.side_by_party[party]
-	local is_park_pact = side:name() == "dark_pact"
-
-	if not is_park_pact then
-		return
-	end
-
-	local unit_side = Managers.state.side.side_by_unit[self.unit]
-
-	if not unit_side then
-		return
-	end
-
-	local unit_is_hero = unit_side:name() == "heroes"
-
-	if not unit_is_hero then
-		return
-	end
-
 	local new_outline_color
 	local outline_ext = self._outline_extension
 	local is_disabled = self.status_extension:is_disabled()
 	local current_health_percent = self:current_health_percent()
+	local party = Managers.party:get_party_from_player_id(peer_id, local_player_id)
+	local side = Managers.state.side.side_by_party[party]
+	local is_dark_pact = side:name() == "dark_pact"
+	local unit_side = Managers.state.side.side_by_unit[self.unit]
+	local unit_is_hero = unit_side:name() == "heroes"
 
-	if is_disabled then
+	if not is_dark_pact or not unit_side or not unit_is_hero then
+		new_outline_color = nil
+	elseif is_disabled then
 		new_outline_color = OutlineSettingsVS.colors.hero_dying
 	elseif current_health_percent >= 0.66 then
 		new_outline_color = OutlineSettingsVS.colors.hero_healthy
@@ -421,7 +444,13 @@ PlayerUnitHealthExtension._update_outline_color = function (self, t, dt)
 		new_outline_color = OutlineSettingsVS.colors.hero_dying
 	end
 
-	if not self._outline_id then
+	if not new_outline_color then
+		if self._outline_id then
+			outline_ext:remove_outline(self._outline_id)
+
+			self._outline_id = nil
+		end
+	elseif not self._outline_id then
 		self._outline_id = outline_ext:add_outline({
 			method = "always",
 			priority = 2,
@@ -446,7 +475,7 @@ PlayerUnitHealthExtension.apply_client_predicted_damage = function (self, predic
 end
 
 local using_bucket_damage = true
-local streak_duration = 1.2
+local streak_duration = 2.2
 
 PlayerUnitHealthExtension.create_streak_damage = function (self, streak_damage, attacker_breed)
 	local text_size = math.auto_lerp(0, 30, self._min_streak_font_size, self._max_streak_font_size, streak_damage)
@@ -455,7 +484,8 @@ PlayerUnitHealthExtension.create_streak_damage = function (self, streak_damage, 
 	local z_offset_override = attacker_breed.z_onscreen_damage_offset
 	local color = Vector3(c[2], c[3], c[4])
 	local dmg_int = math.floor(streak_damage)
-	local dmg_dec = streak_damage % 1 * 10
+	local dmg_dec = streak_damage % 1 * 100
+	local display_data = self._display_data
 
 	display_data.floating_speed = 0
 	display_data.ref = true
@@ -466,10 +496,10 @@ PlayerUnitHealthExtension.create_streak_damage = function (self, streak_damage, 
 	local is_critical_strike = false
 	local text
 
-	if using_bucket_damage then
-		text = "{#size(" .. text_size .. ")}" .. dmg_int
+	if using_bucket_damage and dmg_int >= 1 then
+		text = string.format("{#size(%s)}%s", text_size, dmg_int)
 	else
-		text = "{#size(" .. text_size .. ")}" .. dmg_int .. "{#size(" .. math.floor(ts / 2) .. ")}" .. dmg_dec
+		text = string.format("{#size(%s)}%s{#size(%s)}%s", text_size, dmg_int, math.floor(text_size / 2), dmg_dec)
 	end
 
 	Managers.state.event:trigger("add_damage_number", text, text_size, self.unit, duration, color, is_critical_strike, z_offset_override, display_data)
@@ -478,9 +508,6 @@ PlayerUnitHealthExtension.create_streak_damage = function (self, streak_damage, 
 		self._streak_ref = display_data.ref
 	end
 end
-
-local min_font_size = 50
-local max_font_size = 100
 
 PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type, backstab_multiplier)
 	if DamageUtils.is_in_inn then
@@ -494,13 +521,42 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 	end
 
 	local unit = self.unit
+	local attacker_player = AiUtils.get_actual_attacker_player(attacker_unit, unit, damage_source_name)
+
+	if not source_attacker_unit then
+		if attacker_player and ALIVE[attacker_player.player_unit] then
+			source_attacker_unit = attacker_player.player_unit
+		end
+
+		source_attacker_unit = AiUtils.get_actual_attacker_unit(source_attacker_unit or attacker_unit)
+
+		if not source_attacker_unit then
+			local last_attacker_id = self.last_damage_data.attacker_unit_id
+
+			source_attacker_unit = last_attacker_id and Managers.state.unit_storage:unit(last_attacker_id)
+		end
+	end
+
 	local bb = BLACKBOARDS[source_attacker_unit]
-	local attacker_breed = Unit.get_data(attacker_unit, "breed") or bb and bb.breed
+	local attacker_breed = ALIVE[source_attacker_unit] and Unit.get_data(source_attacker_unit, "breed") or bb and bb.breed or ALIVE[attacker_unit] and Unit.get_data(attacker_unit, "breed")
+
+	attacker_breed = AiUtils.get_actual_attacker_breed(attacker_breed, unit, damage_source_name, attacker_unit, attacker_player)
+
+	if attacker_player then
+		local attacker_player_unique_id = attacker_player:unique_id()
+		local owner_player = Managers.player:owner(unit)
+		local owner_player_unique_id = owner_player:unique_id()
+
+		if attacker_player_unique_id ~= owner_player_unique_id then
+			local damage_t = Managers.time:time("game")
+
+			self:_register_attacker(attacker_player_unique_id, attacker_breed, damage_t)
+		end
+	end
 
 	if attacker_breed then
 		if self._use_floating_damage_numbers then
 			local show_hud_damage_feedback_in_world = Application.user_setting("hud_damage_feedback_in_world")
-			local attacker_player = Managers.player:owner(attacker_unit)
 
 			if attacker_player and attacker_player.local_player and attacker_breed.is_player and not attacker_breed.is_hero and show_hud_damage_feedback_in_world then
 				local streak_damage = self._streak_damage or 0
@@ -508,7 +564,7 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 				local t = Managers.time:time("game")
 				local time_since_last_dmg = t - last_dmg_time
 
-				if time_since_last_dmg > 1 then
+				if time_since_last_dmg > 1 and damage_amount > 0 then
 					streak_damage = damage_amount
 
 					if self._show_floating_streak_damage then
@@ -519,12 +575,12 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 
 					if self._streak_ref then
 						local dmg_int = math.floor(streak_damage)
-						local ts = math.auto_lerp(0, 30, min_font_size, max_font_size, streak_damage)
+						local ts = math.auto_lerp(0, 30, self._min_streak_font_size, self._max_streak_font_size, streak_damage)
 						local c = DamageUtils.get_color_from_damage(streak_damage)
 						local text
 
-						if using_bucket_damage then
-							text = "{#size(" .. ts .. ")}" .. dmg_int
+						if using_bucket_damage and streak_damage >= 1 then
+							text = string.format("{#size(%s)}%s", ts, dmg_int)
 
 							Managers.state.event:trigger("alter_damage_number", unit, self._streak_ref, {
 								text = text,
@@ -533,9 +589,9 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 								damage = streak_damage,
 							})
 						else
-							local dmg_dec = streak_damage % 1 * 10
+							local dmg_dec = streak_damage % 1 * 100
 
-							text = "{#size(" .. ts .. ")}" .. dmg_int .. "{#size(" .. math.floor(ts / 2) .. ")}" .. dmg_dec
+							text = string.format("{#size(%s)}%s{#size(%s)}%s", ts, dmg_int, math.floor(ts / 2), dmg_dec)
 
 							Managers.state.event:trigger("alter_damage_number", unit, self._streak_ref, {
 								text = text,
@@ -564,8 +620,10 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 
 		if attacker_breed.boss or attributes.grudge_marked then
 			local owner_player = Managers.player:owner(self.unit)
+			local is_local_and_not_bot = owner_player and owner_player.local_player and not owner_player.bot_player
+			local not_same_player = owner_player and attacker_player and owner_player ~= attacker_player
 
-			if owner_player and owner_player.local_player and not owner_player.bot_player then
+			if not_same_player and is_local_and_not_bot then
 				Managers.state.event:trigger("boss_health_bar_set_prioritized_unit", attacker_unit, "damage_taken")
 			end
 
@@ -608,8 +666,6 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 		local position = POSITION_LOOKUP[unit]
 
 		Managers.telemetry_events:player_damaged(player, damage_type, damage_source_name or "n/a", damage_amount, position)
-
-		local attacker_player = Managers.player:owner(attacker_unit)
 
 		if not DEDICATED_SERVER and attacker_player then
 			local local_player = Managers.player:local_player()
@@ -725,6 +781,10 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 
 			local new_health = current_health < permanent_damage_amount and 0 or current_health - permanent_damage_amount
 
+			if script_data.player_unkillable then
+				new_health = math.max(new_health, 1)
+			end
+
 			GameSession.set_game_object_field(game, game_object_id, "current_health", new_health)
 
 			local new_temporary_health = current_temporary_health < temporary_damage_amount and 0 or current_temporary_health - temporary_damage_amount
@@ -797,7 +857,7 @@ PlayerUnitHealthExtension.add_heal = function (self, healer_unit, heal_amount, h
 				GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", new_temporary_health)
 			end
 
-			if heal_type ~= "career_passive" and not status_extension:is_wounded() then
+			if heal_type ~= "career_passive" and (not status_extension:is_wounded() or self._temp_hp_degen_delay_when_wounded) then
 				local t = Managers.time:time("game")
 				local _, _, degen_start = self:health_degen_settings()
 

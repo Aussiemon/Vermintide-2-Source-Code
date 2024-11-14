@@ -57,6 +57,8 @@ StateTitleScreenMainMenu._start_game = function (self, level_key)
 
 	if Managers.mechanism then
 		current_mechanism_name = Managers.mechanism:current_mechanism_name()
+
+		Managers.mechanism:destroy()
 	end
 
 	Managers.mechanism = GameMechanismManager:new(current_mechanism_name)
@@ -145,7 +147,7 @@ end
 StateTitleScreenMainMenu.update = function (self, dt, t)
 	local active_view = self._active_view
 
-	if self._auto_start and (Development.parameter("auto_host_level") or Development.parameter("auto_join") or Development.parameter("deus_auto_host")) then
+	if self._auto_start and (Development.parameter("auto_host_level") or Development.parameter("auto_join") or Development.parameter("deus_auto_host") or Development.parameter("vs_auto_search") or Development.parameter("weave_name")) then
 		self._input_disabled = true
 
 		Managers.transition:show_loading_icon(false)

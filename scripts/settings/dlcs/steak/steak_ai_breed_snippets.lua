@@ -11,31 +11,28 @@ AiBreedSnippets.on_beastmen_minotaur_spawn = function (unit, blackboard)
 	blackboard.aggro_list = {}
 
 	local breed = blackboard.breed
+	local allowed_layers = {
+		bot_poison_wind = 1,
+		bot_ratling_gun_fire = 1,
+		destructible_wall = 0,
+		doors = 1,
+		fire_grenade = 1,
+		planks = 1,
+		temporary_wall = 0,
+	}
+	local navigation_extension = blackboard.navigation_extension
+	local navtag_layer_cost_table = navigation_extension:get_navtag_layer_cost_table("charge")
 
-	if breed.use_charge_nav_layers then
-		local allowed_layers = {
-			bot_poison_wind = 1,
-			bot_ratling_gun_fire = 1,
-			destructible_wall = 0,
-			doors = 1,
-			fire_grenade = 1,
-			planks = 1,
-			temporary_wall = 0,
-		}
-		local navigation_extension = blackboard.navigation_extension
-		local navtag_layer_cost_table = navigation_extension:get_navtag_layer_cost_table("charge")
+	table.merge(allowed_layers, NAV_TAG_VOLUME_LAYER_COST_AI)
+	AiUtils.initialize_cost_table(navtag_layer_cost_table, allowed_layers)
 
-		table.merge(allowed_layers, NAV_TAG_VOLUME_LAYER_COST_AI)
-		AiUtils.initialize_cost_table(navtag_layer_cost_table, allowed_layers)
+	local nav_cost_map_cost_table = navigation_extension:nav_cost_map_cost_table("charge")
 
-		local nav_cost_map_cost_table = navigation_extension:nav_cost_map_cost_table("charge")
+	AiUtils.initialize_nav_cost_map_cost_table(nav_cost_map_cost_table)
 
-		AiUtils.initialize_nav_cost_map_cost_table(nav_cost_map_cost_table)
+	local charge_traverse_logic = navigation_extension:get_reusable_traverse_logic("charge", nav_cost_map_cost_table)
 
-		local charge_traverse_logic = navigation_extension:get_reusable_traverse_logic("charge", nav_cost_map_cost_table)
-
-		GwNavTraverseLogic.set_navtag_layer_cost_table(charge_traverse_logic, navtag_layer_cost_table)
-	end
+	GwNavTraverseLogic.set_navtag_layer_cost_table(charge_traverse_logic, navtag_layer_cost_table)
 
 	blackboard.aggro_list = {}
 	blackboard.fling_skaven_timer = 0
@@ -84,15 +81,8 @@ AiBreedSnippets.on_beastmen_minotaur_spawn = function (unit, blackboard)
 end
 
 AiBreedSnippets.on_beastmen_minotaur_update = function (unit, blackboard, t)
-	local traverse_logic
-
-	if blackboard.breed.use_charge_nav_layers then
-		local nav_cost_map_cost_table = blackboard.navigation_extension:nav_cost_map_cost_table("charge")
-
-		traverse_logic = blackboard.navigation_extension:get_reusable_traverse_logic("charge", nav_cost_map_cost_table)
-	else
-		traverse_logic = blackboard.navigation_extension:traverse_logic()
-	end
+	local nav_cost_map_cost_table = blackboard.navigation_extension:nav_cost_map_cost_table("charge")
+	local traverse_logic = blackboard.navigation_extension:get_reusable_traverse_logic("charge", nav_cost_map_cost_table)
 
 	if traverse_logic and blackboard.charge_astar_timer and not blackboard.charge_state and Unit.alive(blackboard.target_unit) then
 		local astar = blackboard.navigation_extension:get_reusable_astar("charge", true)

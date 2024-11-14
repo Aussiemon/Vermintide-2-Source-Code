@@ -37,6 +37,7 @@ BuffExtension.init = function (self, extension_init_context, unit, extension_ini
 	self._continuous_screen_effects = {}
 	self._deactivation_screen_effects = {}
 	self._vfx = {}
+	self._vfx_update = {}
 
 	for stat_buff_name, _ in pairs(StatBuffApplicationMethods) do
 		self._stat_buffs[stat_buff_name] = {}
@@ -173,13 +174,9 @@ BuffExtension.add_buff = function (self, template_name, params)
 	local sub_buffs = buff_template.buffs
 	local time_offset = params and params._hot_join_sync_buff_age or 0
 	local start_time = Managers.time:time("game") - time_offset
-	local id = self:claim_buff_id()
+	local id = self:claim_buff_id(template_name)
 	local world = self.world
 	local is_server = self.is_server
-
-	if self.debug_buff_names then
-		self.debug_buff_names[id] = buff_template.buffs and buff_template.buffs[1] and buff_template.buffs[1].name
-	end
 
 	if self._num_buffs == 0 then
 		Managers.state.entity:system("buff_system"):set_buff_ext_active(unit, true)
@@ -199,7 +196,7 @@ BuffExtension.add_buff = function (self, template_name, params)
 			local duration = sub_buff_template.duration
 			local ticks = sub_buff_template.ticks
 			local update_frequency = sub_buff_template.update_frequency
-			local max_stacks = sub_buff_template.max_stacks
+			local max_stacks = sub_buff_template.max_stacks_func and sub_buff_template.max_stacks_func(self._unit, sub_buff_template) or sub_buff_template.max_stacks
 			local is_stacking_buff = max_stacks
 			local bonus = sub_buff_template.bonus
 			local value = sub_buff_template.value
@@ -323,6 +320,7 @@ BuffExtension.add_buff = function (self, template_name, params)
 					power_level = power_level,
 					attacker_unit = attacker_unit,
 					source_attacker_unit = source_attacker_unit,
+					max_stacks = max_stacks,
 					parent_buff_shared_table = parent_buff_shared_table,
 				}
 
@@ -367,6 +365,8 @@ BuffExtension.add_buff = function (self, template_name, params)
 
 				if sub_buff_template.buff_area then
 					local unit_spawner = Managers.state.unit_spawner
+					local side_by_unit = Managers.state.side.side_by_unit
+					local owner_side = side_by_unit[source_attacker_unit] or side_by_unit[unit]
 					local extension_init_data = {
 						buff_area_system = {
 							duration = duration,
@@ -375,6 +375,7 @@ BuffExtension.add_buff = function (self, template_name, params)
 							sub_buff_id = i,
 							owner_unit = unit,
 							source_unit = source_attacker_unit,
+							side_id = owner_side and owner_side.side_id or 0,
 						},
 					}
 					local position = params and params.buff_area_position or POSITION_LOOKUP[self._unit]
@@ -458,7 +459,13 @@ BuffExtension.add_buff = function (self, template_name, params)
 						end
 					end
 
-					self._vfx[id] = BuffUtils.create_attached_particles(world, particles, target_unit, is_first_person)
+					local vfx_state = BuffUtils.create_attached_particles(world, particles, target_unit, is_first_person, unit, end_time)
+
+					self._vfx[id] = vfx_state
+
+					if vfx_state.update_fx then
+						self._vfx_update[id] = vfx_state
+					end
 				end
 
 				local sfx = sub_buff_template.sfx
@@ -474,8 +481,6 @@ BuffExtension.add_buff = function (self, template_name, params)
 		end
 	end
 
-	self._buff_id_refs[id] = sub_buffs_added
-
 	local activation_sound = buff_template.activation_sound
 
 	if activation_sound then
@@ -489,6 +494,8 @@ BuffExtension.add_buff = function (self, template_name, params)
 	end
 
 	if sub_buffs_added > 0 then
+		self._buff_id_refs[id] = sub_buffs_added
+
 		local deactivation_effect = buff_template.deactivation_effect
 
 		if deactivation_effect then
@@ -513,11 +520,15 @@ BuffExtension._add_stacking_buff = function (self, sub_buff_template, max_stacks
 	local current_buff_stacks = self._stacking_buffs[sub_buff_template.name]
 	local num_stacks = current_buff_stacks and #current_buff_stacks or 0
 
-	if duration and sub_buff_template.refresh_durations then
-		for stack_idx = 1, num_stacks do
-			local stack_buff = current_buff_stacks[stack_idx]
+	if duration then
+		local refresh_duration = sub_buff_template.refresh_durations_func and sub_buff_template.refresh_durations_func(self._unit, sub_buff_template) or sub_buff_template.refresh_durations
 
-			self:_refresh_duration(stack_buff, start_time, duration, end_time, params, sub_buff_template)
+		if refresh_duration then
+			for stack_idx = 1, num_stacks do
+				local stack_buff = current_buff_stacks[stack_idx]
+
+				self:_refresh_duration(stack_buff, start_time, duration, end_time, params, sub_buff_template)
+			end
 		end
 	end
 
@@ -549,7 +560,7 @@ BuffExtension._add_stacking_buff = function (self, sub_buff_template, max_stacks
 			local is_overflow = true
 
 			params = params or FrameTable.alloc_table()
-			should_add_buff = on_max_stacks_overflow_func(self._unit, sub_buff_template, params, is_overflow)
+			should_add_buff = should_add_buff and on_max_stacks_overflow_func(self._unit, sub_buff_template, params, is_overflow)
 		else
 			should_add_buff = false
 		end
@@ -560,7 +571,9 @@ BuffExtension._add_stacking_buff = function (self, sub_buff_template, max_stacks
 			on_max_stacks_func(self._unit, sub_buff_template, params)
 		end
 
-		if sub_buff_template.reset_on_max_stacks then
+		local reset_on_max_stacks = sub_buff_template.reset_on_max_stacks_func and sub_buff_template.reset_on_max_stacks_func(self._unit, sub_buff_template) or sub_buff_template.reset_on_max_stacks
+
+		if reset_on_max_stacks then
 			local buffs = self._buffs
 
 			for i = 1, self._num_buffs do
@@ -580,17 +593,6 @@ BuffExtension._add_stacking_buff = function (self, sub_buff_template, max_stacks
 			end
 
 			should_add_buff = false
-		end
-	end
-
-	local on_add_stack_override_func = StackingBuffFunctions[sub_buff_template.on_add_stack_override_func]
-
-	if on_add_stack_override_func then
-		local current_num_stacks = num_stacks
-		local should_add_buff_override = on_add_stack_override_func(self._unit, sub_buff_template, current_num_stacks, self, params)
-
-		if should_add_buff_override ~= nil then
-			should_add_buff = should_add_buff_override
 		end
 	end
 
@@ -801,6 +803,10 @@ BuffExtension.update = function (self, unit, input, dt, context, t)
 		end
 	end
 
+	for _, fx_state in pairs(self._vfx_update) do
+		BuffUtils.update_attached_particles(world, fx_state, t)
+	end
+
 	local i = 1
 	local removed = 0
 
@@ -1008,7 +1014,7 @@ BuffExtension._remove_sub_buff = function (self, buff, index, buff_extension_fun
 	buffs[index] = _removed_buff
 	self._any_buff_removed = true
 
-	local is_stacking_buff = buff.template.max_stacks
+	local is_stacking_buff = template.max_stacks or template.max_stacks_func
 
 	if is_stacking_buff then
 		local buff_stacks = self._stacking_buffs[buff.template.name]
@@ -1098,6 +1104,7 @@ BuffExtension._remove_sub_buff = function (self, buff, index, buff_extension_fun
 			BuffUtils.destroy_attached_particles(world, particles)
 
 			self._vfx[id] = nil
+			self._vfx_update[id] = nil
 		end
 	end
 end
@@ -1228,7 +1235,7 @@ BuffExtension.get_non_stacking_buff = function (self, buff_type)
 		local buff = buffs[i]
 
 		if buff.buff_type == buff_type then
-			fassert(buff.template.max_stacks and buff.template.max_stacks == 1, "Tried getting a stacking buff!")
+			fassert(buff.max_stacks == 1, "Tried getting a stacking buff!")
 
 			return buff
 		end
@@ -1479,7 +1486,7 @@ BuffExtension._activate_initial_buffs = function (self)
 	end
 end
 
-BuffExtension.set_pending_sync_id = function (self, buff_id, local_sync_id, sync_type, orphanated)
+BuffExtension.set_pending_sync_id = function (self, buff_id, local_sync_id, sync_type)
 	self:_initalize_sync_tables()
 
 	self._id_to_local_sync[buff_id] = local_sync_id
@@ -1548,10 +1555,14 @@ BuffExtension.generate_sync_id = function (self)
 	return sync_id
 end
 
-BuffExtension.claim_buff_id = function (self)
+BuffExtension.claim_buff_id = function (self, template_name)
 	local id = self.id
 
 	self.id = id + 1
+
+	if self.debug_buff_names then
+		self.debug_buff_names[id] = template_name
+	end
 
 	return id
 end

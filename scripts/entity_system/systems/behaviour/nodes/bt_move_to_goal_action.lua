@@ -26,9 +26,9 @@ BTMoveToGoalAction.enter = function (self, unit, blackboard, t)
 	local passive_in_patrol = breed.passive_in_patrol == nil or breed.passive_in_patrol and not blackboard.ignore_passive_on_patrol
 
 	if passive_in_patrol then
-		network_manager:anim_event(unit, "to_passive")
+		AiUtils.enter_passive(unit, blackboard)
 	else
-		network_manager:anim_event(unit, "to_combat")
+		AiUtils.enter_combat(unit, blackboard)
 	end
 
 	local wield_weapon = not breed.dont_wield_weapon_on_patrol

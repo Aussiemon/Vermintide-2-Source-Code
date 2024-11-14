@@ -13,6 +13,8 @@ end
 LobbyHost = class(LobbyHost)
 
 LobbyHost.init = function (self, network_options, lobby)
+	print("[LobbyHost] Creating")
+
 	local config_file_name = network_options.config_file_name
 	local project_hash = network_options.project_hash
 

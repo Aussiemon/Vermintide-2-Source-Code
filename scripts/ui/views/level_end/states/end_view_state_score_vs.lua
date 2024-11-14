@@ -3,7 +3,6 @@
 local definitions = local_require("scripts/ui/views/level_end/states/definitions/end_view_state_score_vs_definitions")
 
 require("scripts/ui/views/level_end/states/end_view_state_score_vs_tabs/end_view_state_score_vs_tab_details")
-require("scripts/ui/views/level_end/states/end_view_state_score_vs_tabs/end_view_state_score_vs_tab_summary")
 require("scripts/ui/views/level_end/states/end_view_state_score_vs_tabs/end_view_state_score_vs_tab_report")
 
 local widget_definitions = definitions.widgets
@@ -38,13 +37,21 @@ EndViewStateScoreVS.on_enter = function (self, params)
 
 	self._ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
 	self._animations = {}
+	self._animation_callbacks = {}
 
 	local initial_tab = self._layout_settings[1]
 
 	self._selected_layout_name = initial_tab.name
 
-	self:_set_initial_tab()
+	self:_update_tab_selection(1)
+	self._parent:hide_team()
 	self:_play_animation("transition_enter")
+
+	self._animation_callbacks.transition_enter = function ()
+		self:_set_initial_tab()
+	end
+
+	self._parent:set_input_description(nil)
 end
 
 EndViewStateScoreVS.exit = function (self, direction)
@@ -57,8 +64,9 @@ EndViewStateScoreVS._play_animation = function (self, anim_name)
 	local params = {
 		render_settings = self._render_settings,
 	}
+	local anim_id = self._ui_animator:start_animation(anim_name, self._widgets_by_name, scenegraph_definition, params)
 
-	self._anim_id = self._ui_animator:start_animation(anim_name, self._widgets_by_name, scenegraph_definition, params)
+	self._animations[anim_name] = anim_id
 end
 
 EndViewStateScoreVS.play_sound = function (self, event_name)
@@ -66,10 +74,12 @@ EndViewStateScoreVS.play_sound = function (self, event_name)
 end
 
 EndViewStateScoreVS.exit_done = function (self)
-	return self._exit_started and self._ui_animator:is_animation_completed(self._anim_id)
+	return self._exit_started and table.is_empty(self._animations)
 end
 
 EndViewStateScoreVS.create_ui_elements = function (self, params)
+	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
+
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self._widgets, self._widgets_by_name = UIUtils.create_widgets(widget_definitions, {}, {})
 
@@ -123,7 +133,9 @@ EndViewStateScoreVS.create_ui_elements = function (self, params)
 	self._widgets_by_name.prev_tab.content.visible = num_tabs > 1
 	self._widgets_by_name.next_tab.content.visible = num_tabs > 1
 
-	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
+	local back_to_keep_button_widget = self._widgets_by_name.back_to_keep_button
+
+	UIUtils.enable_button(back_to_keep_button_widget, false)
 end
 
 EndViewStateScoreVS._align_tabs = function (self)
@@ -226,17 +238,44 @@ EndViewStateScoreVS.update = function (self, dt, t)
 end
 
 EndViewStateScoreVS._update_animations = function (self, dt, t)
-	self._ui_animator:update(dt)
+	local animations = self._animations
+	local ui_animator = self._ui_animator
+
+	ui_animator:update(dt)
+
+	for animation_name, animation_id in pairs(animations) do
+		if ui_animator:is_animation_completed(animation_id) then
+			ui_animator:stop_animation(animation_id)
+
+			animations[animation_name] = nil
+
+			local animation_callback = self._animation_callbacks[animation_name]
+
+			if animation_callback then
+				animation_callback()
+
+				self._animation_callbacks[animation_name] = nil
+			end
+		end
+	end
 
 	for name, animation in pairs(self._ui_animations) do
 		UIAnimation.update(animation, dt)
 
 		if UIAnimation.completed(animation) then
 			self._ui_animations[name] = nil
+
+			local animation_callback = self._animation_callbacks[name]
+
+			if animation_callback then
+				animation_callback()
+
+				self._animation_callbacks[name] = nil
+			end
 		end
 	end
 
-	local widget = self._widgets_by_name.continue_button
+	local widget = self._widgets_by_name.back_to_keep_button
 
 	UIWidgetUtils.animate_default_button(widget, dt)
 end
@@ -289,15 +328,16 @@ EndViewStateScoreVS._handle_input = function (self, dt, t)
 		end
 	end
 
-	local continue_button_widget = self._widgets_by_name.continue_button
+	local back_to_keep_button_widget = self._widgets_by_name.back_to_keep_button
+	local continue_input_pressed = UIUtils.is_button_enabled(back_to_keep_button_widget) and input_service:get("refresh")
 
-	if UIUtils.is_button_pressed(continue_button_widget) then
+	if UIUtils.is_button_pressed(back_to_keep_button_widget) or continue_input_pressed then
 		self._done = true
-		continue_button_widget.content.disable_button = true
 
-		UIUtils.enable_button(continue_button_widget, false)
+		UIUtils.enable_button(back_to_keep_button_widget, false)
 		self:play_sound("play_gui_mission_summary_button_return_to_keep_click")
-	elseif UIUtils.is_button_hover_enter(continue_button_widget) then
+		Managers.transition:fade_in(GameSettings.transition_fade_in_speed)
+	elseif UIUtils.is_button_hover_enter(back_to_keep_button_widget) then
 		self:play_sound("Play_hud_hover")
 	end
 end
@@ -329,6 +369,7 @@ EndViewStateScoreVS._change_tab = function (self, new_layout_name, new_layout_in
 	self._selected_layout_name = new_layout_name
 
 	self:_update_tab_selection(new_layout_index)
+	self:play_sound("Play_vs_hud_progression_scoreboard_appear")
 end
 
 EndViewStateScoreVS._update_tab_selection = function (self, index)
@@ -394,4 +435,10 @@ EndViewStateScoreVS._get_tab_settings_by_layout_name = function (self, layout_na
 			return settings
 		end
 	end
+end
+
+EndViewStateScoreVS.activate_back_to_keep_button = function (self)
+	local back_to_keep_button = self._widgets_by_name.back_to_keep_button
+
+	UIUtils.enable_button(back_to_keep_button, true)
 end

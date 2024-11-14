@@ -197,6 +197,12 @@ weapon_template.wwise_dep_left_hand = {
 	"wwise/rakegun",
 }
 
+local career_skill_vs = table.clone(weapon_template)
+
+career_skill_vs.actions.action_career_release.default.impact_data.damage_profile = "shot_sniper_ability_vs"
+career_skill_vs.actions.action_career_release.default.damage_profile = "shot_shotgun_ability"
+
 return {
 	victor_bountyhunter_career_skill_weapon = table.clone(weapon_template),
+	victor_bountyhunter_career_skill_weapon_vs = table.clone(career_skill_vs),
 }

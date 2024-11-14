@@ -139,7 +139,7 @@ PlayerCharacterStateClimbingLadder.update = function (self, unit, input, dt, con
 		local params = self.temp_params
 
 		params.ladder_unit = self.ladder_unit
-		params.ladder_shaking = true
+		params.shaking_ladder_unit = self.ladder_unit
 
 		csm:change_state("jumping", params)
 

@@ -1561,12 +1561,12 @@ weapon_template.tooltip_detail = {
 	},
 }
 
-local javelin_vs = table.clone(weapon_template)
+local weapon_template_vs = table.clone(weapon_template)
 
-javelin_vs.actions.action_one.throw_charged.impact_data.damage_profile = "thrown_javelin"
-javelin_vs.ammo_data.max_ammo = 3
+weapon_template_vs.actions.action_one.throw_charged.impact_data.damage_profile = "thrown_javelin_vs"
+weapon_template_vs.ammo_data.max_ammo = 3
 
 return {
 	javelin_template = table.clone(weapon_template),
-	javelin_template_vs = table.clone(javelin_vs),
+	javelin_template_vs = table.clone(weapon_template_vs),
 }

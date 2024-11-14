@@ -12,6 +12,7 @@ PlayerCharacterStateGrabbedByPackMaster.init = function (self, character_state_i
 	self.last_valid_position = Vector3Box()
 	self._drag_delta_move = Vector3Box()
 	self.next_hanging_damage_time = 0
+	self._mechanism_name = Managers.mechanism:current_mechanism_name()
 end
 
 PlayerCharacterStateGrabbedByPackMaster.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
@@ -30,6 +31,21 @@ PlayerCharacterStateGrabbedByPackMaster.on_enter = function (self, unit, input, 
 
 	local status_extension = self.status_extension
 	local packmaster_unit = status_extension:get_pack_master_grabber()
+
+	self.packmaster_unit = packmaster_unit
+	self.packmaster_is_player = Managers.player:is_player_unit(packmaster_unit)
+
+	if self.packmaster_is_player then
+		self.packmaster_claw_left_hand_constraint = Unit.animation_find_constraint_target(packmaster_unit, "claw_target_left_hand")
+		self.packmaster_claw_right_hand_constraint = Unit.animation_find_constraint_target(packmaster_unit, "claw_target_right_hand")
+
+		local packmaster_inventory = ScriptUnit.extension(packmaster_unit, "inventory_system")
+
+		self.packmaster_claw = packmaster_inventory:get_weapon_unit()
+		self.claw_left_hand_node = Unit.node(self.packmaster_claw, "a_left_hand")
+		self.claw_right_hand_node = Unit.node(self.packmaster_claw, "a_right_hand")
+	end
+
 	local packmaster_unit_position = position_lookup[packmaster_unit]
 	local position = position_lookup[unit]
 	local node = Unit.node(packmaster_unit, "j_rightweaponcomponent10")
@@ -172,6 +188,14 @@ PlayerCharacterStateGrabbedByPackMaster.states = {
 		run = function (parent, unit)
 			local drag_delta_move = parent._drag_delta_move:unbox()
 			local delta_move_length = Vector3.length(drag_delta_move)
+
+			if parent.packmaster_is_player then
+				local claw_left_hand_node_position = Unit.world_position(parent.packmaster_claw, parent.claw_left_hand_node)
+				local claw_right_hand_node_position = Unit.world_position(parent.packmaster_claw, parent.claw_right_hand_node)
+
+				Unit.animation_set_constraint_target(parent.packmaster_unit, parent.packmaster_claw_left_hand_constraint, claw_left_hand_node_position)
+				Unit.animation_set_constraint_target(parent.packmaster_unit, parent.packmaster_claw_right_hand_constraint, claw_right_hand_node_position)
+			end
 
 			if delta_move_length == 0 and parent.dragged_move_anim == "move_bwd" then
 				Managers.state.network:anim_event(unit, "packmaster_hooked_idle")
@@ -358,6 +382,15 @@ PlayerCharacterStateGrabbedByPackMaster.update = function (self, unit, input, dt
 	local pack_master_status = CharacterStateHelper.pack_master_status(self.status_extension)
 
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, self.first_person_extension, status_extension, self.inventory_extension)
+
+	if self._mechanism_name == "versus" and CharacterStateHelper.is_ledge_hanging(self.world, unit, self.temp_params) then
+		local grabber = status_extension:get_pack_master_grabber()
+
+		StatusUtils.set_grabbed_by_pack_master_network("pack_master_unhooked", unit, false, grabber)
+		csm:change_state("ledge_hanging", self.temp_params)
+
+		return
+	end
 
 	local states = PlayerCharacterStateGrabbedByPackMaster.states
 	local last_state = self.pack_master_status

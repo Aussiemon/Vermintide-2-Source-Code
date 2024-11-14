@@ -31,7 +31,7 @@ local buff_tweak_data = {
 		percent_fury_to_gain = 0.02,
 	},
 	victor_priest_5_1_buff = {
-		multiplier = 0.25,
+		multiplier = 0.15,
 	},
 	victor_priest_5_2_buff = {
 		multiplier = 0.25,
@@ -552,7 +552,7 @@ local talents = {
 		buffs = {},
 	},
 	{
-		buffer = "server",
+		buffer = "both",
 		description = "victor_priest_4_3_desc_new",
 		icon = "victor_priest_4_3",
 		name = "victor_priest_4_3",

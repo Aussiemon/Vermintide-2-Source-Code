@@ -118,7 +118,7 @@ ActionAssertFuncs = {
 		fassert(charge_time, "No charge time set for [\"%s.%s\"] in weapon [\"%s\"]", action_name, sub_action_name, weapon_name)
 	end,
 	action_selector = function (weapon_name, action_name, sub_action_name, action)
-		local actions = Weapons[weapon_name].actions
+		local actions = rawget(Weapons, weapon_name).actions
 		local conditional_actions = action.conditional_actions
 		local default_linked_action = action.default_action
 

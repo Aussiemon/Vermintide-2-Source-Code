@@ -179,7 +179,7 @@ BTMeleeSlamAction.anim_cb_damage = function (self, unit, blackboard)
 
 					if target_status_extension:is_disabled() then
 						damage = action.damage
-					elseif DamageUtils.check_ranged_block(unit, hit_unit, Vector3.normalize(to_target), action.shield_blocked_fatigue_type or "shield_blocked_slam") then
+					elseif DamageUtils.check_ranged_block(unit, hit_unit, action.shield_blocked_fatigue_type or "shield_blocked_slam") then
 						local blocked_velocity = action.player_push_speed_blocked * Vector3.normalize(POSITION_LOOKUP[hit_unit] - self_pos)
 						local locomotion_extension = ScriptUnit.extension(hit_unit, "locomotion_system")
 

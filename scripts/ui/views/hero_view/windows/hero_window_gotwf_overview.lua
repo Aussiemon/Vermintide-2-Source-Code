@@ -75,6 +75,7 @@ HeroWindowGotwfOverview._reset_current_item = function (self)
 	self._params.selected_item_index = nil
 	self._params.selected_item_claimed = nil
 	self._params.selected_item_already_owned = nil
+	self._params.selected_item_bundle_data = nil
 end
 
 HeroWindowGotwfOverview._sync_backend_gotwf = function (self)
@@ -543,16 +544,28 @@ HeroWindowGotwfOverview._populate_painting_data = function (self, widget, index,
 end
 
 HeroWindowGotwfOverview._populate_item_widget = function (self, widget, index, reward)
-	local num_rewards = #reward
+	local bundle_reward_item = self:_get_reward_item_from_bundle(reward)
 
-	for i = num_rewards, 1, -1 do
-		local item = reward[i]
-		local reward_type = item.reward_type
+	if bundle_reward_item then
+		local reward_type = bundle_reward_item.reward_type
 
 		if reward_type == "keep_decoration_painting" then
-			self:_populate_painting_data(widget, index, item, i)
+			self:_populate_painting_data(widget, index, bundle_reward_item, 1)
 		else
-			self:_populate_item_data(widget, index, item, i)
+			self:_populate_item_data(widget, index, bundle_reward_item, 1)
+		end
+	else
+		local num_rewards = #reward
+
+		for i = num_rewards, 1, -1 do
+			local item = reward[i]
+			local reward_type = item.reward_type
+
+			if reward_type == "keep_decoration_painting" then
+				self:_populate_painting_data(widget, index, item, i)
+			else
+				self:_populate_item_data(widget, index, item, i)
+			end
 		end
 	end
 end
@@ -901,14 +914,15 @@ HeroWindowGotwfOverview._gather_replacement_presentation_data = function (self, 
 		return
 	end
 
+	local fake_item_data, _, description_str = BackendUtils.get_fake_currency_item(data.code or "SM", data.amount)
 	local fake_item = {
-		data = BackendUtils.get_fake_currency_item(data.code or "SM", data.amount),
+		data = fake_item_data,
 	}
 	local description = {}
 	local _, display_name, _ = UIUtils.get_ui_information_from_item(fake_item)
 
 	description[1] = Localize(display_name)
-	description[2] = string.format(Localize("achv_menu_curreny_reward_claimed"), data.amount)
+	description[2] = string.format(Localize(description_str), data.amount)
 
 	local entry = {}
 
@@ -965,6 +979,7 @@ HeroWindowGotwfOverview._update_selected_reward = function (self, item_widget)
 	self._params.selected_item = is_claimed and selected_item
 	self._params.selected_item_index = is_claimed and self._current_item_index
 	self._params.selected_item_claimed = is_claimed
+	self._params.selected_item_bundle_data = is_claimed and reward.bundle_data
 	self._params.selected_item_already_owned = already_owned
 	self._current_item_index = self._current_item_index
 end
@@ -1330,12 +1345,13 @@ HeroWindowGotwfOverview._handle_input = function (self, dt, t)
 
 		local rewards = self._login_rewards.rewards
 		local current_reward = rewards[self._current_item_index]
-		local item = current_reward and current_reward[reward_index]
+		local item = self:_get_reward_item_from_bundle(current_reward) or current_reward and current_reward[reward_index]
 
 		self._params.selected_item = is_claimed and item
 		self._params.selected_item_index = is_claimed and self._current_item_index
 		self._params.selected_item_claimed = is_claimed
 		self._params.selected_item_already_owned = already_owned
+		self._params.selected_item_bundle_data = is_claimed and current_reward.bundle_data
 
 		if is_claimed then
 			self:_start_transition_animation("reveal_instant")
@@ -1349,6 +1365,33 @@ HeroWindowGotwfOverview._handle_input = function (self, dt, t)
 	end
 
 	self._gamepad_was_active = gamepad_active
+end
+
+HeroWindowGotwfOverview._get_reward_item_from_bundle = function (self, reward)
+	if reward.bundle then
+		local bundle = reward.bundle
+		local player = Managers.player:local_player()
+		local profile_index = player:profile_index()
+		local career_index = player:career_index()
+		local profile = SPProfiles[profile_index]
+		local career = profile.careers[career_index]
+		local career_name = career.name
+		local index = 1
+
+		for i = 1, #bundle do
+			local bundle_reward = bundle[i]
+			local item_id = bundle_reward.item_id
+			local item_data = rawget(ItemMasterList, item_id) or {}
+
+			if table.contains(item_data.can_wield, career_name) then
+				index = i
+
+				break
+			end
+		end
+
+		return reward.bundle[index]
+	end
 end
 
 HeroWindowGotwfOverview._handle_input_descriptions = function (self, dt, t)

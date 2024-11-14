@@ -19,7 +19,7 @@ local item_master_list = {
 		skin_combination_table = "dr_deus_01_skins",
 		slot_type = "ranged",
 		template = "dr_deus_01_template_1",
-		trait_table_name = "ranged_ammo",
+		trait_table_name = "trollhammer_torpedo",
 		can_wield = {
 			"dr_ironbreaker",
 		},
@@ -709,7 +709,7 @@ local item_master_list = {
 		required_dlc = "grass",
 		right_hand_unit = "units/weapons/player/wpn_bw_deus_01/wpn_bw_deus_01",
 		slot_type = "weapon_skin",
-		template = "bw_deus_01_template",
+		template = "bw_deus_01_template_1",
 		can_wield = {
 			"bw_scholar",
 			"bw_adept",
@@ -797,7 +797,7 @@ local item_master_list = {
 		required_dlc = "grass",
 		right_hand_unit = "units/weapons/player/wpn_bw_deus_01/wpn_bw_deus_01_magic",
 		slot_type = "weapon_skin",
-		template = "bw_deus_01_template",
+		template = "bw_deus_01_template_1",
 		can_wield = {
 			"bw_scholar",
 			"bw_adept",
@@ -816,7 +816,7 @@ local item_master_list = {
 		required_dlc = "grass",
 		right_hand_unit = "units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_magic",
 		slot_type = "weapon_skin",
-		template = "bw_deus_01_template",
+		template = "bw_deus_01_template_1",
 		can_wield = {
 			"bw_scholar",
 			"bw_adept",

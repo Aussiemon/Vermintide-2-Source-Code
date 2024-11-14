@@ -9,7 +9,7 @@ local function encode_comma_separated_string_array(array)
 end
 
 local function decode_comma_separated_string_array(string)
-	local array = string.split(string, ",")
+	local array = string.split_deprecated(string, ",")
 
 	return array
 end
@@ -26,7 +26,7 @@ local function encode_blessings(blessings_table)
 end
 
 local function decode_blessings(blessings_string)
-	local blessings_with_buyer_unassigned = string.split(blessings_string, ",")
+	local blessings_with_buyer_unassigned = string.split_deprecated(blessings_string, ",")
 	local blessings_with_buyer = {}
 
 	for i = 1, #blessings_with_buyer_unassigned, 2 do
@@ -116,7 +116,7 @@ local function encode_additional_items(additional_items)
 end
 
 local function decode_additional_items(encoded_additional_items_string)
-	local encoded_additional_items_list = string.split(encoded_additional_items_string, ",")
+	local encoded_additional_items_list = string.split_deprecated(encoded_additional_items_string, ",")
 	local decoded_table = SpawningHelper.unnetpack_additional_items(encoded_additional_items_list)
 
 	decoded_table = table.clone(decoded_table)
@@ -138,7 +138,7 @@ end
 
 local function decode_bought_power_ups(bought_power_ups_string)
 	local power_ups = {}
-	local power_up_data_strings = string.split(bought_power_ups_string, ",")
+	local power_up_data_strings = string.split_deprecated(bought_power_ups_string, ",")
 
 	for power_up_data_strings_index = 1, #power_up_data_strings do
 		local power_up_data_string = power_up_data_strings[power_up_data_strings_index]
@@ -164,7 +164,7 @@ end
 
 local function decode_bought_blessings(bought_blessings_string)
 	local blessings = {}
-	local blessing_data_strings = string.split(bought_blessings_string, ",")
+	local blessing_data_strings = string.split_deprecated(bought_blessings_string, ",")
 
 	for blessing_data_strings_index = 1, #blessing_data_strings do
 		local blessing_data_string = blessing_data_strings[blessing_data_strings_index]
@@ -188,7 +188,7 @@ local function encode_chests_used(chests_used_table)
 end
 
 local function decode_chests_used(chests_used_string)
-	local chests_used_string_split = string.split(chests_used_string, ",")
+	local chests_used_string_split = string.split_deprecated(chests_used_string, ",")
 	local chests_used_table = {}
 
 	for i = 1, #chests_used_string_split, 2 do
@@ -570,6 +570,11 @@ local spec = {
 		player_frame = {
 			default_value = "default",
 			type = "string",
+			composite_keys = {},
+		},
+		versus_player_level = {
+			default_value = 0,
+			type = "number",
 			composite_keys = {},
 		},
 	},

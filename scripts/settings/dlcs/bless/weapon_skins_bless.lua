@@ -198,7 +198,7 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_wh_shield_01/wpn_wh_shield_01_t1",
 			rarity = "common",
 			right_hand_unit = "units/weapons/player/wpn_emp_flail_02_t1/wpn_emp_flail_02_t1",
-			template = "one_handed_flail_shield_priest_template",
+			template = "one_handed_flail_shield_template",
 		},
 	},
 	{
@@ -212,7 +212,7 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_wh_shield_01/wpn_wh_shield_01_t1_runed",
 			rarity = "unique",
 			right_hand_unit = "units/weapons/player/wpn_emp_flail_02_t1/wpn_emp_flail_02_t1_runed_01",
-			template = "one_handed_flail_shield_priest_template",
+			template = "one_handed_flail_shield_template",
 		},
 	},
 	{
@@ -226,7 +226,7 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_wh_shield_01/wpn_wh_shield_01_t1_runed",
 			rarity = "unique",
 			right_hand_unit = "units/weapons/player/wpn_emp_flail_02_t1/wpn_emp_flail_02_t1_runed_01",
-			template = "one_handed_flail_shield_priest_template",
+			template = "one_handed_flail_shield_template",
 			material_settings = WeaponMaterialSettingsTemplates.purple_glow,
 		},
 	},
@@ -241,7 +241,7 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_wh_shield_01/wpn_wh_shield_01_t1",
 			rarity = "rare",
 			right_hand_unit = "units/weapons/player/wpn_emp_flail_05_t1/wpn_emp_flail_05_t1",
-			template = "one_handed_flail_shield_priest_template",
+			template = "one_handed_flail_shield_template",
 		},
 	},
 	{
@@ -255,7 +255,7 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_wh_shield_01/wpn_wh_shield_01_t1_runed",
 			rarity = "unique",
 			right_hand_unit = "units/weapons/player/wpn_emp_flail_05_t1/wpn_emp_flail_05_t1_runed_01",
-			template = "one_handed_flail_shield_priest_template",
+			template = "one_handed_flail_shield_template",
 		},
 	},
 	{
@@ -269,7 +269,7 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_wh_shield_01/wpn_wh_shield_01_t1_runed",
 			rarity = "unique",
 			right_hand_unit = "units/weapons/player/wpn_emp_flail_05_t1/wpn_emp_flail_05_t1_runed_01",
-			template = "one_handed_flail_shield_priest_template",
+			template = "one_handed_flail_shield_template",
 			material_settings = WeaponMaterialSettingsTemplates.purple_glow,
 		},
 	},
@@ -284,7 +284,7 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_wh_shield_01/wpn_wh_shield_01_t1_magic",
 			rarity = "magic",
 			right_hand_unit = "units/weapons/player/wpn_emp_flail_04_t1/wpn_emp_flail_04_t1_magic_01",
-			template = "one_handed_flail_shield_priest_template",
+			template = "one_handed_flail_shield_template",
 		},
 	},
 	{

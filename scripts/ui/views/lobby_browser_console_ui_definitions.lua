@@ -3472,10 +3472,8 @@ end
 local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinable, completed_difficulty_index)
 	local host_name = IS_WINDOWS and (lobby_data.unique_server_name or lobby_data.host) or lobby_data.name or "UNKNOWN"
 	local num_players = lobby_data.num_players or 0
-	local country_code = lobby_data.country_code
-	local matchmaking_type_id = lobby_data.matchmaking_type
-	local matchmaking_type = IS_PS4 and matchmaking_type_id or NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)]
 	local mechanism = lobby_data.mechanism
+	local is_versus_custom_game = mechanism == "versus" and NetworkLookup.matchmaking_types[tonumber(lobby_data.matchmaking_type)] == "custom"
 	local difficulty = lobby_data.difficulty or "UNKNOWN"
 	local difficulty_settings = DifficultySettings[difficulty]
 
@@ -3760,7 +3758,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 			selected = false,
 			lobby_hotspot = {},
 			host_name = host_name,
-			num_players_id = num_players .. "/4",
+			num_players_id = num_players .. "/" .. (is_versus_custom_game and "8" or "4"),
 			difficulty_id = difficulty,
 			selected_level_name = selected_level_name,
 			current_level_name = current_level_name,

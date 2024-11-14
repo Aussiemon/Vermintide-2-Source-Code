@@ -233,6 +233,8 @@ CinematicsView._create_video_renderer = function (self)
 		"materials/fonts/gw_fonts",
 		"material",
 		"materials/ui/ui_1080p_common",
+		"material",
+		"materials/ui/ui_1080p_versus_available_common",
 	}
 
 	for i = 1, #CinematicsViewSettings do
@@ -335,7 +337,7 @@ CinematicsView.do_exit = function (self, return_to_game)
 
 	self._exiting = true
 
-	Managers.music:trigger_event(IS_WINDOWS and "Play_hud_select" or "Play_console_menu_select")
+	Managers.music:trigger_event(IS_WINDOWS and "Play_console_menu_back" or "Play_console_menu_select")
 end
 
 CinematicsView.update = function (self, dt, t)

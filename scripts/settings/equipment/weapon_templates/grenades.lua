@@ -315,6 +315,16 @@ fire_grenade_t2.left_hand_unit = "units/weapons/player/wpn_emp_grenade_01_t2/wpn
 fire_grenade_t2.pickup_data.pickup_name = "fire_grenade_t2"
 fire_grenade_t2.actions.action_one.throw.projectile_info = Projectiles.grenade_fire
 
+local engineer_grenade_t1 = table.clone(weapon_template_frag)
+
+engineer_grenade_t1.actions.action_one.throw.impact_data.aoe = ExplosionTemplates.engineer_grenade
+engineer_grenade_t1.actions.action_one.throw.timed_data.aoe = ExplosionTemplates.engineer_grenade
+engineer_grenade_t1.left_hand_unit = weapon_template_frag.left_hand_unit
+engineer_grenade_t1.wield_anim = weapon_template_frag.wield_anim
+engineer_grenade_t1.right_hand_unit = "units/weapons/player/wpn_emp_grenade_01_t1/wpn_emp_grenade_01_t1"
+engineer_grenade_t1.left_hand_unit = "units/weapons/player/wpn_emp_grenade_01_t1/wpn_emp_grenade_lighter_01_t1"
+engineer_grenade_t1.pickup_data.pickup_name = "engineer_grenade_t1"
+
 return {
 	grenade = table.clone(weapon_template_frag),
 	frag_grenade_t1 = frag_grenade_t1,
@@ -322,4 +332,5 @@ return {
 	fire_grenade_t1 = fire_grenade_t1,
 	fire_grenade_t2 = fire_grenade_t2,
 	shadow_flare = shadow_flare,
+	engineer_grenade_t1 = engineer_grenade_t1,
 }

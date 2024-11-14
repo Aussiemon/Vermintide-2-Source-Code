@@ -78,7 +78,7 @@ local animations_definitions = {
 	exit = {
 		{
 			end_progress = 0.5,
-			name = "slide_and_fade_in",
+			name = "slide_and_fade_out",
 			start_progress = 0,
 			init = function (ui_scenegraph, scenegraph_definition, widget, params)
 				return

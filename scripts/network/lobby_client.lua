@@ -21,6 +21,8 @@ LobbyClient.init = function (self, network_options, lobby_data, joined_lobby)
 	if HAS_STEAM then
 		self:set_steam_lobby_reconnectable(true)
 	end
+
+	mm_printf("LobbyClient Created")
 end
 
 LobbyClient.destroy = function (self)
@@ -35,9 +37,7 @@ LobbyClient.destroy = function (self)
 		CHANNEL_TO_PEER_ID[channel_id] = nil
 	end
 
-	if IS_PS4 and self._host_peer_id then
-		-- Nothing
-	end
+	mm_printf("LobbyClient Destroyed")
 
 	self._host_peer_id = nil
 	self._host_channel_id = nil

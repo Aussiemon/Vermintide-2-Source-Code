@@ -58,7 +58,7 @@ StateTitleScreen.on_enter = function (self, params)
 	}
 
 	for _, parameter in pairs(args) do
-		if parameter == "-auto-host-level" or parameter == "-auto-join" or parameter == "-skip-splash" or parameter == "-deus-auto-host" or loading_context.join_lobby_data or loading_context.offline_invite then
+		if parameter == "-auto-host-level" or parameter == "-auto-join" or parameter == "-skip-splash" or parameter == "-deus-auto-host" or true or loading_context.join_lobby_data or loading_context.offline_invite or parameter == "-weave-name" then
 			self._auto_start = true
 
 			break

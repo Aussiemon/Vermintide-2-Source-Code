@@ -34,6 +34,7 @@ end
 LevelEndViewWeave.destroy = function (self)
 	LevelEndViewWeave.super.destroy(self)
 	self:_destroy_team_previewer()
+	Managers.state.event:unregister("trigger_hero_pose", self)
 end
 
 LevelEndViewWeave.setup_pages = function (self, game_won, rewards)
@@ -97,6 +98,10 @@ LevelEndViewWeave.update = function (self, dt, t)
 	if script_data.testify then
 		Testify:poll_requests_through_handler(level_end_view_weave_testify, self)
 	end
+end
+
+LevelEndViewWeave.event_trigger_hero_pose = function (self, pose_index)
+	self._team_previewer:trigger_hero_pose(pose_index)
 end
 
 LevelEndViewWeave.set_input_description = function (self, input_desc)
@@ -315,16 +320,38 @@ LevelEndViewWeave.get_hero_from_score = function (self, player_data)
 	local profile_data = SPProfiles[profile_index]
 	local careers = profile_data.careers
 	local career_settings = careers[career_index]
+	local weapon_pose_weapon, weapon_pose_slot, weapon_pose_anim_event
+	local weapon_pose = player_data.weapon_pose and player_data.weapon_pose.item_name
+
+	if weapon_pose then
+		local item = ItemMasterList[weapon_pose]
+
+		if item then
+			local skin_name = player_data.weapon_pose.skin_name
+			local parent_item_name = item.parent
+			local parent_item = rawget(ItemMasterList, parent_item_name)
+
+			if parent_item then
+				weapon_pose_weapon = {
+					item_name = parent_item_name,
+					skin_name = skin_name,
+				}
+				weapon_pose_slot = parent_item.slot_type
+				weapon_pose_anim_event = item.data.anim_event
+			end
+		end
+	end
 
 	return {
 		profile_index = profile_index,
 		career_index = career_index,
 		hero_name = career_settings.profile_name,
 		skin_name = player_data.hero_skin,
-		weapon_slot = player_data.weapon and career_settings.preview_wield_slot or nil,
+		weapon_slot = weapon_pose_slot or player_data.weapon and career_settings.preview_wield_slot or nil,
+		weapon_pose_anim_event = weapon_pose_anim_event,
 		preview_items = {
 			player_data.hat,
-			player_data.weapon,
+			weapon_pose_weapon or player_data.weapon,
 		},
 	}
 end
@@ -347,6 +374,8 @@ LevelEndViewWeave.setup_camera = function (self)
 			camera_pose = Matrix4x4Box(pose)
 
 			print("Found camera: " .. name)
+
+			self._camera_unit = Level.unit_by_index(self._level, index)
 		end
 	end
 
@@ -359,6 +388,14 @@ LevelEndViewWeave.start_camera_look_up = function (self, transition_delay, trans
 	self._camera_look_up_time = -transition_delay
 	self._camera_look_up_duration = transition_duration
 	self._camera_look_up_degrees = degrees
+
+	if self._story_id then
+		if self._storyteller:is_playing(self._story_id) then
+			self._storyteller:stop(self._story_id)
+		end
+
+		self._story_id = nil
+	end
 end
 
 LevelEndViewWeave._update_camera_look_up = function (self, dt, t)

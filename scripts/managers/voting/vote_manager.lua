@@ -135,7 +135,7 @@ VoteManager.request_vote = function (self, name, vote_data, voter_peer_id, ignor
 		local sync_data = vote_template.pack_sync_data(vote_data)
 
 		Managers.matchmaking:set_local_quick_game(false)
-		Managers.matchmaking:set_quick_game(false)
+		Managers.matchmaking:set_quick_game(vote_data.quick_game or false)
 		Managers.state.network.network_transmit:send_rpc_server(client_start_vote_rpc, vote_type_id, sync_data)
 
 		if vote_template.initial_vote_func then
@@ -284,6 +284,10 @@ end
 
 VoteManager.is_mission_vote = function (self)
 	return self.active_voting.template.mission_vote
+end
+
+VoteManager.cancel_disabled = function (self)
+	return self.active_voting and self.active_voting.template.cancel_disabled
 end
 
 VoteManager.allow_vote_input = function (self, enable)

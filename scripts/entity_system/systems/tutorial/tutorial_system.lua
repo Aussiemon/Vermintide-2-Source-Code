@@ -1,6 +1,7 @@
 ﻿-- chunkname: @scripts/entity_system/systems/tutorial/tutorial_system.lua
 
 require("scripts/entity_system/systems/tutorial/tutorial_templates")
+require("scripts/entity_system/systems/tutorial/tutorial_condition_evaluator")
 
 local TIME_TO_WAIT_BETWEEN_SHOWS = 30
 local TOOLTIP_MINIMUM_SHOW_TIME = 0.3
@@ -53,10 +54,16 @@ TutorialSystem.init = function (self, entity_system_creation_context, system_nam
 
 	network_event_delegate:register(self, "rpc_tutorial_message", "rpc_pacing_changed", "rpc_objective_unit_set_active", "rpc_prioritize_objective_tooltip")
 
+	SaveData.seen_handbook_popups = SaveData.seen_handbook_popups or {}
+
+	Managers.state.event:register(self, "tutorial_trigger", "on_tutorial_trigger")
+
+	self._condition_context = TutorialConditionEvaluator:new()
 	DO_TUT_RELOAD = false
 end
 
 TutorialSystem.destroy = function (self)
+	Managers.state.event:unregister(self, "tutorial_trigger")
 	self.network_event_delegate:unregister(self)
 	table.clear(self)
 end
@@ -483,6 +490,45 @@ TutorialSystem.iterate_info_slates = function (self, t, unit, extension, raycast
 		end
 	else
 		Managers.state.event:trigger("tutorial_event_clear_tutorials")
+	end
+end
+
+TutorialSystem.on_tutorial_trigger = function (self, trigger_name)
+	local seen_handbook_popups = SaveData.seen_handbook_popups
+	local ctx = self._condition_context
+
+	ctx:clear_cache()
+
+	for popup_id, popup_settings in pairs(HandbookSettings.popups) do
+		if seen_handbook_popups[popup_id] then
+			-- Nothing
+		elseif not table.find(popup_settings.triggers, trigger_name) then
+			-- Nothing
+		else
+			local conditions = popup_settings.conditions
+
+			if conditions then
+				for i = 1, #conditions do
+					local cond_name = conditions[i]
+
+					if not ctx:get(cond_name) then
+						goto label_1_0
+					end
+				end
+			end
+
+			local condition_func = popup_settings.custom_condition
+
+			if condition_func and not condition_func(ctx) then
+				-- Nothing
+			else
+				Managers.state.event:trigger("ui_show_popup", popup_id, "handbook")
+
+				seen_handbook_popups[popup_id] = true
+			end
+		end
+
+		::label_1_0::
 	end
 end
 

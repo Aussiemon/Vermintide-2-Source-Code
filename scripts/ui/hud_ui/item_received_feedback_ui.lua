@@ -28,6 +28,7 @@ local event_colors = {
 	personal = Colors.get_table("dodger_blue"),
 }
 local item_icons = {
+	grenade_engineer = "killfeed_icon_05",
 	grenade_fire_01 = "killfeed_icon_09",
 	grenade_fire_02 = "killfeed_icon_09",
 	grenade_frag_01 = "killfeed_icon_05",

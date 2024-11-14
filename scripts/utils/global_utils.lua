@@ -69,30 +69,6 @@ function UPDATE_RESOLUTION_LOOKUP(force_update, optional_scale_multiplier)
 	resolution_lookup.modified = resolution_modified or force_update
 end
 
-local function is_valid(unit)
-	return unit_alive(unit) and not ScriptUnit.extension(unit, "status_system").ready_for_assisted_respawn
-end
-
-local function is_valid_target(unit)
-	local status_ext = ScriptUnit.extension(unit, "status_system")
-
-	return not status_ext:is_in_end_zone() and not status_ext:is_invisible() and not status_ext.spawn_grace and HEALTH_ALIVE[unit]
-end
-
-local function is_valid_aggro_target(unit)
-	if not unit_alive(unit) then
-		return false
-	end
-
-	local status_ext = ScriptUnit.has_extension(unit, "status_system")
-
-	if status_ext then
-		return not status_ext.ready_for_assisted_respawn and not status_ext:is_in_end_zone() and not status_ext:is_invisible() and not status_ext.spawn_grace and HEALTH_ALIVE[unit]
-	end
-
-	return true
-end
-
 function CLEAR_ALL_PLAYER_LISTS()
 	print("Clearing all global lookup lists")
 	table.clear(BLACKBOARDS)

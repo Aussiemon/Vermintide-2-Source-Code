@@ -1206,7 +1206,7 @@ local function create_menu_button(scenegraph_id, text, callback, menu_option_dat
 							if match then
 								local formatted_match = string.gsub(match, "%s", "")
 								local value_match = string.match(formatted_match, "%d+,%d+,%d+,%d+")
-								local values = string.split(value_match, ",")
+								local values = string.split_deprecated(value_match, ",")
 
 								values[4] = tostring(alpha)
 

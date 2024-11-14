@@ -1,5 +1,16 @@
 ﻿-- chunkname: @scripts/settings/equipment/weapon_templates/markus_questingknight_career_skill.lua
 
+local wield_with_cancel = table.clone(ActionTemplates.wield)
+local wield_default = wield_with_cancel.default
+local anims = type(wield_default.pre_action_anim_event) == "table" and table.clone(wield_default.pre_action_anim_event) or {
+	wield_default.pre_action_anim_event,
+}
+
+table.insert(anims, 1, "questing_knight_ability_cancel_01")
+table.insert(anims, 2, "ability_finished")
+
+wield_default.pre_action_anim_event = anims
+
 local weapon_template = {}
 
 weapon_template.actions = {
@@ -58,6 +69,12 @@ weapon_template.actions = {
 					start_time = 0.35,
 					sub_action = "default_smiter",
 				},
+				{
+					action = "action_wield",
+					input = "action_wield",
+					start_time = 0,
+					sub_action = "default",
+				},
 			},
 		},
 		default_2 = {
@@ -94,6 +111,12 @@ weapon_template.actions = {
 					start_time = 0.5,
 					sub_action = "default_tank",
 				},
+				{
+					action = "action_wield",
+					input = "action_wield",
+					start_time = 0,
+					sub_action = "default",
+				},
 			},
 		},
 		default_3 = {
@@ -129,6 +152,12 @@ weapon_template.actions = {
 					input = "action_career_not_hold",
 					start_time = 0.35,
 					sub_action = "smiter_combo_1",
+				},
+				{
+					action = "action_wield",
+					input = "action_wield",
+					start_time = 0,
+					sub_action = "default",
 				},
 			},
 		},
@@ -334,6 +363,12 @@ weapon_template.actions = {
 					input = "action_career_not_hold",
 					start_time = 0.75,
 					sub_action = "smiter_combo_2",
+				},
+				{
+					action = "action_wield",
+					input = "action_wield",
+					start_time = 0,
+					sub_action = "default",
 				},
 				{
 					action = "action_career_release",
@@ -575,6 +610,7 @@ weapon_template.actions = {
 			sweep_z_offset = 0.1,
 			total_time = 1,
 			uninterruptible = true,
+			unlimited_cleave = true,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"
 			end,
@@ -695,7 +731,7 @@ weapon_template.actions = {
 		},
 	},
 	action_inspect = ActionTemplates.action_inspect,
-	action_wield = ActionTemplates.wield,
+	action_wield = wield_with_cancel,
 }
 weapon_template.attack_meta_data = {
 	base_action_name = "action_career_release",

@@ -364,6 +364,10 @@ function flow_callback_math_ceil(params)
 	}
 end
 
+function flow_callback_set_simple_animation_speed(params)
+	Unit.set_simple_animation_speed(params.unit, params.speed, params.group)
+end
+
 function flow_callback_trigger_event(params)
 	if unit_alive(params.unit) then
 		Unit.flow_event(params.unit, params.event)
@@ -515,6 +519,7 @@ function flow_callback_attach_player_item(params)
 	local item_unit
 	local parent_unit = params.unit
 	local world = Unit.world(parent_unit)
+	local node_link_type = params.node_linking or "wielded"
 
 	if ItemMasterList ~= nil then
 		local item_table = ItemMasterList
@@ -529,18 +534,51 @@ function flow_callback_attach_player_item(params)
 			end
 
 			if item.slot_type == "melee" or item.slot_type == "ranged" or item.slot_type == "weapon_skin" or item.slot_type == "potion" then
-				if Weapons ~= nil then
-					local weapon_template = Weapons[item.template]
+				pcall(require, "scripts/settings/equipment/weapons")
+				pcall(require, "scripts/settings/equipment/weapon_skins")
 
-					if item.right_hand_unit ~= nil then
-						item_unit = attach_player_item(parent_unit, item.right_hand_unit .. "_3p", weapon_template.right_hand_attachment_node_linking.third_person, params.unwielded, false)
+				if Weapons ~= nil then
+					local unit_suffix = "_3p"
+
+					if node_link_type == "display" then
+						unit_suffix = ""
 					end
 
-					if item.left_hand_unit ~= nil then
-						if item.left_hand_unit ~= item.ammo_unit then
-							item_unit = attach_player_item(parent_unit, item.left_hand_unit .. "_3p", weapon_template.left_hand_attachment_node_linking.third_person, params.unwielded, false)
-						else
-							item_unit = attach_player_item(parent_unit, item.left_hand_unit .. "_3p", weapon_template.right_hand_attachment_node_linking.third_person, params.unwielded, false)
+					local template_name = item.template
+					local weapon_template = rawget(Weapons, template_name)
+					local weapon_skin = rawget(WeaponSkins.skins, params.item)
+					local right_unit = item.right_hand_unit
+					local left_unit = item.left_hand_unit
+
+					if weapon_skin ~= nil then
+						if right_unit == nil then
+							right_unit = weapon_skin.right_hand_unit or nil
+						end
+
+						if left_unit == nil then
+							left_unit = weapon_skin.left_hand_unit or nil
+						end
+					end
+
+					if right_unit ~= nil then
+						item_unit = attach_player_item(parent_unit, right_unit .. unit_suffix, weapon_template.right_hand_attachment_node_linking.third_person, node_link_type, false)
+
+						if weapon_skin ~= nil and weapon_skin.material_settings ~= nil then
+							apply_material_settings(item_unit, weapon_skin.material_settings)
+						end
+					end
+
+					if left_unit ~= nil then
+						local node_link = weapon_template.left_hand_attachment_node_linking.third_person
+
+						if left_unit == item.ammo_unit then
+							node_link = weapon_template.right_hand_attachment_node_linking.third_person
+						end
+
+						item_unit = attach_player_item(parent_unit, left_unit .. unit_suffix, node_link, node_link_type, false)
+
+						if weapon_skin ~= nil and weapon_skin.material_settings ~= nil then
+							apply_material_settings(item_unit, weapon_skin.material_settings)
 						end
 					end
 
@@ -548,7 +586,11 @@ function flow_callback_attach_player_item(params)
 						local projectile_units = ProjectileUnits
 
 						if projectile_units[weapon_template.actions.action_one.default.projectile_info.projectile_units_template].dummy_linker_unit_name ~= nil then
-							item_unit = attach_player_item(parent_unit, projectile_units[weapon_template.actions.action_one.default.projectile_info.projectile_units_template].dummy_linker_unit_name, weapon_template.ammo_data.ammo_unit_attachment_node_linking.third_person, params.unwielded, false)
+							item_unit = attach_player_item(parent_unit, projectile_units[weapon_template.actions.action_one.default.projectile_info.projectile_units_template].dummy_linker_unit_name, weapon_template.ammo_data.ammo_unit_attachment_node_linking.third_person, node_link_type, false)
+
+							if weapon_skin ~= nil and weapon_skin.material_settings ~= nil then
+								apply_material_settings(item_unit, weapon_skin.material_settings)
+							end
 						end
 					end
 
@@ -602,7 +644,17 @@ function flow_callback_attach_player_item(params)
 				if Cosmetics ~= nil then
 					local skin_template = Cosmetics[params.item]
 
-					if skin_template.third_person_attachment ~= nil then
+					if node_link_type == "display" then
+						if skin_template.first_person_attachment ~= nil then
+							item_unit = attach_player_item(parent_unit, skin_template.first_person_attachment.unit, skin_template.first_person_attachment.attachment_node_linking, nil, true)
+
+							if skin_template.material_changes ~= nil then
+								for slot_name, material_name in pairs(skin_template.material_changes.first_person) do
+									Unit.set_material(item_unit, slot_name, material_name)
+								end
+							end
+						end
+					elseif skin_template.third_person_attachment ~= nil then
 						item_unit = attach_player_item(parent_unit, skin_template.third_person_attachment.unit, skin_template.third_person_attachment.attachment_node_linking, nil, true)
 
 						if skin_template.material_changes ~= nil then
@@ -610,6 +662,14 @@ function flow_callback_attach_player_item(params)
 								Unit.set_material(item_unit, slot_name, material_name)
 							end
 						end
+
+						if skin_template.material_settings ~= nil then
+							apply_material_settings(item_unit, skin_template.material_settings)
+						end
+
+						local skin_equip_event = skin_template.equip_skin_event or "using_skin_default"
+
+						Unit.flow_event(parent_unit, skin_equip_event)
 
 						local skin_events = Unit.get_data(parent_unit, "skin_events") or {}
 
@@ -644,11 +704,13 @@ function flow_callback_attach_player_item(params)
 	}
 end
 
-function attach_player_item(parent_unit, child_unit_name, node_link_template, unwielded, link_lods)
+function attach_player_item(parent_unit, child_unit_name, node_link_template, node_link_type, link_lods)
 	local index_offset = Script.index_offset()
 
-	if unwieled then
+	if node_link_type == "unwielded" then
 		node_link_template = node_link_template.unwielded or node_link_template
+	elseif node_link_type == "display" then
+		node_link_template = node_link_template.display or node_link_template
 	else
 		node_link_template = node_link_template.wielded or node_link_template
 	end
@@ -692,6 +754,52 @@ function attach_player_item(parent_unit, child_unit_name, node_link_template, un
 	Unit.set_data(parent_unit, "flow_item_attachments", item_attachments)
 
 	return child_unit
+end
+
+function apply_material_settings(unit, material_settings)
+	for variable_name, data in pairs(material_settings) do
+		if data.type == "color" then
+			if data.apply_to_children then
+				Unit.set_color_for_materials_in_unit_and_childs(unit, variable_name, Quaternion(data.alpha, data.r, data.g, data.b))
+			else
+				Unit.set_color_for_materials(unit, variable_name, Quaternion(data.alpha, data.r, data.g, data.b))
+			end
+		elseif data.type == "matrix4x4" then
+			local matrix = Matrix4x4(data.xx, data.xy, data.xz, data.yx, data.yy, data.yz, data.zx, data.zy, data.zz, data.tx, data.ty, data.tz)
+
+			if data.apply_to_children then
+				Unit.set_matrix4x4_for_materials_in_unit_and_childs(unit, variable_name, matrix)
+			else
+				Unit.set_matrix4x4_for_materials(unit, variable_name, matrix)
+			end
+		elseif data.type == "scalar" then
+			if data.apply_to_children then
+				Unit.set_scalar_for_materials_in_unit_and_childs(unit, variable_name, data.value)
+			else
+				Unit.set_scalar_for_materials(unit, variable_name, data.value)
+			end
+		elseif data.type == "vector2" then
+			if data.apply_to_children then
+				Unit.set_vector2_for_materials_in_unit_and_childs(unit, variable_name, Vector3(data.x, data.y, 0))
+			else
+				Unit.set_vector2_for_materials(unit, variable_name, Vector3(data.x, data.y, 0))
+			end
+		elseif data.type == "vector3" then
+			if data.apply_to_children then
+				Unit.set_vector3_for_materials_in_unit_and_childs(unit, variable_name, Vector3(data.x, data.y, data.z))
+			else
+				Unit.set_vector3_for_materials(unit, variable_name, Vector3(data.x, data.y, data.z))
+			end
+		elseif data.type == "vector4" then
+			if data.apply_to_children then
+				Unit.set_vector4_for_materials_in_unit_and_childs(unit, variable_name, Quaternion(data.x, data.y, data.z, data.w))
+			else
+				Unit.set_vector4_for_materials(unit, variable_name, Quaternion(data.x, data.y, data.z, data.w))
+			end
+		elseif data.type == "texture" and Application.can_get("texture", data.texture) then
+			Unit.set_texture_for_materials(unit, variable_name, data.texture)
+		end
+	end
 end
 
 function flow_callback_remove_player_items(params)

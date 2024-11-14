@@ -5,7 +5,10 @@ AimTemplates = AimTemplates or {}
 local BLACKBOARDS = BLACKBOARDS
 local AIM_DIRECTION_MAX = 1.9999999
 local HUSK_MIN_PITCH = -0.95
+local HUSK_BOSS_MIN_PITCH = -0.8
 local HUSK_MAX_PITCH = 0.6
+local AIM_DIRECTION_MAGNITUDE = 3
+local BOSS_AIM_DIRECTION_MAGNITUDE = 5
 
 local function look_at_target_unit(unit, data, dt, target_unit, target_distance, head_constraint_target, always_on)
 	local previously_used_head_constraint = data.is_using_head_constraint
@@ -182,7 +185,9 @@ AimTemplates.player = {
 			local aim_direction = GameSession.game_object_field(game, go_id, "aim_direction")
 			local rotation = Quaternion.look(aim_direction)
 			local yaw = Quaternion.yaw(rotation)
-			local pitch = math.clamp(Quaternion.pitch(rotation), HUSK_MIN_PITCH, HUSK_MAX_PITCH)
+			local breed = Unit.get_data(unit, "breed")
+			local husk_max_pitch = breed.custom_husk_max_pitch or HUSK_MAX_PITCH
+			local pitch = math.clamp(Quaternion.pitch(rotation), HUSK_MIN_PITCH, husk_max_pitch)
 			local yaw_rotation = Quaternion(Vector3.up(), yaw)
 			local pitch_rotation = Quaternion(Vector3.right(), pitch)
 			local look_rotation = Quaternion.multiply(yaw_rotation, pitch_rotation)
@@ -263,7 +268,7 @@ AimTemplates.enemy_character = {
 
 			Unit.animation_set_variable(unit, data.aim_direction_pitch_var, math.clamp(Quaternion.pitch(Quaternion.look(aim_direction)), -1, 1))
 
-			local aim_direction_scaled = aim_direction * 3
+			local aim_direction_scaled = aim_direction * AIM_DIRECTION_MAGNITUDE
 			local aim_from_pos = Unit.world_position(unit, Unit.node(unit, "camera_attach"))
 			local aim_target = aim_from_pos + aim_direction_scaled
 
@@ -297,6 +302,11 @@ AimTemplates.enemy_character = {
 			data.aim_constraint_anim_var = Unit.animation_find_constraint_target(unit, "aim_constraint_target")
 			data.look_direction_anim_var = Unit.animation_find_variable(unit, "aim_direction")
 			data.aim_direction_pitch_var = Unit.animation_find_variable(unit, "aim_direction_pitch")
+
+			local breed = Unit.get_data(unit, "breed")
+
+			data.boss = breed.boss or false
+			data.aim_constraint_forward_multiplier = breed.aim_constraint_forward_multiplier or 1
 			data.camera_attach_node = Unit.node(unit, "camera_attach")
 			data.status_extension = ScriptUnit.extension(unit, "status_system")
 		end,
@@ -311,14 +321,32 @@ AimTemplates.enemy_character = {
 			local aim_direction = GameSession.game_object_field(game, go_id, "aim_direction")
 			local rotation = Quaternion.look(aim_direction)
 			local yaw = Quaternion.yaw(rotation)
-			local pitch = math.clamp(Quaternion.pitch(rotation), HUSK_MIN_PITCH, HUSK_MAX_PITCH)
+			local breed = Unit.get_data(unit, "breed")
+			local husk_max_pitch = breed.custom_husk_max_pitch or HUSK_MAX_PITCH
+			local pitch
+
+			if data.boss then
+				pitch = math.clamp(Quaternion.pitch(rotation), HUSK_BOSS_MIN_PITCH, husk_max_pitch)
+			else
+				pitch = math.clamp(Quaternion.pitch(rotation), HUSK_MIN_PITCH, husk_max_pitch)
+			end
+
 			local yaw_rotation = Quaternion(Vector3.up(), yaw)
 			local pitch_rotation = Quaternion(Vector3.right(), pitch)
 			local look_rotation = Quaternion.multiply(yaw_rotation, pitch_rotation)
 
 			aim_direction = Vector3.normalize(Quaternion.forward(look_rotation))
 
-			local aim_direction_scaled = aim_direction * 3
+			local aim_direction_scaled
+
+			if data.boss then
+				aim_direction_scaled = aim_direction * BOSS_AIM_DIRECTION_MAGNITUDE
+			else
+				aim_direction_scaled = aim_direction * AIM_DIRECTION_MAGNITUDE
+			end
+
+			aim_direction_scaled = aim_direction_scaled * data.aim_constraint_forward_multiplier
+
 			local from_pos = Unit.world_position(unit, data.camera_attach_node)
 
 			if script_data.lerp_debug or script_data.extrapolation_debug then

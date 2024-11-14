@@ -137,7 +137,7 @@ weapon_template.buffs = {
 	},
 }
 
-local explosive_barrel = Weapons.explosive_barrel or table.clone(weapon_template)
+local explosive_barrel = table.clone(weapon_template)
 
 explosive_barrel.left_hand_unit = "units/weapons/player/wpn_explosive_barrel/wpn_explosive_barrel_01"
 

@@ -34,6 +34,7 @@ GutterRunnerStatePouncing.on_enter = function (self, unit, input, dt, context, t
 	local initial_velocity = pounce_data.initial_velocity:unbox()
 
 	self:_start_pounce(unit, initial_velocity, t)
+	CharacterStateHelper.ghost_mode(self._ghost_mode_extension, input_extension)
 	CharacterStateHelper.look(input_extension, player.viewport_name, first_person_extension, status_extension, self._inventory_extension)
 	CharacterStateHelper.update_weapon_actions(t, unit, input_extension, inventory_extension, self._health_extension)
 
@@ -44,6 +45,7 @@ GutterRunnerStatePouncing.on_enter = function (self, unit, input, dt, context, t
 	local start_jump_height = position_lookup[unit].z
 
 	status_extension:set_falling_height(start_jump_height)
+	status_extension:set_gutter_runner_leaping(true)
 
 	self._entered_in_ghostmode = status_extension:get_in_ghost_mode()
 	self._played_landing_event = nil
@@ -57,11 +59,13 @@ GutterRunnerStatePouncing.on_enter = function (self, unit, input, dt, context, t
 	blackboard.pounce_start_time = t
 
 	self:set_breed_action("jump")
+	self._ghost_mode_extension:set_external_no_spawn_reason("pouncing", true)
 end
 
-GutterRunnerStatePouncing.on_exit = function (self, unit, input, dt, context, t, next_state)
+GutterRunnerStatePouncing.on_exit = function (self, unit, input, dt, context, t, next_state, is_destroy)
 	local first_person_extension = self._first_person_extension
 	local locomotion_extension = self._locomotion_extension
+	local status_extension = self._status_extension
 
 	locomotion_extension:reset_maximum_upwards_velocity()
 
@@ -98,6 +102,13 @@ GutterRunnerStatePouncing.on_exit = function (self, unit, input, dt, context, t,
 	first_person_extension:set_wanted_player_height("stand", t)
 	locomotion_extension:set_active_mover("standing")
 	self:set_breed_action("n/a")
+
+	if is_destroy then
+		return
+	end
+
+	self._ghost_mode_extension:set_external_no_spawn_reason("pouncing", nil)
+	status_extension:set_gutter_runner_leaping(false)
 end
 
 GutterRunnerStatePouncing.update = function (self, unit, input, dt, context, t)
@@ -195,8 +206,9 @@ GutterRunnerStatePouncing._update_movement = function (self, unit, dt, t)
 
 		Broadphase.query(broadphase, position, radius, nearby_hero_units)
 
+		local closest_hero_distance
+
 		for _, player_unit in pairs(nearby_hero_units) do
-			local closest_hero_distance
 			local target_status_extension = ScriptUnit.extension(player_unit, "status_system")
 
 			if player_unit ~= unit and CharacterStateHelper.is_viable_stab_target(unit, player_unit, target_status_extension) then

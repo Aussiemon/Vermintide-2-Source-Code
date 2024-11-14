@@ -19,7 +19,7 @@ DemoEndUI.init = function (self, world)
 	self.render_settings = {
 		snap_pixel_positions = true,
 	}
-	self._ui_renderer = UIRenderer.create(world, "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", demo_video.video_name)
+	self._ui_renderer = UIRenderer.create(world, "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_versus_available_common", "material", demo_video.video_name)
 
 	UISetupFontHeights(self._ui_renderer.gui)
 

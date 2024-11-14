@@ -69,23 +69,6 @@ GhostModeSystem.update = function (self, context, t)
 	GhostModeSystem.super.update(self, context, t)
 end
 
-GhostModeSystem.in_line_of_sight_of_enemies = function (self, unit, enemy_positions, physics_world)
-	local pos = POSITION_LOOKUP[unit]
-	local z_offset = Vector3(0, 0, 1)
-	local num_enemy_positions = #enemy_positions
-
-	for i = 1, num_enemy_positions do
-		local target_pos = enemy_positions[i]
-		local in_los = PerceptionUtils.is_position_in_line_of_sight(nil, pos + z_offset, target_pos + z_offset, physics_world)
-
-		if in_los then
-			return true
-		end
-	end
-
-	return false
-end
-
 local IS_LOCAL_CALL = "is_local_call"
 
 GhostModeSystem._update_safe_spot = function (self)

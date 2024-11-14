@@ -2,7 +2,7 @@
 
 VersusDarkPactCareerDelegator = class(VersusDarkPactCareerDelegator)
 
-local weights = {
+local weights_by_career = {
 	default = {
 		[0] = 1,
 		0.5,
@@ -16,6 +16,9 @@ local weights = {
 		0.1,
 	},
 }
+local weights_by_repetition = {
+	[1] = 0.25,
+}
 
 VersusDarkPactCareerDelegator.init = function (self)
 	self._playable_boss_can_be_picked = false
@@ -23,6 +26,7 @@ VersusDarkPactCareerDelegator.init = function (self)
 	self._picks_per_player = {}
 	self._peer_picking_boss = nil
 	self._rolled_careers_time_stamp = {}
+	self._last_picked_by_player = {}
 
 	Managers.state.event:register(self, "on_player_left_party", "on_player_left_party")
 	Managers.state.event:register(self, "player_profile_assigned", "on_player_profile_assigned")
@@ -54,8 +58,9 @@ VersusDarkPactCareerDelegator._roll_career_options = function (self, num_career_
 		self._picks_per_career[career] = self._picks_per_career[career] or 0
 
 		local num_times_picked = self._picks_per_career[career]
-		local career_weights = weights[career] or weights.default
-		local weighted_roll = math.random() * (career_weights[num_times_picked] or 0)
+		local career_weights = weights_by_career[career] or weights_by_career.default
+		local repetition_weight = self:_weight_by_repetition(peer_id, career)
+		local weighted_roll = math.random() * (career_weights[num_times_picked] or 0) * repetition_weight
 		local smallest_roll = table.min(rolls)
 
 		if weighted_roll > rolls[smallest_roll] then
@@ -136,6 +141,10 @@ VersusDarkPactCareerDelegator.on_player_profile_assigned = function (self, peer_
 	local career_name = profile.careers[career_index].name
 	local settings = Managers.state.game_mode:game_mode():settings()
 
+	if not self._picks_per_player[peer_id] then
+		return
+	end
+
 	if not table.contains(settings.dark_pact_profile_order, career_name) and not table.contains(GameModeSettings.versus.dark_pact_boss_profiles, career_name) then
 		return
 	end
@@ -172,6 +181,8 @@ VersusDarkPactCareerDelegator._career_picked = function (self, peer_id, career)
 	end
 
 	delegated_careers[1] = career
+
+	self:_register_player_career(peer_id, career)
 end
 
 VersusDarkPactCareerDelegator._release_career_for_player = function (self, peer_id)
@@ -219,4 +230,32 @@ VersusDarkPactCareerDelegator._picking_telemetry = function (self, peer_id, sele
 	local build = BUILD
 
 	Managers.telemetry_events:versus_pactsworn_picking(match_id, player_backend_id, career_options, selected_career, career_selection_time_elapsed, platform, build)
+end
+
+VersusDarkPactCareerDelegator._weight_by_repetition = function (self, peer_id, career)
+	local last_picks = self._last_picked_by_player[peer_id]
+
+	if not last_picks then
+		return 1
+	end
+
+	for i = 1, #last_picks do
+		if last_picks[i] == career then
+			return weights_by_repetition[i]
+		end
+	end
+
+	return 1
+end
+
+VersusDarkPactCareerDelegator._register_player_career = function (self, peer_id, career)
+	local last_picks = self._last_picked_by_player[peer_id] or {}
+
+	self._last_picked_by_player[peer_id] = last_picks
+
+	table.insert(last_picks, 1, career)
+
+	for i = #weights_by_repetition + 1, #last_picks do
+		last_picks[i] = nil
+	end
 end

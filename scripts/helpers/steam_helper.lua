@@ -38,6 +38,22 @@ SteamHelper.friends = function ()
 	for i = 1, num_friends do
 		local id = Friends.id(i)
 		local playing_game = Friends.playing_game(id)
+
+		if playing_game and not playing_game.lobby and not playing_game.ip then
+			local connect_info = Presence.presence(id, "connect")
+			local prefix_len = #"+connect "
+
+			if connect_info and prefix_len < #connect_info then
+				local ip_port = string.sub(connect_info, prefix_len + 1, #connect_info)
+				local ip, port = NetworkUtils.split_ip_port(ip_port)
+
+				if ip then
+					playing_game.ip = ip
+					playing_game.server_port = port
+				end
+			end
+		end
+
 		local playing_this_game = playing_game and playing_game.app_id == app_id
 
 		friends[id] = {

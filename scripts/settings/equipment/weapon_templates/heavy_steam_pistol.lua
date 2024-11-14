@@ -451,6 +451,13 @@ weapon_template.tooltip_detail = {
 	},
 }
 
+local heavy_steam_pistol_template_vs = table.clone(weapon_template)
+
+heavy_steam_pistol_template_vs.actions.action_one.default.impact_data.damage_profile = "shot_sniper_pistol_vs"
+heavy_steam_pistol_template_vs.actions.action_one.shoot.impact_data.damage_profile = "shot_sniper_pistol_vs"
+heavy_steam_pistol_template_vs.actions.action_one.fast_shot.impact_data.damage_profile = "shot_sniper_pistol_vs"
+
 return {
 	heavy_steam_pistol_template_1 = table.clone(weapon_template),
+	heavy_steam_pistol_template_1_vs = table.clone(heavy_steam_pistol_template_vs),
 }

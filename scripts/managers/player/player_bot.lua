@@ -139,6 +139,9 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 	local frame_name = frame_item and frame_item.data.name or base_frame
 	local overcharge_data = OverchargeData[career_name] or {}
 	local energy_data = EnergyData[career_name] or {}
+	local base_pose = "default_weapon_pose_01"
+	local pose_item = BackendUtils.get_loadout_item(career_name, "slot_pose")
+	local pose_name = pose_item and pose_item.name or base_pose
 	local status = Managers.party:get_status_from_unique_id(self._unique_id)
 	local party = Managers.party:get_party(status.party_id)
 	local side = Managers.state.side.side_by_party[party]
@@ -228,6 +231,7 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 			profile = profile,
 			skin_name = skin_name,
 			frame_name = frame_name,
+			pose_name = pose_name,
 			player = self,
 		},
 		buff_system = {

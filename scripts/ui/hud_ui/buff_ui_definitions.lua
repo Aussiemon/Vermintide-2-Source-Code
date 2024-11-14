@@ -20,7 +20,7 @@ local scenegraph_definition = {
 		parent = "root",
 		vertical_alignment = "bottom",
 		position = {
-			150,
+			200,
 			18,
 			1,
 		},

@@ -699,11 +699,13 @@ PlayerBotBase._update_target_ally = function (self, dt, t)
 		best_ally, ally_dist, in_need_type, look_at_ally = self:_select_ally_by_utility(unit, blackboard, breed, t)
 	end
 
+	local new_target = best_ally and blackboard.target_ally_unit ~= best_ally
+
 	blackboard.target_ally_unit = best_ally or nil
 	blackboard.ally_distance = ally_dist
 
-	if blackboard.target_ally_unit and in_need_type then
-		if not blackboard.target_ally_needs_aid and in_need_type ~= "in_need_of_attention_look" then
+	if (new_target or blackboard.target_ally_unit) and in_need_type then
+		if (not blackboard.target_ally_needs_aid or new_target) and in_need_type ~= "in_need_of_attention_look" then
 			local follow_bb = blackboard.follow
 
 			if follow_bb then
@@ -884,8 +886,6 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 
 	local conflict_director = Managers.state.conflict
 	local self_segment = conflict_director:get_player_unit_segment(unit) or 1
-	local level_settings = LevelHelper:current_level_settings()
-	local disable_bot_main_path_teleport_check = level_settings.disable_bot_main_path_teleport_check
 	local side = Managers.state.side.side_by_unit[unit]
 	local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 
@@ -897,7 +897,7 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 			local utility = 0
 			local look_at_ally = false
 
-			if not status_ext:is_ready_for_assisted_respawn() and not status_ext.near_vortex and (disable_bot_main_path_teleport_check or self_segment <= (conflict_director:get_player_unit_segment(player_unit) or 1)) then
+			if not status_ext:is_ready_for_assisted_respawn() and not status_ext.near_vortex and self_segment <= (conflict_director:get_player_unit_segment(player_unit) or 1) then
 				local player = Managers.player:owner(player_unit)
 				local is_bot = not player:is_player_controlled()
 				local heal_player_preference = is_bot and 0 or PLAYER_HEAL_STICKYBESS
@@ -905,13 +905,13 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 
 				if status_ext:is_knocked_down() then
 					in_need_type = "knocked_down"
-					utility = 100
+					utility = 200
 				elseif status_ext:get_is_ledge_hanging() and not status_ext:is_pulled_up() then
 					in_need_type = "ledge"
-					utility = 100
+					utility = 200
 				elseif status_ext:is_hanging_from_hook() then
 					in_need_type = "hook"
-					utility = 100
+					utility = 200
 				else
 					local health_percent = ScriptUnit.extension(player_unit, "health_system"):current_permanent_health_percent()
 					local has_no_permanent_health_from_item_buff = ScriptUnit.extension(player_unit, "buff_system"):has_buff_type("trait_necklace_no_healing_health_regen")
@@ -973,7 +973,7 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 						end
 
 						if not is_bot then
-							utility = utility * 1.25
+							utility = utility * 1.5
 						end
 
 						if in_need_type or not is_bot then
@@ -1931,7 +1931,6 @@ end
 
 local ALLY_PATH_TIME_MIN_DISTANCE_SQ = 25
 local ALLY_PATH_TIME_MAX_DISTANCE_SQ = 225
-local ALLY_PATH_TIME_DISTANCE_SLOPE = 1 / (ALLY_PATH_TIME_MAX_DISTANCE_SQ - ALLY_PATH_TIME_MIN_DISTANCE_SQ)
 local ALLY_PATH_MIN_DISTANCE_TIME = 3
 local ALLY_PATH_MAX_DISTANCE_TIME = 12
 
@@ -1942,7 +1941,7 @@ PlayerBotBase._ally_path_allowed = function (self, self_unit, ally_unit, t)
 		local self_position = POSITION_LOOKUP[self_unit]
 		local ally_position = POSITION_LOOKUP[ally_unit]
 		local ally_distance_sq = Vector3.distance_squared(self_position, ally_position)
-		local p = math.clamp((ally_distance_sq - ALLY_PATH_TIME_MIN_DISTANCE_SQ) * ALLY_PATH_TIME_DISTANCE_SLOPE, 0, 1)
+		local p = math.inv_lerp_clamped(ALLY_PATH_TIME_MIN_DISTANCE_SQ, ALLY_PATH_TIME_MAX_DISTANCE_SQ, ally_distance_sq)
 		local wait_time = math.lerp(ALLY_PATH_MIN_DISTANCE_TIME, ALLY_PATH_MAX_DISTANCE_TIME, p)
 
 		if t > path_status.ignore_ally_from + wait_time then

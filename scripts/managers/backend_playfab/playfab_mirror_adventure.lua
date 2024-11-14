@@ -14,6 +14,9 @@ PlayFabMirrorAdventure.init = function (self, signin_result)
 end
 
 PlayFabMirrorAdventure.set_mechanism = function (self, mechanism_key)
+	printf("[PlayFabMirrorAdventure] Setting mechanism %s", mechanism_key)
+	rawset(_G, "debug_characters_data_unsafe_write", self._mechanism_key and self._mechanism_key ~= mechanism_key or nil)
+
 	self._mechanism_key = mechanism_key
 
 	if mechanism_key == "versus" then
@@ -29,6 +32,7 @@ PlayFabMirrorAdventure.set_mechanism = function (self, mechanism_key)
 				"slot_ring",
 				"slot_frame",
 				"talents",
+				"slot_pose",
 			},
 			dark_pact = {
 				"slot_melee",
@@ -50,6 +54,7 @@ PlayFabMirrorAdventure.set_mechanism = function (self, mechanism_key)
 				"slot_ring",
 				"slot_frame",
 				"talents",
+				"slot_pose",
 			},
 		}
 	end
@@ -148,6 +153,14 @@ PlayFabMirrorAdventure.versus_player_setup_cb = function (self, result)
 	self:set_read_only_data("vs_profile_data", vs_profile_data, true)
 
 	self._num_items_to_load = self._num_items_to_load - 1
+
+	local unlocked_cosmetics = function_result.unlocked_cosmetics
+
+	if unlocked_cosmetics then
+		self:set_read_only_data("unlocked_cosmetics", unlocked_cosmetics, true)
+
+		self._unlocked_cosmetics = self:_parse_unlocked_cosmetics()
+	end
 
 	if num_items_granted > 0 then
 		self:_request_user_inventory()

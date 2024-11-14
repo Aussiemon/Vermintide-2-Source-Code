@@ -81,7 +81,6 @@ local breed_data = {
 	trigger_dialogue_on_target_switch = true,
 	unit_template = "ai_unit_beastmen_minotaur",
 	use_aggro = true,
-	use_charge_nav_layers = false,
 	use_navigation_path_splines = true,
 	walk_speed = 5,
 	wield_inventory_on_spawn = true,

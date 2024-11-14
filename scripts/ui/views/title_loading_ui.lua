@@ -920,7 +920,10 @@ TitleLoadingUI.init = function (self, world, params, force_done)
 
 	if title_settings and title_settings.video_override then
 		first_time_video = title_settings.video_override
-		first_time_video.subtitle_template_settings = local_require(first_time_video.subtitle_template_settings_path)
+
+		if first_time_video.subtitle_template_settings_path then
+			first_time_video.subtitle_template_settings = local_require(first_time_video.subtitle_template_settings_path)
+		end
 	end
 
 	if params.is_prologue then
@@ -952,7 +955,7 @@ TitleLoadingUI.init = function (self, world, params, force_done)
 end
 
 TitleLoadingUI._setup_gui = function (self)
-	self._ui_renderer = UIRenderer.create(self._world, "material", "materials/ui/ui_1080p_title_screen", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_menu_atlas_textures", "material", first_time_video.video_name, "material", "materials/fonts/gw_fonts")
+	self._ui_renderer = UIRenderer.create(self._world, "material", "materials/ui/ui_1080p_title_screen", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_versus_available_common", "material", "materials/ui/ui_1080p_menu_atlas_textures", "material", first_time_video.video_name, "material", "materials/fonts/gw_fonts")
 
 	self:_create_elements()
 end

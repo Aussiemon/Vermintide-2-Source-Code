@@ -358,10 +358,6 @@ ConflictDirector.destroy = function (self)
 			local astar = data.astar
 
 			if astar then
-				if not GwNavAStar.processing_finished(astar) then
-					GwNavAStar.cancel(astar)
-				end
-
 				GwNavAStar.destroy(astar)
 
 				data.astar = nil
@@ -1322,7 +1318,9 @@ ConflictDirector.handle_alone_player = function (self, t, enemy_side)
 						}
 					end
 
-					self.horde_spawner:execute_ambush_horde(extra_data, self.default_enemy_side_id, false, position_lookup[ahead_unit])
+					if not script_data.ai_horde_spawning_disabled and not Managers.state.game_mode:setting("horde_spawning_disabled") then
+						self.horde_spawner:execute_ambush_horde(extra_data, self.default_enemy_side_id, false, position_lookup[ahead_unit])
+					end
 
 					add_time = add_time + 10
 					success = true
@@ -1796,6 +1794,10 @@ ConflictDirector.get_spawned_unit = function (self, spawn_queue_id)
 	return self._spawn_queue_id_lut[spawn_queue_id]
 end
 
+ConflictDirector._get_spawned_unit_id = function (self, spawned_unit)
+	return self._spawn_queue_id_lut[spawned_unit]
+end
+
 ConflictDirector.remove_queued_unit = function (self, queue_id)
 	local spawn_queue = self.spawn_queue
 	local first_spawn_index = self.first_spawn_index
@@ -2111,7 +2113,7 @@ ConflictDirector._post_spawn_unit = function (self, ai_unit, go_id, breed, spawn
 	if breed.boss then
 		local dialogue_system = Managers.state.entity:system("dialogue_system")
 
-		dialogue_system:trigger_mission_giver_event("vs_mg_new_spawn_monster")
+		dialogue_system:queue_mission_giver_event("vs_mg_new_spawn_monster")
 	end
 end
 
@@ -2490,9 +2492,9 @@ ConflictDirector.destroy_close_units = function (self, position, except_unit, di
 						breed = breed,
 					}
 					local local_player_unit = Managers.player:local_player().player_unit
-					local weave_objective_system = Managers.state.entity:system("weave_objective_system")
+					local objective_system = Managers.state.entity:system("objective_system")
 
-					weave_objective_system:on_ai_killed(unit, local_player_unit, death_data)
+					objective_system:on_ai_killed(unit, local_player_unit, death_data)
 				end
 
 				self:destroy_unit(unit, blackboard, reason)
@@ -2697,7 +2699,7 @@ end
 
 ConflictDirector.rpc_debug_conflict_director_command = function (self, channel_id, command_name, breed_name, position, enhancements_string, extra_data)
 	self._debug_spawn_breed_position = position
-	self._debug_spawn_breed_enhancements = table.set(string.split(enhancements_string, ","))
+	self._debug_spawn_breed_enhancements = table.set(string.split_deprecated(enhancements_string, ","))
 
 	if command_name == "debug_spawn_breed" then
 		self:debug_spawn_breed(breed_name, false, position, extra_data)
@@ -3445,8 +3447,9 @@ local function cb_spawn_at_raw_spawned(unit, breed, optional_data)
 
 	if play_go_tutorial_system then
 		local spawner_unit = optional_data.spawner_unit
+		local spawned_unit_id = Managers.state.conflict:_get_spawned_unit_id(unit)
 
-		play_go_tutorial_system:register_unit(spawner_unit, unit)
+		play_go_tutorial_system:register_unit(spawner_unit, unit, spawned_unit_id)
 	end
 end
 

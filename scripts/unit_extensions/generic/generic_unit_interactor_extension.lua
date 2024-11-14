@@ -306,11 +306,12 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 	local interaction_type = interaction_context.interaction_type
 	local interaction_template = InteractionDefinitions[interaction_type]
 	local interaction_config = interaction_template and (interaction_template.config or interaction_template.get_config()) or nil
+	local local_only = interaction_context.local_only
 
 	if self.state == "starting_interaction" then
 		interaction_template.client.start(world, unit, interactable_unit, interaction_data, interaction_config, t)
 
-		if self.is_server then
+		if self.is_server and not local_only then
 			interaction_template.server.start(world, unit, interactable_unit, interaction_data, interaction_config, t)
 		end
 
@@ -318,17 +319,18 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 	end
 
 	if self.state == "doing_interaction" then
-		interaction_template.client.update(world, unit, interactable_unit, interaction_data, interaction_config, dt, t)
+		local interaction_result = interaction_template.client.update(world, unit, interactable_unit, interaction_data, interaction_config, dt, t)
 
-		if self.is_server then
-			local interaction_result = interaction_template.server.update(world, unit, interactable_unit, interaction_data, interaction_config, dt, t)
+		interaction_result = local_only and interaction_result or nil
 
-			interaction_context.result = interaction_result
+		if self.is_server and not local_only then
+			interaction_result = interaction_template.server.update(world, unit, interactable_unit, interaction_data, interaction_config, dt, t)
+		end
 
-			if interaction_result ~= InteractionResult.ONGOING then
-				InteractionHelper:complete_interaction(unit, interactable_unit, interaction_result)
-				self:stop_interaction(t)
-			end
+		interaction_context.result = interaction_result
+
+		if interaction_result and interaction_result ~= InteractionResult.ONGOING then
+			InteractionHelper:complete_interaction(unit, interactable_unit, interaction_result)
 		end
 	end
 end
@@ -346,17 +348,18 @@ GenericUnitInteractorExtension._check_if_interactable_in_chest = function (self,
 
 	local unit_center_matrix, _ = Unit.box(interactable_unit)
 	local unit_pos = Matrix4x4.translation(unit_center_matrix)
-	local distance = Vector3.length(unit_pos - camera_position)
+	local dir, distance = Vector3.direction_length(unit_pos - camera_position)
 
-	if distance > 0 then
-		local dir = unit_pos - camera_position
-		local found_collision, collisionPos, distance, normal, hit_actor = PhysicsWorld.immediate_raycast(self.physics_world, unit_pos, dir, distance, "closest", "types", "both", "collision_filter", "filter_interactable_in_chest")
+	if distance < math.epsilon then
+		return true
+	end
 
-		if found_collision then
-			chest_interactables[interactable_unit] = true
+	local found_collision, collisionPos, distance, normal, hit_actor = PhysicsWorld.immediate_raycast(self.physics_world, unit_pos, dir, distance, "closest", "types", "both", "collision_filter", "filter_interactable_in_chest")
 
-			return true
-		end
+	if found_collision then
+		chest_interactables[interactable_unit] = true
+
+		return true
 	end
 
 	return false
@@ -383,6 +386,8 @@ GenericUnitInteractorExtension._get_player_camera = function (self)
 end
 
 GenericUnitInteractorExtension._stop_interaction = function (self, interactable_unit, t)
+	Managers.state.unit_spawner:remove_destroy_listener(interactable_unit, "interactable_unit")
+
 	local world = self.world
 	local unit = self.unit
 	local interaction_context = self.interaction_context
@@ -393,12 +398,16 @@ GenericUnitInteractorExtension._stop_interaction = function (self, interactable_
 	local interaction_type = interaction_context.interaction_type
 	local interaction_template = InteractionDefinitions[interaction_type]
 	local interaction_config = interaction_template and (interaction_template.config or interaction_template.get_config()) or nil
-	local go_id, is_level_unit = Managers.state.network:game_object_or_level_id(interactable_unit)
+	local local_only = interaction_context.local_only
 
-	if not is_level_unit and go_id == nil then
-		InteractionHelper.printf("[GenericUnitInteractorExtension] game object doesnt exist, changing result from %s to %s", InteractionResult[interaction_context.result], InteractionResult[InteractionResult.FAILURE])
+	if not local_only then
+		local go_id, is_level_unit = Managers.state.network:game_object_or_level_id(interactable_unit)
 
-		interaction_context.result = InteractionResult.FAILURE
+		if not is_level_unit and go_id == nil then
+			InteractionHelper.printf("[GenericUnitInteractorExtension] game object doesnt exist, changing result from %s to %s", InteractionResult[interaction_context.result], InteractionResult[InteractionResult.FAILURE])
+
+			interaction_context.result = InteractionResult.FAILURE
+		end
 	end
 
 	local interaction_result = interaction_context.result
@@ -411,19 +420,11 @@ GenericUnitInteractorExtension._stop_interaction = function (self, interactable_
 	InteractionHelper.printf("[GenericUnitInteractorExtension] Stopping interaction %s with result %s", interaction_type, InteractionResult[interaction_result])
 	interaction_template.client.stop(world, unit, interactable_unit, interaction_data, interaction_config, t, interaction_result)
 
-	if self.is_server then
+	if self.is_server and not local_only then
 		interaction_template.server.stop(world, unit, interactable_unit, interaction_data, interaction_config, t, interaction_result)
 	end
 
 	self.state = "waiting_to_interact"
-end
-
-GenericUnitInteractorExtension.stop_interaction = function (self, t)
-	local interaction_context = self.interaction_context
-	local interactable_unit = interaction_context.interactable_unit
-
-	self:_stop_interaction(interactable_unit, t)
-	Managers.state.unit_spawner:remove_destroy_listener(interactable_unit, "interactable_unit")
 end
 
 GenericUnitInteractorExtension.is_interacting = function (self)
@@ -549,6 +550,10 @@ GenericUnitInteractorExtension.interaction_hold_input = function (self)
 	return self.interaction_context.hold_input
 end
 
+GenericUnitInteractorExtension.is_interacting_with_local_only_interact = function (self)
+	return self.interaction_context.local_only
+end
+
 GenericUnitInteractorExtension.interaction_camera_node = function (self)
 	local interaction_type = self.interaction_context.interaction_type
 	local interaction_template = InteractionDefinitions[interaction_type]
@@ -573,30 +578,27 @@ GenericUnitInteractorExtension.get_progress = function (self, t)
 end
 
 GenericUnitInteractorExtension.start_interaction = function (self, hold_input, interactable_unit, interaction_type, forced)
-	InteractionHelper.printf("[GenericUnitInteractorExtension] start_interaction(interactable_unit=%s, interaction_type=%s)", tostring(interactable_unit), tostring(interaction_type))
-
 	local interaction_context = self.interaction_context
 
+	interactable_unit = interactable_unit or interaction_context.interactable_unit
+	interaction_type = interaction_type or interaction_context.interaction_type
+
+	InteractionHelper.printf("[GenericUnitInteractorExtension] start_interaction(interactable_unit=%s, interaction_type=%s)", interactable_unit, interaction_type)
+
+	interaction_context.interactable_unit = interactable_unit
+	interaction_context.interaction_type = interaction_type
 	interaction_context.hold_input = hold_input
-	interaction_context.interactable_unit = interactable_unit or interaction_context.interactable_unit
-	interaction_context.interaction_type = interaction_type or interaction_context.interaction_type
 
-	fassert(forced or self:can_interact(interaction_context.interactable_unit, interaction_type), "Attempted to start interaction even though the interaction wasn't allowed.")
+	fassert(forced or self:can_interact(interactable_unit, interaction_type), "Attempted to start interaction even though the interaction wasn't allowed.")
 
-	interaction_context.interaction_type = InteractionHelper.player_modify_interaction_type(self.unit, interaction_context.interactable_unit, interaction_context.interaction_type)
+	interaction_type = InteractionHelper.player_modify_interaction_type(self.unit, interactable_unit, interaction_type)
+	interaction_context.interaction_type = interaction_type
 
 	local unit = self.unit
-	local interaction_type = interaction_context.interaction_type
-	local network_manager = Managers.state.network
-	local interactor_go_id = Managers.state.unit_storage:go_id(unit)
-	local interactable_go_id, is_level_unit = network_manager:game_object_or_level_id(interaction_context.interactable_unit)
+	local interactable_extension = ScriptUnit.has_extension(interactable_unit, "interactable_system")
+	local local_only = interactable_extension and interactable_extension:local_only()
 
-	if interactor_go_id == nil or interactable_go_id == nil then
-		InteractionHelper.printf("[GenericUnitInteractorExtension] start_interaction failed due to no id for interactor=%s or interactable=%s", tostring(self.unit), tostring(self.interaction_context.interactable_unit))
-		fassert(LEVEL_EDITOR_TEST)
-
-		return
-	end
+	interaction_context.local_only = local_only
 
 	local interaction_data = interaction_context.data
 	local interactor_data = interaction_data.interactor_data
@@ -611,7 +613,7 @@ GenericUnitInteractorExtension.start_interaction = function (self, hold_input, i
 
 	self.state = "waiting_for_confirmation"
 
-	InteractionHelper:request(interaction_type, interactor_go_id, interactable_go_id, is_level_unit, self.is_server)
+	InteractionHelper:request(interaction_type, unit, interactable_unit, self.is_server, local_only)
 end
 
 GenericUnitInteractorExtension.abort_interaction = function (self)
@@ -619,7 +621,7 @@ GenericUnitInteractorExtension.abort_interaction = function (self)
 		self.state = "waiting_for_abort"
 
 		InteractionHelper.printf("[GenericUnitInteractorExtension] abort_interaction in state=%s", self.state)
-		InteractionHelper:abort(Managers.state.unit_storage:go_id(self.unit), self.is_server)
+		InteractionHelper:abort(self.unit, self.is_server)
 	end
 end
 
@@ -656,9 +658,10 @@ GenericUnitInteractorExtension.interaction_completed = function (self, interacti
 
 	self.interaction_context.result = interaction_result
 
+	local interactable_unit = self.interaction_context.interactable_unit
 	local t = Managers.time:time("game")
 
-	self:stop_interaction(t)
+	self:_stop_interaction(interactable_unit, t)
 end
 
 GenericUnitInteractorExtension.hot_join_sync = function (self, sender)
@@ -666,8 +669,13 @@ GenericUnitInteractorExtension.hot_join_sync = function (self, sender)
 		return
 	end
 
-	local network_manager = Managers.state.network
 	local context = self.interaction_context
+
+	if context.local_only then
+		return
+	end
+
+	local network_manager = Managers.state.network
 	local state_id = NetworkLookup.interaction_states[self.state]
 	local interaction_type_id = NetworkLookup.interactions[context.interaction_type]
 	local interactable_unit_id, is_level_unit = network_manager:game_object_or_level_id(context.interactable_unit)

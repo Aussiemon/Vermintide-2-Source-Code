@@ -586,6 +586,8 @@ return {
 	"units/weapons/player/pup_oil_jug_01/pup_oil_jug_01",
 	"units/weapons/player/wpn_packmaster_claw/wpn_packmaster_claw",
 	"units/weapons/player/wpn_packmaster_claw/wpn_packmaster_claw_3p",
+	"units/weapons/player/wpn_packmaster_claw_combo/wpn_packmaster_claw_combo",
+	"units/weapons/player/wpn_packmaster_claw_combo/wpn_packmaster_claw_combo_3p",
 	"units/weapons/player/pup_potion/pup_potion_buff",
 	"units/weapons/player/pup_potion/pup_potion_t1",
 	"units/weapons/player/pup_potion_01/pup_potion_extra_01",

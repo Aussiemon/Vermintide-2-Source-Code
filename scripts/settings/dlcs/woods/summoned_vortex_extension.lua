@@ -102,8 +102,6 @@ SummonedVortexExtension.init = function (self, extension_init_context, unit, ext
 		local medium_cost_type = vortex_template.medium_cost_nav_cost_map_cost_type
 
 		self:_create_nav_cost_maps(ai_system, position, full_outer_radius, high_cost_type, medium_cost_type)
-
-		self._use_nav_cost_map_volumes = true
 	end
 
 	self._owner_unit = extension_init_data.owner_unit or unit
@@ -113,6 +111,10 @@ SummonedVortexExtension._create_nav_cost_maps = function (self, ai_system, posit
 	position = Vector3Box(position)
 
 	local function safe_navigation_callback()
+		if self._nav_cb_blocker then
+			return
+		end
+
 		local num_volumes = 1
 		local transform = Matrix4x4.from_translation(position:unbox())
 		local scale_vector = Vector3(full_outer_radius, full_outer_radius, 1)
@@ -130,6 +132,7 @@ SummonedVortexExtension._create_nav_cost_maps = function (self, ai_system, posit
 		local t = time_manager:time("game")
 
 		self._next_nav_cost_map_update_t = t + NAV_COST_MAP_UPDATE_INTERVAL
+		self._use_nav_cost_map_volumes = true
 	end
 
 	local ai_navigation_system = Managers.state.entity:system("ai_navigation_system")
@@ -203,6 +206,9 @@ end
 
 SummonedVortexExtension.destroy = function (self)
 	local unit = self.unit
+
+	self._nav_cb_blocker = true
+
 	local target_unit = self._target_unit
 
 	if HEALTH_ALIVE[target_unit] then

@@ -16,6 +16,7 @@ CameraStateObserver.on_enter = function (self, unit, input, dt, context, t, prev
 	self._is_server = context.network_transmit.is_server
 	self._default_observed_node_name = "camera_attach"
 	self._input_service_name = params.input_service_name or "Player"
+	self._has_read_camera_input = false
 
 	local override_observed_node = params.override_observed_node
 
@@ -70,7 +71,11 @@ CameraStateObserver.update = function (self, unit, input, dt, context, t)
 		end
 	end
 
-	CameraStateHelper.set_camera_rotation(unit, camera_extension)
+	local manually_moved_camera = CameraStateHelper.set_camera_rotation(unit, camera_extension)
+
+	if manually_moved_camera then
+		self._has_read_camera_input = true
+	end
 
 	local observed_unit = self._observed_unit
 
@@ -80,11 +85,21 @@ CameraStateObserver.update = function (self, unit, input, dt, context, t)
 		return
 	end
 
+	if not self._has_read_camera_input and not Managers.player:owner(observed_unit) then
+		CameraStateHelper.set_camera_rotation_observe_static(unit, observed_unit)
+	end
+
 	local observed_node = self._observed_node
 	local snap_camera = self._snap_camera
 	local position = Unit.world_position(observed_unit, observed_node)
+	local is_player = Managers.player:is_player_unit(observed_unit)
+	local observed_unit_status = is_player and ScriptUnit.extension(observed_unit, "status_system")
+	local is_hoisted = observed_unit_status and (observed_unit_status:is_hanging_from_hook() or observed_unit_status:is_grabbed_by_pack_master())
 
-	if observed_node == 0 and not Managers.player:owner(observed_unit) then
+	if is_hoisted then
+		position = Unit.world_position(observed_unit, 0)
+		position = position + Vector3(0, 0, 1.5)
+	elseif observed_node == 0 and not Managers.player:owner(observed_unit) then
 		position = position + Vector3(0, 0, 1.5)
 	end
 
@@ -155,6 +170,8 @@ CameraStateObserver._set_observed_unit = function (self, observed_unit, observed
 
 		self._network_transmit:send_rpc_server("rpc_set_observed_unit", local_player_id, observed_unit_id, is_level_unit)
 	end
+
+	self._has_read_camera_input = false
 
 	return true
 end

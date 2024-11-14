@@ -10,6 +10,8 @@ local extensions = {
 	"AIGroupMember",
 }
 
+AIGroupSystem.invalid_group_uid = 0
+
 AIGroupSystem.init = function (self, context, system_name)
 	local entity_manager = context.entity_manager
 
@@ -25,7 +27,7 @@ AIGroupSystem.init = function (self, context, system_name)
 	self.groups_to_update = {}
 	self.unit_extension_data = {}
 	self.frozen_unit_extension_data = {}
-	self.group_uid = 0
+	self.group_uid = AIGroupSystem.invalid_group_uid
 	self._spline_properties = {}
 	self._spline_lookup = {}
 	self._cached_splines = {}
@@ -972,4 +974,10 @@ end
 
 AIGroupSystem.register_spline_properties = function (self, spline_name, properties)
 	self._spline_properties[spline_name] = properties
+end
+
+AIGroupSystem.get_group_id = function (self, unit)
+	local extension = self.unit_extension_data[unit]
+
+	return extension and extension.id
 end

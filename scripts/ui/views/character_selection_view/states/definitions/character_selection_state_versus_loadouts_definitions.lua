@@ -1215,7 +1215,7 @@ local function create_loadout_equipment(scenegraph_id, offset)
 			offset = {
 				(i - 1) * (weapon_icon_size[1] + weapon_spacing),
 				0,
-				2,
+				3,
 			},
 		}
 		style[slot_name .. "_mask"] = {
@@ -1232,7 +1232,7 @@ local function create_loadout_equipment(scenegraph_id, offset)
 			offset = {
 				(i - 1) * (weapon_icon_size[1] + weapon_spacing),
 				0,
-				1,
+				2,
 			},
 		}
 		style[slot_name .. "_frame"] = {
@@ -2037,6 +2037,6 @@ return {
 	hero_icon_widget = UIWidgets.create_hero_icon_widget("hero_icon_root", scenegraph_definition.hero_icon_root.size),
 	hero_widget = UIWidgets.create_hero_widget("hero_root", scenegraph_definition.hero_root.size),
 	weapon_slots = weapon_slots,
-	tag_widget_func = UIWidgets.create_rounded_rect_with_text,
+	tag_widget_func = UIWidgets.create_tag,
 	generic_input_actions = generic_input_actions,
 }

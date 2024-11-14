@@ -162,7 +162,7 @@ StartGameWindowDifficulty._setup_difficulties = function (self)
 end
 
 StartGameWindowDifficulty._get_difficulty_options = function (self)
-	return Managers.state.difficulty:get_level_difficulties()
+	return Managers.state.difficulty:get_default_difficulties()
 end
 
 StartGameWindowDifficulty.on_exit = function (self, params)

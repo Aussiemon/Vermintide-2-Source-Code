@@ -62,6 +62,8 @@ require("scripts/managers/status_effect/status_effect_manager")
 require("scripts/utils/fps_reporter")
 require("scripts/utils/ping_reporter")
 require("scripts/managers/side/side_manager")
+require("scripts/managers/vce/vce_manager")
+require("scripts/managers/flow_helper/flow_helper_manager")
 DLCUtils.require_list("statistics_database")
 
 local state_ingame_testify = script_data.testify and require("scripts/game_state/state_ingame_testify")
@@ -363,7 +365,7 @@ StateIngame.on_enter = function (self)
 
 		self.viewport_name = viewport_name
 
-		local network_options = Managers.lobby:network_options()
+		local network_options = LobbySetup.network_options()
 		local params = {
 			local_player_id = i,
 			viewport_name = viewport_name,
@@ -435,12 +437,28 @@ StateIngame.on_enter = function (self)
 		Managers.state.networked_flow_state:load_checkpoint_data(checkpoint_data.networked_flow_state)
 	end
 
-	if self.is_in_inn and not SaveData.first_time_in_inn then
-		Level.trigger_event(level, "first_time_started_game")
+	if self.is_in_inn then
+		local current_mechanism_name = Managers.mechanism:current_mechanism_name()
 
-		SaveData.first_time_in_inn = true
+		if current_mechanism_name == "adventure" and not SaveData.first_time_in_inn then
+			Level.trigger_event(level, "first_time_started_game")
 
-		Managers.save:auto_save(SaveFileName, SaveData, callback(self, "cb_save_data"))
+			SaveData.first_time_in_inn = true
+
+			Managers.save:auto_save(SaveFileName, SaveData, callback(self, "cb_save_data"))
+		elseif current_mechanism_name == "versus" and not SaveData.first_time_in_versus_inn then
+			Level.trigger_event(level, "first_time_started_versus_game")
+
+			SaveData.first_time_in_versus_inn = true
+
+			Managers.save:auto_save(SaveFileName, SaveData, callback(self, "cb_save_data"))
+		elseif current_mechanism_name == "deus" and not SaveData.first_time_in_deus_inn then
+			Level.trigger_event(level, "first_time_started_deus_game")
+
+			SaveData.first_time_in_deus_inn = true
+
+			Managers.save:auto_save(SaveFileName, SaveData, callback(self, "cb_save_data"))
+		end
 	end
 
 	local platform = PLATFORM
@@ -624,6 +642,7 @@ StateIngame.on_enter = function (self)
 	self._fps_reporter = FPSReporter:new()
 	self._ping_reporter = PingReporter:new()
 
+	Managers.state.entity:system("objective_system"):on_game_entered()
 	Managers.state.event:trigger("start_game_time", Managers.state.network:network_time())
 	Managers:on_round_start(network_event_delegate, event_manager)
 	Managers.mechanism:handle_ingame_enter(game_mode)
@@ -801,11 +820,11 @@ StateIngame.pre_update = function (self, dt)
 	network_manager:update_receive(dt)
 
 	if self.network_server then
-		self.network_server:update(dt)
+		self.network_server:update(dt, t)
 	end
 
 	if self.network_client then
-		self.network_client:update(dt)
+		self.network_client:update(dt, t)
 	end
 
 	Managers.state.spawn:pre_update(dt, t)
@@ -969,6 +988,8 @@ StateIngame.update = function (self, dt, main_t)
 
 	if self:_safe_to_do_entity_update() then
 		self.entity_system:update(dt, t)
+	else
+		self.entity_system:unsafe_entity_update(dt, t)
 	end
 
 	Managers.state.game_mode:update(dt, t)
@@ -998,6 +1019,7 @@ StateIngame.update = function (self, dt, main_t)
 	end
 
 	Managers.state.bot_nav_transition:update(dt, t)
+	Managers.state.flow_helper:update(t)
 	Managers.state.performance:update(dt, t)
 	self._fps_reporter:update(dt, t)
 	self._ping_reporter:update(dt, t)
@@ -1973,11 +1995,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 		end
 
 		Managers.chat:unregister_channel(1)
-
-		if Managers.mechanism:game_mechanism().unregister_chats then
-			Managers.mechanism:game_mechanism():unregister_chats()
-		end
-
+		Managers.mechanism:mechanism_try_call("unregister_chats")
 		Managers.deed:network_context_destroyed()
 		level_transition_handler.enemy_package_loader:network_context_destroyed()
 		level_transition_handler.transient_package_loader:network_context_destroyed()
@@ -2002,12 +2020,6 @@ StateIngame.on_exit = function (self, application_shutdown)
 		local party_join = join_data ~= nil and join_data.join_method == "party"
 
 		if self._lobby_host then
-			local is_versus = Managers.mechanism:current_mechanism_name() == "versus"
-
-			if is_versus and not DEDICATED_SERVER then
-				Managers.mechanism:clear_player_reservation_handler()
-			end
-
 			if self.network_server then
 				self.network_server:destroy()
 
@@ -2207,9 +2219,10 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 		Managers.mechanism:progress_state()
 	end
 
-	local event_manager = EventManager:new()
+	local event_manager = EventManager:new(Managers.persistent_event)
 
 	Managers.state.event = event_manager
+	Managers.state.flow_helper = FlowHelperManager:new(world)
 
 	local level_transition_handler = Managers.level_transition_handler
 	local game_mode_key = level_transition_handler:get_current_game_mode()
@@ -2396,6 +2409,8 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 	Managers.state.network:set_unit_storage(unit_storage)
 	Managers.state.network:set_unit_spawner(unit_spawner)
 
+	Managers.state.vce = VCEManager:new()
+
 	local ai_system = Managers.state.entity:system("ai_system")
 	local nav_world = ai_system:nav_world()
 	local physics_world = World.get_data(world, "physics_world")
@@ -2418,6 +2433,7 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 	Managers.state.performance_title = PerformanceTitleManager:new(self.network_transmit, self.statistics_db, is_server)
 
 	Managers.state.performance_title:register_rpcs(network_event_delegate)
+	Managers.mechanism:state_context_set_up()
 end
 
 StateIngame.rpc_kick_peer = function (self, channel_id)
@@ -2526,7 +2542,7 @@ StateIngame.gm_event_end_conditions_met = function (self, reason, checkpoint_ava
 		local players_session_score = Managers.mechanism:get_players_session_score(self.statistics_db, self.profile_synchronizer, self._saved_scoreboard_stats)
 
 		if is_final_objective then
-			Managers.mechanism:sync_players_session_score(self.statistics_db, self.profile_synchronizer, players_session_score)
+			Managers.mechanism:sync_players_session_score(players_session_score)
 		else
 			self.parent.loading_context.saved_scoreboard_stats = players_session_score
 		end

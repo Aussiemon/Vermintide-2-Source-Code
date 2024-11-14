@@ -165,7 +165,7 @@ local scenegraph_definition = {
 		vertical_alignment = "bottom",
 		size = {
 			50,
-			400,
+			440,
 		},
 		position = {
 			-25,
@@ -179,7 +179,7 @@ local scenegraph_definition = {
 		vertical_alignment = "bottom",
 		size = {
 			50,
-			400,
+			440,
 		},
 		position = {
 			25,
@@ -935,7 +935,8 @@ local function create_item_definition_func(scenegraph_id, size, masked, index, c
 	local painting_frame_spacing = painting_frame_settings.texture_sizes.horizontal[2]
 	local icon_intensity = (current_reward or hidden and not expired or owned) and 255 or 60
 	local current_reward_offset = 75
-	local num_rewards = hidden and 1 or rewards and #rewards or 1
+	local is_bundle = rewards and rewards.bundle
+	local num_rewards = is_bundle and 1 or hidden and 1 or rewards and #rewards or 1
 	local size_multiplier = 1 - (num_rewards - 1) * 0.25
 	local offset = 0
 	local widget = {

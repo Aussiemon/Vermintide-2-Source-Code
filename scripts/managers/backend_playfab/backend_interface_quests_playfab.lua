@@ -416,6 +416,12 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 		end
 	end
 
+	local chest_inventory = function_result.chest_inventory
+
+	if chest_inventory then
+		backend_mirror:set_read_only_data("chest_inventory", chest_inventory, true)
+	end
+
 	local claimed_quest_name, claimed_quest_type
 
 	if function_result.quest_name then
@@ -641,6 +647,12 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards_request_cb = function
 				peddler_interface:set_chips(chip_type, amount)
 			end
 		end
+	end
+
+	local chest_inventory = function_result.chest_inventory
+
+	if chest_inventory then
+		backend_mirror:set_read_only_data("chest_inventory", chest_inventory, true)
 	end
 
 	local claimed_quest_names = {}

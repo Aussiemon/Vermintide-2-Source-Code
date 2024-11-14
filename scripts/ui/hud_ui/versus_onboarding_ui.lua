@@ -35,15 +35,15 @@ VersusOnboardingUI._create_ui_elements = function (self)
 	self._animations = {}
 
 	local widget_def
-	local side = self._side:name()
+	local side_name = self._side:name()
 
-	if self._side:name() == "heroes" then
+	if side_name == "heroes" then
 		widget_def = UIWidgets.create_hero_onboarding_tutorial_widget("side_pivot_heroes", scenegraph_definition.side_pivot_heroes.size, {
 			-400,
 			0,
 			5,
 		})
-	elseif self._side:name() == "dark_pact" then
+	elseif side_name == "dark_pact" then
 		widget_def = UIWidgets.create_dark_pact_onboarding_tutorial_widget("side_pivot_dark_pact", scenegraph_definition.side_pivot_dark_pact.size, {
 			-400,
 			0,
@@ -116,7 +116,11 @@ VersusOnboardingUI._populate_help_widget_info = function (self, profile_settings
 				if input_action then
 					local str = " $KEY;Player__" .. input_action .. ":"
 
-					abilities_string = abilities_string .. string.format(Localize(info.description), str) .. (is_last and "" or "\n\n")
+					if info.double_input then
+						abilities_string = abilities_string .. string.format(Localize(info.description), str, str) .. (is_last and "" or "\n\n")
+					else
+						abilities_string = abilities_string .. string.format(Localize(info.description), str) .. (is_last and "" or "\n\n")
+					end
 				else
 					abilities_string = abilities_string .. Localize(info.description) .. (is_last and "" or "\n\n")
 				end
@@ -164,7 +168,14 @@ VersusOnboardingUI._update_visibility = function (self)
 	local is_in_ghost_mode = ghost_mode_ext and ghost_mode_ext:is_in_ghost_mode()
 
 	if is_in_ghost_mode and Application.user_setting("toggle_pactsworn_help_ui") then
-		return true
+		local ingame_ui = Managers.ui:ingame_ui()
+		local hint_handler = ingame_ui.hint_ui_handler
+
+		if hint_handler and hint_handler:is_hint_active() then
+			return false
+		else
+			return true
+		end
 	end
 
 	local input_service = Managers.input:get_service("Player")

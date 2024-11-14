@@ -2,17 +2,6 @@
 
 ActionWarpfireThrower = class(ActionWarpfireThrower, ActionBase)
 
-local POSITION_TWEAK = -1.5
-local SPRAY_RANGE = math.abs(POSITION_TWEAK) + 10
-local SPRAY_RADIUS = 2
-local MAX_TARGETS = 50
-local NODES = {
-	"j_leftshoulder",
-	"j_rightshoulder",
-	"j_spine1",
-}
-local NUM_NODES = #NODES
-
 ActionWarpfireThrower.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	ActionWarpfireThrower.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 
@@ -24,35 +13,27 @@ ActionWarpfireThrower.init = function (self, world, item_name, is_server, owner_
 	self.weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
 	self.stop_sound_event = "Stop_player_combat_weapon_drakegun_flamethrower_shoot"
 	self.unit_id = Managers.state.network.unit_storage:go_id(owner_unit)
+	self.weapon_unit = weapon_unit
+	self.owner_unit = owner_unit
+	self.physics_world = World.physics_world(world)
+	self._current_flame_time = 0
 end
 
 ActionWarpfireThrower.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
 	ActionWarpfireThrower.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level)
 
 	self.current_action = new_action
-	self.power_level = power_level
-	self.state = "waiting_to_shoot"
-	self.time_to_shoot = t + new_action.fire_time
+	self.state = "shooting"
 	self.overcharge_timer = 0
-	self.damage_timer = 1
-	self.stop_sound_event = new_action.stop_fire_event or self.stop_sound_event
-	self.muzzle_node_name = new_action.fx_node or "fx_muzzle"
-	self._fx_stopped = false
+
+	local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[self.current_action.overcharge_type]
+
+	self.overcharge_extension:add_charge(overcharge_amount)
 end
 
-local INDEX_ACTOR = 4
-
 ActionWarpfireThrower.client_owner_post_update = function (self, dt, t, world, can_damage)
-	if self.state == "wait_for_overcharge" then
-		return
-	end
-
 	local owner_unit = self.owner_unit
 	local current_action = self.current_action
-
-	if self.state == "waiting_to_shoot" and t >= self.time_to_shoot then
-		self.state = "shooting"
-	end
 
 	self.overcharge_timer = self.overcharge_timer + dt
 
@@ -74,6 +55,14 @@ ActionWarpfireThrower.client_owner_post_update = function (self, dt, t, world, c
 				rumble_effect = "reload_start",
 			})
 		end
+
+		self._current_flame_time = dt + self._current_flame_time or 0
+
+		if t > (self.next_fire_tick or 0) then
+			self:fire(owner_unit, current_action, t)
+
+			self.next_fire_tick = t + current_action.shoot_warpfire_close_attack_cooldown
+		end
 	elseif is_max_overcharge and self.state == "shooting" then
 		self.state = "shot"
 
@@ -82,20 +71,12 @@ ActionWarpfireThrower.client_owner_post_update = function (self, dt, t, world, c
 end
 
 ActionWarpfireThrower.finish = function (self, reason, data)
-	if self.state == "wait_for_overcharge" then
-		return
-	end
-
 	if self.state ~= "shot" then
 		self:_proc_spell_used(self.buff_extension)
 	end
 end
 
 ActionWarpfireThrower._stop_fx = function (self)
-	if self._fx_stopped then
-		return
-	end
-
 	local hud_extension = ScriptUnit.has_extension(self.owner_unit, "hud_system")
 
 	if hud_extension then
@@ -117,110 +98,23 @@ ActionWarpfireThrower.destroy = function (self)
 	end
 end
 
-ActionWarpfireThrower._select_targets = function (self, world, show_outline)
-	local owner_unit = self.owner_unit
-	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-	local position_offset = Vector3(0, 0, -0.4)
-	local player_position = first_person_extension:current_position() + position_offset
-	local first_person_unit = self.first_person_unit
-	local player_rotation = Unit.world_rotation(first_person_unit, 0)
-	local player_direction = Vector3.normalize(Quaternion.forward(player_rotation))
-	local ignore_hitting_allies = not Managers.state.difficulty:get_difficulty_settings().friendly_fire_ranged
-	local start_point = player_position + player_direction * POSITION_TWEAK
-	local broadphase_radius = 6
-	local blackboard = BLACKBOARDS[owner_unit]
-	local side = blackboard.side
-	local ai_units = {}
-	local ai_units_n = AiUtils.broadphase_query(player_position + player_direction * broadphase_radius, broadphase_radius, ai_units)
-	local physics_world = World.get_data(world, "physics_world")
+ActionWarpfireThrower.fire = function (self, unit, current_action, t)
+	local buff_system = Managers.state.entity:system("buff_system")
+	local enemies_in_range = EnemyCharacterStateHelper.get_enemies_in_line_of_sight(unit, self.first_person_unit, self.physics_world)
 
-	PhysicsWorld.prepare_actors_for_overlap(physics_world, start_point, SPRAY_RANGE * SPRAY_RANGE)
+	if not enemies_in_range then
+		return
+	end
 
-	if ai_units_n > 0 then
-		local targets = self.targets
-		local v, q, m = Script.temp_count()
-		local num_hit = 0
+	for i = 1, #enemies_in_range do
+		local enemy_data = enemies_in_range[i]
+		local hit_unit = enemy_data.unit
 
-		for i = 1, ai_units_n do
-			local hit_unit = ai_units[i]
-			local hit_position = POSITION_LOOKUP[hit_unit] + Vector3.up()
+		if DamageUtils.is_enemy(unit, hit_unit) then
+			local buff_name = enemy_data.distance <= current_action.shoot_warpfire_close_attack_range and current_action.buff_name_close or current_action.buff_name_far
 
-			if targets[hit_unit] == nil then
-				local is_enemy = side.enemy_units_lookup[hit_unit]
-
-				if (is_enemy or not ignore_hitting_allies) and self:_is_infront_player(player_position, player_direction, hit_position) and self:_check_within_cone(start_point, player_direction, hit_unit, is_enemy) then
-					targets[#targets + 1] = hit_unit
-					targets[hit_unit] = false
-
-					if is_enemy and HEALTH_ALIVE[hit_unit] then
-						num_hit = num_hit + 1
-					end
-				end
-
-				if num_hit >= MAX_TARGETS then
-					break
-				end
-			end
+			buff_system:add_buff(hit_unit, buff_name, unit)
+			buff_system:add_buff(hit_unit, "warpfire_thrower_fire_slowdown", unit)
 		end
-
-		Script.set_temp_count(v, q, m)
 	end
-end
-
-ActionWarpfireThrower._check_within_cone = function (self, player_position, player_direction, target, is_enemy)
-	local target_position = Unit.world_position(target, Unit.node(target, "j_neck"))
-	local target_direction = Vector3.normalize(target_position - player_position)
-	local target_cos_alpha = Vector3.dot(player_direction, target_direction)
-	local dot_threshold = is_enemy and self.dot_check or 0.99
-
-	if dot_threshold <= target_cos_alpha then
-		return true
-	end
-
-	return false
-end
-
-ActionWarpfireThrower._is_infront_player = function (self, player_position, player_direction, hit_position)
-	local player_to_hit_unit_dir = Vector3.normalize(hit_position - player_position)
-	local dot = Vector3.dot(player_to_hit_unit_dir, player_direction)
-
-	if dot > 0 then
-		return true
-	end
-end
-
-ActionWarpfireThrower.raycast_to_target = function (self, world, from_position, direction, target)
-	local physics_world = World.get_data(world, "physics_world")
-	local collision_filter = "filter_player_ray_projectile"
-	local result = PhysicsWorld.immediate_raycast(physics_world, from_position, direction, SPRAY_RANGE, "all", "collision_filter", collision_filter)
-
-	return result
-end
-
-ActionWarpfireThrower._check_critical_strike = function (self, t)
-	local owner_unit = self.owner_unit
-	local current_action = self.current_action
-	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, current_action, t)
-	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
-
-	self:_handle_critical_strike(is_critical_strike, self.buff_extension, hud_extension, nil, "on_critical_shot", nil)
-
-	self._is_critical_strike = is_critical_strike
-end
-
-ActionWarpfireThrower._clear_targets = function (self)
-	local targets = self.targets
-	local old_targets = self.old_targets
-	local current_targets = {}
-
-	for i = 1, #targets do
-		local current_target_count = old_targets and old_targets[targets[i]] or 0
-
-		current_targets[targets[i]] = current_target_count + 1
-	end
-
-	table.clear(self.old_targets)
-	table.clear(self.targets)
-
-	self.old_targets = current_targets
 end

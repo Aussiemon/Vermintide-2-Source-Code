@@ -303,7 +303,7 @@ local breed_data = {
 		},
 		{
 			shield_block_threshold = 2,
-			shield_open_stagger_threshold = 8,
+			shield_open_stagger_threshold = 6,
 			stagger_regen_rate = {
 				1,
 				0.1,
@@ -878,6 +878,7 @@ local action_data = {
 				bot_threat_duration = 0.7,
 				bot_threat_start_time = 0.5,
 				catapult_player = true,
+				freeze_intensity_decay_time = -1,
 				height = 1,
 				hit_multiple_targets = true,
 				hit_only_players = false,
@@ -932,6 +933,7 @@ local action_data = {
 				bot_threat_duration = 0.7,
 				bot_threat_start_time = 0.5,
 				catapult_player = true,
+				freeze_intensity_decay_time = -1,
 				height = 1,
 				hit_multiple_targets = true,
 				hit_only_players = false,

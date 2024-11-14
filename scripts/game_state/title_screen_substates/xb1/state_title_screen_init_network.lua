@@ -29,9 +29,9 @@ StateTitleScreenInitNetwork._init_network = function (self)
 
 	local increment_lobby_port = true
 
-	Managers.lobby:setup_network_options(increment_lobby_port)
+	LobbySetup.setup_network_options(increment_lobby_port)
 
-	local network_options = Managers.lobby:network_options()
+	local network_options = LobbySetup.network_options()
 
 	if not rawget(_G, "LobbyInternal") or not LobbyInternal.network_initialized() then
 		require("scripts/network/lobby_xbox_live")
@@ -63,7 +63,7 @@ StateTitleScreenInitNetwork._create_session = function (self)
 	Managers.mechanism:register_rpcs(self._network_event_delegate)
 	Managers.party:register_rpcs(self._network_event_delegate)
 
-	local network_options = Managers.lobby:network_options()
+	local network_options = LobbySetup.network_options()
 
 	if loading_context.join_lobby_data then
 		self._lobby_client = LobbyClient:new(network_options, loading_context.join_lobby_data)
@@ -147,7 +147,7 @@ StateTitleScreenInitNetwork._update_host_lobby = function (self, dt, t)
 		end
 	end
 
-	self._network_server:update(dt)
+	self._network_server:update(dt, t)
 end
 
 StateTitleScreenInitNetwork._update_lobby_client = function (self, dt, t)
@@ -160,7 +160,7 @@ StateTitleScreenInitNetwork._update_lobby_client = function (self, dt, t)
 		local host = self._lobby_client:lobby_host()
 
 		if host ~= "0" then
-			self._network_client = NetworkClient:new(host)
+			self._network_client = NetworkClient:new(host, nil, nil, nil, self._lobby_client)
 			self._network_transmit = NetworkTransmit:new(false, self._network_client.server_peer_id)
 
 			self._network_transmit:set_network_event_delegate(self._network_event_delegate)
@@ -176,7 +176,7 @@ StateTitleScreenInitNetwork._update_lobby_client = function (self, dt, t)
 	end
 
 	if self._network_client then
-		self._network_client:update(dt)
+		self._network_client:update(dt, t)
 
 		if self._network_client.state == NetworkClientStates.denied_enter_game and not self._popup_id then
 			local error_message = "failure_start_join_server"
@@ -202,7 +202,7 @@ StateTitleScreenInitNetwork._update_lobby_join = function (self, dt, t)
 		local auto_join = lobby.unique_server_name == Development.parameter("unique_server_name")
 
 		if lobby.valid and auto_join then
-			local network_options = Managers.lobby:network_options()
+			local network_options = LobbySetup.network_options()
 			local level_transition_handler = Managers.level_transition_handler
 
 			level_transition_handler:set_next_level(lobby.level_key)
@@ -275,7 +275,7 @@ StateTitleScreenInitNetwork._next_state = function (self)
 
 			self._profile_synchronizer = nil
 
-			local network_options = Managers.lobby:network_options()
+			local network_options = LobbySetup.network_options()
 
 			self._lobby_host = LobbyHost:new(network_options)
 			self._network_state = "_creating_session_host"

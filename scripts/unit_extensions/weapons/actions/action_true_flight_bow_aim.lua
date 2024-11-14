@@ -120,6 +120,12 @@ ActionTrueFlightBowAim._stop_charge_sound = function (self)
 	ActionUtils.play_husk_sound_event(wwise_world, current_action.charge_sound_husk_stop_event, owner_unit, is_bot)
 end
 
+local function is_target_invisible(unit)
+	local status_extension = ScriptUnit.has_extension(unit, "status_system")
+
+	return status_extension and status_extension:is_invisible()
+end
+
 local EMPTY_TABLE = {}
 
 ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, can_damage)
@@ -172,7 +178,7 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 		self.played_aim_sound = true
 	end
 
-	if current_target and not HEALTH_ALIVE[current_target] then
+	if current_target and (not HEALTH_ALIVE[current_target] or is_target_invisible(current_target)) then
 		if not is_bot then
 			self:_mark_target(nil)
 		end
@@ -216,36 +222,62 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 			local ignore_bosses = current_action.ignore_bosses
 
 			for i = 1, num_results do
-				local result = results[i]
-				local hit_actor = result[RAYCAST_INDEX_ACTOR]
+				repeat
+					local result = results[i]
+					local hit_actor = result[RAYCAST_INDEX_ACTOR]
 
-				if hit_actor then
+					if not hit_actor then
+						break
+					end
+
 					local unit = actor_unit(hit_actor)
 
-					if HEALTH_ALIVE[unit] then
-						local hit_unit_side = side_by_unit[unit]
-
-						if not hit_unit_side or side_manager:is_enemy_by_side(side, hit_unit_side) then
-							local node = actor_node(hit_actor)
-							local breed = AiUtils.unit_breed(unit)
-
-							if not ignored_breeds[breed and breed.name] and (not breed or not breed.is_player or can_target_players) then
-								local hit_zone = breed and breed.hit_zones_lookup[node]
-
-								if hit_zone and hit_zone.name ~= "afro" and not breed.no_autoaim and (not ignore_bosses or not breed.boss) then
-									local priority = prio_breeds[breed.name] or -1
-
-									if priority > 0 and higest_priority < priority then
-										hit_unit = unit
-										higest_priority = priority
-									else
-										hit_unit = hit_unit or unit
-									end
-								end
-							end
-						end
+					if not HEALTH_ALIVE[unit] then
+						break
 					end
-				end
+
+					local hit_unit_side = side_by_unit[unit]
+
+					if hit_unit_side and not side_manager:is_enemy_by_side(side, hit_unit_side) then
+						break
+					end
+
+					local node = actor_node(hit_actor)
+					local breed = AiUtils.unit_breed(unit)
+
+					if not breed or ignored_breeds[breed.name] then
+						break
+					end
+
+					if breed.is_player and not can_target_players then
+						break
+					end
+
+					local hit_zone = breed.hit_zones_lookup[node]
+
+					if not hit_zone or hit_zone.name == "afro" then
+						break
+					end
+
+					if breed.no_autoaim or ignore_bosses and breed.boss then
+						break
+					end
+
+					if is_target_invisible(unit) then
+						break
+					end
+
+					local priority = prio_breeds[breed.name] or -1
+
+					if priority > 0 and higest_priority < priority then
+						hit_unit = unit
+						higest_priority = priority
+
+						break
+					end
+
+					hit_unit = hit_unit or unit
+				until true
 			end
 		end
 
@@ -277,7 +309,6 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 				self.aim_timer = 0
 
 				if ALIVE[hit_unit] and current_target ~= hit_unit then
-					current_target = hit_unit
 					self.target = hit_unit
 
 					self:_mark_target(hit_unit)
@@ -300,7 +331,6 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 
 				self.target = nil
 				self.aimed_target = nil
-				current_target = nil
 			end
 		end
 	end
@@ -350,7 +380,7 @@ ActionTrueFlightBowAim._get_visible_targets = function (self, aimed_target, num_
 					local enemy_dir = Vector3.normalize(POSITION_LOOKUP[unit] - own_position)
 					local dot_angle = Vector3.dot(look_direction, enemy_dir)
 
-					if min_dot < dot_angle and unit ~= aimed_target then
+					if min_dot < dot_angle and unit ~= aimed_target and not is_target_invisible(unit) then
 						targets[#targets + 1] = unit
 					end
 				end
@@ -360,7 +390,7 @@ ActionTrueFlightBowAim._get_visible_targets = function (self, aimed_target, num_
 		targets = self.targets
 
 		for i = #targets, 1, -1 do
-			if not ALIVE[targets[i]] then
+			if not ALIVE[targets[i]] or is_target_invisible(targets[i]) then
 				table.remove(targets, i)
 			end
 		end
@@ -368,7 +398,7 @@ ActionTrueFlightBowAim._get_visible_targets = function (self, aimed_target, num_
 
 	TrueFlightUtility.sort_prioritize_specials(targets)
 
-	if aimed_target then
+	if aimed_target and not is_target_invisible(aimed_target) then
 		table.insert(targets, 1, aimed_target)
 	end
 

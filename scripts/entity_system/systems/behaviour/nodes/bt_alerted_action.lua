@@ -196,7 +196,7 @@ BTAlertedAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	end
 
 	if not blackboard.confirmed_player_sighting then
-		Managers.state.network:anim_event(unit, "to_passive")
+		AiUtils.enter_passive(unit, blackboard)
 	end
 
 	blackboard.lerp_into_follow = blackboard.breed.lerp_alerted_into_follow_speed or nil

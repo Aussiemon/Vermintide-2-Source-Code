@@ -166,6 +166,10 @@ DeusRunState.get_blessings = function (self)
 		blessings_array[#blessings_array + 1] = blessing
 	end
 
+	if script_data.deus_force_load_blessing then
+		blessings_array[#blessings_array + 1] = script_data.deus_force_load_blessing
+	end
+
 	return blessings_array
 end
 
@@ -500,6 +504,14 @@ end
 
 DeusRunState.set_own_player_level = function (self, level)
 	self._shared_state:set_own(self._shared_state:get_key("player_level"), level)
+end
+
+DeusRunState.get_versus_player_level = function (self, peer_id)
+	return self._shared_state:get_peer(peer_id, self._shared_state:get_key("versus_player_level"))
+end
+
+DeusRunState.set_own_versus_player_level = function (self, versus_level)
+	self._shared_state:set_own(self._shared_state:get_key("versus_player_level"), versus_level)
 end
 
 DeusRunState.get_player_name = function (self, peer_id)

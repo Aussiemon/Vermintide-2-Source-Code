@@ -385,7 +385,7 @@ MainPathSpawningGenerator.process_conflict_directors_zones = function (default_c
 			local conflict_directors = zone_layer.roaming_set
 
 			if conflict_directors then
-				conflict_directors = string.split(conflict_directors, "/")
+				conflict_directors = string.split_deprecated(conflict_directors, "/")
 
 				local random_int
 

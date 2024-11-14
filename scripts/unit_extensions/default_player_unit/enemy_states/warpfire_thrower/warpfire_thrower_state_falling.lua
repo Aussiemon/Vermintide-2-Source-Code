@@ -11,14 +11,11 @@ end
 WarpfireThrowerStateFalling.update = function (self, unit, input, dt, context, t)
 	local csm = self._csm
 	local career_extension = self._career_extension
-
-	if career_extension:ability_was_triggered(self._fire_ability_id) then
-		csm:change_state("warpfire_firing")
-
-		return
-	end
-
 	local ghost_mode_extension = self._ghost_mode_extension
 	local in_ghost_mode = ghost_mode_extension:is_in_ghost_mode()
 	local handled = self:common_movement(in_ghost_mode, dt, unit)
+
+	if not handled then
+		CharacterStateHelper.update_weapon_actions(t, unit, self._input_extension, self._inventory_extension, self._health_extension)
+	end
 end

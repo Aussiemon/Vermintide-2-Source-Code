@@ -152,8 +152,8 @@ local damage_templates = {
 			},
 		},
 		cleave_distribution = {
-			attack = 0.5,
-			impact = 2,
+			attack = 100,
+			impact = 100,
 		},
 		default_target = {
 			attack_template = "heavy_slashing_tank",

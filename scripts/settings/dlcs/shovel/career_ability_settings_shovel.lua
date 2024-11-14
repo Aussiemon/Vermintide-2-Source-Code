@@ -2,7 +2,6 @@
 
 require("scripts/unit_extensions/default_player_unit/careers/career_ability_bw_necromancer_wave")
 require("scripts/settings/dlcs/shovel/passive_ability_necromancer_charges")
-require("scripts/settings/dlcs/shovel/passive_ability_necromancer")
 require("scripts/unit_extensions/default_player_unit/careers/career_ability_bw_necromancer_command")
 require("scripts/settings/profiles/career_constants")
 

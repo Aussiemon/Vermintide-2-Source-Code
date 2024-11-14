@@ -329,6 +329,31 @@ GenericVolumeTemplates.functions = {
 				if on_triggered then
 					on_triggered()
 				end
+
+				local function cb()
+					GenericVolumeTemplates.functions.trigger_volume.ai_inside.on_exit(unit, data)
+				end
+
+				local volume_system = Managers.state.entity:system("volume_system")
+
+				volume_system:register_track_unit_dead(unit, cb)
+			end,
+			on_exit = function (unit, data)
+				local event = data.params.event_on_exit
+
+				if event then
+					Level.trigger_event(data.level, event)
+				end
+
+				local on_exit = data.params.on_exit
+
+				if on_exit then
+					on_exit()
+				end
+
+				local volume_system = Managers.state.entity:system("volume_system")
+
+				volume_system:unregister_track_unit_dead(unit)
 			end,
 		},
 		players_inside = {
@@ -428,5 +453,16 @@ GenericVolumeTemplates.filters = {
 		local volume_system = Managers.state.entity:system("volume_system")
 
 		return volume_system:all_alive_human_players_inside(data.volume_name)
+	end,
+	is_alive_default_enemy = function (unit, data)
+		if not HEALTH_ALIVE[unit] then
+			return false
+		end
+
+		local conflict_director = Managers.state.conflict
+		local side_manager = Managers.state.side
+		local side = side_manager and side_manager.side_by_unit[unit]
+
+		return (conflict_director and conflict_director.default_enemy_side_id) == (side and side.side_id)
 	end,
 }

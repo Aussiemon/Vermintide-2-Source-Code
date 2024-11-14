@@ -29,6 +29,7 @@ require("scripts/ui/views/friends_ui_component")
 require("scripts/ui/text_popup/text_popup_ui")
 require("scripts/ui/weave_tutorial/weave_ui_onboarding_tutorial")
 require("scripts/ui/dlc_upsell/common_popup_handler")
+require("scripts/ui/hint_ui/hint_ui_handler")
 DLCUtils.map_list("ui_views", function (view)
 	local file = view.file
 
@@ -109,6 +110,7 @@ IngameUI.init = function (self, ingame_ui_context)
 	self.weave_onboarding = WeaveUIOnboardingTutorial:new(ingame_ui_context)
 	self.popup_handler = CommonPopupHandler:new(ingame_ui_context)
 	self.text_popup_ui = TextPopupUI:new(ingame_ui_context)
+	self.hint_ui_handler = HintUIHandler:new(ingame_ui_context)
 
 	if GameSettingsDevelopment.help_screen_enabled then
 		self.help_screen = HelpScreenUI:new(ingame_ui_context)
@@ -294,6 +296,12 @@ IngameUI.destroy = function (self)
 		self.popup_handler = nil
 	end
 
+	if self.hint_ui_handler then
+		self.hint_ui_handler:destroy()
+
+		self.hint_ui_handler = nil
+	end
+
 	printf("[IngameUI] destroy")
 end
 
@@ -329,7 +337,7 @@ IngameUI.weaves_requirements_fulfilled = function (self)
 	local player = player_manager:local_player()
 	local stats_id = player:stats_id()
 
-	for _, level_key in pairs(MainGameLevels) do
+	for _, level_key in pairs(HelmgartLevels) do
 		local level_settings = LevelSettings[level_key]
 
 		if level_settings.mechanism == "adventure" and statistics_db:get_persistent_stat(stats_id, "completed_levels", level_key) < 1 then
@@ -352,6 +360,22 @@ IngameUI.weaves_requirements_fulfilled = function (self)
 	end
 
 	return true
+end
+
+IngameUI._handle_versus_matchmaking = function (self)
+	local matchmaking_manager = Managers.matchmaking
+
+	if not matchmaking_manager:is_matchmaking_versus() then
+		return true
+	end
+
+	if matchmaking_manager:is_in_versus_custom_game_lobby() then
+		return true
+	end
+
+	self:add_local_system_message("matchmaking_ready_interaction_message_map")
+
+	return false
 end
 
 IngameUI.not_in_modded = function (self)
@@ -469,6 +493,11 @@ IngameUI.handle_menu_hotkeys = function (self, dt, input_service, hotkeys_enable
 							menu_state_name = mapping_data.transition_state,
 							menu_sub_state_name = mapping_data.transition_sub_state,
 						}
+						local inject_transition_params_func = mapping_data.inject_transition_params_func
+
+						if inject_transition_params_func then
+							inject_transition_params_func(transition_params)
+						end
 
 						self:transition_with_fade(transition, transition_params)
 					end
@@ -537,6 +566,10 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 		self:handle_transition("end_game")
 	end
 
+	if self.hint_ui_handler then
+		self.hint_ui_handler:update(dt, t)
+	end
+
 	if is_in_inn then
 		local is_not_in_menu = self.has_left_menu and self.hud_visible
 		local has_holly_dlc = Managers.unlock:is_dlc_unlocked("holly")
@@ -579,7 +612,6 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 		local versus_slot_status_ui = ingame_hud:component("VersusSlotStatusUI")
 
 		player_list_active = versus_tab_ui and versus_tab_ui:is_active() or versus_slot_status_ui and versus_slot_status_ui:is_active() or player_list_active
-		allowed_to_access_menu = not gamepad_active or not Managers.matchmaking:is_matchmaking_versus()
 
 		local game_mode = Managers.state.game_mode:game_mode()
 

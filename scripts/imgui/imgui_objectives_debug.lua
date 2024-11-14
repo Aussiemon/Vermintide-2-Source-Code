@@ -15,13 +15,13 @@ ImguiObjectivesDebug.init = function (self)
 end
 
 ImguiObjectivesDebug._initialize = function (self)
+	self._objective_system = Managers.state.entity:system("objective_system")
+
 	local weave_manager = Managers.weave
 
 	if weave_manager:get_active_weave() then
-		self._objective_system = Managers.state.entity:system("weave_objective_system")
 		self._is_weave = true
 	elseif Managers.mechanism:current_mechanism_name() == "versus" then
-		self._objective_system = Managers.state.entity:system("versus_objective_system")
 		self._is_versus = true
 		self._timer_paused = false
 	end
@@ -140,10 +140,7 @@ ImguiObjectivesDebug._draw_versus = function (self, is_open)
 	Imgui.text(string.format("Num Completed Main Objectives: %q", obj_system._num_completed_main_objectives))
 	Imgui.text(string.format("Num Completed Sub Objectives: %q", obj_system._num_completed_sub_objectives))
 	Imgui.text(string.format("Current Num Completed Main Objectives: %q", obj_system._current_num_completed_main_objectives))
-	Imgui.text(string.format("Current Num Completed Sub Objectives: %q", obj_system._current_num_completed_sub_objectives))
-	Imgui.text(string.format("Current Num Sub Objectives: %q", obj_system._current_num_sub_objectives))
 	Imgui.text(string.format("Current Num Optional Sub Objectives: %q", obj_system._current_num_optional_sub_objectives))
-	Imgui.text(string.format("Current Objective Index: %q", obj_system._current_objective_index))
 end
 
 ImguiObjectivesDebug.draw = function (self, is_open)

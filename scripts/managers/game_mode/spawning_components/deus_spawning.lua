@@ -375,12 +375,13 @@ DeusSpawning._update_joining_clients = function (self, dt, t)
 end
 
 DeusSpawning._add_client_to_party = function (self, peer_id, local_player_id)
-	local update_safe = true
 	local party_id = 1
-	local removed_bot_player = Managers.state.game_mode:remove_bot(peer_id, local_player_id, update_safe)
 	local status = Managers.party:get_player_status(peer_id, local_player_id)
 
-	if status.party_id ~= 1 then
+	if status.party_id ~= party_id then
+		local update_safe = true
+		local removed_bot_player = Managers.state.game_mode:remove_bot(party_id, peer_id, local_player_id, update_safe)
+
 		Managers.party:request_join_party(peer_id, local_player_id, party_id, nil, removed_bot_player)
 	end
 end

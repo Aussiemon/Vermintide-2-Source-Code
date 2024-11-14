@@ -120,12 +120,25 @@ local function decode_inventory(compressed_byte_array_string)
 	}
 end
 
+local function encode_character_data(character_data)
+	return string.format("%d:%d", character_data.profile_index, character_data.career_index)
+end
+
+local function decode_character_data(character_string)
+	local split = string.split(character_string, ":")
+
+	return {
+		profile_index = tonumber(split[1]),
+		career_index = tonumber(split[2]),
+	}
+end
+
 local function encode_comma_separated_string_array(array)
 	return table.concat(array, ",")
 end
 
 local function decode_comma_separated_string_array(string)
-	local array = string.split(string, ",")
+	local array = string.split_deprecated(string, ",")
 
 	return array
 end
@@ -141,7 +154,7 @@ local function encode_locked_director_functions(array)
 end
 
 local function decode_locked_director_functions(string)
-	local array = string.split(string, ",")
+	local array = string.split_deprecated(string, ",")
 	local func_array = {}
 
 	for index, id in ipairs(array) do
@@ -162,7 +175,7 @@ local function encode_extra_packages(array)
 end
 
 local function decode_extra_packages(string)
-	local id_array = string.split(string, ",")
+	local id_array = string.split_deprecated(string, ",")
 	local array = {}
 
 	for index, id in ipairs(id_array) do
@@ -244,8 +257,21 @@ local spec = {
 			default_value = "",
 			type = "string",
 			composite_keys = {
+				party_id = true,
 				profile_index = true,
 			},
+		},
+		persistent_hero_reservation = {
+			type = "table",
+			default_value = {
+				career_index = 0,
+				profile_index = 0,
+			},
+			composite_keys = {
+				peer_id = true,
+			},
+			encode = encode_character_data,
+			decode = decode_character_data,
 		},
 		full_profile_peers = {
 			type = "table",

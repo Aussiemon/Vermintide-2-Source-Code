@@ -46,7 +46,7 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
 			rarity = "unique",
 			right_hand_unit = "units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_runed",
-			template = "bw_deus_01_template",
+			template = "bw_deus_01_template_1",
 			right_hand_unit_override = {
 				bw_necromancer = "units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_runed_baelfire",
 			},
@@ -58,6 +58,7 @@ local skins = {
 		data = {
 			description = "es_dual_wield_hammer_sword_skin_02_runed_05_description",
 			display_name = "es_dual_wield_hammer_sword_skin_02_runed_05_name",
+			display_unit = "units/weapons/weapon_display/display_dual_weapons",
 			hud_icon = "weapon_generic_icon_falken",
 			inventory_icon = "icon_es_dual_wield_hammer_sword_02_runed_02",
 			left_hand_unit = "units/weapons/player/wpn_emp_sword_06_t2/wpn_emp_sword_06_t2_runed_01",

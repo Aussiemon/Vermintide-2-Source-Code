@@ -22,7 +22,7 @@ local function _split_helper(part)
 	_fields[#_fields + 1] = part
 end
 
-string.split = function (str, sep, dest)
+string.split_deprecated = function (str, sep, dest)
 	_fields = dest or {}
 
 	local pattern = format("([^%s]+)", sep or " ")
@@ -30,6 +30,42 @@ string.split = function (str, sep, dest)
 	gsub(str, pattern, _split_helper)
 
 	return _fields
+end
+
+string.split = function (str, sep, dest)
+	sep = sep or " "
+	dest = dest or {}
+
+	local count = 0
+
+	if str == "" then
+		return dest, count
+	end
+
+	if sep == "" then
+		local len = #str
+
+		for i = 1, len do
+			dest[i] = string.sub(str, i, i)
+		end
+
+		return dest, len
+	end
+
+	local offset = 1
+	local from, to = string.find(str, sep, offset, true)
+
+	while from do
+		count = count + 1
+		dest[count] = string.sub(str, offset, from - 1)
+		offset = to + 1
+		from, to = string.find(str, sep, offset, true)
+	end
+
+	count = count + 1
+	dest[count] = string.sub(str, offset, #str)
+
+	return dest, count
 end
 
 string.trim = function (str)
@@ -53,7 +89,7 @@ string.is_snake_case = function (str)
 		return false
 	end
 
-	local arr = string.split(str, "_")
+	local arr = string.split_deprecated(str, "_")
 
 	for _, substr in pairs(arr) do
 		if string.match(substr, "%w+") ~= substr or substr:lower() ~= substr then
@@ -162,4 +198,12 @@ string.damerau_levenshtein_distance = function (s, t, lim)
 	end
 
 	return d[#d]
+end
+
+string.pad_end = function (str, target_length, pad_str)
+	for i = #str, target_length - 1 do
+		str = str .. pad_str
+	end
+
+	return str
 end

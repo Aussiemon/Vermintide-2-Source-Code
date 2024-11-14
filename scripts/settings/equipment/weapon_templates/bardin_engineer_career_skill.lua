@@ -520,7 +520,14 @@ weapon_template.custom_data = {
 	windup_loss_per_second = (armor_pierce_max_rps - armor_pierce_initial_rounds_per_second) / armor_pierce_rps_loss_per_second,
 }
 
+local career_skill_vs = table.clone(weapon_template)
+
+career_skill_vs.actions.action_one.base_fire.damage_profile = "engineer_ability_shot_vs"
+armor_piercing_template_vs = table.clone(armor_piercing_template)
+
 return {
 	bardin_engineer_career_skill_weapon = table.clone(weapon_template),
 	bardin_engineer_career_skill_weapon_special = armor_piercing_template,
+	bardin_engineer_career_skill_weapon_vs = table.clone(career_skill_vs),
+	bardin_engineer_career_skill_weapon_special_vs = armor_piercing_template_vs,
 }

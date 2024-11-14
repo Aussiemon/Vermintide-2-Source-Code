@@ -159,6 +159,7 @@ FreeFlightManager._update_global = function (self, dt)
 
 	local button_pressed = input_service:get("global_free_flight_toggle")
 	local frustum_modifier = input_service:get("frustum_freeze_toggle")
+	local player_controls_toggle = input_service:get("player_controls_toggle")
 
 	if data.active and not Managers.world:has_world(data.viewport_world_name) then
 		self:_clear_global_free_flight(data)
@@ -166,11 +167,13 @@ FreeFlightManager._update_global = function (self, dt)
 		local world = Managers.world:world(data.viewport_world_name)
 
 		self:_toggle_frustum_freeze(dt, data, world, ScriptWorld.global_free_flight_viewport(world), true)
+	elseif data.active and player_controls_toggle then
+		self:_set_control_input(not self._controlling_input)
 	elseif data.active and button_pressed then
 		self:_exit_global_free_flight(data)
 	elseif button_pressed then
 		self:_enter_global_free_flight(data)
-	elseif data.active then
+	elseif data.active and self._controlling_input then
 		self:_update_global_free_flight(dt, data, input_service)
 	end
 end
@@ -445,15 +448,33 @@ FreeFlightManager._enter_global_free_flight = function (self, data)
 		self:_pause_game(true)
 	end
 
-	self.input_manager:block_device_except_service("FreeFlight", "keyboard", nil, "free_flight")
-	self.input_manager:block_device_except_service("FreeFlight", "mouse", nil, "free_flight")
-	self.input_manager:block_device_except_service("FreeFlight", "gamepad", nil, "free_flight")
-	self.input_manager:device_unblock_service("keyboard", 1, "DebugMenu")
-	self.input_manager:device_unblock_service("mouse", 1, "DebugMenu")
-	self.input_manager:device_unblock_service("gamepad", 1, "DebugMenu")
-	self.input_manager:device_unblock_service("keyboard", 1, "Debug")
-	self.input_manager:device_unblock_service("mouse", 1, "Debug")
-	self.input_manager:device_unblock_service("gamepad", 1, "Debug")
+	self:_set_control_input(true)
+end
+
+FreeFlightManager._set_control_input = function (self, control_input)
+	control_input = not not control_input
+
+	if self._controlling_input == control_input then
+		return
+	end
+
+	self._controlling_input = control_input
+
+	if control_input then
+		self.input_manager:block_device_except_service("FreeFlight", "keyboard", nil, "free_flight")
+		self.input_manager:block_device_except_service("FreeFlight", "mouse", nil, "free_flight")
+		self.input_manager:block_device_except_service("FreeFlight", "gamepad", nil, "free_flight")
+		self.input_manager:device_unblock_service("keyboard", 1, "DebugMenu")
+		self.input_manager:device_unblock_service("mouse", 1, "DebugMenu")
+		self.input_manager:device_unblock_service("gamepad", 1, "DebugMenu")
+		self.input_manager:device_unblock_service("keyboard", 1, "Debug")
+		self.input_manager:device_unblock_service("mouse", 1, "Debug")
+		self.input_manager:device_unblock_service("gamepad", 1, "Debug")
+	else
+		self.input_manager:device_unblock_all_services("keyboard")
+		self.input_manager:device_unblock_all_services("mouse")
+		self.input_manager:device_unblock_all_services("gamepad")
+	end
 end
 
 FreeFlightManager._exit_global_free_flight = function (self, data)
@@ -479,9 +500,7 @@ FreeFlightManager._exit_global_free_flight = function (self, data)
 	data.viewport_world_name = nil
 
 	ScriptWorld.destroy_global_free_flight_viewport(Managers.world:world(world_name))
-	self.input_manager:device_unblock_all_services("keyboard")
-	self.input_manager:device_unblock_all_services("mouse")
-	self.input_manager:device_unblock_all_services("gamepad")
+	self:_set_control_input(false)
 end
 
 FreeFlightManager._clear_global_free_flight = function (self, data)

@@ -185,7 +185,7 @@ BTEnterHooks.stormfiend_boss_charge_enter = function (unit, blackboard, t)
 end
 
 BTEnterHooks.to_combat = function (unit, blackboard, t)
-	Managers.state.network:anim_event(unit, "to_combat")
+	AiUtils.enter_combat(unit, blackboard)
 end
 
 BTEnterHooks.on_chaos_exalted_champion_intro_enter = function (unit, blackboard, t)

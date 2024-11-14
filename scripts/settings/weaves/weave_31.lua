@@ -17,35 +17,7 @@ return {
 			show_bar = true,
 			spawning_seed = 6482,
 			objective_settings = {
-				objective_lists = {
-					{
-						kill_enemies = {},
-						weave_explosive_barrel_socket_007 = {
-							is_scored = true,
-						},
-						weave_limited_item_track_spawner_007 = {
-							template_name = "gargoyle_head_spawner",
-						},
-					},
-					{
-						kill_enemies = {},
-						weave_explosive_barrel_socket_004 = {
-							is_scored = true,
-						},
-						weave_limited_item_track_spawner_002 = {
-							template_name = "gargoyle_head_spawner",
-						},
-					},
-					{
-						kill_enemies = {},
-						weave_explosive_barrel_socket_002 = {
-							is_scored = true,
-						},
-						weave_limited_item_track_spawner_005 = {
-							template_name = "gargoyle_head_spawner",
-						},
-					},
-				},
+				objective_lists = "weave_31",
 			},
 			bonus_time_on_complete = WeaveSettings.bonus_time,
 			system_seeds = {

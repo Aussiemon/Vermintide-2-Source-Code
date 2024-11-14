@@ -309,7 +309,7 @@ local scenegraph_definition = {
 			0,
 		},
 		position = {
-			63,
+			128,
 			69,
 			3,
 		},
@@ -323,7 +323,7 @@ local scenegraph_definition = {
 			0,
 		},
 		position = {
-			63,
+			128,
 			69,
 			3,
 		},
@@ -337,7 +337,7 @@ local scenegraph_definition = {
 			0,
 		},
 		position = {
-			63,
+			128,
 			69,
 			3,
 		},
@@ -351,8 +351,48 @@ local scenegraph_definition = {
 			0,
 		},
 		position = {
-			63,
+			128,
 			69,
+			3,
+		},
+	},
+	team_1_player_insignia_1 = {
+		horizontal_alignment = "left",
+		parent = "team_1_player_panel_1",
+		vertical_alignment = "bottom",
+		position = {
+			-275,
+			0,
+			3,
+		},
+	},
+	team_1_player_insignia_2 = {
+		horizontal_alignment = "left",
+		parent = "team_1_player_panel_2",
+		vertical_alignment = "bottom",
+		position = {
+			-275,
+			0,
+			3,
+		},
+	},
+	team_1_player_insignia_3 = {
+		horizontal_alignment = "left",
+		parent = "team_1_player_panel_3",
+		vertical_alignment = "bottom",
+		position = {
+			-275,
+			0,
+			3,
+		},
+	},
+	team_1_player_insignia_4 = {
+		horizontal_alignment = "left",
+		parent = "team_1_player_panel_4",
+		vertical_alignment = "bottom",
+		position = {
+			-275,
+			0,
 			3,
 		},
 	},
@@ -549,7 +589,7 @@ local scenegraph_definition = {
 			0,
 		},
 		position = {
-			63,
+			128,
 			69,
 			3,
 		},
@@ -563,7 +603,7 @@ local scenegraph_definition = {
 			0,
 		},
 		position = {
-			63,
+			128,
 			69,
 			3,
 		},
@@ -577,7 +617,7 @@ local scenegraph_definition = {
 			0,
 		},
 		position = {
-			63,
+			128,
 			69,
 			3,
 		},
@@ -591,8 +631,48 @@ local scenegraph_definition = {
 			0,
 		},
 		position = {
-			63,
+			128,
 			69,
+			3,
+		},
+	},
+	team_2_player_insignia_1 = {
+		horizontal_alignment = "left",
+		parent = "team_2_player_panel_1",
+		vertical_alignment = "bottom",
+		position = {
+			-275,
+			0,
+			3,
+		},
+	},
+	team_2_player_insignia_2 = {
+		horizontal_alignment = "left",
+		parent = "team_2_player_panel_2",
+		vertical_alignment = "bottom",
+		position = {
+			-275,
+			0,
+			3,
+		},
+	},
+	team_2_player_insignia_3 = {
+		horizontal_alignment = "left",
+		parent = "team_2_player_panel_3",
+		vertical_alignment = "bottom",
+		position = {
+			-275,
+			0,
+			3,
+		},
+	},
+	team_2_player_insignia_4 = {
+		horizontal_alignment = "left",
+		parent = "team_2_player_panel_4",
+		vertical_alignment = "bottom",
+		position = {
+			-275,
+			0,
 			3,
 		},
 	},

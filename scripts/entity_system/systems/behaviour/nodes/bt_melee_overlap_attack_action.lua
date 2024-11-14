@@ -58,11 +58,16 @@ BTMeleeOverlapAttackAction.enter = function (self, unit, blackboard, t)
 	blackboard.keep_target = true
 	blackboard.past_damage_in_attack = false
 
-	local attack = blackboard.attack
-	local freeze_intensity_decay_time = attack.freeze_intensity_decay_time or 15
+	local side = Managers.state.side.side_by_unit[unit]
+	local is_conflict_enemy = side and side.side_id == Managers.state.conflict.default_enemy_side_id
 
-	if freeze_intensity_decay_time > 0 then
-		Managers.state.conflict:freeze_intensity_decay(freeze_intensity_decay_time)
+	if is_conflict_enemy then
+		local attack = blackboard.attack
+		local freeze_intensity_decay_time = attack.freeze_intensity_decay_time or 15
+
+		if freeze_intensity_decay_time > 0 then
+			Managers.state.conflict:freeze_intensity_decay(freeze_intensity_decay_time)
+		end
 	end
 
 	AiUtils.add_attack_intensity(target_unit, action, blackboard)
@@ -613,7 +618,7 @@ BTMeleeOverlapAttackAction.hit_player = function (self, unit, blackboard, hit_un
 	local dealt_damage = false
 
 	if DamageUtils.check_block(unit, hit_unit, action.fatigue_type, attack_direction) then
-		if not action.ignore_shield_block and DamageUtils.check_ranged_block(unit, hit_unit, Vector3.normalize(POSITION_LOOKUP[hit_unit] - POSITION_LOOKUP[unit]), action.shield_blocked_fatigue_type or "shield_blocked_slam") then
+		if not action.ignore_shield_block and DamageUtils.check_ranged_block(unit, hit_unit, action.shield_blocked_fatigue_type or "shield_blocked_slam") then
 			self:push_player(unit, hit_unit, attack.player_push_speed_blocked, attack.player_push_speed_blocked_z, false)
 		else
 			if action.blocked_damage then

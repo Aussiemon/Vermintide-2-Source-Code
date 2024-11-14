@@ -236,14 +236,14 @@ BuffSystem._next_free_server_buff_id = function (self)
 	return free_buff_id
 end
 
-local params = {}
+local buff_helper_params = {}
 
 BuffSystem._add_buff_helper_function = function (self, unit, template_name, attacker_unit, server_buff_id, power_level, source_attacker_unit)
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
 
-	params.attacker_unit = attacker_unit
-	params.power_level = power_level
-	params.source_attacker_unit = source_attacker_unit
+	buff_helper_params.attacker_unit = attacker_unit
+	buff_helper_params.power_level = power_level
+	buff_helper_params.source_attacker_unit = source_attacker_unit
 
 	if server_buff_id > 0 then
 		if not self.server_controlled_buffs[unit] then
@@ -260,7 +260,7 @@ BuffSystem._add_buff_helper_function = function (self, unit, template_name, atta
 		end
 
 		if not self.server_controlled_buffs[unit][server_buff_id] then
-			local local_buff_id = buff_extension:add_buff(template_name, params)
+			local local_buff_id = buff_extension:add_buff(template_name, buff_helper_params)
 
 			self.server_controlled_buffs[unit][server_buff_id] = {
 				local_buff_id = local_buff_id,
@@ -270,7 +270,7 @@ BuffSystem._add_buff_helper_function = function (self, unit, template_name, atta
 			}
 		end
 	else
-		buff_extension:add_buff(template_name, params)
+		buff_extension:add_buff(template_name, buff_helper_params)
 	end
 end
 
@@ -844,7 +844,7 @@ BuffSystem.add_buff_synced = function (self, target_unit, template_name, sync_ty
 
 	if buff_extension then
 		if sync_type == BuffSyncType.Client and optional_peer_id ~= Network.peer_id() or sync_type == BuffSyncType.Server and not self.is_server then
-			buff_id = buff_extension:claim_buff_id()
+			buff_id = buff_extension:claim_buff_id(template_name)
 			num_sub_buffs = 1
 		else
 			buff_id, num_sub_buffs = buff_extension:add_buff(template_name, params)
@@ -884,38 +884,44 @@ BuffSystem.rpc_add_buff_synced = function (self, channel_id, target_unit_id, tem
 
 	if buff_extension then
 		local template_name = NetworkLookup.buff_templates[template_name_id]
-		local id, num_sub_buffs = buff_extension:add_buff(template_name)
+		local id, num_buffs_added = buff_extension:add_buff(template_name)
+		local ignore_blind_fire_print = false
+		local sync_type = BuffSyncTypeLookup[sync_type_id]
+		local server_sync_id
 
-		if num_sub_buffs <= 0 then
+		if num_buffs_added <= 0 then
 			remote_sync_id = invalid_buff_sync_id
+			server_sync_id = invalid_buff_sync_id
+			ignore_blind_fire_print = true
+		elseif self.is_server and remote_sync_id ~= invalid_buff_sync_id then
+			server_sync_id = buff_extension:generate_sync_id()
+
+			buff_extension:set_pending_sync_id(id, server_sync_id, sync_type)
+		else
+			server_sync_id = remote_sync_id
 		end
 
-		local local_sync_id = remote_sync_id ~= invalid_buff_sync_id and buff_extension:generate_sync_id() or invalid_buff_sync_id
-		local server_sync_id = self.is_server and local_sync_id or remote_sync_id
-		local sync_type = BuffSyncTypeLookup[sync_type_id]
 		local owner_peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
 		if server_sync_id ~= invalid_buff_sync_id then
 			buff_extension:apply_remote_sync_id(id, server_sync_id, sync_type, owner_peer_id)
 		end
 
-		if remote_sync_id == invalid_buff_sync_id then
-			debug_sync_print("[BuffSystem] rpc_add_buff_synced, response consumed due to blind fire sync", owner_peer_id, target_unit_id, template_name)
+		local network_manager = Managers.state.network
+
+		if self.is_server and sync_type == BuffSyncType.All then
+			network_manager.network_transmit:send_rpc_clients_except("rpc_add_buff_synced_relay", owner_peer_id, target_unit_id, template_name_id, server_sync_id, sync_type_id)
+		end
+
+		if server_sync_id == invalid_buff_sync_id then
+			if not ignore_blind_fire_print then
+				debug_sync_print("[BuffSystem] rpc_add_buff_synced, response consumed due to blind fire sync", owner_peer_id, target_unit_id, template_name)
+			end
 
 			return
 		end
 
-		local network_manager = Managers.state.network
-
 		if self.is_server then
-			if sync_type == BuffSyncType.All then
-				network_manager.network_transmit:send_rpc_clients_except("rpc_add_buff_synced_relay", owner_peer_id, target_unit_id, template_name_id, server_sync_id, sync_type_id)
-			end
-
-			network_manager.network_transmit:send_rpc("rpc_add_buff_synced_response", owner_peer_id, target_unit_id, remote_sync_id, server_sync_id)
-		elseif sync_type == BuffSyncType.ClientAndServer then
-			network_manager.network_transmit:send_rpc_server("rpc_add_buff_synced_response", target_unit_id, remote_sync_id, server_sync_id)
-		elseif sync_type == BuffSyncType.Client then
 			network_manager.network_transmit:send_rpc("rpc_add_buff_synced_response", owner_peer_id, target_unit_id, remote_sync_id, server_sync_id)
 		end
 	end
@@ -927,11 +933,13 @@ BuffSystem.rpc_add_buff_synced_relay = function (self, channel_id, target_unit_i
 
 	if buff_extension then
 		local template_name = NetworkLookup.buff_templates[template_name_id]
-		local local_buff_id = buff_extension:add_buff(template_name)
+		local local_buff_id, num_buffs_added = buff_extension:add_buff(template_name)
 
-		if server_sync_id ~= invalid_buff_sync_id then
+		if server_sync_id ~= invalid_buff_sync_id and num_buffs_added > 0 then
 			local sync_type = BuffSyncTypeLookup[sync_type_id]
+			local local_sync_id = buff_extension:generate_sync_id()
 
+			buff_extension:set_pending_sync_id(local_buff_id, local_sync_id, sync_type)
 			buff_extension:apply_remote_sync_id(local_buff_id, server_sync_id, sync_type)
 		end
 	end
@@ -944,33 +952,44 @@ BuffSystem.rpc_add_buff_synced_params = function (self, channel_id, target_unit_
 	if buff_extension then
 		local template_name = NetworkLookup.buff_templates[template_name_id]
 		local params = self:_unpack_buff_params(unpacked_buff_params, param_ids, param_vals, target_unit)
-		local id = buff_extension:add_buff(template_name, params)
-		local local_sync_id = remote_sync_id ~= invalid_buff_sync_id and buff_extension:generate_sync_id() or invalid_buff_sync_id
-		local server_sync_id = self.is_server and local_sync_id or remote_sync_id
+		local id, num_buffs_added = buff_extension:add_buff(template_name, params)
+		local ignore_blind_fire_print = false
 		local sync_type = BuffSyncTypeLookup[sync_type_id]
+		local server_sync_id
+
+		if num_buffs_added <= 0 then
+			remote_sync_id = invalid_buff_sync_id
+			server_sync_id = invalid_buff_sync_id
+			ignore_blind_fire_print = true
+		elseif self.is_server and remote_sync_id ~= invalid_buff_sync_id then
+			server_sync_id = buff_extension:generate_sync_id()
+
+			buff_extension:set_pending_sync_id(id, server_sync_id, sync_type)
+		else
+			server_sync_id = remote_sync_id
+		end
+
 		local owner_peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
 		if server_sync_id ~= invalid_buff_sync_id then
 			buff_extension:apply_remote_sync_id(id, server_sync_id, sync_type, owner_peer_id)
 		end
 
-		if remote_sync_id == invalid_buff_sync_id then
-			debug_sync_print("[BuffSystem] rpc_add_buff_synced_params, response consumed due to blind fire sync", owner_peer_id, target_unit_id, template_name)
+		local network_manager = Managers.state.network
+
+		if self.is_server and sync_type == BuffSyncType.All then
+			network_manager.network_transmit:send_rpc_clients_except("rpc_add_buff_synced_relay_params", owner_peer_id, target_unit_id, template_name_id, server_sync_id, sync_type_id, param_ids, param_vals)
+		end
+
+		if server_sync_id == invalid_buff_sync_id then
+			if not ignore_blind_fire_print then
+				debug_sync_print("[BuffSystem] rpc_add_buff_synced_params, response consumed due to blind fire sync", owner_peer_id, target_unit_id, template_name)
+			end
 
 			return
 		end
 
-		local network_manager = Managers.state.network
-
 		if self.is_server then
-			if sync_type == BuffSyncType.All then
-				network_manager.network_transmit:send_rpc_clients_except("rpc_add_buff_synced_relay_params", owner_peer_id, target_unit_id, template_name_id, server_sync_id, sync_type_id, param_ids, param_vals)
-			end
-
-			network_manager.network_transmit:send_rpc("rpc_add_buff_synced_response", owner_peer_id, target_unit_id, remote_sync_id, server_sync_id)
-		elseif sync_type == BuffSyncType.ClientAndServer then
-			network_manager.network_transmit:send_rpc_server("rpc_add_buff_synced_response", target_unit_id, remote_sync_id, server_sync_id)
-		elseif sync_type == BuffSyncType.Client then
 			network_manager.network_transmit:send_rpc("rpc_add_buff_synced_response", owner_peer_id, target_unit_id, remote_sync_id, server_sync_id)
 		end
 	end
@@ -983,11 +1002,13 @@ BuffSystem.rpc_add_buff_synced_relay_params = function (self, channel_id, target
 	if buff_extension then
 		local template_name = NetworkLookup.buff_templates[template_name_id]
 		local params = self:_unpack_buff_params(unpacked_buff_params, param_ids, param_vals, target_unit)
-		local local_buff_id = buff_extension:add_buff(template_name, params)
+		local local_buff_id, num_buffs_added = buff_extension:add_buff(template_name, params)
 
-		if server_sync_id ~= invalid_buff_sync_id then
+		if server_sync_id ~= invalid_buff_sync_id and num_buffs_added > 0 then
 			local sync_type = BuffSyncTypeLookup[sync_type_id]
+			local local_sync_id = buff_extension:generate_sync_id()
 
+			buff_extension:set_pending_sync_id(local_buff_id, local_sync_id, sync_type)
 			buff_extension:apply_remote_sync_id(local_buff_id, server_sync_id, sync_type)
 		end
 	end

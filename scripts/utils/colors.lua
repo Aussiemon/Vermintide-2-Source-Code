@@ -1504,6 +1504,24 @@ Colors.color_definitions = {
 		106,
 		34,
 	},
+	pactsworn_light_green = {
+		100,
+		144,
+		238,
+		144,
+	},
+	pactsworn_green = {
+		165,
+		38,
+		255,
+		0,
+	},
+	pactsworn_red = {
+		255,
+		255,
+		0,
+		0,
+	},
 }
 Colors.indexed_colors, Colors.num_colors = table.values(Colors.color_definitions)
 
@@ -1566,6 +1584,17 @@ if not Colors.distinct_colors_lookup then
 	}
 end
 
+Colors.get_categorical_color = function (index)
+	local golden_ratio = 1.61803398875
+	local hue = index * golden_ratio % 1
+	local color = {
+		255,
+		Colors.hsl2rgb(hue, 0.4, 0.5),
+	}
+
+	return color
+end
+
 Colors.get = function (name)
 	local color = Colors.color_definitions[name]
 
@@ -1586,6 +1615,17 @@ Colors.get_table = function (name)
 		color[2],
 		color[3],
 		color[4],
+	}
+end
+
+Colors.get_table_rgba = function (name)
+	local color = Colors.color_definitions[name]
+
+	return {
+		color[2],
+		color[3],
+		color[4],
+		color[1],
 	}
 end
 

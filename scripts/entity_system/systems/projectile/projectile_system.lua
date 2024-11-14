@@ -176,7 +176,8 @@ ProjectileSystem._get_projectile_units_names = function (self, projectile_info, 
 end
 
 ProjectileSystem.spawn_player_projectile = function (self, owner_unit, position, rotation, scale, angle, target_vector, speed, item_name, item_template_name, action_name, sub_action_name, fast_forward_time, is_critical_strike, power_level, gaze_settings, charge_level)
-	local action = Weapons[item_template_name].actions[action_name][sub_action_name]
+	local weapon_template = WeaponUtils.get_weapon_template(item_template_name)
+	local action = weapon_template.actions[action_name][sub_action_name]
 	local projectile_info = action.projectile_info
 	local gravity_settings = projectile_info.gravity_settings
 
@@ -276,6 +277,7 @@ ProjectileSystem.spawn_globadier_globe = function (self, position, target_vector
 					create_nav_tag_volume = create_nav_tag_volume,
 					nav_tag_volume_layer = nav_tag_volume_layer,
 					source_attacker_unit = owner_unit,
+					threat_duration = duration,
 				},
 			}
 			local aoe_unit_name = "units/weapons/projectile/poison_wind_globe/poison_wind_globe"
@@ -303,7 +305,6 @@ ProjectileSystem.spawn_globadier_globe = function (self, position, target_vector
 					damage_players = true,
 					invisible_unit = false,
 					player_screen_effect_name = "fx/screenspace_poison_globe_impact",
-					threat_duration = 0.5,
 					aoe_dot_damage = aoe_dot_damage,
 					aoe_init_damage = aoe_init_damage,
 					aoe_dot_damage_interval = aoe_dot_damage_interval,
@@ -317,6 +318,7 @@ ProjectileSystem.spawn_globadier_globe = function (self, position, target_vector
 					nav_tag_volume_layer = nav_tag_volume_layer,
 					source_attacker_unit = owner_unit,
 					owner_player = Managers.player:owner(owner_unit),
+					threat_duration = duration,
 				},
 			}
 			local unit_template
@@ -609,7 +611,8 @@ ProjectileSystem.rpc_spawn_explosive_pickup_projectile_limited = function (self,
 end
 
 ProjectileSystem.spawn_true_flight_projectile = function (self, owner_unit, target_unit, true_flight_template_name, position, rotation, angle, target_vector, speed, item_name, item_template_name, action_name, sub_action_name, scale, is_critical_strike, power_level)
-	local action = Weapons[item_template_name].actions[action_name][sub_action_name]
+	local weapon_template = WeaponUtils.get_weapon_template(item_template_name)
+	local action = weapon_template.actions[action_name][sub_action_name]
 	local projectile_info = action.projectile_info
 	local gravity_settings = projectile_info.gravity_settings
 	local trajectory_template_name = projectile_info.trajectory_template_name
@@ -801,11 +804,11 @@ ProjectileSystem.delete_indexed_projectiles = function (self, owner_unit)
 	self.indexed_player_projectile_units[owner_unit] = nil
 end
 
-ProjectileSystem.rpc_generic_impact_projectile_impact = function (self, channel_id, unit_id, hit_go_unit_id, hit_level_unit_id, position, direction, normal, actor_index)
+ProjectileSystem.rpc_generic_impact_projectile_impact = function (self, channel_id, unit_id, hit_go_unit_id, hit_level_unit_id, position, direction, normal, actor_index, num_units_hits)
 	if self.is_server then
 		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
-		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_generic_impact_projectile_impact", peer_id, unit_id, hit_go_unit_id, hit_level_unit_id, position, direction, normal, actor_index)
+		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_generic_impact_projectile_impact", peer_id, unit_id, hit_go_unit_id, hit_level_unit_id, position, direction, normal, actor_index, num_units_hits)
 	end
 
 	local unit_storage = self.unit_storage
@@ -820,11 +823,35 @@ ProjectileSystem.rpc_generic_impact_projectile_impact = function (self, channel_
 		hit_unit = unit_storage:unit(hit_go_unit_id)
 	end
 
-	if hit_unit then
-		local actor = Unit.actor(hit_unit, actor_index)
-		local projectile_extension = ScriptUnit.extension(unit, "projectile_system")
+	if not self.bufferd_impacts then
+		self.bufferd_impacts = {}
+	end
 
-		projectile_extension:impact(hit_unit, position, direction, normal, actor)
+	self.bufferd_impacts[hit_unit] = {
+		hit_unit,
+		Vector3Box(position),
+		Vector3Box(direction),
+		Vector3Box(normal),
+		actor_index,
+	}
+	self.impact_buffer_counter = self.impact_buffer_counter and self.impact_buffer_counter + 1 or 1
+
+	if num_units_hits <= self.impact_buffer_counter then
+		local impact_counter = 0
+
+		for hit_unit, data in pairs(self.bufferd_impacts) do
+			if Unit.alive(hit_unit) then
+				impact_counter = impact_counter + 1
+
+				local actor = Unit.actor(hit_unit, data[ProjectileImpactDataIndex.ACTOR_INDEX])
+				local projectile_extension = ScriptUnit.extension(unit, "projectile_system")
+
+				projectile_extension:impact(hit_unit, data[ProjectileImpactDataIndex.POSITION]:unbox(), data[ProjectileImpactDataIndex.DIRECTION]:unbox(), data[ProjectileImpactDataIndex.NORMAL]:unbox(), actor, impact_counter)
+			end
+		end
+
+		self.bufferd_impacts = nil
+		self.impact_buffer_counter = 0
 	end
 end
 

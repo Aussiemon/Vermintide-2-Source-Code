@@ -230,9 +230,9 @@ settings.buff_function_templates = {
 
 		local pick_frag
 
-		pick_frag, buff._state = PseudoRandomDistribution.flip_coin(buff._state, 0.5)
+		pick_frag = true
 
-		local frag_settings = AllPickups.frag_grenade_t1
+		local frag_settings = AllPickups.engineer_grenade_t1
 		local fire_settings = AllPickups.fire_grenade_t1
 
 		if fire_settings.slot_name ~= slot_name then

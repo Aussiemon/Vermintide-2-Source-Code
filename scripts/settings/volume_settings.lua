@@ -319,7 +319,9 @@ VolumeExtensionSettings = VolumeExtensionSettings or {
 			},
 		},
 		ai_inside = {
-			[AI] = {},
+			[AI] = {
+				filter = GenericVolumeTemplates.filters.is_alive_default_enemy,
+			},
 		},
 		players_and_bots_inside = {
 			[PLAYER] = {},

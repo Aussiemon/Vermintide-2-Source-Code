@@ -48,6 +48,7 @@ UnitFramesHandler.init = function (self, parent, ingame_ui_context)
 	self._unit_frames = {}
 	self._unit_frame_index_by_ui_id = {}
 	self.unit_frame_by_player = {}
+	self._cached_versus_level = {}
 	self._is_spectator = false
 	self._spectated_player = nil
 	self._spectated_player_unit = nil
@@ -708,7 +709,6 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 
 		cursed_health = buff_extension:apply_buffs_to_value(cursed_health, "curse_protection")
 		active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier + num_slayer_curses * slayer_curse_multiplier + num_mutator_curses * mutator_curse_multiplier + cursed_health
-		active_percentage = math.clamp(active_percentage, 0, 1)
 		equipment = inventory_extension:equipment()
 		profile_index = career_extension:profile_index()
 		career_index = career_extension:career_index()
@@ -727,6 +727,10 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 	local is_player_controlled = player:is_player_controlled()
 	local display_name = UIRenderer.crop_text(player:name(), 17)
 	local level_text = is_player_controlled and (ExperienceSettings.get_player_level(player) or "") or UISettings.bots_level_display_text
+	local versus_level = is_player_controlled and (ExperienceSettings.get_versus_player_level(player) or self._cached_versus_level[peer_id]) or 0
+
+	self._cached_versus_level[peer_id] = versus_level or self._cached_versus_level[peer_id]
+
 	local portrait_texture = career_index and get_portrait_name_by_profile_index(profile_index, career_index) or "unit_frame_portrait_default"
 	local frame_texture = Managers.state.entity:system("cosmetic_system"):get_equipped_frame(player_unit)
 	local is_player_server = self.host_peer_id == peer_id
@@ -814,6 +818,12 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 		widget:set_portrait_frame(frame_texture, level_text)
 
 		dirty = true
+	end
+
+	if data.versus_level ~= versus_level then
+		data.versus_level = versus_level
+
+		widget:set_versus_level(versus_level)
 	end
 
 	if data.display_name ~= display_name then
@@ -1056,22 +1066,6 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 		local hide_health_bar = is_ready_for_assisted_respawn or is_dead
 
 		widget:set_health_bar_status(not hide_health_bar, is_knocked_down, is_wounded)
-
-		dirty = true
-	end
-
-	local is_playing_boss = false
-
-	if self._is_dark_pact then
-		local profile_settings = SPProfiles[profile_index]
-
-		is_playing_boss = profile_settings.role == "boss"
-	end
-
-	if data.is_playing_boss ~= is_playing_boss then
-		data.is_playing_boss = is_playing_boss
-
-		widget:set_is_playing_dark_pact_boss(is_playing_boss)
 
 		dirty = true
 	end

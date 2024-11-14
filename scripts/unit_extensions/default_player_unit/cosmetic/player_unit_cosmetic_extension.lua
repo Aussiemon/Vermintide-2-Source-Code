@@ -34,6 +34,16 @@ PlayerUnitCosmeticExtension.init = function (self, extension_init_context, unit,
 
 	CosmeticUtils.update_cosmetic_slot(self._player, "slot_skin", skin_name)
 
+	local pose_name = extension_init_data.pose_name
+
+	if pose_name then
+		local pose_item = ItemMasterList[pose_name]
+
+		self._cosmetics.weapon_pose = pose_item
+
+		CosmeticUtils.update_cosmetic_slot(self._player, "slot_pose", pose_name)
+	end
+
 	if frame_name then
 		self:set_equipped_frame(frame_name)
 	end
@@ -46,6 +56,8 @@ end
 
 PlayerUnitCosmeticExtension.destroy = function (self)
 	if self._tp_unit_mesh then
+		AttachmentUtils.unlink(self._world, self._tp_unit_mesh)
+
 		local unit_spawner = Managers.state.unit_spawner
 
 		unit_spawner:mark_for_deletion(self._tp_unit_mesh)
@@ -64,6 +76,12 @@ PlayerUnitCosmeticExtension.extensions_ready = function (self, world, unit)
 
 	if material_changes then
 		self:change_skin_materials(material_changes)
+	end
+
+	local material_settings = skin_data.material_settings
+
+	if material_settings then
+		self:change_skin_material_settings(material_settings)
 	end
 
 	local tint_data = skin_data.color_tint
@@ -116,6 +134,21 @@ PlayerUnitCosmeticExtension.change_skin_materials = function (self, material_cha
 				Unit.set_material(first_person_unit, slot_name, material_name)
 			end
 		end
+	end
+end
+
+PlayerUnitCosmeticExtension.change_skin_material_settings = function (self, material_settings)
+	local unit = self._unit
+	local third_person_unit = self._tp_unit_mesh
+
+	CosmeticUtils.apply_material_settings(third_person_unit, material_settings)
+
+	local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
+
+	if first_person_extension then
+		local first_person_unit = first_person_extension:get_first_person_mesh_unit()
+
+		CosmeticUtils.apply_material_settings(first_person_unit, material_settings)
 	end
 end
 
@@ -173,6 +206,10 @@ PlayerUnitCosmeticExtension._init_mesh_attachment = function (self, world, unit,
 
 	Unit.set_flow_variable(tp_unit_mesh, "climate_type", climate_type)
 	Unit.flow_event(tp_unit_mesh, "climate_type_set")
+
+	local equip_skin_event = Cosmetics[skin_name].equip_skin_event or "using_skin_default"
+
+	Unit.flow_event(unit, equip_skin_event)
 
 	if not self._tp_mesh_visible then
 		self._tp_mesh_visible = true

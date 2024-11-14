@@ -4,6 +4,7 @@ require("scripts/ui/views/versus_menu/ui_widgets_vs")
 require("scripts/ui/views/team_previewer")
 
 local definitions = local_require("scripts/ui/views/versus_menu/versus_party_char_selection_view_definitions")
+local settings = DLCSettings.carousel
 local widget_definitions = definitions.widget_definitions
 local create_progress_marker = definitions.create_progress_marker
 local generic_input_actions = definitions.generic_input_actions
@@ -131,8 +132,6 @@ VersusPartyCharSelectionView.on_exit = function (self)
 	if not Managers.state.game_mode:setting("display_parading_view") then
 		self:play_sound("vs_unmute_reset_all")
 	end
-
-	self:play_sound("menu_versus_character_amb_loop_stop")
 end
 
 VersusPartyCharSelectionView.post_update = function (self, dt, t)
@@ -275,7 +274,9 @@ VersusPartyCharSelectionView._update_party_state_startup = function (self, party
 
 		if rounded_time ~= self._prev_timer_value then
 			if rounded_time > 0 then
-				self:play_sound("menu_versus_character_selection_clock_tick")
+				local tick_sound = settings.versus_character_selection_clock_tick[rounded_time]
+
+				self:play_sound(tick_sound)
 			end
 
 			self._prev_timer_value = rounded_time
@@ -1050,7 +1051,7 @@ VersusPartyCharSelectionView._handle_gamepad_selection = function (self)
 			local career_index = current_content.career_index
 
 			self._party_selection_logic:select_character(profile_index, career_index)
-			self:play_sound("Play_hud_select")
+			self:play_sound("play_gui_hero_select_career_click")
 		end
 	end
 
@@ -1117,7 +1118,7 @@ VersusPartyCharSelectionView._handle_mouse_selection = function (self)
 						local career_index = j
 
 						self._party_selection_logic:select_character(profile_index, career_index)
-						self:play_sound("Play_hud_select")
+						self:play_sound("play_gui_hero_select_career_click")
 
 						return
 					end
@@ -1384,6 +1385,7 @@ VersusPartyCharSelectionView._spawn_level = function (self, world)
 	local level = ScriptWorld.spawn_level(world, level_name, object_sets, position, rotation, shading_callback, mood_setting, time_sliced_spawn)
 
 	Level.spawn_background(level)
+	Level.trigger_level_loaded(level)
 
 	return level
 end
@@ -1545,7 +1547,7 @@ VersusPartyCharSelectionView._get_hero_previewer_data = function (self, picker, 
 	if profile_data then
 		local careers = profile_data.careers
 		local career_settings = careers[career_index]
-		local preview_animation = career_settings.preview_animation
+		local preview_animation = career_settings.versus_preview_animation or career_settings.preview_animation
 		local preview_wield_slot = career_settings.preview_wield_slot
 		local hero_name = career_settings.profile_name
 		local weapon = slot_data["slot_" .. preview_wield_slot]

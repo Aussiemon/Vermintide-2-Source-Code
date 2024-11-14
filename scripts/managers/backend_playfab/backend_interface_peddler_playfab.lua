@@ -337,7 +337,7 @@ BackendInterfacePeddlerPlayFab._read_bundle_from_steam = function (self, steam_i
 	local bundle_string = SteamInventory.get_item_definition_property(steam_itemdefid, "bundle")
 
 	if bundle_string then
-		local bundle_contains = string.split(bundle_string, ";")
+		local bundle_contains = string.split_deprecated(bundle_string, ";")
 
 		for k, v in ipairs(bundle_contains) do
 			bundle_contains[k] = tonumber(v)
@@ -381,15 +381,17 @@ BackendInterfacePeddlerPlayFab._refresh_steam_item_prices_cb = function (self, e
 
 				local cloned_master_item = table.clone(master_item)
 
-				if master_item.item_type == "bundle" then
+				if master_item.item_type == "bundle" or master_item.item_type == "cosmetic_bundle" then
 					local contains, discount = self:_read_bundle_from_steam(steam_itemdefid)
 
 					if contains then
 						cloned_master_item.bundle_contains = contains
 						cloned_master_item.discount = discount
+						bundles[#bundles + 1] = cloned_master_item
+					else
+						Crashify.print_exception("[BackendInterfacePeddlerPlayFab] _refresh_steam_item_prices_cb, bundle_contains table is empty. steam_itemdef_id: %s", tostring(steam_itemdefid))
+						print(table.dump(cloned_master_item), "MISSING BUNDLE CONTAINS", 2)
 					end
-
-					bundles[#bundles + 1] = cloned_master_item
 				end
 
 				peddler_stock[steam_stock_index] = {
@@ -414,10 +416,12 @@ BackendInterfacePeddlerPlayFab._refresh_steam_item_prices_cb = function (self, e
 		local price_sum = 0
 		local bundle_contains = bundle_item_data.bundle_contains
 
-		for j = 1, #bundle_contains do
-			local steam_itemdefid = bundle_contains[j]
+		if type(bundle_contains) == "table" then
+			for j = 1, #bundle_contains do
+				local steam_itemdefid = bundle_contains[j]
 
-			price_sum = price_sum + (self._steam_item_prices[steam_itemdefid] or 0)
+				price_sum = price_sum + (self._steam_item_prices[steam_itemdefid] or 0)
+			end
 		end
 
 		bundle_item_data.bundle_price = price_sum
@@ -674,14 +678,17 @@ BackendInterfacePeddlerPlayFab._exchange_chips_success_cb = function (self, exte
 	for i = 1, #items do
 		local item = items[i]
 		local item_instance_id = item.ItemInstanceId
-		local chip_type = item.UnitCurrency
-		local chip_amount = item.UnitPrice
 
 		mirror:add_item(item_instance_id, item)
 
-		chips[chip_type] = chips[chip_type] - chip_amount
+		if not item.BundleParent then
+			local chip_type = item.UnitCurrency
+			local chip_amount = item.UnitPrice
 
-		print(string.format("[BackendInterfacePeddlerPlayFab] Exchanged %s %s for %s", chip_amount, chip_type, item.ItemId))
+			chips[chip_type] = chips[chip_type] - chip_amount
+
+			print(string.format("[BackendInterfacePeddlerPlayFab] Exchanged %s %s for %s", chip_amount, chip_type, item.ItemId))
+		end
 	end
 
 	local request = {
@@ -821,11 +828,10 @@ BackendInterfacePeddlerPlayFab._claim_store_rewards_cb = function (self, externa
 	self:_refresh_login_rewards_cb(nil, result)
 
 	local granted_items = result.FunctionResult.items
+	local backend_mirror = self._backend_mirror
 	local rewards_claimed = false
 
 	if granted_items then
-		local backend_mirror = self._backend_mirror
-
 		for i = 1, #granted_items do
 			local item = granted_items[i]
 			local backend_id = item.ItemInstanceId
@@ -891,6 +897,12 @@ BackendInterfacePeddlerPlayFab._claim_store_rewards_cb = function (self, externa
 		end
 
 		rewards_claimed = true
+	end
+
+	local chest_inventory = result.FunctionResult.chest_inventory
+
+	if chest_inventory then
+		backend_mirror:set_read_only_data("chest_inventory", chest_inventory, true)
 	end
 
 	if rewards_claimed then

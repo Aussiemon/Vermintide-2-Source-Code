@@ -14,6 +14,8 @@ vs_gutter_runner.keep_weapon_on_death = true
 vs_gutter_runner.movement_speed_multiplier = 1.25
 vs_gutter_runner.run_threshold = 4
 vs_gutter_runner.pounce_prime_time = 1
+vs_gutter_runner.breed_move_acceleration_up = 8
+vs_gutter_runner.breed_move_acceleration_down = 8
 vs_gutter_runner.pounce_speed = 25
 vs_gutter_runner.pounce_upwards_amount = 0.15
 vs_gutter_runner.pounce_start_forward_offset = 0.3
@@ -24,7 +26,6 @@ vs_gutter_runner.pounce_hit_radius = 1.1
 vs_gutter_runner.pounce_max_damage_time = 3
 vs_gutter_runner.min_pounce_damage = 10
 vs_gutter_runner.max_pounce_damage = 24
-vs_gutter_runner.foff_explosion_template = "gutter_runner_foff"
 vs_gutter_runner.foff_enter_anim_time = 0.32
 vs_gutter_runner.time_before_ramping_damage = 1.5
 vs_gutter_runner.time_to_reach_max_damage = 3
@@ -39,6 +40,11 @@ vs_gutter_runner.stagger_threshold_heavy = 2.5
 vs_gutter_runner.stagger_threshold_explosion = 3
 vs_gutter_runner.z_onscreen_damage_offset = 1
 vs_gutter_runner.damage_numbers_font_override = 10
+vs_gutter_runner.default_gear = {
+	slot_frame = "frame_0000",
+	slot_melee = "vs_gutter_runner_claws",
+	slot_skin = "skaven_gutter_runner_skin_0000",
+}
 
 local vs_packmaster = table.clone(Breeds.skaven_pack_master)
 
@@ -51,9 +57,12 @@ vs_packmaster.starting_animation = "to_packmaster"
 vs_packmaster.climb_type = "climb"
 vs_packmaster.poison_resistance = 100
 vs_packmaster.keep_weapon_on_death = false
+vs_packmaster.custom_husk_max_pitch = math.huge
 vs_packmaster.movement_speed_multiplier = 1.3
 vs_packmaster.run_threshold = 4
 vs_packmaster.strafe_speed_multiplier = 0.5
+vs_packmaster.breed_move_acceleration_up = 8
+vs_packmaster.breed_move_acceleration_down = 8
 vs_packmaster.grab_movement_speed_multiplier_initial = 0.875
 vs_packmaster.grab_movement_speed_multiplier_target = 0.25
 vs_packmaster.grab_hook_range = 4.5
@@ -78,6 +87,11 @@ vs_packmaster.stagger_threshold_light = 1
 vs_packmaster.stagger_threshold_medium = 2
 vs_packmaster.stagger_threshold_heavy = 2.5
 vs_packmaster.stagger_threshold_explosion = 3
+vs_packmaster.default_gear = {
+	slot_frame = "frame_0000",
+	slot_melee = "vs_packmaster_claw",
+	slot_skin = "skaven_pack_master_skin_0000",
+}
 
 local vs_poison_wind_globadier = table.clone(Breeds.skaven_poison_wind_globadier)
 
@@ -92,6 +106,8 @@ vs_poison_wind_globadier.movement_speed_multiplier = 1
 vs_poison_wind_globadier.wind_up_movement_speed = 2
 vs_poison_wind_globadier.run_threshold = 5
 vs_poison_wind_globadier.globe_throw_prime_time = 0.65
+vs_poison_wind_globadier.breed_move_acceleration_up = 8
+vs_poison_wind_globadier.breed_move_acceleration_down = 8
 vs_poison_wind_globadier.globe_throw_spawn_globe_time = 0.14
 vs_poison_wind_globadier.globe_throw_finish_time = 0.5
 vs_poison_wind_globadier.globe_throw_speed = 1600
@@ -108,11 +124,11 @@ vs_poison_wind_globadier.globe_throw_impact_difficulty_damage = {
 	1,
 }
 vs_poison_wind_globadier.globe_throw_dot_difficulty_damage = {
-	9,
-	9,
-	9,
-	9,
-	9,
+	8,
+	8,
+	8,
+	8,
+	8,
 }
 vs_poison_wind_globadier.globe_throw_dot_damage_interval = 1
 vs_gutter_runner.max_stagger_duration = 0.4
@@ -122,6 +138,11 @@ vs_poison_wind_globadier.stagger_threshold_light = 1
 vs_poison_wind_globadier.stagger_threshold_medium = 2
 vs_poison_wind_globadier.stagger_threshold_heavy = 2.5
 vs_poison_wind_globadier.stagger_threshold_explosion = 3
+vs_poison_wind_globadier.default_gear = {
+	slot_frame = "frame_0000",
+	slot_melee = "vs_poison_wind_globadier_orb",
+	slot_skin = "skaven_wind_globadier_skin_0000",
+}
 
 local vs_ratling_gunner = table.clone(Breeds.skaven_ratling_gunner)
 
@@ -145,8 +166,12 @@ vs_ratling_gunner.weapon_reach = 2
 vs_ratling_gunner.smart_targeting_width = 0.3
 vs_ratling_gunner.smart_targeting_height_multiplier = 2.1
 vs_ratling_gunner.smart_targeting_outer_width = 0.7
+vs_ratling_gunner.aim_constraint_forward_multiplier = 30
+vs_ratling_gunner.custom_husk_max_pitch = math.huge
 vs_ratling_gunner.movement_speed_multiplier = 0.875
 vs_ratling_gunner.run_threshold = 2.5
+vs_ratling_gunner.breed_move_acceleration_up = 8
+vs_ratling_gunner.breed_move_acceleration_down = 8
 vs_ratling_gunner.shoot_ratlinggun_pose_weapon_time = 1.8
 vs_ratling_gunner.reloading_max_time = 1
 vs_ratling_gunner.reloading_movement_speed = 3
@@ -162,6 +187,12 @@ vs_ratling_gunner.stagger_threshold_light = 1
 vs_ratling_gunner.stagger_threshold_medium = 2
 vs_ratling_gunner.stagger_threshold_heavy = 3
 vs_ratling_gunner.stagger_threshold_explosion = 4
+vs_ratling_gunner.default_gear = {
+	slot_frame = "frame_0000",
+	slot_melee = "vs_ratling_gunner_gun",
+	slot_skin = "skaven_ratling_gunner_skin_0000",
+}
+vs_ratling_gunner.track_projectile_blocked_vo = true
 
 local vs_warpfire_thrower = table.clone(Breeds.skaven_warpfire_thrower)
 
@@ -173,6 +204,8 @@ vs_warpfire_thrower.keep_weapon_on_death = false
 vs_warpfire_thrower.starting_animation = "to_warpfire_thrower"
 vs_warpfire_thrower.climb_type = "climb"
 vs_warpfire_thrower.movement_speed_multiplier = 0.875
+vs_warpfire_thrower.breed_move_acceleration_up = 8
+vs_warpfire_thrower.breed_move_acceleration_down = 8
 vs_warpfire_thrower.run_threshold = 4
 vs_warpfire_thrower.shoot_warpfire_prime_time = 0.2
 vs_warpfire_thrower.shoot_warpfire_wind_up_movement_speed = {
@@ -181,6 +214,7 @@ vs_warpfire_thrower.shoot_warpfire_wind_up_movement_speed = {
 	start = 3,
 }
 vs_warpfire_thrower.shoot_warpfire_movement_speed_mod = 2
+vs_warpfire_thrower.custom_husk_max_pitch = math.huge
 vs_warpfire_thrower.shoot_warpfire_max_flame_time = 5
 vs_warpfire_thrower.shoot_warpfire_attack_range = 10
 vs_warpfire_thrower.shoot_warpfire_close_attack_range = 7
@@ -188,13 +222,14 @@ vs_warpfire_thrower.shoot_warpfire_close_attack_cooldown = 0.2
 vs_warpfire_thrower.shoot_warpfire_close_attack_hit_radius = 1.5
 vs_warpfire_thrower.shoot_warpfire_close_attack_dot = 0.9
 vs_warpfire_thrower.shoot_warpfire_minimum_forced_cooldown = 0.6
+vs_warpfire_thrower.warpfire_vfx = "chr_warp_fire_flamethrower_01_1p_versus"
 vs_warpfire_thrower.shoot_warpfire_long_attack_damage = {
-	3,
-	3,
-	3,
-	3,
-	3,
-	3,
+	2,
+	2,
+	2,
+	2,
+	2,
+	2,
 }
 vs_warpfire_thrower.armor_category = 1
 vs_gutter_runner.max_stagger_duration = 0.4
@@ -205,6 +240,11 @@ vs_warpfire_thrower.stagger_threshold_light = 1
 vs_warpfire_thrower.stagger_threshold_medium = 2
 vs_warpfire_thrower.stagger_threshold_heavy = 3
 vs_warpfire_thrower.stagger_threshold_explosion = 4
+vs_warpfire_thrower.default_gear = {
+	slot_frame = "frame_0000",
+	slot_melee = "vs_warpfire_thrower_gun",
+	slot_skin = "skaven_warpfire_thrower_skin_0000",
+}
 
 local vs_chaos_troll = table.clone(Breeds.chaos_troll)
 
@@ -217,13 +257,26 @@ vs_chaos_troll.climb_type = "climb"
 vs_chaos_troll.keep_weapon_on_death = true
 vs_chaos_troll.max_vomit_distance = 7
 vs_chaos_troll.vomit_in_face_sweep_radius = 3
-vs_chaos_troll.movement_speed_multiplier = 1.1
+vs_chaos_troll.vomit_movement_speed = 2
+vs_chaos_troll.look_sense_override = 0.33
+vs_chaos_troll.vomit_upwards_amount = 0.2
+vs_chaos_troll.vomit_projectile_speed = 10
+vs_chaos_troll.puke_in_face_sweep_radius = 3.3
+vs_chaos_troll.puke_in_face_indicator_raidus = 3
+vs_chaos_troll.movement_speed_multiplier = 1
+vs_chaos_troll.breed_move_acceleration_up = 2
+vs_chaos_troll.breed_move_acceleration_down = 4
 vs_chaos_troll.run_threshold = 4
 vs_chaos_troll.run_on_spawn = AiBreedSnippets.on_chaos_troll_spawn
 vs_chaos_troll.run_on_death = nil
 vs_chaos_troll.run_on_despawn = nil
 vs_chaos_troll.boss_blocked_sound = nil
 vs_chaos_troll.combat_music_state = "troll"
+vs_chaos_troll.default_gear = {
+	slot_frame = "frame_0000",
+	slot_melee = "vs_chaos_troll_axe",
+	slot_skin = "chaos_troll_skin_0000",
+}
 PlayerBreeds.vs_chaos_troll = vs_chaos_troll
 PlayerBreeds.vs_gutter_runner = vs_gutter_runner
 PlayerBreeds.vs_packmaster = vs_packmaster

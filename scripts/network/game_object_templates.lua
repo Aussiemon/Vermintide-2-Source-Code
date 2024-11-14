@@ -518,6 +518,10 @@ local game_object_templates = {
 		game_object_created_func_name = "game_object_created_player_unit_health",
 		game_object_destroyed_func_name = "game_object_destroyed_player_unit_health",
 	},
+	dark_pact_horde_ability = {
+		game_object_created_func_name = "game_object_created_dark_pact_horde_ability",
+		game_object_destroyed_func_name = "game_object_destroyed_dark_pact_horde_ability",
+	},
 	music_states = {
 		game_object_created_func_name = "game_object_created_music_states",
 		game_object_destroyed_func_name = "game_object_destroyed_music_states",
@@ -564,17 +568,13 @@ local game_object_templates = {
 		game_object_created_func_name = "game_object_created_weave",
 		game_object_destroyed_func_name = "game_object_destroyed_weave",
 	},
-	weave_objective = {
-		game_object_created_func_name = "game_object_created_weave_objective",
-		game_object_destroyed_func_name = "game_object_destroyed_weave_objective",
+	objective = {
+		game_object_created_func_name = "game_object_created_objective",
+		game_object_destroyed_func_name = "game_object_destroyed_objective",
 	},
 	horde_surge = {
 		game_object_created_func_name = "game_object_created_horde_surge",
 		game_object_destroyed_func_name = "game_object_destroyed_horde_surge",
-	},
-	versus_objective = {
-		game_object_created_func_name = "game_object_created_versus_objective",
-		game_object_destroyed_func_name = "game_object_destroyed_versus_objective",
 	},
 	game_mode_data = {
 		game_object_created_func_name = "game_object_created_game_mode_data",

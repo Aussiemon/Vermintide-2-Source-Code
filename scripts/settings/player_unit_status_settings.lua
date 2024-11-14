@@ -40,6 +40,7 @@ PlayerUnitStatusSettings.fatigue_point_costs = {
 	chaos_cleave = 30,
 	chaos_spawn_combo = 2,
 	complete = 150,
+	force_set = 0,
 	headshot_clan_rat = -1,
 	headshot_special = -10,
 	ogre_shove = 150,
@@ -119,6 +120,13 @@ PlayerUnitStatusSettings.hanging_by_pack_master = {
 	release_unhook_time = 1.5,
 	release_unhook_time_dead = 3,
 	release_unhook_time_ko = 4,
+}
+PlayerUnitStatusSettings.invisibility = {
+	disabled_enemy_fade_max = 0.5,
+	disabled_enemy_fade_min = 0.1,
+	enemy_fade = 1,
+	friendly_fade = 0.65,
+	intensity = 10,
 }
 
 DLCUtils.require_list("player_unit_status_settings_file_names")

@@ -22,6 +22,7 @@ local RPCS = {
 	"rpc_set_stagger",
 	"rpc_set_action_data",
 	"rpc_set_override_blocking",
+	"rpc_set_fatigue_points",
 }
 local extensions = {
 	"GenericStatusExtension",
@@ -77,6 +78,133 @@ StatusSystem.rpc_set_action_data = function (self, channel_id, game_object_id, b
 	status_ext:set_breed_action(breed_name, breed_action_name)
 end
 
+local rpc_status_change_bool_funcs = {
+	pushed = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		local t = Managers.time:time("game")
+
+		status_ext:set_pushed(status_bool, t)
+	end,
+	pounced_down = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_pounced_down(status_bool, other_unit)
+	end,
+	dead = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_dead(status_bool)
+	end,
+	knocked_down = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_knocked_down(status_bool)
+	end,
+	revived = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_revived(status_bool, other_unit)
+	end,
+	reviving = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_reviving(status_bool, other_unit)
+	end,
+	pack_master_pulling = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_pack_master("pack_master_pulling", status_bool, other_unit)
+	end,
+	pack_master_dragging = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_pack_master("pack_master_dragging", status_bool, other_unit)
+	end,
+	pack_master_hoisting = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_pack_master("pack_master_hoisting", status_bool, other_unit)
+	end,
+	pack_master_hanging = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_pack_master("pack_master_hanging", status_bool, other_unit)
+	end,
+	pack_master_dropping = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_pack_master("pack_master_dropping", status_bool, other_unit)
+	end,
+	pack_master_released = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_pack_master("pack_master_released", status_bool, other_unit)
+	end,
+	pack_master_unhooked = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_pack_master("pack_master_unhooked", status_bool, other_unit)
+	end,
+	chaos_corruptor_grabbed = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_grabbed_by_corruptor(status, status_bool, other_unit)
+	end,
+	chaos_corruptor_dragging = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_grabbed_by_corruptor(status, status_bool, other_unit)
+	end,
+	chaos_corruptor_released = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_grabbed_by_corruptor(status, status_bool, other_unit)
+	end,
+	crouching = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_crouching(status_bool)
+	end,
+	pulled_up = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_pulled_up(status_bool, other_unit)
+	end,
+	ladder_climbing = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		local ladder_unit = Level.unit_by_index(level, other_unit_go_id)
+
+		status_ext:set_is_on_ladder(status_bool, ladder_unit)
+	end,
+	ledge_hanging = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		local ledge_unit = Level.unit_by_index(level, other_unit_go_id)
+
+		status_ext:set_is_ledge_hanging(status_bool, ledge_unit)
+	end,
+	ready_for_assisted_respawn = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		local flavour_unit = Level.unit_by_index(level, other_unit_go_id)
+
+		Managers.state.game_mode:player_respawned(status_ext.unit)
+		status_ext:set_ready_for_assisted_respawn(status_bool, flavour_unit)
+	end,
+	assisted_respawning = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_assisted_respawning(status_bool, other_unit)
+	end,
+	respawned = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_respawned(status_bool)
+	end,
+	overcharge_exploding = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_overcharge_exploding(status_bool)
+	end,
+	dodging = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_is_dodging(status_bool)
+	end,
+	grabbed_by_tentacle = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_grabbed_by_tentacle(status_bool, other_unit)
+
+		local tentacle_spline_extension = ScriptUnit.has_extension(other_unit, "ai_supplementary_system")
+
+		if Unit.alive(other_unit) then
+			tentacle_spline_extension:set_target_unit(unit)
+		end
+	end,
+	grabbed_by_chaos_spawn = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_grabbed_by_chaos_spawn(status_bool, other_unit)
+	end,
+	in_vortex = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_in_vortex(status_bool, other_unit)
+	end,
+	near_vortex = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_near_vortex(status_bool, other_unit)
+	end,
+	invisible = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_invisible(status_bool)
+	end,
+	in_end_zone = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_in_end_zone(status_bool, other_unit)
+	end,
+	in_liquid = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_in_liquid(status_bool, other_unit)
+	end,
+	charged = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		local t = Managers.time:time("game")
+
+		status_ext:set_charged(status_bool, t)
+	end,
+	block_broken = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		local t = Managers.time:time("game")
+
+		status_ext:set_block_broken(status_bool, t, other_unit)
+	end,
+	gutter_runner_leaping = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
+		status_ext:set_gutter_runner_leaping(status_bool)
+	end,
+}
+
 StatusSystem.rpc_status_change_bool = function (self, channel_id, status_id, status_bool, game_object_id, other_object_id)
 	local unit = self.unit_storage:unit(game_object_id)
 
@@ -89,91 +217,10 @@ StatusSystem.rpc_status_change_bool = function (self, channel_id, status_id, sta
 	local status = NetworkLookup.statuses[status_id]
 	local level = LevelHelper:current_level(self.world)
 
-	if status == "pushed" then
-		local t = Managers.time:time("game")
-
-		status_ext:set_pushed(status_bool, t)
-	elseif status == "pounced_down" then
-		status_ext:set_pounced_down(status_bool, other_unit)
-	elseif status == "dead" then
-		status_ext:set_dead(status_bool)
-	elseif status == "knocked_down" then
-		status_ext:set_knocked_down(status_bool)
-	elseif status == "revived" then
-		status_ext:set_revived(status_bool, other_unit)
-	elseif status == "pack_master_pulling" then
-		status_ext:set_pack_master("pack_master_pulling", status_bool, other_unit)
-	elseif status == "pack_master_dragging" then
-		status_ext:set_pack_master("pack_master_dragging", status_bool, other_unit)
-	elseif status == "pack_master_hoisting" then
-		status_ext:set_pack_master("pack_master_hoisting", status_bool, other_unit)
-	elseif status == "pack_master_hanging" then
-		status_ext:set_pack_master("pack_master_hanging", status_bool, other_unit)
-	elseif status == "pack_master_dropping" then
-		status_ext:set_pack_master("pack_master_dropping", status_bool, other_unit)
-	elseif status == "pack_master_released" then
-		status_ext:set_pack_master("pack_master_released", status_bool, other_unit)
-	elseif status == "pack_master_unhooked" then
-		status_ext:set_pack_master("pack_master_unhooked", status_bool, other_unit)
-	elseif status == "chaos_corruptor_grabbed" then
-		status_ext:set_grabbed_by_corruptor(status, status_bool, other_unit)
-	elseif status == "chaos_corruptor_dragging" then
-		status_ext:set_grabbed_by_corruptor(status, status_bool, other_unit)
-	elseif status == "chaos_corruptor_released" then
-		status_ext:set_grabbed_by_corruptor(status, status_bool, other_unit)
-	elseif status == "crouching" then
-		status_ext:set_crouching(status_bool)
-	elseif status == "pulled_up" then
-		status_ext:set_pulled_up(status_bool, other_unit)
-	elseif status == "ladder_climbing" then
-		local ladder_unit = Level.unit_by_index(level, other_object_id)
-
-		status_ext:set_is_on_ladder(status_bool, ladder_unit)
-	elseif status == "ledge_hanging" then
-		local ledge_unit = Level.unit_by_index(level, other_object_id)
-
-		status_ext:set_is_ledge_hanging(status_bool, ledge_unit)
-	elseif status == "ready_for_assisted_respawn" then
-		local flavour_unit = Level.unit_by_index(level, other_object_id)
-
-		Managers.state.game_mode:player_respawned(status_ext.unit)
-		status_ext:set_ready_for_assisted_respawn(status_bool, flavour_unit)
-	elseif status == "assisted_respawning" then
-		status_ext:set_assisted_respawning(status_bool, other_unit)
-	elseif status == "respawned" then
-		status_ext:set_respawned(status_bool)
-	elseif status == "overcharge_exploding" then
-		status_ext:set_overcharge_exploding(status_bool)
-	elseif status == "dodging" then
-		status_ext:set_is_dodging(status_bool)
-	elseif status == "dodging" then
-		status_ext:set_is_dodging(status_bool)
-	elseif status == "grabbed_by_tentacle" then
-		status_ext:set_grabbed_by_tentacle(status_bool, other_unit)
-
-		local tentacle_spline_extension = ScriptUnit.has_extension(other_unit, "ai_supplementary_system")
-
-		if Unit.alive(other_unit) then
-			tentacle_spline_extension:set_target_unit(unit)
-		end
-	elseif status == "grabbed_by_chaos_spawn" then
-		status_ext:set_grabbed_by_chaos_spawn(status_bool, other_unit)
-	elseif status == "in_vortex" then
-		status_ext:set_in_vortex(status_bool, other_unit)
-	elseif status == "near_vortex" then
-		status_ext:set_near_vortex(status_bool, other_unit)
-	elseif status == "invisible" then
-		status_ext:set_invisible(status_bool)
-	elseif status == "in_end_zone" then
-		status_ext:set_in_end_zone(status_bool, other_unit)
-	elseif status == "in_liquid" then
-		status_ext:set_in_liquid(status_bool, other_unit)
-	elseif status == "charged" then
-		local t = Managers.time:time("game")
-
-		status_ext:set_charged(status_bool, t)
+	if rpc_status_change_bool_funcs[status] then
+		rpc_status_change_bool_funcs[status](status_ext, status, level, status_bool, unit, game_object_id, other_unit, other_object_id)
 	else
-		fassert(false, "Unhandled status %s", tostring(status))
+		fassert(false, "Unhandled status %s", status)
 	end
 
 	if Managers.player.is_server then
@@ -400,4 +447,22 @@ StatusSystem.rpc_set_stagger = function (self, channel_id, game_object_id, stagg
 
 	fassert(status_extension.set_stagger_values)
 	status_extension:set_stagger_values(stagger_type, stagger_direction, stagger_length, accumulated_stagger, stagger_time, stagger_animation_scale, always_stagger_suffered, false)
+end
+
+StatusSystem.rpc_set_fatigue_points = function (self, channel_id, game_object_id, fatigue, fatigue_type_id)
+	local unit = self.unit_storage:unit(game_object_id)
+
+	if unit then
+		local skip_sync = true
+		local status_extension = ScriptUnit.extension(unit, "status_system")
+		local fatigue_type = NetworkLookup.fatigue_types[fatigue_type_id]
+
+		status_extension:set_fatigue_points(fatigue, fatigue_type, skip_sync)
+
+		if self.is_server then
+			local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+			self.network_transmit:send_rpc_clients_except("rpc_set_fatigue_points", peer_id, game_object_id, fatigue, fatigue_type_id)
+		end
+	end
 end

@@ -44,7 +44,7 @@ ProximitySystem.init = function (self, context, system_name)
 		all_categories[#all_categories + 1] = side:name()
 	end
 
-	self.enemy_broadphase = Broadphase(PROXIMITY_DISTANCE_ENEMIES, 128)
+	self.enemy_broadphase = Broadphase(PROXIMITY_DISTANCE_ENEMIES, 128, all_categories)
 	self.special_units_broadphase = Broadphase(SPECIAL_PROXIMITY_DISTANCE, 8)
 	self.player_units_broadphase = Broadphase(PROXIMITY_DISTANCE_FRIENDS, 8, all_categories)
 	self.enemy_check_raycasts = {}
@@ -77,10 +77,11 @@ ProximitySystem.on_spectator_target_changed = function (self, spectated_player_u
 end
 
 ProximitySystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
+	local side = extension_init_data.side
 	local extension = {
 		last_num_enemies_nearby = 0,
 		last_num_friends_nearby = 0,
-		side = extension_init_data.side,
+		side = side,
 	}
 
 	ScriptUnit.set_extension(unit, "proximity_system", extension)
@@ -91,28 +92,73 @@ ProximitySystem.on_add_extension = function (self, world, unit, extension_name, 
 		self.player_unit_extensions_map[unit] = extension
 		extension.proximity_types = {
 			friends_close = {
+				cooldown = 0,
 				num = 0,
 				distance = DialogueSettings.friends_close_distance,
-				check = self.player_unit_extensions_map,
-				broadphase = self.player_units_broadphase,
+				broadphase_pairs = {
+					{
+						check = self.player_unit_extensions_map,
+						broadphase = self.player_units_broadphase,
+					},
+				},
+				broadphase_categories = side.ally_broadphase_categories,
 			},
 			friends_distant = {
+				cooldown = 0,
 				num = 0,
 				distance = DialogueSettings.friends_distant_distance,
-				check = self.player_unit_extensions_map,
-				broadphase = self.player_units_broadphase,
+				broadphase_pairs = {
+					{
+						check = self.player_unit_extensions_map,
+						broadphase = self.player_units_broadphase,
+					},
+				},
+				broadphase_categories = side.ally_broadphase_categories,
 			},
 			enemies_close = {
+				cooldown = 0,
 				num = 0,
 				distance = DialogueSettings.enemies_close_distance,
-				check = self.ai_unit_extensions_map,
-				broadphase = self.enemy_broadphase,
+				broadphase_pairs = {
+					{
+						check = self.ai_unit_extensions_map,
+						broadphase = self.enemy_broadphase,
+					},
+					{
+						check = self.player_unit_extensions_map,
+						broadphase = self.player_units_broadphase,
+					},
+				},
+				broadphase_categories = side.enemy_broadphase_categories,
 			},
 			enemies_distant = {
+				cooldown = 0,
 				num = 0,
 				distance = DialogueSettings.enemies_distant_distance,
-				check = self.ai_unit_extensions_map,
-				broadphase = self.enemy_broadphase,
+				broadphase_pairs = {
+					{
+						check = self.ai_unit_extensions_map,
+						broadphase = self.enemy_broadphase,
+					},
+					{
+						check = self.player_unit_extensions_map,
+						broadphase = self.player_units_broadphase,
+					},
+				},
+				broadphase_categories = side.enemy_broadphase_categories,
+			},
+			vs_passing_hoisted_hero = {
+				cooldown = 0,
+				disable_in_ghost_mode = true,
+				num = 0,
+				distance = DialogueSettings.passing_hoisted_range,
+				broadphase_pairs = {
+					{
+						check = self.player_unit_extensions_map,
+						broadphase = self.player_units_broadphase,
+					},
+				},
+				broadphase_categories = side.enemy_broadphase_categories,
 			},
 		}
 		extension.raycast_timer = 0
@@ -280,18 +326,10 @@ local function check_raycast_center(physics_world, unit, target)
 	end
 end
 
-local near_lookup = {
-	bright_wizard = "bright_wizard_is_near",
-	dwarf_ranger = "dwarf_ranger_is_near",
-	empire_soldier = "empire_soldier_is_near",
-	empire_soldier_tutorial = "empire_soldier_is_near",
-	witch_hunter = "witch_hunter_is_near",
-	wood_elf = "wood_elf_is_near",
-}
 local nearby_units = {}
 
 ProximitySystem.update = function (self, context, t)
-	local player_unit_extensions_map, player_units_broadphase = self.player_unit_extensions_map, self.player_units_broadphase
+	local player_unit_extensions_map = self.player_unit_extensions_map
 	local unit_forwards = self.unit_forwards
 	local Unit_world_forward = unit_world_forward
 	local network_manager = Managers.state.network
@@ -319,6 +357,24 @@ ProximitySystem.update = function (self, context, t)
 			QuickDrawer:sphere(POSITION_LOOKUP[unit] + Vector3.up(), 2, color)
 		end
 	end
+end
+
+ProximitySystem._valid_dialogue_unit = function (self, unit, proximity_type)
+	local ghost_mode_extension = ScriptUnit.has_extension(unit, "ghost_mode_system")
+
+	if ghost_mode_extension and ghost_mode_extension:is_in_ghost_mode() then
+		return false
+	end
+
+	if proximity_type == "vs_passing_hoisted_hero" then
+		local status_extension = ScriptUnit.has_extension(unit, "status_system")
+
+		if not status_extension or not status_extension:is_grabbed_by_pack_master() then
+			return false
+		end
+	end
+
+	return true
 end
 
 ProximitySystem.physics_async_update = function (self, context, t)
@@ -374,49 +430,54 @@ ProximitySystem.physics_async_update = function (self, context, t)
 			local enemy_units_lookup = side.enemy_units_lookup
 
 			for proximity_type, proximity_data in pairs(extension.proximity_types) do
-				local broadphase = proximity_data.broadphase
-				local radius = proximity_data.distance
-				local num_nearby_units = Broadphase.query(broadphase, position, radius, nearby_units)
-				local check = proximity_data.check
-				local num_matching_units = 0
+				repeat
+					proximity_data.cooldown = proximity_data.cooldown - dt
 
-				for i = 1, num_nearby_units do
-					local nearby_unit = nearby_units[i]
-
-					if nearby_unit ~= unit and check[nearby_unit] then
-						num_matching_units = num_matching_units + 1
+					if proximity_data.cooldown > 0 then
+						break
 					end
-				end
 
-				local last_num_matching_units = proximity_data.num
+					proximity_data.cooldown = DialogueSettings.proximity_trigger_interval
 
-				if num_matching_units < last_num_matching_units * 0.5 or num_matching_units > last_num_matching_units * 1.5 then
-					proximity_data.num = num_matching_units
+					if proximity_data.disable_in_ghost_mode then
+						local ghost_mode_extension = ScriptUnit.has_extension(unit, "ghost_mode_system")
 
-					local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
-					local event_data = FrameTable.alloc_table()
+						if ghost_mode_extension and ghost_mode_extension:is_in_ghost_mode() then
+							break
+						end
+					end
 
-					event_data.num_units = num_matching_units
+					local radius = proximity_data.distance
+					local broadphase_categories = proximity_data.broadphase_categories
+					local broadphase_pairs = proximity_data.broadphase_pairs
+					local last_num_matching_units = proximity_data.num
+					local num_matching_units = 0
 
-					if proximity_type == "friends_close" then
-						for i = 1, num_nearby_units do
-							local nearby_unit = nearby_units[i]
+					for pair_i = 1, #broadphase_pairs do
+						local broadphase = broadphase_pairs[pair_i].broadphase
+						local num_nearby_units = Broadphase.query(broadphase, position, radius, nearby_units, broadphase_categories)
+						local check = broadphase_pairs[pair_i].check
 
-							if nearby_unit ~= unit and check[nearby_unit] then
-								local profile_name = ScriptUnit.extension(nearby_unit, "dialogue_system").context.player_profile
-								local near_title = near_lookup[profile_name]
+						for check_i = 1, num_nearby_units do
+							local nearby_unit = nearby_units[check_i]
 
-								if near_title then
-									event_data[near_title] = true
-								end
+							if nearby_unit ~= unit and check[nearby_unit] and self:_valid_dialogue_unit(nearby_unit, proximity_type) then
+								num_matching_units = num_matching_units + 1
 							end
 						end
 					end
 
-					dialogue_input:trigger_dialogue_event(proximity_type, event_data)
-				end
+					if last_num_matching_units ~= num_matching_units then
+						proximity_data.num = num_matching_units
 
-				table.clear(nearby_units)
+						local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+						local event_data = FrameTable.alloc_table()
+
+						event_data.num_units = num_matching_units
+
+						dialogue_input:trigger_dialogue_event(proximity_type, event_data)
+					end
+				until true
 			end
 
 			local raycast_timer = extension.raycast_timer + dt
@@ -442,7 +503,7 @@ ProximitySystem.physics_async_update = function (self, context, t)
 
 						local is_alive = HEALTH_ALIVE[nearby_unit]
 
-						if nearby_unit ~= unit and is_alive and enemy_units_lookup[nearby_unit] then
+						if nearby_unit ~= unit and is_alive and enemy_units_lookup[nearby_unit] and self:_valid_dialogue_unit(nearby_unit, nil) then
 							local nearby_unit_pos = POSITION_LOOKUP[nearby_unit]
 							local nearby_unit_pos_flat = Vector3.flat(nearby_unit_pos)
 							local direction_unit_nearby_unit = nearby_unit_pos_flat - my_pos_flat
@@ -587,7 +648,7 @@ ProximitySystem._update_nearby_boss = function (self)
 		local breed = Unit.get_data(unit, "breed")
 		local attributes = ai_system:get_attributes(unit)
 
-		if breed and breed.boss and not breed.server_controlled_health_bar or attributes.grudge_marked then
+		if breed and breed.boss and not breed.server_controlled_health_bar or attributes.grudge_marked and self:_valid_dialogue_unit(unit, nil) then
 			self.closest_boss_unit = unit
 
 			break
@@ -635,11 +696,13 @@ ProximitySystem._update_nearby_enemies = function (self)
 		for i = 1, num_units do
 			local unit = broadphase_result[i]
 
-			new_nearby[unit] = Vector3.distance_squared(POSITION_LOOKUP[unit], player_pos)
+			if self:_valid_dialogue_unit(unit, nil) then
+				new_nearby[unit] = Vector3.distance_squared(POSITION_LOOKUP[unit], player_pos)
 
-			if not old_nearby[unit] then
-				list_len = list_len + 1
-				list[list_len] = unit
+				if not old_nearby[unit] then
+					list_len = list_len + 1
+					list[list_len] = unit
+				end
 			end
 		end
 

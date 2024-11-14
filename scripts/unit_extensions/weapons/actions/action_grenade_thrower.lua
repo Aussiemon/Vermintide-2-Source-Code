@@ -82,9 +82,10 @@ ActionGrenadeThrower.client_owner_post_update = function (self, dt, t, world, ca
 
 		if self.ammo_extension and not self.extra_buff_shot then
 			local ammo_usage = current_action.ammo_usage
+			local is_grenade = ItemMasterList[self.item_name].item_type == "grenade"
 			local _, procced = self.owner_buff_extension:apply_buffs_to_value(0, "not_consume_grenade")
 
-			if procced then
+			if procced and is_grenade then
 				self.ammo_extension:add_ammo_to_reserve(ammo_usage)
 			end
 

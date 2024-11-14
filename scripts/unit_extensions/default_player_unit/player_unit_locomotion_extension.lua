@@ -4,15 +4,10 @@ require("scripts/helpers/mover_helper")
 require("scripts/unit_extensions/default_player_unit/third_person_idle_fullbody_animation_control")
 
 PlayerUnitLocomotionExtension = class(PlayerUnitLocomotionExtension)
-IS_NEW_FRAME = false
 
 local POSITION_LOOKUP = POSITION_LOOKUP
 local MAX_MOVE_SPEED = 99.9999
 local MOVE_SPEED_ANIM_LERP_TIME = 0.15
-
-PlayerUnitLocomotionExtension.set_new_frame = function ()
-	IS_NEW_FRAME = true
-end
 
 PlayerUnitLocomotionExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.unit = unit
@@ -32,7 +27,8 @@ PlayerUnitLocomotionExtension.init = function (self, extension_init_context, uni
 	self.external_velocity = nil
 	self._external_velocity_enabled = true
 	self._script_driven_gravity_scale = 1
-	self.velocity_forced = nil
+	self._velocity_forced = Vector3Box()
+	self._dirty_forced_velocity = false
 	self.use_drag = true
 
 	self:reset()
@@ -393,11 +389,12 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 		velocity_wanted.z = velocity_current.z
 	end
 
-	local velocity_forced = self.velocity_forced
+	if self._dirty_forced_velocity then
+		velocity_wanted = self._velocity_forced:unbox()
 
-	if velocity_forced then
-		velocity_wanted = velocity_forced
-		self.velocity_forced = nil
+		self._velocity_forced:store(Vector3.zero())
+
+		self._dirty_forced_velocity = false
 	end
 
 	local external_dir, new_external_velocity
@@ -828,14 +825,14 @@ end
 
 PlayerUnitLocomotionExtension.set_forced_velocity = function (self, velocity_forced)
 	if not self.disabled and (self.state == "script_driven" or self.state == "script_driven_ladder") then
-		assert(IS_NEW_FRAME, "trying to set forced velocity too late in frame")
-
 		if velocity_forced then
-			local current_velocity_forced = self.velocity_forced
+			self._velocity_forced:store(self._velocity_forced:unbox() + velocity_forced)
 
-			self.velocity_forced = current_velocity_forced and current_velocity_forced + velocity_forced or velocity_forced
+			self._dirty_forced_velocity = true
 		else
-			self.velocity_forced = nil
+			self._velocity_forced:store(Vector3.zero())
+
+			self._dirty_forced_velocity = false
 		end
 	end
 end
@@ -948,13 +945,13 @@ PlayerUnitLocomotionExtension.enable_animation_driven_movement_with_rotation_no_
 end
 
 PlayerUnitLocomotionExtension.enable_script_driven_movement = function (self)
-	self.velocity_forced = nil
+	self._dirty_forced_velocity = false
 	self._script_movement_time_scale = nil
 	self.state = "script_driven"
 end
 
 PlayerUnitLocomotionExtension.enable_script_driven_ladder_movement = function (self)
-	self.velocity_forced = nil
+	self._dirty_forced_velocity = false
 	self._script_movement_time_scale = nil
 	self.state = "script_driven_ladder"
 

@@ -25,7 +25,7 @@ DifficultySettings.normal = {
 	stagger_damage_multiplier = 0.2,
 	stagger_modifier = 1,
 	wounds = 5,
-	xp_multiplier = 2,
+	xp_multiplier = 1,
 	respawn = {
 		ammo_melee = 0.5,
 		ammo_ranged = 0.5,
@@ -37,7 +37,7 @@ DifficultySettings.normal = {
 		token_type = "iron_tokens",
 	},
 	weave_settings = {
-		experience_reward_on_complete = 200,
+		experience_reward_on_complete = 400,
 	},
 }
 DifficultySettings.hard = {
@@ -56,11 +56,11 @@ DifficultySettings.hard = {
 	power_level_cap = 500,
 	power_level_max_target = 500,
 	rank = 3,
-	required_power_level = 300,
+	required_power_level = 0,
 	stagger_damage_multiplier = 0.2,
 	stagger_modifier = 1,
 	wounds = 3,
-	xp_multiplier = 2,
+	xp_multiplier = 1.25,
 	respawn = {
 		ammo_melee = 0.5,
 		ammo_ranged = 0.5,
@@ -78,7 +78,7 @@ DifficultySettings.hard = {
 		peak_intensity_threshold = 50,
 	},
 	weave_settings = {
-		experience_reward_on_complete = 200,
+		experience_reward_on_complete = 400,
 	},
 }
 DifficultySettings.harder = {
@@ -98,11 +98,11 @@ DifficultySettings.harder = {
 	power_level_cap = 800,
 	power_level_max_target = 300,
 	rank = 4,
-	required_power_level = 400,
+	required_power_level = 385,
 	stagger_damage_multiplier = 0.2,
 	stagger_modifier = 1,
 	wounds = 2,
-	xp_multiplier = 2,
+	xp_multiplier = 1.5,
 	respawn = {
 		ammo_melee = 0.5,
 		ammo_ranged = 0.5,
@@ -120,7 +120,7 @@ DifficultySettings.harder = {
 		peak_intensity_threshold = 55,
 	},
 	weave_settings = {
-		experience_reward_on_complete = 200,
+		experience_reward_on_complete = 400,
 	},
 }
 DifficultySettings.hardest = {
@@ -140,11 +140,11 @@ DifficultySettings.hardest = {
 	power_level_cap = 935,
 	power_level_max_target = 400,
 	rank = 5,
-	required_power_level = 600,
+	required_power_level = 585,
 	stagger_damage_multiplier = 0.2,
 	stagger_modifier = 0.9,
 	wounds = 2,
-	xp_multiplier = 2,
+	xp_multiplier = 1.75,
 	respawn = {
 		ammo_melee = 0.5,
 		ammo_ranged = 0.5,
@@ -162,7 +162,7 @@ DifficultySettings.hardest = {
 		peak_intensity_threshold = 70,
 	},
 	weave_settings = {
-		experience_reward_on_complete = 200,
+		experience_reward_on_complete = 400,
 	},
 }
 DifficultySettings.cataclysm = {
@@ -184,12 +184,12 @@ DifficultySettings.cataclysm = {
 	power_level_cap = 2000,
 	power_level_max_target = 100,
 	rank = 6,
-	required_power_level = 700,
+	required_power_level = 685,
 	show_warning = true,
 	stagger_damage_multiplier = 0.2,
 	stagger_modifier = 0.75,
 	wounds = 2,
-	xp_multiplier = 2,
+	xp_multiplier = 1.75,
 	respawn = {
 		ammo_melee = 0.5,
 		ammo_ranged = 0.5,
@@ -207,7 +207,7 @@ DifficultySettings.cataclysm = {
 		peak_intensity_threshold = 70,
 	},
 	weave_settings = {
-		experience_reward_on_complete = 200,
+		experience_reward_on_complete = 400,
 	},
 	button_textures = {
 		background = "difficulty_cataclysm_button_background",
@@ -235,12 +235,12 @@ DifficultySettings.cataclysm_2 = {
 	power_level_cap = 2000,
 	power_level_max_target = 100,
 	rank = 7,
-	required_power_level = 700,
+	required_power_level = 685,
 	show_warning = true,
 	stagger_damage_multiplier = 0.3,
 	stagger_modifier = 0.6,
 	wounds = 2,
-	xp_multiplier = 2,
+	xp_multiplier = 1.75,
 	respawn = {
 		ammo_melee = 0.5,
 		ammo_ranged = 0.5,
@@ -258,7 +258,7 @@ DifficultySettings.cataclysm_2 = {
 		peak_intensity_threshold = 70,
 	},
 	weave_settings = {
-		experience_reward_on_complete = 200,
+		experience_reward_on_complete = 400,
 	},
 	button_textures = {
 		background = "difficulty_cataclysm_button_background",
@@ -285,12 +285,12 @@ DifficultySettings.cataclysm_3 = {
 	min_stagger_damage_coefficient = 1,
 	power_level_cap = 2000,
 	rank = 8,
-	required_power_level = 700,
+	required_power_level = 685,
 	show_warning = true,
 	stagger_damage_multiplier = 0.5,
 	stagger_modifier = 0.6,
 	wounds = 2,
-	xp_multiplier = 2,
+	xp_multiplier = 1.75,
 	respawn = {
 		ammo_melee = 0.5,
 		ammo_ranged = 0.5,
@@ -308,7 +308,7 @@ DifficultySettings.cataclysm_3 = {
 		peak_intensity_threshold = 70,
 	},
 	weave_settings = {
-		experience_reward_on_complete = 200,
+		experience_reward_on_complete = 400,
 	},
 	button_textures = {
 		background = "difficulty_cataclysm_button_background",
@@ -333,6 +333,9 @@ DifficultySettings.versus_base = {
 	max_chest_power_level = 100,
 	max_hp = 150,
 	min_stagger_damage_coefficient = 1,
+	no_wound_dependent_temp_hp_degen = true,
+	percent_health_on_revive = 0.25,
+	percent_temp_health_on_revive = 0.25,
 	power_level_cap = 400,
 	power_level_max_target = 400,
 	rank = 9,
@@ -340,7 +343,7 @@ DifficultySettings.versus_base = {
 	stagger_damage_multiplier = 0.2,
 	stagger_modifier = 1,
 	wounds = 5,
-	xp_multiplier = 2,
+	xp_multiplier = 1,
 	respawn = {
 		ammo_melee = 0.5,
 		ammo_ranged = 0.5,
@@ -352,7 +355,7 @@ DifficultySettings.versus_base = {
 		token_type = "iron_tokens",
 	},
 	weave_settings = {
-		experience_reward_on_complete = 200,
+		experience_reward_on_complete = 400,
 	},
 }
 
@@ -363,8 +366,12 @@ end
 ExtraDifficultyRequirements = {
 	kill_all_lords_on_legend = {
 		description_text = "achv_scorpion_cataclysm_unlock_kill_all_lords_desc",
-		requirement_function = function ()
+		requirement_function = function (joining_existing_game)
 			if Development.parameter("unlock_all_difficulties") then
+				return true
+			end
+
+			if joining_existing_game then
 				return true
 			end
 
@@ -416,6 +423,8 @@ DifficultyMapping = {
 	hardest = "legend",
 	normal = "recruit",
 }
+DefaultDifficultyLookup = table.mirror_array(DefaultDifficulties)
+DifficultyLookup = table.mirror_array(Difficulties)
 DefaultStartingDifficulty = "hard"
 DefaultQuickPlayStartingDifficulty = "normal"
 DefaultAdventureModeStartingDifficulty = "normal"

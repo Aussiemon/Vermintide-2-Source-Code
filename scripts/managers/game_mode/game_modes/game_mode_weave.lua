@@ -154,7 +154,6 @@ GameModeWeave.on_ai_unit_destroyed = function (self, unit, blackboard, reason)
 			despawned = true,
 			breed = breed,
 		}
-		local weave_objective_system = Managers.state.entity:system("weave_objective_system")
 		local pos = Vector3Box(POSITION_LOOKUP[unit])
 		local rot = QuaternionBox(Unit.local_rotation(unit, 0))
 		local optional_data = {
@@ -162,7 +161,10 @@ GameModeWeave.on_ai_unit_destroyed = function (self, unit, blackboard, reason)
 		}
 
 		enemy_recycler:add_breed(breed.name, pos, rot, optional_data)
-		weave_objective_system:on_ai_killed(unit, nil, death_data)
+
+		local objective_system = Managers.state.entity:system("objective_system")
+
+		objective_system:on_ai_killed(unit, nil, death_data)
 	end
 end
 
@@ -185,8 +187,8 @@ GameModeWeave._is_time_up = function (self)
 	return time_up
 end
 
-GameModeWeave.player_entered_game_session = function (self, peer_id, local_player_id, wanted_party_index)
-	GameModeWeave.super.player_entered_game_session(self, peer_id, local_player_id, wanted_party_index)
+GameModeWeave.player_entered_game_session = function (self, peer_id, local_player_id)
+	GameModeWeave.super.player_entered_game_session(self, peer_id, local_player_id)
 
 	if LAUNCH_MODE ~= "attract_benchmark" then
 		self._adventure_profile_rules:handle_profile_delegation_for_joining_player(peer_id, local_player_id)
@@ -199,12 +201,12 @@ GameModeWeave.player_entered_game_session = function (self, peer_id, local_playe
 
 		if #self._bot_players > 0 then
 			local profile_index = self._profile_synchronizer:profile_by_peer(peer_id, local_player_id)
-			local removed = self:_remove_bot_by_profile(self._bot_players, profile_index)
+			local removed = self:_remove_bot_by_profile(profile_index)
 
 			if not removed then
 				local update_safe = false
 
-				self:_remove_bot(self._bot_players, #self._bot_players, update_safe)
+				self:_remove_bot(self._bot_players[#self._bot_players], update_safe)
 			end
 		end
 
@@ -486,7 +488,7 @@ GameModeWeave._handle_bots = function (self, t, dt)
 		local num_bots_to_add = math.min(delta, open_slots)
 
 		for i = 1, num_bots_to_add do
-			self:_add_bot(bot_players)
+			self:_add_bot()
 		end
 	elseif delta < 0 then
 		local num_bots_to_remove = math.abs(delta)
@@ -494,12 +496,13 @@ GameModeWeave._handle_bots = function (self, t, dt)
 		for i = 1, num_bots_to_remove do
 			local update_safe = true
 
-			self:_remove_bot(bot_players, #bot_players, update_safe)
+			self:_remove_bot(bot_players[#bot_players], update_safe)
 		end
 	end
 end
 
-GameModeWeave._add_bot = function (self, bot_players)
+GameModeWeave._add_bot = function (self)
+	local bot_players = self._bot_players
 	local party_id = 1
 	local party = Managers.party:get_party(party_id)
 	local profile_index, career_index = self:_get_first_available_bot_profile(party)
@@ -513,10 +516,9 @@ GameModeWeave._add_bot = function (self, bot_players)
 	bot_players[#bot_players + 1] = bot_player
 end
 
-GameModeWeave._remove_bot = function (self, bot_players, index, update_safe)
-	local bot_player = bot_players[index]
-
-	fassert(bot_player, "No bot player at index (%s)", tostring(index))
+GameModeWeave._remove_bot = function (self, bot_player, update_safe)
+	local bot_players = self._bot_players
+	local index = table.index_of(bot_players, bot_player)
 
 	if update_safe then
 		self:_remove_bot_update_safe(bot_player)
@@ -530,7 +532,8 @@ GameModeWeave._remove_bot = function (self, bot_players, index, update_safe)
 	bot_players[last] = nil
 end
 
-GameModeWeave._remove_bot_by_profile = function (self, bot_players, profile_index)
+GameModeWeave._remove_bot_by_profile = function (self, profile_index)
+	local bot_players = self._bot_players
 	local bot_index
 	local num_current_bots = #bot_players
 
@@ -550,7 +553,7 @@ GameModeWeave._remove_bot_by_profile = function (self, bot_players, profile_inde
 	if bot_index then
 		local update_safe = false
 
-		self:_remove_bot(bot_players, bot_index, update_safe)
+		self:_remove_bot(bot_players[bot_index], update_safe)
 
 		removed = true
 	end
@@ -563,7 +566,7 @@ GameModeWeave._clear_bots = function (self, update_safe)
 	local num_bot_players = #bot_players
 
 	for i = num_bot_players, 1, -1 do
-		self:_remove_bot(bot_players, i, update_safe)
+		self:_remove_bot(bot_players[i], update_safe)
 	end
 end
 

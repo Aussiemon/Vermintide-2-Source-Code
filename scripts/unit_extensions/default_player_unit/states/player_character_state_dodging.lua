@@ -209,7 +209,7 @@ PlayerCharacterStateDodging.update = function (self, unit, input, dt, context, t
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, first_person_extension, status_extension, self.inventory_extension)
 	CharacterStateHelper.update_weapon_actions(t, unit, input_extension, self.inventory_extension, self.health_extension)
 
-	local move_anim = CharacterStateHelper.get_move_animation(self.locomotion_extension, input_extension, status_extension)
+	local move_anim = CharacterStateHelper.get_move_animation(self.locomotion_extension, input_extension, status_extension, self.move_anim)
 
 	if move_anim ~= self.move_anim then
 		CharacterStateHelper.play_animation_event(unit, move_anim)

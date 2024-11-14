@@ -27,19 +27,6 @@ PackmasterStateGrabbing.on_enter = function (self, unit, input, dt, context, t, 
 	self._physics_world = World.physics_world(self._world)
 	self.highest_dot_value = 0
 
-	local velocity = Vector3(0, 0, 0)
-
-	self._locomotion_extension:set_forced_velocity(velocity)
-	self._locomotion_extension:set_wanted_velocity(Vector3.zero())
-
-	self._first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
-	self._status_extension = ScriptUnit.extension(unit, "status_system")
-	self._career_extension = ScriptUnit.extension(unit, "career_system")
-	self._buff_extension = ScriptUnit.extension(unit, "buff_system")
-	self._locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
-	self._input_extension = ScriptUnit.has_extension(unit, "input_system")
-	self._inventory_extension = ScriptUnit.has_extension(unit, "inventory_system")
-
 	local first_person_extension = self._first_person_extension
 
 	self._first_person_unit = first_person_extension:get_first_person_unit()
@@ -123,13 +110,13 @@ PackmasterStateGrabbing.update = function (self, unit, input, dt, context, t)
 			local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 			local event_data = FrameTable.alloc_table()
 
-			dialogue_input:trigger_dialogue_event("hook_success", event_data)
+			dialogue_input:trigger_networked_dialogue_event("hook_success", event_data)
 			csm:change_state("packmaster_dragging", grab_target)
 		elseif t >= grab_grace_period.after then
 			local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 			local event_data = FrameTable.alloc_table()
 
-			dialogue_input:trigger_dialogue_event("hook_fail", event_data)
+			dialogue_input:trigger_networked_dialogue_event("hook_fail", event_data)
 			csm:change_state("walking")
 		end
 	end
@@ -161,8 +148,10 @@ PackmasterStateGrabbing._update_movement = function (self, unit, t, dt)
 	local current_movement_speed_scale = self.current_movement_speed_scale
 
 	if not self.is_bot then
-		local move_acceleration_up_dt = movement_settings_table.move_acceleration_up * dt
-		local move_acceleration_down_dt = movement_settings_table.move_acceleration_down * dt
+		local breed_move_acceleration_up = self._breed and self._breed.breed_move_acceleration_up
+		local breed_move_acceleration_down = self._breed and self._breed.breed_move_acceleration_down
+		local move_acceleration_up_dt = breed_move_acceleration_up * dt or movement_settings_table.move_acceleration_up * dt
+		local move_acceleration_down_dt = breed_move_acceleration_down * dt or movement_settings_table.move_acceleration_down * dt
 
 		if is_moving then
 			current_movement_speed_scale = math.min(1, current_movement_speed_scale + move_acceleration_up_dt)
@@ -193,13 +182,12 @@ PackmasterStateGrabbing._update_movement = function (self, unit, t, dt)
 		self.last_input_direction:store(move_input_direction)
 	end
 
-	local move_anim_3p, move_anim_1p = CharacterStateHelper.get_move_animation(self._locomotion_extension, input_extension, self._status_extension)
+	local move_anim_3p = CharacterStateHelper.get_move_animation(self._locomotion_extension, input_extension, self._status_extension, self.move_anim_3p)
 
-	if move_anim_3p ~= self.move_anim_3p or move_anim_1p ~= self.move_anim_1p then
+	if move_anim_3p ~= self.move_anim_3p then
 		CharacterStateHelper.play_animation_event(unit, move_anim_3p)
 
 		self.move_anim_3p = move_anim_3p
-		self.move_anim_1p = move_anim_1p
 	end
 
 	CharacterStateHelper.move_on_ground(first_person_extension, input_extension, self._locomotion_extension, move_input_direction, final_move_speed, unit)

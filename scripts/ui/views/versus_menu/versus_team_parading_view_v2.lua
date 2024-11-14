@@ -81,6 +81,7 @@ VersusTeamParadingViewV2.on_exit = function (self)
 	end
 
 	self:_play_sound("vs_unmute_reset_all")
+	self:_play_sound("menu_versus_character_amb_loop_stop")
 end
 
 VersusTeamParadingViewV2._create_ui_elements = function (self, params)
@@ -97,6 +98,7 @@ VersusTeamParadingViewV2._create_ui_elements = function (self, params)
 	self._top_widgets = {}
 	self._transition_widgets = {}
 	self._team_portrait_frame_widgets = {}
+	self._team_insignia_widgets = {}
 	self._player_name_widgets = {}
 	self._widgets_by_name = {}
 
@@ -138,6 +140,10 @@ VersusTeamParadingViewV2.draw = function (self, dt)
 		self:_draw_widgets(self._team_portrait_frame_widgets, render_settings, ui_top_renderer, alpha_multiplier)
 	end
 
+	if self._team_insignia_widgets then
+		self:_draw_widgets(self._team_insignia_widgets, render_settings, ui_top_renderer, alpha_multiplier)
+	end
+
 	UIRenderer.end_pass(ui_top_renderer)
 
 	render_settings.alpha_multiplier = alpha_multiplier
@@ -170,6 +176,7 @@ VersusTeamParadingViewV2.post_update = function (self, dt, t)
 		local camera = self:_get_viewport_camera(self._viewport_widget)
 		local level = self:_get_viewport_level(self._viewport_widget)
 
+		Level.trigger_level_loaded(level)
 		self:_setup_camera_nodes_data(level)
 		self:_setup_initial_camera(world, camera)
 	end
@@ -257,6 +264,7 @@ end
 
 VersusTeamParadingViewV2._create_team_portrait_frames = function (self, party_id, party_data)
 	table.clear(self._team_portrait_frame_widgets)
+	table.clear(self._team_insignia_widgets)
 
 	if not party_data then
 		return
@@ -276,13 +284,14 @@ VersusTeamParadingViewV2._create_team_portrait_frames = function (self, party_id
 			local career_index = status.selected_career_index
 			local profile = SPProfiles[profile_index]
 			local scenegraph_node_name = "player_portrait_anchor_" .. i
+			local insignia_scenegraph_node_name = "player_insignia_anchor_" .. i
 
 			if profile then
 				local careers = profile.careers
 				local career_settings = careers[career_index]
 				local is_bot = picker.is_bot
 				local portrait_frame_name = slot_data.slot_frame ~= "n/a" and slot_data.slot_frame or "frame_0000"
-				local level_text = is_bot and "BOT" or "-"
+				local level_text = is_bot and "BOT" or status.level or "-"
 				local portrait_image = career_settings.portrait_image
 				local widget_definition = UIWidgets.create_portrait_frame(scenegraph_node_name, portrait_frame_name, level_text, 1, nil, portrait_image)
 				local widget = UIWidget.init(widget_definition, self._ui_top_renderer)
@@ -295,6 +304,16 @@ VersusTeamParadingViewV2._create_team_portrait_frames = function (self, party_id
 					20,
 				}
 				self._team_portrait_frame_widgets[#self._team_portrait_frame_widgets + 1] = widget
+
+				local widget_definition = UIWidgets.create_small_insignia(insignia_scenegraph_node_name, status.versus_level or 0)
+				local widget = UIWidget.init(widget_definition, self._ui_top_renderer)
+
+				widget.offset = {
+					0,
+					0,
+					20,
+				}
+				self._team_insignia_widgets[#self._team_insignia_widgets + 1] = widget
 			end
 		end
 	end
@@ -567,7 +586,7 @@ VersusTeamParadingViewV2._get_hero_previewer_data = function (self, picker, part
 	if profile_data then
 		local careers = profile_data.careers
 		local career_settings = careers[career_index]
-		local preview_animation = career_settings.preview_animation
+		local preview_animation = career_settings.versus_preview_animation or career_settings.preview_animation
 		local preview_wield_slot = career_settings.preview_wield_slot
 		local hero_name = career_settings.profile_name
 		local weapon = slot_data["slot_" .. preview_wield_slot]

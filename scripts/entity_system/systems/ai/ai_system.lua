@@ -870,9 +870,11 @@ AISystem.update_brains = function (self, t, dt)
 		local blackboard = extension._blackboard
 
 		if blackboard.activated ~= nil then
-			local event = blackboard.activated and "to_combat" or "to_passive"
-
-			Managers.state.network:anim_event(unit, event)
+			if blackboard.activated then
+				AiUtils.enter_combat(unit, blackboard)
+			else
+				AiUtils.enter_passive(unit, blackboard)
+			end
 
 			blackboard.activated = nil
 		end

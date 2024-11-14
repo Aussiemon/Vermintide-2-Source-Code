@@ -118,157 +118,51 @@ local challenge_settings = {
 			},
 		},
 	},
-	versus = {
-		always_reset_quest_pool = true,
+	weave = {
 		possible_challenges = {
 			{
-				reward = "markus_questing_knight_passive_cooldown_reduction",
+				reward = "markus_questing_knight_passive_power_level",
 				type = "kill_elites",
 				amount = {
-					10,
-					10,
-					10,
-					10,
-					10,
-					10,
-					10,
-					10,
+					1,
+					15,
+					15,
+					20,
+					20,
+					30,
+					30,
+					30,
 					10,
 				},
 			},
 			{
 				reward = "markus_questing_knight_passive_attack_speed",
-				type = "kill_elites",
+				type = "kill_specials",
 				amount = {
+					1,
 					10,
 					10,
-					10,
-					10,
-					10,
-					10,
-					10,
-					10,
-					10,
-				},
-			},
-			{
-				reward = "markus_questing_knight_passive_power_level",
-				type = "kill_elites",
-				amount = {
-					10,
-					10,
-					10,
-					10,
-					10,
-					10,
-					10,
-					10,
-					10,
-				},
-			},
-			{
-				reward = "markus_questing_knight_passive_damage_taken",
-				type = "kill_elites",
-				amount = {
-					10,
-					10,
-					10,
-					10,
-					10,
-					10,
-					10,
-					10,
-					10,
-				},
-			},
-			{
-				reward = "markus_questing_knight_passive_health_regen",
-				type = "kill_elites",
-				amount = {
-					10,
-					10,
-					10,
-					10,
-					10,
-					10,
-					10,
-					10,
+					15,
+					15,
+					20,
+					20,
+					20,
 					10,
 				},
 			},
 			{
 				reward = "markus_questing_knight_passive_cooldown_reduction",
-				type = "kill_enemies",
+				type = "kill_monsters",
 				amount = {
-					50,
-					50,
-					50,
-					50,
-					50,
-					50,
-					50,
-					50,
-					50,
-				},
-			},
-			{
-				reward = "markus_questing_knight_passive_attack_speed",
-				type = "kill_enemies",
-				amount = {
-					50,
-					50,
-					50,
-					50,
-					50,
-					50,
-					50,
-					50,
-					50,
-				},
-			},
-			{
-				reward = "markus_questing_knight_passive_power_level",
-				type = "kill_enemies",
-				amount = {
-					50,
-					50,
-					50,
-					50,
-					50,
-					50,
-					50,
-					50,
-					50,
-				},
-			},
-			{
-				reward = "markus_questing_knight_passive_damage_taken",
-				type = "kill_enemies",
-				amount = {
-					50,
-					50,
-					50,
-					50,
-					50,
-					50,
-					50,
-					50,
-					50,
-				},
-			},
-			{
-				reward = "markus_questing_knight_passive_health_regen",
-				type = "kill_enemies",
-				amount = {
-					50,
-					50,
-					50,
-					50,
-					50,
-					50,
-					50,
-					50,
-					50,
+					1,
+					1,
+					1,
+					1,
+					1,
+					1,
+					1,
+					1,
+					1,
 				},
 			},
 		},
@@ -276,15 +170,94 @@ local challenge_settings = {
 			reward = "markus_questing_knight_passive_strength_potion",
 			type = "kill_enemies",
 			amount = {
+				1,
+				100,
+				125,
+				150,
+				175,
+				200,
+				200,
+				200,
+			},
+		},
+	},
+	versus = {
+		always_reset_quest_pool = true,
+		possible_challenges = {
+			{
+				reward = "markus_questing_knight_passive_damage_taken",
+				type = "kill_specials",
+				amount = {
+					14,
+					16,
+					18,
+					20,
+					22,
+					24,
+					26,
+					28,
+					30,
+				},
+			},
+			{
+				reward = "markus_questing_knight_passive_power_level",
+				type = "kill_elites",
+				amount = {
+					6,
+					8,
+					10,
+					12,
+					14,
+					16,
+					18,
+					20,
+					22,
+				},
+			},
+			{
+				reward = "markus_questing_knight_passive_power_level",
+				type = "kill_monsters",
+				amount = {
+					1,
+					1,
+					1,
+					1,
+					1,
+					1,
+					1,
+					1,
+					1,
+				},
+			},
+			{
+				reward = "markus_questing_knight_passive_attack_speed",
+				type = "kill_enemies",
+				amount = {
+					30,
+					35,
+					40,
+					45,
+					50,
+					55,
+					60,
+					65,
+					70,
+				},
+			},
+		},
+		side_quest_challenge = {
+			reward = "markus_questing_knight_passive_strength_potion",
+			type = "kill_enemies",
+			amount = {
+				30,
+				35,
+				40,
+				45,
 				50,
-				50,
-				50,
-				50,
-				50,
-				50,
-				50,
-				50,
-				50,
+				55,
+				60,
+				65,
+				70,
 			},
 		},
 	},
@@ -390,11 +363,11 @@ PassiveAbilityQuestingKnight._generate_quest_pool = function (self)
 end
 
 PassiveAbilityQuestingKnight._get_possible_challenges = function (self)
-	local mechanism_name = Managers.mechanism:current_mechanism_name()
-	local settings = challenge_settings[mechanism_name] or challenge_settings.default
+	local game_mode_name = Managers.state.game_mode:game_mode_key()
+	local settings = challenge_settings[game_mode_name] or challenge_settings.default
 	local possible_challenges = settings.possible_challenges
 
-	fassert(possible_challenges, "[PassiveAbilityQuestingKnight] possible_challenges not defined for the current mechanism")
+	fassert(possible_challenges, "[PassiveAbilityQuestingKnight] possible_challenges not defined for the current game mode")
 
 	local filtered_challenges = {}
 
@@ -410,18 +383,18 @@ PassiveAbilityQuestingKnight._get_possible_challenges = function (self)
 end
 
 PassiveAbilityQuestingKnight._get_side_quest_challenge = function (self)
-	local mechanism_name = Managers.mechanism:current_mechanism_name()
-	local settings = challenge_settings[mechanism_name] or challenge_settings.default
+	local game_mode_name = Managers.state.game_mode:game_mode_key()
+	local settings = challenge_settings[game_mode_name] or challenge_settings.default
 	local side_quest_challenge = settings.side_quest_challenge
 
-	fassert(side_quest_challenge, "[PassiveAbilityQuestingKnight] side_quest_challenge not defined for the current mechanism")
+	fassert(side_quest_challenge, "[PassiveAbilityQuestingKnight] side_quest_challenge not defined for the current game mode")
 
 	return side_quest_challenge
 end
 
 PassiveAbilityQuestingKnight._always_reset_quest_pool = function (self)
-	local mechanism_name = Managers.mechanism:current_mechanism_name()
-	local settings = challenge_settings[mechanism_name] or challenge_settings.default
+	local game_mode_name = Managers.state.game_mode:game_mode_key()
+	local settings = challenge_settings[game_mode_name] or challenge_settings.default
 
 	return settings.always_reset_quest_pool or false
 end

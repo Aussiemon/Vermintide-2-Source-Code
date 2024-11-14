@@ -203,7 +203,7 @@ DebugTextManager.clear_unit_text = function (self, clear_unit, clear_category)
 	end
 end
 
-DebugTextManager.output_world_text = function (self, text, text_size, position, time, category, color, viewport_name)
+DebugTextManager.output_world_text = function (self, text, text_size, position, time, category, color, viewport_name, rotation)
 	if script_data and script_data.disable_debug_draw then
 		return
 	end
@@ -220,7 +220,7 @@ DebugTextManager.output_world_text = function (self, text, text_size, position, 
 
 		tm = Matrix4x4.from_quaternion_position(camera_rotation, position)
 	else
-		tm = Matrix4x4.from_quaternion_position(Quaternion.identity(), position)
+		tm = Matrix4x4.from_quaternion_position(rotation and Quaternion.inverse(rotation) or Quaternion.identity(), position)
 	end
 
 	local text_extent_min, text_extent_max = Gui.text_extents(gui, text, font, text_size)

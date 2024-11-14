@@ -191,7 +191,7 @@ PlayerCharacterStateStunned.update = function (self, unit, input, dt, context, t
 
 	CharacterStateHelper.move_on_ground(first_person_extension, input_extension, locomotion_extension, move_input_direction, move_speed, unit)
 
-	local move_anim_3p, _ = CharacterStateHelper.get_move_animation(locomotion_extension, input_extension, status_extension)
+	local move_anim_3p, _ = CharacterStateHelper.get_move_animation(locomotion_extension, input_extension, status_extension, self.move_anim_3p)
 
 	if move_anim_3p ~= self.move_anim_3p then
 		CharacterStateHelper.play_animation_event(unit, move_anim_3p)

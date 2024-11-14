@@ -324,10 +324,6 @@ TentacleSplineExtension.destroy = function (self)
 		local astar = tentacle_data.astar
 
 		if astar then
-			if not GwNavAStar.processing_finished(astar) then
-				GwNavAStar.cancel(astar)
-			end
-
 			GwNavAStar.destroy(astar)
 		end
 	end

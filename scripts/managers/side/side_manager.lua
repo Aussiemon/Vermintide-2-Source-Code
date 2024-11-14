@@ -108,7 +108,13 @@ end
 SideManager.versus_is_hero = function (self, unit)
 	local side = self.side_by_unit[unit]
 
-	return side and side:name() == "heroes"
+	if not side or side:name() ~= "heroes" then
+		return
+	end
+
+	local owner_player = Managers.player:owner(unit)
+
+	return not not owner_player
 end
 
 SideManager.versus_is_dark_pact = function (self, unit)
@@ -311,6 +317,7 @@ SideManager.update_frame_tables = function (self)
 	for i = 1, num_sides do
 		local side = sides[i]
 
+		self:_update_ally_frame_tables(side)
 		self:_update_enemy_frame_tables(side)
 	end
 end
@@ -402,6 +409,26 @@ SideManager._update_frame_tables = function (self, side, all_human_and_bot_units
 		human_and_bot_units[k] = nil
 		human_and_bot_unit_positions[k] = nil
 		k = k + 1
+	end
+end
+
+SideManager._update_ally_frame_tables = function (self, side)
+	local human_and_bot_units = side.PLAYER_AND_BOT_UNITS
+	local num_non_disabled = 0
+	local non_disabled_player_units = side.NON_DISABLED_PLAYER_AND_BOT_UNITS
+
+	for i = 1, #human_and_bot_units do
+		local unit = human_and_bot_units[i]
+		local status_extension = ScriptUnit.has_extension(unit, "status_system")
+
+		if status_extension and not status_extension:is_disabled_non_temporarily() then
+			num_non_disabled = num_non_disabled + 1
+			non_disabled_player_units[num_non_disabled] = unit
+		end
+	end
+
+	for i = num_non_disabled + 1, #non_disabled_player_units do
+		non_disabled_player_units[i] = nil
 	end
 end
 

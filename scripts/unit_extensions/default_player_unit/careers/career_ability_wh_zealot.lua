@@ -205,8 +205,7 @@ CareerAbilityWHZealot._run_ability = function (self)
 			first_person_extension:play_hud_sound_event("Play_career_ability_zealot_charge")
 			first_person_extension:play_remote_unit_sound_event("Play_career_ability_zealot_charge", owner_unit, 0)
 			career_extension:set_state("victor_activate_zealot")
-
-			MOOD_BLACKBOARD.skill_zealot = true
+			Managers.state.camera:set_mood("skill_zealot", "skill_zealot", true)
 		end
 	end
 

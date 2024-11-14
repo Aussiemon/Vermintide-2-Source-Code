@@ -422,6 +422,20 @@ Pickups.level_events.gargoyle_head = {
 	unit_template_name = "pickup_projectile_unit",
 	wield_on_pickup = true,
 }
+Pickups.level_events.gargoyle_head_vs = {
+	debug_pickup_category = "level_event",
+	hud_description = "gargoyle_head",
+	individual_pickup = false,
+	item_description = "gargoyle_head",
+	item_name = "wpn_gargoyle_head",
+	only_once = true,
+	slot_name = "slot_level_event",
+	spawn_weighting = 1e-06,
+	type = "inventory_item",
+	unit_name = "units/weapons/player/pup_gargoyle_head/pup_gargoyle_head_01",
+	unit_template_name = "pickup_projectile_unit_limited",
+	wield_on_pickup = true,
+}
 Pickups.level_events.magic_crystal = {
 	debug_pickup_category = "level_event",
 	hud_description = "magic_crystal",
@@ -637,6 +651,23 @@ Pickups.improved_grenades.fire_grenade_t2 = {
 	spawn_weighting = 0.2,
 	type = "inventory_item",
 	unit_name = "units/weapons/player/pup_grenades/pup_grenade_03_t2",
+}
+Pickups.grenades.engineer_grenade_t1 = {
+	bots_mule_pickup = true,
+	consumable_item = true,
+	debug_pickup_category = "grenades",
+	dupable = true,
+	hud_description = "grenade_frag",
+	individual_pickup = false,
+	item_description = "grenade_frag",
+	item_name = "grenade_engineer",
+	local_pickup_sound = true,
+	only_once = true,
+	pickup_sound_event = "pickup_grenade",
+	slot_name = "slot_grenade",
+	spawn_weighting = 0.8,
+	type = "inventory_item",
+	unit_name = "units/weapons/player/pup_grenades/pup_grenade_01_t1",
 }
 Pickups.special = {}
 Pickups.special.loot_die = {

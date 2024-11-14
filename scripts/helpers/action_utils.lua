@@ -317,7 +317,7 @@ ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, bre
 
 		if weapon_template_name then
 			local power_level_weapon_multiplier = 1
-			local weapon_template = Weapons[weapon_template_name]
+			local weapon_template = WeaponUtils.get_weapon_template(weapon_template_name)
 			local buff_type = weapon_template.buff_type
 			local is_melee = MeleeBuffTypes[buff_type]
 			local is_ranged = RangedBuffTypes[buff_type]
@@ -555,6 +555,7 @@ ActionUtils.get_action_time_scale = function (unit, action_settings, is_animatio
 
 				if is_melee then
 					time_scale = buff_extension:apply_buffs_to_value(time_scale, "attack_speed")
+					time_scale = buff_extension:apply_buffs_to_value(time_scale, "attack_speed_melee")
 				elseif is_ranged then
 					time_scale = buff_extension:apply_buffs_to_value(time_scale, "attack_speed")
 				end
@@ -842,7 +843,7 @@ ActionUtils.resolve_action_selector = function (action, talent_extension, buff_e
 
 	local next_action_name = next_action.action or action.lookup_data.action_name
 	local next_sub_action_name = next_action.sub_action
-	local item_template = Weapons[action.lookup_data.item_template_name]
+	local item_template = WeaponUtils.get_weapon_template(action.lookup_data.item_template_name)
 	local new_action = item_template.actions[next_action_name][next_sub_action_name]
 
 	return new_action, next_action_name, next_sub_action_name

@@ -71,6 +71,12 @@ template.create_widget_definition = function (scenegraph_id)
 					255,
 					255,
 				},
+				color_disabled = {
+					10,
+					190,
+					190,
+					190,
+				},
 				color_occluded = {
 					100,
 					190,
@@ -134,9 +140,12 @@ template.update_function = function (ui_renderer, widget, marker, settings, dt, 
 	local icon_style = style.icon
 	local distance = content.distance
 	local progress = content.progress
+	local climb_unit = marker.unit
+	local interactable_extension = ScriptUnit.extension(climb_unit, "interactable_system")
+	local enabled = interactable_extension:is_enabled()
 	local attack_held = Managers.input:get_service("Player"):get("action_one_hold")
 
-	if distance <= 3 and not marker.raycast_result and not attack_held then
+	if distance <= 3 and not marker.raycast_result and not attack_held and enabled then
 		progress = math.min(1, progress + dt * 3.5)
 	else
 		progress = math.max(0, progress - dt * 15)
@@ -145,7 +154,9 @@ template.update_function = function (ui_renderer, widget, marker, settings, dt, 
 	content.progress = progress
 	style.background.color[1] = 175 * progress
 
-	if marker.raycast_result or attack_held then
+	if not enabled then
+		Colors.copy_to(icon_style.color, icon_style.color_disabled)
+	elseif marker.raycast_result or attack_held or not enabled then
 		Colors.copy_to(icon_style.color, icon_style.color_occluded)
 	else
 		Colors.lerp_color_tables(icon_style.color_inactive, icon_style.color_active, progress, icon_style.color)

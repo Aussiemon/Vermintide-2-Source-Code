@@ -241,7 +241,7 @@ BreedFreezer.try_mark_unit_for_freeze = function (self, breed, unit)
 
 	for i = 1, #units_to_freeze do
 		if units_to_freeze[i] == unit then
-			rawset(_G, "DoubleFreezeContext", {})
+			rawset(_G, "DoubleFreezeContext", rawget(_G, "DoubleFreezeContext") or {})
 
 			DoubleFreezeContext[unit] = true
 

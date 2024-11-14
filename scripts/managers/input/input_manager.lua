@@ -685,6 +685,11 @@ InputManager.update = function (self, dt, t)
 	self:update_devices(dt, t)
 end
 
+local VALID_AXIS_PS4 = {
+	left = true,
+	right = true,
+}
+
 InputManager.update_devices = function (self, dt, t)
 	local input_devices = self.input_devices
 
@@ -741,12 +746,7 @@ InputManager.update_devices = function (self, dt, t)
 			local button_name = input_device.axis_name(key)
 
 			if IS_PS4 or is_ps_pad then
-				local valid_axis = {
-					left = true,
-					right = true,
-				}
-
-				if valid_axis[button_name] and Vector3.length(axis[key]) ~= 0 then
+				if VALID_AXIS_PS4[button_name] and Vector3.length(axis[key]) ~= 0 then
 					any_device_input_axis_moved = true
 				end
 			elseif input_device.axis_name(key) ~= "cursor" and Vector3.length(axis[key]) ~= 0 then

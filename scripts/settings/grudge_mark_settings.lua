@@ -13,6 +13,17 @@ BreedEnhancements = BreedEnhancements or {
 		"grudge_mark_stagger_distance_resistance",
 		no_attribute = true,
 	},
+	termite_base = {
+		"grudge_mark_termite_health",
+		"grudge_mark_unstaggerable",
+		"grudge_mark_shockwave_attacks",
+		"grudge_mark_crushing_blow",
+		no_attribute = true,
+	},
+	termite_small = {
+		"grudge_mark_termite_health_small",
+		no_attribute = true,
+	},
 	warping = {
 		"grudge_mark_warping",
 		display_name = "display_name_warping",

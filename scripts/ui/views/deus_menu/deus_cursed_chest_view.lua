@@ -287,34 +287,42 @@ DeusCursedChestView.update = function (self, dt, t)
 	self:draw(dt)
 end
 
+DeusCursedChestView._on_button_pressed = function (self, power_up_data)
+	local power_up = power_up_data.power_up
+
+	power_up_data.selected = true
+
+	Unit.set_data(self._interactable, "power_ups", self._power_up_data)
+
+	local run_controller = self._deus_run_controller
+
+	run_controller:add_power_ups({
+		power_up,
+	}, REAL_PLAYER_LOCAL_ID, true)
+
+	self._circle_max_speed_modifier = POWER_UP_SELECTED_CIRCLE_SPEED
+
+	self:_play_sound(SOUND_EVENTS.power_up_unlocked)
+
+	local deus_cursed_chest_extension = ScriptUnit.has_extension(self._interactable, "deus_cursed_chest_system")
+
+	if deus_cursed_chest_extension then
+		deus_cursed_chest_extension:on_reward_collected(power_up)
+	end
+
+	self:_close()
+end
+
 DeusCursedChestView._handle_input = function (self, dt)
 	for _, power_up_data in ipairs(self._power_up_data) do
 		local widget = power_up_data.widget
 
 		if self:_is_button_pressed(widget) then
-			local power_up = power_up_data.power_up
+			local animation_system = Managers.state.entity:system("animation_system")
 
-			power_up_data.selected = true
-
-			Unit.set_data(self._interactable, "power_ups", self._power_up_data)
-
-			local run_controller = self._deus_run_controller
-
-			run_controller:add_power_ups({
-				power_up,
-			}, REAL_PLAYER_LOCAL_ID, true)
-
-			self._circle_max_speed_modifier = POWER_UP_SELECTED_CIRCLE_SPEED
-
-			self:_play_sound(SOUND_EVENTS.power_up_unlocked)
-
-			local deus_cursed_chest_extension = ScriptUnit.has_extension(self._interactable, "deus_cursed_chest_system")
-
-			if deus_cursed_chest_extension then
-				deus_cursed_chest_extension:on_reward_collected(power_up)
-			end
-
-			self:_close()
+			animation_system:add_safe_animation_callback(function ()
+				self:_on_button_pressed(power_up_data)
+			end)
 		end
 
 		self:_update_button_hover_sound(widget)

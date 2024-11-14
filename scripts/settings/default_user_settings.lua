@@ -95,7 +95,9 @@ local default_user_settings = {
 	toggle_alternate_attack = false,
 	toggle_crouch = false,
 	toggle_pactsworn_help_ui = true,
+	toggle_pactsworn_overhead_name_ui = true,
 	toggle_stationary_dodge = false,
+	toggle_versus_level_in_all_game_modes = true,
 	tutorials_enabled = true,
 	twitch_difficulty = 50,
 	twitch_disable_mutators = false,
@@ -174,6 +176,7 @@ local default_render_settings = {
 	fov = script_data.settings.default_fov or CameraSettings.first_person._node.vertical_fov,
 	nv_low_latency_mode = not not reflex_supported,
 }
+local default_versus_settings = {}
 local default_texture_settings = {}
 local char_texture_settings = TextureQuality.characters[default_user_settings.char_texture_quality]
 local env_texture_settings = TextureQuality.environment[default_user_settings.env_texture_quality]
@@ -263,6 +266,14 @@ DefaultUserSettings.set_default_user_settings = function ()
 		end
 	end
 
+	for key, value in pairs(default_versus_settings) do
+		if Application.user_setting("versus_settings", key) == nil then
+			Application.set_user_setting("versus_settings", key, value)
+
+			set_default = true
+		end
+	end
+
 	if reload then
 		Application.apply_user_settings()
 
@@ -289,6 +300,8 @@ DefaultUserSettings.get = function (setting_type, setting_name)
 		setting = default_render_settings[setting_name]
 	elseif setting_type == "texture_settings" then
 		setting = default_texture_settings[setting_name]
+	elseif setting_type == "versus_settings" then
+		setting = default_versus_settings[setting_name]
 	end
 
 	fassert(setting ~= nil, "No default setting set for setting %s", setting_name)

@@ -39,6 +39,13 @@ IgnoreChatPings = {
 	[PingTypes.MOVEMENT_GENERIC] = true,
 	[PingTypes.PING_ONLY] = true,
 	[PingTypes.ENEMY_POSITION] = true,
+	mechanism_overrides = {
+		versus = {
+			[PingTypes.ENEMY_GENERIC] = true,
+			[PingTypes.PLAYER_PICK_UP] = true,
+			[PingTypes.ACKNOWLEDGE] = true,
+		},
+	},
 }
 PingMessagesByPingType = {
 	versus = {
@@ -77,7 +84,7 @@ PingTemplates = {
 				{
 					"MOVEMENT_GENERIC",
 				},
-				"objective_capture_point",
+				"ping_friendly",
 			},
 			[PingTypes.PLAYER_PICK_UP] = {
 				true,
@@ -155,7 +162,7 @@ PingTemplates = {
 				{
 					"MOVEMENT_GENERIC",
 				},
-				"objective_capture_point",
+				"ping_friendly",
 			},
 			[PingTypes.PLAYER_PICK_UP] = {
 				true,
@@ -224,7 +231,7 @@ PingTemplates = {
 				{
 					"MOVEMENT_GENERIC",
 				},
-				"objective_capture_point",
+				"ping_friendly",
 			},
 			[PingTypes.PLAYER_PICK_UP] = {
 				true,
@@ -283,7 +290,7 @@ PingTemplates = {
 				{
 					"MOVEMENT_GENERIC",
 				},
-				"objective_capture_point",
+				"ping_friendly",
 			},
 			[PingTypes.PLAYER_PICK_UP] = {
 				true,
@@ -314,7 +321,7 @@ PingTemplates = {
 				{
 					"ENEMY_POSITION",
 				},
-				"objective_survive",
+				"ping_hostile",
 			},
 		},
 		exec_func = function (self, parent, pinger_unit, pinged_unit, ping_type, social_wheel_event_id, mechanism_key)

@@ -79,7 +79,7 @@ ChatManager.init = function (self)
 	self.current_message_target_index = 1
 	self.current_view_index = 1
 
-	self:add_message_target("Party", Irc.PARTY_MSG)
+	self:add_message_target("Party", Irc.PARTY_MSG, "vs_chat_msg_target_team")
 
 	if (IS_WINDOWS or IS_LINUX) and GameSettingsDevelopment.use_global_chat and rawget(_G, "Steam") then
 		Steam.retrieve_encrypted_app_ticket()
@@ -571,27 +571,16 @@ ChatManager.send_chat_message = function (self, channel_id, local_player_id, mes
 		if self.is_server then
 			peer_id = sender_peer_id and sender_peer_id or peer_id
 
-			local members = self:channel_members(channel_id)
+			local network_handler = Managers.mechanism:network_handler()
+			local match_handler = network_handler:get_match_handler()
 
-			for _, member in pairs(members) do
-				if member ~= self.my_peer_id then
-					local network_channel_id = PEER_ID_TO_CHANNEL[member]
-
-					if network_channel_id then
-						RPC.rpc_chat_message(network_channel_id, channel_id, peer_id, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev, message_type)
-					end
-				end
-			end
+			match_handler:send_rpc_all("rpc_chat_message", channel_id, peer_id, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev, message_type)
 		else
-			local host_peer_id = self.host_peer_id
+			local network_handler = Managers.mechanism:network_handler()
+			local match_handler = network_handler:get_match_handler()
 
-			if host_peer_id then
-				local network_channel_id = PEER_ID_TO_CHANNEL[host_peer_id]
-
-				if network_channel_id then
-					RPC.rpc_chat_message(network_channel_id, channel_id, peer_id, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev, message_type)
-				end
-			end
+			match_handler:send_rpc_up("rpc_chat_message", channel_id, peer_id, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev, message_type)
+			match_handler:send_rpc_self("rpc_chat_message", channel_id, peer_id, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev, message_type)
 		end
 
 		if not localize then
@@ -759,20 +748,16 @@ ChatManager.rpc_chat_message = function (self, sender_channel_id, channel_id, me
 		return
 	end
 
+	local sender_peer_id = CHANNEL_TO_PEER_ID[sender_channel_id]
+
 	if self.is_server then
 		local members = self:channel_members(channel_id)
-		local my_peer_id = self.my_peer_id
-		local sender_peer_id = CHANNEL_TO_PEER_ID[sender_channel_id]
+		local network_handler = Managers.mechanism:network_handler()
+		local match_handler = network_handler:get_match_handler()
 
-		for _, member in pairs(members) do
-			if member ~= my_peer_id and member ~= sender_peer_id then
-				local member_channel_id = PEER_ID_TO_CHANNEL[member]
-
-				if member_channel_id then
-					RPC.rpc_chat_message(member_channel_id, channel_id, message_sender, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev, message_type)
-				end
-			end
-		end
+		match_handler:propagate_rpc_if("rpc_chat_message", sender_peer_id, function (peer_id)
+			return table.find(members, peer_id)
+		end, channel_id, message_sender, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev, message_type)
 	end
 
 	if self:is_channel_member(channel_id) and (is_system_message or not self.peer_ignore_list[message_sender]) then
@@ -960,7 +945,7 @@ COMMAND_LUT = {
 
 ChatManager._handle_command = function (self, message, recent_message_index, optional_message_target)
 	if string.find(message, "/") == 1 then
-		local parameters = string.split(message, " ")
+		local parameters = string.split_deprecated(message, " ")
 		local command = COMMAND_LUT[parameters[1]]
 		local context_data
 

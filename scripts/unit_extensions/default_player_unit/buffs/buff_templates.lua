@@ -32,6 +32,7 @@ StatBuffApplicationMethods = {
 	attack_intensity_threshold = "stacking_multiplier",
 	attack_speed = "stacking_multiplier",
 	attack_speed_drakefire = "stacking_multiplier",
+	attack_speed_melee = "stacking_multiplier",
 	backstab_multiplier = "stacking_bonus",
 	block_angle = "stacking_multiplier",
 	block_cost = "stacking_multiplier",
@@ -191,7 +192,7 @@ ProcEvents = {
 	"on_boss_killed",
 	"on_special_killed",
 	"on_elite_killed",
-	"on_ping_target_killed",
+	"on_pingable_target_killed",
 	"on_block",
 	"on_block_broken",
 	"on_knocked_down",
@@ -215,6 +216,7 @@ ProcEvents = {
 	"on_unwield",
 	"on_critical_hit",
 	"on_last_ammo_used",
+	"on_ammo_clip_used",
 	"on_gained_ammo_from_no_ammo",
 	"on_player_damage_dealt",
 	"on_stagger",
@@ -492,14 +494,22 @@ ProcFunctions = {
 		end
 
 		if ALIVE[owner_unit] and breed and (attack_type == "light_attack" or attack_type == "heavy_attack") and not has_procced then
-			if hit_zone_name == "head" or hit_zone_name == "neck" or hit_zone_name == "weakspot" then
-				buff.has_procced = true
-
-				DamageUtils.heal_network(owner_unit, owner_unit, heal_amount, "heal_from_proc")
-			end
-
 			if critical_hit then
 				DamageUtils.heal_network(owner_unit, owner_unit, heal_amount, "heal_from_proc")
+
+				buff.has_procced = true
+
+				if hit_zone_name == "head" or hit_zone_name == "neck" or hit_zone_name == "weakspot" then
+					DamageUtils.heal_network(owner_unit, owner_unit, heal_amount, "heal_from_proc")
+
+					buff.has_procced = true
+				end
+			elseif hit_zone_name == "head" or hit_zone_name == "neck" or hit_zone_name == "weakspot" then
+				DamageUtils.heal_network(owner_unit, owner_unit, heal_amount, "heal_from_proc")
+
+				buff.has_procced = true
+			else
+				DamageUtils.heal_network(owner_unit, owner_unit, heal_amount / 4, "heal_from_proc")
 
 				buff.has_procced = true
 			end
@@ -1648,6 +1658,40 @@ ProcFunctions = {
 			buff_system:remove_server_controlled_buff(owner_unit, active_buff.server_buff_id)
 		end
 	end,
+	victor_bountyhunter_add_power_on_no_ammo_proc = function (owner_unit, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local buff_system = Managers.state.entity:system("buff_system")
+		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+		local buff_template = buff.template
+		local buff_to_add = buff_template.buff_to_add
+		local active_buff = buff_extension:get_stacking_buff(buff_to_add)
+		local server_controlled = true
+
+		if not active_buff then
+			local server_buff_id = buff_system:add_buff(owner_unit, buff_to_add, owner_unit, server_controlled)
+			local added_buff = buff_extension:get_stacking_buff(buff_to_add)
+
+			added_buff.server_buff_id = server_buff_id
+		end
+	end,
+	victor_bountyhunter_remove_power_on_no_ammo_proc = function (owner_unit, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local buff_system = Managers.state.entity:system("buff_system")
+		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+		local buff_template = buff.template
+		local buff_to_remove = buff_template.buff_to_remove
+		local active_buff = buff_extension:get_stacking_buff(buff_to_remove)
+
+		if active_buff and active_buff.server_buff_id then
+			buff_system:remove_server_controlled_buff(owner_unit, active_buff.server_buff_id)
+		end
+	end,
 	debuff_defence_grenade_hit = function (owner_unit, buff, params)
 		local hit_unit = params[1]
 		local attack_type = params[2]
@@ -2539,9 +2583,8 @@ ProcFunctions = {
 			first_person_extension:play_remote_hud_sound_event("Stop_career_ability_markus_huntsman_loop_husk")
 
 			if not is_bot(owner_unit) then
-				MOOD_BLACKBOARD.skill_huntsman_stealth = false
-				MOOD_BLACKBOARD.skill_huntsman_surge = true
-
+				Managers.state.camera:set_mood("skill_huntsman_stealth", "skill_huntsman_stealth", false)
+				Managers.state.camera:set_mood("skill_huntsman_surge", "skill_huntsman_surge", true)
 				first_person_extension:play_hud_sound_event("Stop_career_ability_markus_huntsman_loop")
 			end
 		end
@@ -2610,29 +2653,6 @@ ProcFunctions = {
 
 			if ammo_extension then
 				ammo_extension:add_ammo_to_reserve(ammo_amount)
-			end
-		end
-	end,
-	victor_bounty_hunter_add_power_on_no_ammo_proc = function (owner_unit, buff, params)
-		if not Managers.state.network.is_server then
-			return
-		end
-
-		local buff_template = buff.template
-		local buff_to_add = buff_template.buff_to_add
-		local buff_system = Managers.state.entity:system("buff_system")
-
-		if ALIVE[owner_unit] then
-			local side = Managers.state.side.side_by_unit[owner_unit]
-			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
-			local num_units = #player_and_bot_units
-
-			for i = 1, num_units do
-				local unit = player_and_bot_units[i]
-
-				if Unit.alive(unit) then
-					buff_system:add_buff(unit, buff_to_add, owner_unit, false)
-				end
 			end
 		end
 	end,
@@ -3979,18 +3999,6 @@ ProcFunctions = {
 			end
 		end
 	end,
-	remove_controlled_unit_on_death = function (owner_unit, buff, params)
-		if not buff.removed_controlled_unit then
-			buff.removed_controlled_unit = true
-
-			local commander_unit = buff.source_attacker_unit
-			local commander_extension = ScriptUnit.extension(commander_unit, "ai_commander_system")
-			local skip_sync = true
-			local skip_buff_removal = false
-
-			commander_extension:remove_controlled_unit(owner_unit, skip_sync, skip_buff_removal)
-		end
-	end,
 	apply_dot_on_hit = function (owner_unit, buff, params)
 		if not Managers.state.network.is_server then
 			return
@@ -4213,20 +4221,6 @@ StackingBuffFunctions = {
 
 		BuffFunctionTemplates.functions.reduce_cooldown_percent(unit, dummy_buff, new_buff_params)
 	end,
-	fire_grenade_dot_add = function (unit, sub_buff_template, current_num_stacks, buff_extension, new_buff_params)
-		local should_add_buff = true
-		local breed = AiUtils.unit_breed(unit)
-
-		if breed and breed.is_player then
-			local mechanism_name = Managers.mechanism:current_mechanism_name()
-
-			if mechanism_name == "versus" then
-				should_add_buff = current_num_stacks < (sub_buff_template.max_player_stacks_in_versus or math.huge)
-			end
-		end
-
-		return should_add_buff
-	end,
 }
 PotionSpreadTrinketTemplates = {
 	damage_boost_potion = {
@@ -4256,6 +4250,7 @@ BuffTemplates = {
 				refresh_durations = true,
 				perks = {
 					buff_perks.invulnerable,
+					buff_perks.no_ranged_knockback,
 				},
 			},
 		},
@@ -5043,6 +5038,80 @@ BuffTemplates = {
 			},
 		},
 	},
+	planted_decrease_rotation_speed = {
+		buffs = {
+			{
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				lerp_time = 0.2,
+				multiplier = 0.75,
+				name = "decrease_rotation_speed",
+				remove_buff_func = "remove_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_rotation",
+				update_func = "update_action_lerp_movement_buff",
+				path_to_movement_setting_to_modify = {
+					"look_input_sensitivity",
+				},
+			},
+		},
+	},
+	planted_return_to_normal_rotation = {
+		buffs = {
+			{
+				apply_buff_func = "apply_action_lerp_remove_movement_buff",
+				duration = 1,
+				lerp_time = 0.2,
+				name = "decrease_rotation_speed_return",
+				update_func = "update_action_lerp_remove_movement_buff",
+				path_to_movement_setting_to_modify = {
+					"look_input_sensitivity",
+				},
+			},
+		},
+	},
+	set_rotation_limit = {
+		buffs = {
+			{
+				apply_buff_func = "apply_rotation_limit_buff",
+				bonus = 1,
+				name = "set_rotation_limit",
+				remove_buff_func = "remove_rotation_limit_buff",
+				max_stacks = math.huge,
+				path_to_movement_setting_to_modify = {
+					"look_input_limit",
+				},
+			},
+		},
+	},
+	planted_rotation_limit_multiplier = {
+		buffs = {
+			{
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				lerp_time = 0.4,
+				multiplier = 0.75,
+				name = "planted_rotation_limit_multiplier",
+				remove_buff_func = "remove_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_rotation_limit_multiplier",
+				update_func = "update_action_lerp_movement_buff",
+				path_to_movement_setting_to_modify = {
+					"look_input_limit_multiplier",
+				},
+			},
+		},
+	},
+	planted_return_to_normal_rotation_limit_multiplier = {
+		buffs = {
+			{
+				apply_buff_func = "apply_action_lerp_remove_movement_buff",
+				duration = 1.5,
+				lerp_time = 0.4,
+				name = "planted_return_to_normal_rotation_limit_multiplier",
+				update_func = "update_action_lerp_remove_movement_buff",
+				path_to_movement_setting_to_modify = {
+					"look_input_limit_multiplier",
+				},
+			},
+		},
+	},
 	arrow_poison_dot = {
 		buffs = {
 			{
@@ -5256,17 +5325,39 @@ BuffTemplates = {
 				damage_profile = "burning_dot_firegrenade",
 				damage_type = "burninating",
 				duration = 6,
-				max_player_stacks_in_versus = 1,
 				name = "burning_dot_fire_grenade",
-				on_add_stack_override_func = "fire_grenade_dot_add",
 				time_between_dot_damages = 1,
 				update_func = "apply_dot_damage",
 				update_start_delay = 1,
-				versus_player_duration = 3,
 				perks = {
 					buff_perks.burning,
 				},
-				max_stacks = math.huge,
+				max_stacks_func = function (unit, template)
+					local breed = AiUtils.unit_breed(unit)
+
+					if breed and breed.is_player then
+						local mechanism_name = Managers.mechanism:current_mechanism_name()
+
+						if mechanism_name == "versus" then
+							return 1
+						end
+					end
+
+					return math.huge
+				end,
+				refresh_durations_func = function (unit, template)
+					local breed = AiUtils.unit_breed(unit)
+
+					if breed and breed.is_player then
+						local mechanism_name = Managers.mechanism:current_mechanism_name()
+
+						if mechanism_name == "versus" then
+							return true
+						end
+					end
+
+					return false
+				end,
 				duration_modifier_func = function (unit, sub_buff_template, duration, buff_extension, params)
 					local is_versus = Managers.mechanism:current_mechanism_name() == "versus"
 
@@ -5277,7 +5368,9 @@ BuffTemplates = {
 					local breed = AiUtils.unit_breed(unit)
 
 					if breed and breed.is_player then
-						return sub_buff_template.versus_player_duration
+						local versus_player_duration = 2
+
+						return versus_player_duration
 					end
 
 					return duration
@@ -5296,6 +5389,23 @@ BuffTemplates = {
 				time_between_dot_damages = 1.5,
 				update_func = "apply_dot_damage",
 				update_start_delay = 1.5,
+				perks = {
+					buff_perks.burning,
+				},
+			},
+		},
+	},
+	burning_dot_1tick_vs = {
+		buffs = {
+			{
+				apply_buff_func = "start_dot_damage",
+				damage_profile = "burning_dot",
+				damage_type = "burninating",
+				duration = 4,
+				name = "burning_dot_1tick_vs",
+				time_between_dot_damages = 0.75,
+				update_func = "apply_dot_damage",
+				update_start_delay = 0.75,
 				perks = {
 					buff_perks.burning,
 				},
@@ -6942,10 +7052,10 @@ BuffTemplates = {
 					},
 					versus_base = {
 						3,
-						1,
-						0,
-						6.5,
-						2,
+						3,
+						3,
+						3,
+						3,
 					},
 				},
 				perks = {
@@ -7028,11 +7138,11 @@ BuffTemplates = {
 						4,
 					},
 					versus_base = {
-						10,
-						1,
-						0,
-						6.5,
-						1,
+						3,
+						3,
+						3,
+						3,
+						3,
 					},
 				},
 				perks = {
@@ -8956,16 +9066,6 @@ BuffTemplates = {
 				icon = "markus_mercenary_increased_damage_on_enemy_proximity",
 				name = "twitch_vote_buff_pulsating_waves",
 				update_func = "update_twitch_pulsating_waves",
-			},
-		},
-	},
-	commandeered_unit_tracker = {
-		buffs = {
-			{
-				buff_func = "remove_controlled_unit_on_death",
-				event = "on_death",
-				name = "commandeered_unit_tracker",
-				remove_buff_func = "remove_controlled_unit",
 			},
 		},
 	},

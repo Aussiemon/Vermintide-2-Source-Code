@@ -77,7 +77,7 @@ RewardPopupUI.set_visible = function (self, visible)
 	self._is_visible = visible
 end
 
-RewardPopupUI.update = function (self, dt)
+RewardPopupUI.update = function (self, dt, t)
 	if self.input_acquired and self:is_presentation_complete() then
 		self:_release_input()
 	end
@@ -199,7 +199,7 @@ RewardPopupUI.draw = function (self, dt)
 	end
 end
 
-RewardPopupUI.display_presentation = function (self, data)
+RewardPopupUI.display_presentation = function (self, data, reward_complete_callback)
 	self._draw_widgets = true
 	self._ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
 	self._animations = {}
@@ -213,6 +213,7 @@ RewardPopupUI.display_presentation = function (self, data)
 	self._presentation_complete = false
 	self._speed_up_popup = false
 	self._done_reset_speed_up_popup = false
+	self._reward_complete_cb = reward_complete_callback
 
 	if not data.keep_input then
 		self:_acquire_input()
@@ -235,6 +236,12 @@ RewardPopupUI.on_presentation_complete = function (self)
 	self:set_fullscreen_effect_enable_state(false)
 
 	self._animation_presentation_data = nil
+
+	if self._reward_complete_cb then
+		self._reward_complete_cb()
+
+		self._reward_complete_cb = nil
+	end
 end
 
 RewardPopupUI.start_presentation_animation = function (self, animation_name, widgets)

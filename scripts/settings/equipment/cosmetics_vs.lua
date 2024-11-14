@@ -74,7 +74,7 @@ local skaven_warpfire_thrower_skin_0000 = {
 	},
 	third_person_attachment = {
 		unit = "units/beings/player/dark_pact_skins/skaven_warpfire_thrower/skin_0000/third_person/chr_third_person_mesh",
-		attachment_node_linking = AttachmentNodeLinking.skaven_third_person_attachment,
+		attachment_node_linking = AttachmentNodeLinking.skaven_third_person_attachment_backpack,
 	},
 	always_hide_attachment_slots = {
 		"slot_hat",
@@ -94,7 +94,7 @@ local skaven_ratling_gunner_skin_0000 = {
 	},
 	third_person_attachment = {
 		unit = "units/beings/player/dark_pact_skins/skaven_ratlinggunner/skin_0000/third_person/chr_third_person_mesh",
-		attachment_node_linking = AttachmentNodeLinking.skaven_third_person_attachment,
+		attachment_node_linking = AttachmentNodeLinking.skaven_third_person_attachment_backpack,
 	},
 	always_hide_attachment_slots = {
 		"slot_hat",

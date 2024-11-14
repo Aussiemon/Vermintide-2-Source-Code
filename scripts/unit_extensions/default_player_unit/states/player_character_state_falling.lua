@@ -32,7 +32,7 @@ PlayerCharacterStateFalling.init = function (self, character_state_init_context)
 	PlayerCharacterState.init(self, character_state_init_context, "falling")
 
 	self.last_valid_nav_position = Vector3Box()
-	self.ladder_shaking = false
+	self.shaking_ladder_unit = false
 end
 
 PlayerCharacterStateFalling.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
@@ -68,7 +68,7 @@ PlayerCharacterStateFalling.on_enter = function (self, unit, input, dt, context,
 
 	self.is_active = true
 	self.times_jumped_in_air = 0
-	self.ladder_shaking = params.ladder_shaking or false
+	self.shaking_ladder_unit = params.shaking_ladder_unit or nil
 
 	if previous_state ~= "jumping" and previous_state ~= "leaping" and previous_state ~= "overcharge_exploding" and previous_state ~= "lunging" then
 		ScriptUnit.extension(unit, "whereabouts_system"):set_fell()
@@ -196,16 +196,23 @@ PlayerCharacterStateFalling.update = function (self, unit, input, dt, context, t
 
 	local colliding_with_ladder, ladder_unit = CharacterStateHelper.is_colliding_with_gameplay_collision_box(world, unit, "filter_ladder_collision")
 	local recently_left_ladder = CharacterStateHelper.recently_left_ladder(status_extension, t)
+	local below_ladder, near_ladder, distance
 
-	if colliding_with_ladder and not recently_left_ladder and not self.ladder_shaking then
+	if colliding_with_ladder and not recently_left_ladder and (not self.shaking_ladder_unit or self.shaking_ladder_unit ~= ladder_unit) then
 		local top_node = Unit.node(ladder_unit, "c_platform")
 		local ladder_rot = Unit.local_rotation(ladder_unit, 0)
 		local ladder_plane_inv_normal = Quaternion.forward(ladder_rot)
 		local ladder_offset = Unit.local_position(ladder_unit, 0) - self_pos
-		local distance = Vector3.dot(ladder_plane_inv_normal, ladder_offset)
+
+		distance = Vector3.dot(ladder_plane_inv_normal, ladder_offset)
+
 		local epsilon = 0.1
 
-		if self_pos.z < Vector3.z(Unit.world_position(ladder_unit, top_node)) and distance > 0 and distance < 0.7 + epsilon then
+		below_ladder = self_pos.z < Vector3.z(Unit.world_position(ladder_unit, top_node))
+		near_ladder = distance > 0 and distance < 0.7 + epsilon
+		can_climb_ladder = below_ladder and near_ladder
+
+		if can_climb_ladder then
 			local params = self.temp_params
 
 			params.ladder_unit = ladder_unit
@@ -213,6 +220,34 @@ PlayerCharacterStateFalling.update = function (self, unit, input, dt, context, t
 			csm:change_state("climbing_ladder", params)
 
 			return
+		end
+	end
+
+	if script_data.debug_ladder_climbing then
+		Debug.text("CAN CLIMB: %s", can_climb_ladder)
+
+		if not can_climb_ladder then
+			Debug.text("Can't climb because:")
+
+			if recently_left_ladder then
+				Debug.text("\tRecently left ladder: %s", t - ScriptUnit.extension(unit, "status_system").left_ladder_timer)
+			end
+
+			if colliding_with_ladder == false then
+				Debug.text("\tNot colliding with ladder")
+			end
+
+			if below_ladder == false then
+				Debug.text("\tAbove ladder")
+			end
+
+			if near_ladder == false then
+				Debug.text("\tToo far from ladder. Is %s, needs %s", distance, 0.8)
+			end
+
+			if self.shaking_ladder_unit and ladder_unit == self.shaking_ladder_unit then
+				Debug.text("\tAttempting to latch onto shaking ladder")
+			end
 		end
 	end
 

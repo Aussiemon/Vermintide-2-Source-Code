@@ -84,6 +84,10 @@ CutsceneCamera.update = function (self)
 	self:update_cutscene_camera()
 end
 
+CutsceneCamera.unsafe_entity_update = function (self)
+	self:update_cutscene_camera()
+end
+
 CutsceneCamera.update_cutscene_camera = function (self)
 	local source_camera = self.source_camera
 	local target_camera = self.target_camera

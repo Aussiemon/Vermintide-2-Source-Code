@@ -1,16 +1,13 @@
 ﻿-- chunkname: @scripts/unit_extensions/weaves/weave_capture_point_extension.lua
 
-WeaveCapturePointExtension = class(WeaveCapturePointExtension)
+WeaveCapturePointExtension = class(WeaveCapturePointExtension, BaseObjectiveExtension)
 WeaveCapturePointExtension.NAME = "WeaveCapturePointExtension"
 
+local CLIENT_PROGRESS_BUFFER_SIZE = 10
+
 WeaveCapturePointExtension.init = function (self, extension_init_context, unit, extension_init_data)
-	self._extension_init_context = extension_init_context
-	self._extension_init_data = extension_init_data
-	self._is_server = extension_init_context.is_server
-	self._objective_name = extension_init_data.objective_name
-	self._score = extension_init_data.score or 0
-	self._game_object_id = nil
-	self._unit = unit
+	WeaveCapturePointExtension.super.init(self, extension_init_context, unit, extension_init_data)
+
 	self._is_already_inside = false
 	self._num_players = 0
 	self._num_players_required = 0
@@ -20,28 +17,27 @@ WeaveCapturePointExtension.init = function (self, extension_init_context, unit, 
 	self._on_exit_func = extension_init_data.on_exit_func
 	self._on_complete_func = extension_init_data.on_complete_func
 	self._percentage_of_players_required = extension_init_data.percentage_of_players_required or 0.25
-	self._timer_recharge_per_second = extension_init_data.timer_recharge_per_second or 0
 	self._max_time = extension_init_data.timer or 45
 	self._capture_rate_multiplier = extension_init_data.capture_rate_multiplier or 5
 	self._timer = self._max_time
-	self._weave_objective_system = Managers.state.entity:system("weave_objective_system")
 
-	local scale = extension_init_data.scale
-
-	Unit.set_local_scale(unit, 0, scale)
+	if not self._is_server then
+		self._progress_buffer_index = 0
+		self._client_progress_buffer = {}
+	end
 
 	local terror_event_spawner_id = extension_init_data.terror_event_spawner_id
 
 	Unit.set_data(unit, "terror_event_spawner_id", terror_event_spawner_id)
 	self:_calculate_size()
+
+	self._last_set_value = 0
+	self._latest_value = 0
+	self._predicted_value = 0
 end
 
-WeaveCapturePointExtension.get_objective_settings = function (self)
-	return WeaveObjectiveSettings[WeaveCapturePointExtension.NAME]
-end
-
-WeaveCapturePointExtension.score = function (self)
-	return self._score
+WeaveCapturePointExtension.display_name = function (self)
+	return "objective_capture_points_name_single"
 end
 
 WeaveCapturePointExtension._calculate_size = function (self)
@@ -55,27 +51,15 @@ WeaveCapturePointExtension._calculate_size = function (self)
 	end
 end
 
-WeaveCapturePointExtension.activate = function (self, game_object_id, objective_data)
+WeaveCapturePointExtension._set_objective_data = function (self, objective_data)
+	return
+end
+
+WeaveCapturePointExtension._activate = function (self)
 	local extension = ScriptUnit.has_extension(self._unit, "tutorial_system")
 
 	if extension then
 		extension:set_active(true)
-	end
-
-	if self._is_server then
-		local game_object_data_table = {
-			value = 0,
-			go_type = NetworkLookup.go_types.weave_objective,
-			objective_name = NetworkLookup.weave_objective_names[self._objective_name],
-		}
-		local callback = callback(self, "cb_game_session_disconnect")
-
-		self._game_object_id = Managers.state.network:create_game_object("weave_objective", game_object_data_table, callback)
-	else
-		self._game_object_id = game_object_id
-		self._current_value = 0
-		self._lerp_step = 0
-		self._new_value = 0
 	end
 
 	local mesh = Unit.mesh(self._unit, "g_projector002")
@@ -129,27 +113,15 @@ WeaveCapturePointExtension.activate = function (self, game_object_id, objective_
 	end
 end
 
-WeaveCapturePointExtension.complete = function (self)
+WeaveCapturePointExtension.complete = function (self, last_leaf_objective)
+	WeaveCapturePointExtension.super.complete(self, last_leaf_objective)
+
 	local audio_system = Managers.state.entity:system("audio_system")
 
 	audio_system:play_audio_unit_event("Play_winds_gameplay_capture_success", self._unit)
-
-	if self._is_server and self._on_complete_func then
-		self._on_complete_func(self._unit)
-	end
-
-	self:deactivate()
 end
 
-WeaveCapturePointExtension.deactivate = function (self)
-	if self._is_server then
-		local game_session = Network.game_session()
-
-		if game_session then
-			GameSession.destroy_game_object(game_session, self._game_object_id)
-		end
-	end
-
+WeaveCapturePointExtension._deactivate = function (self)
 	local size = self._size
 
 	for i = 1, size * 15 do
@@ -157,30 +129,10 @@ WeaveCapturePointExtension.deactivate = function (self)
 		local y_offset = math.random(-size * 10, size * 10) / 10
 		local unit_position = Unit.local_position(self._unit, 0)
 		local spawn_pos = unit_position + Vector3(x_offset, y_offset, 0)
+		local objective_system = Managers.state.entity:system("objective_system")
+		local weave_essence_handler = objective_system:weave_essence_handler()
 
-		self._weave_objective_system:spawn_essence_unit(spawn_pos)
-	end
-
-	self._game_object_id = nil
-end
-
-WeaveCapturePointExtension.cb_game_session_disconnect = function (self)
-	return
-end
-
-WeaveCapturePointExtension.objective_name = function (self)
-	return self._objective_name
-end
-
-WeaveCapturePointExtension.update = function (self, dt, t)
-	if not self._game_object_id then
-		return
-	end
-
-	if self._is_server then
-		self:_server_update(dt, t)
-	else
-		self:_client_update(dt, t)
+		weave_essence_handler:spawn_essence_unit(spawn_pos)
 	end
 end
 
@@ -223,7 +175,7 @@ WeaveCapturePointExtension._server_update = function (self, dt, t)
 		self:_update_num_players_required(num_players)
 	end
 
-	local new_time
+	local new_time = self._timer
 	local num_players_required = self._num_players_required
 
 	if num_players_required <= num_players_inside then
@@ -258,20 +210,16 @@ WeaveCapturePointExtension._server_update = function (self, dt, t)
 		if self._on_progress_func then
 			self._on_progress_func(self._unit, self._timer, self._max_time)
 		end
-	else
-		if self._is_already_inside then
-			if self._on_exit_func then
-				self._on_exit_func(self._unit)
-			end
-
-			local audio_system = Managers.state.entity:system("audio_system")
-
-			audio_system:play_audio_unit_event("Stop_winds_gameplay_capture_loop", self._unit)
-
-			self._is_already_inside = false
+	elseif self._is_already_inside then
+		if self._on_exit_func then
+			self._on_exit_func(self._unit)
 		end
 
-		new_time = math.clamp(self._timer + self._timer_recharge_per_second * dt, 0, self._max_time)
+		local audio_system = Managers.state.entity:system("audio_system")
+
+		audio_system:play_audio_unit_event("Stop_winds_gameplay_capture_loop", self._unit)
+
+		self._is_already_inside = false
 	end
 
 	if new_time ~= self._timer then
@@ -280,55 +228,69 @@ WeaveCapturePointExtension._server_update = function (self, dt, t)
 		local percentage_done = self:get_percentage_done()
 
 		Material.set_scalar(self._material, "radial_cutoff", percentage_done)
-
-		local game_session = Network.game_session()
-
-		if game_session and self._game_object_id then
-			GameSession.set_game_object_field(game_session, self._game_object_id, "value", percentage_done * 100)
-		end
+		self:server_set_value(percentage_done)
 	end
+end
+
+WeaveCapturePointExtension._client_average_progress_speed = function (self)
+	local buffer = self._client_progress_buffer
+	local buffer_size = #buffer
+
+	if buffer_size == 0 then
+		return 0
+	end
+
+	local buffer_start = math.index_wrapper(self._progress_buffer_index + 1, buffer_size)
+	local last_value = buffer[buffer_start] and buffer[buffer_start].value
+	local last_t = buffer[buffer_start] and buffer[buffer_start].t
+	local average_speed = 0
+
+	for i = 1, buffer_size - 1 do
+		local buffer_idx = math.index_wrapper(buffer_start + i, buffer_size)
+		local data = buffer[buffer_idx]
+		local value = data.value
+		local t = data.t
+
+		average_speed = average_speed + (value - last_value) / (t - last_t)
+		last_value = value
+		last_t = t
+	end
+
+	return average_speed / buffer_size
+end
+
+WeaveCapturePointExtension._client_register_value_progress = function (self, value, t)
+	self._progress_buffer_index = math.index_wrapper(self._progress_buffer_index + 1, CLIENT_PROGRESS_BUFFER_SIZE)
+
+	local data = self._client_progress_buffer[self._progress_buffer_index] or {}
+
+	data.value = value
+	data.t = t
+	self._client_progress_buffer[self._progress_buffer_index] = data
 end
 
 WeaveCapturePointExtension._client_update = function (self, dt, t)
-	local game_session = Network.game_session()
+	local real_value = self:client_get_value()
 
-	if not game_session then
-		return
+	if real_value > self._latest_value then
+		self:_client_register_value_progress(real_value, t)
+
+		self._latest_value = real_value
 	end
 
-	local value = GameSession.game_object_field(game_session, self._game_object_id, "value")
+	local predict_limit = 1
+	local speed = self:_client_average_progress_speed()
+	local predicted_value = math.clamp(self._predicted_value + speed * dt, real_value, real_value + speed * predict_limit)
 
-	value = value > self._new_value and (value + 2) * 0.01 or value
+	self._predicted_value = predicted_value
 
-	if value ~= self._new_value then
-		self._current_value = math.lerp(self._current_value, self._new_value, self._lerp_step)
-		self._new_value = value
-		self._lerp_step = 0
-	end
+	local set_value = math.lerp(self._last_set_value, predicted_value, dt)
 
-	if self._current_value == self._new_value then
-		return
-	end
+	self._last_set_value = set_value
 
-	self._lerp_step = math.clamp(self._lerp_step + dt, 0, 1)
-
-	if self._lerp_step > 1 then
-		self._current_value = self._new_value
-	end
-
-	local lerp = math.lerp(self._current_value, self._new_value, self._lerp_step)
-
-	Material.set_scalar(self._material, "radial_cutoff", lerp)
-end
-
-WeaveCapturePointExtension.is_done = function (self)
-	return self._timer <= 0
+	Material.set_scalar(self._material, "radial_cutoff", set_value)
 end
 
 WeaveCapturePointExtension.get_percentage_done = function (self)
 	return math.clamp(1 - self._timer / self._max_time, 0, 1)
-end
-
-WeaveCapturePointExtension.get_score = function (self)
-	return self._score
 end

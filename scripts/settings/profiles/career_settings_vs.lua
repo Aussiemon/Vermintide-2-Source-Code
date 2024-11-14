@@ -66,14 +66,16 @@ CareerSettings.vs_gutter_runner = {
 	name = "vs_gutter_runner",
 	package_name = "resource_packages/careers/wh_zealot",
 	picking_image = "medium_unit_frame_portrait_gutter_runner",
+	picking_image_square = "pactsworn_portrait_diamond_gutter_runner",
 	playfab_name = "vs_gutter_runner",
 	portrait_image = "unit_frame_portrait_vs_gutter_runner",
-	preview_animation = "idle",
-	preview_idle_animation = "idle",
+	preview_animation = "career_idle_01",
+	preview_idle_animation = "career_idle_01",
 	preview_wield_slot = "melee",
 	profile_name = "vs_gutter_runner",
-	sort_order = 3,
+	sort_order = 1,
 	sound_character = "witch_hunter_zealot",
+	store_tag_icon = "store_tag_icon_vs_pactsworn",
 	talent_tree_index = 1,
 	breed = PlayerBreeds.vs_gutter_runner,
 	item_types = {},
@@ -96,15 +98,17 @@ CareerSettings.vs_gutter_runner = {
 		{
 			description = "vs_htp_gutter_pounce_description_line1",
 			gamepad_input = "action_one",
-			icon = "htp_icon_gutter_runner_01",
+			icon = "gutter_runner_01",
 			input_action = "action_one",
+			name = "pounce",
 			title = "vs_htp_gutter_pounce",
 		},
 		{
 			description = "vs_htp_gutter_smoke_description_line1",
-			gamepad_input = "ability",
-			icon = "htp_icon_gutter_runner_02",
-			input_action = "action_career",
+			gamepad_input = "weapon_reload_input",
+			icon = "gutter_runner_02",
+			input_action = "weapon_reload",
+			name = "foff",
 			title = "vs_htp_gutter_smoke",
 		},
 	},
@@ -117,6 +121,7 @@ CareerSettings.vs_gutter_runner = {
 		"necklace",
 		"ring",
 		"trinket",
+		"weapon_pose",
 	},
 	item_slot_types_by_slot_name = {
 		slot_melee = {
@@ -139,6 +144,9 @@ CareerSettings.vs_gutter_runner = {
 		},
 		slot_frame = {
 			"frame",
+		},
+		slot_pose = {
+			"weapon_pose",
 		},
 	},
 	additional_character_states_list = {
@@ -164,14 +172,16 @@ CareerSettings.vs_poison_wind_globadier = {
 	name = "vs_poison_wind_globadier",
 	package_name = "resource_packages/careers/dr_slayer",
 	picking_image = "medium_unit_frame_portrait_globardier",
+	picking_image_square = "pactsworn_portrait_diamond_globadier",
 	playfab_name = "vs_poison_wind_globadier",
 	portrait_image = "unit_frame_portrait_vs_poison_wind_globadier",
-	preview_animation = "idle",
-	preview_idle_animation = "idle",
+	preview_animation = "career_idle_01",
+	preview_idle_animation = "career_idle_01",
 	preview_wield_slot = "melee",
 	profile_name = "vs_poison_wind_globadier",
-	sort_order = 3,
+	sort_order = 1,
 	sound_character = "dwarf_slayer",
+	store_tag_icon = "store_tag_icon_vs_pactsworn",
 	talent_tree_index = 1,
 	breed = PlayerBreeds.vs_poison_wind_globadier,
 	item_types = {},
@@ -194,8 +204,9 @@ CareerSettings.vs_poison_wind_globadier = {
 		{
 			description = "vs_htp_globadier_globe_description_line2",
 			gamepad_input = "action_one",
-			icon = "htp_icon_globardier_01",
+			icon = "globadier_01",
 			input_action = "action_one",
+			name = "gas",
 			title = "vs_htp_globadier_globe",
 		},
 	},
@@ -208,6 +219,7 @@ CareerSettings.vs_poison_wind_globadier = {
 		"necklace",
 		"ring",
 		"trinket",
+		"weapon_pose",
 	},
 	item_slot_types_by_slot_name = {
 		slot_melee = {
@@ -230,6 +242,9 @@ CareerSettings.vs_poison_wind_globadier = {
 		},
 		slot_frame = {
 			"frame",
+		},
+		slot_pose = {
+			"weapon_pose",
 		},
 	},
 	additional_character_states_list = {
@@ -252,14 +267,16 @@ CareerSettings.vs_packmaster = {
 	name = "vs_packmaster",
 	package_name = "resource_packages/careers/dr_slayer",
 	picking_image = "medium_unit_frame_portrait_packmaster",
+	picking_image_square = "pactsworn_portrait_diamond_packmaster",
 	playfab_name = "vs_packmaster",
 	portrait_image = "unit_frame_portrait_vs_packmaster",
-	preview_animation = "idle",
-	preview_idle_animation = "idle",
+	preview_animation = "career_idle_01",
+	preview_idle_animation = "career_idle_01",
 	preview_wield_slot = "melee",
 	profile_name = "vs_packmaster",
-	sort_order = 3,
+	sort_order = 1,
 	sound_character = "dwarf_slayer",
+	store_tag_icon = "store_tag_icon_vs_pactsworn",
 	talent_tree_index = 1,
 	breed = PlayerBreeds.vs_packmaster,
 	item_types = {},
@@ -281,17 +298,12 @@ CareerSettings.vs_packmaster = {
 	career_info_settings = {
 		{
 			description = "vs_htp_packmaster_hook_description_line1",
+			double_input = true,
 			gamepad_input = "action_one",
-			icon = "htp_icon_packmaster_01",
+			icon = "packmaster_01",
 			input_action = "action_one",
+			name = "grab",
 			title = "vs_htp_packmaster_hook",
-		},
-		{
-			description = "vs_htp_packmaster_hoist_description_line1",
-			gamepad_input = "action_one",
-			icon = "htp_icon_packmaster_02",
-			input_action = "action_one",
-			title = "vs_htp_packmaster_hoist",
 		},
 	},
 	is_unlocked_function = local_is_unlocked_function,
@@ -303,6 +315,7 @@ CareerSettings.vs_packmaster = {
 		"necklace",
 		"ring",
 		"trinket",
+		"weapon_pose",
 	},
 	item_slot_types_by_slot_name = {
 		slot_melee = {
@@ -325,6 +338,9 @@ CareerSettings.vs_packmaster = {
 		},
 		slot_frame = {
 			"frame",
+		},
+		slot_pose = {
+			"weapon_pose",
 		},
 	},
 	additional_character_states_list = {
@@ -349,14 +365,16 @@ CareerSettings.vs_ratling_gunner = {
 	name = "vs_ratling_gunner",
 	package_name = "resource_packages/careers/dr_slayer",
 	picking_image = "medium_unit_frame_portrait_ratling_gunner",
+	picking_image_square = "pactsworn_portrait_diamond_ratling_gunner",
 	playfab_name = "vs_ratling_gunner",
 	portrait_image = "unit_frame_portrait_vs_ratling_gunner",
-	preview_animation = "idle",
-	preview_idle_animation = "idle",
+	preview_animation = "career_idle_01",
+	preview_idle_animation = "career_idle_01",
 	preview_wield_slot = "melee",
 	profile_name = "vs_ratling_gunner",
-	sort_order = 3,
+	sort_order = 1,
 	sound_character = "dwarf_slayer",
+	store_tag_icon = "store_tag_icon_vs_pactsworn",
 	talent_tree_index = 1,
 	breed = PlayerBreeds.vs_ratling_gunner,
 	item_types = {},
@@ -379,15 +397,16 @@ CareerSettings.vs_ratling_gunner = {
 		{
 			description = "vs_htp_ratling_gun_description_line1",
 			gamepad_input = "action_one",
-			icon = "htp_icon_ratling_gunner_01",
+			icon = "ratling_gunner_01",
 			input_action = "action_one",
 			title = "vs_htp_ratling_rapidfire",
 		},
 		{
 			description = "vs_htp_ratling_reload_description_line1",
 			gamepad_input = "weapon_reload_input",
-			icon = "icons_placeholder",
+			icon = "ratling_gunner_03",
 			input_action = "weapon_reload_hold",
+			name = "fire",
 			title = "vs_htp_ratling_reload",
 		},
 	},
@@ -400,6 +419,7 @@ CareerSettings.vs_ratling_gunner = {
 		"necklace",
 		"ring",
 		"trinket",
+		"weapon_pose",
 	},
 	item_slot_types_by_slot_name = {
 		slot_melee = {
@@ -423,6 +443,9 @@ CareerSettings.vs_ratling_gunner = {
 		slot_frame = {
 			"frame",
 		},
+		slot_pose = {
+			"weapon_pose",
+		},
 	},
 	additional_character_states_list = {
 		"RatlingGunnerStateStanding",
@@ -442,13 +465,16 @@ CareerSettings.vs_warpfire_thrower = {
 	name = "vs_warpfire_thrower",
 	package_name = "resource_packages/careers/dr_slayer",
 	picking_image = "medium_unit_frame_portrait_warpfire",
+	picking_image_square = "pactsworn_portrait_diamond_warpfire_thrower",
 	playfab_name = "vs_warpfire_thrower",
 	portrait_image = "unit_frame_portrait_vs_warpfire_thrower",
-	preview_animation = "idle",
+	preview_animation = "career_idle_01",
+	preview_idle_animation = "career_idle_01",
 	preview_wield_slot = "melee",
 	profile_name = "vs_warpfire_thrower",
-	sort_order = 3,
+	sort_order = 1,
 	sound_character = "dwarf_slayer",
+	store_tag_icon = "store_tag_icon_vs_pactsworn",
 	talent_tree_index = 1,
 	breed = PlayerBreeds.vs_warpfire_thrower,
 	item_types = {},
@@ -471,8 +497,9 @@ CareerSettings.vs_warpfire_thrower = {
 		{
 			description = "vs_htp_warpfire_blast_description_line1",
 			gamepad_input = "action_one",
-			icon = "htp_icon_warpfire_thrower_01",
+			icon = "warpfire_thrower_01",
 			input_action = "action_one",
+			name = "fire",
 			title = "vs_htp_wapfire_blast",
 		},
 	},
@@ -485,6 +512,7 @@ CareerSettings.vs_warpfire_thrower = {
 		"necklace",
 		"ring",
 		"trinket",
+		"weapon_pose",
 	},
 	item_slot_types_by_slot_name = {
 		slot_melee = {
@@ -508,11 +536,13 @@ CareerSettings.vs_warpfire_thrower = {
 		slot_frame = {
 			"frame",
 		},
+		slot_pose = {
+			"weapon_pose",
+		},
 	},
 	additional_character_states_list = {
 		"WarpfireThrowerStateStanding",
 		"WarpfireThrowerStateWalking",
-		"WarpfireThrowerStateFiring",
 		"WarpfireThrowerStateJumping",
 		"WarpfireThrowerStateFalling",
 	},
@@ -528,14 +558,16 @@ CareerSettings.vs_chaos_troll = {
 	name = "vs_chaos_troll",
 	package_name = "resource_packages/careers/dr_slayer",
 	picking_image = "medium_unit_frame_portrait_troll",
+	picking_image_square = "pactsworn_portrait_diamond_troll",
 	playfab_name = "vs_chaos_troll",
 	portrait_image = "unit_frame_portrait_vs_chaos_troll",
-	preview_animation = "idle",
-	preview_idle_animation = "idle",
+	preview_animation = "career_idle_01",
+	preview_idle_animation = "career_idle_01",
 	preview_wield_slot = "melee",
 	profile_name = "vs_chaos_troll",
-	sort_order = 3,
+	sort_order = 1,
 	sound_character = "dwarf_slayer",
+	store_tag_icon = "store_tag_icon_vs_pactsworn",
 	talent_tree_index = 1,
 	breed = PlayerBreeds.vs_chaos_troll,
 	item_types = {},
@@ -543,7 +575,7 @@ CareerSettings.vs_chaos_troll = {
 	passive_ability = PassiveAbilitySettings.vs_chaos_troll,
 	attributes = {
 		base_critical_strike_chance = 0.05,
-		max_hp = 750,
+		max_hp = 600,
 	},
 	video = {
 		material_name = "dr_slayer",
@@ -558,15 +590,16 @@ CareerSettings.vs_chaos_troll = {
 		{
 			description = "vs_htp_troll_melee_description_line1",
 			gamepad_input = "action_one",
-			icon = "htp_icon_gutter_runner_01",
+			icon = "troll_01",
 			input_action = "action_one",
 			title = "vs_htp_troll_melee",
 		},
 		{
 			description = "vs_htp_troll_vomit_description_line1",
-			gamepad_input = "ability",
-			icon = "htp_icon_gutter_runner_02",
-			input_action = "action_career",
+			gamepad_input = "action_two",
+			icon = "troll_02",
+			input_action = "action_two",
+			name = "vomit",
 			title = "vs_htp_troll_vomit",
 		},
 	},
@@ -579,6 +612,7 @@ CareerSettings.vs_chaos_troll = {
 		"necklace",
 		"ring",
 		"trinket",
+		"weapon_pose",
 	},
 	item_slot_types_by_slot_name = {
 		slot_melee = {
@@ -601,6 +635,9 @@ CareerSettings.vs_chaos_troll = {
 		},
 		slot_frame = {
 			"frame",
+		},
+		slot_pose = {
+			"weapon_pose",
 		},
 	},
 	additional_character_states_list = {
@@ -629,3 +666,27 @@ CareerSettings.spectator = {
 		return false
 	end,
 }
+OverchargeData = OverchargeData or {}
+OverchargeData.vs_warpfire_thrower = {
+	explosion_template = "overcharge_explosion_brw",
+	hit_overcharge_threshold_sound = "ui_special_attack_ready",
+	max_value = 40,
+	no_explosion = true,
+	no_forced_movement = true,
+	overcharge_threshold = 39,
+	overcharge_value_decrease_rate = 12.5,
+	time_until_overcharge_decreases = 0.5,
+	overcharge_depleted_func = function (world, unit, first_person_extension)
+		return
+	end,
+	overcharge_ui = {
+		material = "dark_pact_overcharge_bar",
+		color_normal = Colors.get_color_table_with_alpha("pactsworn_green", 255),
+		color_medium = Colors.get_color_table_with_alpha("pactsworn_green", 255),
+		color_high = Colors.get_color_table_with_alpha("pactsworn_green", 255),
+	},
+}
+PlayerUnitStatusSettings = PlayerUnitStatusSettings or {}
+PlayerUnitStatusSettings.overcharge_values = table.merge(PlayerUnitStatusSettings.overcharge_values or {}, {
+	vs_warpfire_thrower_normal = 5,
+})

@@ -245,8 +245,7 @@ CareerAbilityDRSlayer._do_common_stuff = function (self)
 
 		if local_player then
 			career_extension:set_state("bardin_activate_slayer")
-
-			MOOD_BLACKBOARD.skill_slayer = true
+			Managers.state.camera:set_mood("skill_slayer", "skill_slayer", true)
 		end
 	end
 

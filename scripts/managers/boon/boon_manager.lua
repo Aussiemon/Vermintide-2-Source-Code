@@ -253,7 +253,7 @@ BoonManager.on_player_spawned = function (self, player, unit, unique_id)
 	self._spawned_players_queue[#self._spawned_players_queue + 1] = unit
 end
 
-BoonManager.on_player_joined_party = function (self, peer_id, local_player_id, party_id, slot_id)
+BoonManager.on_player_joined_party = function (self, peer_id, local_player_id, party_id, slot_id, is_bot)
 	self:_activate_player_boons(peer_id, local_player_id)
 end
 

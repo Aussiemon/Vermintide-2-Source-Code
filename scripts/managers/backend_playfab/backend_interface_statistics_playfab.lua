@@ -100,17 +100,23 @@ BackendInterfaceStatisticsPlayFab.save = function (self)
 	self._stats_to_save = stats_to_save
 end
 
+BackendInterfaceStatisticsPlayFab.save_state_completed_achievements = function (self, state_completed_achievements)
+	self._state_completed_achievements = state_completed_achievements
+end
+
 BackendInterfaceStatisticsPlayFab.clear_saved_stats = function (self)
+	self._state_completed_achievements = nil
 	self._stats_to_save = nil
 
 	Managers.player:statistics_db():apply_persistant_stats()
 end
 
 BackendInterfaceStatisticsPlayFab.get_stat_save_request = function (self)
-	local stats_to_save = self._stats_to_save
+	local stats_to_save = self._stats_to_save or {}
+	local state_completed_achievements = self._state_completed_achievements
 
-	if not stats_to_save or table.is_empty(stats_to_save) then
-		print("[BackendInterfaceStatisticsPlayFab] No modified player statistics to save...")
+	if (not stats_to_save or table.is_empty(stats_to_save)) and (not state_completed_achievements or table.is_empty(state_completed_achievements)) then
+		print("[BackendInterfaceStatisticsPlayFab] No modified player statistics or achievements to save...")
 
 		return false
 	end
@@ -119,10 +125,31 @@ BackendInterfaceStatisticsPlayFab.get_stat_save_request = function (self)
 		FunctionName = "savePlayerStatistics3",
 		FunctionParameter = {
 			stats = stats_to_save,
+			completed_achievements = state_completed_achievements,
 		},
 	}
 
 	return request, stats_to_save
+end
+
+BackendInterfaceStatisticsPlayFab.get_achievement_reward_levels = function (self)
+	local achievement_reward_levels = self._mirror:get_read_only_data("achievement_reward_levels")
+
+	if achievement_reward_levels then
+		achievement_reward_levels = cjson.decode(achievement_reward_levels)
+
+		return achievement_reward_levels
+	end
+end
+
+BackendInterfaceStatisticsPlayFab.get_achievement_reward_level = function (self, achievement_id)
+	local achievement_reward_levels = self._mirror:get_read_only_data("achievement_reward_levels")
+
+	if achievement_reward_levels then
+		achievement_reward_levels = cjson.decode(achievement_reward_levels)
+
+		return achievement_reward_levels[achievement_id]
+	end
 end
 
 BackendInterfaceStatisticsPlayFab.reset = function (self)

@@ -54,6 +54,7 @@ StoreWindowItemPreview.on_enter = function (self, params, offset)
 
 	self._current_generic_input_action = nil
 	self._required_dlcs = {}
+	self._item_currency_settings = DLCSettings.store.currency_ui_settings
 end
 
 StoreWindowItemPreview._set_window_expanded = function (self, expand)
@@ -668,8 +669,19 @@ StoreWindowItemPreview._handle_input = function (self, input_service, dt, t)
 	if self:_is_button_pressed(details_button) or special_press then
 		local path = parent:get_store_path()
 		local new_path = table.clone(path)
+		local product = self._selected_product
+		local product_settings = product and product.settings
+		local part_of_bundle = product_settings and product_settings.part_of_bundle
 
-		if self:_detailed_view_available() then
+		if part_of_bundle then
+			self:_play_sound("Play_hud_select")
+
+			new_path[#new_path] = nil
+
+			parent:go_to_store_path(new_path)
+
+			input_handled = true
+		elseif self:_detailed_view_available() and not part_of_bundle then
 			self:_play_sound("Play_hud_select")
 
 			if path[#path] == "item_details" then
@@ -864,7 +876,7 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 	if selected_product ~= self._selected_product or force_update then
 		table.clear(self._required_dlcs)
 
-		local reset_presentation = not self._selected_product or not selected_product or self._selected_product.product_id ~= selected_product.product_id
+		local reset_presentation = not self._selected_product or not selected_product or self._selected_product.product_id ~= selected_product.product_id or self._selected_product.item ~= selected_product.item
 
 		self._selected_product = selected_product
 
@@ -890,7 +902,10 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 				dlc_name = item.dlc_name
 
 				if item_key and (backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key)) then
-					already_owned = true
+					local item_data = item.data
+					local item_type = item_data.item_type
+
+					already_owned = item_type ~= "chips" and true or false
 				else
 					local all_owned, any_owned, missing_dlcs = backend_items:has_bundle_contents(item.data.bundle_contains)
 
@@ -916,6 +931,26 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 
 				dlc_name = dlc_settings.dlc_name
 				already_owned = Managers.unlock:is_dlc_unlocked(dlc_name)
+			elseif selected_product.product_type == "collection" then
+				local backend_items = Managers.backend:get_interface("items")
+				local product_item = selected_product.product_item
+				local product_item_data = product_item.data
+				local bundle = product_item_data.bundle
+				local bundled_items = bundle.BundledItems or {}
+
+				already_owned = true
+
+				for i = 1, #bundled_items do
+					local bundled_item_name = bundled_items[i]
+
+					if not backend_items:has_item(bundled_item_name) then
+						already_owned = false
+
+						break
+					end
+				end
+
+				can_afford = self._parent:can_afford_item(product_item)
 			end
 
 			self._show_dupe_warning = show_dupe_warning
@@ -937,7 +972,7 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 
 			local unlock_button_width_offset = 0
 
-			if product_type == "item" then
+			if product_type == "item" or product_type == "weapon_pose" then
 				local item = selected_product.item
 
 				if item.data.item_type == "bundle" then
@@ -1203,7 +1238,7 @@ StoreWindowItemPreview._present_dlc = function (self, settings, product_id)
 	self:_set_career_title_name("")
 	self:_set_disclaimer_text("")
 	self:_set_expire_timer_text("")
-	self:_set_price(nil, dlc_name)
+	self:_set_price(nil, nil, dlc_name)
 
 	self._dlc_presentation_active = true
 	self._item_widgets_by_name.details_button.content.visible = false
@@ -1249,22 +1284,35 @@ StoreWindowItemPreview._present_item = function (self, item, product)
 	local price, currency
 
 	if steam_itemdefid then
-		self:_set_price(nil, nil, steam_itemdefid)
+		self:_set_price(nil, nil, nil, steam_itemdefid)
 	elseif dlc_name then
-		self:_set_price(nil, dlc_name)
+		self:_set_price(nil, nil, dlc_name)
 	else
 		local currency_type = "SM"
-		local regular_prices = item.regular_prices
-		local current_prices = item.current_prices
+		local product_item = product.product_item
+		local regular_prices = product_item and product_item.regular_prices or item.regular_prices
+		local current_prices = product_item and product_item.current_prices or item.current_prices
+
+		for currency, settings in pairs(self._item_currency_settings) do
+			local has_regular_price = regular_prices[currency]
+			local has_current_price = current_prices[currency]
+
+			if has_regular_price and has_current_price then
+				currency_type = currency
+
+				break
+			end
+		end
+
 		local price = current_prices[currency_type] or regular_prices[currency_type]
 
-		self:_set_price(price)
+		self:_set_price(price, currency_type)
 	end
 
 	local item_preview_layout_name = item.product_layout or item_data.product_layout
 	local item_preview_layout = item_preview_layout_name and StoreBundleLayouts[item_preview_layout_name]
 
-	if item_data.bundle_contains and not item_preview_layout_name then
+	if item_type ~= "cosmetic_bundle" and item_data.bundle_contains and not item_preview_layout_name then
 		item_preview_layout = self:_create_item_bundle_layout(steam_itemdefid, item_data)
 	end
 
@@ -1325,14 +1373,26 @@ StoreWindowItemPreview._present_item = function (self, item, product)
 
 				disclaimer_text = settings and string.format(Localize("menu_store_disclaimer_missing_required_dlc"), Localize(settings.name)) or Localize("dlc_required")
 			end
-		elseif slot_type == "skin" then
-			type_title_text = Localize(item_type)
+		elseif slot_type == "skin" or slot_type == "cosmetic_bundle" or slot_type == "weapon_pose" then
+			local hero_skin = true
+			local _, profile_index = self:_get_hero_wield_info_by_item(item)
+			local profile = SPProfiles[profile_index]
+
+			if profile.affiliation == "dark_pact" then
+				hero_skin = false
+			end
+
+			type_title_text = hero_skin and Localize(item_type) or Localize("dark_pact_skin")
 			item_preview_object_set_name = item_preview_object_set_name or "flow_character_lights"
 
 			if missing_required_dlc then
 				local settings = StoreDlcSettingsByName[item_data.required_dlc]
 
 				disclaimer_text = settings and string.format(Localize("menu_store_disclaimer_missing_required_dlc"), Localize(settings.name)) or Localize("dlc_required")
+			elseif slot_type == "weapon_pose" then
+				disclaimer_text = ""
+			elseif slot_type == "cosmetic_bundle" then
+				disclaimer_text = Localize("menu_store_product_pactsworn_skin_disclaimer_desc")
 			else
 				disclaimer_text = Localize("menu_store_product_hero_skin_disclaimer_desc")
 			end
@@ -1412,12 +1472,21 @@ StoreWindowItemPreview._delayed_item_unit_presentation = function (self, item)
 		item_previewer:register_spawn_callback(callback)
 
 		self._item_previewer = item_previewer
-	elseif slot_type == "frame" then
+	elseif slot_type == "frame" or slot_type == "chips" then
 		local preview_position = {
 			0,
-			0,
+			0.4,
 			-0.25,
 		}
+
+		if slot_type == "chips" then
+			preview_position = {
+				0,
+				-1,
+				-0.25,
+			}
+		end
+
 		local unique_id, invert_start_rotation, display_unit_key = nil, true
 		local use_highest_mip_levels = true
 		local camera = ScriptViewport.camera(viewport)
@@ -1453,10 +1522,75 @@ StoreWindowItemPreview._delayed_item_unit_presentation = function (self, item)
 
 		local optional_skin = item_data.name
 		local profile_name, profile_index, career_name, career_index = self:_get_hero_wield_info_by_item(item)
-		local optional_hat = product_settings.part_of_bundle and item_data.store_optional_hat or nil
 
-		self:_spawn_hero_with_hat(world_previewer, profile_name, career_index, optional_skin, optional_hat)
+		if item_data.linked_weapon then
+			local optional_weapon_skin
+			local optional_weapon_item = ItemMasterList[item_data.linked_weapon]
+
+			if optional_weapon_item then
+				optional_weapon_skin = optional_weapon_item.name
+			end
+
+			self:_spawn_hero_with_linked_weapon(world_previewer, profile_name, career_index, optional_skin, optional_weapon_skin)
+		else
+			local optional_hat = product_settings.part_of_bundle and item_data.store_optional_hat or nil
+
+			self:_spawn_hero_with_hat(world_previewer, profile_name, career_index, optional_skin, optional_hat)
+		end
+	elseif slot_type == "cosmetic_bundle" then
+		local world_previewer = MenuWorldPreviewer:new(self._ingame_ui_context, UISettings.hero_skin_camera_position_by_character, "StoreWindowItemPreview")
+
+		world_previewer:on_enter(viewport_widget)
+
+		self._world_previewer = world_previewer
+
+		local contents = self:_get_cosmetic_bundle_item_contents(item_data)
+		local optional_skin
+
+		if contents.skin then
+			optional_skin = contents.skin
+		end
+
+		local optional_weapon_skin
+
+		if contents.melee or contents.ranged then
+			optional_weapon_skin = contents.melee or content.ranged
+		end
+
+		local profile_name, profile_index, career_name, career_index = self:_get_hero_wield_info_by_item(item)
+
+		self:_spawn_hero_with_linked_weapon(world_previewer, profile_name, career_index, optional_skin, optional_weapon_skin)
+	elseif slot_type == "weapon_pose" then
+		local world_previewer = MenuWorldPreviewer:new(self._ingame_ui_context, UISettings.hero_skin_camera_position_by_character, "StoreWindowItemPreview")
+
+		world_previewer:on_enter(viewport_widget)
+
+		self._world_previewer = world_previewer
+
+		local profile_name, profile_index, career_name, career_index = self:_get_hero_wield_info_by_item(item)
+		local optional_skin, hat_item_name
+
+		self:_spawn_hero_with_hat_and_pose(world_previewer, profile_name, career_index, optional_skin, hat_item_name, item)
 	end
+end
+
+StoreWindowItemPreview._get_cosmetic_bundle_item_contents = function (self, item_data)
+	local contained_items = {}
+	local bundle_contains = item_data.bundle_contains
+
+	for i = 1, #bundle_contains do
+		local steam_itemdefid = bundle_contains[i]
+		local item_key = SteamitemdefidToMasterList[steam_itemdefid]
+		local contained_item_data = ItemMasterList[item_key]
+
+		if contained_item_data then
+			local slot_type = contained_item_data.slot_type
+
+			contained_items[slot_type] = contained_item_data.name
+		end
+	end
+
+	return contained_items
 end
 
 StoreWindowItemPreview._update_delayed_item_unit_presentation = function (self, dt)
@@ -1480,12 +1614,18 @@ StoreWindowItemPreview._update_delayed_item_unit_presentation = function (self, 
 	end
 end
 
-StoreWindowItemPreview._set_price = function (self, price, dlc_name, steam_itemdefid)
+StoreWindowItemPreview._set_price = function (self, price, currency_type, dlc_name, steam_itemdefid)
 	local widget = self._top_widgets_by_name.unlock_button
 	local content = widget.content
 
 	if price then
 		content.currency_text = tostring(price)
+	end
+
+	if currency_type then
+		local currency_ui_settings = self._item_currency_settings[currency_type]
+
+		content.currency_icon = currency_ui_settings.icon_big
 	end
 
 	content.present_currency = price ~= nil
@@ -1900,6 +2040,61 @@ StoreWindowItemPreview.cb_unit_spawned_item_preview = function (self, item_previ
 	self._fadeout_loading_overlay = true
 end
 
+StoreWindowItemPreview._spawn_hero_with_linked_weapon = function (self, world_previewer, hero_name, career_index, optional_skin, weapon_item_name)
+	local callback = callback(self, "cb_hero_unit_spawned_weapon_preview", world_previewer, hero_name, career_index, weapon_item_name)
+
+	world_previewer:request_spawn_hero_unit(hero_name, career_index, false, callback, 1, nil, optional_skin)
+end
+
+StoreWindowItemPreview.cb_hero_unit_spawned_weapon_preview = function (self, world_previewer, hero_name, career_index, weapon_item_name)
+	local profile_index = FindProfileIndex(hero_name)
+	local profile = SPProfiles[profile_index]
+	local careers = profile.careers
+	local career_settings = careers[career_index]
+	local preview_idle_animation = "store_idle"
+
+	if profile.affiliation == "dark_pact" then
+		preview_idle_animation = "career_idle_01"
+	end
+
+	local preview_items = career_settings.preview_items
+
+	if weapon_item_name then
+		local item_data = ItemMasterList[weapon_item_name]
+		local slot_type = item_data.slot_type
+		local slot_names = InventorySettings.slot_names_by_type[slot_type]
+		local slot_name = slot_names[1]
+		local slot = InventorySettings.slots_by_name[slot_name]
+
+		if slot_type == "melee" or slot_type == "ranged" then
+			world_previewer:wield_weapon_slot(slot_type)
+		end
+
+		world_previewer:equip_item(weapon_item_name, slot)
+	elseif preview_items then
+		for _, item_data in ipairs(preview_items) do
+			local item_name = item_data.item_name
+			local item_template = ItemMasterList[item_name]
+			local slot_type = item_template.slot_type
+
+			if slot_type == "melee" or slot_type == "ranged" then
+				local slot_names = InventorySettings.slot_names_by_type[slot_type]
+				local slot_name = slot_names[1]
+				local slot = InventorySettings.slots_by_name[slot_name]
+
+				world_previewer:equip_item(item_name, slot)
+				world_previewer:wield_weapon_slot(slot_type)
+			end
+		end
+	end
+
+	if preview_idle_animation then
+		world_previewer:play_character_animation(preview_idle_animation)
+	end
+
+	self._fadeout_loading_overlay = true
+end
+
 StoreWindowItemPreview._spawn_hero_with_hat = function (self, world_previewer, hero_name, career_index, optional_skin, hat_item_name)
 	local callback = callback(self, "cb_hero_unit_spawned_hat_preview", world_previewer, hero_name, career_index, hat_item_name)
 
@@ -1912,6 +2107,11 @@ StoreWindowItemPreview.cb_hero_unit_spawned_hat_preview = function (self, world_
 	local careers = profile.careers
 	local career_settings = careers[career_index]
 	local preview_idle_animation = "store_idle"
+
+	if profile.affiliation == "dark_pact" then
+		preview_idle_animation = "idle"
+	end
+
 	local preview_items = career_settings.preview_items
 
 	if hat_item_name then
@@ -1938,6 +2138,73 @@ StoreWindowItemPreview.cb_hero_unit_spawned_hat_preview = function (self, world_
 
 	if preview_idle_animation then
 		world_previewer:play_character_animation(preview_idle_animation)
+	end
+
+	self._fadeout_loading_overlay = true
+end
+
+StoreWindowItemPreview._spawn_hero_with_hat_and_pose = function (self, world_previewer, hero_name, career_index, optional_skin, hat_item_name, pose_item)
+	local callback = callback(self, "cb_hero_unit_spawned_hat_and_pose_preview", world_previewer, hero_name, career_index, hat_item_name, pose_item)
+
+	world_previewer:request_spawn_hero_unit(hero_name, career_index, false, callback, 1, nil, optional_skin)
+end
+
+StoreWindowItemPreview.cb_hero_unit_spawned_hat_and_pose_preview = function (self, world_previewer, hero_name, career_index, hat_item_name, pose_item)
+	local profile_index = FindProfileIndex(hero_name)
+	local profile = SPProfiles[profile_index]
+	local careers = profile.careers
+	local career_settings = careers[career_index]
+	local preview_idle_animation = "store_idle"
+
+	if profile.affiliation == "dark_pact" then
+		preview_idle_animation = "career_idle_01"
+	end
+
+	local preview_items = career_settings.preview_items
+
+	if hat_item_name then
+		local hat_slot = InventorySettings.slots_by_name.slot_hat
+
+		world_previewer:equip_item(hat_item_name, hat_slot)
+	end
+
+	if preview_items then
+		for _, item_data in ipairs(preview_items) do
+			local item_name = item_data.item_name
+			local item_template = ItemMasterList[item_name]
+			local slot_type = item_template.slot_type
+
+			if slot_type ~= "melee" and slot_type ~= "ranged" and (not hat_item_name or slot_type ~= "hat") then
+				local slot_names = InventorySettings.slot_names_by_type[slot_type]
+				local slot_name = slot_names[1]
+				local slot = InventorySettings.slots_by_name[slot_name]
+
+				world_previewer:equip_item(item_name, slot)
+				world_previewer:wield_weapon_slot(slot_type)
+			end
+		end
+	end
+
+	local parent_item = pose_item.parent
+
+	if parent_item then
+		local item_data = ItemMasterList[parent_item]
+		local slot_type = item_data.slot_type
+		local slot_names = InventorySettings.slot_names_by_type[slot_type]
+		local slot_name = slot_names[1]
+		local slot = InventorySettings.slots_by_name[slot_name]
+
+		if slot_type == "melee" or slot_type == "ranged" then
+			world_previewer:wield_weapon_slot(slot_type)
+		end
+
+		world_previewer:equip_item(parent_item, slot)
+	end
+
+	local anim_event = pose_item.data.data.anim_event
+
+	if anim_event then
+		world_previewer:play_character_animation(anim_event)
 	end
 
 	self._fadeout_loading_overlay = true
@@ -1987,24 +2254,46 @@ StoreWindowItemPreview._get_can_wield_display_text = function (self, can_wield)
 	return hero_text, career_text
 end
 
+local TEMP_TABLE = {}
+
 StoreWindowItemPreview._get_hero_wield_info_by_item = function (self, item)
 	local item_data = item.data
 	local can_wield = item_data.can_wield
-	local career_name = can_wield[1]
+
+	table.clear(TEMP_TABLE)
 
 	for _, profile_settings in ipairs(SPProfiles) do
 		local careers = profile_settings.careers
 
 		for index, career_settings in ipairs(careers) do
-			if career_settings.name == career_name then
+			if table.contains(can_wield, career_settings.name) then
 				local profile_name = profile_settings.display_name
 				local profile_index = FindProfileIndex(profile_name)
 				local career_index = career_settings.sort_order
 
-				return profile_name, profile_index, career_name, career_index
+				TEMP_TABLE[#TEMP_TABLE + 1] = {
+					profile_name = profile_name,
+					profile_index = profile_index,
+					career_name = career_settings.name,
+					career_index = career_index,
+				}
 			end
 		end
 	end
+
+	local function sort_func(a, b)
+		return a.career_index < b.career_index
+	end
+
+	table.sort(TEMP_TABLE, sort_func)
+
+	local data = TEMP_TABLE[1]
+	local profile_name = data.profile_name
+	local profile_index = data.profile_index
+	local career_name = data.career_name
+	local career_index = data.career_index
+
+	return profile_name, profile_index, career_name, career_index
 end
 
 StoreWindowItemPreview._sync_layout_path = function (self)

@@ -19,6 +19,7 @@ GameModeSettings.deus.hud_ui_settings = {
 }
 GameModeSettings.deus.use_keep_decorations = true
 GameModeSettings.deus.disable_difficulty_check = true
+GameModeSettings.deus.max_num_rewards_displayed = 7
 GameModeSettings.inn_deus = table.clone(GameModeSettings.base)
 GameModeSettings.inn_deus.key = "inn_deus"
 GameModeSettings.inn_deus.disable_difficulty_spawning_items = true

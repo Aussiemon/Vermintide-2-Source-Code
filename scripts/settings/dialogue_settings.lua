@@ -17,6 +17,7 @@ DialogueSettings.auto_load_files = {
 	"dialogues/generated/witch_hunter_generic_vo",
 	"dialogues/generated/weather_vo",
 }
+DialogueSettings.auto_load_files_mechanism = {}
 DialogueSettings.level_specific_load_files = {
 	whitebox_climb = {
 		"dialogues/generated/wood_elf_prologue",
@@ -190,6 +191,7 @@ DialogueSettings.blocked_auto_load_files = {
 }
 
 DLCUtils.append("auto_load_files", DialogueSettings.auto_load_files)
+DLCUtils.merge("auto_load_files_mechanism", DialogueSettings.auto_load_files_mechanism, true)
 
 for _, dlc in pairs(DLCSettings) do
 	local dialogue_settings = dlc.dialogue_settings
@@ -230,11 +232,13 @@ DialogueSettings.friends_close_distance = 15
 DialogueSettings.friends_distant_distance = 50
 DialogueSettings.enemies_close_distance = 10
 DialogueSettings.enemies_distant_distance = 40
+DialogueSettings.proximity_trigger_interval = 1
 DialogueSettings.knocked_down_broadcast_range = 40
 DialogueSettings.pounced_down_broadcast_range = 40
 DialogueSettings.suicide_run_broadcast_range = 40
 DialogueSettings.troll_vomit_broadcast_range = 20
 DialogueSettings.troll_incapacitaded_broadcast_range = 20
+DialogueSettings.passing_hoisted_range = 7
 DialogueSettings.grabbed_broadcast_range = 40
 DialogueSettings.globadier_poisoned_broadcast_range = 20
 DialogueSettings.armor_hit_broadcast_range = 7
@@ -243,7 +247,13 @@ DialogueSettings.story_start_delay = 90
 DialogueSettings.story_tick_time = 10
 DialogueSettings.ambush_delay = 6
 DialogueSettings.vector_delay = 12
+DialogueSettings.mission_giver_events_delay = 1
 DialogueSettings.sound_event_default_length = 4.5
+DialogueSettings.vs_globadier_missing_globe_vo_range_from_edge = 5
+DialogueSettings.vs_globadier_many_heroes_hit_num = 2
+DialogueSettings.vs_many_heroes_incapacitated_num = 2
+DialogueSettings.vs_track_projectiles_blocked_timer = 5
+DialogueSettings.vs_num_blocked_projectiles_to_track = 10
 DialogueSettings.breed_types_trigger_on_spawn = {
 	chaos_corruptor_sorcerer = true,
 	chaos_spawn = true,
@@ -495,6 +505,7 @@ DialogueSettings.dialogue_category_config = {
 			level_talk_must_play = true,
 		},
 		playable_during_category = {
+			activate_ability = true,
 			default = true,
 			enemy_basic_prio = true,
 			enemy_high_prio = true,

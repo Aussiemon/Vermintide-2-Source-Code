@@ -368,10 +368,10 @@ BTChargePositionAction._push_player = function (self, unit, hit_unit, blackboard
 	StatusUtils.set_catapulted_network(hit_unit, true, velocity)
 end
 
-BTChargePositionAction._hit_player = function (self, unit, blackboard, hit_unit, action, attack_direction)
+BTChargePositionAction._hit_player = function (self, unit, blackboard, hit_unit, action)
 	local hit_unit_status_extension = ScriptUnit.has_extension(hit_unit, "status_system")
 	local blocked = DamageUtils.check_block(unit, hit_unit, action.fatigue_type)
-	local blocked_with_shield = DamageUtils.check_ranged_block(unit, hit_unit, attack_direction, action.shield_blocked_fatigue_type or "ogre_shove")
+	local blocked_with_shield = DamageUtils.check_ranged_block(unit, hit_unit, action.shield_blocked_fatigue_type or "ogre_shove")
 
 	if not blocked_with_shield and not blocked then
 		AiUtils.damage_target(hit_unit, unit, action, action.damage)

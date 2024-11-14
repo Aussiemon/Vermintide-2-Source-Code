@@ -1122,10 +1122,6 @@ settings.buff_function_templates = {
 		if Managers.state.network.is_server then
 			buff.broadphase_results = {}
 			buff.pushed_units = {}
-
-			local proximity_system = Managers.state.entity:system("proximity_system")
-
-			buff.broadphase = proximity_system.enemy_broadphase
 		end
 	end,
 	victor_priest_activated_noclip_remove = function (owner_unit, buff, params, world)
@@ -1147,10 +1143,11 @@ settings.buff_function_templates = {
 		local stagger_distance = template.stagger_distance
 		local broadphase_results = buff.broadphase_results
 		local pushed_units = buff.pushed_units
-		local broadphase = buff.broadphase
 		local t = params.t
+		local side = Managers.state.side.side_by_unit[owner_unit]
+		local enemy_broadphase_categories = side.enemy_broadphase_categories
 		local position = POSITION_LOOKUP[owner_unit]
-		local num_results = Broadphase.query(broadphase, position, push_radius, broadphase_results)
+		local num_results = AiUtils.broadphase_query(position, push_radius, broadphase_results, enemy_broadphase_categories)
 
 		for i = 1, num_results do
 			local hit_unit = broadphase_results[i]

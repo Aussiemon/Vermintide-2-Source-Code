@@ -32,14 +32,12 @@ EnemyCharacterStateLeaping.on_enter = function (self, unit, input, dt, context, 
 	local projected_hit_pos = leap_data.projected_hit_pos:unbox()
 	local distance = Vector3.length(projected_hit_pos - start_position)
 
+	self._percentage_done = 0
 	self.jump_direction = Vector3Box(look_direction_flat)
 
 	self:_start_leap(unit, t)
 	CharacterStateHelper.look(input_extension, player.viewport_name, first_person_extension, status_extension, self._inventory_extension)
 	CharacterStateHelper.update_weapon_actions(t, unit, input_extension, inventory_extension, self._health_extension)
-
-	local position = POSITION_LOOKUP[unit]
-
 	ScriptUnit.extension(unit, "whereabouts_system"):set_jumped()
 
 	self._time_slided = 0
@@ -134,8 +132,21 @@ EnemyCharacterStateLeaping.update = function (self, unit, input, dt, context, t)
 
 	local current_position = POSITION_LOOKUP[unit]
 	local starting_pos = self._leap_data.starting_pos:unbox()
+	local projected_hit_pos = self._leap_data.projected_hit_pos:unbox()
 	local distance_travelled = Vector3.length(current_position - starting_pos)
-	local percentage_done = distance_travelled / Vector3.length(self._leap_data.projected_hit_pos:unbox() - starting_pos)
+
+	self._percentage_done = distance_travelled / Vector3.length(projected_hit_pos - starting_pos)
+
+	if self._leap_data.update_leap_anim_variable then
+		self._leap_data.update_leap_anim_variable(self, unit)
+	end
+
+	local distance_to_goal_sqr = Vector3.distance_squared(current_position, projected_hit_pos)
+
+	if distance_to_goal_sqr < 0.25 then
+		self._leap_done = true
+	end
+
 	local look_sense_override, look_override
 
 	CharacterStateHelper.look(input_extension, self._player.viewport_name, first_person_extension, status_extension, inventory_extension, look_sense_override, look_override)
@@ -146,8 +157,6 @@ local function scale_percentage(a, b, p)
 end
 
 EnemyCharacterStateLeaping._move_in_air = function (self, unit, dt, t)
-	local first_person_extension = self._first_person_extension
-	local input_extension = self._input_extension
 	local locomotion_extension = self._locomotion_extension
 	local current_position = POSITION_LOOKUP[unit]
 	local starting_pos = self._leap_data.starting_pos:unbox()
@@ -163,15 +172,14 @@ EnemyCharacterStateLeaping._move_in_air = function (self, unit, dt, t)
 	local speed = starting_speed
 	local move_speed_multiplier = self._status_extension:current_move_speed_multiplier()
 
-	speed = speed * move_speed_multiplier
-	speed = speed * move_speed_multiplier
+	speed = speed * move_speed_multiplier^2
 	speed = speed * movement_settings_table.player_speed_scale
 
 	local zero_distance = total_distance * 0
 	local start_accel_distance = total_distance * 0.1
 	local end_accel_distance = total_distance * 0.2
-	local glide_distance = total_distance * 0.5
-	local slow_distance = total_distance * 0.7
+	local glide_distance = total_distance * 0.7
+	local slow_distance = total_distance * 0.95
 	local full_distance = total_distance * 1
 
 	if distance_travelled <= start_accel_distance then
@@ -334,8 +342,10 @@ EnemyCharacterStateLeaping._finish = function (self, unit, t)
 	locomotion_extension:set_wanted_velocity(Vector3.zero())
 	locomotion_extension:reset_maximum_upwards_velocity()
 
-	if self._leap_data.leap_finish then
-		self._leap_data.leap_finish(unit)
+	if self._leap_data.leap_events.finished then
+		local final_position = POSITION_LOOKUP[unit]
+
+		self._leap_data.leap_events.finished(self, unit, false, final_position)
 	end
 
 	self._leap_done = true

@@ -221,13 +221,10 @@ DeathSystem.kill_unit = function (self, unit, killing_blow)
 		extension.death_has_started = true
 	end
 
-	local blackboard = BLACKBOARDS[unit]
-	local inventory_extension = ScriptUnit.has_extension(unit, "inventory_system")
+	if breed and breed.is_player and breed.keep_weapon_on_death == false then
+		local inventory_extension = ScriptUnit.has_extension(unit, "inventory_system")
 
-	if inventory_extension and blackboard then
-		local breed = blackboard.breed
-
-		if breed and breed.is_player and breed.keep_weapon_on_death == false then
+		if inventory_extension then
 			inventory_extension:drop_equipped_weapons("death")
 		end
 	end
@@ -265,7 +262,7 @@ DeathSystem._create_dummy_killing_blow = function (self, unit, damage_type)
 	killing_blow[DamageDataIndex.DIRECTION] = damage_direction_table
 	killing_blow[DamageDataIndex.DAMAGE_SOURCE_NAME] = "n/a"
 	killing_blow[DamageDataIndex.HIT_RAGDOLL_ACTOR_NAME] = "n/a"
-	killing_blow[DamageDataIndex.SOURCE_ATTACKER_UNIT] = nil
+	killing_blow[DamageDataIndex.SOURCE_ATTACKER_UNIT] = unit
 	killing_blow[DamageDataIndex.HIT_REACT_TYPE] = "n/a"
 	killing_blow[DamageDataIndex.CRITICAL_HIT] = false
 	killing_blow[DamageDataIndex.FIRST_HIT] = true

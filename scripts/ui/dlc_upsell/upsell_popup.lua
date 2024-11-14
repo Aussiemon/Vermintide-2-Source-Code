@@ -46,7 +46,7 @@ UpsellPopup._handle_input = function (self, dt)
 	end
 
 	if UIUtils.is_button_pressed(widgets_by_name.store_button) or input_service:get("confirm_press", true) then
-		Managers.unlock:open_dlc_page(self._dlc_name)
+		Managers.unlock:open_dlc_page(self._name)
 
 		return
 	end

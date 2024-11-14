@@ -1,5 +1,6 @@
 ﻿-- chunkname: @scripts/settings/equipment/cosmetics.lua
 
+require("scripts/settings/equipment/skin_material_settings_templates")
 require("scripts/utils/cosmetics_utils")
 
 Cosmetics = {}
@@ -609,6 +610,7 @@ Cosmetics.skin_es_knight_black_and_gold = {
 		package_name = "units/beings/player/empire_soldier_knight/skins/black_and_gold/chr_empire_soldier_knight_black_and_gold",
 		third_person = {
 			mtr_outfit = "units/beings/player/empire_soldier_knight/skins/black_and_gold/mtr_outfit_black_and_gold",
+			mtr_outfit_ds = "units/beings/player/empire_soldier_knight/skins/black_and_gold/mtr_outfit_black_and_gold_ds",
 		},
 		first_person = {
 			mtr_outfit = "units/beings/player/empire_soldier_knight/skins/black_and_gold/mtr_outfit_black_and_gold_1p",
@@ -634,6 +636,7 @@ Cosmetics.skin_es_knight_bronze = {
 		package_name = "units/beings/player/empire_soldier_knight/skins/bronze/chr_empire_soldier_knight_bronze",
 		third_person = {
 			mtr_outfit = "units/beings/player/empire_soldier_knight/skins/bronze/mtr_outfit_bronze",
+			mtr_outfit_ds = "units/beings/player/empire_soldier_knight/skins/bronze/mtr_outfit_bronze_ds",
 		},
 		first_person = {
 			mtr_outfit = "units/beings/player/empire_soldier_knight/skins/bronze/mtr_outfit_bronze_1p",
@@ -659,6 +662,7 @@ Cosmetics.skin_es_knight_green = {
 		package_name = "units/beings/player/empire_soldier_knight/skins/green/chr_empire_soldier_knight_green",
 		third_person = {
 			mtr_outfit = "units/beings/player/empire_soldier_knight/skins/green/mtr_outfit_green",
+			mtr_outfit_ds = "units/beings/player/empire_soldier_knight/skins/green/mtr_outfit_green_ds",
 		},
 		first_person = {
 			mtr_outfit = "units/beings/player/empire_soldier_knight/skins/green/mtr_outfit_green_1p",
@@ -684,6 +688,7 @@ Cosmetics.skin_es_knight_middenland = {
 		package_name = "units/beings/player/empire_soldier_knight/skins/middenland/chr_empire_soldier_knight_middenland",
 		third_person = {
 			mtr_outfit = "units/beings/player/empire_soldier_knight/skins/middenland/mtr_outfit_middenland",
+			mtr_outfit_ds = "units/beings/player/empire_soldier_knight/skins/middenland/mtr_outfit_middenland_ds",
 		},
 		first_person = {
 			mtr_outfit = "units/beings/player/empire_soldier_knight/skins/middenland/mtr_outfit_middenland_1p",
@@ -709,6 +714,7 @@ Cosmetics.skin_es_knight_red = {
 		package_name = "units/beings/player/empire_soldier_knight/skins/red/chr_empire_soldier_knight_red",
 		third_person = {
 			mtr_outfit = "units/beings/player/empire_soldier_knight/skins/red/mtr_outfit_red",
+			mtr_outfit_ds = "units/beings/player/empire_soldier_knight/skins/red/mtr_outfit_red_ds",
 		},
 		first_person = {
 			mtr_outfit = "units/beings/player/empire_soldier_knight/skins/red/mtr_outfit_red_1p",
@@ -3063,9 +3069,45 @@ Cosmetics.frame_skulls_2022 = {
 Cosmetics.frame_celebration_06 = {
 	icon = "unit_frame_02",
 }
-Cosmetics.frame_skulls_2023 = {
+Cosmetics.frame_globadier_01 = {
 	icon = "unit_frame_02",
-	texture_package_name = "resource_packages/store/item_icons/store_item_icon_frame_skulls_2023",
+}
+Cosmetics.frame_globadier_02 = {
+	icon = "unit_frame_02",
+}
+Cosmetics.frame_gutter_runner_01 = {
+	icon = "unit_frame_02",
+}
+Cosmetics.frame_gutter_runner_02 = {
+	icon = "unit_frame_02",
+}
+Cosmetics.frame_packmaster_01 = {
+	icon = "unit_frame_02",
+}
+Cosmetics.frame_packmaster_02 = {
+	icon = "unit_frame_02",
+}
+Cosmetics.frame_ratling_gunner_01 = {
+	icon = "unit_frame_02",
+}
+Cosmetics.frame_ratling_gunner_02 = {
+	icon = "unit_frame_02",
+}
+Cosmetics.frame_troll_01 = {
+	icon = "unit_frame_02",
+}
+Cosmetics.frame_troll_02 = {
+	icon = "unit_frame_02",
+}
+Cosmetics.frame_warpfire_thrower_01 = {
+	icon = "unit_frame_02",
+}
+Cosmetics.frame_warpfire_thrower_02 = {
+	icon = "unit_frame_02",
+}
+Cosmetics.frame_versus_01 = {
+	icon = "unit_frame_02",
+	texture_package_name = "resource_packages/store/item_icons/store_item_icon_frame_versus_01",
 	unit = "",
 	attachment_node = {
 		unit = "units/ui/ui_portrait_frame",
@@ -3073,10 +3115,28 @@ Cosmetics.frame_skulls_2023 = {
 	},
 	material_settings = {
 		portrait_frame = {
-			texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_skulls_2023/store_item_icon_frame_skulls_2023",
+			texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_versus_01/store_item_icon_frame_versus_01",
 			type = "texture",
 		},
 	},
+}
+Cosmetics.frame_versus_02 = {
+	icon = "unit_frame_02",
+	texture_package_name = "resource_packages/store/item_icons/store_item_icon_frame_versus_02",
+	unit = "",
+	attachment_node = {
+		unit = "units/ui/ui_portrait_frame",
+		attachment_node = AttachmentNodeLinking.ui_portrait_frame,
+	},
+	material_settings = {
+		portrait_frame = {
+			texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_versus_02/store_item_icon_frame_versus_02",
+			type = "texture",
+		},
+	},
+}
+Cosmetics.frame_skulls_2023 = {
+	icon = "unit_frame_02",
 }
 Cosmetics.frame_skulls_2024 = {
 	icon = "unit_frame_02",
@@ -3135,11 +3195,22 @@ Cosmetics.frame_geheimnisnacht_05 = {
 		},
 	},
 }
+Cosmetics.coin_template = {
+	icon = "unit_frame_02",
+	unit = "",
+	attachment_node = {
+		unit = "units/ui/versus_coin/versus_coin",
+		attachment_node = AttachmentNodeLinking.ui_portrait_frame,
+	},
+}
 Cosmetics.frame_geheimnisnacht_2024 = {
 	icon = "unit_frame_02",
 }
 Cosmetics.frame_gotwf_01 = {
 	icon = "unit_frame_02",
+}
+Cosmetics.pose_template = {
+	icon = "icons_placeholder",
 }
 
 DLCUtils.map_list("cosmetics_files", function (file_name)

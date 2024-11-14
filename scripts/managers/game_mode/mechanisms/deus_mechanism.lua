@@ -466,7 +466,7 @@ DeusMechanism.get_hub_level_key = function (self)
 	return HUB_LEVEL_NAME
 end
 
-DeusMechanism.get_end_of_level_rewards_arguments = function (self, game_won, quickplay, statistics_db, stats_id)
+DeusMechanism.get_end_of_level_rewards_arguments = function (self, game_won, quickplay, statistics_db, stats_id, level_key, hero_name)
 	local end_of_level_rewards_arguments = self._deus_run_controller:get_end_of_level_rewards_arguments(game_won, quickplay)
 	local ignore_dlc_check = false
 	local current_weave = LevelUnlockUtils.current_weave(statistics_db, stats_id, ignore_dlc_check)
@@ -850,25 +850,6 @@ DeusMechanism._build_side_compositions = function (self, state)
 	return side_compositions
 end
 
-DeusMechanism.profile_available = function (self, profile_synchronizer, profile_name, career_name)
-	local profile_index = FindProfileIndex(profile_name)
-	local party = Managers.party:get_party(1)
-	local occupied_slots = party.occupied_slots
-
-	for i = 1, #occupied_slots do
-		local status = occupied_slots[i]
-		local peer_id = status.peer_id
-		local local_player_id = status.local_player_id
-		local player_profile_id, player_career_id = profile_synchronizer:profile_by_peer(peer_id, local_player_id)
-
-		if player_profile_id == profile_index then
-			return false
-		end
-	end
-
-	return true
-end
-
 DeusMechanism.get_state = function (self)
 	return self._state
 end
@@ -923,13 +904,6 @@ DeusMechanism.uses_random_directors = function (self)
 	return false
 end
 
-DeusMechanism.profile_available_for_peer = function (self, profile_synchronizer, peer_id, local_player_id, profile_name, career_name)
-	local profile_index = FindProfileIndex(profile_name)
-	local reserver_peer_id = profile_synchronizer:get_profile_index_reservation(profile_index)
-
-	return not reserver_peer_id or reserver_peer_id == peer_id
-end
-
 DeusMechanism.profile_changed = function (self, peer_id, local_player_id, profile_index, career_index, is_bot)
 	if self._deus_run_controller and not self._deus_run_controller:get_run_ended() then
 		self._deus_run_controller:profile_changed(peer_id, local_player_id, profile_index, career_index, is_bot)
@@ -945,17 +919,6 @@ DeusMechanism.profile_changed = function (self, peer_id, local_player_id, profil
 
 		self:_update_career_loadout(local_player_id, career_name, is_bot)
 	end
-end
-
-DeusMechanism.allocate_slot = function (self, sender, profile_index)
-	local network_server = Managers.mechanism:network_server()
-	local profile_synchronizer = network_server.profile_synchronizer
-
-	if profile_synchronizer:try_reserve_profile_for_peer(sender, profile_index) then
-		return true
-	end
-
-	return false
 end
 
 DeusMechanism.sync_mechanism_data = function (self, peer_id, mechanism_newly_initialized)
@@ -1259,11 +1222,12 @@ DeusMechanism._update_own_avatar_info = function (self)
 	local career_name = career.name
 	local experience = ExperienceSettings.get_experience(display_name)
 	local level = ExperienceSettings.get_level(experience)
+	local versus_level = Application.user_setting("toggle_versus_level_in_all_game_modes") and ExperienceSettings.get_versus_level() or 0
 	local frame_item = BackendUtils.get_loadout_item(career_name, "slot_frame")
 	local frame_name = frame_item and frame_item.data.name or "default"
 	local name = local_player:name() or ""
 
-	self._deus_run_controller:set_own_player_avatar_info(level, name, frame_name)
+	self._deus_run_controller:set_own_player_avatar_info(level, name, frame_name, versus_level)
 end
 
 DeusMechanism.rpc_deus_setup_run = function (self, channel_id, run_id, run_seed, difficulty_id, journey_name_id, dominant_god_id, with_belakor, mutator_array, boon_array)
@@ -1417,4 +1381,18 @@ end
 
 DeusMechanism.get_starting_level = function ()
 	return HUB_LEVEL_NAME
+end
+
+DeusMechanism.reserved_party_id_by_peer = function (self, peer_id)
+	return 1
+end
+
+DeusMechanism.try_reserve_profile_for_peer_by_mechanism = function (self, profile_synchronizer, peer_id, profile_index, career_index, allow_switching)
+	local party_id = self:reserved_party_id_by_peer(peer_id)
+
+	return profile_synchronizer:try_reserve_profile_for_peer(party_id, peer_id, profile_index, career_index)
+end
+
+DeusMechanism.entered_mechanism_due_to_switch = function (self)
+	Managers.chat:set_chat_enabled(true)
 end

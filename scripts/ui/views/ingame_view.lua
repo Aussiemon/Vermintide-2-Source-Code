@@ -98,9 +98,6 @@ IngameView.on_exit = function (self)
 	self.input_manager:device_unblock_all_services("keyboard", 1)
 	self.input_manager:device_unblock_all_services("mouse", 1)
 	self.input_manager:device_unblock_all_services("gamepad", 1)
-
-	MOOD_BLACKBOARD.menu = false
-
 	self:play_sound("Play_hud_button_close")
 
 	local world = self.ui_renderer.world

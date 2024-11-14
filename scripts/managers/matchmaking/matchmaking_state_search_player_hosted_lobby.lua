@@ -207,20 +207,19 @@ MatchmakingStateSearchPlayerHostedLobby._lobby_match = function (self, lobby_dat
 	end
 
 	if IS_WINDOWS then
-		local party_members = {
-			lobby_data.player_slot_1,
-			lobby_data.player_slot_2,
-			lobby_data.player_slot_3,
-			lobby_data.player_slot_4,
-			lobby_data.player_slot_5,
-		}
+		local reservation_data = ProfileSynchronizer.deserialize_lobby_reservation_data(lobby_data)
 
-		for i = 1, #party_members do
-			local relationship = Friends.relationship(party_members[i])
-			local user_blocked = relationship == 5 or relationship == 6
+		for party_id = 1, #reservation_data do
+			local peer_datas = reservation_data[party_id]
 
-			if user_blocked then
-				return false, "user blocked"
+			for i = 1, #peer_datas do
+				local peer_id = ProfileSynchronizer.unpack_lobby_reservation_peer_data(peer_datas[i])
+				local relationship = Friends.relationship(peer_id)
+				local user_blocked = relationship == 5 or relationship == 6
+
+				if user_blocked then
+					return false, "user blocked"
+				end
 			end
 		end
 	end
@@ -263,9 +262,10 @@ MatchmakingStateSearchPlayerHostedLobby._lobby_match = function (self, lobby_dat
 	local party_lobby_host = search_config.party_lobby_host
 	local lobby_members = party_lobby_host and party_lobby_host:members()
 	local party_members = lobby_members and lobby_members:get_members()
+	local matchmaking_settings = Managers.matchmaking.get_matchmaking_settings_for_mechanism(lobby_data.mechanism)
 	local my_num_players = party_members and #party_members or 1
 	local lobby_num_players = lobby_data.num_players and tonumber(lobby_data.num_players)
-	local max_number_of_players = search_config.max_number_of_players or MatchmakingSettings.MAX_NUMBER_OF_PLAYERS
+	local max_number_of_players = search_config.max_number_of_players or matchmaking_settings.MAX_NUMBER_OF_PLAYERS
 	local has_empty_slots = lobby_num_players and max_number_of_players >= lobby_num_players + my_num_players
 
 	if not has_empty_slots then

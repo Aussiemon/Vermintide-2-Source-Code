@@ -824,8 +824,9 @@ DeusRunController.get_peers = function (self)
 	return self._network_handler:get_peers()
 end
 
-DeusRunController.set_own_player_avatar_info = function (self, level, name, frame)
+DeusRunController.set_own_player_avatar_info = function (self, level, name, frame, versus_level)
 	self._run_state:set_own_player_level(level)
+	self._run_state:set_own_versus_player_level(versus_level)
 	self._run_state:set_own_player_frame(frame)
 	self._run_state:set_own_player_name(name)
 end
@@ -1670,6 +1671,10 @@ DeusRunController.get_player_level = function (self, peer_id)
 	return self._run_state:get_player_level(peer_id)
 end
 
+DeusRunController.get_versus_player_level = function (self, peer_id)
+	return self._run_state:get_versus_player_level(peer_id)
+end
+
 DeusRunController.get_player_name = function (self, peer_id)
 	return self._run_state:get_player_name(peer_id)
 end
@@ -1760,6 +1765,7 @@ DeusRunController.restore_game_mode_data = function (self, peer_id, local_player
 		data.consumables.slot_grenade = difficulty_settings.slot_grenade
 
 		self._run_state:set_player_spawned_once(peer_id, local_player_id, profile_index, career_index, true)
+		self:save_game_mode_data(peer_id, local_player_id, profile_index, career_index, data)
 	else
 		data.health_state = self._run_state:get_player_health_state(peer_id, local_player_id, profile_index, career_index)
 		data.health_percentage = self._run_state:get_player_health_percentage(peer_id, local_player_id, profile_index, career_index)

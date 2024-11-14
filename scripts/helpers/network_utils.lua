@@ -75,7 +75,19 @@ NetworkUtils.announce_chat_peer_joined = function (peer_id, lobby)
 	Managers.chat:add_local_system_message(1, message, pop_chat)
 end
 
+local peer_left_ignored_states = table.set({
+	"MatchmakingStatePartyJoins",
+	"MatchmakingStateJoinGame",
+})
+
 NetworkUtils.announce_chat_peer_left = function (peer_id, lobby)
+	local matchmaking_manager = Managers.matchmaking
+	local matchmaking_state = matchmaking_manager:state()
+
+	if peer_left_ignored_states[matchmaking_state] then
+		return
+	end
+
 	local sender = NetworkUtils.get_user_name(peer_id, lobby)
 
 	if not sender then
@@ -86,4 +98,37 @@ NetworkUtils.announce_chat_peer_left = function (peer_id, lobby)
 	local pop_chat = true
 
 	Managers.chat:add_local_system_message(1, message, pop_chat)
+end
+
+local cached_ip_port = {}
+
+NetworkUtils.split_ip_port = function (ip_port)
+	local parts, n = string.split(ip_port, ":", cached_ip_port)
+
+	if parts and n >= 2 then
+		return parts[1], parts[2]
+	end
+
+	return nil, nil
+end
+
+NetworkUtils.net_pack_flexmatch_ticket = function (ticket)
+	local STRING_MAX = 500
+	local id_size = #ticket
+	local parts = math.ceil(id_size / STRING_MAX)
+	local max_size = Network.type_info("flexmatch_ticket").max_size
+
+	fassert(parts <= max_size, "Flexmatch ticket is too big (%s>%s)", id_size, max_size * STRING_MAX)
+
+	local networkified_ticket = {}
+
+	for i = 1, parts do
+		networkified_ticket[i] = string.sub(ticket, (i - 1) * STRING_MAX + 1, math.min(i * STRING_MAX, id_size))
+	end
+
+	return networkified_ticket
+end
+
+NetworkUtils.unnet_pack_flexmatch_ticket = function (packed_ticket)
+	return table.concat(packed_ticket)
 end

@@ -31,7 +31,19 @@ GraphDrawer.graph = function (self, graph_name)
 end
 
 GraphDrawer.update = function (self, input_service, t)
-	if input_service:get("f11") then
+	local toggle = input_service:get("f11")
+
+	if self.active then
+		Debug.text("GraphDrawer active, other mouse input disabled")
+
+		local graph_drawer_input = self.input_manager:get_input_service("Debug")
+
+		if not graph_drawer_input or graph_drawer_input:is_blocked() then
+			toggle = true
+		end
+	end
+
+	if toggle then
 		if not self.active then
 			self.input_manager:capture_input({
 				"mouse",
@@ -45,10 +57,6 @@ GraphDrawer.update = function (self, input_service, t)
 		end
 
 		self.active = not self.active
-	end
-
-	if self.active then
-		Debug.text("GraphDrawer active, other mouse input disabled")
 	end
 
 	local res_x, res_y = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h

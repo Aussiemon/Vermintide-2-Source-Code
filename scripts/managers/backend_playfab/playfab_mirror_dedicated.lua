@@ -22,8 +22,6 @@ PlayFabMirrorDedicated.init = function (self, signin_result)
 			dlc:set_owned(true)
 		end
 	end
-
-	self:_request_server_inventory()
 end
 
 PlayFabMirrorDedicated.is_update_items_done = function (self)

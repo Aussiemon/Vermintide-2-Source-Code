@@ -153,6 +153,26 @@ local function is_valid_player_and_target_unit_exclude_local_player(player_profi
 	end
 end
 
+local function is_weapon_pose_available(data, active_context, content, style)
+	local pose_index = data.pose_index
+	local player = Managers.player:local_player()
+	local player_unit = player.player_unit
+
+	if not ALIVE[player_unit] then
+		return false
+	end
+
+	local inventory_ext = ScriptUnit.extension(player_unit, "inventory_system")
+	local wielded_slot_data = inventory_ext:get_wielded_slot_data()
+	local item_data = wielded_slot_data.item_data
+	local item_name = item_data.name
+	local pose_name = item_data.pose_name
+	local backend_crafting = Managers.backend:get_interface("items")
+	local unlocked_weapon_poses = backend_crafting:get_unlocked_weapon_poses()
+
+	return unlocked_weapon_poses[item_name] and unlocked_weapon_poses[item_name][pose_name]
+end
+
 local function get_ping_hero_event_text(target_unit, event_settings)
 	local player_manager = Managers.player
 	local callee_player = player_manager:owner(target_unit)
@@ -269,6 +289,86 @@ SocialWheelPriority = {
 	},
 }
 
+local general_emotes = {
+	{
+		icon = "radial_chat_icon_thank_you",
+		name = "social_wheel_general_pose_01",
+		text = "social_wheel_pose_test_01",
+		execute_func = play_emote,
+		is_valid_func = is_weapon_pose_available,
+		data = {
+			anim_event = "anim_pose_01",
+			hide_weapons = false,
+			pose_index = 1,
+		},
+		ping_type = PingTypes.LOCAL_ONLY,
+	},
+	{
+		icon = "radial_chat_icon_thank_you",
+		name = "social_wheel_general_pose_02",
+		text = "social_wheel_pose_test_02",
+		execute_func = play_emote,
+		is_valid_func = is_weapon_pose_available,
+		data = {
+			anim_event = "anim_pose_02",
+			hide_weapons = false,
+			pose_index = 2,
+		},
+		ping_type = PingTypes.LOCAL_ONLY,
+	},
+	{
+		icon = "radial_chat_icon_thank_you",
+		name = "social_wheel_general_pose_03",
+		text = "social_wheel_pose_test_03",
+		execute_func = play_emote,
+		is_valid_func = is_weapon_pose_available,
+		data = {
+			anim_event = "anim_pose_03",
+			hide_weapons = false,
+			pose_index = 3,
+		},
+		ping_type = PingTypes.LOCAL_ONLY,
+	},
+	{
+		icon = "radial_chat_icon_thank_you",
+		name = "social_wheel_general_pose_04",
+		text = "social_wheel_pose_test_04",
+		execute_func = play_emote,
+		is_valid_func = is_weapon_pose_available,
+		data = {
+			anim_event = "anim_pose_04",
+			hide_weapons = false,
+			pose_index = 4,
+		},
+		ping_type = PingTypes.LOCAL_ONLY,
+	},
+	{
+		icon = "radial_chat_icon_thank_you",
+		name = "social_wheel_general_pose_05",
+		text = "social_wheel_pose_test_05",
+		execute_func = play_emote,
+		is_valid_func = is_weapon_pose_available,
+		data = {
+			anim_event = "anim_pose_05",
+			hide_weapons = false,
+			pose_index = 5,
+		},
+		ping_type = PingTypes.LOCAL_ONLY,
+	},
+	{
+		icon = "radial_chat_icon_thank_you",
+		name = "social_wheel_general_pose_06",
+		text = "social_wheel_pose_test_06",
+		execute_func = play_emote,
+		is_valid_func = is_weapon_pose_available,
+		data = {
+			anim_event = "anim_pose_06",
+			hide_weapons = false,
+			pose_index = 6,
+		},
+		ping_type = PingTypes.LOCAL_ONLY,
+	},
+}
 local unarmed_emotes = {
 	{
 		icon = "radial_chat_pose_wheel_icon_unarmed",
@@ -348,7 +448,9 @@ local function clone_wheel_settings(settings, unique_name_postfix)
 	return new_settings
 end
 
+local general_emotes_gamepad = clone_wheel_settings(general_emotes, "_gp")
 local unarmed_emotes_gamepad = clone_wheel_settings(unarmed_emotes, "_gp")
+local unarmed_emotes_gamepad_versus = clone_wheel_settings(unarmed_emotes, "_gp_versus")
 
 SocialWheelSettings = {
 	general = {
@@ -710,7 +812,7 @@ SocialWheelSettings = {
 				ping_type = PingTypes.VO_ONLY,
 			},
 		},
-		{},
+		unarmed_emotes_gamepad_versus,
 		has_pages = true,
 		individual_bg = false,
 		wedge_adjustment = 0.85,
@@ -816,7 +918,6 @@ SocialWheelSettings = {
 				ping_type = PingTypes.VO_ONLY,
 			},
 		},
-		{},
 		has_pages = true,
 		individual_bg = false,
 		wedge_adjustment = 0.85,
@@ -891,26 +992,46 @@ for category_name, category_settings in pairs(SocialWheelSettings) do
 	end
 end
 
-SocialWheelSettingsLookup = {}
+if not rawget(_G, "SocialWheelSettingsLookup") then
+	SocialWheelSettingsLookup = {}
 
-for _, category_settings in pairs(SocialWheelSettings) do
-	if category_settings.has_pages then
-		for i = 1, #category_settings do
-			for _, setting in ipairs(category_settings[i]) do
-				local name = setting.name or settings.category_name
+	for _, category_settings in pairs(SocialWheelSettings) do
+		if category_settings.has_pages then
+			for i = 1, #category_settings do
+				for _, setting in ipairs(category_settings[i]) do
+					local name = setting.name or settings.category_name
+
+					fassert(SocialWheelSettingsLookup[name] == nil, "You have a duplicate entry in SocialWheelSettings (%s), each entry must have a unique name!", name)
+
+					SocialWheelSettingsLookup[name] = setting
+				end
+			end
+		else
+			for _, setting in ipairs(category_settings) do
+				local name = setting.name or setting.category_name
 
 				fassert(SocialWheelSettingsLookup[name] == nil, "You have a duplicate entry in SocialWheelSettings (%s), each entry must have a unique name!", name)
 
 				SocialWheelSettingsLookup[name] = setting
 			end
 		end
-	else
-		for _, setting in ipairs(category_settings) do
-			local name = setting.name or setting.category_name
+	end
 
-			fassert(SocialWheelSettingsLookup[name] == nil, "You have a duplicate entry in SocialWheelSettings (%s), each entry must have a unique name!", name)
+	SocialWheelSettingsNetworkLookupBase = {
+		"n/a",
+	}
 
-			SocialWheelSettingsLookup[name] = setting
-		end
+	local MAX_WEAPON_POSES = 13
+
+	for i = 1, MAX_WEAPON_POSES do
+		SocialWheelSettingsNetworkLookupBase[#SocialWheelSettingsNetworkLookupBase + 1] = string.format("social_wheel_weapon_pose_general_pose_%02d", i)
 	end
 end
+
+return {
+	functions = {
+		play_emote = play_emote,
+		is_weapon_pose_available = is_weapon_pose_available,
+		clone_wheel_settings = clone_wheel_settings,
+	},
+}

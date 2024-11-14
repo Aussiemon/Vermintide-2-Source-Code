@@ -2,7 +2,7 @@
 
 CommonPopup = class(CommonPopup)
 
-CommonPopup.init = function (self, ui_context, dlc_name, common_settings)
+CommonPopup.init = function (self, ui_context, name, common_settings)
 	self._ui_context = ui_context
 	self._ui_renderer = ui_context.ui_renderer
 	self._ui_top_renderer = ui_context.ui_top_renderer
@@ -12,16 +12,13 @@ CommonPopup.init = function (self, ui_context, dlc_name, common_settings)
 		alpha_multiplier = 1,
 		snap_pixel_positions = true,
 	}
-	self._dlc_name = dlc_name
+	self._name = name
 	self._common_settings = common_settings
 	self._animations = {}
-
-	self:create_ui_elements()
-
 	self._input_service_name = "common_popup"
 
 	self:setup_input()
-	self:setup_input_description()
+	self:create_ui_elements()
 
 	self.popup_id = 0
 	self._has_widget_been_closed = false
@@ -31,21 +28,41 @@ CommonPopup.destroy = function (self)
 	if self._is_visible then
 		self:hide()
 	end
+
+	if self._fullscreen_effect_enabled then
+		self:set_fullscreen_effect_enable_state(false)
+	end
 end
 
 CommonPopup.create_ui_elements = function (self)
 	local settings = self._common_settings
+	local definitions = settings.definitions
 
-	self._ui_scenegraph = UISceneGraph.init_scenegraph(settings.definitions.scenegraph_definition)
+	definitions = definitions or local_require(settings.definitions_path)
+	self._definitions = definitions
+	self._ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 
 	local widgets_by_name
 
-	self._widgets, widgets_by_name = UIUtils.create_widgets(settings.definitions.widget_definitions)
+	self._widgets, widgets_by_name = UIUtils.create_widgets(definitions.widget_definitions)
 	self._widgets_by_name = widgets_by_name
 
-	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
+	UIRenderer.clear_scenegraph_queue(self._ui_top_renderer)
 
-	self._ui_animator = UIAnimator:new(self._ui_scenegraph, settings.definitions.animation_definitions)
+	self._ui_animator = UIAnimator:new(self._ui_scenegraph, definitions.animation_definitions)
+
+	local generic_input_actions = definitions.generic_input_actions
+
+	if generic_input_actions then
+		local menu_desc = MenuInputDescriptionUI:new(nil, self._ui_top_renderer, self:_get_input_service(), 3, 900, generic_input_actions.default)
+		local input_desc = settings.input_desc
+
+		if input_desc then
+			menu_desc:set_input_description(input_desc)
+		end
+
+		self._menu_input_description = menu_desc
+	end
 end
 
 CommonPopup.update = function (self, dt)
@@ -71,6 +88,11 @@ CommonPopup.draw = function (self, dt)
 
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 	UIRenderer.draw_all_widgets(ui_top_renderer, self._widgets)
+
+	if self._content_widgets then
+		UIRenderer.draw_all_widgets(ui_top_renderer, self._content_widgets)
+	end
+
 	UIRenderer.end_pass(ui_top_renderer)
 
 	if gamepad_active and self._menu_input_description then
@@ -136,20 +158,6 @@ CommonPopup.setup_input = function (self)
 	end
 end
 
-CommonPopup.setup_input_description = function (self)
-	local generic_input_actions = self._common_settings.definitions.generic_input_actions
-
-	if not generic_input_actions then
-		return
-	end
-
-	local menu_desc = MenuInputDescriptionUI:new(nil, self._ui_top_renderer, self:_get_input_service(), 3, 900, self._common_settings.definitions.generic_input_actions.default)
-
-	menu_desc:set_input_description(self._common_settings.input_desc)
-
-	self._menu_input_description = menu_desc
-end
-
 CommonPopup._get_input_service = function (self)
 	return Managers.input:get_service(self._input_service_name)
 end
@@ -160,4 +168,21 @@ end
 
 CommonPopup.is_popup_showing = function (self)
 	return self._is_visible
+end
+
+CommonPopup.play_sound = function (self, event)
+	WwiseWorld.trigger_event(self._wwise_world, event)
+end
+
+CommonPopup.set_fullscreen_effect_enable_state = function (self, enabled)
+	local world = self._ui_renderer.world
+	local shading_env = World.get_data(world, "shading_environment")
+
+	if shading_env then
+		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", enabled and 1 or 0)
+		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", enabled and 0.75 or 0)
+		ShadingEnvironment.apply(shading_env)
+	end
+
+	self._fullscreen_effect_enabled = enabled
 end

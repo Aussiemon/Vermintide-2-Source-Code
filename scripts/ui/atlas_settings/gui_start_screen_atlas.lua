@@ -1,6 +1,20 @@
 ﻿-- chunkname: @scripts/ui/atlas_settings/gui_start_screen_atlas.lua
 
 start_screen_atlas = {
+	info_slate_arrow = {
+		size = {
+			11,
+			13,
+		},
+		uv00 = {
+			0.71875,
+			0.003906,
+		},
+		uv11 = {
+			0.729492,
+			0.029297,
+		},
+	},
 	dot = {
 		size = {
 			44,

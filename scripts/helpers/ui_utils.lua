@@ -13,6 +13,22 @@ ALL_INPUT_METHODS = {
 	"mouse",
 }
 
+UIUtils.use_gamepad_hud_layout = function ()
+	if not IS_WINDOWS then
+		return true
+	end
+
+	local use_gamepad_hud_layout = UISettings.use_gamepad_hud_layout
+
+	if use_gamepad_hud_layout == "auto" then
+		return Managers.input:is_device_active("gamepad")
+	elseif use_gamepad_hud_layout == "never" then
+		return false
+	elseif use_gamepad_hud_layout == "always" then
+		return true
+	end
+end
+
 local VALUE_LIST = {}
 
 UIUtils.format_localized_description = function (fmt_str, fmt_def)
@@ -29,6 +45,13 @@ UIUtils.format_localized_description = function (fmt_str, fmt_def)
 		local value_type = value_data.value_type
 		local value_fmt = value_data.value_fmt
 		local value = value_data.value
+		local localize = value_data.localize
+
+		if localize then
+			local value_fmt_def = value_data.format_values
+
+			value = UIUtils.format_localized_description(value, value_fmt_def)
+		end
 
 		if value_type == "percent" then
 			value = math.abs(100 * value)
@@ -207,6 +230,11 @@ UIUtils.get_ui_information_from_item = function (item)
 		store_icon = skin_template.store_icon
 		display_name = skin_template.display_name
 		description = skin_template.description
+	elseif item_type == "weapon_pose" then
+		inventory_icon = item_data.hud_icon
+		store_icon = "icons_placeholder"
+		display_name = item_data.display_name
+		description = item_data.description
 	elseif item.skin then
 		local skin = item.skin
 		local skin_template = WeaponSkins.skins[skin]
@@ -340,7 +368,14 @@ UIUtils.enable_button = function (widget, enable, hotspot_name)
 	local content = widget.content
 	local hotspot = content[hotspot_name] or content.button_hotspot or content.hotspot
 
-	hotspot.disable_button = enable
+	hotspot.disable_button = not enable
+end
+
+UIUtils.is_button_enabled = function (widget, enable, hotspot_name)
+	local content = widget.content
+	local hotspot = content[hotspot_name] or content.button_hotspot or content.hotspot
+
+	return not hotspot.disable_button
 end
 
 UIUtils.is_button_pressed = function (widget, hotspot_name, keyboard_input)

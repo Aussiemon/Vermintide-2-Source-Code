@@ -50,6 +50,7 @@ local components = {
 		filename = "scripts/ui/hud_ui/dark_pact_ability_ui",
 		visibility_groups = {
 			"alive",
+			"ghost_mode",
 		},
 		validation_function = is_dark_pact_or_spectator_validate_function,
 	},
@@ -650,15 +651,36 @@ local visibility_groups = {
 	{
 		name = "dead",
 		validation_function = function (ingame_hud)
-			return ingame_hud:is_own_player_dead()
+			local player = Managers.player:local_player()
+			local side = Managers.state.side:get_side_from_player_unique_id(player:unique_id())
+			local is_hero = side and side:name() == "heroes"
+			local player_ready = true
+
+			if is_hero then
+				player_ready = Managers.state.game_mode:game_mode():player_ready()
+			end
+
+			return ingame_hud:is_own_player_dead() and player_ready
 		end,
 	},
 	{
 		name = "alive",
 		validation_function = function (ingame_hud)
-			local player_unit = Managers.player:local_player().player_unit
+			local local_player = Managers.player:local_player()
+			local player_unit = local_player.player_unit
+			local player_ready = Managers.state.game_mode:game_mode():player_ready()
 
-			return player_unit and Unit.alive(player_unit)
+			return player_unit and Unit.alive(player_unit) and player_ready
+		end,
+	},
+	{
+		name = "ghost_mode",
+		validation_function = function (ingame_hud)
+			local local_player = Managers.player:local_player()
+			local ghost_mode_extension = ScriptUnit.has_extension(local_player.unit, "ghost_mode_system")
+			local in_ghost_mode = ghost_mode_extension and ghost_mode_extension:is_in_ghost_mode()
+
+			return in_ghost_mode
 		end,
 	},
 }

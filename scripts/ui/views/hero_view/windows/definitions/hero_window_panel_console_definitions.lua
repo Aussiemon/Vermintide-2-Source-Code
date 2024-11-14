@@ -128,7 +128,7 @@ local scenegraph_definition = {
 	},
 	panel_input_area_2 = {
 		horizontal_alignment = "right",
-		parent = "game_option_4",
+		parent = "game_option_5",
 		vertical_alignment = "center",
 		size = {
 			0,
@@ -399,6 +399,7 @@ title_button_definitions[#title_button_definitions + 1] = UIWidgets.create_conso
 title_button_definitions[#title_button_definitions + 1] = UIWidgets.create_console_panel_button("game_option_2", scenegraph_definition.game_option_2.size, "hero_window_talents", menu_options_font_size, nil, "center")
 title_button_definitions[#title_button_definitions + 1] = UIWidgets.create_console_panel_button("game_option_3", scenegraph_definition.game_option_3.size, "hero_window_crafting", menu_options_font_size, nil, "center")
 title_button_definitions[#title_button_definitions + 1] = UIWidgets.create_console_panel_button("game_option_4", scenegraph_definition.game_option_4.size, "hero_window_cosmetics", menu_options_font_size, nil, "center")
+title_button_definitions[#title_button_definitions + 1] = UIWidgets.create_console_panel_button("game_option_5", scenegraph_definition.game_option_5.size, "hero_window_pactsworn_equipment", menu_options_font_size, nil, "center")
 
 local panel_color = UISettings.console_menu_rect_color
 local widgets = {

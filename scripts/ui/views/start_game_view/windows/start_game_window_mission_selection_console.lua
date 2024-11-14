@@ -64,45 +64,9 @@ StartGameWindowMissionSelectionConsole._create_ui_elements = function (self, par
 	local ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 
 	self._ui_scenegraph = ui_scenegraph
-
-	local widgets = {}
-	local widgets_by_name = {}
-
-	for name, widget_definition in pairs(widget_definitions) do
-		local widget = UIWidget.init(widget_definition)
-
-		widgets[#widgets + 1] = widget
-		widgets_by_name[name] = widget
-	end
-
-	self._widgets = widgets
-	self._widgets_by_name = widgets_by_name
-
-	local node_widgets = {}
-	local node_widgets_by_name = {}
-
-	for name, widget_definition in pairs(node_widget_definitions) do
-		local widget = UIWidget.init(widget_definition)
-
-		node_widgets[#node_widgets + 1] = widget
-		node_widgets_by_name[name] = widget
-	end
-
-	self._node_widgets = node_widgets
-	self._node_widgets_by_name = node_widgets_by_name
-
-	local act_widgets = {}
-	local act_widgets_by_name = {}
-
-	for name, widget_definition in pairs(act_widget_definitions) do
-		local widget = UIWidget.init(widget_definition)
-
-		act_widgets[#act_widgets + 1] = widget
-		act_widgets_by_name[name] = widget
-	end
-
-	self._act_widgets = act_widgets
-	self._act_widgets_by_name = act_widgets_by_name
+	self._widgets, self._widgets_by_name = UIUtils.create_widgets(widget_definitions)
+	self._node_widgets, self._node_widgets_by_name = UIUtils.create_widgets(node_widget_definitions)
+	self._act_widgets, self._act_widgets_by_name = UIUtils.create_widgets(act_widget_definitions)
 	self._end_act_widget = UIWidget.init(end_act_widget_definition)
 	self._loot_object_widgets = {}
 
@@ -348,6 +312,14 @@ end
 StartGameWindowMissionSelectionConsole._setup_mission_data = function (self, level_settings)
 	local loot_objectives = level_settings.loot_objectives
 
+	do
+		local widgets_by_name = self._widgets_by_name
+		local visible = not not loot_objectives
+
+		widgets_by_name.hero_tabs.content.visible = visible
+		widgets_by_name.heros_completed_text.content.visible = visible
+	end
+
 	if not loot_objectives then
 		return
 	end
@@ -464,6 +436,12 @@ StartGameWindowMissionSelectionConsole._sync_completed_difficulty = function (se
 end
 
 StartGameWindowMissionSelectionConsole._calculate_paint_scrap_amount = function (self, level_settings)
+	local game_mode_settings = GameModeSettings[level_settings.game_mode or "adventure"]
+
+	if not game_mode_settings.has_art_scraps then
+		return 0
+	end
+
 	local level_key = level_settings.level_id
 
 	table.clear(TEMP_TABLE)
@@ -536,7 +514,7 @@ StartGameWindowMissionSelectionConsole._profile_difficulty_index_completed = fun
 			local career_name = careers[j].display_name
 			local value = statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career_name, level_key, difficulty_key)
 
-			if statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career_name, level_key, difficulty_key) > 0 then
+			if value > 0 then
 				return i, CareerSettings[career_name]
 			end
 		end
@@ -707,26 +685,6 @@ StartGameWindowMissionSelectionConsole._update_animations = function (self, dt)
 		local node_widget = node_widgets[i]
 
 		self:_animate_node_widget(node_widget, dt)
-	end
-end
-
-StartGameWindowMissionSelectionConsole._is_button_pressed = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	if hotspot.on_release then
-		hotspot.on_release = false
-
-		return true
-	end
-end
-
-StartGameWindowMissionSelectionConsole._is_button_hovered = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	if hotspot.on_hover_enter then
-		return true
 	end
 end
 
@@ -910,12 +868,12 @@ StartGameWindowMissionSelectionConsole._handle_input = function (self, dt, t)
 			local level_settings = content.level_data
 			local level_id = level_settings.level_id
 
-			if self:_is_button_hovered(widget) and self._selected_level_id ~= level_id then
+			if UIUtils.is_button_hover_enter(widget) and self._selected_level_id ~= level_id then
 				self:_play_sound("play_gui_lobby_button_02_mission_act_click")
 				self:_select_level(level_id)
 			end
 
-			if self:_is_button_pressed(widget) then
+			if UIUtils.is_button_pressed(widget) then
 				parent:set_selected_level_id(level_id)
 
 				local game_mode_layout_name = parent:get_selected_game_mode_layout_name()
@@ -945,37 +903,19 @@ StartGameWindowMissionSelectionConsole._draw = function (self, dt)
 	local input_service = self._parent:window_input_service()
 
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, self._render_settings)
-
-	local widgets = self._widgets
-
-	for i = 1, #widgets do
-		local widget = widgets[i]
-
-		UIRenderer.draw_widget(ui_top_renderer, widget)
-	end
+	UIRenderer.draw_all_widgets(ui_top_renderer, self._widgets)
+	UIRenderer.draw_all_widgets(ui_top_renderer, self._loot_object_widgets)
 
 	local active_node_widgets = self._active_node_widgets
 
 	if active_node_widgets then
-		for i = 1, #active_node_widgets do
-			local widget = active_node_widgets[i]
-
-			UIRenderer.draw_widget(ui_top_renderer, widget)
-		end
+		UIRenderer.draw_all_widgets(ui_top_renderer, active_node_widgets)
 	end
 
 	local active_act_widgets = self._active_act_widgets
 
 	if active_act_widgets then
-		for i = 1, #active_act_widgets do
-			local widget = active_act_widgets[i]
-
-			UIRenderer.draw_widget(ui_top_renderer, widget)
-		end
-	end
-
-	for widget_name, widget in pairs(self._loot_object_widgets) do
-		UIRenderer.draw_widget(ui_top_renderer, widget)
+		UIRenderer.draw_all_widgets(ui_top_renderer, active_act_widgets)
 	end
 
 	UIRenderer.end_pass(ui_top_renderer)

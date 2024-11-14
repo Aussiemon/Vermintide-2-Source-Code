@@ -1717,11 +1717,25 @@ local function render_buttons_in_text(ui_renderer, text, font_material, font_siz
 			local gamepad_active = Managers.input:is_device_active("gamepad")
 			local button_texture_data, _, keymap_binding, unassigned = UISettings.get_gamepad_input_texture_data(Managers.input:get_service(input_service), input_action, gamepad_active)
 			local substr = string.sub(text, 1, math.max(start_idx, 2))
+			local was_invalid = false
+
+			while not Utf8.valid(substr) and start_idx > 1 do
+				start_idx = start_idx - 1
+				substr = string.sub(text, 1, math.max(start_idx, 2))
+				was_invalid = true
+			end
+
 			local length = UIRenderer.text_size(ui_renderer, substr, font_material, font_size)
 
 			length = start_idx > 1 and length or 0
 
-			local pos = position + Vector3(length - font_size * inv_scale * 0.25, -font_size * inv_scale * 0.25, 0)
+			local pos = false
+
+			if was_invalid then
+				pos = position + Vector3(length + font_size * inv_scale * 0.25, -font_size * inv_scale * 0.25, 0)
+			else
+				pos = position + Vector3(length - font_size * inv_scale * 0.25, -font_size * inv_scale * 0.25, 0)
+			end
 
 			if not ui_style.skip_button_rendering then
 				if gamepad_active then
@@ -1752,7 +1766,13 @@ local function render_buttons_in_text(ui_renderer, text, font_material, font_siz
 					local left_part = button_texture_data[1]
 					local middle_part = button_texture_data[2]
 					local size_multiplier = button_text_height / left_part.size[2] * 1.5
-					local texture_pos = position + Vector3(length - left_part.size[1] * 0.3 * size_multiplier, -left_part.size[2] * 0.23 * size_multiplier, 0)
+					local texture_pos
+
+					if was_invalid then
+						texture_pos = position + Vector3(length + left_part.size[1] * 0.3 * size_multiplier, -left_part.size[2] * 0.23 * size_multiplier, 0)
+					else
+						texture_pos = position + Vector3(length - left_part.size[1] * 0.3 * size_multiplier, -left_part.size[2] * 0.23 * size_multiplier, 0)
+					end
 
 					UIRenderer_draw_texture(ui_renderer, left_part.texture, texture_pos, Vector2(left_part.size[1] * size_multiplier, left_part.size[2] * size_multiplier), {
 						ui_style.text_color[1],
@@ -1770,7 +1790,13 @@ local function render_buttons_in_text(ui_renderer, text, font_material, font_siz
 						255,
 					}, ui_style.masked, ui_style.saturated)
 
-					local text_pos = position + Vector3(length + left_part.size[1] * 0.3 * size_multiplier + left_part.size[1] * 0.3 * size_multiplier, 0, 1)
+					local text_pos
+
+					if was_invalid then
+						text_pos = position + Vector3(length + (left_part.size[1] * 0.3 * size_multiplier + left_part.size[1] * 0.3 * size_multiplier) * 2, 0, 1)
+					else
+						text_pos = position + Vector3(length + left_part.size[1] * 0.3 * size_multiplier + left_part.size[1] * 0.3 * size_multiplier, 0, 1)
+					end
 
 					UIRenderer.draw_text(ui_renderer, localized_button_name, font_material, font_size, font_name, text_pos, ui_style.text_color)
 
@@ -2451,7 +2477,7 @@ UIPasses.viewport = {
 		local ui_renderer
 
 		if style.enable_sub_gui then
-			ui_renderer = UIRenderer.create(world, "material", "materials/ui/ui_1080p_hud_atlas_textures", "material", "materials/ui/ui_1080p_hud_single_textures", "material", "materials/ui/ui_1080p_menu_atlas_textures", "material", "materials/ui/ui_1080p_menu_single_textures", "material", "materials/ui/ui_1080p_common", "material", "materials/fonts/gw_fonts")
+			ui_renderer = UIRenderer.create(world, "material", "materials/ui/ui_1080p_hud_atlas_textures", "material", "materials/ui/ui_1080p_hud_single_textures", "material", "materials/ui/ui_1080p_menu_atlas_textures", "material", "materials/ui/ui_1080p_menu_single_textures", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_versus_available_common", "material", "materials/fonts/gw_fonts")
 		end
 
 		return {
@@ -3462,6 +3488,7 @@ UIPasses.item_tooltip = {
 			"item_information_text",
 			"loot_chest_difficulty",
 			"loot_chest_power_range",
+			"item_rarity_rate",
 			"unwieldable",
 			"keywords",
 			"special_action_tooltip",

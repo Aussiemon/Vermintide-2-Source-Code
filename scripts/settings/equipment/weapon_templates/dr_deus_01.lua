@@ -318,6 +318,11 @@ weapon_template.tooltip_detail = {
 	},
 }
 
+local weapon_template_vs = table.clone(weapon_template)
+
+weapon_template_vs.actions.action_one.default.impact_data.damage_profile = "dr_deus_01_vs"
+
 return {
 	dr_deus_01_template_1 = table.clone(weapon_template),
+	dr_deus_01_template_1_vs = table.clone(weapon_template_vs),
 }

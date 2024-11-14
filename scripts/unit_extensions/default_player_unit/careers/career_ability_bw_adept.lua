@@ -240,13 +240,11 @@ CareerAbilityBWAdept._run_ability = function (self)
 
 		first_person_extension:animation_event("battle_wizard_active_ability_blink")
 		career_extension:set_state("sienna_activate_adept")
-
-		MOOD_BLACKBOARD.skill_adept = true
 	end
 
 	locomotion_extension:set_external_velocity_enabled(false)
 	status_extension:reset_move_speed_multiplier()
-	status_extension:set_noclip(true, "skill_adept")
+	status_extension:set_noclip(true, self)
 
 	if Managers.state.network:game() then
 		status_extension:set_is_dodging(true)
@@ -271,7 +269,7 @@ CareerAbilityBWAdept._run_ability = function (self)
 					local unit_3p = this.unit
 					local status_ext = ScriptUnit.extension(unit_3p, "status_system")
 
-					status_ext:set_invisible(true, nil, "skill_adept")
+					status_ext:set_invisible(true, nil, self)
 				end,
 			},
 			{
@@ -322,8 +320,8 @@ CareerAbilityBWAdept._run_ability = function (self)
 					area_damage_system:create_explosion(unit_3p, final_position, rotation, explosion_template, scale, "career_ability", career_power_level, false)
 				end
 
-				status_ext:set_invisible(false, nil, "skill_adept")
-				status_ext:set_noclip(false, "skill_adept")
+				status_ext:set_invisible(false, nil, self)
+				status_ext:set_noclip(false, self)
 
 				if Managers.state.network:game() then
 					status_ext:set_is_dodging(false)

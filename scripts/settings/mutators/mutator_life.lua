@@ -18,14 +18,18 @@ return {
 	end,
 	spawn_bush = function (context, data, position, rotation)
 		local unit_name = "units/weave/life/life_thorn_bushes_mutator"
-		local game_session = Network.game_session()
+
+		if not Managers.state.network or not Managers.state.network:game() then
+			return
+		end
+
 		local is_position_on_navmesh = GwNavQueries.triangle_from_position(data.nav_world, position)
 
 		if not is_position_on_navmesh then
 			position = GwNavQueries.inside_position_from_outside_position(data.nav_world, position, 6, 6, 8, 0.5)
 		end
 
-		if game_session and position then
+		if position then
 			local unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, "thorn_bush_unit", data.extension_init_data, position, rotation)
 
 			data.audio_system:play_audio_unit_event("Play_winds_life_gameplay_thorn_grow", unit)

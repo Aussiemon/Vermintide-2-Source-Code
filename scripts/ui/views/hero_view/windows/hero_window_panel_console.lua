@@ -12,6 +12,7 @@ local layout_name_by_index = {
 	"talents",
 	"forge",
 	"cosmetics",
+	"pactsworn_equipment",
 	"system",
 }
 local layout_index_by_name = {}
@@ -349,7 +350,7 @@ HeroWindowPanelConsole._handle_input = function (self, dt, t)
 
 			if previous_selected_game_mode_index then
 				self:_reset_back_button()
-				self:_on_panel_button_selected(previous_selected_game_mode_index)
+				self.parent:set_layout(previous_selected_game_mode_index)
 
 				input_made = true
 			end
@@ -387,7 +388,7 @@ HeroWindowPanelConsole._handle_input = function (self, dt, t)
 
 		if not input_made and not self.parent.parent:input_blocked() then
 			local current_index = self._selected_index or 1
-			local max_index = 5
+			local max_index = #layout_name_by_index
 			local next_index
 
 			if input_service:get(INPUT_ACTION_PREVIOUS) then
@@ -445,6 +446,9 @@ HeroWindowPanelConsole._on_panel_button_selected = function (self, index)
 	local layout_name = layout_name_by_index[index]
 
 	if layout_name ~= selected_layout_name then
+		local selected_panel_layout_name = layout_name_by_index[self._selected_index]
+
+		self.parent:window_layout_on_exit(selected_panel_layout_name)
 		self.parent:set_layout_by_name(layout_name)
 	end
 end

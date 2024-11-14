@@ -20,51 +20,7 @@ return {
 				"weave_spot_event_special_skaven",
 			},
 			objective_settings = {
-				objective_lists = {
-					{
-						kill_enemies = {},
-						weave_target_spawner_001 = {
-							is_scored = true,
-						},
-						weave_target_spawner_005 = {
-							is_scored = true,
-						},
-						weave_target_spawner_006 = {
-							is_scored = true,
-						},
-						weave_target_spawner_007 = {
-							is_scored = true,
-						},
-						weave_target_spawner_016 = {
-							is_scored = true,
-							on_complete_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("weave_spot_event_special_skaven", spawner_id)
-							end,
-						},
-						weave_target_spawner_022 = {
-							is_scored = true,
-						},
-						weave_target_spawner_031 = {
-							is_scored = true,
-						},
-						weave_target_spawner_034 = {
-							is_scored = true,
-						},
-						weave_target_spawner_041 = {
-							is_scored = true,
-						},
-						weave_target_spawner_043 = {
-							is_scored = true,
-							on_complete_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("weave_spot_event_special_skaven", spawner_id)
-							end,
-						},
-					},
-				},
+				objective_lists = "weave_28",
 			},
 			bonus_time_on_complete = WeaveSettings.bonus_time,
 			system_seeds = {

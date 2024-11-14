@@ -43,13 +43,15 @@ ActionHealingDraught.finish = function (self, reason)
 		heal_type = "healing_draught_temp_health"
 	end
 
+	local heal_amount = Managers.state.game_mode:setting("healing_draught_heal_amount") or 75
+
 	if self.is_server or LEVEL_EDITOR_TEST then
-		DamageUtils.heal_network(owner_unit, owner_unit, 75, heal_type)
+		DamageUtils.heal_network(owner_unit, owner_unit, heal_amount, heal_type)
 	else
 		local owner_unit_id = network_manager:unit_game_object_id(owner_unit)
 		local heal_type_id = NetworkLookup.heal_types[heal_type]
 
-		network_transmit:send_rpc_server("rpc_request_heal", owner_unit_id, 75, heal_type_id)
+		network_transmit:send_rpc_server("rpc_request_heal", owner_unit_id, heal_amount, heal_type_id)
 	end
 
 	local ammo_extension = self.ammo_extension

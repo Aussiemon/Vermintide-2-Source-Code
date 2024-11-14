@@ -187,8 +187,8 @@ BTLeaveHooks.on_grey_seer_death_sequence_leave = function (unit, blackboard, t)
 	blackboard.locomotion_extension:set_wanted_velocity(Vector3.zero())
 end
 
-BTLeaveHooks.leave_attack_grabbed_smash = function (unit, blackboard, t)
-	local victim_is_alive = Unit.alive(blackboard.victim_grabbed)
+BTLeaveHooks.leave_attack_grabbed = function (unit, blackboard, t)
+	local victim_is_alive = HEALTH_ALIVE[blackboard.victim_grabbed]
 
 	if blackboard.stagger or not HEALTH_ALIVE[unit] or not victim_is_alive then
 		if victim_is_alive then
@@ -197,6 +197,8 @@ BTLeaveHooks.leave_attack_grabbed_smash = function (unit, blackboard, t)
 
 		blackboard.has_grabbed_victim = nil
 		blackboard.victim_grabbed = nil
+		blackboard.attack_grabbed_attacks = 0
+		blackboard.chew_attacks_done = 0
 	end
 
 	blackboard.override_target_unit = nil

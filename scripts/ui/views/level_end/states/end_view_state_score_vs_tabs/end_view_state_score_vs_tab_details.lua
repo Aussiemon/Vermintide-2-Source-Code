@@ -62,6 +62,7 @@ EndViewStateScoreVSTabDetails.on_enter = function (self, params)
 	print("[EndViewStateVS] Enter Substate EndViewStateScoreVSTabDetails")
 
 	self._params = params
+	self._parent = params.parent
 
 	local context = params.context
 
@@ -78,6 +79,8 @@ EndViewStateScoreVSTabDetails.on_enter = function (self, params)
 
 	self:create_ui_elements(params)
 	self:_start_transition_animation("on_enter", "on_enter")
+	self._parent:hide_team()
+	self._parent:activate_back_to_keep_button()
 end
 
 EndViewStateScoreVSTabDetails.on_exit = function (self, params)
@@ -147,7 +150,7 @@ EndViewStateScoreVSTabDetails._trim_bots = function (self, party_composition)
 	end
 
 	for name, party_id in pairs(party_composition) do
-		local values = string.split(name, ":")
+		local values = string.split_deprecated(name, ":")
 
 		if values[2] == "1" then
 			PARTY_COMPOSITION[name] = party_id

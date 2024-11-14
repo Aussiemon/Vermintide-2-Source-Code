@@ -32,6 +32,7 @@ LevelEndViewBase.init = function (self, context)
 
 	self.context = context
 	self.game_won = game_won
+	self.challenge_progression_status = context.challenge_progression_status
 	self.game_mode_key = context.game_mode_key
 	self.player_manager = context.player_manager
 	self.input_manager = context.input_manager
@@ -51,7 +52,8 @@ LevelEndViewBase.init = function (self, context)
 	if not self.is_server then
 		local statistics_db = Managers.player:statistics_db()
 
-		self.context.players_session_score = Managers.mechanism:get_players_session_score(statistics_db, self.profile_synchronizer)
+		self.context.players_session_score = self._players_session_score or Managers.mechanism:get_players_session_score(statistics_db, self.profile_synchronizer)
+		self._players_session_score = self.context.players_session_score
 	end
 
 	local is_untrusted = script_data["eac-untrusted"]
@@ -65,6 +67,7 @@ LevelEndViewBase.init = function (self, context)
 		self.keep_decoration_rewards = self:_get_keep_decoration_rewards()
 		self.event_rewards = self:_get_event_rewards()
 		self.win_track_rewards = self:_get_win_track_rewards()
+		self.versus_level_up_rewards = self:_get_versus_level_up_rewards()
 	end
 
 	self._reward_presentation_queue = {}
@@ -278,11 +281,9 @@ LevelEndViewBase.left_lobby = function (self)
 	end
 end
 
-LevelEndViewBase.destroy = function (self)
+LevelEndViewBase.destroy = function (self, keep_resources)
 	if self._registered_rpcs then
 		self._network_event_delegate:unregister(self)
-
-		self._network_event_delegate = nil
 	end
 
 	self.ui_animator = nil
@@ -303,7 +304,10 @@ LevelEndViewBase.destroy = function (self)
 	self:play_sound("play_gui_chestroom_stop")
 	self:play_sound("unmute_all_world_sounds")
 	self:destroy_world()
-	Managers.mechanism:unload_end_screen_resources()
+
+	if not keep_resources then
+		Managers.mechanism:unload_end_screen_resources()
+	end
 end
 
 LevelEndViewBase.play_sound = function (self, event)
@@ -376,7 +380,28 @@ LevelEndViewBase._get_level_up_rewards = function (self)
 
 	for reward_name, item in pairs(end_of_level_rewards) do
 		if string.find(reward_name, "level_up_reward") == 1 then
-			local data = string.split(reward_name, ";")
+			local data = string.split_deprecated(reward_name, ";")
+			local level = tonumber(data[2])
+			local index = tonumber(data[3])
+
+			if not items_by_level[level] then
+				items_by_level[level] = {}
+			end
+
+			items_by_level[level][index] = item
+		end
+	end
+
+	return items_by_level
+end
+
+LevelEndViewBase._get_versus_level_up_rewards = function (self)
+	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
+	local items_by_level = {}
+
+	for reward_name, item in pairs(end_of_level_rewards) do
+		if string.find(reward_name, "vs_level_up_reward") == 1 then
+			local data = string.split_deprecated(reward_name, ";")
 			local level = tonumber(data[2])
 			local index = tonumber(data[3])
 
@@ -400,7 +425,7 @@ LevelEndViewBase._get_win_track_rewards = function (self)
 
 	for reward_name, item in pairs(end_of_level_rewards) do
 		if string.find(reward_name, "win_track_reward") == 1 then
-			local data = string.split(reward_name, ";")
+			local data = string.split_deprecated(reward_name, ";")
 			local level = tonumber(data[2])
 
 			win_track_rewards.item_rewards[level] = item
@@ -1410,6 +1435,8 @@ LevelEndViewBase.create_ui_renderer = function (self, context, world, top_world)
 		"materials/ui/ui_1080p_menu_single_textures",
 		"material",
 		"materials/ui/ui_1080p_common",
+		"material",
+		"materials/ui/ui_1080p_versus_available_common",
 		"material",
 		"materials/fonts/gw_fonts",
 	}

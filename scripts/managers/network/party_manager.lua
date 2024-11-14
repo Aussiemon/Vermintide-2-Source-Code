@@ -10,6 +10,7 @@ local rpcs = {
 	"rpc_peer_assigned_to_party",
 	"rpc_remove_peer_from_party",
 	"rpc_set_client_friend_party",
+	"rpc_sync_friend_party_ids",
 }
 
 local function debug_printf(format, ...)
@@ -22,9 +23,10 @@ PartyManager.init = function (self)
 
 	self:clear_parties()
 
+	self._friend_party_lookup = {}
+
 	if DEDICATED_SERVER then
-		self._friend_parties = {}
-		self._friend_party_lookup = {}
+		self:server_init_friend_parties(false)
 	else
 		self._client_friend_party = {}
 	end
@@ -317,6 +319,10 @@ PartyManager.game_participating_parties = function (self)
 	return self._game_participating_parties
 end
 
+PartyManager.is_game_participating_party = function (self, party_id)
+	return self._game_participating_parties[party_id] ~= nil
+end
+
 PartyManager.get_party_composition = function (self)
 	local party_composition = {}
 
@@ -534,17 +540,23 @@ PartyManager.assign_peer_to_party = function (self, peer_id, local_player_id, wa
 	local player = Managers.player:player(peer_id, local_player_id)
 	local is_local_player = player and player.local_player
 
-	Managers.state.event:trigger("player_party_changed", player, is_local_player, old_party_id, party_id)
+	if Managers.state.event then
+		Managers.state.event:trigger("player_party_changed", player, is_local_player, old_party_id, party_id)
+	end
 
 	if Managers.state.game_mode then
 		Managers.state.game_mode:player_joined_party(peer_id, local_player_id, party_id, slot_id, old_party_id)
 	end
 
 	if Managers.state.event then
-		Managers.state.event:trigger("on_player_joined_party", peer_id, local_player_id, party_id, slot_id)
+		Managers.state.event:trigger("on_player_joined_party", peer_id, local_player_id, party_id, slot_id, is_bot)
 	end
 
-	Managers.mechanism:player_joined_party(peer_id, local_player_id, party_id, slot_id)
+	if Managers.venture.challenge then
+		Managers.venture.challenge:on_player_joined_party(peer_id, local_player_id, party_id, slot_id, is_bot)
+	end
+
+	Managers.mechanism:player_joined_party(peer_id, local_player_id, party_id, slot_id, is_bot)
 
 	return player_status
 end
@@ -571,9 +583,17 @@ PartyManager.remove_peer_from_party = function (self, peer_id, local_player_id, 
 	end
 
 	if Managers.state.event then
-		local slot_id = player_status.slot_id
-
 		Managers.state.event:trigger("on_player_left_party", peer_id, local_player_id, party_id, slot_id)
+	end
+
+	if Managers.venture.challenge then
+		local is_bot = player_status.is_bot
+
+		Managers.venture.challenge:on_player_left_party(peer_id, local_player_id, party_id, slot_id, is_bot)
+	end
+
+	if not DEDICATED_SERVER then
+		Managers.account:update_presence()
 	end
 
 	player_status.party_id = nil
@@ -831,12 +851,6 @@ PartyManager.rpc_remove_peer_from_party = function (self, channel_id, peer_id, l
 end
 
 PartyManager.rpc_set_client_friend_party = function (self, channel_id, peers)
-	for i = 1, #peers do
-		if peers[i] == "" then
-			peers[i] = nil
-		end
-	end
-
 	self:_client_set_friend_party(peers)
 end
 
@@ -896,7 +910,7 @@ PartyManager._draw_debug = function (self, t)
 
 	y = y - row_height
 
-	local info3 = string.format("    state: '%s' max: %s", game_mode:game_mode_state(), Managers.lobby._network_options.max_members)
+	local info3 = string.format("    state: '%s' max: %s", game_mode:game_mode_state(), LobbySetup._network_options.max_members)
 
 	Gui.text(self._gui, info3, font, text_height, font_material, Vector3(win_start_x + margin, y, 0), game_mode_color)
 
@@ -942,7 +956,7 @@ PartyManager._draw_debug = function (self, t)
 							dist_str = string.format("dist: %.1f%%", data.distance_traveled * 100)
 						end
 
-						local info = string.format("Party %s -> Score: %s/%s(%s) %s", party_id, data.claimed_points, tostring(data.max_points), data.unclaimed_points, dist_str)
+						local info = string.format("Party %s -> Score: %s/%s(%s) %s", party_id, data.claimed_points, tostring(data.max_points), data.max_points - data.claimed_points, dist_str)
 
 						Gui.text(self._gui, info, font, small_txt_height, font_material, Vector3(win_start_x + margin, y, 0), game_mode_color)
 					end
@@ -1063,6 +1077,36 @@ PartyManager.any_party_has_free_slots = function (self, num_slots)
 	return false
 end
 
+PartyManager.server_init_friend_parties = function (self, is_player_hosted_game)
+	self._is_hosting_vs_custom_game = true
+	self._friend_parties = {}
+	self._friend_party_lookup = {}
+	self._num_friend_party_ids = 0
+
+	if is_player_hosted_game then
+		local host = Managers.player:local_player()
+		local lobby_party = host:get_party()
+		local host_friend_party = {}
+
+		for _, slot in pairs(lobby_party.slots) do
+			if slot.peer_id then
+				host_friend_party[#host_friend_party + 1] = slot.peer_id
+			end
+		end
+
+		self:server_create_friend_party(host_friend_party, host.peer_id)
+	end
+end
+
+PartyManager.server_clear_friend_parties = function (self)
+	if self._is_hosting_vs_custom_game then
+		self._is_hosting_vs_custom_game = nil
+	end
+
+	table.clear(self._friend_parties)
+	table.clear(self._friend_party_lookup)
+end
+
 PartyManager.server_update_all_client_friend_parties = function (self)
 	for friend_party_id, friend_party in pairs(self._friend_parties) do
 		self:_server_set_client_friend_party(friend_party_id)
@@ -1092,6 +1136,8 @@ PartyManager.server_create_friend_party = function (self, peers, leader, overrid
 	for i = 1, #peers do
 		self._friend_party_lookup[peers[i]] = friend_party_id
 	end
+
+	self:_server_set_client_friend_party(friend_party_id)
 end
 
 PartyManager.server_remove_friend_party_peer = function (self, peer_id)
@@ -1123,6 +1169,9 @@ PartyManager.server_remove_friend_party_peer = function (self, peer_id)
 
 	party.num_peers = party.num_peers - 1
 	party.leader = party.peers[1]
+	self._friend_party_lookup[peer_id] = nil
+
+	self:_server_set_client_friend_party(friend_party_id)
 end
 
 PartyManager.server_add_friend_party_peer = function (self, friend_party_id, peer_id)
@@ -1130,6 +1179,9 @@ PartyManager.server_add_friend_party_peer = function (self, friend_party_id, pee
 
 	friend_party.num_peers = friend_party.num_peers + 1
 	friend_party.peers[friend_party.num_peers] = peer_id
+	self._friend_party_lookup[peer_id] = friend_party_id
+
+	self:_server_set_client_friend_party(friend_party_id)
 end
 
 PartyManager.server_add_friend_party_peer_from_invitee = function (self, peer_id, invitee)
@@ -1140,8 +1192,12 @@ PartyManager.server_add_friend_party_peer_from_invitee = function (self, peer_id
 	end
 end
 
-PartyManager.server_get_friend_party_id_from_peer = function (self, peer_id)
-	return self._friend_party_lookup[peer_id]
+PartyManager.server_get_friend_party_from_peer = function (self, peer_id)
+	local id = self:get_friend_party_id_from_peer(peer_id)
+
+	if id then
+		return self:server_get_friend_party(id)
+	end
 end
 
 PartyManager.server_get_friend_party = function (self, friend_party_id)
@@ -1279,10 +1335,18 @@ PartyManager._server_generate_friend_party_id = function (self)
 end
 
 PartyManager._server_remove_friend_party = function (self, friend_party_id)
+	local friend_party = self._friend_parties[friend_party_id]
+
+	for _, peer_id in pairs(friend_party.peers) do
+		self._friend_party_lookup[peer_id] = nil
+	end
+
 	self._friend_parties[friend_party_id] = nil
 end
 
-PartyManager._server_set_client_friend_party = function (self, friend_party_id)
+PartyManager._collect_peers_from_friend_party = function (self, friend_party_id)
+	assert(DEDICATED_SERVER or self._is_hosting_vs_custom_game)
+
 	local friend_party = self._friend_parties[friend_party_id]
 
 	assert(friend_party, "[Party Manager:server_update_client_friend_parties()] tried to update client friend parties of nonexistant friend party id " .. friend_party_id)
@@ -1299,27 +1363,60 @@ PartyManager._server_set_client_friend_party = function (self, friend_party_id)
 
 	for i = 1, num_party_peers do
 		local peer = peers[i]
+		local next_idx = #friend_party_peers + 1
 
-		if PEER_ID_TO_CHANNEL[peer] then
-			local next_idx = #friend_party_peers + 1
-
-			if max_friend_party_size < next_idx then
-				print("Too many peers in the same party:", peer)
-			else
-				friend_party_peers[next_idx] = peers[i]
-			end
+		if max_friend_party_size < next_idx then
+			print("Too many peers in the same party:", peer)
+		else
+			friend_party_peers[next_idx] = peers[i]
 		end
 	end
 
-	for i = #friend_party_peers + 1, max_friend_party_size do
-		friend_party_peers[i] = ""
+	return friend_party_peers
+end
+
+PartyManager.sync_friend_party_for_player = function (self, peer_id)
+	assert(DEDICATED_SERVER or self._is_hosting_vs_custom_game)
+
+	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+	if channel_id then
+		local friend_party_id = self:get_friend_party_id_from_peer(peer_id)
+		local friend_party_peers = self:_collect_peers_from_friend_party(friend_party_id)
+
+		RPC.rpc_set_client_friend_party(channel_id, friend_party_peers)
 	end
+end
+
+PartyManager._server_set_client_friend_party = function (self, friend_party_id)
+	local friend_party_peers = self:_collect_peers_from_friend_party(friend_party_id)
 
 	self:_server_send_rpc_to_friend_party("rpc_set_client_friend_party", friend_party_id, friend_party_peers)
 end
 
+PartyManager.server_get_friend_party_leaders = function (self, exclude_own_peer_id)
+	local friend_party_leaders = {}
+	local own_peer_id = Network.peer_id()
+
+	if not self._friend_parties then
+		return friend_party_leaders
+	end
+
+	for _, friend_party in pairs(self._friend_parties) do
+		if not exclude_own_peer_id or friend_party.leader ~= own_peer_id then
+			friend_party_leaders[#friend_party_leaders + 1] = friend_party.leader
+		end
+	end
+
+	return friend_party_leaders
+end
+
 PartyManager._server_send_rpc_to_friend_party = function (self, rpc_name, friend_party_id, ...)
 	local friend_party = self._friend_parties[friend_party_id]
+
+	if not friend_party then
+		return
+	end
 
 	for _, peer_id in pairs(friend_party.peers) do
 		local channel_id = PEER_ID_TO_CHANNEL[peer_id]
@@ -1330,8 +1427,43 @@ PartyManager._server_send_rpc_to_friend_party = function (self, rpc_name, friend
 	end
 end
 
+PartyManager.sync_friend_party_ids = function (self)
+	local peers = {}
+	local party_ids = {}
+	local index = 0
+
+	for peer_id, friend_party_id in pairs(self._friend_party_lookup) do
+		index = index + 1
+		peers[index] = peer_id
+		party_ids[index] = friend_party_id
+	end
+
+	for friend_party_id = 1, self._num_friend_party_ids do
+		if self._friend_parties[friend_party_id] then
+			self:_server_send_rpc_to_friend_party("rpc_sync_friend_party_ids", friend_party_id, peers, party_ids)
+		end
+	end
+end
+
+PartyManager.get_friend_party_id_from_peer = function (self, peer_id)
+	return self._friend_party_lookup[peer_id]
+end
+
 PartyManager._client_set_friend_party = function (self, peers)
 	self._client_friend_party = peers
+end
+
+PartyManager.rpc_sync_friend_party_ids = function (self, channel_id, peers, friend_party_ids)
+	for i = 1, #peers do
+		self._friend_party_lookup[peers[i]] = friend_party_ids[i]
+	end
+
+	local mechanism = Managers.mechanism:game_mechanism()
+	local is_hosting_versus_custom_game = mechanism.is_hosting_versus_custom_game and mechanism:is_hosting_versus_custom_game()
+
+	if not is_hosting_versus_custom_game and self._is_server then
+		self:_send_rpc_to_clients("rpc_sync_friend_party_ids", peers, friend_party_ids)
+	end
 end
 
 PartyManager.client_get_friend_party = function (self)

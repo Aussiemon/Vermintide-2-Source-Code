@@ -181,7 +181,7 @@ CharacterSelectionView.hide_hero_world = function (self)
 end
 
 CharacterSelectionView.show_hero_panel = function (self)
-	self._draw_menu_panel = true
+	self._draw_menu_panel = not self:initial_profile_view()
 
 	self:set_input_blocked(false)
 end
@@ -573,7 +573,12 @@ CharacterSelectionView.exit = function (self, return_to_game)
 	local exit_transition = self._exit_transition or self:initial_profile_view() and "exit_initial_character_selection" or "exit_menu"
 
 	self.ingame_ui:transition_with_fade(exit_transition, self._exit_transition_params)
-	self:play_sound("Play_hud_button_close")
+
+	if IS_WINDOWS and self:initial_profile_view() then
+		self:play_sound("Play_hero_selected_game_start")
+	else
+		self:play_sound("Play_hud_button_close")
+	end
 
 	self.exiting = true
 

@@ -303,23 +303,32 @@ settings.area_damage_templates = {
 		},
 		client = {
 			update = function (world, radius, aoe_unit, player_screen_effect_name, player_unit_particles, aoe_dot_player_take_damage, explosion_template_name, slow_modifier)
+				local side = Managers.state.side.side_by_unit[aoe_unit]
+
+				if not side then
+					return
+				end
+
 				local area_damage_position = POSITION_LOOKUP[aoe_unit]
 
-				if area_damage_position then
-					for _, player in pairs(Managers.player:players()) do
-						local unit = player.player_unit
-						local unit_position = POSITION_LOOKUP[unit]
+				if not area_damage_position then
+					return
+				end
 
-						if unit_position then
-							local distance = Vector3.distance_squared(unit_position, area_damage_position)
-							local is_inside_radius = distance < radius * radius
+				local player_units = side.PLAYER_AND_BOT_UNITS
 
-							if is_inside_radius then
-								local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+				for _, player_unit in pairs(player_units) do
+					local unit_position = POSITION_LOOKUP[player_unit]
 
-								if buff_extension then
-									buff_extension:add_buff("thorn_sister_wall_slow")
-								end
+					if unit_position then
+						local distance = Vector3.distance_squared(unit_position, area_damage_position)
+						local is_inside_radius = distance < radius * radius
+
+						if is_inside_radius then
+							local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
+
+							if buff_extension then
+								buff_extension:add_buff("thorn_sister_wall_slow")
 							end
 						end
 					end

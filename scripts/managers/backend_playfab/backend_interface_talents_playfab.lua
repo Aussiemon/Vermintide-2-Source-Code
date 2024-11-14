@@ -37,7 +37,7 @@ BackendInterfaceTalentsPlayfab._refresh_talents = function (self)
 			local talent_string = backend_mirror:get_character_data(career_name, "talents")
 
 			if talent_string then
-				local career_talents = string.split(talent_string, ",")
+				local career_talents = string.split_deprecated(talent_string, ",")
 
 				for i = 1, #career_talents do
 					career_talents[i] = tonumber(career_talents[i])
@@ -71,7 +71,7 @@ BackendInterfaceTalentsPlayfab.refresh_bot_talents = function (self)
 				local talent_string = backend_mirror:get_character_data(career_name, "talents", bot_loadout_index)
 
 				if talent_string then
-					local career_talents = string.split(talent_string, ",")
+					local career_talents = string.split_deprecated(talent_string, ",")
 
 					for i = 1, #career_talents do
 						career_talents[i] = tonumber(career_talents[i])
@@ -99,9 +99,9 @@ BackendInterfaceTalentsPlayfab._refresh_default_loadouts_talents = function (sel
 		if settings.playfab_name then
 			local career_loadouts = backend_mirror:get_default_loadouts(career_name)
 
-			if career_loadouts then
-				talents[career_name] = talents[career_name] or {}
+			talents[career_name] = talents[career_name] or {}
 
+			if career_loadouts then
 				local career_loadouts_talents = talents[career_name]
 
 				for i = 1, #career_loadouts do
@@ -109,7 +109,7 @@ BackendInterfaceTalentsPlayfab._refresh_default_loadouts_talents = function (sel
 					local talent_string = career_loadout.talents
 
 					if talent_string then
-						local career_talents = string.split(talent_string, ",")
+						local career_talents = string.split_deprecated(talent_string, ",")
 
 						for i = 1, #career_talents do
 							career_talents[i] = tonumber(career_talents[i])
@@ -159,7 +159,7 @@ BackendInterfaceTalentsPlayfab._refresh_career_loadouts_talents = function (self
 					local talent_string = career_loadout.talents
 
 					if talent_string then
-						local career_talents = string.split(talent_string, ",")
+						local career_talents = string.split_deprecated(talent_string, ",")
 
 						for i = 1, #career_talents do
 							career_talents[i] = tonumber(career_talents[i])

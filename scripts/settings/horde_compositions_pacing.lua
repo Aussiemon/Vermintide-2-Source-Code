@@ -70,6 +70,25 @@ HordeCompositionsPacing.large = {
 		},
 	},
 }
+HordeCompositionsPacing.large_vs = {
+	sound_settings = HordeCompositionsSoundSettings.skaven,
+	{
+		name = "plain",
+		weight = 7,
+		breeds = {
+			"skaven_slave",
+			{
+				48,
+				52,
+			},
+			"skaven_clan_rat",
+			{
+				4,
+				5,
+			},
+		},
+	},
+}
 HordeCompositionsPacing.huge = {
 	sound_settings = HordeCompositionsSoundSettings.skaven,
 	{
@@ -261,6 +280,36 @@ HordeCompositionsPacing.chaos_large = {
 		},
 	},
 }
+HordeCompositionsPacing.chaos_large_vs = {
+	sound_settings = HordeCompositionsSoundSettings.chaos,
+	{
+		name = "plain",
+		weight = 7,
+		breeds = {
+			"chaos_marauder",
+			{
+				2,
+				3,
+			},
+			"chaos_fanatic",
+			{
+				20,
+				25,
+			},
+		},
+	},
+	{
+		name = "plain",
+		weight = 7,
+		breeds = {
+			"chaos_fanatic",
+			{
+				25,
+				30,
+			},
+		},
+	},
+}
 HordeCompositionsPacing.chaos_huge = {
 	sound_settings = HordeCompositionsSoundSettings.chaos,
 	{
@@ -414,6 +463,41 @@ HordeCompositionsPacing.beastmen_medium = {
 	},
 }
 HordeCompositionsPacing.beastmen_large = {
+	sound_settings = HordeCompositionsSoundSettings.beastmen,
+	{
+		name = "plain",
+		weight = 7,
+		breeds = {
+			"beastmen_gor",
+			{
+				12,
+				14,
+			},
+			"beastmen_ungor",
+			{
+				5,
+				7,
+			},
+		},
+	},
+	{
+		name = "plain",
+		weight = 7,
+		breeds = {
+			"beastmen_gor",
+			{
+				9,
+				11,
+			},
+			"beastmen_ungor",
+			{
+				8,
+				10,
+			},
+		},
+	},
+}
+HordeCompositionsPacing.beastmen_large_vs = {
 	sound_settings = HordeCompositionsSoundSettings.beastmen,
 	{
 		name = "plain",

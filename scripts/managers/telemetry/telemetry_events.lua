@@ -837,12 +837,30 @@ TelemetryEvents.store_breadcrumbs_changed = function (self, widgets, product)
 end
 
 TelemetryEvents.store_product_purchased = function (self, product)
+	local item = product.product_item or product.item
+	local currency_type = "SM"
+	local regular_prices = item and item.regular_prices
+	local current_prices = item and item.current_prices
+
+	for currency, settings in pairs(DLCSettings.store.currency_ui_settings) do
+		local has_regular_price = regular_prices[currency]
+		local has_current_price = current_prices[currency]
+
+		if has_regular_price and has_current_price then
+			currency_type = currency
+
+			break
+		end
+	end
+
+	local current_price = current_prices[currency_type]
+	local regular_price = regular_prices[currency_type]
 	local prod = {
-		currency = "SM",
 		id = product.product_id,
-		type = product.item.data.item_type,
-		current_price = product.item.current_prices.SM or product.item.regular_prices.SM,
-		regular_price = product.item.regular_prices.SM,
+		type = item.data.item_type,
+		current_price = current_price or regular_price,
+		regular_price = regular_price,
+		currency = currency_type,
 	}
 
 	self:_store_product_purchased(prod)
@@ -1138,5 +1156,49 @@ end
 TelemetryEvents.loadout_equipped = function (self)
 	local event = self:_create_event("loadout_equipped")
 
+	self._manager:register_event(event)
+end
+
+TelemetryEvents.default_loadout_equipped = function (self)
+	local event = self:_create_event("default_loadout_equipped")
+
+	self._manager:register_event(event)
+end
+
+TelemetryEvents.start_versus_experience = function (self, versus_level_start, versus_experience_start)
+	local event = self:_create_event("start_versus_experience")
+
+	event:set_data({
+		start_experience = versus_experience_start,
+		start_level = versus_level_start,
+	})
+	self._manager:register_event(event)
+end
+
+TelemetryEvents.versus_experience_gained = function (self, versus_experience_gained)
+	local event = self:_create_event("versus_experience_gained")
+
+	event:set_data({
+		versus_experience_gained = versus_experience_gained,
+	})
+	self._manager:register_event(event)
+end
+
+TelemetryEvents.versus_level_gained = function (self, old_versus_level, new_versus_level)
+	local event = self:_create_event("versus_level_gained")
+
+	event:set_data({
+		old_versus_level = old_versus_level,
+		new_versus_level = new_versus_level,
+	})
+	self._manager:register_event(event)
+end
+
+TelemetryEvents.versus_currency_gained = function (self, currency_gained)
+	local event = self:_create_event("versus_currency_gained")
+
+	event:set_data({
+		currency_gained = currency_gained,
+	})
 	self._manager:register_event(event)
 end

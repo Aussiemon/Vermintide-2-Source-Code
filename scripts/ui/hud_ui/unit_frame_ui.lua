@@ -71,6 +71,7 @@ UnitFrameUI._create_ui_elements = function (self, frame_index)
 
 	self._portrait_widgets = {
 		portrait_static = widgets.portrait_static,
+		versus_insignia_static = widgets.versus_insignia_static,
 	}
 	self._equipment_widgets = {
 		loadout_dynamic = widgets.loadout_dynamic,
@@ -114,6 +115,11 @@ end
 
 UnitFrameUI.set_position = function (self, x, y)
 	local position = self.ui_scenegraph.pivot.local_position
+
+	position[1] = x
+	position[2] = y
+
+	local position = self.ui_scenegraph.insignia_pivot.local_position
 
 	position[1] = x
 	position[2] = y
@@ -479,6 +485,26 @@ UnitFrameUI.set_host_status = function (self, is_host)
 	self:_set_widget_dirty(widget)
 end
 
+UnitFrameUI.set_versus_level = function (self, versus_level)
+	local insignia_main_uvs, insignia_addon_uvs = UIAtlasHelper.get_insignia_texture_settings_from_level(versus_level)
+	local widget = self:_widget_by_feature("versus_insignia", "static")
+
+	if not widget then
+		return
+	end
+
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+	local widget_content = widget.content
+
+	widget_content.insignia_main.uvs = insignia_main_uvs
+	widget_content.insignia_addon.uvs = insignia_addon_uvs
+	widget_content.level = versus_level
+	widget_content.visible = (mechanism_name == "versus" or Application.user_setting("toggle_versus_level_in_all_game_modes")) and versus_level > 0
+
+	self:_set_widget_dirty(widget)
+	self:set_dirty()
+end
+
 UnitFrameUI.set_talking = function (self, is_talking)
 	local widget = self:_widget_by_feature("default", "dynamic")
 	local widget_content = widget.content
@@ -720,9 +746,7 @@ UnitFrameUI.set_health_percentage = function (self, health_percentage, health_mu
 
 	widget_content.actual_health_percent = health_percentage
 
-	local name = widget_content.is_playing_boss and "boss_health" or "health"
-
-	self:_on_player_health_changed(name, widget, health_percentage * health_multiplier)
+	self:_on_player_health_changed("health", widget, health_percentage * health_multiplier)
 	self:_set_widget_dirty(widget)
 end
 
@@ -732,9 +756,7 @@ UnitFrameUI.set_total_health_percentage = function (self, total_health_percentag
 
 	widget_content.actual_total_health_percent = total_health_percentage
 
-	local name = widget_content.is_playing_boss and "boss_total_health" or "total_health"
-
-	self:_on_player_total_health_changed(name, widget, total_health_percentage * health_multiplier)
+	self:_on_player_total_health_changed("total_health", widget, total_health_percentage * health_multiplier)
 	self:_set_widget_dirty(widget)
 end
 
@@ -745,16 +767,6 @@ UnitFrameUI.set_health_bar_status = function (self, show_health_bar, is_knocked_
 	local total_health_bar_content = widget_content.total_health_bar
 	local hp_bar_content = widget_content.hp_bar
 	local total_health_bar_style = widget_style.total_health_bar
-
-	if widget_content.is_playing_boss then
-		total_health_bar_content = widget_content.boss_total_health_bar
-		hp_bar_content = widget_content.boss_hp_bar
-		total_health_bar_style = widget_style.boss_total_health_bar
-	end
-
-	if not total_health_bar_content then
-		return
-	end
 
 	total_health_bar_content.draw_health_bar = show_health_bar
 	total_health_bar_content.is_knocked_down = is_knocked_down
@@ -871,7 +883,7 @@ end
 UnitFrameUI._update_health_bar_animation = function (self, dt, t)
 	local widget = self:_widget_by_feature("health", "dynamic")
 	local widget_content = widget.content
-	local content = widget_content.is_playing_boss and widget_content.boss_hp_bar or widget_content.hp_bar
+	local content = widget_content.hp_bar
 	local bar_value = content.bar_value
 
 	if bar_value ~= content.internal_bar_value then
@@ -884,7 +896,7 @@ end
 UnitFrameUI._update_total_health_bar_animation = function (self, dt, t)
 	local widget = self:_widget_by_feature("health", "dynamic")
 	local widget_content = widget.content
-	local content = widget_content.is_playing_boss and widget_content.boss_total_health_bar or widget_content.total_health_bar
+	local content = widget_content.total_health_bar
 	local bar_value = content.bar_value
 
 	if bar_value ~= content.internal_bar_value then
@@ -907,13 +919,19 @@ UnitFrameUI.show_respawn_countdown = function (self, player, is_local_player, sp
 	widget_content.respawn_timer = spawn_timer
 	widget_content.total_countdown_time = spawn_timer
 	widget_content.state = "countdown"
-	widget_content.respawn_info_text = "Respawn in"
+	widget_content.respawn_info_text = Localize("vs_respawn_in_ghostmode")
 
 	local widget_style = widget.style
 	local style_n = widget_style.respawn_countdown_text
 
 	if style_n then
 		style_n.text_color[1] = 255
+	end
+
+	local style_t = widget_style.respawn_info_text
+
+	if style_t then
+		style_t.text_color[1] = 255
 	end
 end
 
@@ -931,20 +949,19 @@ UnitFrameUI.update_respawn_countdown = function (self, dt, t)
 
 	if state == "countdown" then
 		local respawn_delta = widget_content.respawn_timer - Managers.time:time("game")
+		local total_fadeout_time = widget_content.total_fadeout_time or fallback_fadeout_time
 
-		if respawn_delta <= 0 then
-			local total_fadeout_time = widget_content.total_fadeout_time
-
-			widget_content.fadeout_time = total_fadeout_time or fallback_fadeout_time
+		if respawn_delta <= total_fadeout_time then
+			widget_content.fadeout_time = total_fadeout_time
 			state = "fadeout"
-			respawn_delta = 0
 		end
 
-		widget_content.respawn_countdown_text = string.format("%d", math.abs(respawn_delta))
+		widget_content.respawn_countdown_text = tostring(math.ceil(math.abs(respawn_delta)))
 	elseif state == "fadeout" then
 		local widget_style = widget.style
 		local fadeout_time = (widget_content.fadeout_time or fallback_fadeout_time) - dt
-		local normalized_alpha = math.max(fadeout_time, 0) / (widget_content.total_fadeout_time or fallback_fadeout_time)
+		local total_fadeout_time = widget_content.total_fadeout_time or fallback_fadeout_time
+		local normalized_alpha = total_fadeout_time <= 0 and 0 or math.max(fadeout_time, 0) / total_fadeout_time
 		local alpha = normalized_alpha * 255
 		local style_n = widget_style.respawn_countdown_text
 
@@ -1176,12 +1193,8 @@ UnitFrameUI._on_player_health_changed = function (self, name, widget, health_per
 	bar_animation.current_health = health_percent
 
 	if health_percent <= 1 and health_percent ~= health_percent_current then
-		local widget_content = widget.content
-		local widget_style = widget.style
-		local hp_bar_content = widget_content.is_playing_boss and widget_content.boss_hp_bar or widget_content.hp_bar
-		local hp_bar_style = widget_content.is_playing_boss and widget_style.boss_hp_bar or widget_style.hp_bar
-		local is_knocked_down = hp_bar_content.is_knocked_down
-		local current_bar_health = hp_bar_content.bar_value
+		local is_knocked_down = widget.content.hp_bar.is_knocked_down
+		local current_bar_health = widget.content.hp_bar.bar_value
 		local lerp_time = UISettings.unit_frames.health_bar_lerp_time
 		local anim_time
 
@@ -1200,8 +1213,8 @@ UnitFrameUI._on_player_health_changed = function (self, name, widget, health_per
 		bar_animation.time = 0
 		bar_animation.total_time = anim_time
 		bar_animation.widget = widget
-		bar_animation.content = hp_bar_content
-		bar_animation.style = hp_bar_style
+		bar_animation.content = widget.content.hp_bar
+		bar_animation.style = widget.style.hp_bar
 
 		return true
 	end
@@ -1217,12 +1230,8 @@ UnitFrameUI._on_player_total_health_changed = function (self, name, widget, tota
 	bar_animation.current_health = total_health_percent
 
 	if total_health_percent <= 1 and total_health_percent ~= total_health_percent_current then
-		local widget_content = widget.content
-		local widget_style = widget.style
-		local total_health_bar_content = widget_content.is_playing_boss and widget_content.boss_total_health_bar or widget_content.total_health_bar
-		local total_health_bar_style = widget_content.is_playing_boss and widget_style.boss_total_health_bar or widget_style.total_health_bar
-		local is_knocked_down = total_health_bar_content.is_knocked_down
-		local current_bar_total_health = total_health_bar_content.bar_value
+		local is_knocked_down = widget.content.hp_bar.is_knocked_down
+		local current_bar_total_health = widget.content.total_health_bar.bar_value
 		local lerp_time = UISettings.unit_frames.health_bar_lerp_time
 		local anim_time
 
@@ -1241,8 +1250,8 @@ UnitFrameUI._on_player_total_health_changed = function (self, name, widget, tota
 		bar_animation.time = 0
 		bar_animation.total_time = anim_time
 		bar_animation.widget = widget
-		bar_animation.content = total_health_bar_content
-		bar_animation.style = total_health_bar_style
+		bar_animation.content = widget.content.total_health_bar
+		bar_animation.style = widget.style.total_health_bar
 
 		return true
 	end
@@ -1335,10 +1344,8 @@ UnitFrameUI._update_damage_highlight = function (self, widget, time, dt)
 		local progress = math.min(time / total_time, 1)
 		local catmullrom_value = math.catmullrom(progress, -8, 0, 0, -8)
 		local highlight_alpha = 255 * catmullrom_value
-		local content = widget.content
-		local highlight_style = content.is_playing_boss and style.boss_hp_bar_highlight or style.hp_bar_highlight
 
-		highlight_style.color[1] = highlight_alpha
+		style.hp_bar_highlight.color[1] = highlight_alpha
 
 		self:_set_widget_dirty(widget)
 
@@ -1606,14 +1613,6 @@ UnitFrameUI.update_numeric_ui_career_ability = function (self, game, go_id, play
 	widget.content.ability_cooldown = UIUtils.format_time(ability_cooldown)
 
 	self:_set_widget_dirty(widget)
-end
-
-UnitFrameUI.set_is_playing_dark_pact_boss = function (self, value)
-	local widget = self:_widget_by_name("health_dynamic")
-	local content = widget.content
-
-	content.is_playing_boss = value
-	self._widgets.default_static.content.is_playing_boss = value
 end
 
 local pop_time_between_dmg = 0.01

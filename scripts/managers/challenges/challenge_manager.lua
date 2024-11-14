@@ -40,8 +40,6 @@ end
 
 ChallengeManager.on_round_start = function (self, network_event_delegate, event_manager)
 	self:register_rpcs(network_event_delegate)
-	event_manager:register(self, "on_bot_added", "on_bot_added")
-	event_manager:register(self, "on_bot_removed", "on_bot_removed")
 
 	local all_challenges = self._all_challenges
 
@@ -71,10 +69,6 @@ ChallengeManager.on_round_end = function (self)
 		end
 	end
 
-	local event_manager = Managers.state.event
-
-	event_manager:unregister("on_bot_added", self)
-	event_manager:unregister("on_bot_removed", self)
 	self:unregister_rpcs()
 end
 
@@ -246,9 +240,8 @@ ChallengeManager.get_completed_challenges_filtered = function (self, results, ca
 	return results, results_size
 end
 
-ChallengeManager.player_entered_game_session = function (self, peer_id, local_player_id, wanted_party_index)
+ChallengeManager.on_player_joined_party = function (self, peer_id, local_player_id, party_id, slot_id, is_bot)
 	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
-	local player = Managers.player:player_from_unique_id(unique_id)
 	local all_challenges = self._all_challenges
 
 	for i = 1, #all_challenges do
@@ -260,7 +253,7 @@ ChallengeManager.player_entered_game_session = function (self, peer_id, local_pl
 	end
 end
 
-ChallengeManager.player_left_game_session = function (self, peer_id, local_player_id)
+ChallengeManager.on_player_left_party = function (self, peer_id, local_player_id, party_id, slot_id)
 	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
 	local all_challenges = self._all_challenges
 
@@ -269,6 +262,23 @@ ChallengeManager.player_left_game_session = function (self, peer_id, local_playe
 
 		if challenge:belongs_to(unique_id) then
 			challenge:set_paused(true)
+		end
+	end
+end
+
+ChallengeManager.profile_changed = function (self, peer_id, local_player_id, profile_index, career_index, is_bot)
+	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
+	local profile = SPProfiles[profile_index]
+	local affiliation = profile.affiliation
+	local all_challenges = self._all_challenges
+
+	for i = 1, #all_challenges do
+		local challenge = all_challenges[i]
+
+		if challenge:belongs_to(unique_id) then
+			local pause = affiliation ~= "heroes"
+
+			challenge:set_paused(pause)
 		end
 	end
 end

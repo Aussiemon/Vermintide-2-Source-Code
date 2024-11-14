@@ -26,13 +26,13 @@ local scenegraph_definition = {
 		},
 		position = {
 			90,
-			-110,
+			-180,
 			1,
 		},
 	},
 }
 local widgets = {
-	loadout_grid = UIWidgets.create_loadout_grid_console("loadout_grid", scenegraph_definition.loadout_grid.size, 3, loadout_grid_spacing),
+	loadout_grid = UIWidgets.create_loadout_grid_console("loadout_grid", scenegraph_definition.loadout_grid.size, 4, loadout_grid_spacing),
 }
 local generic_input_actions = {
 	default = {

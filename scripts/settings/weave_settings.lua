@@ -5,6 +5,7 @@ require("scripts/settings/horde_compositions_pacing")
 require("scripts/settings/difficulty_settings")
 require("scripts/managers/conflict_director/conflict_utils")
 require("scripts/settings/terror_event_blueprints")
+require("scripts/settings/objective_lists")
 
 local total_required_essence = 100
 local max_objective_essence = 80
@@ -490,13 +491,12 @@ for i = 1, num_templates * 4 do
 
 	for k = 1, #objectives do
 		local objective = objectives[k]
-		local level_id = objective.level_id
 		local objective_settings = objective.objective_settings
-		local objective_lists = objective_settings and objective_settings.objective_lists
+		local objective_lists = ObjectiveLists[objective_settings and objective_settings.objective_lists]
 
 		if objective_lists then
 			for _, objective_set in ipairs(objective_lists) do
-				for objective_name, _ in pairs(objective_set) do
+				for objective_name, objective_data in pairs(objective_set) do
 					weave_objective_names[objective_name] = true
 				end
 			end
@@ -525,7 +525,7 @@ local function sort_objective_indices(weave_template)
 		objectives_ordered[objective_index] = {}
 
 		local objective_settings = objective.objective_settings
-		local objective_lists = objective_settings and objective_settings.objective_lists
+		local objective_lists = ObjectiveLists[objective_settings and objective_settings.objective_lists]
 
 		if objective_lists then
 			for list_index, objective_list in ipairs(objective_lists) do
@@ -726,7 +726,7 @@ end
 
 local function update_objective_template_data(objective, score_multipliers, score_per_objective)
 	local objective_settings = objective.objective_settings
-	local objective_lists = objective_settings and objective_settings.objective_lists
+	local objective_lists = ObjectiveLists[objective_settings.objective_lists]
 
 	for _, objective_list in pairs(objective_lists) do
 		for objective_name, objective_data in pairs(objective_list) do
@@ -735,7 +735,7 @@ local function update_objective_template_data(objective, score_multipliers, scor
 			end
 
 			if objective_data.is_scored then
-				objective_data.score = score_per_objective
+				objective_data.score_for_completion = score_per_objective
 			end
 		end
 	end
@@ -743,7 +743,7 @@ end
 
 local function get_scored_objective_count(objective)
 	local objective_settings = objective.objective_settings
-	local objective_lists = objective_settings and objective_settings.objective_lists
+	local objective_lists = ObjectiveLists[objective_settings.objective_lists]
 	local num_scored_objectives = 0
 
 	for _, objective_list in pairs(objective_lists) do
@@ -759,7 +759,7 @@ end
 
 local function calculate_score_multipliers(objective, weave_name)
 	local objective_settings = objective.objective_settings
-	local objective_lists = objective_settings and objective_settings.objective_lists
+	local objective_lists = ObjectiveLists[objective_settings and objective_settings.objective_lists]
 
 	if not objective_lists then
 		return

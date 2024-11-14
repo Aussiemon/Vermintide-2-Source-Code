@@ -548,6 +548,7 @@ HeroWindowGotwfItemPreview._sync_presentation_item = function (self, force_updat
 		local reset_presentation = not selected_product or not self._selected_product or self._selected_product.item_id ~= selected_product.item_id
 
 		self._selected_product = selected_product
+		self._selected_product_bundle_data = params.selected_item_bundle_data
 
 		local item = selected_product
 
@@ -641,6 +642,14 @@ HeroWindowGotwfItemPreview._present_item = function (self, item)
 		description_text = Localize(masterlist_item.description)
 		sub_title_text = ""
 		career_title_text = ""
+	end
+
+	local bundle_data = self._selected_product_bundle_data
+
+	if bundle_data then
+		description_text = bundle_data.description_text and Localize(bundle_data.description_text) or ""
+		sub_title_text = bundle_data.subtitle_text and Localize(bundle_data.subtitle_text) or ""
+		career_title_text = bundle_data.career_title_text and Localize(bundle_data.career_title_text) or ""
 	end
 
 	self:_show_object_set(item_preview_object_set_name)

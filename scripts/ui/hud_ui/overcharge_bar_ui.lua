@@ -144,7 +144,16 @@ OverchargeBarUI.create_ui_elements = function (self)
 
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 
-	local widget_definition = UIWidgets.create_overcharge_bar_widget("charge_bar", nil, nil, nil, nil, definitions.DEFAULT_BAR_SIZE)
+	local widget_definition
+
+	self._party = Managers.party:get_local_player_party()
+	self._side = Managers.state.side.side_by_party[self._party]
+
+	if self._side and self._side:name() == "dark_pact" then
+		widget_definition = UIWidgets.create_dark_pact_overcharge_bar_widget("charge_bar_dark_pact", nil, nil, nil, nil, definitions.DEFAULT_DARK_PACT_BAR_SIZE)
+	else
+		widget_definition = UIWidgets.create_overcharge_bar_widget("charge_bar", nil, nil, nil, nil, definitions.DEFAULT_BAR_SIZE)
+	end
 
 	self.charge_bar = UIWidget.init(widget_definition)
 end
@@ -189,7 +198,8 @@ OverchargeBarUI.update = function (self, dt, t, player)
 end
 
 OverchargeBarUI.update_bar_size = function (self, max_overcharge_value, min_threshold_fraction, max_threshold_fraction)
-	local new_width = math.remap(0, 40, 0, definitions.DEFAULT_BAR_SIZE[1], max_overcharge_value)
+	local bar_size = self._side:name() == "dark_pact" and definitions.DEFAULT_DARK_PACT_BAR_SIZE[1] or definitions.DEFAULT_BAR_SIZE[1]
+	local new_width = math.remap(0, 40, 0, bar_size, max_overcharge_value)
 	local widget = self.charge_bar
 	local content = widget.content
 

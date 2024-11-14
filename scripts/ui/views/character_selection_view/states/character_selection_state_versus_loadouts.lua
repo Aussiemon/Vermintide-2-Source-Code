@@ -25,6 +25,7 @@ local LOADOUT_SLOTS = {
 	slot_hat = true,
 	slot_melee = true,
 	slot_necklace = true,
+	slot_pose = true,
 	slot_ranged = true,
 	slot_ring = true,
 	slot_skin = true,
@@ -55,6 +56,7 @@ CharacterSelectionStateVersusLoadouts.on_enter = function (self, params)
 	self.local_player = Managers.player:local_player()
 	self._stats_id = self.local_player:stats_id()
 	self.use_user_skins = true
+	self.use_loadout_items = true
 
 	local profile_index, career_index = self._profile_synchronizer:profile_by_peer(self.peer_id, self._local_player_id)
 	local hero_name = params.hero_name
@@ -128,6 +130,7 @@ CharacterSelectionStateVersusLoadouts.on_exit = function (self, params)
 		local force_update = true
 
 		self:_set_loadout(loadout, loadout_type, stored_loadout_index, career_name, force_update)
+		self:_save_loadout_index(career_name, stored_loadout_index)
 	end
 end
 
@@ -858,6 +861,19 @@ CharacterSelectionStateVersusLoadouts._handle_item_loadout_selection = function 
 		self:_set_loadout_item(item, self._current_weapon_slot_name)
 		item_grid:update_items_status()
 
+		local career_index = self._selected_career_index
+		local profile_index = FindProfileIndex(self._hero_name)
+		local profile = SPProfiles[profile_index]
+		local careers = profile.careers
+		local career_settings = careers[career_index]
+		local preview_wield_slot = career_settings.preview_wield_slot
+
+		preview_wield_slot = preview_wield_slot or "melee"
+
+		local slot_names = InventorySettings.slot_names_by_type[preview_wield_slot]
+		local slot_name = slot_names[1]
+
+		self._spawn_hero = slot_name == self._current_weapon_slot_name
 		self._items_dirty = true
 	end
 end
@@ -930,12 +946,20 @@ CharacterSelectionStateVersusLoadouts._handle_talent_loadout_selection = functio
 
 			if not content.disabled then
 				if UIUtils.is_button_pressed(talent_grid_widget, talent_id) then
+					if self._selected_loadout_talents[i] ~= j then
+						self:_play_sound("play_gui_talents_selection_click")
+					end
+
 					self._selected_loadout_talents[i] = j
 
 					self:_populate_talent_grid()
 
 					self._talents_dirty = true
 				elseif UIUtils.is_right_button_pressed(talent_grid_widget, talent_id) then
+					if self._selected_loadout_talents[i] ~= 0 then
+						self:_play_sound("play_gui_talents_selection_click")
+					end
+
 					self._selected_loadout_talents[i] = self._selected_loadout_talents[i] == j and 0 or self._selected_loadout_talents[i]
 
 					self:_populate_talent_grid()
@@ -978,6 +1002,14 @@ CharacterSelectionStateVersusLoadouts._confirm_loadout = function (self)
 		self._parent:set_input_blocked(true)
 
 		self._new_loadout_confirmed = true
+
+		if self._selected_loadout_index then
+			local loadout_settings = InventorySettings.loadouts[self._selected_loadout_index]
+
+			if loadout_settings.loadout_type == "default" then
+				Managers.telemetry_events:default_loadout_equipped()
+			end
+		end
 	else
 		self._parent:close_menu()
 	end
@@ -1071,11 +1103,15 @@ CharacterSelectionStateVersusLoadouts._set_loadout = function (self, loadout, lo
 			if LOADOUT_SLOTS[slot_name] then
 				if CosmeticUtils.is_cosmetic_slot(slot_name) then
 					backend_id = item_interface:get_backend_id_from_cosmetic_item(backend_id)
+				elseif slot_name == "slot_pose" then
+					local item_id = loadout[slot_name]
+
+					backend_id = item_id and item_interface:get_backend_id_from_unlocked_weapon_poses(item_id)
 				end
 
-				local item = item_interface:get_item_from_id(backend_id)
+				local item = backend_id and item_interface:get_item_from_id(backend_id)
 
-				if not LoadoutUtils.is_item_disabled(item.ItemId) then
+				if item and not LoadoutUtils.is_item_disabled(item.ItemId) then
 					local slot = InventorySettings.slots_by_name[slot_name]
 					local slot_type = slot.type
 					local highest_rarity = self._statistics_db:get_persistent_stat(self._stats_id, "highest_equipped_rarity", slot_type)
@@ -1305,7 +1341,7 @@ CharacterSelectionStateVersusLoadouts._populate_tags = function (self)
 		local default_loadout_settings = UISettings.default_loadout_settings[career_name]
 		local ui_loadout_settings = default_loadout_settings[loadout_settings.loadout_index]
 
-		tags = string.split(ui_loadout_settings.tags, ",")
+		tags = string.split_deprecated(ui_loadout_settings.tags, ",")
 	else
 		tags[#tags + 1] = "loadout_tag_custom"
 	end
@@ -1323,7 +1359,7 @@ CharacterSelectionStateVersusLoadouts._populate_tags = function (self)
 
 	for i = 1, num_tags do
 		local tag = tags[i]
-		local widget_definition = tag_widget_func(tag_scenegraph_id, Localize(tag), nil, nil, nil, {
+		local widget_definition = tag_widget_func(tag_scenegraph_id, Localize(tag), {
 			nil,
 			30,
 		})

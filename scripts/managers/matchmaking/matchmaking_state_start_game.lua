@@ -25,6 +25,8 @@ end
 DLCS_TO_CHECK = {}
 ADDED_DLCS = {}
 
+local host_human_players = {}
+
 MatchmakingStateStartGame._verify_requirements = function (self)
 	table.clear(DLCS_TO_CHECK)
 	table.clear(ADDED_DLCS)
@@ -64,14 +66,34 @@ MatchmakingStateStartGame._verify_requirements = function (self)
 	if difficulty then
 		local difficulty_settings = DifficultySettings[difficulty]
 
-		if difficulty_settings.extra_requirement_name and not mechanism_settings.disable_difficulty_check and not Development.parameter("unlock_all_difficulties") then
-			local players_not_meeting_requirements = DifficultyManager.players_below_difficulty_rank(difficulty, human_players)
+		if not mechanism_settings.disable_difficulty_check and not Development.parameter("unlock_all_difficulties") then
+			if not search_config.private_game then
+				local players_below_difficulty = DifficultyManager.players_below_required_power_level(difficulty, human_players)
 
-			if #players_not_meeting_requirements > 0 then
-				self._matchmaking_manager:cancel_matchmaking()
-				self._matchmaking_manager:send_system_chat_message("matchmaking_status_difficulty_requirements_failed")
+				if #players_below_difficulty > 0 then
+					self._matchmaking_manager:cancel_matchmaking()
+					self._matchmaking_manager:send_system_chat_message("matchmaking_status_difficulty_requirements_failed")
 
-				return
+					return
+				end
+			end
+
+			if difficulty_settings.extra_requirement_name then
+				local players = human_players
+
+				if Managers.state.network.is_server then
+					host_human_players[1] = Managers.player:local_player()
+					players = host_human_players
+				end
+
+				local players_not_meeting_requirements = DifficultyManager.players_locked_difficulty_rank(difficulty, players)
+
+				if #players_not_meeting_requirements > 0 then
+					self._matchmaking_manager:cancel_matchmaking()
+					self._matchmaking_manager:send_system_chat_message("matchmaking_status_difficulty_requirements_failed")
+
+					return
+				end
 			end
 		end
 
@@ -166,6 +188,16 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 			}
 
 			Managers.mechanism:set_vote_data(vote_data)
+		elseif mechanism == "versus" then
+			local map_pool = script_data.versus_map_pool or Managers.mechanism:mechanism_setting_for_title("map_pool")
+
+			mission_id = map_pool[Math.random(#map_pool)]
+
+			local override_level_key = Managers.mechanism:game_mechanism():get_level_override_key()
+
+			if override_level_key then
+				mission_id = override_level_key
+			end
 		else
 			local preferred_level_keys = search_config.preferred_level_keys
 
@@ -189,10 +221,16 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 				private_game = true
 			end
 		end
-	elseif mechanism == "versus" and mission_id == "any" then
+	elseif mechanism == "versus" and not search_config.player_hosted then
 		local map_pool = script_data.versus_map_pool or Managers.mechanism:mechanism_setting_for_title("map_pool")
 
 		mission_id = map_pool[Math.random(#map_pool)]
+
+		local override_level_key = Managers.mechanism:game_mechanism():get_level_override_key()
+
+		if override_level_key then
+			mission_id = override_level_key
+		end
 	end
 
 	local eac_authorized = false
@@ -344,7 +382,11 @@ end
 
 MatchmakingStateStartGame._start_game = function (self)
 	self:_capture_telemetry()
-	self:_send_rpc_clients("rpc_matchmaking_join_game")
+
+	local network_handler = Managers.mechanism:network_handler()
+	local match_handler = network_handler:get_match_handler()
+
+	match_handler:send_rpc_down("rpc_matchmaking_join_game")
 
 	local game_server_lobby_client = self.state_context.game_server_lobby_client
 

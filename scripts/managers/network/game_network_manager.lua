@@ -470,6 +470,40 @@ GameNetworkManager.game_object_destroyed_player_unit_health = function (self, go
 	health_extension:set_health_game_object_id(nil)
 end
 
+GameNetworkManager.game_object_created_dark_pact_horde_ability = function (self, go_id, owner_peer_id)
+	local player_unit_id = GameSession.game_object_field(self.game_session, go_id, "unit_game_object_id")
+	local player_unit = self.unit_storage:unit(player_unit_id)
+
+	if player_unit == nil then
+		return nil
+	end
+
+	local horde_ability_extension = ScriptUnit.extension(player_unit, "versus_horde_ability_system")
+
+	if horde_ability_extension == nil then
+		return nil
+	end
+
+	horde_ability_extension:set_ability_game_object_id(go_id)
+end
+
+GameNetworkManager.game_object_destroyed_dark_pact_horde_ability = function (self, go_id, owner_peer_id)
+	local player_unit_id = GameSession.game_object_field(self.game_session, go_id, "unit_game_object_id")
+	local player_unit = self.unit_storage:unit(player_unit_id)
+
+	if player_unit == nil then
+		return nil
+	end
+
+	local horde_ability_extension = ScriptUnit.extension(player_unit, "versus_horde_ability_system")
+
+	if horde_ability_extension == nil then
+		return nil
+	end
+
+	horde_ability_extension:set_ability_game_object_id(nil)
+end
+
 GameNetworkManager.game_object_created_player_sync_data = function (self, go_id, owner_peer_id)
 	local peer_id = GameSession.game_object_field(self.game_session, go_id, "network_id")
 	local local_player_id = GameSession.game_object_field(self.game_session, go_id, "local_player_id")
@@ -602,16 +636,16 @@ GameNetworkManager.game_object_destroyed_weave = function (self, game_object_id)
 	Managers.weave:game_object_destroyed(game_object_id)
 end
 
-GameNetworkManager.game_object_created_weave_objective = function (self, game_object_id, owner_id, go_template)
-	local weave_objective_system = Managers.state.entity:system("weave_objective_system")
+GameNetworkManager.game_object_created_objective = function (self, game_object_id, owner_id, go_template)
+	local objective_system = Managers.state.entity:system("objective_system")
 
-	weave_objective_system:game_object_created(game_object_id)
+	objective_system:game_object_created(game_object_id)
 end
 
-GameNetworkManager.game_object_destroyed_weave_objective = function (self, game_object_id)
-	local weave_objective_system = Managers.state.entity:system("weave_objective_system")
+GameNetworkManager.game_object_destroyed_objective = function (self, game_object_id)
+	local objective_system = Managers.state.entity:system("objective_system")
 
-	weave_objective_system:game_object_destroyed(game_object_id)
+	objective_system:game_object_destroyed(game_object_id)
 end
 
 GameNetworkManager.game_object_created_horde_surge = function (self, game_object_id, owner_id, go_template)
@@ -624,18 +658,6 @@ GameNetworkManager.game_object_destroyed_horde_surge = function (self, game_obje
 	local game_mode = Managers.state.game_mode:game_mode()
 
 	game_mode._horde_surge_handler._game_object_id = nil
-end
-
-GameNetworkManager.game_object_created_versus_objective = function (self, game_object_id, owner_id, go_template)
-	local versus_objective_system = Managers.state.entity:system("versus_objective_system")
-
-	versus_objective_system:game_object_created(game_object_id)
-end
-
-GameNetworkManager.game_object_destroyed_versus_objective = function (self, game_object_id, owner_id, go_template)
-	local versus_objective_system = Managers.state.entity:system("versus_objective_system")
-
-	versus_objective_system:game_object_destroyed(game_object_id)
 end
 
 GameNetworkManager.destroy_game_object = function (self, go_id)
@@ -961,11 +983,13 @@ GameNetworkManager.rpc_gm_event_end_conditions_met = function (self, channel_id,
 end
 
 GameNetworkManager.gm_event_round_started = function (self)
-	self.network_transmit:send_rpc_clients("rpc_gm_event_round_started")
+	local time_since_round_started = 0
+
+	self.network_transmit:send_rpc_clients("rpc_gm_event_round_started", time_since_round_started)
 end
 
-GameNetworkManager.rpc_gm_event_round_started = function (self, channel_id)
-	Managers.state.game_mode:trigger_event("round_started")
+GameNetworkManager.rpc_gm_event_round_started = function (self, channel_id, time_since_round_started)
+	Managers.state.game_mode:trigger_event("round_started", time_since_round_started)
 end
 
 GameNetworkManager.gm_event_initial_peers_spawned = function (self)

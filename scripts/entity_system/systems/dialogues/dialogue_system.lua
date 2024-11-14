@@ -88,8 +88,10 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 	self._unit_extension_data = {}
 	self._playing_dialogues = {}
 	self._playing_units = {}
+	self._query_results = {}
 	self._is_server = entity_system_creation_context.is_server
 	self._debug_state = nil
+	self._mission_giver_events = {}
 	self._tagquery_database = TagQueryDatabase:new()
 	self._dialogues = {}
 	self._markers = {}
@@ -110,6 +112,8 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 	local dialogue_filename = "dialogues/generated/" .. level_name
 	local auto_load_files = DialogueSettings.auto_load_files
 	local blocked_auto_load = DialogueSettings.blocked_auto_load_files[level_name]
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+	local auto_load_files_mechanism = DialogueSettings.auto_load_files_mechanism[mechanism_name] or {}
 
 	self._original_dialogue_settings = {}
 
@@ -131,6 +135,22 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 
 	if not blocked_auto_load then
 		for _, file_name in ipairs(auto_load_files) do
+			if Application.can_get("lua", file_name) then
+				self._tagquery_loader:load_file(file_name)
+			end
+
+			if Application.can_get("lua", file_name .. "_markers") then
+				local markers = dofile(file_name .. "_markers")
+
+				for name, marker in pairs(markers) do
+					fassert(not self._markers[name], "[DialogueSystem] There is already a marker called %s registered", name)
+
+					self._markers[name] = marker
+				end
+			end
+		end
+
+		for _, file_name in ipairs(auto_load_files_mechanism) do
 			if Application.can_get("lua", file_name) then
 				self._tagquery_loader:load_file(file_name)
 			end
@@ -233,6 +253,7 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 
 	self.statistics_db = entity_system_creation_context.statistics_db
 	self._global_context = {
+		game_about_to_end = 0,
 		current_level = level_name,
 		weather = environment_variation_name,
 	}
@@ -257,11 +278,20 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 	local dlc_level_dialogue_context = Managers.mechanism:get_level_dialogue_context()
 
 	table.merge(self._global_context, dlc_level_dialogue_context)
-	self._tagquery_database:set_global_context(self._global_context)
 
 	self._global_context.level_time = 0
+
+	local mechanism = Managers.mechanism:game_mechanism()
+
+	if mechanism.get_current_set then
+		local current_set = mechanism:get_current_set()
+
+		self._global_context.current_set = current_set
+	end
+
+	self._tagquery_database:set_global_context(self._global_context)
+
 	self._next_story_line_update_t = DialogueSettings.story_start_delay
-	self._ensured_event_queue = {}
 end
 
 DialogueSystem._load_special_event_dialogues = function (self, package_name, mechanism_name)
@@ -802,7 +832,14 @@ DialogueSystem._update_currently_playing_dialogues = function (self, dt)
 			end
 
 			if currently_playing_dialogue.dialogue_timer then
-				if extension.input:is_silenced() then
+				local ghost_mode_blocked = false
+				local ghost_mode_extension = ScriptUnit.has_extension(unit, "ghost_mode_system")
+
+				if ghost_mode_extension and ghost_mode_extension:is_in_ghost_mode() and not currently_playing_dialogue.only_local and not currently_playing_dialogue.only_allies then
+					ghost_mode_blocked = true
+				end
+
+				if extension.input:is_silenced() or ghost_mode_blocked then
 					if self._is_server then
 						local go_id, is_level_unit = Managers.state.network:game_object_or_level_id(unit)
 
@@ -913,16 +950,12 @@ DialogueSystem.physics_async_update = function (self, context, t)
 	self:_update_incapacitation(t)
 
 	local tagquery_database = self._tagquery_database
-
-	if not tagquery_database:has_queries() then
-		self:_trigger_next_ensured_event(t)
-	end
-
-	local tagquery_database = self._tagquery_database
-	local query = tagquery_database:iterate_queries(LOCAL_GAMETIME)
+	local query_results = self._query_results
+	local num_queries = tagquery_database:iterate_queries(query_results, LOCAL_GAMETIME)
 
 	if enabled and (self._global_context.level_time > DialogueSettings.dialogue_level_start_delay or self:has_local_player_moved_from_start_position()) then
-		if query then
+		for i = 1, num_queries do
+			local query = query_results[i]
 			local dialogue_actor_unit = query.query_context.source
 			local unit_extension_data = self._unit_extension_data
 			local extension = unit_extension_data[dialogue_actor_unit]
@@ -930,164 +963,162 @@ DialogueSystem.physics_async_update = function (self, context, t)
 			extension.last_query = query
 
 			local result = query.result
+			local dialogue = self._dialogues[result]
+			local dialogue_category = dialogue.category
+			local category_setting = dialogue_category_config[dialogue_category]
+			local playable_during_category = category_setting.playable_during_category
 
-			if result then
-				local dialogue = self._dialogues[result]
-				local dialogue_category = dialogue.category
-				local category_setting = dialogue_category_config[dialogue_category]
-				local playable_during_category = category_setting.playable_during_category
+			fassert(category_setting, "No category setting for category %q used in dialogue %q", dialogue_category, result)
 
-				fassert(category_setting, "No category setting for category %q used in dialogue %q", dialogue_category, result)
+			local player_manager = Managers.player
+			local owner_player = player_manager:owner(dialogue_actor_unit)
+			local side_manager = Managers.state.side
+			local playing_dialogues = self._playing_dialogues
+			local will_play = true
+			local interrupt_dialogue_list = FrameTable.alloc_table()
 
-				local player_manager = Managers.player
-				local owner_player = player_manager:owner(dialogue_actor_unit)
-				local side_manager = Managers.state.side
-				local playing_dialogues = self._playing_dialogues
-				local will_play = true
-				local interrupt_dialogue_list = FrameTable.alloc_table()
+			for playing_dialogue, playing_dialogue_category_data in pairs(playing_dialogues) do
+				local mutually_exclusive = playing_dialogue_category_data.mutually_exclusive
+				local interrupted_by = playing_dialogue_category_data.interrupted_by
+				local only_play_for_allies = playing_dialogue.only_allies
+				local not_heard_since_enemy = only_play_for_allies and not side_manager:is_ally(dialogue_actor_unit, playing_dialogue.currently_playing_unit)
+				local not_heard_since_local = playing_dialogue.only_local and (not owner_player or owner_player ~= player_manager:owner(playing_dialogue.currently_playing_unit))
 
-				for playing_dialogue, playing_dialogue_category_data in pairs(playing_dialogues) do
-					local mutually_exclusive = playing_dialogue_category_data.mutually_exclusive
-					local interrupted_by = playing_dialogue_category_data.interrupted_by
-					local only_play_for_allies = playing_dialogue.only_allies
-					local not_heard_since_enemy = only_play_for_allies and not side_manager:is_ally(dialogue_actor_unit, playing_dialogue.currently_playing_unit)
-					local not_heard_since_local = playing_dialogue.only_local and (not owner_player or owner_player ~= player_manager:owner(playing_dialogue.currently_playing_unit))
+				if not_heard_since_enemy or not_heard_since_local then
+					-- Nothing
+				elseif mutually_exclusive and dialogue_category == playing_dialogue.category then
+					will_play = false
 
-					if not_heard_since_enemy or not_heard_since_local then
-						-- Nothing
-					elseif mutually_exclusive and dialogue_category == playing_dialogue.category then
-						will_play = false
+					break
+				elseif interrupted_by[dialogue_category] then
+					interrupt_dialogue_list[playing_dialogue] = true
+					playing_dialogues[playing_dialogue] = nil
+				elseif playing_dialogue.currently_playing_unit == dialogue_actor_unit then
+					will_play = false
 
-						break
-					elseif interrupted_by[dialogue_category] then
-						interrupt_dialogue_list[playing_dialogue] = true
-						playing_dialogues[playing_dialogue] = nil
-					elseif playing_dialogue.currently_playing_unit == dialogue_actor_unit then
-						will_play = false
+					break
+				elseif playable_during_category[playing_dialogue.category] then
+					-- Nothing
+				else
+					will_play = false
 
-						break
-					elseif playable_during_category[playing_dialogue.category] then
-						-- Nothing
+					break
+				end
+			end
+
+			if dialogue.currently_playing_id then
+				will_play = false
+			end
+
+			if extension.input:is_silenced() then
+				will_play = false
+			end
+
+			if will_play then
+				extension.used_query = query
+
+				local network_manager = Managers.state.network
+
+				for interrupt_dialogue, _ in pairs(interrupt_dialogue_list) do
+					interrupt_dialogue_list[interrupt_dialogue] = nil
+
+					local playing_unit = interrupt_dialogue.currently_playing_unit
+					local go_id, is_level_unit = network_manager:game_object_or_level_id(playing_unit)
+
+					network_manager.network_transmit:send_rpc_all("rpc_interrupt_dialogue_event", go_id, is_level_unit)
+				end
+
+				local go_id, is_level_unit = network_manager:game_object_or_level_id(dialogue_actor_unit)
+				local filter_context = FrameTable.alloc_table()
+
+				filter_context.query_context = query.query_context
+				filter_context.global_context = self._global_context
+
+				local user_context_list = self._tagquery_database:get_object_context(dialogue_actor_unit) or EMPTY_TABLE
+
+				filter_context.user_context = user_context_list.user_context or EMPTY_TABLE
+				filter_context.user_memory = user_context_list.user_memory or EMPTY_TABLE
+				filter_context.faction_memory = user_context_list.faction_memory or EMPTY_TABLE
+
+				local dialogue_index = DialogueQueries.get_filtered_dialogue_event_index(dialogue, filter_context, GLOBAL_SOUND_EVENT_FILTERS)
+				local additional_trigger = dialogue.additional_trigger or dialogue.additional_trigger_heard
+
+				if additional_trigger then
+					local event_data = FrameTable.alloc_table()
+					local source = dialogue_actor_unit
+					local speaker_name = "UNKNOWN"
+					local breed_data = Unit.get_data(source, "breed")
+
+					if breed_data and not breed_data.is_player then
+						speaker_name = breed_data.name
+					elseif source and self._unit_extension_data[source] then
+						speaker_name = self._unit_extension_data[source].context.player_profile
+					end
+
+					event_data.dialogue_name_nopre = string.sub(result, 5)
+					event_data.dialogue_name = result
+					event_data.speaker = source
+					event_data.speaker_name = speaker_name
+					event_data.sound_event = extension.last_query_sound_event
+
+					if not dialogue.additional_trigger_heard then
+						event_data.distance = 1
+
+						for unit, target_extension in pairs(self._unit_extension_data) do
+							target_extension.input:trigger_dialogue_event(additional_trigger, event_data)
+						end
 					else
-						will_play = false
+						local source_wp = POSITION_LOOKUP[source] or Unit.local_position(source, 0)
+						local sound_distance = DialogueSettings.default_hear_distance
 
-						break
-					end
-				end
+						for unit, target_extension in pairs(self._unit_extension_data) do
+							local target_world_pos = POSITION_LOOKUP[unit] or Unit.local_position(unit, 0)
+							local distance = Vector3.distance(source_wp, target_world_pos)
 
-				if dialogue.currently_playing_id then
-					will_play = false
-				end
+							if distance <= sound_distance then
+								event_data.distance = distance
 
-				if extension.input:is_silenced() then
-					will_play = false
-				end
-
-				if will_play then
-					extension.used_query = query
-
-					local network_manager = Managers.state.network
-
-					for interrupt_dialogue, _ in pairs(interrupt_dialogue_list) do
-						interrupt_dialogue_list[interrupt_dialogue] = nil
-
-						local playing_unit = interrupt_dialogue.currently_playing_unit
-						local go_id, is_level_unit = network_manager:game_object_or_level_id(playing_unit)
-
-						network_manager.network_transmit:send_rpc_all("rpc_interrupt_dialogue_event", go_id, is_level_unit)
-					end
-
-					local go_id, is_level_unit = network_manager:game_object_or_level_id(dialogue_actor_unit)
-					local filter_context = FrameTable.alloc_table()
-
-					filter_context.query_context = query.query_context
-					filter_context.global_context = self._global_context
-
-					local user_context_list = self._tagquery_database:get_object_context(dialogue_actor_unit) or EMPTY_TABLE
-
-					filter_context.user_context = user_context_list.user_context or EMPTY_TABLE
-					filter_context.user_memory = user_context_list.user_memory or EMPTY_TABLE
-					filter_context.faction_memory = user_context_list.faction_memory or EMPTY_TABLE
-
-					local dialogue_index = DialogueQueries.get_filtered_dialogue_event_index(dialogue, filter_context, GLOBAL_SOUND_EVENT_FILTERS)
-					local additional_trigger = dialogue.additional_trigger or dialogue.additional_trigger_heard
-
-					if additional_trigger then
-						local event_data = FrameTable.alloc_table()
-						local source = dialogue_actor_unit
-						local speaker_name = "UNKNOWN"
-						local breed_data = Unit.get_data(source, "breed")
-
-						if breed_data and not breed_data.is_player then
-							speaker_name = breed_data.name
-						elseif source and self._unit_extension_data[source] then
-							speaker_name = self._unit_extension_data[source].context.player_profile
-						end
-
-						event_data.dialogue_name_nopre = string.sub(result, 5)
-						event_data.dialogue_name = result
-						event_data.speaker = source
-						event_data.speaker_name = speaker_name
-						event_data.sound_event = extension.last_query_sound_event
-
-						if not dialogue.additional_trigger_heard then
-							event_data.distance = 1
-
-							for unit, target_extension in pairs(self._unit_extension_data) do
 								target_extension.input:trigger_dialogue_event(additional_trigger, event_data)
-							end
-						else
-							local source_wp = POSITION_LOOKUP[source] or Unit.local_position(source, 0)
-							local sound_distance = DialogueSettings.default_hear_distance
 
-							for unit, target_extension in pairs(self._unit_extension_data) do
-								local target_world_pos = POSITION_LOOKUP[unit] or Unit.local_position(unit, 0)
-								local distance = Vector3.distance(source_wp, target_world_pos)
-
-								if distance <= sound_distance then
-									event_data.distance = distance
-
-									target_extension.input:trigger_dialogue_event(additional_trigger, event_data)
-
-									event_data = table.shallow_copy(event_data, false, FrameTable.alloc_table())
-								end
+								event_data = table.shallow_copy(event_data, false, FrameTable.alloc_table())
 							end
 						end
 					end
+				end
 
-					local dialogue_timer = DialogueQueries.get_sound_event_duration(dialogue, dialogue_index)
-					local query_context = query.query_context
+				local dialogue_timer = DialogueQueries.get_sound_event_duration(dialogue, dialogue_index)
+				local query_context = query.query_context
 
-					if query_context.identifier and query_context.identifier ~= "" then
-						self._dialogue_state_handler:add_playing_dialogue(query_context.identifier, dialogue.sound_events[dialogue_index], t, dialogue_timer)
-					end
+				if query_context.identifier and query_context.identifier ~= "" then
+					self._dialogue_state_handler:add_playing_dialogue(query_context.identifier, dialogue.sound_events[dialogue_index], t, dialogue_timer)
+				end
 
-					local dialogue_id = NetworkLookup.dialogues[result]
+				local dialogue_id = NetworkLookup.dialogues[result]
 
-					if dialogue.only_local then
-						local owner = Managers.player:owner(dialogue_actor_unit)
-						local owner_peer = owner and owner:network_id()
+				if dialogue.only_local then
+					local owner = Managers.player:owner(dialogue_actor_unit)
+					local owner_peer = owner and not owner.bot_player and owner:network_id()
 
-						if owner_peer then
-							network_manager.network_transmit:send_rpc("rpc_play_dialogue_event", owner_peer, go_id, is_level_unit, dialogue_id, dialogue_index)
-						end
+					if owner_peer then
+						self:rpc_play_dialogue_event(0, go_id, is_level_unit, dialogue_id, dialogue_index)
 
 						if owner_peer ~= Network.peer_id() then
-							network_manager.network_transmit:send_rpc_server("rpc_play_dialogue_event", go_id, is_level_unit, dialogue_id, dialogue_index)
+							network_manager.network_transmit:send_rpc("rpc_play_dialogue_event", owner_peer, go_id, is_level_unit, dialogue_id, dialogue_index)
 						end
-					elseif dialogue.only_allies then
-						local side = Managers.state.side.side_by_unit[dialogue_actor_unit]
-
-						if side then
-							local include_allies = true
-							local include_spectators = false
-							local always_include_server = true
-
-							network_manager.network_transmit:send_rpc_side("rpc_play_dialogue_event", side, include_allies, include_spectators, always_include_server, go_id, is_level_unit, dialogue_id, dialogue_index)
-						end
-					else
-						network_manager.network_transmit:send_rpc_all("rpc_play_dialogue_event", go_id, is_level_unit, dialogue_id, dialogue_index)
 					end
+				elseif dialogue.only_allies then
+					local side = Managers.state.side.side_by_unit[dialogue_actor_unit]
+
+					if side then
+						local include_allies = true
+						local include_spectators = false
+
+						self:rpc_play_dialogue_event(0, go_id, is_level_unit, dialogue_id, dialogue_index)
+						network_manager.network_transmit:send_rpc_side_clients("rpc_play_dialogue_event", side, include_allies, include_spectators, go_id, is_level_unit, dialogue_id, dialogue_index)
+					end
+				else
+					self:rpc_play_dialogue_event(0, go_id, is_level_unit, dialogue_id, dialogue_index)
+					network_manager.network_transmit:send_rpc_clients("rpc_play_dialogue_event", go_id, is_level_unit, dialogue_id, dialogue_index)
 				end
 			end
 		end
@@ -1099,6 +1130,7 @@ DialogueSystem.physics_async_update = function (self, context, t)
 		self:_update_player_jumping(t)
 	end
 
+	self:_update_mission_giver_events(dt)
 	self:_update_new_events(t)
 end
 
@@ -1559,14 +1591,55 @@ DialogueSystem._update_player_jumping = function (self, t)
 	end
 end
 
-DialogueSystem.trigger_mission_giver_event = function (self, event_name, event_data)
+DialogueSystem.queue_mission_giver_event = function (self, event_name, event_data)
+	self._mission_giver_events[#self._mission_giver_events + 1] = {
+		delay = DialogueSettings.mission_giver_events_delay,
+		event_name = event_name,
+		event_data = event_data,
+	}
+end
+
+DialogueSystem.queue_mission_giver_event_for_side = function (self, side_name, event_name, event_data)
+	local side = Managers.state.side:get_side_from_name(side_name)
+	local side_id = side.side_id
+
+	self._mission_giver_events[#self._mission_giver_events + 1] = {
+		delay = DialogueSettings.mission_giver_events_delay,
+		event_name = event_name,
+		event_data = event_data,
+		side_id = side_id,
+	}
+end
+
+DialogueSystem._update_mission_giver_events = function (self, dt)
 	local surrounding_aware_system = Managers.state.entity:system("surrounding_aware_system")
 	local global_observers = surrounding_aware_system:get_global_observers()
+	local events = self._mission_giver_events
+	local num_events = #events
+	local i = 1
 
-	for unit, surrounding_aware_extension in pairs(global_observers) do
-		local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+	while i <= num_events do
+		local event = events[i]
 
-		dialogue_input:trigger_networked_dialogue_event(event_name, event_data)
+		event.delay = event.delay - dt
+
+		if event.delay < 0 then
+			for unit, surrounding_aware_extension in pairs(global_observers) do
+				local side_id = event.side_id
+
+				if not side_id or side_id == surrounding_aware_extension.side_id then
+					local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+
+					dialogue_input:trigger_networked_dialogue_event(event.event_name, event.event_data)
+				end
+			end
+
+			table.swap_delete(events, i)
+
+			num_events = num_events - 1
+		else
+			i = i + 1
+		end
 	end
 end
 
@@ -1647,6 +1720,10 @@ DialogueSystem._check_play_debug_sound = function (self, sound_event, subtitles_
 	return
 end
 
+DialogueSystem.is_unit_playing_dialogue = function (self, unit)
+	return self._playing_units[unit]
+end
+
 DialogueSystem.rpc_play_dialogue_event = function (self, channel_id, go_id, is_level_unit, dialogue_id, dialogue_index)
 	local dialogue_actor_unit = Managers.state.network:game_object_or_level_unit(go_id, is_level_unit)
 
@@ -1659,7 +1736,16 @@ DialogueSystem.rpc_play_dialogue_event = function (self, channel_id, go_id, is_l
 	end
 
 	local dialogue_name = NetworkLookup.dialogues[dialogue_id]
-	local dialogue = table.shallow_copy(self._dialogues[dialogue_name])
+	local dialogue = self._dialogues[dialogue_name]
+
+	if not dialogue then
+		Crashify.print_exception("DialogueSystem", "Mismatch in loaded dialogue packages. Received rpc to play dialogue '%s'", dialogue_name)
+
+		return
+	end
+
+	dialogue = table.shallow_copy(dialogue)
+
 	local extension = self._unit_extension_data[dialogue_actor_unit]
 	local sound_event, subtitles_event, anim_face_event, anim_dialogue_event = DialogueQueries.get_dialogue_event(dialogue, dialogue_index)
 	local modified_event
@@ -1714,6 +1800,8 @@ DialogueSystem.rpc_play_dialogue_event = function (self, channel_id, go_id, is_l
 			local playing_id, _ = self:_check_play_debug_sound(sound_event, subtitles_event)
 
 			if not playing_id then
+				Managers.state.vce:interrupt_vce(dialogue_actor_unit)
+
 				playing_id, _ = WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
 				dialogue.currently_playing_id = playing_id
 			end
@@ -1812,36 +1900,4 @@ DialogueSystem.rpc_update_current_wind = function (self, channel_id, weave_name_
 	local current_wind = NetworkLookup.weave_winds[weave_name_id]
 
 	self._global_context.current_wind = current_wind
-end
-
-local EnsuredEventIndexLookup = table.mirror_array({
-	"unit",
-	"concept",
-	"event_data",
-	"identifier",
-})
-
-DialogueSystem._trigger_next_ensured_event = function (self, t)
-	local queued_ensured_event = self._ensured_event_queue
-	local ensured_event = table.remove(queued_ensured_event, 1)
-	local unit = ensured_event and ensured_event[EnsuredEventIndexLookup.unit]
-
-	if ALIVE[unit] then
-		local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
-		local concept = ensured_event[EnsuredEventIndexLookup.concept]
-		local event_data = ensured_event[EnsuredEventIndexLookup.event_data]
-		local identifier = ensured_event[EnsuredEventIndexLookup.identifier]
-
-		dialogue_input:trigger_dialogue_event(concept, event_data, identifier)
-		self:_update_new_events(t)
-	end
-end
-
-DialogueSystem.queue_ensured_dialogue_event = function (self, unit, concept, event_data, identifier)
-	self._ensured_event_queue[#self._ensured_event_queue + 1] = {
-		[EnsuredEventIndexLookup.unit] = unit,
-		[EnsuredEventIndexLookup.concept] = concept,
-		[EnsuredEventIndexLookup.event_data] = event_data,
-		[EnsuredEventIndexLookup.identifier] = identifier,
-	}
 end

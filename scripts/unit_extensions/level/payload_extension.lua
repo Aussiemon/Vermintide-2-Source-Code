@@ -34,11 +34,30 @@ PayloadExtension.init = function (self, extension_init_context, unit, extension_
 	self._stop_command_given = false
 	self._activated = true
 	self._started = false
+	self._use_statemachine = false
+	self._speed_var_index = 0
 
-	local wheel_diameter = Unit.get_data(unit, "wheel_diameter") / 10
-	local wheel_circumference = wheel_diameter * math.pi
+	if Unit.has_data(unit, "payload_statemachine_speed_var") then
+		local speed_var = Unit.get_data(unit, "payload_statemachine_speed_var")
 
-	self._anim_speed = 30 / FRAMES / wheel_circumference
+		if Unit.animation_has_variable(unit, speed_var) then
+			self._speed_var_index = Unit.animation_find_variable(unit, speed_var)
+			self._use_statemachine = true
+		end
+	end
+
+	local wheel_diameter = Unit.get_data(unit, "wheel_diameter")
+	local wheel_frames = 60
+
+	if Unit.has_data(unit, "payload_wheel_frames") then
+		wheel_frames = Unit.get_data(unit, "payload_wheel_frames")
+
+		if wheel_frames == 0 then
+			wheel_frames = 60
+		end
+	end
+
+	self._anim_speed = 30 / wheel_frames * wheel_diameter * math.pi
 	self._anim_group = "wheels"
 
 	if Unit.has_data(unit, "wheel_anim_group") then
@@ -123,6 +142,10 @@ PayloadExtension.init_payload = function (self, payload_gizmos)
 	if self._is_server then
 		self:_create_game_object()
 	end
+end
+
+PayloadExtension.movement = function (self)
+	return self._spline_curve:movement()
 end
 
 PayloadExtension._push_player = function (self, player_unit, abs_speed)
@@ -318,7 +341,12 @@ PayloadExtension.update = function (self, unit, input, dt, context, t)
 	self._previous_status = status
 	self._previous_spline_index = current_spline_index
 
-	Unit.set_simple_animation_speed(self._unit, new_speed / self._anim_speed, self._anim_group)
+	if self._use_statemachine then
+		Unit.animation_set_variable(self._unit, self._speed_var_index, new_speed / self._anim_speed)
+	else
+		Unit.set_simple_animation_speed(self._unit, new_speed / self._anim_speed, self._anim_group)
+	end
+
 	Unit.set_local_position(unit, 0, movement:current_position())
 
 	local dir = movement:current_tangent_direction()

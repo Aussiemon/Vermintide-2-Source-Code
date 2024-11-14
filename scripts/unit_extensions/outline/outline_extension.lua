@@ -146,3 +146,39 @@ end
 OutlineExtension.on_unfreeze = function (self)
 	self:_refresh_current_outline()
 end
+
+OutlineExtension.swap_delete_outline = function (self, new_id, old_id)
+	local settings_bucket = self.outline_settings
+	local to_bucket_id, to_setting_id, from_bucket_id, from_setting_id
+
+	for bucket_id = 1, #settings_bucket do
+		local current_bucket = settings_bucket[bucket_id]
+
+		for setting_id = 1, #current_bucket do
+			if current_bucket[setting_id]._unique_id == new_id then
+				from_bucket_id = bucket_id
+				from_setting_id = setting_id
+			end
+
+			if current_bucket[setting_id]._unique_id == old_id then
+				to_bucket_id = bucket_id
+				to_setting_id = setting_id
+			end
+		end
+	end
+
+	local new_settings = settings_bucket[from_bucket_id][from_setting_id]
+
+	new_settings._unique_id = old_id
+	settings_bucket[to_bucket_id][to_setting_id] = new_settings
+
+	table.remove(settings_bucket[from_bucket_id], from_setting_id)
+
+	if #settings_bucket[from_bucket_id] == 0 then
+		table.remove(settings_bucket, from_bucket_id)
+	end
+
+	self._default_settings = new_settings
+
+	self:update_outline(new_settings, old_id)
+end

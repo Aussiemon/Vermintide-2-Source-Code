@@ -12,6 +12,7 @@ PlayerUnitGhostModeExtension.init = function (self, extension_init_context, unit
 	self._unit_storage = extension_init_context.unit_storage
 	self._teleport_target_unit = nil
 	self._teleport_target_index_fallback = 1
+	self._player = extension_init_data.player
 
 	local side_id = extension_init_data.side_id
 
@@ -29,6 +30,7 @@ PlayerUnitGhostModeExtension.init = function (self, extension_init_context, unit
 
 	self._has_teleported = false
 	self._has_left_once = false
+	self._external_no_spawn_reasons = {}
 	self._enter_ghost_mode_allowance_check_time = 0
 	self._leave_ghost_mode_allowance_check_time = 0
 	self._is_husk = false
@@ -41,6 +43,7 @@ end
 PlayerUnitGhostModeExtension.extensions_ready = function (self)
 	self._locomotion_extension = ScriptUnit.extension(self._unit, "locomotion_system")
 	self._inventory_extension = ScriptUnit.extension(self._unit, "inventory_system")
+	self._career_extension = ScriptUnit.extension(self._unit, "career_system")
 	self._breed = Unit.get_data(self._unit, "breed")
 end
 
@@ -60,19 +63,14 @@ end
 
 PlayerUnitGhostModeExtension.update = function (self, unit, input, dt, context, t)
 	if self:is_in_ghost_mode() then
-		local new_reason = self:_update_allowed_to_leave(t)
-
-		if new_reason then
-			self:_update_allowed_to_leave_ui()
-		end
+		self:_update_allowed_to_leave(t)
 	else
 		self:_update_allowed_to_enter(t)
 	end
 end
 
-PlayerUnitGhostModeExtension._update_allowed_to_leave = function (self, t, force_update, skip_triggers)
+PlayerUnitGhostModeExtension._update_allowed_to_leave = function (self, t, force_update)
 	local unit = self._unit
-	local new_reason = false
 
 	self._range = math.ceil(self:get_distance_from_players(unit))
 
@@ -83,22 +81,36 @@ PlayerUnitGhostModeExtension._update_allowed_to_leave = function (self, t, force
 	end
 
 	if not force_update and t < self._leave_ghost_mode_allowance_check_time then
-		return new_reason
+		return
 	end
 
-	self._leave_ghost_mode_allowance_check_time = t + 0.33
+	self._leave_ghost_mode_allowance_check_time = t + 0.2
 
 	local world = self._world
 	local always_allow_leave_ghost_mode = script_data.always_allow_leave_ghost_mode or Development.parameter("disable_ghost_mode")
-	local side_manager = Managers.state.side
-	local side = side_manager.side_by_unit[unit]
-	local enemy_positions = side.ENEMY_PLAYER_AND_BOT_POSITIONS
+	local side = self._side
+	local units = side.ENEMY_PLAYER_AND_BOT_UNITS
+	local enemy_positions = {}
+
+	for i = 1, #units do
+		local player_unit = units[i]
+		local status_extension = ScriptUnit.extension(player_unit, "status_system")
+
+		if not status_extension:is_knocked_down() then
+			enemy_positions[#enemy_positions + 1] = POSITION_LOOKUP[player_unit]
+		end
+	end
+
 	local physics_world = World.get_data(world, "physics_world")
 	local in_los = GhostModeUtils.in_line_of_sight_of_enemies(unit, enemy_positions, physics_world)
-	local in_range = GhostModeUtils.in_range_of_enemies(unit)
-	local round_started = Managers.state.game_mode:is_round_started()
+	local profile_index = self._player:profile_index()
+	local profile = SPProfiles[profile_index]
+	local is_boss = profile.enemy_role and profile.enemy_role == "boss"
+	local in_range = GhostModeUtils.in_range_of_enemies(POSITION_LOOKUP[unit], self._side, is_boss)
+	local round_started = GhostModeUtils.pact_sworn_round_started(unit)
 	local enemies_using_transport = GhostModeUtils.enemy_players_using_transport(unit)
 	local in_safe_zone = GhostModeUtils.in_safe_zone(unit)
+	local external_no_spawn_reason = self:_external_no_spawn_reason()
 	local teleport_target_type = "player"
 
 	if not always_allow_leave_ghost_mode and (enemies_using_transport or not round_started) then
@@ -110,34 +122,36 @@ PlayerUnitGhostModeExtension._update_allowed_to_leave = function (self, t, force
 	end
 
 	local _, reason_prev = self:allowed_to_leave()
-	local owner = Managers.player:owner(unit)
+	local owner = self._player
 	local status = Managers.party:get_player_status(owner.peer_id, owner:local_player_id())
 	local spawn_timer = status and status.game_mode_data.spawn_timer or 0
 	local reason = "allowed"
 
 	if enemies_using_transport then
 		reason = "transport"
-	elseif in_los then
-		reason = "los"
 	elseif in_range then
 		reason = "range"
+	elseif in_los then
+		reason = "los"
 	elseif spawn_timer - t > 0 then
 		reason = "w8_to_spawn"
 	elseif not round_started then
 		reason = "start_zone"
 	elseif in_safe_zone then
 		reason = "in_safe_zone"
+	elseif external_no_spawn_reason then
+		reason = "external_no_spawn_reason"
 	end
 
 	if reason ~= reason_prev then
 		local allowed_to_leave = reason == "allowed"
 
-		self:_set_allowed_to_leave(allowed_to_leave, reason, skip_triggers)
+		self:_set_allowed_to_leave(allowed_to_leave, reason)
 
-		new_reason = true
+		if self:is_in_ghost_mode() then
+			self:_update_allowed_to_leave_ui()
+		end
 	end
-
-	return new_reason
 end
 
 PlayerUnitGhostModeExtension._update_allowed_to_enter = function (self, t, force_update)
@@ -145,7 +159,7 @@ PlayerUnitGhostModeExtension._update_allowed_to_enter = function (self, t, force
 		return
 	end
 
-	self._enter_ghost_mode_allowance_check_time = t + 0.33
+	self._enter_ghost_mode_allowance_check_time = t + 0.2
 
 	self:_update_allowed_to_leave(t, true, true)
 
@@ -171,12 +185,12 @@ PlayerUnitGhostModeExtension._update_allowed_to_enter = function (self, t, force
 	end
 end
 
-PlayerUnitGhostModeExtension._set_allowed_to_leave = function (self, allowed_to_leave, reason, skip_triggers)
+PlayerUnitGhostModeExtension._set_allowed_to_leave = function (self, allowed_to_leave, reason)
 	self._allowed_to_leave = allowed_to_leave
 	self._reason_not_allowed_to_leave = reason
 end
 
-PlayerUnitGhostModeExtension._update_allowed_to_leave_ui = function (self)
+PlayerUnitGhostModeExtension._update_allowed_to_leave_ui = function (self, skip_sound)
 	local allowed_to_leave = self._allowed_to_leave
 	local reason = self._reason_not_allowed_to_leave
 	local round_started = Managers.state.game_mode:is_round_started()
@@ -189,7 +203,10 @@ PlayerUnitGhostModeExtension._update_allowed_to_leave_ui = function (self)
 
 	if allowed_to_leave then
 		Managers.state.event:trigger("add_gameplay_info_event", "ghost_spawn", true)
-		self:_play_sound("versus_ghost_mode_spawn_indicator")
+
+		if not skip_sound then
+			self:_play_sound("versus_ghost_mode_spawn_indicator")
+		end
 	else
 		if not round_started then
 			Managers.state.event:trigger("add_gameplay_info_event", "hide_teleport", true, reason)
@@ -200,12 +217,11 @@ PlayerUnitGhostModeExtension._update_allowed_to_leave_ui = function (self)
 end
 
 PlayerUnitGhostModeExtension.get_distance_from_players = function (self, unit)
-	local side_manager = Managers.state.side
-	local side = side_manager.side_by_unit[unit]
+	local side = self._side
 	local enemy_positions = side.ENEMY_PLAYER_AND_BOT_POSITIONS
 	local unit_position = POSITION_LOOKUP[unit]
 	local distance_to_spawn = math.huge
-	local profile_index = Managers.player:owner(unit):profile_index()
+	local profile_index = self._player:profile_index()
 	local profile = SPProfiles[profile_index]
 	local min_dist = GameModeSettings.versus.dark_pact_minimum_spawn_distance
 
@@ -342,7 +358,7 @@ PlayerUnitGhostModeExtension._teleport_to_next_enemy = function (self, find_furt
 	self._has_teleported = true
 
 	self:_progress_teleport_target(target_unit)
-	self:_update_allowed_to_leave_ui()
+	self:_update_allowed_to_leave_ui(true)
 end
 
 PlayerUnitGhostModeExtension._teleport_to_safe_spot = function (self)
@@ -365,7 +381,7 @@ PlayerUnitGhostModeExtension._enter_ghost_mode = function (self, teleport_player
 		Unit.flow_event(weapon_unit, "lua_entered_ghost_mode")
 	end
 
-	MOOD_BLACKBOARD.ghost_mode = true
+	Managers.state.camera:set_mood("ghost_mode", self, true)
 
 	if teleport_player then
 		local find_furthest_player = true
@@ -422,8 +438,7 @@ PlayerUnitGhostModeExtension._leave_ghost_mode = function (self)
 		Unit.flow_event(skin_unit, "lua_left_ghost_mode")
 	end
 
-	MOOD_BLACKBOARD.ghost_mode = false
-
+	Managers.state.camera:set_mood("ghost_mode", self, false)
 	self._locomotion_extension:set_mover_filter_property("dark_pact_noclip", false)
 	Managers.state.event:trigger("enter_ghostmode", false, player_unit)
 	Managers.state.event:trigger("add_gameplay_info_event", "hide_text", true, {
@@ -446,7 +461,7 @@ PlayerUnitGhostModeExtension._leave_ghost_mode = function (self)
 		if not self._has_played_boss_sound and self._breed.boss then
 			local dialogue_system = Managers.state.entity:system("dialogue_system")
 
-			dialogue_system:trigger_mission_giver_event("vs_mg_new_spawn_monster")
+			dialogue_system:queue_mission_giver_event("vs_mg_new_spawn_monster")
 
 			self._has_played_boss_sound = true
 		end
@@ -463,6 +478,18 @@ PlayerUnitGhostModeExtension._leave_ghost_mode = function (self)
 	local dialogue_context_system = Managers.state.entity:system("dialogue_context_system")
 
 	dialogue_context_system:set_context_value(player_unit, "is_in_ghost_mode", false)
+
+	local profile_index = self._career_extension:profile_index()
+	local career_index = self._career_extension:career_index()
+	local abilities = CareerUtils.get_abilities(profile_index, career_index)
+
+	for i = 1, #abilities do
+		local ability = abilities[i]
+
+		if ability.unpause_on_leave_ghost_mode then
+			self._career_extension:set_activated_ability_cooldown_unpaused(i)
+		end
+	end
 end
 
 PlayerUnitGhostModeExtension.try_enter_ghost_mode = function (self)
@@ -509,4 +536,17 @@ PlayerUnitGhostModeExtension._play_sound = function (self, name)
 	local wwise_world = Managers.world:wwise_world(world)
 
 	WwiseWorld.trigger_event(wwise_world, name)
+end
+
+PlayerUnitGhostModeExtension.set_external_no_spawn_reason = function (self, reason, value)
+	self._external_no_spawn_reasons[reason] = value or nil
+
+	local t = Managers.time:time("game")
+	local force_update = true
+
+	self:_update_allowed_to_leave(t, force_update)
+end
+
+PlayerUnitGhostModeExtension._external_no_spawn_reason = function (self)
+	return next(self._external_no_spawn_reasons)
 end

@@ -332,17 +332,28 @@ EndViewStateSummary._get_summary_entries = function (self, game_won, game_mode_k
 
 		local name = "entry_" .. index
 		local text = mission_reward.text
+		local format_values = mission_reward.format_values
 		local experience = mission_reward.experience and math.round(mission_reward.experience)
 		local value = mission_reward.value
 		local bonus = mission_reward.bonus
 		local icon = mission_reward.icon
 		local widget = entry_widgets[widget_index]
+		local title_text
+
+		if text then
+			if format_values then
+				title_text = UIUtils.format_localized_description(text, format_values)
+			else
+				title_text = Localize(text)
+			end
+		end
+
 		local value_text = experience and tostring(experience) or value and tostring(value) or ""
 		local entry = {
 			spacing = 8,
 			start_counter_sound = true,
 			name = name,
-			title_text = text and Localize(text),
+			title_text = title_text,
 			experience = experience,
 			value = value,
 			value_text = value_text,

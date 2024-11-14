@@ -19,6 +19,7 @@ VolumeSystem.init = function (self, context, name)
 	self._volume_system = EngineOptimizedExtensions.volume_init_system(self._volume_system, VolumeSystemSettings.updates_per_frame)
 	self.nav_tag_volume_handler = nil
 	self.nav_tag_volumes_to_create = {}
+	self._unit_dead_cbs = {}
 end
 
 VolumeSystem.destroy = function (self)
@@ -62,6 +63,14 @@ VolumeSystem._cleanup_extension = function (self, unit, extension_name)
 
 	if extension == nil then
 		return
+	end
+
+	local dead_unit_cb = self._unit_dead_cbs[unit]
+
+	if dead_unit_cb then
+		dead_unit_cb()
+
+		self._unit_dead_cbs[unit] = nil
 	end
 
 	EngineOptimizedExtensions.volume_on_remove_extension(self._volume_system, unit, extension_name)
@@ -304,4 +313,12 @@ end
 
 VolumeSystem.player_inside = function (self, volume_name, unit)
 	return EngineOptimizedExtensions.volume_has_all_units_inside(self._volume_system, volume_name, unit)
+end
+
+VolumeSystem.register_track_unit_dead = function (self, unit, cb)
+	self._unit_dead_cbs[unit] = cb
+end
+
+VolumeSystem.unregister_track_unit_dead = function (self, unit, cb)
+	self._unit_dead_cbs[unit] = nil
 end

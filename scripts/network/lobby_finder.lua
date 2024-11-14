@@ -4,6 +4,9 @@ require("scripts/network/lobby_aux")
 
 LobbyFinder = class(LobbyFinder)
 
+local lf_print = script_data.verbose_lobby_finder and print or NOP
+local lf_printf = script_data.verbose_lobby_finder and printf or NOP
+
 LobbyFinder.init = function (self, network_options, max_num_lobbies)
 	local config_file_name = network_options.config_file_name
 	local project_hash = network_options.project_hash
@@ -41,7 +44,7 @@ LobbyFinder.add_filter_requirements = function (self, requirements, force_refres
 	LobbyInternal.add_filter_requirements(requirements, self._browser)
 
 	if force_refresh then
-		printf("===========LobbyFinder:add_filter_requirements force refresh")
+		lf_printf("===========LobbyFinder:add_filter_requirements force refresh")
 		self:refresh()
 	end
 
@@ -61,7 +64,7 @@ LobbyFinder.latest_filter_lobbies = function (self)
 end
 
 LobbyFinder.refresh = function (self)
-	printf("===========LobbyFinder:refresh() _refresing=%s", self._refreshing)
+	lf_printf("===========LobbyFinder:refresh() _refresing=%s", self._refreshing)
 
 	if not self._refreshing then
 		self._browser:refresh(self._server_port)
@@ -91,7 +94,7 @@ LobbyFinder.update = function (self, dt)
 				num_lobbies = math.min(max_num_lobbies, num_lobbies)
 			end
 
-			printf("===========Lobbyfinder REFRESHING num_lobbies: %s", num_lobbies)
+			lf_printf("===========Lobbyfinder REFRESHING num_lobbies: %s", num_lobbies)
 
 			for i = 0, num_lobbies - 1 do
 				local engine_lobby_data = LobbyInternal.get_lobby(lobby_browser, i)
@@ -100,7 +103,7 @@ LobbyFinder.update = function (self, dt)
 					engine_lobbies[#engine_lobbies + 1] = engine_lobby_data
 					engine_lobby_data.valid = true
 
-					printf("=======================Found valid lobby!")
+					lf_printf("=======================Found valid lobby!")
 				end
 			end
 

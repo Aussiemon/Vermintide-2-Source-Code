@@ -757,7 +757,7 @@ ItemMasterList.wh_flail_shield_skin_01 = {
 	required_dlc = "bless",
 	right_hand_unit = "units/weapons/player/wpn_emp_flail_01_t1/wpn_emp_flail_01_t1",
 	slot_type = "weapon_skin",
-	template = "one_handed_flail_shield_priest_template",
+	template = "one_handed_flail_shield_template",
 	can_wield = {
 		"wh_priest",
 	},
@@ -774,7 +774,7 @@ ItemMasterList.wh_flail_shield_skin_01_runed_01 = {
 	required_dlc = "bless",
 	right_hand_unit = "units/weapons/player/wpn_emp_flail_02_t1/wpn_emp_flail_02_t1_runed_01",
 	slot_type = "weapon_skin",
-	template = "one_handed_flail_shield_priest_template",
+	template = "one_handed_flail_shield_template",
 	can_wield = {
 		"wh_priest",
 	},
@@ -791,7 +791,7 @@ ItemMasterList.wh_flail_shield_skin_01_runed_02 = {
 	required_dlc = "bless",
 	right_hand_unit = "units/weapons/player/wpn_emp_flail_02_t1/wpn_emp_flail_02_t1_runed_01",
 	slot_type = "weapon_skin",
-	template = "one_handed_flail_shield_priest_template",
+	template = "one_handed_flail_shield_template",
 	can_wield = {
 		"wh_priest",
 	},
@@ -824,7 +824,7 @@ ItemMasterList.wh_flail_shield_skin_02_runed_01 = {
 	required_dlc = "bless",
 	right_hand_unit = "units/weapons/player/wpn_emp_flail_05_t1/wpn_emp_flail_05_t1_runed_01",
 	slot_type = "weapon_skin",
-	template = "one_handed_flail_shield_priest_template",
+	template = "one_handed_flail_shield_template",
 	can_wield = {
 		"wh_priest",
 	},
@@ -841,7 +841,7 @@ ItemMasterList.wh_flail_shield_skin_02_runed_02 = {
 	required_dlc = "bless",
 	right_hand_unit = "units/weapons/player/wpn_emp_flail_05_t1/wpn_emp_flail_05_t1_runed_01",
 	slot_type = "weapon_skin",
-	template = "one_handed_flail_shield_priest_template",
+	template = "one_handed_flail_shield_template",
 	can_wield = {
 		"wh_priest",
 	},
@@ -858,7 +858,7 @@ ItemMasterList.wh_flail_shield_skin_02_magic_01 = {
 	required_dlc = "bless",
 	right_hand_unit = "units/weapons/player/wpn_emp_flail_04_t1/wpn_emp_flail_04_t1_magic_01",
 	slot_type = "weapon_skin",
-	template = "one_handed_flail_shield_priest_template",
+	template = "one_handed_flail_shield_template",
 	can_wield = {
 		"wh_priest",
 	},

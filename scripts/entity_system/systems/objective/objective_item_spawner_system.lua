@@ -1,5 +1,7 @@
 ﻿-- chunkname: @scripts/entity_system/systems/objective/objective_item_spawner_system.lua
 
+require("scripts/settings/objective_unit_templates")
+
 ObjectiveItemSpawnerSystem = class(ObjectiveItemSpawnerSystem, ExtensionSystemBase)
 
 ObjectiveItemSpawnerSystem.init = function (self, entity_system_creation_context, system_name, extensions)
@@ -7,12 +9,21 @@ ObjectiveItemSpawnerSystem.init = function (self, entity_system_creation_context
 
 	self._item_spawners = {}
 	self._spawned_items = {}
+
+	local static_item_spawners = Managers.state.game_mode:setting("static_objective_item_spawners")
+
+	if static_item_spawners then
+		for spawn_id, spawner_data in pairs(static_item_spawners) do
+			self._item_spawners[spawn_id] = spawner_data
+		end
+	end
+
 	self._spawn_id = ""
 	self._unit_template_id = ""
 end
 
 ObjectiveItemSpawnerSystem.item_gizmo_spawned = function (self, unit)
-	local spawn_id, unit_template = self:_get_unit_template(unit)
+	local unit_template, spawn_id = self:template_by_unit(unit)
 
 	fassert(unit_template, "[ObjectiveItemSpawnerSystem] All item spawners need a unit template")
 
@@ -22,27 +33,29 @@ ObjectiveItemSpawnerSystem.item_gizmo_spawned = function (self, unit)
 	}
 end
 
-ObjectiveItemSpawnerSystem._get_unit_template = function (self, unit)
-	fassert(false, "'_get_unit_template' needs to be overwritten in child")
+ObjectiveItemSpawnerSystem.template_by_unit = function (self, unit)
+	local spawn_id = Unit.get_data(unit, "objective_id")
+	local unit_template_name = Unit.get_data(unit, "unit_template")
+
+	spawn_id = spawn_id or Unit.get_data(unit, "versus_objective_id") or Unit.get_data(unit, "weave_objective_id")
+	unit_template_name = unit_template_name or Unit.get_data(unit, "versus_unit_template") or Unit.get_data(unit, "weave_unit_template")
+
+	local unit_template = ObjectiveUnitTemplates[unit_template_name]
+
+	return unit_template, spawn_id
 end
 
-ObjectiveItemSpawnerSystem.spawn_items = function (self, spawn_ids)
-	for spawn_id, objective_data in pairs(spawn_ids) do
-		if objective_data.sub_objectives then
-			self:spawn_items(objective_data.sub_objectives)
-		else
-			local item_spawner_data = self._item_spawners[spawn_id]
+ObjectiveItemSpawnerSystem.spawn_item = function (self, objective_name, objective_data)
+	local item_spawner_data = self._item_spawners[objective_name]
 
-			if item_spawner_data then
-				local spawned_unit, game_object_id = self:_trigger_spawn(item_spawner_data, spawn_id, objective_data)
+	if item_spawner_data then
+		local spawned_unit, game_object_id = self:_trigger_spawn(item_spawner_data, objective_name, objective_data)
 
-				if spawned_unit then
-					self._spawned_items[spawn_id] = {
-						unit = spawned_unit,
-						game_object_id = game_object_id,
-					}
-				end
-			end
+		if spawned_unit then
+			self._spawned_items[objective_name] = {
+				unit = spawned_unit,
+				game_object_id = game_object_id,
+			}
 		end
 	end
 end

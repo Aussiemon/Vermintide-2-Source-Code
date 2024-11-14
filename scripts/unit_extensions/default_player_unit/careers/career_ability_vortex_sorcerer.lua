@@ -259,8 +259,7 @@ CareerAbilityVortexSorcerer._stop_priming = function (self)
 	if self._astar_data then
 		local astar = self._astar_data.astar
 
-		if astar and not GwNavAStar.processing_finished(astar) then
-			GwNavAStar.cancel(astar)
+		if astar then
 			GwNavAStar.destroy(astar)
 		end
 

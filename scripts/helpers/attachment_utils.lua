@@ -58,6 +58,7 @@ AttachmentUtils.destroy_attachment = function (world, owner_unit, slot_data)
 	local unit_spawner = Managers.state.unit_spawner
 
 	if unit then
+		AttachmentUtils.unlink(world, unit)
 		unit_spawner:mark_for_deletion(unit)
 	end
 end
@@ -71,6 +72,10 @@ AttachmentUtils.link = function (world, source, target, node_linking)
 
 		World.link_unit(world, target, target_node_index, source, source_node_index)
 	end
+end
+
+AttachmentUtils.unlink = function (world, target)
+	World.unlink_unit(world, target)
 end
 
 AttachmentUtils.hot_join_sync = function (peer_id, unit, slots, synced_buffs)

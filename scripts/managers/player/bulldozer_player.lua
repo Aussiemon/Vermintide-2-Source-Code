@@ -66,7 +66,7 @@ BulldozerPlayer.despawn = function (self)
 	self:_set_spawn_state("despawned")
 
 	for mood, _ in pairs(MoodSettings) do
-		MOOD_BLACKBOARD[mood] = false
+		Managers.state.camera:clear_mood(mood)
 	end
 
 	Managers.state.camera:set_additional_fov_multiplier(1)
@@ -197,6 +197,12 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 
 	frame_item = frame_item or BackendUtils.try_set_loadout_item(career_name, "slot_frame", "frame_0000")
 
+	local pose_item = BackendUtils.get_loadout_item(career_name, "slot_pose")
+
+	pose_item = pose_item or BackendUtils.try_set_loadout_item(career_name, "slot_pose", "default_weapon_pose_01")
+
+	local pose_data = pose_item and pose_item.data or nil
+	local pose_name = pose_data and pose_data.name or nil
 	local frame_name = frame_item and frame_item.data.name or base_frame
 	local overcharge_data = OverchargeData[career_name] or {}
 	local energy_data = EnergyData[career_name] or {}
@@ -255,6 +261,7 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 			profile = profile,
 			skin_name = skin_name,
 			frame_name = frame_name,
+			pose_name = pose_name,
 			player = self,
 		},
 		locomotion_system = {
@@ -341,6 +348,7 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 	if using_ghost_mode_system then
 		extension_init_data.ghost_mode_system = {
 			side_id = side.side_id,
+			player = self,
 		}
 	end
 
@@ -380,7 +388,7 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 	local is_player_unit = true
 
 	player_manager:assign_unit_ownership(unit, self, is_player_unit)
-	Managers.state.event:trigger("level_start_local_player_spawned", is_initial_spawn)
+	Managers.state.event:trigger("level_start_local_player_spawned", is_initial_spawn, unit, side, breed)
 	Managers.telemetry_events:player_spawned(self)
 
 	if not breed.is_hero then
@@ -497,40 +505,30 @@ BulldozerPlayer.reevaluate_highest_difficulty = function (self)
 end
 
 BulldozerPlayer.name = function (self)
-	if rawget(_G, "Steam") then
-		if self._cached_name then
-			return self._cached_name
-		else
-			local clan_tag = ""
-			local clan_tag_id = Application.user_setting("clan_tag")
+	if self._cached_name then
+		return self._cached_name
+	end
 
-			if clan_tag_id and clan_tag_id ~= "0" then
-				local clan_tag_string = tostring(Clans.clan_tag(clan_tag_id))
+	local name = PlayerUtils.player_name(self:network_id(), Managers.state.network:lobby())
 
-				if clan_tag_string ~= "" then
-					clan_tag = clan_tag_string .. "|"
-				end
+	if name then
+		local clan_tag = ""
+		local clan_tag_id = Application.user_setting("clan_tag")
+
+		if clan_tag_id and clan_tag_id ~= "0" then
+			local clan_tag_string = tostring(Clans.clan_tag(clan_tag_id))
+
+			if clan_tag_string ~= "" then
+				clan_tag = clan_tag_string .. "|"
 			end
-
-			local name = clan_tag .. Steam.user_name(self:network_id())
-
-			self._cached_name = name
-
-			return name
-		end
-	elseif IS_CONSOLE then
-		if self._cached_name then
-			return self._cached_name
 		end
 
-		local name = Managers.state.network:lobby():user_name(self:network_id()) or "Remote #" .. tostring(self.peer_id:sub(-3, -1))
-
-		self._cached_name = name
+		self._cached_name = clan_tag .. name
 
 		return name
-	else
-		return self._debug_name
 	end
+
+	return self._debug_name
 end
 
 BulldozerPlayer.cached_name = function (self)

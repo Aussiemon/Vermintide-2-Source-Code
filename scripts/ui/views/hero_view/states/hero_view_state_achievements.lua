@@ -221,6 +221,8 @@ HeroViewStateAchievements._update_summary_quest_timers = function (self, dt)
 end
 
 HeroViewStateAchievements.create_ui_elements = function (self, params)
+	local category_tab_widget_definitions = definitions.create_category_tab_widgets_func()
+
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self._console_cursor_widget = UIWidget.init(console_cursor_definition)
 	self._widgets, self._widgets_by_name = UIUtils.create_widgets(widget_definitions)
@@ -686,7 +688,7 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 								elseif type(reward) == "table" then
 									local reward_type = reward.reward_type
 
-									if reward_type == "item" or CosmeticUtils.is_cosmetic_item(reward_type) then
+									if reward_type == "item" or reward_type == "loot_chest" or CosmeticUtils.is_cosmetic_item(reward_type) then
 										local item_key = reward.item_name
 										local item_template = ItemMasterList[item_key]
 										local custom_data = reward.custom_data
@@ -800,6 +802,7 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 							content.completed = completed
 							content.claimed = claimed
 							content.id = entry_id
+							content.achievement_id = entry_id
 							content.original_order_index = i
 
 							local name = entry_data.name
@@ -1534,7 +1537,7 @@ HeroViewStateAchievements._update_new_status_for_current_tab = function (self)
 		local data = active_tab.content.data
 
 		fill_achievement_list(data)
-		self._achievement_manager:setup_achievement_data_from_list(achievement_list)
+		self._achievement_manager:setup_achievement_data_from_list(achievement_list, false)
 		self:_setup_tab_widget(active_tab, data)
 	elseif self._achievement_layout_type == "quest" then
 		local layout = self:_get_layout(self._achievement_layout_type)
@@ -1577,7 +1580,7 @@ HeroViewStateAchievements._setup_reward_presentation = function (self, reward_po
 		for _, data in ipairs(rewards) do
 			local reward_type = data.type
 
-			if reward_type == "item" or CosmeticUtils.is_cosmetic_item(reward_type) then
+			if reward_type == "item" or reward_type == "loot_chest" or CosmeticUtils.is_cosmetic_item(reward_type) then
 				local backend_id = data.backend_id
 				local amount = data.amount
 				local entry = {}
@@ -1643,14 +1646,15 @@ HeroViewStateAchievements._setup_reward_presentation = function (self, reward_po
 				}
 				presentation_data[#presentation_data + 1] = entry
 			elseif reward_type == "currency" then
+				local fake_item_data, _, description_str = BackendUtils.get_fake_currency_item(data.currency_code, data.amount)
 				local fake_item = {
-					data = BackendUtils.get_fake_currency_item(data.currency_code, data.amount),
+					data = fake_item_data,
 				}
 				local description = {}
 				local _, display_name, _ = UIUtils.get_ui_information_from_item(fake_item)
 
 				description[1] = Localize(display_name)
-				description[2] = string.format(Localize("achv_menu_curreny_reward_claimed"), data.amount)
+				description[2] = string.format(Localize(description_str), data.amount)
 
 				local entry = {}
 

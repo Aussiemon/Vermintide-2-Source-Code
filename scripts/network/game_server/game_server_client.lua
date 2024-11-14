@@ -14,6 +14,7 @@ GameServerLobbyClient.init = function (self, network_options, game_server_data, 
 	dprintf("Joining lobby on address %s", game_server_data.server_info.ip_port)
 
 	self._game_server_info = game_server_data.server_info
+	self.peer_id = Network.peer_id()
 
 	if reserve_peers then
 		self._game_server_lobby = GameServerInternal.reserve_server(self._game_server_info, password, reserve_peers)
@@ -30,6 +31,11 @@ GameServerLobbyClient.init = function (self, network_options, game_server_data, 
 	self.lobby = self._game_server_lobby
 	self.network_hash = self._network_hash
 	self._is_party_host = not Managers.state.network or Managers.state.network.is_server
+	self._advertising_playing = true
+end
+
+GameServerLobbyClient.lobby_host = function (self)
+	return GameServerInternal.lobby_host(self._game_server_lobby)
 end
 
 GameServerLobbyClient.destroy = function (self)
@@ -51,7 +57,7 @@ GameServerLobbyClient.destroy = function (self)
 		end
 	end
 
-	Presence.stop_advertise_playing()
+	self:stop_advertise_playing()
 	GameServerInternal.leave_server(self._game_server_lobby)
 
 	if self._eac_communication_initated then
@@ -80,6 +86,18 @@ GameServerLobbyClient.update = function (self, dt)
 				EAC.after_leave()
 
 				self._eac_communication_initated = false
+			end
+
+			local versus_interface = Managers.backend and Managers.backend:get_interface("versus")
+
+			if versus_interface then
+				local matchmaking_session_id = versus_interface:get_matchmaking_session_id()
+
+				if matchmaking_session_id then
+					local ip_port = self._game_server_info.ip_port or "MISSING"
+
+					Crashify.print_exception("GameServerLobbyClient", "State changed from %s to %s for flexmatch server. matchmaking_session_id: %s | ip_port: %s", old_state, new_state, matchmaking_session_id or "MISSING", ip_port)
+				end
 			end
 		elseif new_state == "reserved" then
 			local game_server_peer_id = GameServerInternal.lobby_host(engine_lobby)
@@ -119,8 +137,6 @@ GameServerLobbyClient.update = function (self, dt)
 				end
 			end
 
-			Presence.advertise_playing(self._game_server_info.ip_port)
-
 			self._members = self._members or LobbyMembers:new(engine_lobby)
 		end
 
@@ -136,6 +152,22 @@ end
 
 GameServerLobbyClient.claim_reserved = function (self)
 	GameServerInternal.claim_reserved(self._game_server_lobby)
+end
+
+GameServerLobbyClient.advertise_playing = function (self)
+	Presence.advertise_playing(self._game_server_info.ip_port)
+
+	self._advertising_playing = true
+end
+
+GameServerLobbyClient.stop_advertise_playing = function (self, force)
+	if not self._advertising_playing then
+		return
+	end
+
+	Presence.stop_advertise_playing()
+
+	self._advertising_playing = false
 end
 
 GameServerLobbyClient.state = function (self)

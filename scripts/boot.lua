@@ -723,10 +723,6 @@ Boot.game_update = function (self, real_world_dt)
 	local Managers = Managers
 	local dt = Managers.time:scaled_delta_time(real_world_dt)
 
-	if PlayerUnitLocomotionExtension then
-		PlayerUnitLocomotionExtension.set_new_frame()
-	end
-
 	if Managers.mod then
 		Managers.mod:update(dt)
 	end
@@ -815,6 +811,10 @@ Boot.game_update = function (self, real_world_dt)
 	Managers.telemetry:update(dt, t)
 	Managers.invite:update(dt, t)
 	Managers.admin:update(dt)
+
+	if Managers.ping then
+		Managers.ping:update(dt, t)
+	end
 
 	if Managers.account then
 		Managers.account:update(dt)
@@ -1271,10 +1271,11 @@ Game.require_game_scripts = function (self)
 	game_require("settings", "demo_settings", "motion_control_settings", "game_settings_development", "controller_settings", "default_user_settings")
 	game_require("entity_system", "entity_system")
 	game_require("game_state", "game_state_machine", "state_context", "state_splash_screen", "state_loading", "state_ingame", "state_demo_end")
+	require("scripts/managers/network/lobby_setup")
 	game_require("managers", "admin/admin_manager", "news_ticker/news_ticker_manager", "player/player_manager", "player/player_bot", "save/save_manager", "save/save_data", "perfhud/perfhud_manager", "music/music_manager", "network/party_manager", "network/lobby_manager", "transition/transition_manager", "debug/updator", "invite/invite_manager", "unlock/unlock_manager", "popup/popup_manager", "popup/simple_popup", "light_fx/light_fx_manager", "razer_chroma/razer_chroma_manager", "play_go/play_go_manager", "controller_features/controller_features_manager", "deed/deed_manager", "boon/boon_manager", "telemetry/telemetry_manager", "telemetry/telemetry_events", "telemetry/telemetry_reporters", "load_time/load_time_manager", "game_mode/game_mechanism_manager", "ui/ui_manager", "weave/weave_manager")
 
 	if IS_WINDOWS then
-		game_require("managers", "irc/irc_manager", "curl/curl_manager", "curl/curl_token", "twitch/twitch_manager")
+		game_require("managers", "irc/irc_manager", "curl/curl_manager", "curl/curl_token", "ping/ping_manager", "twitch/twitch_manager")
 
 		if rawget(_G, "Steam") then
 			game_require("managers", "steam/steam_manager")
@@ -1284,9 +1285,7 @@ Game.require_game_scripts = function (self)
 	elseif IS_PS4 then
 		game_require("managers", "irc/irc_manager", "twitch/twitch_manager", "rest_transport/rest_transport_manager", "system_dialog/system_dialog_manager")
 	elseif IS_LINUX then
-		game_require("managers", "irc/irc_manager", "curl/curl_manager", "curl/curl_token", "twitch/twitch_manager")
-	elseif IS_LINUX then
-		game_require("managers", "irc/irc_manager", "curl/curl_manager", "curl/curl_token", "twitch/twitch_manager")
+		game_require("managers", "irc/irc_manager", "curl/curl_manager", "curl/curl_token", "twitch/twitch_manager", "ping/ping_manager")
 	end
 
 	game_require("helpers", "effect_helper", "weapon_helper", "item_helper", "lorebook_helper", "ui_atlas_helper", "scoreboard_helper")
@@ -1511,6 +1510,7 @@ end
 Game._init_managers = function (self)
 	parse_item_master_list()
 
+	Managers.persistent_event = EventManager:new()
 	Managers.save = SaveManager:new(script_data.settings.disable_cloud_save)
 
 	if IS_XB1 then
@@ -1527,6 +1527,7 @@ Game._init_managers = function (self)
 	Managers.music = MusicManager:new()
 	Managers.transition = TransitionManager:new()
 	Managers.play_go = PlayGoManager:new()
+	Managers.ping = IS_WINDOWS and PingManager:new()
 
 	if IS_WINDOWS then
 		Managers.irc = IRCManager:new()

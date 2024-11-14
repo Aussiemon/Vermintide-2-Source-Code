@@ -19,26 +19,16 @@ GhostModeUtils.in_line_of_sight_of_enemies = function (unit, enemy_positions, ph
 	return false
 end
 
-GhostModeUtils.in_range_of_enemies = function (unit)
-	local side_manager = Managers.state.side
-	local side = side_manager.side_by_unit[unit]
+GhostModeUtils.in_range_of_enemies = function (position, side, is_boss)
 	local enemy_positions = side.ENEMY_PLAYER_AND_BOT_POSITIONS
 	local in_range = false
-	local unit_position = POSITION_LOOKUP[unit]
-	local min_dist = GameModeSettings.versus.dark_pact_minimum_spawn_distance
+	local min_dist = is_boss and GameModeSettings.versus.boss_minimum_spawn_distance or GameModeSettings.versus.dark_pact_minimum_spawn_distance
 	local min_dist_vertical = GameModeSettings.versus.dark_pact_minimum_spawn_distance_vertical
-	local profile_index = Managers.player:owner(unit):profile_index()
-	local profile = SPProfiles[profile_index]
-
-	if profile.enemy_role and profile.enemy_role == "boss" then
-		min_dist = GameModeSettings.versus.boss_minimum_spawn_distance
-	end
-
 	local min_dist_sq = min_dist^2
 
 	for i = 1, #enemy_positions do
 		local enemy_position = enemy_positions[i]
-		local diff = enemy_position - unit_position
+		local diff = enemy_position - position
 		local height_diff = math.abs(diff[3])
 
 		if height_diff < min_dist_vertical then
@@ -67,6 +57,38 @@ GhostModeUtils.in_safe_zone = function (unit)
 	end
 
 	return in_safe_zone
+end
+
+GhostModeUtils.pact_sworn_round_started = function (pact_sworn_unit)
+	local heroes_started, time_since_round_started = Managers.state.game_mode:is_round_started()
+
+	if not heroes_started then
+		return false
+	end
+
+	local pact_sworn_spawn_delay = GameModeSettings.versus.round_start_pact_sworn_spawn_delay
+	local side = Managers.state.side.side_by_unit[pact_sworn_unit]
+
+	if side then
+		local any_left = false
+		local enemy_player_units = side.ENEMY_PLAYER_AND_BOT_UNITS
+
+		for i = 1, #enemy_player_units do
+			local enemy_unit = enemy_player_units[i]
+
+			if not GhostModeUtils.in_safe_zone(enemy_unit) then
+				any_left = true
+
+				break
+			end
+		end
+
+		if any_left then
+			pact_sworn_spawn_delay = GameModeSettings.versus.round_start_heroes_left_safe_zone_spawn_delay
+		end
+	end
+
+	return pact_sworn_spawn_delay < time_since_round_started
 end
 
 GhostModeUtils.enemy_players_using_transport = function (unit)

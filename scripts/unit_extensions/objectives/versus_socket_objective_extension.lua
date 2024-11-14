@@ -1,27 +1,39 @@
 ﻿-- chunkname: @scripts/unit_extensions/objectives/versus_socket_objective_extension.lua
 
-VersusSocketObjectiveExtension = class(VersusSocketObjectiveExtension, VersusBaseObjectiveExtension)
+VersusSocketObjectiveExtension = class(VersusSocketObjectiveExtension, BaseObjectiveExtension)
 VersusSocketObjectiveExtension.NAME = "VersusSocketObjectiveExtension"
 
-VersusSocketObjectiveExtension._activate = function (self, game_object_id, objective_data)
+VersusSocketObjectiveExtension.init = function (self, ...)
+	VersusSocketObjectiveExtension.super.init(self, ...)
+
+	self._num_closed_sockets = 0
+end
+
+VersusSocketObjectiveExtension.extensions_ready = function (self)
+	local socket_extension = ScriptUnit.has_extension(self._unit, "objective_socket_system")
+
+	if socket_extension then
+		self._socket_extension = socket_extension
+		self._num_sections = socket_extension.num_sockets
+	end
+end
+
+VersusSocketObjectiveExtension._set_objective_data = function (self, objective_data)
 	local socket_default_settings = GameModeSettings.versus.objectives.socket
 
 	self._score_per_section = objective_data.score_per_socket or socket_default_settings.score_per_socket
 	self._time_per_section = objective_data.time_per_socket or socket_default_settings.time_per_socket
 	self._score_for_completion = objective_data.score_for_completion or socket_default_settings.score_for_completion
 	self._time_for_completion = objective_data.time_for_completion or socket_default_settings.time_for_completion
-	self._on_complete_sound_event = objective_data.on_complete_sound_event or socket_default_settings.on_complete_sound_event
-	self._socket_extension = ScriptUnit.has_extension(self._unit, "objective_socket_system")
-	self._num_sections = self._socket_extension.num_sockets
-	self._num_closed_sockets = 0
+	self._on_last_leaf_complete_sound_event = objective_data.on_last_leaf_complete_sound_event or socket_default_settings.on_last_leaf_complete_sound_event
+end
+
+VersusSocketObjectiveExtension._activate = function (self)
+	return
 end
 
 VersusSocketObjectiveExtension._deactivate = function (self)
-	if not DEDICATED_SERVER then
-		local complete_event = self._on_complete_sound_event[self._local_side:name()]
-
-		self:play_local_sound(complete_event)
-	end
+	return
 end
 
 VersusSocketObjectiveExtension._server_update = function (self, dt, t)

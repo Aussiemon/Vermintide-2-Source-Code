@@ -74,6 +74,26 @@ local function is_husk(unit)
 	return is_husk
 end
 
+local function is_grail_knight_blocking(unit, attacker_unit, buff, params, world)
+	local unit_id = Managers.state.unit_storage:go_id(unit)
+	local game = Managers.state.network:game()
+	local unit_forward = GameSession.game_object_field(game, unit_id, "aim_direction")
+	local unit_pos = POSITION_LOOKUP[unit]
+	local attacker_pos = POSITION_LOOKUP[attacker_unit]
+	local to_attacker = Vector3.flat(attacker_pos - unit_pos)
+	local to_attacker_normalized, distance = Vector3.direction_length(to_attacker)
+
+	if distance < math.epsilon then
+		return true, 1
+	end
+
+	local unit_facing_attacker_dot = Vector3.dot(unit_forward, to_attacker_normalized)
+	local max_block_angle = math.cos(math.pi * 0.6666666666666666)
+	local is_power_blocking = max_block_angle < unit_facing_attacker_dot
+
+	return is_power_blocking
+end
+
 BuffFunctionTemplates.functions = {
 	heal_owner = function (unit, buff, params)
 		local heal_amount = buff.template.heal_amount
@@ -274,6 +294,42 @@ BuffFunctionTemplates.functions = {
 		local navigation_extension = blackboard.navigation_extension
 
 		navigation_extension:remove_movement_modifier(buff.id)
+	end,
+	apply_rotation_limit_buff = function (unit, buff, params)
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local min_limit = buff.bonus
+		local rotation_buff_stacks = buff_extension:get_stacking_buff(buff.template.name)
+
+		for i = 1, #rotation_buff_stacks do
+			local other_buff = rotation_buff_stacks[i]
+
+			min_limit = math.min(min_limit, other_buff.bonus)
+		end
+
+		local path_to_movement_setting_to_modify = buff.template.path_to_movement_setting_to_modify
+
+		set_variable(path_to_movement_setting_to_modify, unit, min_limit)
+	end,
+	remove_rotation_limit_buff = function (unit, buff, params)
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local min_limit = math.huge
+		local rotation_buff_stacks = buff_extension:get_stacking_buff(buff.template.name)
+
+		for i = 1, #rotation_buff_stacks do
+			local other_buff = rotation_buff_stacks[i]
+
+			if other_buff ~= buff then
+				min_limit = math.min(min_limit, other_buff.bonus)
+			end
+		end
+
+		if min_limit == math.huge then
+			min_limit = -1
+		end
+
+		local path_to_movement_setting_to_modify = buff.template.path_to_movement_setting_to_modify
+
+		set_variable(path_to_movement_setting_to_modify, unit, min_limit)
 	end,
 	apply_screenspace_effect = function (unit, buff, params, world)
 		local screenspace_effect_name = buff.template.screenspace_effect_name
@@ -719,10 +775,12 @@ BuffFunctionTemplates.functions = {
 			DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
 		end
 
-		local fatigue_type = buff_template.fatigue_type
-		local status_extension = ScriptUnit.has_extension(unit, "status_system")
+		local owner_player = Managers.player:owner(unit)
 
-		if status_extension then
+		if owner_player and not owner_player.remote then
+			local fatigue_type = buff_template.fatigue_type
+			local status_extension = ScriptUnit.extension(unit, "status_system")
+
 			status_extension:add_fatigue_points(fatigue_type)
 		end
 
@@ -759,10 +817,12 @@ BuffFunctionTemplates.functions = {
 		local buff_template = buff.template
 
 		if next_tick < t then
-			local fatigue_type = buff_template.fatigue_type
-			local status_extension = ScriptUnit.has_extension(unit, "status_system")
+			local owner_player = Managers.player:owner(unit)
 
-			if status_extension then
+			if owner_player and not owner_player.remote then
+				local fatigue_type = buff_template.fatigue_type
+				local status_extension = ScriptUnit.extension(unit, "status_system")
+
 				status_extension:add_fatigue_points(fatigue_type)
 			end
 
@@ -829,10 +889,12 @@ BuffFunctionTemplates.functions = {
 			DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
 		end
 
-		local fatigue_type = buff_template.fatigue_type
-		local status_extension = ScriptUnit.has_extension(unit, "status_system")
+		local owner_player = Managers.player:owner(unit)
 
-		if status_extension then
+		if owner_player and not owner_player.remote then
+			local fatigue_type = buff_template.fatigue_type
+			local status_extension = ScriptUnit.extension(unit, "status_system")
+
 			status_extension:add_fatigue_points(fatigue_type)
 		end
 
@@ -893,10 +955,12 @@ BuffFunctionTemplates.functions = {
 			DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
 		end
 
-		local fatigue_type = buff_template.fatigue_type
-		local status_extension = ScriptUnit.has_extension(unit, "status_system")
+		local owner_player = Managers.player:owner(unit)
 
-		if status_extension then
+		if owner_player and not owner_player.remote then
+			local fatigue_type = buff_template.fatigue_type
+			local status_extension = ScriptUnit.extension(unit, "status_system")
+
 			status_extension:add_fatigue_points(fatigue_type)
 		end
 
@@ -1051,10 +1115,12 @@ BuffFunctionTemplates.functions = {
 			DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
 		end
 
-		local fatigue_type = buff_template.fatigue_type
-		local status_extension = ScriptUnit.has_extension(unit, "status_system")
+		local owner_player = Managers.player:owner(unit)
 
-		if status_extension then
+		if owner_player and not owner_player.remote then
+			local fatigue_type = buff_template.fatigue_type
+			local status_extension = ScriptUnit.extension(unit, "status_system")
+
 			status_extension:add_fatigue_points(fatigue_type)
 		end
 
@@ -1147,10 +1213,12 @@ BuffFunctionTemplates.functions = {
 			DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
 		end
 
-		local fatigue_type = buff_template.fatigue_type
-		local status_extension = ScriptUnit.has_extension(unit, "status_system")
+		local owner_player = Managers.player:owner(unit)
 
-		if status_extension then
+		if owner_player and not owner_player.remote then
+			local fatigue_type = buff_template.fatigue_type
+			local status_extension = ScriptUnit.extension(unit, "status_system")
+
 			status_extension:add_fatigue_points(fatigue_type)
 		end
 
@@ -1222,10 +1290,12 @@ BuffFunctionTemplates.functions = {
 			DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
 		end
 
-		local fatigue_type = buff_template.fatigue_type
-		local status_extension = ScriptUnit.has_extension(unit, "status_system")
+		local owner_player = Managers.player:owner(unit)
 
-		if status_extension then
+		if owner_player and not owner_player.remote then
+			local fatigue_type = buff_template.fatigue_type
+			local status_extension = ScriptUnit.extension(unit, "status_system")
+
 			status_extension:add_fatigue_points(fatigue_type)
 		end
 
@@ -1694,14 +1764,22 @@ BuffFunctionTemplates.functions = {
 		if Managers.state.network.is_server then
 			local attacker_unit_is_alive = ALIVE[params.attacker_unit]
 			local attacker_unit = attacker_unit_is_alive and params.attacker_unit or unit
+			local attacker_unit = params.attacker_unit
+			local target_buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+			local target_power_block_perk = target_buff_extension:has_buff_perk("power_block")
+			local is_power_blocking = false
 
-			if HEALTH_ALIVE[unit] then
+			if target_power_block_perk then
+				is_power_blocking = is_grail_knight_blocking(unit, attacker_unit, buff, params, world)
+			end
+
+			if (not is_power_blocking or not DamageUtils.check_ranged_block(attacker_unit, unit, "blocked_berzerker")) and HEALTH_ALIVE[unit] then
 				local armor_type = buff.armor_type
 				local damage_type = buff_template.damage_type
 				local damage = buff.damage[armor_type]
 				local damage_source = buff.damage_source
 
-				DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source, nil, attacker_unit)
+				DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
 			end
 
 			local is_friendly_target = not DamageUtils.is_enemy(attacker_unit, unit)
@@ -4467,18 +4545,6 @@ BuffFunctionTemplates.functions = {
 			first_person_extension:play_hud_sound_event("Play_career_ability_sienna_unchained", nil, true)
 		end
 	end,
-	end_sienna_adept_activated_ability = function (unit, buff, params)
-		if is_local(unit) then
-			local status_extension = ScriptUnit.extension(unit, "status_system")
-
-			status_extension:set_invisible(false, nil, "skill_adept")
-			status_extension:set_noclip(false, "skill_adept")
-
-			local career_extension = ScriptUnit.extension(unit, "career_system")
-
-			career_extension:set_state("default")
-		end
-	end,
 	sienna_adept_double_trail_talent_start_ability_cooldown_add = function (unit, buff, params)
 		if ALIVE[unit] and not buff.aborted and is_local(unit) then
 			local buff_extension = ScriptUnit.extension(unit, "buff_system")
@@ -4520,30 +4586,29 @@ BuffFunctionTemplates.functions = {
 			network_transmit:send_rpc_server("rpc_flow_event", go_id, flow_id)
 		end
 
-		local stealth_identifier = buff.template.stealth_identifier
 		local status_extension = ScriptUnit.extension(unit, "status_system")
 
-		status_extension:set_noclip(true, stealth_identifier)
-		status_extension:set_invisible(true, nil, stealth_identifier)
+		status_extension:set_noclip(true, buff)
+		status_extension:set_invisible(true, nil, buff)
 
 		if not is_bot(unit) then
-			MOOD_BLACKBOARD[stealth_identifier] = true
+			Managers.state.camera:set_mood("skill_shade", buff, true)
 		end
 	end,
 	on_apply_shade_dash_stealth = function (unit, buff, params, world)
 		if is_local(unit) then
 			local status_extension = ScriptUnit.extension(unit, "status_system")
 
-			status_extension:set_invisible(true, nil, "shade_dash")
-			status_extension:set_noclip(true, "shade_dash")
+			status_extension:set_invisible(true, nil, buff)
+			status_extension:set_noclip(true, buff)
 		end
 	end,
 	on_remove_shade_dash_stealth = function (unit, buff, params, world)
 		if is_local(unit) then
 			local status_extension = ScriptUnit.has_extension(unit, "status_system")
 
-			status_extension:set_invisible(false, nil, "shade_dash")
-			status_extension:set_noclip(false, "shade_dash")
+			status_extension:set_invisible(false, nil, buff)
+			status_extension:set_noclip(false, buff)
 		end
 	end,
 	kerillian_shade_noclip_on = function (owner_unit, buff, params)
@@ -4584,11 +4649,10 @@ BuffFunctionTemplates.functions = {
 		end
 
 		local buff_template = buff.template
-		local stealth_identifier = buff_template.stealth_identifier
 		local status_extension = ScriptUnit.extension(unit, "status_system")
 
-		status_extension:set_invisible(false, nil, stealth_identifier)
-		status_extension:set_noclip(false, stealth_identifier)
+		status_extension:set_invisible(false, nil, buff)
+		status_extension:set_noclip(false, buff)
 
 		local talent_extension = ScriptUnit.has_extension(unit, "talent_system")
 		local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
@@ -4604,7 +4668,7 @@ BuffFunctionTemplates.functions = {
 		first_person_extension:play_remote_hud_sound_event("Stop_career_ability_kerillian_shade_loop_husk")
 
 		if not is_bot(unit) then
-			MOOD_BLACKBOARD[stealth_identifier] = false
+			Managers.state.camera:set_mood("skill_shade", buff, false)
 		end
 
 		local career_extension = ScriptUnit.extension(unit, "career_system")
@@ -4700,8 +4764,8 @@ BuffFunctionTemplates.functions = {
 			first_person_extension:play_remote_hud_sound_event("Stop_career_ability_markus_huntsman_loop_husk")
 
 			if not is_bot(unit) then
-				MOOD_BLACKBOARD.skill_huntsman_surge = false
-				MOOD_BLACKBOARD.skill_huntsman_stealth = false
+				Managers.state.camera:set_mood("skill_huntsman_surge", "skill_huntsman_surge", false)
+				Managers.state.camera:set_mood("skill_huntsman_stealth", "skill_huntsman_stealth", false)
 			end
 		end
 	end,
@@ -4717,7 +4781,7 @@ BuffFunctionTemplates.functions = {
 			career_extension:set_state("default")
 
 			if not is_bot(unit) then
-				MOOD_BLACKBOARD.skill_slayer = false
+				Managers.state.camera:set_mood("skill_slayer", "skill_slayer", false)
 			end
 		end
 	end,
@@ -4742,8 +4806,7 @@ BuffFunctionTemplates.functions = {
 			if not is_bot(unit) then
 				first_person_extension:play_hud_sound_event("Play_career_ability_victor_zealot_exit")
 				first_person_extension:play_hud_sound_event("Stop_career_ability_victor_zealot_loop")
-
-				MOOD_BLACKBOARD.skill_zealot = false
+				Managers.state.camera:set_mood("skill_zealot", "skill_zealot", false)
 			end
 		end
 	end,
@@ -4929,6 +4992,10 @@ BuffFunctionTemplates.functions = {
 		end
 	end,
 	start_maidenguard_activated_ability = function (unit, buff, params)
+		local status_extension = ScriptUnit.extension(unit, "status_system")
+
+		status_extension:set_noclip(true, buff)
+
 		if is_local(unit) and not is_bot(unit) then
 			local fov_multiplier = 0.8
 			local lerp_time = 0.2
@@ -4937,19 +5004,16 @@ BuffFunctionTemplates.functions = {
 		end
 	end,
 	end_maidenguard_activated_ability = function (unit, buff, params)
+		local status_extension = ScriptUnit.extension(unit, "status_system")
+
+		status_extension:set_noclip(false, buff)
+
 		if is_local(unit) then
-			local status_extension = ScriptUnit.extension(unit, "status_system")
-
-			status_extension:set_invisible(false, nil, "skill_maiden_guard")
-			status_extension:set_noclip(false, "skill_maiden_guard")
-
 			if not is_bot(unit) then
 				local fov_multiplier = 1
 				local lerp_time = 0.5
 
 				Managers.state.camera:set_additional_fov_multiplier_with_lerp_time(fov_multiplier, lerp_time)
-
-				MOOD_BLACKBOARD.skill_maiden_guard = false
 			end
 
 			local career_extension = ScriptUnit.extension(unit, "career_system")
@@ -4957,8 +5021,6 @@ BuffFunctionTemplates.functions = {
 			career_extension:set_state("default")
 
 			if Managers.state.network:game() then
-				local status_extension = ScriptUnit.extension(unit, "status_system")
-
 				status_extension:set_is_dodging(false)
 
 				local network_manager = Managers.state.network
@@ -4966,6 +5028,24 @@ BuffFunctionTemplates.functions = {
 
 				network_manager.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.dodging, false, unit_id, 0)
 			end
+		end
+	end,
+	start_maidenguard_ability_stealth = function (unit, buff, params)
+		local status_extension = ScriptUnit.extension(unit, "status_system")
+
+		status_extension:set_invisible(true, nil, buff)
+
+		if is_local(unit) and not is_bot(unit) then
+			Managers.state.camera:set_mood("skill_maiden_guard", buff, true)
+		end
+	end,
+	end_maidenguard_ability_stealth = function (unit, buff, params)
+		local status_extension = ScriptUnit.extension(unit, "status_system")
+
+		status_extension:set_invisible(false, nil, buff)
+
+		if is_local(unit) and not is_bot(unit) then
+			Managers.state.camera:set_mood("skill_maiden_guard", buff, false)
 		end
 	end,
 	end_knight_activated_ability = function (unit, buff, params)
@@ -5173,8 +5253,7 @@ BuffFunctionTemplates.functions = {
 				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
 				first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_enter_small")
-
-				MOOD_BLACKBOARD.twitch_invis = true
+				Managers.state.camera:set_mood("twitch_invis", buff, true)
 			end
 		end
 	end,
@@ -5189,7 +5268,7 @@ BuffFunctionTemplates.functions = {
 			status_extension:set_noclip(false, "twitch_invis")
 
 			if not is_bot(unit) then
-				MOOD_BLACKBOARD.twitch_invis = false
+				Managers.state.camera:set_mood("twitch_invis", buff, false)
 			end
 		end
 	end,
@@ -5326,18 +5405,6 @@ BuffFunctionTemplates.functions = {
 				end
 			end
 		end
-	end,
-	remove_controlled_unit = function (unit, buff, params)
-		if buff.removed_controlled_unit then
-			return
-		end
-
-		local commander_unit = buff.source_attacker_unit
-		local commander_extension = ScriptUnit.extension(commander_unit, "ai_commander_system")
-		local skip_sync = true
-		local skip_buff_removal = true
-
-		commander_extension:remove_controlled_unit(unit, skip_sync, skip_buff_removal)
 	end,
 	sienna_scholar_vent_zone_update = function (owner_unit, buff, params)
 		local template = buff.template

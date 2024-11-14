@@ -43,37 +43,23 @@ SharedStateVersus.is_peer_fully_synced = function (self, peer_id)
 	return self._shared_state:is_peer_fully_synced(peer_id)
 end
 
-SharedStateVersus.set_saved_hero = function (self, peer_id, local_player_id, party_id, slot_id, profile_index, career_index)
-	local key = self._shared_state:get_key("saved_hero", peer_id, local_player_id)
-
-	self._shared_state:set_server(key, {
-		party_id = party_id,
-		slot_id = slot_id,
-		profile_index = profile_index,
-		career_index = career_index,
-	})
-end
-
-SharedStateVersus.get_saved_hero = function (self, peer_id, local_player_id)
-	local key = self._shared_state:get_key("saved_hero", peer_id, local_player_id)
-
-	return self._shared_state:get_server(key)
-end
-
 SharedStateVersus.get_hero_cosmetics = function (self, peer_id, local_player_id)
 	local key = self._shared_state:get_key("hero_cosmetics", nil, local_player_id)
 
 	return self._shared_state:get_peer(peer_id, key)
 end
 
-SharedStateVersus.set_hero_cosmetics = function (self, peer_id, local_player_id, weapon_slot, weapon, hero_skin, hat)
+SharedStateVersus.set_hero_cosmetics = function (self, peer_id, local_player_id, weapon_slot, weapon, weapon_pose, weapon_pose_skin, hero_skin, hat, pactsworn_cosmetics)
 	local key = self._shared_state:get_key("hero_cosmetics", nil, local_player_id)
 
 	self._shared_state:set_peer(peer_id, key, {
 		weapon_slot = weapon_slot,
 		weapon = weapon,
+		weapon_pose = weapon_pose,
+		weapon_pose_skin = weapon_pose_skin,
 		hero_skin = hero_skin,
 		hat = hat,
+		pactsworn_cosmetics = pactsworn_cosmetics,
 	})
 end
 

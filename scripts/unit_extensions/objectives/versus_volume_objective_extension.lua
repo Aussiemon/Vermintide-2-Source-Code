@@ -2,7 +2,7 @@
 
 local versus_volume_objective_extension_testify = script_data.testify and require("scripts/unit_extensions/objectives/testify/versus_volume_objective_extension_testify")
 
-VersusVolumeObjectiveExtension = class(VersusVolumeObjectiveExtension, VersusBaseObjectiveExtension)
+VersusVolumeObjectiveExtension = class(VersusVolumeObjectiveExtension, BaseObjectiveExtension)
 VersusVolumeObjectiveExtension.NAME = "VersusVolumeObjectiveExtension"
 
 local VOLUME_TYPE_TO_FUNC_NAME = {
@@ -10,7 +10,14 @@ local VOLUME_TYPE_TO_FUNC_NAME = {
 	any_alive = "any_alive_human_players_inside",
 }
 
-VersusVolumeObjectiveExtension._activate = function (self, game_object_id, objective_data)
+VersusVolumeObjectiveExtension.init = function (self, ...)
+	VersusVolumeObjectiveExtension.super.init(self, ...)
+
+	self._volume_system = Managers.state.entity:system("volume_system")
+	self._percentage = 0
+end
+
+VersusVolumeObjectiveExtension._set_objective_data = function (self, objective_data)
 	local volume_default_settings = GameModeSettings.versus.objectives.volume
 
 	self._score_for_completion = objective_data.score_for_completion or volume_default_settings.score_for_completion
@@ -19,31 +26,25 @@ VersusVolumeObjectiveExtension._activate = function (self, game_object_id, objec
 	self._time_for_each_player_inside = objective_data.time_for_each_player_inside or volume_default_settings.time_for_each_player_inside
 	self._volume_name = objective_data.volume_name
 	self._volume_type = objective_data.volume_type or volume_default_settings.volume_type
-	self._percentage = 0
-	self._on_complete_sound_event = objective_data.on_complete_sound_event or volume_default_settings.on_complete_sound_event
+	self._on_last_leaf_complete_sound_event = objective_data.on_last_leaf_complete_sound_event or volume_default_settings.on_last_leaf_complete_sound_event
 
+	local name = VOLUME_TYPE_TO_FUNC_NAME[self._volume_type]
+
+	fassert(name ~= nil, "Invalid volume type ", self._volume_type)
+
+	self._condition_func = self._volume_system[name]
+end
+
+VersusVolumeObjectiveExtension._activate = function (self)
 	if self._is_server then
-		self._volume_system = Managers.state.entity:system("volume_system")
-		self._condition_func = self._volume_system.all_alive_human_players_inside
-
 		self._volume_system:register_volume(self._volume_name, "trigger_volume", {
 			sub_type = "players_inside",
 		})
-
-		local name = VOLUME_TYPE_TO_FUNC_NAME[self._volume_type]
-
-		fassert(name ~= nil, "Invalid volume type ", self._volume_type)
-
-		self._condition_func = self._volume_system[name]
 	end
 end
 
 VersusVolumeObjectiveExtension._deactivate = function (self)
-	if not DEDICATED_SERVER then
-		local complete_event = self._on_complete_sound_event[self._local_side:name()]
-
-		self:play_local_sound(complete_event)
-	end
+	return
 end
 
 VersusVolumeObjectiveExtension._server_update = function (self, dt, t)
@@ -52,18 +53,12 @@ VersusVolumeObjectiveExtension._server_update = function (self, dt, t)
 	if self._percentage < 1 and completed then
 		self._percentage = 1
 
-		self:set_game_object_field("value", self._percentage * 100)
+		self:server_set_value(self._percentage)
 	end
 end
 
 VersusVolumeObjectiveExtension._client_update = function (self, dt, t)
-	local game_session = Network.game_session()
-
-	if not game_session or not self._game_object_id then
-		return
-	end
-
-	self._percentage = GameSession.game_object_field(game_session, self._game_object_id, "value") / 100
+	self._percentage = self:client_get_value()
 end
 
 VersusVolumeObjectiveExtension.update_testify = function (self, dt, t)

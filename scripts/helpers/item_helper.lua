@@ -16,6 +16,8 @@ local item_type_templates = {
 	skin = Cosmetics,
 	frame = Cosmetics,
 	color_tint = Cosmetics,
+	weapon_pose = Cosmetics,
+	chips = Cosmetics,
 }
 local weapon_attack_stats_order = {
 	damage = 1,
@@ -47,7 +49,14 @@ ItemHelper.get_template_by_item_name = function (name)
 
 	template_name = temporary_template or template_name
 
-	local template = item_type_templates[slot_type][template_name]
+	local item_type_template = item_type_templates[slot_type]
+	local template
+
+	if item_type_template == Weapons then
+		template = WeaponUtils.get_weapon_template(template_name)
+	else
+		template = item_type_templates[slot_type][template_name]
+	end
 
 	fassert(template, "No template by name %s found for item_data %s.", template_name, name)
 

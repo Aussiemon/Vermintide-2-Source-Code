@@ -17,11 +17,6 @@ GameModeBase.init = function (self, settings, world, network_server, is_server, 
 	self._initial_peers_ready = false
 	self._level_key = level_key
 	self._statistics_db = statistics_db
-
-	if script_data.ai_specials_spawning_disabled == nil then
-		script_data.ai_specials_spawning_disabled = self._settings.ai_specials_spawning_disabled
-	end
-
 	self._player_spawners = {}
 	self._pending_bot_remove = {}
 	self._num_pending_bot_remove = 0
@@ -300,11 +295,11 @@ GameModeBase.ready_to_spawn = function (self, status)
 	return
 end
 
-GameModeBase.player_entered_game_session = function (self, peer_id, local_player_id, wanted_party_index)
+GameModeBase.player_entered_game_session = function (self, peer_id, local_player_id)
 	local player_spawners = self._player_spawners
 
 	for i = 1, #player_spawners do
-		player_spawners[i]:player_entered_game_session(peer_id, local_player_id, wanted_party_index)
+		player_spawners[i]:player_entered_game_session(peer_id, local_player_id)
 	end
 end
 
@@ -539,6 +534,8 @@ GameModeBase.is_about_to_end_game_early = function (self)
 end
 
 GameModeBase.set_about_to_end_game_early = function (self, about_to_end_game_early)
+	Managers.state.entity:system("dialogue_system"):set_global_context("game_about_to_end", about_to_end_game_early and 1 or 0)
+
 	self._about_to_end_game_early = about_to_end_game_early
 end
 

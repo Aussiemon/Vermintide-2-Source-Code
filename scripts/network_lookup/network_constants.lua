@@ -105,12 +105,12 @@ local uint_19 = Network.type_info("uint_19")
 
 fassert(uint_19.bits == 19, "uint_19 is not 19 bits.")
 
-local uint_32 = Network.type_info("uint_32")
+local int_32 = Network.type_info("int_32")
 
-fassert(uint_32.bits == 32, "uint_32 is not 32 bits.")
+fassert(int_32.bits == 32, "uint_32 is not 32 bits.")
 
 local enemy_package_loader_bitmask_array = Network.type_info("enemy_package_loader_bitmask_array")
-local num_bitmasks_bits = enemy_package_loader_bitmask_array.max_size * uint_32.bits
+local num_bitmasks_bits = enemy_package_loader_bitmask_array.max_size * int_32.bits
 local num_breeds = #NetworkLookup.breeds
 
 fassert(num_breeds <= num_bitmasks_bits, "Need to update enemy_package_loader_bitmask_array so that it has enough 32-bit elements to contain number of breeds (%i).", num_breeds)
@@ -141,6 +141,11 @@ NetworkConstants.buff_array = Network.type_info("buff_array")
 NetworkConstants.buff_variable_type_array = Network.type_info("buff_variable_type_array")
 NetworkConstants.buff_variable_data_array = Network.type_info("buff_variable_data_array")
 
+local topic_stat_limit = Network.type_info("players_session_score").max_size
+local possible_num_topic_stats = #ScoreboardHelper.scoreboard_topic_stats_versus * 8
+
+fassert(possible_num_topic_stats <= topic_stat_limit, "'ScoreboardHelper.scoreboard_topic_stats_versus' contains too many entries. Current: %s, Needed: %s", topic_stat_limit, possible_num_topic_stats)
+
 local ready_request_id = Network.type_info("ready_request_id")
 
 NetworkConstants.READY_REQUEST_ID_MAX = ready_request_id.max
@@ -150,6 +155,7 @@ check_bounderies("interaction_lookup", "interactions")
 check_bounderies("interaction_state_lookup", "interaction_states")
 check_bounderies("proc_function_lookup", "proc_functions")
 check_bounderies("difficulty_lookup", "difficulties")
+check_bounderies("objective_name_lookup", "objective_names")
 
 local game_mode_state_id_max = Network.type_info("game_mode_state_id").max
 
@@ -157,4 +163,27 @@ for game_mode_key, settings in pairs(GameModeSettings) do
 	local num_states = #settings.game_mode_states
 
 	fassert(num_states <= game_mode_state_id_max, "Too many game mode states in %s, it has %u maximum is %u", game_mode_key, num_states, game_mode_state_id_max)
+end
+
+require("scripts/settings/objective_lists")
+
+local function count_objectives_in_list(objective_list)
+	local count = 1
+
+	if objective_list.sub_objectives then
+		for _, sub_list in pairs(objective_list.sub_objectives) do
+			count = count + count_objectives_in_list(objective_list)
+		end
+	end
+
+	return count
+end
+
+local uint_31 = Network.type_info("uint_31")
+local objective_bit_field_limit = uint_31.bits
+
+for _, lists in pairs(ObjectiveLists) do
+	for _, list in ipairs(lists) do
+		fassert(objective_bit_field_limit >= count_objectives_in_list(list), "[ObjectiveLists] List '%s' contains more than %s objectives. Replace networked type for 'rpc_activate_objective' with an array that supports %s elements")
+	end
 end

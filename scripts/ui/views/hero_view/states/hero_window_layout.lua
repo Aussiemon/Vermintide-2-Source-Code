@@ -77,6 +77,9 @@ local window_layouts = {
 			inventory = 3,
 			options = 1,
 		},
+		can_add_function = function (mechanism_name)
+			return mechanism_name ~= "versus" and mechanism_name ~= "inn_vs"
+		end,
 	},
 	{
 		close_on_exit = true,

@@ -364,8 +364,8 @@ settings.buff_function_templates = {
 				buff.shake_id = nil
 			end
 
-			MOOD_BLACKBOARD.drunk_01 = true
-			MOOD_BLACKBOARD.hangover_01 = false
+			Managers.state.camera:set_mood("hangover_01", buff, false)
+			Managers.state.camera:set_mood("drunk_01", buff, true)
 		elseif intoxication_level < 0 and #buff.hungover_stack_ids ~= math.abs(intoxication_level) then
 			if career_extension and not career_extension:current_ability_paused() then
 				CharacterStateHelper.stop_weapon_actions(inventory_extension, "hungover")
@@ -430,9 +430,8 @@ settings.buff_function_templates = {
 			end
 
 			Managers.state.camera:camera_effect_shake_event("hungover", t)
-
-			MOOD_BLACKBOARD.drunk_01 = false
-			MOOD_BLACKBOARD.hangover_01 = true
+			Managers.state.camera:set_mood("drunk_01", buff, false)
+			Managers.state.camera:set_mood("hangover_01", buff, true)
 
 			local blink_sound_event_name = "Play_eye_blink_hangover"
 			local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")

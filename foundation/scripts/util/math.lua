@@ -58,6 +58,12 @@ math.inv_lerp = function (a, b, v)
 	return (v - a) / (b - a)
 end
 
+math.inv_lerp_clamped = function (a, b, v)
+	v = math.clamp(v, a, b)
+
+	return math.inv_lerp(a, b, v)
+end
+
 math.remap = function (imin, imax, omin, omax, v)
 	return (v - imin) / (imax - imin) * (omax - omin) + omin
 end
@@ -81,7 +87,7 @@ end
 math.auto_lerp = function (index_1, index_2, val_1, val_2, val)
 	local t = (val - index_1) / (index_2 - index_1)
 
-	return math_lerp(val_1, val_2, t)
+	return math.clamp(math_lerp(val_1, val_2, t), val_1, val_2)
 end
 
 math.round_with_precision = function (value, precision)
@@ -612,6 +618,14 @@ math.easeCubic = function (t)
 	return 0.5 * t * t * t + 1
 end
 
+math.linear = function (t)
+	return t
+end
+
+math.linear_inv = function (t)
+	return t
+end
+
 math.easeInCubic = function (t)
 	return t * t * t
 end
@@ -620,6 +634,10 @@ math.easeOutCubic = function (t)
 	t = t - 1
 
 	return t * t * t + 1
+end
+
+math.easeOutCubicInv = function (t)
+	return 1 - math.pow(1 - t, 0.3333333333333333)
 end
 
 math.ease_out_quad = function (t)
@@ -632,6 +650,10 @@ end
 
 math.ease_out_quart = function (t)
 	return 1 - math.pow(1 - t, 4)
+end
+
+math.ease_out_quart_inv = function (t)
+	return math.pow(-t + 1, 0.25) + 1
 end
 
 math.ease_in_out_quart = function (t)

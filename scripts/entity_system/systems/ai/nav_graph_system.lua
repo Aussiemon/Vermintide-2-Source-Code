@@ -21,13 +21,11 @@ NavGraphSystem.init = function (self, context, system_name)
 	self.entity_manager = entity_manager
 	self.world = context.world
 	self._is_server = context.is_server
-	self._stored_jump_data = {}
 	self.unit_extension_data = {}
 	self._use_level_jumps = Managers.state.game_mode:setting("use_level_jumps")
 
 	if self._use_level_jumps then
 		self.level_jumps = {}
-		self._jumps_are_shown = false
 		self._level_jumps_ready = false
 		self.jumps_broadphase_max_dist = 25
 		self.jumps_broadphase = Broadphase(self.jumps_broadphase_max_dist, 2048)
@@ -89,6 +87,8 @@ NavGraphSystem.init = function (self, context, system_name)
 	self.line_object = World.create_line_object(self.world)
 	self.initialized_unit_nav_graphs = {}
 	self.dynamic_smart_object_index = 1
+
+	Managers.state.event:register(self, "level_start_local_player_spawned", "_event_local_player_spawned")
 end
 
 NavGraphSystem.destroy = function (self)
@@ -96,6 +96,12 @@ NavGraphSystem.destroy = function (self)
 
 	self.line_object = nil
 	self.initialized_unit_nav_graphs = nil
+
+	local event_manager = Managers.state.event
+
+	if event_manager then
+		event_manager:unregister("level_start_local_player_spawned", self)
+	end
 end
 
 local control_points = {}
@@ -145,12 +151,12 @@ NavGraphSystem.init_nav_graphs = function (self, unit, smart_object_id, extensio
 	if self._use_level_jumps and use_for_versus then
 		local first_unit_data = smart_object_unit_data[1]
 
-		self:spawn_versus_jump_unit(first_unit_data)
+		self:spawn_versus_jump_unit(unit, first_unit_data)
 
 		local smart_object_type = first_unit_data.smart_object_type or "ledges"
 
 		if first_unit_data.data.is_bidirectional and (smart_object_type == "jumps" or smart_object_type == "ledges_with_fence") and not first_unit_data.data.is_on_small_fence then
-			self:spawn_versus_jump_unit(first_unit_data, true)
+			self:spawn_versus_jump_unit(unit, first_unit_data, true)
 		end
 	end
 
@@ -159,7 +165,7 @@ end
 
 local jump_unit_offset_z = 1.1
 
-NavGraphSystem.spawn_versus_jump_unit = function (self, jump_object_data, swap)
+NavGraphSystem.spawn_versus_jump_unit = function (self, ledge_unit, jump_object_data, swap)
 	local ledge_position = jump_object_data.data.ledge_position
 
 	ledge_position = ledge_position and Vector3Aux.unbox(ledge_position)
@@ -191,49 +197,26 @@ NavGraphSystem.spawn_versus_jump_unit = function (self, jump_object_data, swap)
 	local right = Vector3.normalize(Vector3.cross(direction, Vector3.up()))
 	local up = Vector3.normalize(Vector3.cross(right, direction))
 	local rotation = Quaternion.look(direction, up)
+	local extension_init_data = {
+		nav_graph_system = {
+			smart_object_index = jump_object_data.smart_object_index,
+			swap = swap,
+		},
+	}
+	local jump_unit = Managers.state.unit_spawner:spawn_local_unit_with_extensions("units/test_unit/jump_marker_ground_pactsworn", "versus_dark_pact_climbing_interaction_unit", extension_init_data, spawn_position, rotation)
+	local node_id = Unit.node(jump_unit, "c_interaction")
 
-	if self._is_server then
-		local extension_init_data = {
-			nav_graph_system = {
-				smart_object_index = jump_object_data.smart_object_index,
-				swap = swap,
-			},
-		}
-		local jump_unit = Managers.state.unit_spawner:spawn_network_unit("units/test_unit/jump_marker_ground_pactsworn", "versus_dark_pact_climbing_interaction_unit", extension_init_data, spawn_position, rotation)
-		local node_id = Unit.node(jump_unit, "c_interaction")
+	Unit.set_local_scale(jump_unit, node_id, Vector3(1, 2, 1))
 
-		Unit.set_local_scale(jump_unit, node_id, Vector3(1, 2, 1))
+	self.level_jumps[jump_unit] = unit_jump_data
 
-		self.level_jumps[jump_unit] = unit_jump_data
-	else
-		local storage = self._stored_jump_data[jump_object_data.smart_object_index]
+	local allow_boss_traversal = Unit.get_data(ledge_unit, "allow_boss_traversal")
 
-		if not storage then
-			storage = {}
-			self._stored_jump_data[jump_object_data.smart_object_index] = storage
-		end
-
-		local index = not swap and 1 or 2
-
-		storage[index] = unit_jump_data
-	end
+	Unit.set_data(jump_unit, "allow_boss_traversal", allow_boss_traversal)
 end
 
 NavGraphSystem.level_jump_units = function (self)
 	return self._level_jumps_ready and self.level_jumps
-end
-
-NavGraphSystem.show_all_jump_units = function (self, show)
-	if not self._use_level_jumps or self._jumps_are_shown == show then
-		return
-	end
-
-	for unit, _ in pairs(self.level_jumps) do
-		Unit.set_unit_visibility(unit, show)
-		ScriptUnit.extension(unit, "interactable_system"):set_enabled(show)
-	end
-
-	self._jumps_are_shown = show
 end
 
 NavGraphSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
@@ -290,16 +273,6 @@ NavGraphSystem.on_add_extension = function (self, world, unit, extension_name, e
 
 		extension.smart_object_index = smart_object_index
 		extension.swap = swap
-
-		if self._is_server then
-			return extension
-		end
-
-		local storage = self._stored_jump_data[smart_object_index]
-		local index = not swap and 1 or 2
-		local jump_data = storage[index]
-
-		self.level_jumps[unit] = jump_data
 	end
 
 	return extension
@@ -561,5 +534,35 @@ NavGraphSystem.has_nav_graph = function (self, unit)
 		return true, not nav_graph_extension.nav_graph_removed
 	else
 		return false, false
+	end
+end
+
+local LevelJumpStates = table.enum("shown", "hidden", "partial")
+
+NavGraphSystem._event_local_player_spawned = function (self, is_initial_spawn, player_unit, side, breed)
+	if not self._use_level_jumps or Managers.state.game_mode:setting("hide_level_jumps") then
+		return
+	end
+
+	if side:name() ~= "dark_pact" then
+		if self._level_jump_state ~= LevelJumpStates.hidden then
+			for unit in pairs(self.level_jumps) do
+				ScriptUnit.extension(unit, "interactable_system"):set_enabled(false)
+			end
+		end
+	else
+		local is_boss = breed.boss
+
+		if is_boss and self._level_jump_state ~= LevelJumpStates.partial then
+			for unit in pairs(self.level_jumps) do
+				local allow_boss_traversal = Unit.get_data(unit, "allow_boss_traversal")
+
+				ScriptUnit.extension(unit, "interactable_system"):set_enabled(allow_boss_traversal)
+			end
+		elseif not is_boss and self._level_jump_state ~= LevelJumpStates.shown then
+			for unit in pairs(self.level_jumps) do
+				ScriptUnit.extension(unit, "interactable_system"):set_enabled(true)
+			end
+		end
 	end
 end

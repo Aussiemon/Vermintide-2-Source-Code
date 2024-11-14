@@ -1448,7 +1448,7 @@ end
 
 StoreItemPurchasePopup._popup_on_enter = function (self)
 	local product = self._product
-	local item = product.item
+	local item = product.product_item or product.item
 	local item_data = item.data
 	local item_rarity = item_data.rarity
 	local item_type = item_data.item_type
@@ -1508,7 +1508,7 @@ end
 StoreItemPurchasePopup._create_popup_widget = function (self, product, scenegraph_id, display_as_owned)
 	local product = self._product
 	local product_id = product.product_id
-	local item = product.item
+	local item = product.product_item or product.item
 	local masked = false
 	local item_size = {
 		260,
@@ -1556,12 +1556,27 @@ StoreItemPurchasePopup._popup_on_exit = function (self)
 end
 
 StoreItemPurchasePopup._poll_result_on_enter = function (self)
+	local item_currency_settings = DLCSettings.store.currency_ui_settings
 	local product = self._product
-	local item = product.item
+	local item = product.product_item or product.item
 	local item_key = item.key
 	local regular_prices = item.regular_prices
 	local current_prices = item.current_prices
 	local currency_type = "SM"
+
+	if regular_prices or current_prices then
+		for currency, settings in pairs(item_currency_settings) do
+			local has_regular_price = regular_prices[currency]
+			local has_current_price = current_prices[currency]
+
+			if has_regular_price and has_current_price then
+				currency_type = currency
+
+				break
+			end
+		end
+	end
+
 	local price = current_prices[currency_type] or regular_prices[currency_type]
 	local expected_amount = price
 	local callback = callback(self, "_backend_result_callback")
@@ -1598,9 +1613,26 @@ local item_backgrounds_by_rarirty = {
 StoreItemPurchasePopup._populate_item_widget = function (self, widget, item, product_id, display_as_owned)
 	local item_rarity_textures = UISettings.item_rarity_textures
 	local item_type_store_icons = UISettings.item_type_store_icons
-	local inventory_icon, display_name, description = UIUtils.get_ui_information_from_item(item)
+	local item_currency_settings = DLCSettings.store.currency_ui_settings
 	local item_data = item.data
-	local rarity = item.rarity or item_data.rarity
+	local parent_id
+	local has_parent = false
+	local inventory_icon, display_name, description, rarity
+
+	if item.data and item.data.parent then
+		local parent_item_data = ItemMasterList[item.data.parent]
+
+		inventory_icon = parent_item_data.inventory_icon
+		display_name = parent_item_data.display_name
+		description = parent_item_data.description
+		rarity = parent_item_data.rarity
+		parent_id = item.data.parent
+		has_parent = true
+	else
+		inventory_icon, display_name, description = UIUtils.get_ui_information_from_item(item)
+		rarity = item.rarity or item_data.rarity
+	end
+
 	local item_type = item_data.item_type
 	local content = widget.content
 	local style = widget.style
@@ -1620,6 +1652,17 @@ StoreItemPurchasePopup._populate_item_widget = function (self, widget, item, pro
 	local current_prices = item.current_prices
 
 	if regular_prices or current_prices then
+		for currency, settings in pairs(item_currency_settings) do
+			local has_regular_price = regular_prices[currency]
+			local has_current_price = current_prices[currency]
+
+			if has_regular_price and has_current_price then
+				currency_type = currency
+
+				break
+			end
+		end
+
 		local regular_price = regular_prices[currency_type]
 		local current_price = current_prices[currency_type]
 
@@ -1633,17 +1676,22 @@ StoreItemPurchasePopup._populate_item_widget = function (self, widget, item, pro
 		local price_text = UIUtils.comma_value(tostring(current_price))
 
 		self:_set_product_price_text(widget, price_text, real_currency)
+
+		content.price_icon = item_currency_settings[currency_type].icon_small
 	end
 
 	local backend_items = Managers.backend:get_interface("items")
 	local item_key = item.key
 	local item_owned = backend_items:has_item(item_key)
+	local item_data = item.data
+	local item_type = item_data.item_type
 
 	content.owned = display_as_owned or item_owned
 
+	local allowed_store_item_types = DLCSettings.store.allowed_store_item_types
 	local type_tag_icon
 
-	if item_type == "hat" or item_type == "skin" or item_type == "weapon_skin" or item_type == "frame" then
+	if allowed_store_item_types[item_type] then
 		type_tag_icon = item_type_store_icons[item_type]
 
 		if rarity and rarity ~= "default" then
@@ -1661,7 +1709,8 @@ StoreItemPurchasePopup._populate_item_widget = function (self, widget, item, pro
 	self._reference_id = (self._reference_id or 0) + 1
 
 	local reference_name = "StoreItemPurchasePopup_" .. product_id .. "_" .. self._reference_id
-	local texture_name = "store_item_icon_" .. product_id
+	local package_product_id = has_parent and parent_id and parent_id or product_id
+	local texture_name = "store_item_icon_" .. package_product_id
 	local package_name = "resource_packages/store/item_icons/" .. texture_name
 	local package_available = Application.can_get("package", package_name)
 
@@ -1775,9 +1824,6 @@ StoreItemPurchasePopup._approved_update = function (self, input_service, dt, t)
 
 	if progress == 1 then
 		widgets_by_name.loading_icon.content.fade_out = false
-
-		self:_play_sound("play_gui_chest_reward_enter")
-
 		self._purchase_confirmation_anim_duration = nil
 		self._approved_anim_params = nil
 

@@ -19,10 +19,6 @@ PackmasterStateHoisting.on_enter = function (self, unit, input, dt, context, t, 
 	local drag_target_unit = self._drag_target_unit
 	local velocity = Vector3(0, 0, 0)
 
-	self._inventory_extension = ScriptUnit.extension(unit, "inventory_system")
-	self._locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
-	self._status_extension = ScriptUnit.extension(unit, "status_system")
-
 	self._locomotion_extension:set_forced_velocity(velocity)
 	self._locomotion_extension:set_wanted_velocity(Vector3.zero())
 	CharacterStateHelper.change_camera_state(self._player, "follow_third_person")

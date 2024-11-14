@@ -577,7 +577,7 @@ else
 				{
 					display_name = "quit_menu_button_name",
 					fade = false,
-					transition = "quit_game_hero_view",
+					transition = "quit_game_hero_view_legacy",
 				},
 			},
 			host = {
@@ -620,7 +620,7 @@ else
 				{
 					display_name = "quit_menu_button_name",
 					fade = false,
-					transition = "quit_game_hero_view",
+					transition = "quit_game_hero_view_legacy",
 				},
 			},
 			client = {
@@ -663,7 +663,7 @@ else
 				{
 					display_name = "quit_menu_button_name",
 					fade = false,
-					transition = "quit_game_hero_view",
+					transition = "quit_game_hero_view_legacy",
 				},
 			},
 			demo = {
@@ -711,7 +711,7 @@ else
 				{
 					display_name = "quit_menu_button_name",
 					fade = false,
-					transition = "quit_game_hero_view",
+					transition = "quit_game_hero_view_legacy",
 				},
 			},
 			host = {
@@ -739,7 +739,7 @@ else
 				{
 					display_name = "quit_menu_button_name",
 					fade = false,
-					transition = "quit_game_hero_view",
+					transition = "quit_game_hero_view_legacy",
 				},
 			},
 			client = {
@@ -767,7 +767,7 @@ else
 				{
 					display_name = "quit_menu_button_name",
 					fade = false,
-					transition = "quit_game_hero_view",
+					transition = "quit_game_hero_view_legacy",
 				},
 			},
 			tutorial = {
@@ -791,7 +791,7 @@ else
 				{
 					display_name = "quit_menu_button_name",
 					fade = false,
-					transition = "quit_game_hero_view",
+					transition = "quit_game_hero_view_legacy",
 				},
 			},
 			demo = {
@@ -814,7 +814,7 @@ else
 				{
 					display_name = "quit_menu_button_name",
 					fade = false,
-					transition = "quit_game_hero_view",
+					transition = "quit_game_hero_view_legacy",
 				},
 			},
 		},

@@ -30,6 +30,15 @@ PlayerUnitOverchargeExtension.init = function (self, extension_init_context, uni
 	self.screen_space_particle = overcharge_data.onscreen_particles_id or "fx/screenspace_overheat_indicator"
 	self.screen_space_particle_critical = overcharge_data.critical_onscreen_particles_id or not overcharge_data.no_critical_onscreen_particles and "fx/screenspace_overheat_critical"
 	self._lerped_overcharge_fraction = 0
+
+	local local_player = Managers.player:local_player()
+	local player_side = local_player and Managers.state.side:get_side_from_player_unique_id(local_player:unique_id())
+
+	if player_side and player_side:name() == "dark_pact" then
+		self.screen_space_particle = "fx/screenspace_overheat_indicator_warpfire"
+		self.screen_space_particle_critical = "fx/screenspace_overheat_critical_warpfire"
+	end
+
 	self._overcharge_states = {
 		[OVERCHARGE_LEVELS.none] = {},
 		[OVERCHARGE_LEVELS.low] = {

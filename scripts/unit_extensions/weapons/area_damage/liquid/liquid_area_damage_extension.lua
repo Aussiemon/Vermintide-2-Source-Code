@@ -104,22 +104,11 @@ LiquidAreaDamageExtension.init = function (self, extension_init_context, unit, e
 	self._source_attacker_unit = extension_init_data.source_unit or unit
 	self._done = false
 	self._started = delay <= 0
-	self.source_attacker_unit_data = {}
 
-	local source_attacker_unit_data = self.source_attacker_unit_data
 	local source_attacker_unit = self._source_attacker_unit
-
-	source_attacker_unit_data.breed = Unit.get_data(source_attacker_unit, "breed")
-
 	local player = Managers.player:owner(source_attacker_unit)
 
-	if player then
-		source_attacker_unit_data.attacker_unique_id = player:unique_id()
-		source_attacker_unit_data.attacker_side = Managers.state.side.side_by_unit[source_attacker_unit]
-	else
-		source_attacker_unit_data.attacker_unique_id = nil
-		source_attacker_unit_data.attacker_side = nil
-
+	if not player then
 		local attacker_buff_extension = ScriptUnit.has_extension(source_attacker_unit, "buff_system")
 
 		if attacker_buff_extension then

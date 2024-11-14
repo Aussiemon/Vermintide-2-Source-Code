@@ -69,9 +69,7 @@ LobbyInternal.init_client = function (network_options)
 	if peer_id then
 		print("Forcing LAN peer_id ", peer_id)
 
-		local peer_id_number = tonumber(peer_id, 16)
-
-		LobbyInternal.client = Network.init_lan_client(network_options.config_file_name, game_port, peer_id_number)
+		LobbyInternal.client = Network.init_lan_client(network_options.config_file_name, game_port, peer_id)
 	else
 		LobbyInternal.client = Network.init_lan_client(network_options.config_file_name, game_port)
 	end

@@ -7,6 +7,7 @@ PlayerHuskGhostModeExtension.init = function (self, extension_init_context, unit
 	self._world = extension_init_context.world
 	self._network_transmit = extension_init_context.network_transmit
 	self._is_server = self._network_transmit.is_server
+	self._has_left_once = false
 	self._ghost_mode_active = false
 	self._is_husk = true
 end
@@ -68,20 +69,27 @@ PlayerHuskGhostModeExtension._is_spectator = function (self)
 end
 
 PlayerHuskGhostModeExtension.husk_enter_ghost_mode = function (self)
+	local player_unit = self._unit
+
 	self._ghost_mode_active = true
-
-	if not DEDICATED_SERVER then
-		local skin_unit = CosmeticsUtils.get_third_person_mesh_unit(self._unit)
-
-		Unit.flow_event(skin_unit, "lua_entered_ghost_mode")
-	end
 
 	local inventory_extension = ScriptUnit.extension(self._unit, "inventory_system")
 	local equipment = inventory_extension:equipment()
 	local weapon_unit = equipment.right_hand_wielded_unit_3p or equipment.left_hand_wielded_unit_3p
 
-	if weapon_unit and not DEDICATED_SERVER then
-		Unit.flow_event(weapon_unit, "lua_entered_ghost_mode")
+	if not DEDICATED_SERVER then
+		if weapon_unit then
+			Unit.flow_event(weapon_unit, "lua_entered_ghost_mode")
+		end
+
+		local skin_unit = CosmeticsUtils.get_third_person_mesh_unit(player_unit)
+
+		if self._has_left_once then
+			World.create_particles(self._world, "fx/chr_gutter_foff", POSITION_LOOKUP[player_unit])
+		end
+
+		Unit.flow_event(skin_unit, "lua_entered_ghost_mode")
+		Unit.flow_event(player_unit, "lua_entered_ghost_mode")
 	end
 
 	local status_extension = ScriptUnit.extension(self._unit, "status_system")
@@ -122,6 +130,19 @@ PlayerHuskGhostModeExtension.cb_world_marker_spawned = function (self, unit, mar
 	local owner = Managers.player:owner(unit)
 	local profile_index = owner and owner:profile_index()
 	local profile = SPProfiles[profile_index]
+	local player_name = owner and owner:name()
+
+	player_name = player_name and player_name ~= "" and player_name or "n/a"
+	widget.content.player_name = player_name
+
+	local peer_id = owner:network_id()
+	local local_player_id = owner:local_player_id()
+	local owner_game_mode_data = Managers.party:get_player_status(peer_id, local_player_id).game_mode_data
+	local respawn_timer = owner_game_mode_data and owner_game_mode_data.spawn_timer
+
+	if respawn_timer then
+		widget.content.respawn_timer = respawn_timer
+	end
 
 	widget.content.icon = profile and profile.ui_portrait or "unit_frame_portrait_default"
 	self._marker_id = marker_id
@@ -129,6 +150,7 @@ end
 
 PlayerHuskGhostModeExtension.husk_leave_ghost_mode = function (self)
 	self._ghost_mode_active = false
+	self._has_left_once = true
 
 	local player_unit = self._unit
 	local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
@@ -151,9 +173,10 @@ PlayerHuskGhostModeExtension.husk_leave_ghost_mode = function (self)
 			Unit.flow_event(weapon_unit, "lua_left_ghost_mode")
 		end
 
-		local skin_unit = CosmeticsUtils.get_third_person_mesh_unit(self._unit)
+		local skin_unit = CosmeticsUtils.get_third_person_mesh_unit(player_unit)
 
 		Unit.flow_event(skin_unit, "lua_left_ghost_mode")
+		Unit.flow_event(player_unit, "lua_left_ghost_mode")
 	end
 
 	if self._is_server then
@@ -164,7 +187,7 @@ PlayerHuskGhostModeExtension.husk_leave_ghost_mode = function (self)
 		if not self._has_played_boss_sound and self._breed.boss then
 			local dialogue_system = Managers.state.entity:system("dialogue_system")
 
-			dialogue_system:trigger_mission_giver_event("vs_mg_new_spawn_monster")
+			dialogue_system:queue_mission_giver_event("vs_mg_new_spawn_monster")
 
 			self._has_played_boss_sound = true
 		end

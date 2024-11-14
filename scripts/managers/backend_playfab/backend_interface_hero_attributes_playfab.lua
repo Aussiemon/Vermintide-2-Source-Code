@@ -98,7 +98,7 @@ BackendInterfaceHeroAttributesPlayFab.set = function (self, hero, attribute, val
 	local mirror = self._backend_mirror
 
 	if DEFAULT_CHARACTER_ATTRIBUTES[attribute] then
-		mirror:set_career_read_only_data(hero, attribute, value, false)
+		mirror:set_career_read_only_data(hero, attribute, value, nil, false)
 	else
 		local key = hero .. "_" .. attribute
 

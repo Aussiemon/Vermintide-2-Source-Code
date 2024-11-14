@@ -26,7 +26,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			90,
-			-250,
+			0,
 			1,
 		},
 	},
@@ -73,9 +73,14 @@ local disclaimer_text_style = {
 		2,
 	},
 }
-local num_equipment_slots = #InventorySettings.equipment_slots
+
+local function create_loadout_grid(num_equipment_slots, ui_scenegraph)
+	ui_scenegraph.loadout_grid.local_position[2] = -num_equipment_slots * 50
+
+	return UIWidgets.create_loadout_grid_console("loadout_grid", scenegraph_definition.loadout_grid.size, num_equipment_slots, loadout_grid_spacing, nil, true)
+end
+
 local widgets = {
-	loadout_grid = UIWidgets.create_loadout_grid_console("loadout_grid", scenegraph_definition.loadout_grid.size, num_equipment_slots, loadout_grid_spacing, nil, true),
 	disclaimer_text = UIWidgets.create_simple_text(Localize("inventory_morris_note"), "disclaimer_text", scenegraph_definition.disclaimer_text.size, nil, disclaimer_text_style),
 	disclaimer_text_background = UIWidgets.create_rect_with_outer_frame("disclaimer_text_background", scenegraph_definition.disclaimer_text_background.size, "frame_outer_fade_02", nil, Colors.get_color_table_with_alpha("black", 125)),
 }
@@ -231,4 +236,5 @@ return {
 	generic_input_actions = generic_input_actions,
 	scenegraph_definition = scenegraph_definition,
 	animation_definitions = animation_definitions,
+	create_loadout_grid_func = create_loadout_grid,
 }

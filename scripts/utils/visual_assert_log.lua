@@ -142,7 +142,7 @@ function visual_assert(condition, message, ...)
 
 			local assert_data = {
 				message = string.format(message, ...),
-				traceback = fixup_callstack(string.split(Script.callstack(), "\n")),
+				traceback = fixup_callstack(string.split_deprecated(Script.callstack(), "\n")),
 			}
 
 			VisualAssertLog.asserts[n_asserts] = assert_data

@@ -70,7 +70,6 @@ AccountManager.init = function (self)
 	self._initiated = false
 	self._offline_mode = nil
 	self._xsts_token = nil
-	self._lobbies_to_free = {}
 	self._gamertags = {}
 	self._smartmatch_cleaner = SmartMatchCleaner:new()
 	self._xbox_privileges = XboxUserPrivileges:new()
@@ -387,16 +386,12 @@ end
 
 AccountManager._update_sessions = function (self, dt)
 	if Network.xboxlive_client_exists() then
-		if #self._lobbies_to_free > 0 then
-			self:_update_lobbies_to_free()
-		end
-
 		self._smartmatch_cleaner:update(dt)
 	else
 		self._smartmatch_cleaner:reset()
 	end
 
-	if self:all_lobbies_freed() and self._teardown_xboxlive then
+	if self:all_sessions_cleaned_up() and self._teardown_xboxlive then
 		Application.warning("SHUTTING DOWN XBOX LIVE CLIENT")
 
 		if Managers.voice_chat then
@@ -413,31 +408,6 @@ AccountManager._update_sessions = function (self, dt)
 		self:reset()
 
 		self._added_local_user_to_graph = nil
-	end
-end
-
-LOBBIES_TO_REMOVE = LOBBIES_TO_REMOVE or {}
-
-AccountManager._update_lobbies_to_free = function (self)
-	for i = #self._lobbies_to_free, 1, -1 do
-		local lobby = self._lobbies_to_free[i]
-		local state = lobby:state()
-
-		if state == MultiplayerSession.SHUTDOWN then
-			print("Freed a lobby")
-			lobby:free()
-
-			LOBBIES_TO_REMOVE[#LOBBIES_TO_REMOVE + 1] = i
-		end
-	end
-
-	if #LOBBIES_TO_REMOVE > 0 then
-		for _, index in ipairs(LOBBIES_TO_REMOVE) do
-			print("Removed a lobby")
-			table.remove(self._lobbies_to_free, index)
-		end
-
-		LOBBIES_TO_REMOVE = {}
 	end
 end
 
@@ -861,12 +831,8 @@ AccountManager.add_session_to_cleanup = function (self, session_data)
 	self._smartmatch_cleaner:add_session(session_data)
 end
 
-AccountManager.add_lobby_to_free = function (self, lobby)
-	self._lobbies_to_free[#self._lobbies_to_free + 1] = lobby
-end
-
-AccountManager.all_lobbies_freed = function (self)
-	return #self._lobbies_to_free == 0 and self._smartmatch_cleaner:ready()
+AccountManager.all_sessions_cleaned_up = function (self)
+	return self._smartmatch_cleaner:ready()
 end
 
 AccountManager.initiate_leave_game = function (self)

@@ -604,7 +604,7 @@ function flow_query_leader_early_owner(params)
 	local backend_manager = Managers.backend
 	local eary_owner = backend_manager:get_read_only_data("early_owner")
 
-	flow_return_table.value = eary_owner
+	flow_return_table.value = not not eary_owner
 
 	return flow_return_table
 end

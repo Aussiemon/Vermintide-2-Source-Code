@@ -398,7 +398,7 @@ GamePadEquipmentUI._update_equipment_lookup = function (self, equipment, invento
 	local equipment_slots = equipment.slots
 
 	for slot_name, _ in pairs(allowed_equipment_slots) do
-		item_template = equipment_slots[slot_name] and equipment_slots[slot_name].item_template
+		item_template = equipment_slots[slot_name] and inventory_extension:get_item_template(equipment_slots[slot_name])
 		equipment_lookup[slot_name] = item_template and item_template.name
 
 		local slot_additional_items = additional_items_table and additional_items_table[slot_name]
@@ -454,7 +454,7 @@ GamePadEquipmentUI._check_equipment_changed = function (self, equipment, invento
 	for slot_name, _ in pairs(allowed_equipment_slots) do
 		local slot_data = equipment_slots[slot_name]
 
-		item_template = slot_data and slot_data.item_template
+		item_template = slot_data and inventory_extension:get_item_template(slot_data)
 		item_name = item_template and item_template.name
 		saved_item_name = equipment_lookup[slot_name]
 

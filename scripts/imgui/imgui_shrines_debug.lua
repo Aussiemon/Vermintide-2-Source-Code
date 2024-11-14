@@ -71,6 +71,12 @@ ImguiShrinesDebug._update_controls = function (self)
 		self._selected_cursed_challenge = challenges[Imgui.combo("Challenge", challenge_index, challenges, 20)]
 	end
 
+	if not Managers.state.network.is_server and self._selected_shrine_type == "deus_cursed_chest" and self._selected_cursed_challenge ~= "default" then
+		Imgui.text("Clients can not spawn chests with a specific challenge. Please select 'default'.")
+
+		return
+	end
+
 	if Imgui.button("Spawn", 100, 20) then
 		local local_player = Managers.player and Managers.player:local_player()
 

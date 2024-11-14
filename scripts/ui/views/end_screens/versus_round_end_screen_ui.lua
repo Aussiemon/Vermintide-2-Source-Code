@@ -41,7 +41,9 @@ VersusRoundEndScreenUI.init = function (self, ingame_ui_context, input_service, 
 	self._player = player
 	self._peer_id = player:network_id()
 	self._local_player_id = player:local_player_id()
+	self._side = Managers.state.side:get_side_from_player_unique_id(player:unique_id())
 	self._win_conditions = Managers.mechanism:game_mechanism():win_conditions()
+	self._input_service = input_service
 
 	VersusRoundEndScreenUI.super.init(self, ingame_ui_context, input_service, definitions)
 end
@@ -51,15 +53,20 @@ VersusRoundEndScreenUI._create_ui_elements = function (self, definitions)
 	local widget_definitions = definitions.widget_definitions
 	local party_manager = Managers.party
 	local _, party_id = party_manager:get_party_from_player_id(self._peer_id, self._local_player_id)
+
+	party_id = party_id == 0 and 1 or party_id
+
 	local opponent_party_id = party_id == 1 and 2 or 1
 
-	self:_setup_score_widgets(scenegraph_definition, widget_definitions, party_id, opponent_party_id)
+	self:_build_score_widgets_scenegraph(scenegraph_definition)
 
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 
 	UISceneGraph.update_scenegraph(self._ui_scenegraph)
 
 	self._widgets, self._widgets_by_name = {}, {}
+
+	self:_setup_score_widgets(scenegraph_definition, widget_definitions, party_id, opponent_party_id)
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition, self._ui_renderer)
@@ -68,10 +75,13 @@ VersusRoundEndScreenUI._create_ui_elements = function (self, definitions)
 		self._widgets_by_name[name] = widget
 	end
 
-	local current_round_bg_widget = UIWidget.init(self._current_round_bg_widget_def, self._ui_renderer)
+	if self._current_round_bg_widget_def then
+		local current_round_bg_widget = UIWidget.init(self._current_round_bg_widget_def, self._ui_renderer)
 
-	self._widgets[#self._widgets + 1] = current_round_bg_widget
-	self._widgets_by_name.current_round_bg_widget = current_round_bg_widget
+		self._widgets[#self._widgets + 1] = current_round_bg_widget
+		self._widgets_by_name.current_round_bg_widget = current_round_bg_widget
+	end
+
 	self._ui_animator = UIAnimator:new(self._ui_scenegraph, definitions.animation_definitions)
 
 	local level_name = Managers.level_transition_handler:get_current_level_key()
@@ -80,18 +90,20 @@ VersusRoundEndScreenUI._create_ui_elements = function (self, definitions)
 	self:_setup_total_score_progress_bars_widgets(level_name, party_id, opponent_party_id)
 	self:_set_team_banner(party_id, opponent_party_id)
 
-	local level_settings = LevelSettings[level_name]
-	local round_end_events = level_settings.round_end_camera_events
+	local current_set = self:_get_current_set()
+	local event_name = string.format("cutscene_camera_vs_round_%s", current_set)
+	local world_manager = self._ingame_ui_context.world_manager
+	local world = world_manager:world("level_world")
+	local level = LevelHelper:current_level(world)
+	local animation_system = Managers.state.entity:system("animation_system")
 
-	if round_end_events then
-		local current_set = self:_get_current_set()
-		local event_name = round_end_events[current_set]
-		local world_manager = self._ingame_ui_context.world_manager
-		local world = world_manager:world("level_world")
-		local level = LevelHelper:current_level(world)
+	animation_system:add_safe_animation_callback(function ()
+		for mood, _ in pairs(MoodSettings) do
+			Managers.state.camera:clear_mood(mood)
+		end
 
 		Level.trigger_event(level, event_name)
-	end
+	end)
 end
 
 VersusRoundEndScreenUI._draw_widgets = function (self, ui_renderer, render_settings)
@@ -116,8 +128,6 @@ VersusRoundEndScreenUI._start = function (self)
 	}
 
 	self._round_end_anim_id = self._ui_animator:start_animation("round_end", self._widgets_by_name, scenegraph_definition, params)
-
-	self:_play_sound("versus_round_end_chains")
 end
 
 VersusRoundEndScreenUI._update = function (self, dt)
@@ -125,7 +135,7 @@ VersusRoundEndScreenUI._update = function (self, dt)
 		return
 	end
 
-	if self._round_end_anim_id and self._ui_animator:is_animation_completed(self._round_end_anim_id) then
+	if self._round_end_anim_id and (self._ui_animator:is_animation_completed(self._round_end_anim_id) or script_data.auto_complete_rounds) then
 		self._round_end_anim_id = nil
 	end
 
@@ -139,7 +149,7 @@ end
 VersusRoundEndScreenUI._get_round_count = function (self)
 	local mechanism = Managers.mechanism:game_mechanism()
 	local win_conditions = mechanism:win_conditions()
-	local round_count = win_conditions:num_rounds_played()
+	local round_count = win_conditions:get_current_round()
 
 	return round_count
 end
@@ -154,14 +164,12 @@ VersusRoundEndScreenUI._get_teams_ui_settings = function (self, local_player_par
 	return local_team_ui_settings, opponent_ui_settings
 end
 
-VersusRoundEndScreenUI._setup_score_widgets = function (self, scenegraph_definition, widget_definitions, local_player_party_id, opponent_party_id)
+VersusRoundEndScreenUI._build_score_widgets_scenegraph = function (self, scenegraph_definition)
 	local mechanism_manager = Managers.mechanism:game_mechanism()
 	local number_of_rounds = mechanism_manager:num_sets()
 
 	self._num_rounds = number_of_rounds
 	self._num_round_splits = number_of_rounds * 2
-
-	local current_set = self:_get_current_set()
 
 	for i = 1, number_of_rounds do
 		local bg_node_name = "round_" .. i .. "_bg"
@@ -181,7 +189,7 @@ VersusRoundEndScreenUI._setup_score_widgets = function (self, scenegraph_definit
 			},
 		}
 
-		local team_1_bar_node_name = "round_" .. i .. "team_1_score_bar"
+		local team_1_bar_node_name = "round_" .. i .. "_team_1_score_bar"
 
 		scenegraph_definition[team_1_bar_node_name] = {
 			horizontal_alignment = "left",
@@ -198,7 +206,7 @@ VersusRoundEndScreenUI._setup_score_widgets = function (self, scenegraph_definit
 			},
 		}
 
-		local team_2_bar_node_name = "round_" .. i .. "team_2_score_bar"
+		local team_2_bar_node_name = "round_" .. i .. "_team_2_score_bar"
 
 		scenegraph_definition[team_2_bar_node_name] = {
 			horizontal_alignment = "right",
@@ -214,33 +222,56 @@ VersusRoundEndScreenUI._setup_score_widgets = function (self, scenegraph_definit
 				14,
 			},
 		}
+	end
+end
 
+VersusRoundEndScreenUI._setup_score_widgets = function (self, scenegraph_definition, widget_definitions, local_player_party_id, opponent_party_id)
+	local number_of_rounds = self._num_rounds
+	local current_set = self:_get_current_set()
+
+	for i = 1, number_of_rounds do
 		local sets_data = self._win_conditions:get_sets_data_for_party(local_player_party_id)
 		local set_data = sets_data[i]
 		local max_points = set_data.max_points
 		local current_points = set_data.claimed_points
 		local bar_fill_threashold = current_points / max_points
+		local team_1_bar_node_name = "round_" .. i .. "_team_1_score_bar"
 		local team_1_widget_def = UIWidgets.create_round_score_progress_bar(team_1_bar_node_name, scenegraph_definition[team_1_bar_node_name].size, nil, true, max_points, current_points)
 
 		team_1_widget_def.content.bar_fill_threashold = bar_fill_threashold
-		widget_definitions[team_1_bar_node_name] = team_1_widget_def
+
+		local team_1_widget = UIWidget.init(team_1_widget_def, self._ui_renderer)
+
+		self._widgets[#self._widgets + 1] = team_1_widget
+		self._widgets_by_name[team_1_bar_node_name] = team_1_widget
 		sets_data = self._win_conditions:get_sets_data_for_party(opponent_party_id)
 		set_data = sets_data[i]
 		max_points = set_data.max_points
 		current_points = set_data.claimed_points
 		bar_fill_threashold = current_points / max_points
 
+		local team_2_bar_node_name = "round_" .. i .. "_team_2_score_bar"
 		local team_2_widget_def = UIWidgets.create_round_score_progress_bar(team_2_bar_node_name, scenegraph_definition[team_2_bar_node_name].size, nil, false, max_points, current_points)
 
-		widget_definitions[team_2_bar_node_name] = team_2_widget_def
 		team_2_widget_def.content.bar_fill_threashold = bar_fill_threashold
 
+		local team_2_widget = UIWidget.init(team_2_widget_def, self._ui_renderer)
+
+		self._widgets[#self._widgets + 1] = team_2_widget
+		self._widgets_by_name[team_2_bar_node_name] = team_2_widget
+
+		local bg_node_name = "round_" .. i .. "_bg"
 		local round_text_widget_name = "round_" .. i .. "_text"
 		local str = "%s %d"
 		local round_text_style = table.clone(round_text_style)
 
 		round_text_style.text_color = current_set == i and Colors.get_color_table_with_alpha("font_default", 255) or Colors.get_color_table_with_alpha("font_button_normal", 255)
-		widget_definitions[round_text_widget_name] = UIWidgets.create_simple_text(string.format(str, Localize("versus_round"), i), bg_node_name, nil, nil, round_text_style)
+
+		local round_text_widget_def = UIWidgets.create_simple_text(string.format(str, Localize("versus_round"), i), bg_node_name, nil, nil, round_text_style)
+		local round_text_widget = UIWidget.init(round_text_widget_def, self._ui_renderer)
+
+		self._widgets[#self._widgets + 1] = round_text_widget
+		self._widgets_by_name[round_text_widget_name] = round_text_widget
 	end
 
 	local bg_node_name = "round_" .. current_set .. "_bg"
@@ -338,21 +369,113 @@ VersusRoundEndScreenUI._setup_total_score_progress_bars_widgets = function (self
 		self._widgets_by_name.winner_team_crown = winner_team_crown_widget
 	end
 
-	local status_text = Localize("versus_end_of_round_team_winning")
-
-	if local_player_team_score < opponent_team_score then
-		status_text = Localize("versus_end_of_round_team_losing")
-	elseif local_player_team_score == opponent_team_score then
-		status_text = Localize("versus_end_of_round_team_tied")
-	end
-
+	local status_text = ""
 	local status_text_widget = self._widgets_by_name.team_wining_status_text
 
 	status_text_widget.content.text = status_text
 end
 
 VersusRoundEndScreenUI._get_current_set = function (self)
-	local rounds_played = self._win_conditions:num_rounds_played()
+	local rounds_played = self._win_conditions:get_current_round()
 
 	return math.round(rounds_played / 2)
+end
+
+VersusRoundEndScreenUI._get_close_to_winning_score = function (self, level_key, local_player_party_id, opponent_party_id)
+	local current_set = self:_get_current_set()
+	local current_round = self:_get_round_count()
+	local num_rounds = self._num_rounds
+	local max_level_score = VersusObjectiveSettings[level_key].max_score
+	local local_player_team_score = self._win_conditions:get_total_score(local_player_party_id)
+	local local_player_team_sets_data = self._win_conditions:get_sets_data_for_party(local_player_party_id)
+	local opponent_team_score = self._win_conditions:get_total_score(opponent_party_id)
+	local opponent_team_sets_data = self._win_conditions:get_sets_data_for_party(opponent_party_id)
+	local local_player_available_score, opponent_team_available_score = max_level_score, max_level_score
+	local player = Managers.player:local_player()
+	local side = Managers.state.side and Managers.state.side:get_side_from_player_unique_id(player:unique_id())
+	local is_hero = side and side:name() == "heroes"
+	local match_state = Managers.mechanism:get_state()
+	local game_mode = Managers.state.game_mode and Managers.state.game_mode:game_mode()
+	local is_round_over = game_mode and game_mode:match_in_round_over_state()
+	local local_player_has_played_round, opponent_has_played_round = false, false
+
+	if current_round % current_set ~= 0 then
+		local_player_has_played_round = is_hero
+		opponent_has_played_round = not is_hero
+	elseif current_round % current_set == 0 then
+		local_player_has_played_round = true
+		opponent_has_played_round = true
+	end
+
+	local is_last_round = self._win_conditions:is_final_round()
+
+	for i = 1, num_rounds do
+		local local_player_set_data = local_player_team_sets_data[i]
+		local opponent_team_set_data = opponent_team_sets_data[i]
+
+		if i < current_set then
+			local unclaimed_points = local_player_set_data.max_points - local_player_set_data.claimed_points or 0
+
+			local_player_available_score = local_player_available_score - unclaimed_points
+			unclaimed_points = opponent_team_set_data.max_points - opponent_team_set_data.claimed_points or 0
+			opponent_team_available_score = opponent_team_available_score - unclaimed_points
+		end
+	end
+
+	local score_threshold = local_player_available_score < opponent_team_available_score and local_player_available_score or opponent_team_available_score
+	local local_player_score_to_win = score_threshold - local_player_team_score
+	local opponent_team_score_to_win = score_threshold - opponent_team_score
+	local next_round_id = num_rounds >= current_set + 1 and current_set + 1 or num_rounds
+	local opp_predicted_score = 0
+	local loc_predicted_score = 0
+
+	if local_player_has_played_round and opponent_has_played_round then
+		local opponent_team_set_data = opponent_team_sets_data[next_round_id]
+
+		opp_predicted_score = opponent_team_score + opponent_team_set_data.max_points
+
+		local local_player_set_data = local_player_team_sets_data[next_round_id]
+
+		loc_predicted_score = local_player_team_score + local_player_set_data.max_points
+	else
+		local opponent_team_set_data = opponent_team_sets_data[current_set]
+
+		opp_predicted_score = opponent_team_score + (opponent_team_set_data.max_points - opponent_team_set_data.claimed_points)
+
+		local local_player_set_data = local_player_team_sets_data[current_set]
+
+		loc_predicted_score = local_player_team_score + (local_player_set_data.max_points - local_player_set_data.claimed_points)
+	end
+
+	local is_next_round_last = current_round + 1 == self._num_rounds * 2
+
+	if is_next_round_last then
+		if is_hero then
+			return opponent_party_id, opponent_team_score_to_win + 1
+		else
+			return local_player_party_id, local_player_score_to_win + 1
+		end
+	end
+
+	if local_player_score_to_win < opponent_team_score_to_win then
+		local local_player_set_data = local_player_team_sets_data[next_round_id]
+
+		if local_player_score_to_win < local_player_set_data.max_points then
+			return local_player_party_id, local_player_score_to_win + 1
+		end
+	elseif opponent_team_score_to_win < local_player_score_to_win then
+		local opponent_team_set_data = opponent_team_sets_data[next_round_id]
+
+		if opponent_team_score_to_win < opponent_team_set_data.max_points then
+			return opponent_party_id, opponent_team_score_to_win + 1
+		end
+	else
+		local local_player_set_data = local_player_team_sets_data[next_round_id]
+
+		if local_player_score_to_win < local_player_set_data.max_points then
+			return local_player_party_id, local_player_score_to_win + 1
+		end
+	end
+
+	return nil, nil
 end

@@ -724,8 +724,10 @@ achievements.shovel_big_suck = {
 		end
 
 		local damage_source = damage_data[DamageDataIndex.DAMAGE_SOURCE_NAME]
+		local item = rawget(ItemMasterList, damage_source)
+		local is_necro_staff = item and item.item_type == "bw_necromancy_staff"
 
-		if damage_source ~= "bw_necromancy_staff" then
+		if not is_necro_staff then
 			return
 		end
 

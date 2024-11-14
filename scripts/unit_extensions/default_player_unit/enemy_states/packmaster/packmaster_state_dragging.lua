@@ -41,6 +41,13 @@ PackmasterStateDragging.on_enter = function (self, unit, input, dt, context, t, 
 
 	first_person_extension:hide_weapons("catapulted")
 	CharacterStateHelper.show_inventory_3p(unit, false, true, Managers.player.is_server, inventory_extension)
+
+	self._weapon_3p = inventory_extension:get_weapon_unit_3p()
+	self.claw_left_hand_constraint = Unit.animation_find_constraint_target(unit, "claw_target_left_hand")
+	self.claw_right_hand_constraint = Unit.animation_find_constraint_target(unit, "claw_target_right_hand")
+	self.constraint_left_hand_node = Unit.node(self._weapon_3p, "a_left_hand")
+	self.constraint_right_hand_node = Unit.node(self._weapon_3p, "a_right_hand")
+
 	StatusUtils.set_grabbed_by_pack_master_network("pack_master_dragging", dragged_unit, true, unit)
 
 	local player = Managers.player:owner(unit)
@@ -93,11 +100,12 @@ PackmasterStateDragging.update = function (self, unit, input, dt, context, t)
 	local csm = self._csm
 	local world = self._world
 	local unit = self._unit
+	local params = self._temp_params
 	local target_unit = self._dragged_unit
+	local status_ext = ScriptUnit.has_extension(target_unit, "status_system")
+	local target_ledge_hanging = status_ext and status_ext:get_is_ledge_hanging()
 
-	if not HEALTH_ALIVE[target_unit] then
-		local params = self._temp_params
-
+	if not HEALTH_ALIVE[target_unit] or target_ledge_hanging then
 		csm:change_state("walking", params)
 
 		return
@@ -169,6 +177,12 @@ PackmasterStateDragging.update = function (self, unit, input, dt, context, t)
 		return
 	end
 
+	local left_hand_node_position = Unit.world_position(self._weapon_3p, self.constraint_right_hand_node)
+	local right_hand_node_position = Unit.world_position(self._weapon_3p, self.constraint_left_hand_node)
+
+	Unit.animation_set_constraint_target(unit, self.claw_left_hand_constraint, left_hand_node_position)
+	Unit.animation_set_constraint_target(unit, self.claw_right_hand_constraint, right_hand_node_position)
+
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local is_crouching = status_extension:is_crouching()
 	local player = Managers.player:owner(unit)
@@ -176,8 +190,10 @@ PackmasterStateDragging.update = function (self, unit, input, dt, context, t)
 	local is_moving = CharacterStateHelper.has_move_input(input_extension)
 
 	if not self.is_bot then
-		local move_acceleration_up_dt = movement_settings_table.move_acceleration_up * dt
-		local move_acceleration_down_dt = movement_settings_table.move_acceleration_down * dt
+		local breed_move_acceleration_up = self._breed and self._breed.breed_move_acceleration_up
+		local breed_move_acceleration_down = self._breed and self._breed.breed_move_acceleration_down
+		local move_acceleration_up_dt = breed_move_acceleration_up * dt or movement_settings_table.move_acceleration_up * dt
+		local move_acceleration_down_dt = breed_move_acceleration_down * dt or movement_settings_table.move_acceleration_down * dt
 
 		if is_moving then
 			current_movement_speed_scale = math.min(1, current_movement_speed_scale + move_acceleration_up_dt)
@@ -305,6 +321,22 @@ PackmasterStateDragging.on_exit = function (self, unit, input, dt, context, t, n
 
 	self._locomotion_extension:enable_rotation_towards_velocity(true)
 	self:set_breed_action("n/a")
+
+	if not self.is_bot then
+		local local_player = Managers.player:local_player()
+		local owner = Managers.player:owner(self._unit)
+
+		if local_player and local_player == owner then
+			local drag_time = math.round(t - self._enter_time)
+
+			if drag_time > 0 then
+				local stats_id = local_player:stats_id()
+				local statistics_db = Managers.player:statistics_db()
+
+				statistics_db:modify_stat_by_amount(stats_id, "vs_drag_heroes", drag_time)
+			end
+		end
+	end
 end
 
 PackmasterStateDragging._release_dragged_target = function (self)

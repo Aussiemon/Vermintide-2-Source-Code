@@ -7,7 +7,7 @@ local function check_journey_completed_difficulty(statistics_db, stats_id, journ
 		return false
 	end
 
-	local difficulties = difficulty_manager:get_level_difficulties()
+	local difficulties = difficulty_manager:get_default_difficulties()
 	local difficulty_index = LevelUnlockUtils.completed_journey_difficulty_index(statistics_db, stats_id, journey_name)
 
 	if not difficulty_index then
@@ -32,7 +32,7 @@ local function check_journey_dominant_god_completed_difficulty(statistics_db, st
 		return false
 	end
 
-	local difficulties = difficulty_manager:get_level_difficulties()
+	local difficulties = difficulty_manager:get_default_difficulties()
 	local difficulty_index = LevelUnlockUtils.completed_journey_dominant_god_difficulty_index(statistics_db, stats_id, dominant_god)
 
 	if not difficulty_index then
@@ -57,7 +57,7 @@ local function check_hero_journey_completed_difficulty(statistics_db, stats_id, 
 		return false
 	end
 
-	local difficulties = difficulty_manager:get_level_difficulties()
+	local difficulties = difficulty_manager:get_default_difficulties()
 	local difficulty_index = LevelUnlockUtils.completed_hero_journey_difficulty_index(statistics_db, stats_id, hero, journey_name)
 
 	if not difficulty_index then
@@ -146,11 +146,14 @@ local function add_journey_dominant_god_complete_challenge(achievements, id, dom
 end
 
 local function add_hero_journey_complete_challenge(achievements, id, hero, journey_name, difficulty_rank, icon, dlc, id_xb1, id_ps4)
+	local difficulty = DifficultyRankLookup[difficulty_rank]
+	local difficulty_setting = DifficultySettings[difficulty]
 	local template = {
 		name = "achv_" .. id .. "_name",
 		desc = "achv_" .. id .. "_desc",
 		icon = icon or "achievement_trophy_" .. id,
 		required_dlc = dlc,
+		required_dlc_extra = difficulty_setting.dlc_requirement,
 		ID_XB1 = id_xb1,
 		ID_PS4 = id_ps4,
 		completed = function (statistics_db, stats_id)

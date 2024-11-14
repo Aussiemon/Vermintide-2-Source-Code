@@ -101,7 +101,7 @@ VersusPreGameLogic.request_ready = function (self, local_player_id, is_ready)
 	local_player_id = self._local_player_id or local_player_id
 	self._local_player_id = local_player_id
 
-	if not Network.game_session() then
+	if not Managers.state.network or not Managers.state.network:game() then
 		Crashify.print_exception("VersusPreGameLogic", "Tried to ready up whithout game_session")
 
 		return

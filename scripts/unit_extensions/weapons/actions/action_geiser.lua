@@ -36,7 +36,6 @@ ActionGeiser.client_owner_start_action = function (self, new_action, t, chain_ac
 	self.radius = chain_action_data.radius
 	self.height = chain_action_data.height
 	self.position = chain_action_data.position
-	self.targeting_effect_id = chain_action_data.targeting_effect_id
 
 	table.clear(self._damage_buffer)
 
@@ -76,10 +75,6 @@ end
 ActionGeiser.finish = function (self, reason)
 	if self.state ~= "waiting_to_shoot" and self.state ~= "shot" then
 		self:_proc_spell_used(self.owner_buff_extension)
-	end
-
-	if self.targeting_effect_id then
-		World.destroy_particles(self.world, self.targeting_effect_id)
 	end
 
 	self.position = nil

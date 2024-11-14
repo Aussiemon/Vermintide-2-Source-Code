@@ -50,15 +50,53 @@ EndViewStateScoreVSTabSummary._calculate_awards = function (self)
 	end
 
 	local max_awards = 0
-	local mvp_peer_id
 
 	for peer_id, awards in pairs(self._awards) do
 		local num_awards = #awards
 
 		if max_awards < num_awards then
-			mvp_peer_id = peer_id
 			max_awards = num_awards
 		end
+	end
+
+	local potential_mvp_peer_ids = {}
+
+	for peer_id, awards in pairs(self._awards) do
+		local num_awards = #awards
+
+		if num_awards == max_awards then
+			potential_mvp_peer_ids[#potential_mvp_peer_ids + 1] = peer_id
+		end
+	end
+
+	local mvp_peer_id
+
+	if not (#potential_mvp_peer_ids > 1) then
+		-- Nothing
+	end
+
+	do
+		local my_peer_id = Network.peer_id()
+		local local_player_id = 1
+		local local_player_party_id = self._context.party_composition[PlayerUtils.unique_player_id(my_peer_id, local_player_id)]
+		local opponent_party_id = local_player_party_id == 1 and 2 or 1
+		local game_won = self._context.game_won
+		local winning_party_id = game_won and local_player_party_id or opponent_party_id
+		local party_composition = self._context.party_composition
+
+		for _, peer_id in ipairs(potential_mvp_peer_ids) do
+			local party_id = party_composition[PlayerUtils.unique_player_id(peer_id, local_player_id)]
+
+			if party_id == winning_party_id then
+				mvp_peer_id = peer_id
+
+				break
+			end
+		end
+	end
+
+	if false then
+		mvp_peer_id = potential_mvp_peer_ids[1]
 	end
 
 	if mvp_peer_id then

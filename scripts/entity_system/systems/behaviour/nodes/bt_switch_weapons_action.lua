@@ -29,7 +29,11 @@ BTSwitchWeaponsAction.enter = function (self, unit, blackboard, t)
 
 	local switch_animation = action and action.switch_animation
 
-	if switch_animation then
+	if switch_animation == "to_combat" then
+		AiUtils.enter_combat(unit, blackboard)
+	elseif switch_animation == "to_passive" then
+		AiUtils.enter_passive(unit, blackboard)
+	elseif switch_animation then
 		Managers.state.network:anim_event(unit, switch_animation)
 	end
 end

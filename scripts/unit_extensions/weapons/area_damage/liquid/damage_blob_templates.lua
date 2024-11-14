@@ -50,14 +50,12 @@ DamageBlobTemplates.templates = {
 		fx_name_rim = "fx/wpnfx_warp_fire_remains_rim",
 		fx_separation_dist = 0.8,
 		fx_size_variable = "warp_fire_flamethrower_remains_size",
-		init_function = "warpfire_thrower_fire_init_vs",
 		nav_cost_map_cost_type = "warpfire_thrower_warpfire",
 		sfx_name_start = "Play_enemy_warpfire_thrower_fire_hit_ground",
 		sfx_name_start_remains = "Play_enemy_stormfiend_fire_ground_loop",
 		sfx_name_stop = "Stop_enemy_warpfire_thrower_fire_hit_ground",
 		sfx_name_stop_remains = "Stop_enemy_stormfiend_fire_ground_loop",
 		time_of_life = 5,
-		update_function = "warpfire_thrower_fire_update_vs",
 		use_nav_cost_map_volumes = true,
 		immune_breeds = {
 			chaos_plague_wave_spawner = true,
@@ -166,7 +164,7 @@ DamageBlobTemplates.warpfire_thrower_fire_init_vs = function (self, t)
 			local fp_extension = ScriptUnit.has_extension(warpfire_thrower_unit, "first_person_system")
 
 			if fp_extension and fp_extension:first_person_mode_active() then
-				particle_name = "fx/chr_warp_fire_flamethrower_01_1p"
+				particle_name = "fx/chr_warp_fire_flamethrower_01_1p_versus"
 			end
 
 			local node_name = "p_fx"
@@ -225,6 +223,13 @@ DamageBlobTemplates.warpfire_thrower_fire_update_vs = function (self, t, dt, tar
 		end
 
 		local particle_name = "fx/chr_warp_fire_flamethrower_01"
+		local warpfire_thrower_unit = self._source_unit
+		local fp_extension = ScriptUnit.has_extension(warpfire_thrower_unit, "first_person_system")
+
+		if fp_extension and fp_extension:first_person_mode_active() then
+			particle_name = "fx/chr_warp_fire_flamethrower_01_1p_versus"
+		end
+
 		local effect_variable_id = World.find_particles_variable(world, particle_name, "firepoint_1")
 
 		World.set_particles_variable(world, particle_id, effect_variable_id, firepoint_1_pos + aim_direction * 0.1)

@@ -1042,7 +1042,7 @@ local function create_bonus_objective_header_func()
 	}
 end
 
-local function create_bonus_objective_func(display_name, score, index, stack_name, objective_name)
+local function create_bonus_objective_func(display_name, index, stack_name, objective_name)
 	local scenegraph_id = "progress_ui"
 	local checkmark_texture = "matchmaking_checkbox"
 	local checkmark_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(checkmark_texture)
@@ -1115,7 +1115,6 @@ local function create_bonus_objective_func(display_name, score, index, stack_nam
 			essence_icon_id = essence_icon_texture,
 			checkmark_id = checkmark_texture,
 			bullet_id = bullet_texture,
-			score_id = score,
 			base_objective_name_id = Localize(display_name),
 			objective_name_id = Localize(display_name),
 			stack = objective_name and {
@@ -1232,41 +1231,6 @@ local function create_bonus_objective_func(display_name, score, index, stack_nam
 					80,
 					-82,
 					1,
-				},
-			},
-			score = {
-				font_size = 18,
-				font_type = "hell_shark_header",
-				horizontal_alignment = "left",
-				localize = false,
-				upper_case = false,
-				vertical_alignment = "bottom",
-				word_wrap = false,
-				text_color = Colors.get_color_table_with_alpha("white", 255),
-				offset = {
-					105,
-					-85,
-					1,
-				},
-			},
-			score_shadow = {
-				font_size = 18,
-				font_type = "hell_shark_header",
-				horizontal_alignment = "left",
-				localize = false,
-				upper_case = false,
-				vertical_alignment = "bottom",
-				word_wrap = false,
-				text_color = {
-					255,
-					0,
-					0,
-					0,
-				},
-				offset = {
-					107,
-					-87,
-					0,
 				},
 			},
 		},

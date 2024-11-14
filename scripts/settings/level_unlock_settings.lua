@@ -176,7 +176,7 @@ end
 LevelUnlockUtils = {}
 
 LevelUnlockUtils.unlocked_level_difficulty_index = function (statistics_db, player_stats_id, level_key)
-	local difficulties, starting_difficulty = Managers.state.difficulty:get_level_difficulties(level_key)
+	local difficulties, starting_difficulty = Managers.state.difficulty:get_default_difficulties()
 	local automatic_difficulty_unlock_index = table.find(difficulties, starting_difficulty)
 	local highest_available_difficulty_index = #difficulties
 	local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, player_stats_id, level_key)

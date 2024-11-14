@@ -72,16 +72,18 @@ settings.area_damage_templates = {
 				local ramping_area_damage = custom_data_table.ramping_area_damage
 
 				if not ramping_area_damage[hit_unit] then
-					ramping_area_damage[hit_unit] = 0.2
+					ramping_area_damage[hit_unit] = 0.015
 				else
-					ramping_area_damage[hit_unit] = ramping_area_damage[hit_unit] + 0.15
+					ramping_area_damage[hit_unit] = ramping_area_damage[hit_unit] * 2.5
 				end
 
 				if ramping_area_damage[hit_unit] < 1 then
 					damage = damage * ramping_area_damage[hit_unit]
 				end
 
-				DamageUtils.add_damage_network(hit_unit, extension_unit, damage, "torso", "gas", nil, Vector3(1, 0, 0), damage_source, hit_ragdoll_actor, source_attacker_unit, nil)
+				if DamageUtils.networkify_damage(damage) > 0 then
+					DamageUtils.add_damage_network(hit_unit, extension_unit, damage, "torso", "gas", nil, Vector3(1, 0, 0), damage_source, hit_ragdoll_actor, source_attacker_unit, nil)
+				end
 			end,
 		},
 		client = {

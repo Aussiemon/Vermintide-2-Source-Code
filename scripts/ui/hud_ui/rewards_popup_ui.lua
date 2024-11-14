@@ -48,7 +48,7 @@ RewardsPopupUI.present_rewards = function (self, rewards)
 			local reward_type = data.type
 			local sounds = data.sounds
 
-			if reward_type == "item" or CosmeticUtils.is_cosmetic_item(reward_type) then
+			if reward_type == "item" or reward_type == "loot_chest" or CosmeticUtils.is_cosmetic_item(reward_type) then
 				local backend_id = data.backend_id
 				local entry = {}
 				local reward_item = item_interface:get_item_from_id(backend_id)

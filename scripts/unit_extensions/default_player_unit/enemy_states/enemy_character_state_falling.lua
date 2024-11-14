@@ -32,7 +32,7 @@ EnemyCharacterStateFalling.init = function (self, character_state_init_context)
 	EnemyCharacterState.init(self, character_state_init_context, "falling")
 
 	self.last_valid_nav_position = Vector3Box()
-	self.ladder_shaking = false
+	self.shaking_ladder_unit = false
 end
 
 EnemyCharacterStateFalling.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
@@ -50,15 +50,13 @@ EnemyCharacterStateFalling.on_enter = function (self, unit, input, dt, context, 
 	CharacterStateHelper.play_animation_event_first_person(first_person_extension, "idle")
 
 	if previous_state ~= "jumping" then
-		if CharacterStateHelper.is_moving(locomotion_extension) then
-			local move_anim = "jump_idle"
+		local move_anim_3p, move_anim_1p
 
-			CharacterStateHelper.play_animation_event(unit, move_anim)
-		else
-			local move_anim = "jump_idle"
+		move_anim_3p = CharacterStateHelper.is_moving(locomotion_extension) and "jump_idle" or "jump_idle"
+		move_anim_1p = self._play_fp_anim and "to_falling" or "idle"
 
-			CharacterStateHelper.play_animation_event(unit, move_anim)
-		end
+		CharacterStateHelper.play_animation_event(unit, move_anim_3p)
+		CharacterStateHelper.play_animation_event_first_person(first_person_extension, move_anim_1p)
 	end
 
 	self.jumped = params.jumped
@@ -70,7 +68,7 @@ EnemyCharacterStateFalling.on_enter = function (self, unit, input, dt, context, 
 
 	self.is_active = true
 	self.times_jumped_in_air = 0
-	self.ladder_shaking = params.ladder_shaking or false
+	self.shaking_ladder_unit = params.shaking_ladder_unit or false
 
 	if previous_state ~= "jumping" and previous_state ~= "leaping" and previous_state ~= "lunging" and previous_state ~= "pouncing" then
 		ScriptUnit.extension(unit, "whereabouts_system"):set_fell()
@@ -120,7 +118,18 @@ EnemyCharacterStateFalling.on_exit = function (self, unit, input, dt, context, t
 		ScriptUnit.extension(unit, "whereabouts_system"):set_no_landing()
 	end
 
-	CharacterStateHelper.play_animation_event(unit, anim_event)
+	if next_state and next_state ~= "falling" and Managers.state.network:game() then
+		if next_state == "dead" then
+			CharacterStateHelper.play_animation_event(unit, "ragdoll")
+		else
+			CharacterStateHelper.play_animation_event(unit, "land_still")
+			CharacterStateHelper.play_animation_event(unit, "to_onground")
+
+			if self._play_fp_anim then
+				CharacterStateHelper.play_animation_event_first_person(self._first_person_extension, "to_onground")
+			end
+		end
+	end
 end
 
 EnemyCharacterStateFalling.common_movement = function (self, in_ghost_mode, dt, unit)
@@ -204,6 +213,7 @@ EnemyCharacterStateFalling.common_movement = function (self, in_ghost_mode, dt, 
 	local final_move_speed = buffed_move_speed * movement_settings_table.player_speed_scale
 
 	CharacterStateHelper.move_in_air_pactsworn(self._first_person_extension, input_extension, self._locomotion_extension, final_move_speed, unit)
+	CharacterStateHelper.ghost_mode(self._ghost_mode_extension, input_extension)
 	CharacterStateHelper.look(input_extension, self._player.viewport_name, self._first_person_extension, status_extension, self._inventory_extension)
 end
 

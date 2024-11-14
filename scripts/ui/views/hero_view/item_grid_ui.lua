@@ -94,6 +94,18 @@ ItemGridUI.get_equipped_items = function (self, hero_name, career_index)
 	return equipped_items
 end
 
+ItemGridUI.get_equipped_weapon_pose_parent = function (self, hero_name, career_index)
+	local profile = SPProfiles[FindProfileIndex(hero_name)]
+	local career = profile.careers[career_index]
+	local career_name = career.name
+	local pose_item = BackendUtils.get_loadout_item(career_name, "slot_pose")
+	local parent = pose_item.data.parent
+	local backend_items = Managers.backend:get_interface("items")
+	local parent_item = backend_items:get_item_from_key(parent)
+
+	return parent_item
+end
+
 ItemGridUI.apply_item_sorting_function = function (self, item_sort_func)
 	self._item_sort_func = item_sort_func
 end
@@ -146,6 +158,12 @@ ItemGridUI.mark_equipped_items = function (self, mark)
 	self:update_items_status()
 end
 
+ItemGridUI.mark_equipped_weapon_pose_parent = function (self, mark)
+	self._mark_equipped_weapon_pose_parent = mark
+
+	self:update_items_status()
+end
+
 ItemGridUI.disable_item_drag = function (self)
 	self._item_drag_disabled = true
 
@@ -163,6 +181,7 @@ ItemGridUI.update_items_status = function (self)
 	local locked_item_icon = self._locked_item_icon
 	local locked_items = self._mark_locked_items and self._locked_items
 	local equipped_items = self._mark_equipped_items and self:get_equipped_items(hero_name, career_index)
+	local equipped_weapon_pose_parent = self._mark_equipped_weapon_pose_parent and self:get_equipped_weapon_pose_parent(hero_name, career_index)
 	local item_drag_disabled = self._item_drag_disabled
 	local hide_slots = self._hide_slots
 	local disable_locked_items = self._disable_locked_items
@@ -184,15 +203,19 @@ ItemGridUI.update_items_status = function (self)
 			local item_style = style[item_icon_name]
 			local item = content["item" .. name_sufix]
 			local item_data = item and item.data
+			local item_key = item_data and item_data.key
 			local backend_id = item and item.backend_id
 			local is_equipped = backend_id and equipped_items and equipped_items[backend_id] ~= nil
+
+			is_equipped = item_key and equipped_weapon_pose_parent and equipped_weapon_pose_parent.data.key == item_key or is_equipped
+
 			local is_locked = backend_id and locked_items and locked_items[backend_id] ~= nil
 			local can_wield_table = item_data and item_data.can_wield
 			local can_wield = can_wield_table and table.contains(can_wield_table, career_name)
 
 			item_content[locked_icon_name] = locked_item_icon
 
-			if equipped_items then
+			if equipped_items or equipped_weapon_pose_parent then
 				item_content.equipped = is_equipped
 			else
 				item_content.equipped = false

@@ -217,11 +217,13 @@ SimpleHuskInventoryExtension.add_equipment = function (self, slot_name, item_nam
 		id = slot_name,
 		skin = skin_name,
 		item_template = item_template,
+		item_template_name = item_template.name,
 	}
 end
 
 SimpleHuskInventoryExtension.add_equipment_limited_item = function (self, slot_name, item_name, spawner_unit, limited_item_id)
 	local item_data = ItemMasterList[item_name]
+	local item_template = BackendUtils.get_item_template(item_data)
 
 	self._equipment.slots[slot_name] = {
 		item_data = item_data,
@@ -230,6 +232,7 @@ SimpleHuskInventoryExtension.add_equipment_limited_item = function (self, slot_n
 			spawner_unit = spawner_unit,
 			id = limited_item_id,
 		},
+		item_template_name = item_template.name,
 	}
 end
 
@@ -326,6 +329,22 @@ SimpleHuskInventoryExtension.wield = function (self, slot_name)
 				local outline_extension = ScriptUnit.extension(self._unit, "outline_system")
 
 				outline_extension:reapply_outline()
+			end
+
+			if slot_name == "slot_packmaster_claw" then
+				local claw_unit = self:get_weapon_unit()
+				local status_extension = ScriptUnit.extension(self._unit, "status_system")
+				local grabber_unit = status_extension:get_pack_master_grabber()
+				local grabber_player = Managers.player:unit_owner(grabber_unit)
+				local cosmetic_slot = CosmeticUtils.get_cosmetic_slot(grabber_player, "slot_skin")
+
+				if cosmetic_slot then
+					if cosmetic_slot.item_name ~= "skaven_pack_master_skin_1001" then
+						Unit.flow_event(claw_unit, "lua_wield_0000")
+					else
+						Unit.flow_event(claw_unit, "lua_wield_1001")
+					end
+				end
 			end
 
 			self:_reapply_fade(equipment)
@@ -590,7 +609,6 @@ SimpleHuskInventoryExtension._override_career_skill_item_template = function (se
 		local equipment = self._equipment
 		local slots = equipment.slots
 		local override_slot_data = slots[slot_to_use]
-		local override_item_template
 
 		if WeaponUtils.is_valid_weapon_override(override_slot_data, item_data) then
 			override_item_template = self:get_item_template(override_slot_data)
@@ -598,7 +616,7 @@ SimpleHuskInventoryExtension._override_career_skill_item_template = function (se
 			local default_item_name = item_data.default_item_to_replace
 			local override_item_data = ItemMasterList[default_item_name]
 
-			override_item_template = Weapons[override_item_data.template]
+			override_item_template = WeaponUtils.get_weapon_template(override_item_data.template)
 		end
 
 		local item_template = BackendUtils.get_item_template(item_data)

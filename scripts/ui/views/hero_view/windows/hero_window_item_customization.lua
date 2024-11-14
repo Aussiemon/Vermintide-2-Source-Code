@@ -1255,7 +1255,8 @@ HeroWindowItemCustomization._update_upgrade_option = function (self)
 	local upgrade_description_text = Localize("upgrade_description_text_" .. rarity)
 
 	content.sub_title = upgrade_description_text
-	content.locked = rarity == "unique"
+	content.locked = rarity == "unique" or rarity == "default"
+	content.input_text_locked = rarity == "unique" and string.upper(Localize("menu_weave_forge_upgrade_loadout_button_cap")) or Localize("search_filter_locked")
 
 	if rarity_name_color then
 		local color_multiplier = 0.8
@@ -1522,6 +1523,7 @@ HeroWindowItemCustomization._setup_illusions = function (self, item)
 	local quest_interface = Managers.backend:get_interface("quests")
 	local backend_crafting = Managers.backend:get_interface("crafting")
 	local unlocked_weapon_skins = backend_crafting:get_unlocked_weapon_skins()
+	local item_key = string.gsub(item.ItemId, "^vs_", "")
 	local default_skin = WeaponSkins.default_skins[item_key]
 	local default_skin_key
 	local width = 51

@@ -1391,23 +1391,6 @@ ItemMasterList.skin_bw_unchained_black_and_gold = {
 	},
 }
 ItemMasterList.skin_bw_unchained_bronze = {
-	description = "description_skin_bw_unchained_bronze",
-	display_name = "skin_bw_unchained_bronze",
-	hud_icon = "unit_frame_portrait_bright_wizard",
-	information_text = "information_text_character_skin",
-	inventory_icon = "icon_skin_unchained_bronze",
-	item_preview_environment = "unchained_skins_01",
-	item_type = "skin",
-	name = "skin_bw_unchained_bronze",
-	rarity = "rare",
-	skin_type = "unit",
-	slot_type = "skin",
-	temporary_template = "skin_bw_unchained_bronze",
-	can_wield = {
-		"bw_unchained",
-	},
-}
-ItemMasterList.skin_bw_unchained_bronze = {
 	description = "description_skin_bw_unchained_redemption",
 	display_name = "skin_bw_unchained_redemption",
 	hud_icon = "unit_frame_portrait_bright_wizard",
@@ -12228,10 +12211,29 @@ ItemMasterList.deed_4040 = {
 }
 ItemMasterList.level_chest = {
 	can_stack = true,
-	chest_category = "level_up",
 	chest_sort_order = 0,
 	chest_tier = 1,
 	content_key = "level_chest",
+	description = "level_chest_greater_description",
+	display_name = "display_name_loot_level_chest_greater",
+	display_unit = "chest_1",
+	inventory_icon = "icon_loot_chest_level_up_2",
+	item_type = "loot_chest",
+	power_level_key = "category_24",
+	rarity = "plentiful",
+	rarity_key = "level_up",
+	slot_type = "loot_chest",
+	temporary_template = "",
+	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"level_up",
+	},
+}
+ItemMasterList.level_chest_lesser = {
+	can_stack = true,
+	chest_sort_order = 0,
+	chest_tier = 1,
+	content_key = "level_chest_lesser",
 	description = "level_chest_description_01",
 	display_name = "display_name_loot_level_chest_01",
 	display_unit = "chest_1",
@@ -12243,10 +12245,12 @@ ItemMasterList.level_chest = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"level_chest_lesser",
+	},
 }
 ItemMasterList.level_chest_02 = {
 	can_stack = true,
-	chest_category = "level_up",
 	chest_sort_order = 0,
 	chest_tier = 1,
 	content_key = "level_chest_02",
@@ -12261,10 +12265,12 @@ ItemMasterList.level_chest_02 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"level_up",
+	},
 }
 ItemMasterList.bogenhafen_chest = {
 	can_stack = true,
-	chest_category = "bogenhafen",
 	chest_sort_order = 0,
 	chest_tier = 1,
 	content_key = "bogenhafen_chest",
@@ -12274,16 +12280,17 @@ ItemMasterList.bogenhafen_chest = {
 	info_text_box_text_id = "loot_opening_screen_non_specific_description",
 	inventory_icon = "icon_loot_chest_bgh",
 	item_type = "loot_chest",
-	power_level_key = "category_24",
 	rarity = "plentiful",
 	rarity_key = "level_up",
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"bogenhafen",
+	},
 }
 ItemMasterList.deed_chest = {
 	can_stack = true,
-	chest_category = "level_up",
 	chest_sort_order = 1,
 	chest_tier = 1,
 	content_key = "deed_chest",
@@ -12298,10 +12305,12 @@ ItemMasterList.deed_chest = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"level_up",
+	},
 }
 ItemMasterList.loot_chest_01_01 = {
 	can_stack = true,
-	chest_category = "normal",
 	chest_sort_order = 1,
 	chest_tier = 1,
 	content_key = "standard_loot_chest_1",
@@ -12317,10 +12326,12 @@ ItemMasterList.loot_chest_01_01 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"normal",
+	},
 }
 ItemMasterList.loot_chest_01_02 = {
 	can_stack = true,
-	chest_category = "normal",
 	chest_sort_order = 1,
 	chest_tier = 2,
 	content_key = "standard_loot_chest_1",
@@ -12336,10 +12347,12 @@ ItemMasterList.loot_chest_01_02 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"normal",
+	},
 }
 ItemMasterList.loot_chest_01_03 = {
 	can_stack = true,
-	chest_category = "normal",
 	chest_sort_order = 1,
 	chest_tier = 3,
 	content_key = "standard_loot_chest_1",
@@ -12355,10 +12368,12 @@ ItemMasterList.loot_chest_01_03 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"normal",
+	},
 }
 ItemMasterList.loot_chest_01_04 = {
 	can_stack = true,
-	chest_category = "normal",
 	chest_sort_order = 1,
 	chest_tier = 4,
 	content_key = "standard_loot_chest_1",
@@ -12374,10 +12389,12 @@ ItemMasterList.loot_chest_01_04 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"normal",
+	},
 }
 ItemMasterList.loot_chest_01_05 = {
 	can_stack = true,
-	chest_category = "normal",
 	chest_sort_order = 1,
 	chest_tier = 5,
 	content_key = "standard_loot_chest_1",
@@ -12393,10 +12410,12 @@ ItemMasterList.loot_chest_01_05 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"normal",
+	},
 }
 ItemMasterList.loot_chest_01_06 = {
 	can_stack = true,
-	chest_category = "normal",
 	chest_sort_order = 1,
 	chest_tier = 6,
 	content_key = "standard_loot_chest_1",
@@ -12412,10 +12431,12 @@ ItemMasterList.loot_chest_01_06 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"normal",
+	},
 }
 ItemMasterList.loot_chest_02_01 = {
 	can_stack = true,
-	chest_category = "hard",
 	chest_sort_order = 2,
 	chest_tier = 1,
 	content_key = "standard_loot_chest_2",
@@ -12431,10 +12452,12 @@ ItemMasterList.loot_chest_02_01 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"hard",
+	},
 }
 ItemMasterList.loot_chest_02_02 = {
 	can_stack = true,
-	chest_category = "hard",
 	chest_sort_order = 2,
 	chest_tier = 2,
 	content_key = "standard_loot_chest_2",
@@ -12450,10 +12473,12 @@ ItemMasterList.loot_chest_02_02 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"hard",
+	},
 }
 ItemMasterList.loot_chest_02_03 = {
 	can_stack = true,
-	chest_category = "hard",
 	chest_sort_order = 2,
 	chest_tier = 3,
 	content_key = "standard_loot_chest_2",
@@ -12469,10 +12494,12 @@ ItemMasterList.loot_chest_02_03 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"hard",
+	},
 }
 ItemMasterList.loot_chest_02_04 = {
 	can_stack = true,
-	chest_category = "hard",
 	chest_sort_order = 2,
 	chest_tier = 4,
 	content_key = "standard_loot_chest_2",
@@ -12488,10 +12515,12 @@ ItemMasterList.loot_chest_02_04 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"hard",
+	},
 }
 ItemMasterList.loot_chest_02_05 = {
 	can_stack = true,
-	chest_category = "hard",
 	chest_sort_order = 2,
 	chest_tier = 5,
 	content_key = "standard_loot_chest_2",
@@ -12507,10 +12536,12 @@ ItemMasterList.loot_chest_02_05 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"hard",
+	},
 }
 ItemMasterList.loot_chest_02_06 = {
 	can_stack = true,
-	chest_category = "hard",
 	chest_sort_order = 2,
 	chest_tier = 6,
 	content_key = "standard_loot_chest_2",
@@ -12526,10 +12557,12 @@ ItemMasterList.loot_chest_02_06 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"hard",
+	},
 }
 ItemMasterList.loot_chest_03_01 = {
 	can_stack = true,
-	chest_category = "harder",
 	chest_sort_order = 3,
 	chest_tier = 1,
 	content_key = "standard_loot_chest_3",
@@ -12545,10 +12578,12 @@ ItemMasterList.loot_chest_03_01 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"harder",
+	},
 }
 ItemMasterList.loot_chest_03_02 = {
 	can_stack = true,
-	chest_category = "harder",
 	chest_sort_order = 3,
 	chest_tier = 2,
 	content_key = "standard_loot_chest_3",
@@ -12564,10 +12599,12 @@ ItemMasterList.loot_chest_03_02 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"harder",
+	},
 }
 ItemMasterList.loot_chest_03_03 = {
 	can_stack = true,
-	chest_category = "harder",
 	chest_sort_order = 3,
 	chest_tier = 3,
 	content_key = "standard_loot_chest_3",
@@ -12583,10 +12620,12 @@ ItemMasterList.loot_chest_03_03 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"harder",
+	},
 }
 ItemMasterList.loot_chest_03_04 = {
 	can_stack = true,
-	chest_category = "harder",
 	chest_sort_order = 3,
 	chest_tier = 4,
 	content_key = "standard_loot_chest_3",
@@ -12602,10 +12641,12 @@ ItemMasterList.loot_chest_03_04 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"harder",
+	},
 }
 ItemMasterList.loot_chest_03_05 = {
 	can_stack = true,
-	chest_category = "harder",
 	chest_sort_order = 3,
 	chest_tier = 5,
 	content_key = "standard_loot_chest_3",
@@ -12621,10 +12662,12 @@ ItemMasterList.loot_chest_03_05 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"harder",
+	},
 }
 ItemMasterList.loot_chest_03_06 = {
 	can_stack = true,
-	chest_category = "harder",
 	chest_sort_order = 3,
 	chest_tier = 6,
 	content_key = "standard_loot_chest_3",
@@ -12640,10 +12683,12 @@ ItemMasterList.loot_chest_03_06 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"harder",
+	},
 }
 ItemMasterList.loot_chest_04_01 = {
 	can_stack = true,
-	chest_category = "hardest",
 	chest_sort_order = 4,
 	chest_tier = 1,
 	content_key = "standard_loot_chest_4",
@@ -12659,10 +12704,13 @@ ItemMasterList.loot_chest_04_01 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"hardest",
+		"cataclysm",
+	},
 }
 ItemMasterList.loot_chest_04_02 = {
 	can_stack = true,
-	chest_category = "hardest",
 	chest_sort_order = 4,
 	chest_tier = 2,
 	content_key = "standard_loot_chest_4",
@@ -12678,10 +12726,13 @@ ItemMasterList.loot_chest_04_02 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"hardest",
+		"cataclysm",
+	},
 }
 ItemMasterList.loot_chest_04_03 = {
 	can_stack = true,
-	chest_category = "hardest",
 	chest_sort_order = 4,
 	chest_tier = 3,
 	content_key = "standard_loot_chest_4",
@@ -12697,10 +12748,13 @@ ItemMasterList.loot_chest_04_03 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"hardest",
+		"cataclysm",
+	},
 }
 ItemMasterList.loot_chest_04_04 = {
 	can_stack = true,
-	chest_category = "hardest",
 	chest_sort_order = 4,
 	chest_tier = 4,
 	content_key = "standard_loot_chest_4",
@@ -12716,10 +12770,13 @@ ItemMasterList.loot_chest_04_04 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"hardest",
+		"cataclysm",
+	},
 }
 ItemMasterList.loot_chest_04_05 = {
 	can_stack = true,
-	chest_category = "hardest",
 	chest_sort_order = 4,
 	chest_tier = 5,
 	content_key = "standard_loot_chest_4",
@@ -12735,10 +12792,13 @@ ItemMasterList.loot_chest_04_05 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"hardest",
+		"cataclysm",
+	},
 }
 ItemMasterList.loot_chest_04_06 = {
 	can_stack = true,
-	chest_category = "hardest",
 	chest_sort_order = 4,
 	chest_tier = 6,
 	content_key = "standard_loot_chest_4",
@@ -12754,10 +12814,13 @@ ItemMasterList.loot_chest_04_06 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"hardest",
+		"cataclysm",
+	},
 }
 ItemMasterList.loot_chest_05_01 = {
 	can_stack = true,
-	chest_category = "cataclysm",
 	chest_sort_order = 5,
 	chest_tier = 1,
 	content_key = "standard_loot_chest_5",
@@ -12773,10 +12836,12 @@ ItemMasterList.loot_chest_05_01 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"cataclysm",
+	},
 }
 ItemMasterList.loot_chest_05_02 = {
 	can_stack = true,
-	chest_category = "cataclysm",
 	chest_sort_order = 5,
 	chest_tier = 2,
 	content_key = "standard_loot_chest_5",
@@ -12792,10 +12857,12 @@ ItemMasterList.loot_chest_05_02 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"cataclysm",
+	},
 }
 ItemMasterList.loot_chest_05_03 = {
 	can_stack = true,
-	chest_category = "cataclysm",
 	chest_sort_order = 5,
 	chest_tier = 3,
 	content_key = "standard_loot_chest_5",
@@ -12811,10 +12878,12 @@ ItemMasterList.loot_chest_05_03 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"cataclysm",
+	},
 }
 ItemMasterList.loot_chest_05_04 = {
 	can_stack = true,
-	chest_category = "cataclysm",
 	chest_sort_order = 5,
 	chest_tier = 4,
 	content_key = "standard_loot_chest_5",
@@ -12830,10 +12899,12 @@ ItemMasterList.loot_chest_05_04 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"cataclysm",
+	},
 }
 ItemMasterList.loot_chest_05_05 = {
 	can_stack = true,
-	chest_category = "cataclysm",
 	chest_sort_order = 5,
 	chest_tier = 5,
 	content_key = "standard_loot_chest_5",
@@ -12849,10 +12920,12 @@ ItemMasterList.loot_chest_05_05 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"cataclysm",
+	},
 }
 ItemMasterList.loot_chest_05_06 = {
 	can_stack = true,
-	chest_category = "cataclysm",
 	chest_sort_order = 5,
 	chest_tier = 6,
 	content_key = "standard_loot_chest_5",
@@ -12868,6 +12941,9 @@ ItemMasterList.loot_chest_05_06 = {
 	slot_type = "loot_chest",
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
+	chest_categories = {
+		"cataclysm",
+	},
 }
 ItemMasterList.wh_1h_axe_skin = {
 	base_skin_item = true,

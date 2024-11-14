@@ -75,6 +75,8 @@ PlayerBotUnitFirstPerson.extensions_ready = function (self)
 end
 
 PlayerBotUnitFirstPerson.destroy = function (self)
+	AttachmentUtils.unlink(self.world, self.first_person_attachment_unit)
+
 	local unit_spawner = Managers.state.unit_spawner
 
 	unit_spawner:mark_for_deletion(self.first_person_unit)

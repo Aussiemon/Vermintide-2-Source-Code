@@ -83,12 +83,12 @@ template.create_widget_definition = function (scenegraph_id)
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
 				texture_size = {
-					70 * icon_scale,
-					90 * icon_scale,
+					80 * icon_scale,
+					80 * icon_scale,
 				},
 				default_size = {
-					70 * icon_scale,
-					90 * icon_scale,
+					80 * icon_scale,
+					80 * icon_scale,
 				},
 				color = {
 					255,
@@ -106,12 +106,12 @@ template.create_widget_definition = function (scenegraph_id)
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
 				texture_size = {
-					128 * icon_scale,
-					128 * icon_scale,
+					100 * icon_scale,
+					100 * icon_scale,
 				},
 				default_size = {
-					128 * icon_scale,
-					128 * icon_scale,
+					100 * icon_scale,
+					100 * icon_scale,
 				},
 				color = {
 					255,
@@ -129,15 +129,15 @@ template.create_widget_definition = function (scenegraph_id)
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
 				texture_size = {
-					128 * icon_scale,
-					128 * icon_scale,
+					100 * icon_scale,
+					100 * icon_scale,
 				},
 				default_size = {
-					128 * icon_scale,
-					128 * icon_scale,
+					100 * icon_scale,
+					100 * icon_scale,
 				},
 				color = {
-					255,
+					200,
 					255,
 					255,
 					255,
@@ -152,15 +152,15 @@ template.create_widget_definition = function (scenegraph_id)
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
 				texture_size = {
-					128 * icon_scale,
-					128 * icon_scale,
+					100 * icon_scale,
+					100 * icon_scale,
 				},
 				default_size = {
-					128 * icon_scale,
-					128 * icon_scale,
+					100 * icon_scale,
+					100 * icon_scale,
 				},
 				color = {
-					255,
+					200,
 					255,
 					255,
 					255,
@@ -257,7 +257,9 @@ end
 
 template.on_enter = function (widget)
 	local content = widget.content
+	local objective_system = Managers.state.entity:system("objective_system")
 
+	widget.content.icon = objective_system:current_objective_icon()
 	content.just_entered = true
 	content.t = 0
 end

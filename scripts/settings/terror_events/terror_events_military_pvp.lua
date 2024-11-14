@@ -90,98 +90,6 @@ local terror_event_blueprints = {
 			enable = true,
 		},
 	},
-	military_pvp_capzone_event_reinforcements_start = {
-		{
-			"set_master_event_running",
-			name = "military_pvp_capzone_event_reinforcements_start",
-		},
-		{
-			"set_freeze_condition",
-			max_active_enemies = 100,
-		},
-		{
-			"event_horde",
-			composition_type = "event_medium",
-			limit_spawners = 4,
-			spawner_id = "military_pvp_capzone_start",
-		},
-		{
-			"play_stinger",
-			stinger_name = "enemy_horde_stinger",
-		},
-		{
-			"delay",
-			duration = 10,
-		},
-		{
-			"flow_event",
-			flow_event_name = "military_pvp_capzone_event_reinforcements_start_done",
-		},
-	},
-	military_pvp_capzone_reinforcements = {
-		{
-			"set_master_event_running",
-			name = "military_pvp_capzone_reinforcements",
-		},
-		{
-			"set_freeze_condition",
-			max_active_enemies = 100,
-		},
-		{
-			"delay",
-			duration = 30,
-		},
-		{
-			"flow_event",
-			flow_event_name = "military_pvp_capzone_reinforcements_done",
-		},
-	},
-	military_pvp_redoubt_capzone_event_reinforcements_start = {
-		{
-			"set_master_event_running",
-			name = "military_pvp_redoubt_capzone_event_reinforcements_start",
-		},
-		{
-			"set_freeze_condition",
-			max_active_enemies = 100,
-		},
-		{
-			"event_horde",
-			composition_type = "event_medium",
-			limit_spawners = 4,
-			spawner_id = "military_pvp_capzone_start_2",
-		},
-		{
-			"play_stinger",
-			stinger_name = "enemy_horde_stinger",
-		},
-		{
-			"delay",
-			duration = 10,
-		},
-		{
-			"flow_event",
-			flow_event_name = "military_pvp_redoubt_capzone_event_reinforcements_start_done",
-		},
-	},
-	military_pvp_redoubt_capzone_reinforcements = {
-		{
-			"set_master_event_running",
-			name = "military_pvp_redoubt_capzone_reinforcements",
-		},
-		{
-			"set_freeze_condition",
-			max_active_enemies = 100,
-		},
-		{
-			"delay",
-			duration = 30,
-		},
-		{
-			"flow_event",
-			flow_event_name = "military_pvp_redoubt_capzone_reinforcements_done",
-		},
-	},
 	military_courtyard_event_start = {
 		{
 			"control_hordes",
@@ -207,7 +115,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"event_horde",
-			composition_type = "event_large_chaos",
+			composition_type = "event_medium_chaos",
 			limit_spawners = 4,
 			spawner_id = "courtyard_hidden",
 		},
@@ -274,7 +182,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"event_horde",
-			composition_type = "event_large_chaos",
+			composition_type = "event_medium_chaos",
 			limit_spawners = 4,
 			spawner_id = "courtyard_hidden",
 		},
@@ -291,7 +199,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"event_horde",
-			composition_type = "event_large",
+			composition_type = "event_medium",
 			limit_spawners = 8,
 			spawner_id = "courtyard",
 		},
@@ -381,7 +289,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"event_horde",
-			composition_type = "event_large",
+			composition_type = "event_medium",
 			limit_spawners = 8,
 			spawner_id = "end_event_start",
 		},
@@ -694,7 +602,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"event_horde",
-			composition_type = "event_large",
+			composition_type = "event_medium",
 			limit_spawners = 4,
 			spawner_id = "end_event_left_hidden",
 		},
@@ -739,7 +647,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"event_horde",
-			composition_type = "event_large",
+			composition_type = "event_medium",
 			limit_spawners = 4,
 			spawner_id = "end_event_right",
 		},
@@ -784,7 +692,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"event_horde",
-			composition_type = "event_large",
+			composition_type = "event_medium",
 			limit_spawners = 4,
 			spawner_id = "end_event_middle",
 		},
@@ -829,7 +737,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"event_horde",
-			composition_type = "event_large",
+			composition_type = "event_medium",
 			limit_spawners = 4,
 			spawner_id = "end_event_back",
 		},

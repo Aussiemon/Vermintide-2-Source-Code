@@ -18,7 +18,11 @@ ActionCareerDREngineerSpin.client_owner_start_action = function (self, new_actio
 	self._last_update_t = t
 
 	if self._talent_extension:has_talent("bardin_engineer_reduced_ability_fire_slowdown") then
-		self._current_windup = 1
+		self._current_windup = CareerConstants.dr_engineer.talent_6_2_starting_rps
+
+		if Managers.mechanism:current_mechanism_name() == "versus" then
+			self._current_windup = CareerConstants.dr_engineer.talent_6_2_starting_rps_vs
+		end
 	end
 end
 

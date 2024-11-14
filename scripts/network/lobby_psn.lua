@@ -79,11 +79,7 @@ LobbyInternal.key_order = {
 	"num_players",
 	"quick_game",
 	"session_id",
-	"player_slot_1",
-	"player_slot_2",
-	"player_slot_3",
-	"player_slot_4",
-	"player_slot_5",
+	"reserved_profiles",
 	"unique_server_name",
 	"host",
 	"country_code",
@@ -105,6 +101,7 @@ LobbyInternal.default_lobby_data = {
 	mission_id = "n/a",
 	num_players = 1,
 	quick_game = "false",
+	reserved_profiles = "0=0",
 	selected_mission_id = "n/a",
 	twitch_enabled = "false",
 }
@@ -323,7 +320,7 @@ LobbyInternal.serialize_psn_data = function (data_table)
 end
 
 LobbyInternal.verify_lobby_data = function (lobby_data_table)
-	local my_network_hash = Managers.lobby:network_hash()
+	local my_network_hash = LobbySetup.network_hash()
 	local lobby_network_hash = lobby_data_table.network_hash
 
 	return lobby_network_hash == my_network_hash
@@ -337,7 +334,7 @@ LobbyInternal.unserialize_psn_data = function (data_string, verify_lobby_data)
 	else
 		t = {}
 
-		local data_string_table = string.split(data_string, "/")
+		local data_string_table = string.split_deprecated(data_string, "/")
 
 		if #data_string_table > #LobbyInternal.key_order then
 			t.broken_lobby_data = data_string
@@ -345,7 +342,7 @@ LobbyInternal.unserialize_psn_data = function (data_string, verify_lobby_data)
 			return t, false
 		end
 
-		local my_network_hash = Managers.lobby:network_hash()
+		local my_network_hash = LobbySetup.network_hash()
 		local index = LobbyInternal.key_index.network_hash
 		local lobby_network_hash = data_string_table[index]
 

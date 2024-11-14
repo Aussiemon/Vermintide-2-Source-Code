@@ -647,10 +647,6 @@ end
 AINavigationExtension.destroy_reusable_astar = function (self, identifier)
 	local astar = self._reusable_astars[identifier]
 
-	if not GwNavAStar.processing_finished(astar) then
-		GwNavAStar.cancel(astar)
-	end
-
 	GwNavAStar.destroy(astar)
 
 	self._reusable_astars[identifier] = nil

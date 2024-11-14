@@ -29,128 +29,86 @@ for i = 2, #LootChestData.score_thresholds do
 end
 
 LootChestData.max_score = LootChestData.score_thresholds[#LootChestData.score_thresholds]
-LootChestData.power_level_tables = {
-	category_1 = {
-		bonus_item_1 = 1,
-		bonus_item_2 = 1,
-		default = 1,
-	},
-	category_2 = {
-		bonus_item_1 = 2,
-		bonus_item_2 = 2,
-		default = 2,
-	},
-	category_3 = {
-		bonus_item_1 = 3,
-		bonus_item_2 = 3,
-		default = 3,
-	},
-	category_4 = {
-		bonus_item_1 = 4,
-		bonus_item_2 = 4,
-		default = 4,
-	},
-	category_5 = {
-		bonus_item_1 = 5,
-		bonus_item_2 = 5,
-		default = 5,
-	},
-	category_6 = {
-		bonus_item_1 = 6,
-		bonus_item_2 = 6,
-		default = 6,
-	},
-	category_7 = {
-		bonus_item_1 = 7,
-		bonus_item_2 = 7,
-		default = 7,
-	},
-	category_8 = {
-		bonus_item_1 = 8,
-		bonus_item_2 = 8,
-		default = 8,
-	},
-	category_9 = {
-		bonus_item_1 = 9,
-		bonus_item_2 = 9,
-		default = 9,
-	},
-	category_10 = {
-		bonus_item_1 = 10,
-		bonus_item_2 = 10,
-		default = 10,
-	},
-	category_11 = {
-		bonus_item_1 = 11,
-		bonus_item_2 = 11,
-		default = 11,
-	},
-	category_12 = {
-		bonus_item_1 = 12,
-		bonus_item_2 = 12,
-		default = 12,
-	},
-	category_13 = {
-		bonus_item_1 = 13,
-		bonus_item_2 = 13,
-		default = 13,
-	},
-	category_14 = {
-		bonus_item_1 = 14,
-		bonus_item_2 = 14,
-		default = 14,
-	},
-	category_15 = {
-		bonus_item_1 = 15,
-		bonus_item_2 = 15,
-		default = 15,
-	},
-	category_16 = {
-		bonus_item_1 = 16,
-		bonus_item_2 = 16,
-		default = 16,
-	},
-	category_17 = {
-		bonus_item_1 = 17,
-		bonus_item_2 = 17,
-		default = 17,
-	},
-	category_18 = {
-		bonus_item_1 = 18,
-		bonus_item_2 = 18,
-		default = 18,
-	},
-	category_19 = {
-		bonus_item_1 = 19,
-		bonus_item_2 = 19,
-		default = 19,
-	},
-	category_20 = {
-		bonus_item_1 = 20,
-		bonus_item_2 = 20,
-		default = 20,
-	},
-	category_21 = {
-		bonus_item_1 = 21,
-		bonus_item_2 = 21,
-		default = 21,
-	},
-	category_22 = {
-		bonus_item_1 = 22,
-		bonus_item_2 = 22,
-		default = 22,
-	},
-	category_23 = {
-		bonus_item_1 = 23,
-		bonus_item_2 = 23,
-		default = 23,
-	},
-	category_24 = {
-		bonus_item_1 = 24,
-		bonus_item_2 = 24,
-		default = 24,
-	},
+LootChestData.power_level_thresholds = {
+	category_1 = 1,
+	category_10 = 10,
+	category_11 = 11,
+	category_12 = 12,
+	category_13 = 13,
+	category_14 = 14,
+	category_15 = 15,
+	category_16 = 16,
+	category_17 = 17,
+	category_18 = 18,
+	category_19 = 19,
+	category_2 = 2,
+	category_20 = 20,
+	category_21 = 21,
+	category_22 = 22,
+	category_23 = 23,
+	category_24 = 24,
+	category_3 = 3,
+	category_4 = 4,
+	category_5 = 5,
+	category_6 = 6,
+	category_7 = 7,
+	category_8 = 8,
+	category_9 = 9,
 }
+LootChestData.LEVEL_USED_FOR_POOL_LEVELS = 30
+
+local power_level_scratch = {
+	0,
+	0,
+}
+
+LootChestData.calculate_power_level = function (level, pivot_data)
+	power_level_scratch[1], power_level_scratch[2] = pivot_data.low, pivot_data.hi
+	level = math.min(level, LootChestData.LEVEL_USED_FOR_POOL_LEVELS)
+
+	local loot_interface = Managers.backend:get_interface("loot")
+	local power_level_settings = loot_interface:get_power_level_settings()
+	local easing_function = math[power_level_settings.easing_function]
+	local inverse_easing_function = math[power_level_settings.inverse_easing_function]
+
+	for i = 1, 2 do
+		local sub_data = power_level_scratch[i]
+		local min, max, pivot_power, pivot_level, easing_power = sub_data.min, sub_data.max, sub_data.pivot_power, sub_data.pivot_level, sub_data.easing_power
+		local power_pivot_t = math.max(math.inv_lerp(min, max, pivot_power), 0)
+		local eased_max = max
+
+		if power_pivot_t > 1 then
+			eased_max = pivot_power
+			power_pivot_t = 1 / power_pivot_t
+		end
+
+		local pivot_mult = inverse_easing_function(power_pivot_t)
+		local level_pivot_t = math.inv_lerp(1, pivot_level, level)
+		local level_and_power_pivot_t = math.max(level_pivot_t * pivot_mult, 0)
+		local eased = easing_function(level_and_power_pivot_t)
+
+		eased = math.lerp(0, eased_max - min, eased) + min
+
+		if level_pivot_t > 1 then
+			if max < pivot_power then
+				eased = max
+			else
+				eased = math.max(eased, pivot_power)
+			end
+		else
+			local un_eased = math.lerp(0, math.min(max, pivot_power) - min, level_pivot_t) + min
+
+			eased = eased + (un_eased - eased) * (1 - easing_power)
+		end
+
+		power_level_scratch[i] = math.clamp(eased, min, max)
+	end
+
+	power_level_scratch[1] = math.min(power_level_scratch[1], power_level_scratch[2])
+
+	return power_level_scratch[1], power_level_scratch[2]
+end
+
 LootChestData.chests_by_category = {
 	easy = {
 		package_name = "resource_packages/chests_d1",
@@ -463,6 +421,18 @@ LootChestData.chests_by_category = {
 			"units/gameplay/loot_chests/gameplay_loot_chest_level_up",
 		},
 	},
+	level_up_lesser = {
+		package_name = "resource_packages/chests_level_up",
+		backend_keys = {
+			"level_chest",
+		},
+		individual_chest_package_names = {
+			"resource_packages/chests_level_up",
+		},
+		chest_unit_names = {
+			"units/gameplay/loot_chests/gameplay_loot_chest_level_up",
+		},
+	},
 	level_up_2 = {
 		package_name = "resource_packages/chests_level_up",
 		backend_keys = {
@@ -687,863 +657,6 @@ LootChestData.rarity_weights_tables = {
 		{
 			name = "unique",
 			weight = 1,
-		},
-	},
-}
-LootChestData.rarity_weights_tables_new = {
-	level_up = {
-		{
-			name = "plentiful",
-			weight_constraints = {
-				10,
-				0,
-			},
-			level_constraints = {
-				1,
-				10,
-			},
-		},
-		{
-			name = "common",
-			weight_constraints = {
-				2.5,
-				3,
-			},
-			level_constraints = {
-				3,
-				10,
-			},
-		},
-		{
-			name = "rare",
-			weight_constraints = {
-				0.05,
-				5,
-			},
-			level_constraints = {
-				7,
-				15,
-			},
-		},
-		{
-			name = "exotic",
-			weight_constraints = {
-				0,
-				2,
-			},
-			level_constraints = {
-				10,
-				20,
-			},
-		},
-		{
-			name = "unique",
-			weight_constraints = {
-				0,
-				0,
-			},
-			level_constraints = {
-				30,
-				30,
-			},
-		},
-	},
-	tier_1 = {
-		{
-			name = "plentiful",
-			weight_constraints = {
-				20,
-				5,
-			},
-			level_constraints = {
-				1,
-				8,
-			},
-		},
-		{
-			name = "common",
-			weight_constraints = {
-				2.5,
-				5,
-			},
-			level_constraints = {
-				3,
-				10,
-			},
-		},
-		{
-			name = "rare",
-			weight_constraints = {
-				0.05,
-				1,
-			},
-			level_constraints = {
-				7,
-				15,
-			},
-		},
-		{
-			name = "exotic",
-			weight_constraints = {
-				0,
-				0,
-			},
-			level_constraints = {
-				10,
-				20,
-			},
-		},
-		{
-			name = "unique",
-			weight_constraints = {
-				0,
-				0,
-			},
-			level_constraints = {
-				25,
-				30,
-			},
-		},
-	},
-	tier_2 = {
-		{
-			name = "plentiful",
-			weight_constraints = {
-				10,
-				3,
-			},
-			level_constraints = {
-				1,
-				8,
-			},
-		},
-		{
-			name = "common",
-			weight_constraints = {
-				2,
-				4,
-			},
-			level_constraints = {
-				3,
-				10,
-			},
-		},
-		{
-			name = "rare",
-			weight_constraints = {
-				0.05,
-				1,
-			},
-			level_constraints = {
-				7,
-				15,
-			},
-		},
-		{
-			name = "exotic",
-			weight_constraints = {
-				0.05,
-				0.5,
-			},
-			level_constraints = {
-				10,
-				20,
-			},
-		},
-		{
-			name = "unique",
-			weight_constraints = {
-				0,
-				0,
-			},
-			level_constraints = {
-				25,
-				30,
-			},
-		},
-	},
-	tier_3 = {
-		{
-			name = "plentiful",
-			weight_constraints = {
-				10,
-				3,
-			},
-			level_constraints = {
-				1,
-				8,
-			},
-		},
-		{
-			name = "common",
-			weight_constraints = {
-				3.5,
-				5,
-			},
-			level_constraints = {
-				3,
-				10,
-			},
-		},
-		{
-			name = "rare",
-			weight_constraints = {
-				0.5,
-				1.5,
-			},
-			level_constraints = {
-				7,
-				15,
-			},
-		},
-		{
-			name = "exotic",
-			weight_constraints = {
-				0.05,
-				0.5,
-			},
-			level_constraints = {
-				10,
-				20,
-			},
-		},
-		{
-			name = "unique",
-			weight_constraints = {
-				0,
-				0,
-			},
-			level_constraints = {
-				25,
-				30,
-			},
-		},
-	},
-	tier_4 = {
-		{
-			name = "plentiful",
-			weight_constraints = {
-				10,
-				3,
-			},
-			level_constraints = {
-				1,
-				8,
-			},
-		},
-		{
-			name = "common",
-			weight_constraints = {
-				3.5,
-				5,
-			},
-			level_constraints = {
-				3,
-				10,
-			},
-		},
-		{
-			name = "rare",
-			weight_constraints = {
-				1,
-				4,
-			},
-			level_constraints = {
-				7,
-				15,
-			},
-		},
-		{
-			name = "exotic",
-			weight_constraints = {
-				0.1,
-				1,
-			},
-			level_constraints = {
-				10,
-				20,
-			},
-		},
-		{
-			name = "unique",
-			weight_constraints = {
-				0,
-				0,
-			},
-			level_constraints = {
-				25,
-				30,
-			},
-		},
-	},
-	tier_5 = {
-		{
-			name = "plentiful",
-			weight_constraints = {
-				10,
-				0,
-			},
-			level_constraints = {
-				1,
-				8,
-			},
-		},
-		{
-			name = "common",
-			weight_constraints = {
-				4,
-				1.5,
-			},
-			level_constraints = {
-				3,
-				10,
-			},
-		},
-		{
-			name = "rare",
-			weight_constraints = {
-				1,
-				4,
-			},
-			level_constraints = {
-				7,
-				15,
-			},
-		},
-		{
-			name = "exotic",
-			weight_constraints = {
-				0.1,
-				0.5,
-			},
-			level_constraints = {
-				10,
-				20,
-			},
-		},
-		{
-			name = "unique",
-			weight_constraints = {
-				0,
-				0,
-			},
-			level_constraints = {
-				25,
-				30,
-			},
-		},
-	},
-	tier_6 = {
-		{
-			name = "plentiful",
-			weight_constraints = {
-				10,
-				0,
-			},
-			level_constraints = {
-				1,
-				8,
-			},
-		},
-		{
-			name = "common",
-			weight_constraints = {
-				6,
-				1,
-			},
-			level_constraints = {
-				3,
-				10,
-			},
-		},
-		{
-			name = "rare",
-			weight_constraints = {
-				1,
-				4,
-			},
-			level_constraints = {
-				7,
-				15,
-			},
-		},
-		{
-			name = "exotic",
-			weight_constraints = {
-				0.1,
-				0.6,
-			},
-			level_constraints = {
-				10,
-				20,
-			},
-		},
-		{
-			name = "unique",
-			weight_constraints = {
-				0,
-				0,
-			},
-			level_constraints = {
-				25,
-				30,
-			},
-		},
-	},
-	tier_5_nightmare = {
-		{
-			name = "plentiful",
-			weight_constraints = {
-				10,
-				0,
-			},
-			level_constraints = {
-				1,
-				8,
-			},
-		},
-		{
-			name = "common",
-			weight_constraints = {
-				5,
-				1.5,
-			},
-			level_constraints = {
-				3,
-				10,
-			},
-		},
-		{
-			name = "rare",
-			weight_constraints = {
-				1,
-				4,
-			},
-			level_constraints = {
-				7,
-				15,
-			},
-		},
-		{
-			name = "exotic",
-			weight_constraints = {
-				0.1,
-				1,
-			},
-			level_constraints = {
-				10,
-				20,
-			},
-		},
-		{
-			name = "unique",
-			weight_constraints = {
-				0,
-				0.1,
-			},
-			level_constraints = {
-				25,
-				30,
-			},
-		},
-	},
-	tier_6_nightmare = {
-		{
-			name = "plentiful",
-			weight_constraints = {
-				10,
-				0,
-			},
-			level_constraints = {
-				1,
-				8,
-			},
-		},
-		{
-			name = "common",
-			weight_constraints = {
-				1,
-				0,
-			},
-			level_constraints = {
-				3,
-				10,
-			},
-		},
-		{
-			name = "rare",
-			weight_constraints = {
-				1,
-				2,
-			},
-			level_constraints = {
-				7,
-				15,
-			},
-		},
-		{
-			name = "exotic",
-			weight_constraints = {
-				0.1,
-				1,
-			},
-			level_constraints = {
-				10,
-				20,
-			},
-		},
-		{
-			name = "unique",
-			weight_constraints = {
-				0,
-				0.15,
-			},
-			level_constraints = {
-				25,
-				30,
-			},
-		},
-	},
-	tier_1_cata = {
-		{
-			name = "plentiful",
-			weight_constraints = {
-				10,
-				0,
-			},
-			level_constraints = {
-				1,
-				8,
-			},
-		},
-		{
-			name = "common",
-			weight_constraints = {
-				6,
-				1,
-			},
-			level_constraints = {
-				3,
-				10,
-			},
-		},
-		{
-			name = "rare",
-			weight_constraints = {
-				1,
-				5,
-			},
-			level_constraints = {
-				7,
-				15,
-			},
-		},
-		{
-			name = "exotic",
-			weight_constraints = {
-				0.1,
-				1,
-			},
-			level_constraints = {
-				10,
-				20,
-			},
-		},
-		{
-			name = "unique",
-			weight_constraints = {
-				0.1,
-				0.25,
-			},
-			level_constraints = {
-				25,
-				30,
-			},
-		},
-	},
-	tier_2_cata = {
-		{
-			name = "plentiful",
-			weight_constraints = {
-				10,
-				0,
-			},
-			level_constraints = {
-				1,
-				8,
-			},
-		},
-		{
-			name = "common",
-			weight_constraints = {
-				5,
-				0.5,
-			},
-			level_constraints = {
-				3,
-				10,
-			},
-		},
-		{
-			name = "rare",
-			weight_constraints = {
-				1,
-				4,
-			},
-			level_constraints = {
-				7,
-				15,
-			},
-		},
-		{
-			name = "exotic",
-			weight_constraints = {
-				0.1,
-				1,
-			},
-			level_constraints = {
-				10,
-				20,
-			},
-		},
-		{
-			name = "unique",
-			weight_constraints = {
-				0.1,
-				0.25,
-			},
-			level_constraints = {
-				25,
-				30,
-			},
-		},
-	},
-	tier_3_cata = {
-		{
-			name = "plentiful",
-			weight_constraints = {
-				10,
-				0,
-			},
-			level_constraints = {
-				1,
-				8,
-			},
-		},
-		{
-			name = "common",
-			weight_constraints = {
-				4,
-				0,
-			},
-			level_constraints = {
-				3,
-				10,
-			},
-		},
-		{
-			name = "rare",
-			weight_constraints = {
-				1,
-				2,
-			},
-			level_constraints = {
-				7,
-				15,
-			},
-		},
-		{
-			name = "exotic",
-			weight_constraints = {
-				0.1,
-				1,
-			},
-			level_constraints = {
-				10,
-				20,
-			},
-		},
-		{
-			name = "unique",
-			weight_constraints = {
-				0.1,
-				0.25,
-			},
-			level_constraints = {
-				25,
-				30,
-			},
-		},
-	},
-	tier_4_cata = {
-		{
-			name = "plentiful",
-			weight_constraints = {
-				10,
-				0,
-			},
-			level_constraints = {
-				1,
-				8,
-			},
-		},
-		{
-			name = "common",
-			weight_constraints = {
-				3,
-				0,
-			},
-			level_constraints = {
-				3,
-				10,
-			},
-		},
-		{
-			name = "rare",
-			weight_constraints = {
-				1,
-				1,
-			},
-			level_constraints = {
-				7,
-				15,
-			},
-		},
-		{
-			name = "exotic",
-			weight_constraints = {
-				0.1,
-				1,
-			},
-			level_constraints = {
-				10,
-				20,
-			},
-		},
-		{
-			name = "unique",
-			weight_constraints = {
-				0.1,
-				0.2,
-			},
-			level_constraints = {
-				25,
-				30,
-			},
-		},
-	},
-	tier_5_cata = {
-		{
-			name = "plentiful",
-			weight_constraints = {
-				10,
-				0,
-			},
-			level_constraints = {
-				1,
-				8,
-			},
-		},
-		{
-			name = "common",
-			weight_constraints = {
-				2,
-				0,
-			},
-			level_constraints = {
-				3,
-				10,
-			},
-		},
-		{
-			name = "rare",
-			weight_constraints = {
-				1,
-				1,
-			},
-			level_constraints = {
-				7,
-				15,
-			},
-		},
-		{
-			name = "exotic",
-			weight_constraints = {
-				0.1,
-				3,
-			},
-			level_constraints = {
-				10,
-				20,
-			},
-		},
-		{
-			name = "unique",
-			weight_constraints = {
-				0.25,
-				0.45,
-			},
-			level_constraints = {
-				25,
-				30,
-			},
-		},
-	},
-	tier_6_cata = {
-		{
-			name = "plentiful",
-			weight_constraints = {
-				10,
-				0,
-			},
-			level_constraints = {
-				1,
-				8,
-			},
-		},
-		{
-			name = "common",
-			weight_constraints = {
-				1,
-				0,
-			},
-			level_constraints = {
-				3,
-				10,
-			},
-		},
-		{
-			name = "rare",
-			weight_constraints = {
-				1,
-				0.5,
-			},
-			level_constraints = {
-				7,
-				15,
-			},
-		},
-		{
-			name = "exotic",
-			weight_constraints = {
-				0.1,
-				2,
-			},
-			level_constraints = {
-				10,
-				20,
-			},
-		},
-		{
-			name = "unique",
-			weight_constraints = {
-				0.25,
-				0.5,
-			},
-			level_constraints = {
-				25,
-				30,
-			},
 		},
 	},
 }

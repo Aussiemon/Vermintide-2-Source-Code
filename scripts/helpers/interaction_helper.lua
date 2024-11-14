@@ -41,6 +41,7 @@ InteractionHelper.interactions = {
 	deus_door_transition = {},
 	carousel_door_transition = {},
 	loadout_access = {},
+	handbook_access = {},
 }
 
 DLCUtils.map_list("interactions", function (interaction)
@@ -59,10 +60,25 @@ end
 
 local IS_LOCAL_HOST = "IS_LOCAL_HOST"
 
-InteractionHelper.request = function (self, interaction_type, interactor_go_id, interactable_go_id, is_level_unit, is_server)
-	InteractionHelper.printf("InteractionHelper:request(%s, %s, %s, %s)", interaction_type, tostring(interactor_go_id), tostring(interactable_go_id), tostring(is_level_unit))
-
+InteractionHelper.request = function (self, interaction_type, interactor_unit, interactable_unit, is_server, local_only)
 	if LEVEL_EDITOR_TEST then
+		return
+	end
+
+	if local_only then
+		InteractionHelper:request_approved(interaction_type, interactor_unit, interactable_unit)
+
+		return
+	end
+
+	local interactor_go_id = Managers.state.unit_storage:go_id(interactor_unit)
+	local interactable_go_id, is_level_unit = Managers.state.network:game_object_or_level_id(interactable_unit)
+
+	InteractionHelper.printf("InteractionHelper:request(%s, %s, %s, %s)", interaction_type, interactor_go_id, interactable_go_id, is_level_unit)
+
+	if interactor_go_id == nil or interactable_go_id == nil then
+		ferror("[GenericUnitInteractorExtension] start_interaction failed due to no id for interactor=%s or interactable=%s", tostring(self.unit), tostring(self.interaction_context.interactable_unit))
+
 		return
 	end
 
@@ -83,8 +99,38 @@ InteractionHelper.request = function (self, interaction_type, interactor_go_id, 
 	end
 end
 
-InteractionHelper.abort = function (self, interactor_go_id, is_server)
-	InteractionHelper.printf("InteractionHelper:abort(%s)", tostring(interactor_go_id))
+InteractionHelper.abort_authoritative = function (self, interactor_unit)
+	if not ALIVE[interactor_unit] then
+		return
+	end
+
+	local interactor_extension = ScriptUnit.extension(interactor_unit, "interactor_system")
+
+	if not interactor_extension:is_interacting() or interactor_extension:is_stopping() then
+		InteractionHelper.printf("Got abort when interaction had already finished, ignore request")
+
+		return
+	end
+
+	local interactable_unit = interactor_extension:interactable_unit()
+
+	if Unit.alive(interactable_unit) then
+		InteractionHelper:complete_interaction(interactor_unit, interactable_unit, InteractionResult.USER_ENDED)
+	end
+end
+
+InteractionHelper.abort = function (self, interactor_unit, is_server)
+	InteractionHelper.printf("InteractionHelper:abort(%s)", interactor_unit)
+
+	local interactor_extension = ScriptUnit.extension(interactor_unit, "interactor_system")
+
+	if interactor_extension:is_interacting_with_local_only_interact() then
+		InteractionHelper:abort_authoritative(interactor_unit)
+
+		return
+	end
+
+	local interactor_go_id = Managers.state.unit_storage:go_id(interactor_unit)
 
 	if is_server or LEVEL_EDITOR_TEST then
 		Managers.state.network._event_delegate.event_table:rpc_interaction_abort(Network.peer_id(), interactor_go_id)
@@ -147,16 +193,15 @@ end
 
 InteractionHelper.complete_interaction = function (self, interactor_unit, interactable_unit, result)
 	InteractionHelper.printf("InteractionHelper:complete_interaction(%s, %s, %s)", tostring(interactor_unit), tostring(interactable_unit), InteractionResult[result])
+	InteractionHelper:interaction_completed(interactor_unit, interactable_unit, result)
 
-	if Unit.alive(interactable_unit) then
-		local interactable_extension = ScriptUnit.extension(interactable_unit, "interactable_system")
+	local interactable_extension = ScriptUnit.extension(interactable_unit, "interactable_system")
 
-		interactable_extension:set_is_being_interacted_with(nil, result)
+	if not interactable_extension:local_only() then
+		local interactor_go_id = Managers.state.unit_storage:go_id(interactor_unit)
+
+		Managers.state.network.network_transmit:send_rpc_clients("rpc_interaction_completed", interactor_go_id, result)
 	end
-
-	local interactor_go_id = Managers.state.unit_storage:go_id(interactor_unit)
-
-	Managers.state.network.network_transmit:send_rpc_clients("rpc_interaction_completed", interactor_go_id, result)
 end
 
 InteractionHelper.interaction_completed = function (self, interactor_unit, interactable_unit, result)

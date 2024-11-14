@@ -75,6 +75,14 @@ HeroWindowLoadoutConsole.create_ui_elements = function (self, params, offset)
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
 
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+	local equipment_slots = InventorySettings.equipment_slots_by_mechanism[mechanism_name] or InventorySettings.equipment_slots_by_mechanism.default
+	local widget_def = definitions.create_loadout_grid_func(#equipment_slots, self.ui_scenegraph)
+	local widget = UIWidget.init(widget_def)
+
+	self._widgets[#self._widgets + 1] = widget
+	self._widgets_by_name.loadout_grid = widget
+
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
@@ -407,7 +415,9 @@ HeroWindowLoadoutConsole._equip_item_presentation = function (self, item, slot)
 
 		local item_content = content[hotspot_name]
 
-		item_content[item_icon_name] = inventory_icon
+		if item_content then
+			item_content[item_icon_name] = inventory_icon
+		end
 	end
 end
 
@@ -433,7 +443,9 @@ HeroWindowLoadoutConsole._clear_item_slot = function (self, slot)
 
 		local item_content = content[hotspot_name]
 
-		item_content[item_icon_name] = nil
+		if item_content then
+			item_content[item_icon_name] = nil
+		end
 	end
 end
 

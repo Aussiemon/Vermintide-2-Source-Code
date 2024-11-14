@@ -38,6 +38,10 @@ DarkPactSelectionUI.init = function (self, ingame_hud, ingame_ui_context)
 	self._ingame_ui = ingame_ui_context.ingame_ui
 	self._game_mode = Managers.state.game_mode:game_mode()
 	self._party = Managers.party:get_local_player_party()
+
+	local world = ingame_ui_context.world
+
+	self._wwise_world = Managers.world:wwise_world(self._world)
 	self._ui_animator = UIAnimator:new(self._ui_scenegraph, definitions.animation_definitions)
 	self._current_anim_id = 0
 	self._analog_data = {
@@ -97,6 +101,10 @@ end
 DarkPactSelectionUI._release_input = function (self)
 	if not self._input_captured then
 		return
+	end
+
+	if IS_WINDOWS and not Window.has_focus() then
+		Window.set_focus()
 	end
 
 	self._input_manager:release_input(self._input_methods, 1, self._input_service_name, "DarkPactSelectionUI")
@@ -177,6 +185,7 @@ DarkPactSelectionUI._show = function (self, play_speed)
 	self._show_play_speed = play_speed
 
 	self:_request_careers()
+	WwiseWorld.trigger_event(self._wwise_world, "Play_versus_pactsworn_select_start")
 end
 
 DarkPactSelectionUI._hide = function (self, play_speed)
@@ -194,11 +203,17 @@ DarkPactSelectionUI._hide = function (self, play_speed)
 		input_service:set_input_blocked("next_observer_target", false, "DarkPactSelectionUI")
 		input_service:set_input_blocked("previous_observer_target", false, "DarkPactSelectionUI")
 	end
+
+	WwiseWorld.trigger_event(self._wwise_world, "Stop_versus_pactsworn_select_start")
 end
 
 DarkPactSelectionUI.update = function (self, dt, t, player)
 	if self._requesting_careers then
 		return
+	end
+
+	if RESOLUTION_LOOKUP.modified then
+		self:_set_overlay_size()
 	end
 
 	self._ui_animator:update(dt)
@@ -247,6 +262,10 @@ DarkPactSelectionUI.update = function (self, dt, t, player)
 	end
 
 	if not self._input_captured then
+		return
+	end
+
+	if not Managers.state.network or not Managers.state.network:game() then
 		return
 	end
 
@@ -455,6 +474,7 @@ DarkPactSelectionUI.event_versus_received_selectable_careers_response = function
 	local selected_career_name = self:_get_current_selected_career_name()
 
 	self:_set_enemy_pick_text(selected_career_name)
+	self:_set_overlay_size()
 
 	self._is_visible = true
 end
@@ -529,4 +549,16 @@ DarkPactSelectionUI._get_current_selected_career_name = function (self)
 	local display_name = current_career.display_name
 
 	return display_name
+end
+
+DarkPactSelectionUI._set_overlay_size = function (self)
+	local w, h = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
+	local inv_scale = RESOLUTION_LOOKUP.inv_scale
+	local widget = self._widgets_by_name.overlay
+	local style = widget.style
+
+	style.rect.size = {
+		w * inv_scale + 6,
+		h * inv_scale + 6,
+	}
 end

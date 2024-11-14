@@ -16,6 +16,7 @@ local RPCS = {
 	"rpc_client_audio_set_global_parameter_with_lerp",
 	"rpc_client_audio_set_global_parameter",
 	"rpc_vs_play_pactsworn_hit_enemy",
+	"rpc_vs_play_matchmaking_sfx",
 }
 
 AudioSystem.init = function (self, entity_system_creation_context, system_name)
@@ -504,4 +505,25 @@ AudioSystem.rpc_client_audio_set_global_parameter = function (self, channel_id, 
 	end
 
 	self:set_global_parameter(name, value)
+end
+
+AudioSystem.rpc_vs_play_matchmaking_sfx = function (self, channel_id, event_id)
+	if DEDICATED_SERVER then
+		return
+	end
+
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+	if peer_id == Network.peer_id() then
+		return
+	end
+
+	if self.is_server then
+		self.network_transmit:send_rpc_clients_except("rpc_play_2d_audio_event", peer_id, event_id)
+	end
+
+	local event = NetworkLookup.sound_events[event_id]
+	local wwise_world = Managers.world:wwise_world(self.world)
+
+	WwiseWorld.trigger_event(wwise_world, event)
 end

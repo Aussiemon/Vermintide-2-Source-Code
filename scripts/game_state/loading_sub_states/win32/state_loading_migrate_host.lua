@@ -25,7 +25,7 @@ StateLoadingMigrateHost._init_params = function (self, params)
 end
 
 StateLoadingMigrateHost._init_network = function (self)
-	Managers.lobby:setup_network_options()
+	LobbySetup.setup_network_options()
 
 	if not self.parent:has_registered_rpcs() then
 		self.parent:register_rpcs()

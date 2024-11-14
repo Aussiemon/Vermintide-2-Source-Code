@@ -308,6 +308,12 @@ local info_text_style = {
 	},
 }
 local widget_definitions = {
+	overlay = UIWidgets.create_simple_rect("screen", {
+		255,
+		0,
+		0,
+		0,
+	}),
 	chrome = {
 		scenegraph_id = "pivot",
 		offset = {
@@ -317,10 +323,6 @@ local widget_definitions = {
 		},
 		element = {
 			passes = {
-				{
-					pass_type = "rect",
-					style_id = "overlay",
-				},
 				{
 					pass_type = "texture",
 					style_id = "bottom_glow",
@@ -364,18 +366,6 @@ local widget_definitions = {
 			color_available = color_available,
 		},
 		style = {
-			overlay = {
-				offset = {
-					-3,
-					-3,
-					-30,
-				},
-				texture_size = {
-					1926,
-					1086,
-				},
-				color = Colors.get_color_table_with_alpha("black", 255),
-			},
 			bottom_glow = {
 				horizontal_alignment = "center",
 				offset = {
@@ -475,8 +465,8 @@ local animation_definitions = {
 				local t = progress
 
 				widgets_by_name.chrome.style.bottom_glow.color[1] = 255 * t
-				widgets_by_name.chrome.style.overlay.color[1] = 30 * t
 				widgets_by_name.chrome.style.textured_backdrop.color[1] = 255 * t
+				widgets_by_name.overlay.style.rect.color[1] = 30 * t
 			end,
 			on_complete = NOP,
 		},
@@ -591,8 +581,8 @@ local animation_definitions = {
 				local t = 1 - progress
 
 				widgets_by_name.chrome.style.bottom_glow.color[1] = 255 * t
-				widgets_by_name.chrome.style.overlay.color[1] = 30 * t
 				widgets_by_name.chrome.style.textured_backdrop.color[1] = 255 * t
+				widgets_by_name.overlay.style.rect.color[1] = 30 * t
 			end,
 			on_complete = NOP,
 		},

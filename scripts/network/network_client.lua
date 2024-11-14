@@ -3,6 +3,7 @@
 require("scripts/game_state/components/profile_synchronizer")
 require("scripts/game_state/components/network_state")
 require("scripts/utils/profile_requester")
+require("scripts/network/network_match_handler")
 
 NetworkClientStates = table.enum("connecting", "connected", "loading", "loaded", "waiting_enter_game", "game_started", "is_ingame", "denied_enter_game", "lost_connection_to_host", "eac_match_failed")
 NetworkClient = class(NetworkClient)
@@ -19,10 +20,16 @@ local function network_printf(format, ...)
 end
 
 NetworkClient.init = function (self, server_peer_id, wanted_profile_index, wanted_party_index, clear_peer_states, lobby_client, voip)
+	Managers.mechanism:set_network_client(self)
 	self:set_state(NetworkClientStates.connecting)
 
 	self.server_peer_id = server_peer_id
-	self._network_state = NetworkState:new(false, self, server_peer_id, Network.peer_id())
+
+	local my_peer_id = Network.peer_id()
+
+	PEER_ID_TO_CHANNEL[my_peer_id] = 0
+	CHANNEL_TO_PEER_ID[0] = my_peer_id
+	self._network_state = NetworkState:new(false, self, server_peer_id, my_peer_id)
 
 	Managers.level_transition_handler:register_network_state(self._network_state)
 
@@ -31,7 +38,7 @@ NetworkClient.init = function (self, server_peer_id, wanted_profile_index, wante
 	self.profile_synchronizer = ProfileSynchronizer:new(false, lobby_client, self._network_state)
 	self._profile_requester = ProfileRequester:new(false, nil, self.profile_synchronizer)
 	self.wanted_profile_index = FindProfileIndex(Development.parameter("wanted_profile")) or wanted_profile_index or SaveData.wanted_profile_index or 1
-	self.wanted_party_index = tonumber(Development.parameter("wanted_party_index")) or wanted_party_index or 0
+	self.wanted_party_index = tonumber(Development.parameter("wanted_party_index")) or wanted_party_index
 
 	if self.wanted_profile_index then
 		local profile = SPProfiles[self.wanted_profile_index]
@@ -71,12 +78,7 @@ NetworkClient.init = function (self, server_peer_id, wanted_profile_index, wante
 	if voip then
 		self.voip = voip
 	else
-		local voip_params = {
-			is_server = is_server,
-			lobby = lobby_client,
-		}
-
-		self.voip = Voip:new(voip_params)
+		self.voip = Voip:new(is_server, lobby_client)
 	end
 
 	self.connecting_timeout = 0
@@ -88,6 +90,7 @@ NetworkClient.init = function (self, server_peer_id, wanted_profile_index, wante
 
 	self._eac_state_determined = false
 	self._eac_can_play = false
+	self._match_handler = NetworkMatchHandler:new(self, false, my_peer_id, self.server_peer_id, lobby_client)
 end
 
 NetworkClient.destroy = function (self)
@@ -95,6 +98,8 @@ NetworkClient.destroy = function (self)
 		EAC.after_leave()
 	end
 
+	self._match_handler:destroy()
+	Managers.mechanism:set_network_client(nil)
 	Managers.level_transition_handler:deregister_network_state()
 
 	if self._network_event_delegate then
@@ -119,7 +124,7 @@ NetworkClient.destroy = function (self)
 end
 
 NetworkClient.register_rpcs = function (self, network_event_delegate, network_transmit)
-	network_event_delegate:register(self, "rpc_loading_synced", "rpc_notify_in_post_game", "rpc_game_started", "rpc_connection_failed", "rpc_notify_connected", IS_XB1 and "rpc_set_migration_host_xbox" or "rpc_set_migration_host", "rpc_client_update_lobby_data", "rpc_client_connection_state")
+	network_event_delegate:register(self, "rpc_loading_synced", "rpc_notify_in_post_game", "rpc_game_started", "rpc_connection_failed", "rpc_notify_connected", IS_XB1 and "rpc_set_migration_host_xbox" or "rpc_set_migration_host", "rpc_client_update_lobby_data", "rpc_client_connection_state", "rpc_slot_reservation_request_peers")
 
 	self._network_event_delegate = network_event_delegate
 
@@ -127,6 +132,8 @@ NetworkClient.register_rpcs = function (self, network_event_delegate, network_tr
 	self.profile_synchronizer:register_rpcs(network_event_delegate, network_transmit)
 	self._profile_requester:register_rpcs(network_event_delegate, network_transmit)
 	self.voip:register_rpcs(network_event_delegate, network_transmit)
+	self._match_handler:register_rpcs(network_event_delegate, network_transmit)
+	self._match_handler:sync_data_up()
 end
 
 NetworkClient.unregister_rpcs = function (self)
@@ -138,6 +145,7 @@ NetworkClient.unregister_rpcs = function (self)
 
 	self.profile_synchronizer:unregister_network_events()
 	self._network_state:unregister_network_events()
+	self._match_handler:unregister_rpcs()
 end
 
 NetworkClient.rpc_connection_failed = function (self, channel_id, reason)
@@ -161,7 +169,7 @@ NetworkClient.rpc_notify_connected = function (self, channel_id)
 
 		local channel_id = PEER_ID_TO_CHANNEL[self.server_peer_id]
 
-		RPC.rpc_notify_lobby_joined(channel_id, self.wanted_profile_index, self.wanted_career_index, self.wanted_party_index, Application.user_setting("clan_tag") or "0", Managers.account:account_id() or "0")
+		RPC.rpc_notify_lobby_joined(channel_id, self.wanted_profile_index, self.wanted_career_index, self.wanted_party_index or 0, Application.user_setting("clan_tag") or "0", Managers.account:account_id() or "0")
 
 		self._notification_sent = true
 
@@ -336,7 +344,7 @@ NetworkClient._update_connections = function (self)
 	end
 end
 
-NetworkClient.update = function (self, dt)
+NetworkClient.update = function (self, dt, t)
 	self._profile_requester:update(dt)
 	self.profile_synchronizer:update()
 	self:_update_connections()
@@ -378,7 +386,7 @@ NetworkClient.update = function (self, dt)
 		self:_update_eac_match(dt)
 	end
 
-	self.voip:update(dt)
+	self.voip:update(dt, t)
 end
 
 NetworkClient.eac_allowed_to_play = function (self)
@@ -472,4 +480,21 @@ end
 
 NetworkClient.get_network_state = function (self)
 	return self._network_state
+end
+
+NetworkClient.is_peer_hot_join_synced = function (self, peer_id)
+	return self._network_state:is_peer_hot_join_synced(peer_id)
+end
+
+NetworkClient.rpc_slot_reservation_request_peers = function (self, channel_id)
+	local peer_id = Network.peer_id()
+
+	printf("[NetworkClient] Game host requested peers to reserve. Responding with (%s)", peer_id)
+	RPC.rpc_provide_slot_reservation_info(channel_id, {
+		peer_id,
+	}, self.server_peer_id)
+end
+
+NetworkClient.get_match_handler = function (self)
+	return self._match_handler
 end

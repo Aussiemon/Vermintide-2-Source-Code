@@ -170,7 +170,7 @@ IRCManager._handle_connections = function (self, message_type, username, message
 
 	if message_type == Irc.NAMES_MSG then
 		local channel = parameter
-		local new_members = string.split(message, " ")
+		local new_members = string.split_deprecated(message, " ")
 
 		self._channels[channel] = true
 		self._channel_members[channel] = self._channel_members[channel] or {}
@@ -274,7 +274,7 @@ IRCManager._create_metadata_table = function (self, username, icon_id, level, in
 end
 
 IRCManager.parse_metadata = function (self, meta_data, username, parameter)
-	local data = string.split(meta_data, ";")
+	local data = string.split_deprecated(meta_data, ";")
 	local user_data = self._channel_members[parameter][username]
 
 	if user_data then
@@ -314,7 +314,7 @@ end
 IRCManager._parse_names_list = function (self, channel, username, members, names_list_parameter)
 	local start_idx, end_idx = string.find(names_list_parameter, channel .. " :")
 	local names_sub_str = string.sub(names_list_parameter, end_idx)
-	local names = string.split(names_sub_str, " ")
+	local names = string.split_deprecated(names_sub_str, " ")
 
 	for _, names in ipairs(names) do
 		print(names)

@@ -260,7 +260,7 @@ PlayGoTutorialSystem._capture_attacks = function (self, player)
 	local equipment = inventory_extension:equipment()
 	local weapon_unit = equipment.right_hand_wielded_unit or equipment.left_hand_wielded_unit
 
-	if weapon_unit then
+	if ALIVE[weapon_unit] then
 		local weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
 
 		if weapon_extension:has_current_action() then
@@ -533,7 +533,7 @@ PlayGoTutorialSystem.register_killing_blow = function (self, damage_type, attack
 	end
 end
 
-PlayGoTutorialSystem.register_unit = function (self, spawner_unit, ai_unit)
+PlayGoTutorialSystem.register_unit = function (self, spawner_unit, ai_unit, spawned_unit_id)
 	if not self._tutorial_started then
 		return
 	end
@@ -546,6 +546,7 @@ PlayGoTutorialSystem.register_unit = function (self, spawner_unit, ai_unit)
 		ScriptUnit.extension(ai_unit, "ai_system"):enemy_aggro(ai_unit, local_player.player_unit)
 	end
 
+	Unit.set_flow_variable(spawner_unit, "lua_ai_spawned_unit_handle", spawned_unit_id)
 	Unit.flow_event(spawner_unit, "lua_ai_spawned")
 
 	if Unit.get_data(spawner_unit, "Tutorial", "highlight_on_spawn") then

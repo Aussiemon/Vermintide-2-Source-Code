@@ -58,6 +58,7 @@ HeroWindowCharacterInfo.create_ui_elements = function (self, params, offset)
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
 
+	self:_create_insignia_widget()
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
@@ -209,6 +210,10 @@ HeroWindowCharacterInfo.draw = function (self, dt)
 		UIRenderer.draw_widget(ui_top_renderer, self._portrait_widget)
 	end
 
+	if self._insignia_widget then
+		UIRenderer.draw_widget(ui_top_renderer, self._insignia_widget)
+	end
+
 	UIRenderer.end_pass(ui_top_renderer)
 end
 
@@ -224,6 +229,14 @@ HeroWindowCharacterInfo._create_portrait_frame_widget = function (self, frame_se
 	widget_content.frame_settings_name = frame_settings_name
 
 	return widget
+end
+
+HeroWindowCharacterInfo._create_insignia_widget = function (self)
+	local player = Managers.player:local_player()
+	local versus_level = ExperienceSettings.get_versus_player_level(player)
+	local insignia_widget_def = UIWidgets.create_small_insignia("insignia", versus_level)
+
+	self._insignia_widget = UIWidget.init(insignia_widget_def)
 end
 
 HeroWindowCharacterInfo._get_portrait_frame = function (self)

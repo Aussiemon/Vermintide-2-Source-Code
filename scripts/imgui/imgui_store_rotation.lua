@@ -1,6 +1,6 @@
 ﻿-- chunkname: @scripts/imgui/imgui_store_rotation.lua
 
-local layout_template = "    {\n        \"pages\": {\n          \"featured\": {\n            \"rotation_timestamp\": 1669633200,\n            \"display_name\": \"menu_store_panel_title_featured\",\n            \"grid\": [\n            ],\n            \"layout\": \"featured\",\n            \"slideshow\": [\n            ],\n            \"sound_event_enter\": \"Play_hud_store_category_front\"\n          },\n          \"dlc\": {\n            \"content\": [\n              \"bless\",\n              \"bless_upgrade\",\n              \"woods\",\n              \"woods_upgrade\",\n              \"grass\",\n              \"cog\",\n              \"cog_upgrade\",\n              \"lake\",\n              \"lake_upgrade\",\n              \"scorpion\",\n              \"holly\",\n              \"bogenhafen\",\n              \"pre_order\"\n            ],\n            \"type\": \"dlc\",\n            \"display_name\": \"menu_store_panel_title_dlcs\",\n            \"layout\": \"dlc_list\",\n            \"sound_event_enter\": \"Play_hud_store_category_dlc\"\n          }\n        }\n      }\n"
+local layout_template = "    {\n        \"pages\": {\n          \"featured\": {\n            \"rotation_timestamp\": 1669633200,\n            \"display_name\": \"menu_store_panel_title_featured\",\n            \"grid\": [\n            ],\n            \"layout\": \"featured\",\n            \"slideshow\": [\n            ],\n            \"sound_event_enter\": \"Play_hud_store_category_front\"\n          },\n          \"dlc\": {\n            \"content\": [\n              \"bless\",\n              \"bless_upgrade\",\n              \"woods\",\n              \"woods_upgrade\",\n              \"grass\",\n              \"cog\",\n              \"cog_upgrade\",\n              \"lake\",\n              \"lake_upgrade\",\n              \"scorpion\",\n              \"holly\",\n              \"bogenhafen\",\n              \"pre_order\",\n              \"premium_career_bundle\",\n              \"premium_career_bundle_upgrade\"\n            ],\n            \"type\": \"dlc\",\n            \"display_name\": \"menu_store_panel_title_dlcs\",\n            \"layout\": \"dlc_list\",\n            \"sound_event_enter\": \"Play_hud_store_category_dlc\"\n          }\n        }\n      }\n"
 local save_file_template = "    {\n        \"featured\": {\n        },\n        \"discounts\" : {\n        }\n    }\n"
 local APP_IDS = {
 	[1] = "795750",
@@ -79,7 +79,7 @@ ImguiStoreRotation._cleanup_slideshow = function (self)
 	for i = 1, #self._item_keys_list do
 		local key = self._item_keys_list[i]
 		local is_dlc = self:_is_a_dlc(key)
-		local item = is_dlc and StoreDlcSettingsByName[key] or ItemMasterList[key]
+		local item = is_dlc and StoreDlcSettingsByName[key] or rawget(ItemMasterList, key)
 
 		if not item or item.item_type ~= "bundle" and not is_dlc and not item.store_bundle_big_image then
 			-- Nothing
@@ -99,7 +99,7 @@ ImguiStoreRotation._filter_item_keys_list = function (self)
 	for i = 1, #self._item_keys_list do
 		local key = self._item_keys_list[i]
 		local is_dlc = self:_is_a_dlc(key)
-		local item = is_dlc and StoreDlcSettingsByName[key] or ItemMasterList[key]
+		local item = is_dlc and StoreDlcSettingsByName[key] or rawget(ItemMasterList, key)
 
 		if not item or item.item_type == "deed" then
 			-- Nothing
@@ -475,7 +475,7 @@ ImguiStoreRotation._get_layout_item = function (self, key)
 		layout_item.id = key
 		layout_item.type = "dlc"
 	else
-		local item = ItemMasterList[key]
+		local item = rawget(ItemMasterList, key)
 		local is_steam_item = _is_steam_item(item)
 
 		if is_steam_item then
@@ -497,7 +497,7 @@ ImguiStoreRotation._get_slideshow_item = function (self, key)
 	local product_type, header, texture, product_id, description, prio
 	local is_dlc = self:_is_a_dlc(key)
 	local product_type = is_dlc and "dlc" or "item"
-	local item = is_dlc and StoreDlcSettingsByName[key] or ItemMasterList[key]
+	local item = is_dlc and StoreDlcSettingsByName[key] or rawget(ItemMasterList, key)
 
 	if not item or item.item_type ~= "bundle" and not is_dlc and not item.store_bundle_big_image then
 		slideshow_item.error_text = "Item " .. key .. " Cannot be used as a slideshow item."
@@ -576,7 +576,7 @@ ImguiStoreRotation._draw_selcted_layout_items = function (self, items_list)
 		local item_id = item.key or item.id
 
 		if self._localize then
-			local item = ItemMasterList[item_id]
+			local item = rawget(ItemMasterList, item_id)
 			local name = Localize(item.display_name)
 
 			Imgui.text_colored("Featured Item: " .. name, 245, 245, 207, 255)
@@ -995,7 +995,7 @@ ImguiStoreRotation._do_discount_item_selection = function (self, is_valid_end_da
 
 			if is_valid_discount and is_valid_end_date then
 				local selected_item_key = self._item_search_results[self._selected_item_index]
-				local item = ItemMasterList[selected_item_key]
+				local item = rawget(ItemMasterList, selected_item_key)
 
 				fassert(item, "Item %s is not in the ItemMasterList", selected_item_key)
 

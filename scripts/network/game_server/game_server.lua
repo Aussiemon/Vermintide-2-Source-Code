@@ -220,7 +220,3 @@ end
 GameServer.lost_connection_to_lobby = function (self)
 	return false
 end
-
-GameServer.get_aws_session = function (self)
-	return self._aws_session
-end

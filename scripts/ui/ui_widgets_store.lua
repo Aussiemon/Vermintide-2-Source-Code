@@ -275,9 +275,357 @@ UIWidgets.create_store_category_entry_definition = function (scenegraph_id, size
 	return widget
 end
 
+UIWidgets.create_store_collection_entry_definition = function (scenegraph_id, size, masked)
+	local frame_name = "button_frame_02_gold"
+	local frame_settings = UIFrameSettings[frame_name]
+	local frame_spacing = frame_settings.texture_sizes.horizontal[2]
+	local hover_frame_name = "frame_outer_glow_04"
+	local hover_frame_settings = UIFrameSettings[hover_frame_name]
+	local hover_frame_spacing = hover_frame_settings.texture_sizes.horizontal[2]
+	local pulse_frame_name = "frame_outer_glow_04_big"
+	local pulse_frame_settings = UIFrameSettings[pulse_frame_name]
+	local pulse_frame_spacing = pulse_frame_settings.texture_sizes.horizontal[2]
+	local widget = {
+		element = {},
+	}
+	local passes = {
+		{
+			content_id = "hotspot",
+			pass_type = "hotspot",
+			style_id = "hotspot",
+		},
+		{
+			pass_type = "tiled_texture",
+			style_id = "background",
+			texture_id = "background",
+		},
+		{
+			pass_type = "texture",
+			style_id = "background_fade",
+			texture_id = "background_fade",
+		},
+		{
+			pass_type = "texture_frame",
+			style_id = "frame",
+			texture_id = "frame",
+		},
+		{
+			pass_type = "texture_frame",
+			style_id = "hover_frame",
+			texture_id = "hover_frame",
+		},
+		{
+			pass_type = "texture_frame",
+			style_id = "pulse_frame",
+			texture_id = "pulse_frame",
+		},
+		{
+			pass_type = "text",
+			style_id = "title",
+			text_id = "title",
+		},
+		{
+			pass_type = "text",
+			style_id = "title_shadow",
+			text_id = "title",
+		},
+		{
+			content_id = "category_texture",
+			pass_type = "texture_uv",
+			style_id = "category_texture",
+			content_check_function = function (content)
+				return content.texture_id
+			end,
+		},
+		{
+			pass_type = "texture",
+			style_id = "owned_icon",
+			texture_id = "owned_icon",
+			content_check_function = function (content)
+				return content.owned
+			end,
+		},
+		{
+			pass_type = "texture",
+			style_id = "owned_icon_bg",
+			texture_id = "owned_icon_bg",
+			content_check_function = function (content)
+				return content.owned
+			end,
+		},
+	}
+	local content = {
+		background = "menu_frame_bg_03",
+		background_fade = "options_window_fade_01",
+		owned_icon = "store_owned_sigil",
+		owned_icon_bg = "store_owned_ribbon",
+		title = "n/a",
+		hotspot = {},
+		hover_frame = hover_frame_settings.texture,
+		pulse_frame = pulse_frame_settings.texture,
+		frame = frame_settings.texture,
+		category_texture = {
+			texture_id = "icons_placeholder",
+			uvs = {
+				{
+					0,
+					size[2] / 220 * 0.5,
+				},
+				{
+					1,
+					1 - size[2] / 220 * 0.5,
+				},
+			},
+		},
+		size = size,
+	}
+	local style = {
+		hotspot = {
+			size = size,
+			offset = {
+				0,
+				0,
+				0,
+			},
+		},
+		background = {
+			horizontal_alignment = "left",
+			vertical_alignment = "bottom",
+			masked = masked,
+			color = {
+				255,
+				100,
+				100,
+				100,
+			},
+			texture_tiling_size = {
+				256,
+				256,
+			},
+			texture_size = size,
+			offset = {
+				0,
+				0,
+				0,
+			},
+		},
+		background_fade = {
+			horizontal_alignment = "left",
+			vertical_alignment = "bottom",
+			masked = masked,
+			texture_size = {
+				size[1] - frame_spacing * 2,
+				size[2] - frame_spacing * 2,
+			},
+			color = {
+				255,
+				255,
+				255,
+				255,
+			},
+			offset = {
+				frame_spacing,
+				frame_spacing,
+				1,
+			},
+		},
+		frame = {
+			horizontal_alignment = "left",
+			vertical_alignment = "bottom",
+			masked = masked,
+			area_size = size,
+			texture_size = frame_settings.texture_size,
+			texture_sizes = frame_settings.texture_sizes,
+			frame_margins = {
+				0,
+				0,
+			},
+			color = {
+				255,
+				255,
+				255,
+				255,
+			},
+			offset = {
+				0,
+				0,
+				5,
+			},
+		},
+		hover_frame = {
+			horizontal_alignment = "left",
+			vertical_alignment = "bottom",
+			masked = masked,
+			area_size = size,
+			texture_size = hover_frame_settings.texture_size,
+			texture_sizes = hover_frame_settings.texture_sizes,
+			frame_margins = {
+				-hover_frame_spacing,
+				-hover_frame_spacing,
+			},
+			color = {
+				0,
+				255,
+				255,
+				255,
+			},
+			offset = {
+				0,
+				0,
+				6,
+			},
+		},
+		pulse_frame = {
+			horizontal_alignment = "left",
+			vertical_alignment = "bottom",
+			masked = masked,
+			area_size = size,
+			texture_size = pulse_frame_settings.texture_size,
+			texture_sizes = pulse_frame_settings.texture_sizes,
+			frame_margins = {
+				-pulse_frame_spacing,
+				-pulse_frame_spacing,
+			},
+			color = {
+				0,
+				255,
+				255,
+				255,
+			},
+			offset = {
+				0,
+				0,
+				12,
+			},
+		},
+		category_texture = {
+			horizontal_alignment = "right",
+			vertical_alignment = "bottom",
+			masked = masked,
+			size = {
+				size[1],
+				size[2],
+			},
+			texture_size = {
+				130,
+				80,
+			},
+			color = Colors.get_color_table_with_alpha("white", 255),
+			offset = {
+				0,
+				0,
+				3,
+			},
+		},
+		title = {
+			dynamic_font_size = true,
+			font_size = 42,
+			horizontal_alignment = "left",
+			localize = false,
+			upper_case = false,
+			vertical_alignment = "center",
+			word_wrap = false,
+			font_type = masked and "hell_shark_header_masked" or "hell_shark_header",
+			text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+			default_text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+			select_text_color = Colors.get_color_table_with_alpha("white", 255),
+			offset = {
+				30,
+				0,
+				5,
+			},
+			size = {
+				size[1] - 170,
+				size[2],
+			},
+		},
+		title_shadow = {
+			dynamic_font_size = true,
+			font_size = 42,
+			horizontal_alignment = "left",
+			localize = false,
+			upper_case = false,
+			vertical_alignment = "center",
+			word_wrap = false,
+			font_type = masked and "hell_shark_header_masked" or "hell_shark_header",
+			text_color = Colors.get_color_table_with_alpha("black", 255),
+			normal_color = Colors.get_color_table_with_alpha("black", 255),
+			offset = {
+				32,
+				-2,
+				4,
+			},
+			size = {
+				size[1] - 170,
+				size[2],
+			},
+		},
+		owned_icon = {
+			horizontal_alignment = "left",
+			vertical_alignment = "bottom",
+			masked = masked,
+			texture_size = {
+				53,
+				53,
+			},
+			default_texture_size = {
+				53,
+				53,
+			},
+			color = {
+				255,
+				255,
+				255,
+				255,
+			},
+			offset = {
+				size[1] - 45,
+				0,
+				12,
+			},
+		},
+		owned_icon_bg = {
+			horizontal_alignment = "left",
+			vertical_alignment = "bottom",
+			masked = masked,
+			texture_size = {
+				34,
+				50,
+			},
+			default_texture_size = {
+				34,
+				50,
+			},
+			color = {
+				255,
+				255,
+				255,
+				255,
+			},
+			offset = {
+				size[1] - 35,
+				-15,
+				11,
+			},
+		},
+	}
+
+	widget.element.passes = passes
+	widget.content = content
+	widget.style = style
+	widget.offset = {
+		0,
+		0,
+		0,
+	}
+	widget.scenegraph_id = scenegraph_id
+
+	return widget
+end
+
 local dummy_table = {}
 
-UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, product)
+UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, product, settings)
 	local frame_name = "menu_frame_16"
 	local frame_settings = UIFrameSettings[frame_name]
 	local hover_frame_name = "frame_outer_glow_04"
@@ -286,8 +634,9 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 	local pulse_frame_name = "frame_outer_glow_04_big"
 	local pulse_frame_settings = UIFrameSettings[pulse_frame_name]
 	local pulse_frame_spacing = pulse_frame_settings.texture_sizes.horizontal[2]
-	local settings = product.settings or dummy_table
+	local settings = settings or product.parent_settings or product.settings or dummy_table
 	local dlc_settings = product.dlc_settings or dummy_table
+	local icon_size = settings.icon_size
 	local widget = {
 		element = {},
 	}
@@ -618,9 +967,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 		console_third_price_text = "",
 		discount = false,
 		discount_bg = "store_thumbnail_sale",
-		draw_price_icon = true,
 		expire_time_icon = "icon_store_timer",
-		hide_price = false,
 		loading_icon = "loot_loading",
 		new_marker = "list_item_tag_new",
 		old_price = false,
@@ -643,7 +990,9 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 		hide_new = settings.hide_new,
 		item_key = product.product_id,
 		hotspot = {},
+		hide_price = settings.hide_price,
 		masked_price_strike_through = not settings.mask_price_strike_through_hack,
+		draw_price_icon = not settings.hide_price,
 		discont_number_icons = {},
 		rect = masked and "rect_masked" or "simple_rect_texture",
 		frame = frame_settings.texture,
@@ -1148,7 +1497,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 			horizontal_alignment = "left",
 			vertical_alignment = "top",
 			masked = masked,
-			texture_size = size,
+			texture_size = icon_size or size,
 			color = {
 				255,
 				255,
@@ -1156,8 +1505,8 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 				255,
 			},
 			offset = {
-				0,
-				0,
+				icon_size and (size[1] - icon_size[1]) * 0.5 or 0,
+				icon_size and -(size[2] - icon_size[2]) * 0.5 or 0,
 				7,
 			},
 		},
@@ -1459,6 +1808,12 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 	widget.scenegraph_id = scenegraph_id
 
 	return widget
+end
+
+UIWidgets.create_store_pose_item_definition = function (scenegraph_id, size, masked, product)
+	local settings = product.settings
+
+	return UIWidgets.create_store_item_definition(scenegraph_id, size, masked, product, settings)
 end
 
 UIWidgets.create_store_header_text_definition = function (scenegraph_id, size, masked)
@@ -3848,5 +4203,118 @@ UIWidgets.create_store_panel_button = function (scenegraph_id, size, text, font_
 			0,
 		},
 		scenegraph_id = scenegraph_id,
+	}
+end
+
+UIWidgets.create_store_panel_currency_widget = function (scenegraph_id, frame_texture, currency_icon, background_texture, background_tile_size)
+	local unit_frame_settings = frame_texture and UIFrameSettings[frame_texture] or UIFrameSettings.button_frame_01_gold
+
+	return {
+		element = {
+			passes = {
+				{
+					pass_type = "texture_frame",
+					style_id = "frame",
+					texture_id = "frame",
+				},
+				{
+					pass_type = "tiled_texture",
+					style_id = "background_texture",
+					texture_id = "background_texture",
+				},
+				{
+					pass_type = "texture",
+					style_id = "currency_icon",
+					texture_id = "currency_icon",
+				},
+				{
+					pass_type = "text",
+					style_id = "currency_text",
+					text_id = "currency_text",
+				},
+			},
+		},
+		content = {
+			currency_text = "-",
+			frame = unit_frame_settings.texture,
+			background_texture = background_texture or "menu_frame_bg_07",
+			currency_icon = currency_icon or "store_icon_currency_ingame_big",
+		},
+		style = {
+			frame = {
+				texture_size = unit_frame_settings.texture_size,
+				texture_sizes = unit_frame_settings.texture_sizes,
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+				offset = {
+					0,
+					0,
+					5,
+				},
+			},
+			background_texture = {
+				offset = {
+					0,
+					0,
+					0,
+				},
+				texture_tiling_size = background_tile_size or {
+					512,
+					256,
+				},
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+			},
+			currency_icon = {
+				horizontal_alignment = "left",
+				vertical_alignment = "center",
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+				offset = {
+					30,
+					0,
+					1,
+				},
+				texture_size = {
+					64,
+					64,
+				},
+			},
+			currency_text = {
+				dynamic_font_size = false,
+				font_size = 32,
+				font_type = "hell_shark_header",
+				horizontal_alignment = "left",
+				localize = false,
+				upper_case = true,
+				use_shadow = true,
+				vertical_alignment = "center",
+				word_wrap = false,
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					99,
+					0,
+					2,
+				},
+			},
+		},
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			1,
+		},
 	}
 end

@@ -3,6 +3,11 @@
 local MAX_SCORE_PANEL_ROWS = 20
 local tab_layouts = {
 	{
+		class_name = "EndViewStateScoreVSTabReport",
+		display_name = "end_view_state_score_vs_tab_report_display_name",
+		name = "end_view_state_score_vs_tab_report",
+	},
+	{
 		class_name = "EndViewStateScoreVSTabDetails",
 		display_name = "end_view_state_score_vs_tab_details_display_name",
 		name = "end_view_state_score_vs_tab_details",
@@ -213,7 +218,7 @@ local scenegraph_definition = {
 			0,
 		},
 	},
-	continue_button = {
+	back_to_keep_button = {
 		horizontal_alignment = "center",
 		parent = "screen",
 		vertical_alignment = "bottom",
@@ -590,10 +595,11 @@ local function create_tab_text(text, gamepad_text, scenegraph_id, text_style)
 	}
 end
 
+local disable_with_gamepad = true
 local widgets = {
 	level = UIWidgets.create_level_widget("level"),
 	level_text = UIWidgets.create_simple_text("Righteous Stand", "level_text", nil, nil, level_text_style),
-	match_finsihed_text = UIWidgets.create_simple_text("Match finished", "match_finished_text", nil, nil, match_finished_text_style),
+	match_finsihed_text = UIWidgets.create_simple_text(Localize("vs_match_completed"), "match_finished_text", nil, nil, match_finished_text_style),
 	banner = UIWidgets.create_shader_tiled_texture("panel", "carousel_end_screen_panel", {
 		512,
 		200,
@@ -620,7 +626,7 @@ local widgets = {
 	}),
 	prev_tab = create_tab_text("$KEY;ingame_menu__cycle_prev_raw:", "$KEY;ingame_menu__cycle_prev_raw:", "tab_selection", tab_selection_style),
 	next_tab = create_tab_text("$KEY;ingame_menu__cycle_next_alt_raw:", "$KEY;ingame_menu__cycle_next_alt_raw:", "tab_selection", tab_selection_style),
-	continue_button = UIWidgets.create_default_button("continue_button", scenegraph_definition.continue_button.size, nil, nil, Localize("popup_choice_continue"), 25),
+	back_to_keep_button = UIWidgets.create_default_button("back_to_keep_button", scenegraph_definition.back_to_keep_button.size, nil, nil, Localize("return_to_inn"), 25, nil, nil, nil, disable_with_gamepad),
 }
 local animation_definitions = {
 	transition_enter = {
@@ -630,9 +636,15 @@ local animation_definitions = {
 			start_progress = 0,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 0
+				ui_scenegraph.panel.local_position[2] = scenegraph_definition.panel.position[2] + 200
+				ui_scenegraph.back_to_keep_button.local_position[2] = scenegraph_definition.back_to_keep_button.position[2] - 200
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				params.render_settings.alpha_multiplier = math.easeOutCubic(progress)
+				local eased_progress = math.easeOutCubic(progress)
+
+				params.render_settings.alpha_multiplier = eased_progress
+				ui_scenegraph.panel.local_position[2] = math.lerp(scenegraph_definition.panel.position[2] + 200, scenegraph_definition.panel.position[2], eased_progress)
+				ui_scenegraph.back_to_keep_button.local_position[2] = math.lerp(scenegraph_definition.back_to_keep_button.position[2] - 200, scenegraph_definition.back_to_keep_button.position[2], eased_progress)
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return

@@ -134,6 +134,10 @@ local screens = {
 		class_name = "DefeatEndScreenUI",
 		file_name = "scripts/ui/views/end_screens/defeat_end_screen_ui",
 	},
+	draw = {
+		class_name = "DrawEndScreenUI",
+		file_name = "scripts/ui/views/end_screens/draw_end_screen_ui",
+	},
 	none = {
 		class_name = "NoneEndScreenUI",
 		file_name = "scripts/ui/views/end_screens/none_end_screen_ui",

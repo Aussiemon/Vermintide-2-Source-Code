@@ -39,6 +39,7 @@ HeroWindowLoadoutSelectionConsole.on_enter = function (self, params, offset)
 	self._profile_synchronizer = ingame_ui_context.profile_synchronizer
 	self._peer_id = ingame_ui_context.peer_id
 	self._local_player_id = ingame_ui_context.local_player_id
+	self._game_mode_key = Managers.state.game_mode:game_mode_key()
 	self._hero_name = params.hero_name
 	self._career_index = params.career_index
 	self._profile_index = params.profile_index
@@ -123,6 +124,10 @@ HeroWindowLoadoutSelectionConsole._create_ui_elements = function (self, params, 
 	end
 
 	self._gamepad_specific_widgets = gamepad_specific_widgets
+
+	local bot_checkbox_widget = widgets_by_name.bot_checkbox
+
+	bot_checkbox_widget.content.visible = InventorySettings.bot_loadout_allowed_game_modes[self._game_mode_key] or false
 	self._widgets_by_name = widgets_by_name
 
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
@@ -167,9 +172,7 @@ HeroWindowLoadoutSelectionConsole._populate_loadout_buttons = function (self)
 	add_loadout_button.content.button_hotspot.disable_button = self._num_loadouts >= self._max_loadouts
 	self._selected_loadout_index = selected_loadout_index
 
-	local game_mode_key = Managers.state.game_mode:game_mode_key()
-
-	if InventorySettings.bot_loadout_allowed_game_modes[game_mode_key] then
+	if InventorySettings.bot_loadout_allowed_game_modes[self._game_mode_key] then
 		PlayerData.loadout_selection = PlayerData.loadout_selection or {}
 		PlayerData.loadout_selection.bot_equipment = PlayerData.loadout_selection.bot_equipment or {}
 
@@ -204,9 +207,7 @@ HeroWindowLoadoutSelectionConsole.on_exit = function (self, params)
 
 	self._ui_animator = nil
 
-	local game_mode_key = Managers.state.game_mode:game_mode_key()
-
-	if not InventorySettings.save_local_loadout_selection[game_mode_key] then
+	if not InventorySettings.save_local_loadout_selection[self._game_mode_key] then
 		return
 	end
 
@@ -281,9 +282,11 @@ HeroWindowLoadoutSelectionConsole._update_animations = function (self, dt)
 
 	UIWidgetUtils.animate_default_button(add_loadout_button_widget, dt)
 
-	local bot_checkbox_widget = self._widgets_by_name.bot_checkbox
+	if InventorySettings.bot_loadout_allowed_game_modes[self._game_mode_key] then
+		local bot_checkbox_widget = self._widgets_by_name.bot_checkbox
 
-	UIWidgetUtils.animate_default_checkbox_button(bot_checkbox_widget, dt)
+		UIWidgetUtils.animate_default_checkbox_button(bot_checkbox_widget, dt)
+	end
 
 	if self._context_menu_active then
 		local delete_button_widget = self._widgets_by_name.delete_button
@@ -440,13 +443,15 @@ HeroWindowLoadoutSelectionConsole._handle_gamepad_input = function (self, input_
 		elseif input_service:get("confirm") then
 			self:_change_loadout(self._context_menu_loadout_index)
 		elseif input_service:get("left_stick_press") then
-			local bot_checkbox_widget = self._widgets_by_name.bot_checkbox
-			local content = bot_checkbox_widget.content
+			if InventorySettings.bot_loadout_allowed_game_modes[self._game_mode_key] then
+				local bot_checkbox_widget = self._widgets_by_name.bot_checkbox
+				local content = bot_checkbox_widget.content
 
-			content.button_hotspot.is_selected = true
-			content.button_hotspot.disable_button = true
+				content.button_hotspot.is_selected = true
+				content.button_hotspot.disable_button = true
 
-			self:_save_bot_equipment()
+				self:_save_bot_equipment()
+			end
 		else
 			self:_handle_delete_input(input_service, dt, t)
 		end
@@ -649,15 +654,17 @@ HeroWindowLoadoutSelectionConsole._handle_delete_input = function (self, input_s
 end
 
 HeroWindowLoadoutSelectionConsole._handle_bot_checkbox_input = function (self, input_service, dt, t)
-	local bot_checkbox_widget = self._widgets_by_name.bot_checkbox
+	if InventorySettings.bot_loadout_allowed_game_modes[self._game_mode_key] then
+		local bot_checkbox_widget = self._widgets_by_name.bot_checkbox
 
-	if UIUtils.is_button_pressed(bot_checkbox_widget) then
-		local content = bot_checkbox_widget.content
+		if UIUtils.is_button_pressed(bot_checkbox_widget) then
+			local content = bot_checkbox_widget.content
 
-		content.button_hotspot.is_selected = true
-		content.button_hotspot.disable_button = true
+			content.button_hotspot.is_selected = true
+			content.button_hotspot.disable_button = true
 
-		self:_save_bot_equipment()
+			self:_save_bot_equipment()
+		end
 	end
 end
 
@@ -834,17 +841,26 @@ HeroWindowLoadoutSelectionConsole._populate_context_menu_loadout = function (sel
 			local backend_id = item_interface:get_backend_id_from_cosmetic_item(item_id)
 
 			item = item_interface:get_item_from_id(backend_id)
+		elseif cosmetic_slot == "slot_pose" then
+			local item_id = loadout[cosmetic_slot]
+			local backend_id = item_id and item_interface:get_backend_id_from_unlocked_weapon_poses(item_id)
+
+			item = backend_id and item_interface:get_item_from_id(backend_id)
 		else
 			item = BackendUtils.get_loadout_item(career_name, cosmetic_slot)
 		end
 
-		content[cosmetic_slot].item = item
-		content[cosmetic_slot].icon = item.data.inventory_icon
-		content[cosmetic_slot].profile_index = self._profile_index
-		content[cosmetic_slot].career_index = self._career_index
-		content[cosmetic_slot].rarity = UISettings.item_rarity_textures[item.rarity]
-		cosmetic_gamepad_grid = cosmetic_gamepad_grid or {}
-		cosmetic_gamepad_grid[#cosmetic_gamepad_grid + 1] = content[cosmetic_slot]
+		if item then
+			content[cosmetic_slot].item = item
+			content[cosmetic_slot].icon = item.data.inventory_icon or item.data.hud_icon
+			content[cosmetic_slot].profile_index = self._profile_index
+			content[cosmetic_slot].career_index = self._career_index
+			content[cosmetic_slot].rarity = UISettings.item_rarity_textures[item.rarity]
+			cosmetic_gamepad_grid = cosmetic_gamepad_grid or {}
+			cosmetic_gamepad_grid[#cosmetic_gamepad_grid + 1] = content[cosmetic_slot]
+		else
+			Application.warning(string.format("[HeroWindowLoadoutSelectionConsole] Missing %q for loadout_index: %q", cosmetic_slot, loadout_index))
+		end
 	end
 
 	self._gamepad_loadout_grid[#self._gamepad_loadout_grid + 1] = cosmetic_gamepad_grid

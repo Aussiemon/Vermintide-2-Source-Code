@@ -51,8 +51,8 @@ weapon_template.actions = {
 			},
 			enter_function = function (attacker_unit, input_extension)
 				input_extension:clear_input_buffer()
-
-				return input_extension:reset_release_input()
+				input_extension:reset_release_input()
+				Managers.state.entity:system("weapon_system"):change_synced_weapon_state(attacker_unit, "targeting", true)
 			end,
 		},
 		thorn_wall_target_flip = {
@@ -166,8 +166,8 @@ weapon_template.actions = {
 			allowed_chain_actions = {},
 			enter_function = function (attacker_unit, input_extension)
 				input_extension:clear_input_buffer()
-
-				return input_extension:reset_release_input()
+				input_extension:reset_release_input()
+				Managers.state.entity:system("weapon_system"):change_synced_weapon_state(attacker_unit, nil, true)
 			end,
 		},
 	},
@@ -204,8 +204,8 @@ weapon_template.actions = {
 			allowed_chain_actions = {},
 			enter_function = function (attacker_unit, input_extension)
 				input_extension:clear_input_buffer()
-
-				return input_extension:reset_release_input()
+				input_extension:reset_release_input()
+				Managers.state.entity:system("weapon_system"):change_synced_weapon_state(attacker_unit, nil, true)
 			end,
 		},
 	},
@@ -229,8 +229,105 @@ weapon_template.buffs = {
 		external_optional_multiplier = 1,
 	},
 }
-weapon_template.particle_fx = {}
-weapon_template.particle_fx_lookup = table.mirror_array_inplace(table.keys(weapon_template.particle_fx))
+
+local fingers_r_1p = {
+	"ep_r_index",
+	"ep_r_middle",
+	"ep_r_ring",
+	"ep_r_pinky",
+	"ep_r_thumb",
+}
+local fingers_l_1p = {
+	"ep_l_index",
+	"ep_l_middle",
+	"ep_l_ring",
+	"ep_l_pinky",
+	"ep_l_thumb",
+}
+
+local function init_state_data(state_data, tp_unit)
+	if state_data.particle_ids then
+		table.clear(state_data.particle_ids)
+	else
+		state_data.particle_ids = {}
+	end
+
+	if not state_data.nodes then
+		state_data.nodes = {}
+
+		local fp_extension = ScriptUnit.has_extension(tp_unit, "first_person_system")
+		local mesh_unit = fp_extension:get_first_person_mesh_unit()
+
+		for i = 1, #fingers_l_1p do
+			local finger = fingers_l_1p[i]
+
+			state_data.nodes[finger] = Unit.node(mesh_unit, finger)
+		end
+
+		for i = 1, #fingers_r_1p do
+			local finger = fingers_r_1p[i]
+
+			state_data.nodes[finger] = Unit.node(mesh_unit, finger)
+		end
+	end
+end
+
+weapon_template.synced_states = {
+	targeting = {
+		enter = function (self, owner_unit, weapon_unit, state_data, is_local_player, world)
+			if not is_local_player then
+				return
+			end
+
+			init_state_data(state_data, owner_unit)
+
+			state_data.delay = 0.1
+			state_data.spawned = false
+		end,
+		update = function (self, owner_unit, weapon_unit, state_data, is_local_player, world, dt)
+			if not is_local_player then
+				return
+			end
+
+			if state_data.spawned then
+				return
+			end
+
+			state_data.delay = state_data.delay - dt
+
+			if state_data.delay > 0 then
+				return
+			end
+
+			state_data.spawned = true
+
+			local mesh_unit = ScriptUnit.extension(owner_unit, "first_person_system"):get_first_person_mesh_unit()
+
+			for i = 1, #fingers_r_1p do
+				local node = state_data.nodes[fingers_r_1p[i]]
+
+				state_data.particle_ids[node] = ScriptWorld.create_particles_linked(world, "fx/magic_thorn_sister_finger_trail", mesh_unit, node, "destroy")
+			end
+
+			for i = 1, #fingers_l_1p do
+				local node = state_data.nodes[fingers_l_1p[i]]
+
+				state_data.particle_ids[node] = ScriptWorld.create_particles_linked(world, "fx/magic_thorn_sister_finger_trail", mesh_unit, node, "destroy")
+			end
+		end,
+		leave = function (self, owner_unit, weapon_unit, state_data, is_local_player, world, next_state, is_destroy)
+			if not is_local_player then
+				return
+			end
+
+			for node in pairs(state_data.particle_ids) do
+				local particle_id = state_data.particle_ids[node]
+
+				World.stop_spawning_particles(world, particle_id)
+			end
+		end,
+	},
+}
 
 return {
 	we_thornsister_career_skill_weapon = table.clone(weapon_template),

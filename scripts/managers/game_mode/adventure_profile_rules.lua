@@ -27,15 +27,16 @@ AdventureProfileRules.handle_profile_delegation_for_joining_player = function (s
 	local profile_synchronizer = self._profile_synchronizer
 	local new_profile_index, new_career_index
 	local current_profile_index, current_career_index = profile_synchronizer:profile_by_peer(peer_id, local_player_id)
+	local party_id = Managers.mechanism:reserved_party_id_by_peer(peer_id)
 
 	if not current_profile_index then
 		local wanted_profile_index, wanted_career_index = self._network_server:peer_wanted_profile(peer_id, local_player_id)
-		local current_reserver = profile_synchronizer:get_profile_index_reservation(wanted_profile_index)
+		local current_reserver = profile_synchronizer:get_profile_index_reservation(party_id, wanted_profile_index)
 
 		if not current_reserver or current_reserver == peer_id then
 			new_profile_index, new_career_index = wanted_profile_index, wanted_career_index
 		else
-			new_profile_index, new_career_index = profile_synchronizer:get_first_free_profile()
+			new_profile_index, new_career_index = profile_synchronizer:get_first_free_profile(party_id)
 		end
 	end
 
@@ -43,7 +44,7 @@ AdventureProfileRules.handle_profile_delegation_for_joining_player = function (s
 		local profile = SPProfiles[new_profile_index]
 
 		if not profile or profile.affiliation ~= "heroes" then
-			new_profile_index, new_career_index = profile_synchronizer:get_first_free_profile()
+			new_profile_index, new_career_index = profile_synchronizer:get_first_free_profile(party_id)
 		end
 
 		if new_career_index then
@@ -60,7 +61,7 @@ AdventureProfileRules.handle_profile_delegation_for_joining_player = function (s
 			end
 
 			local is_bot = false
-			local success = profile_synchronizer:try_reserve_profile_for_peer(peer_id, new_profile_index)
+			local success = Managers.mechanism:try_reserve_profile_for_peer_by_mechanism(peer_id, new_profile_index, new_career_index, false)
 
 			fassert(success, "this should always succeed since we checked everything before")
 			profile_synchronizer:assign_full_profile(peer_id, local_player_id, new_profile_index, new_career_index, is_bot)

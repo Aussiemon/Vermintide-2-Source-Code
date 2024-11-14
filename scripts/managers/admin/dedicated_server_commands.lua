@@ -29,7 +29,7 @@ DedicatedServerCommands.init = function (self)
 end
 
 DedicatedServerCommands.execute_command = function (self, input)
-	local args = string.split(input, " ")
+	local args = string.split_deprecated(input, " ")
 
 	if #args == 0 then
 		local reason = "No command"
@@ -263,10 +263,10 @@ Commands = {
 			local response = ""
 
 			if Managers.level_transition_handler:in_hub_level() then
-				local reservers = Managers.mechanism:game_mechanism()._slot_reservation_handler:reservers()
+				local peers = Managers.mechanism:game_mechanism():get_slot_reservation_handler():peers()
 
-				for i = 1, #reservers do
-					local peer_id = reservers[i]
+				for i = 1, #peers do
+					local peer_id = peers[i]
 
 					response = string.format("%s%s - %s\n", response, peer_id or "-", Managers.game_server:peer_name(peer_id) or "-")
 				end
@@ -292,7 +292,7 @@ Commands = {
 			party_id = tonumber(party_id)
 
 			if Managers.level_transition_handler:in_hub_level() then
-				local reservers = Managers.mechanism:game_mechanism()._slot_reservation_handler._reserved_peers[party_id]
+				local reservers = Managers.mechanism:game_mechanism():get_slot_reservation_handler()._reserved_peers[party_id]
 
 				if not reservers then
 					return false, string.format("Failed to list party - Invalid party id %d", party_id)
@@ -430,7 +430,7 @@ Commands = {
 			return true, "Score added!"
 		end,
 	},
-	h = {
+	start_round = {
 		description = "Start the round",
 		example = "start_round",
 		max_args = 0,
@@ -468,6 +468,24 @@ Commands = {
 			return true, "Round ended!"
 		end,
 	},
+	end_match = {
+		description = "End the match",
+		example = "end_round",
+		max_args = 0,
+		min_args = 0,
+		func = function ()
+			if Managers.level_transition_handler:in_hub_level() then
+				return false, "Failed to end match - Match not started"
+			end
+
+			local game_mode_manager = Managers.state.game_mode
+
+			game_mode_manager:round_started()
+			Managers.mechanism:game_mechanism():win_conditions():debug_end_match()
+
+			return true, "Match ended!"
+		end,
+	},
 	skip_to_set = {
 		description = "End current round and skip to the first round of the specified set",
 		example = "skip_to_set <set>",
@@ -498,7 +516,7 @@ Commands = {
 		example = "skip_picker",
 		max_args = 0,
 		min_args = 0,
-		func = function (set)
+		func = function ()
 			do return false, "Failed to skip to set - only avaiable in DEBUG" end
 
 			local mechanism = Managers.mechanism:game_mechanism()
@@ -529,7 +547,7 @@ Commands = {
 		example = "skip_picker",
 		max_args = 0,
 		min_args = 0,
-		func = function (set)
+		func = function ()
 			do return false, "Failed to skip to set - only avaiable in DEBUG" end
 
 			local mechanism = Managers.mechanism:game_mechanism()
@@ -553,6 +571,17 @@ Commands = {
 			party_selection_logic._timer = 100000
 
 			return true, "Stopping current picker"
+		end,
+	},
+	quick_start = {
+		description = "Bypass mission select and round timers",
+		example = "quick_start",
+		max_args = 0,
+		min_args = 0,
+		func = function ()
+			script_data.dev_quick_start = true
+
+			return true, "Quick start enabled. Bypassing mission select and round timers."
 		end,
 	},
 	say = {
@@ -802,7 +831,7 @@ Commands = {
 MetaCommands = {
 	_num_players = function ()
 		local dedicated_server_reservation_slots = script_data.dedicated_server_reservation_slots
-		local slots_per_party = string.split(dedicated_server_reservation_slots, ",")
+		local slots_per_party = string.split_deprecated(dedicated_server_reservation_slots, ",")
 		local num_players
 		local max_players = 0
 
@@ -811,7 +840,7 @@ MetaCommands = {
 		end
 
 		if Managers.level_transition_handler:in_hub_level() then
-			num_players = Managers.mechanism:game_mechanism()._slot_reservation_handler._num_slots_reserved
+			num_players = Managers.mechanism:game_mechanism():get_slot_reservation_handler()._num_slots_reserved
 		else
 			num_players = Managers.player:num_human_players()
 		end

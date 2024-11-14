@@ -31,7 +31,7 @@ CareerSettings.dr_engineer = {
 	profile_name = "dwarf_ranger",
 	required_dlc = "cog",
 	should_reload_career_weapon = true,
-	sort_order = 1,
+	sort_order = 4,
 	sound_character = "dwarf_engineer",
 	talent_tree_index = 4,
 	breed = PlayerBreeds.hero_dr_engineer,
@@ -92,26 +92,22 @@ CareerSettings.dr_engineer = {
 		is_engineer = 1,
 	},
 	talent_packages = function (talent_ids, packages_list, is_first_person, is_bot)
-		local career_skill_index = 1
 		local career_weapon_index = 1
 
 		for _, talent_id in ipairs(talent_ids) do
 			local talent = TalentUtils.get_talent_by_id("dwarf_ranger", talent_id)
-
-			if talent and talent.talent_career_skill_index then
-				career_skill_index = talent.talent_career_skill_index
-			end
 
 			if talent and talent.talent_career_weapon_index then
 				career_weapon_index = talent.talent_career_weapon_index
 			end
 		end
 
-		local weapon_names = ActivatedAbilitySettings.dr_4[career_skill_index].weapon_names_by_index
+		local weapon_names = ActivatedAbilitySettings.dr_4[1].weapon_names_by_index
 		local weapon_name = weapon_names[career_weapon_index]
 		local weapon = ItemMasterList[weapon_name]
-		local weapon_tempalte = Weapons[weapon.template]
-		local weapon_packages = WeaponUtils.get_weapon_packages(weapon_tempalte, weapon, is_first_person)
+		local weapon_template = WeaponUtils.get_weapon_template(weapon.template)
+		local career_name = "dr_engineer"
+		local weapon_packages = WeaponUtils.get_weapon_packages(weapon_template, weapon, is_first_person, career_name)
 
 		for j = 1, #weapon_packages do
 			local package_name = weapon_packages[j]
@@ -144,6 +140,9 @@ CareerSettings.dr_engineer = {
 		slot_frame = {
 			"frame",
 		},
+		slot_pose = {
+			"weapon_pose",
+		},
 	},
 	loadout_equipment_slots = {
 		"melee",
@@ -151,6 +150,7 @@ CareerSettings.dr_engineer = {
 		"necklace",
 		"ring",
 		"trinket",
+		"weapon_pose",
 	},
 	additional_item_slots = {
 		slot_grenade = 2,

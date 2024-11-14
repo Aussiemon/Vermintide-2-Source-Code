@@ -246,7 +246,7 @@ SpecialsPacing.select_breed_functions = {
 	end,
 }
 
-SpecialsPacing.set_next_coordinated_attack = function (self, t, specials_settings, method_data, slots, spawn_queue)
+SpecialsPacing._set_next_coordinated_attack = function (self, t, specials_settings, method_data, slots, spawn_queue)
 	local state_data = self._state_data
 	local same_breeds, trickle_time
 
@@ -298,7 +298,7 @@ SpecialsPacing.specials_by_slots = function (self, t, specials_settings, method_
 		local state_data = self._state_data
 
 		if t > state_data.coordinated_timer then
-			self:set_next_coordinated_attack(t, specials_settings, method_data, slots, spawn_queue)
+			self:_set_next_coordinated_attack(t, specials_settings, method_data, slots, spawn_queue)
 		end
 
 		self._specials_timer = t + 1
@@ -804,7 +804,7 @@ local function cb_rush_intervention_unit_spawned(unit, breed, optional_data)
 end
 
 SpecialsPacing.request_rushing_intervention = function (self, t, player_unit, main_path_info, main_path_player_info, disable_rush_intervention)
-	if script_data.ai_specials_spawning_disabled then
+	if script_data.ai_specials_spawning_disabled or Managers.state.game_mode:setting("ai_specials_spawning_disabled") then
 		return false, "specials spawning disabled"
 	end
 
@@ -889,7 +889,7 @@ local function cb_speed_running_intervention_unit_spawned(unit, breed, optional_
 end
 
 SpecialsPacing.request_speed_running_intervention = function (self, t, player_unit, main_path_player_info)
-	if script_data.ai_specials_spawning_disabled then
+	if script_data.ai_specials_spawning_disabled or Managers.state.game_mode:setting("ai_specials_spawning_disabled") then
 		return false, "specials spawning disabled"
 	end
 

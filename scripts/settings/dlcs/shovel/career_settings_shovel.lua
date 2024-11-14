@@ -20,7 +20,7 @@ CareerSettings.bw_necromancer = {
 	profile_name = "bright_wizard",
 	required_dlc = "shovel",
 	show_pet_ui = true,
-	sort_order = 1,
+	sort_order = 4,
 	sound_character = "bright_wizard_necromancer",
 	talent_tree_index = 4,
 	breed = PlayerBreeds.hero_bw_necromancer,
@@ -137,6 +137,9 @@ CareerSettings.bw_necromancer = {
 		slot_frame = {
 			"frame",
 		},
+		slot_pose = {
+			"weapon_pose",
+		},
 	},
 	loadout_equipment_slots = {
 		"melee",
@@ -144,6 +147,7 @@ CareerSettings.bw_necromancer = {
 		"necklace",
 		"ring",
 		"trinket",
+		"weapon_pose",
 	},
 	additional_item_slots = {
 		slot_potion = 1,

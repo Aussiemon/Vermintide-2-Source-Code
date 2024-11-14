@@ -178,14 +178,13 @@ IngamePlayerListUI._create_ui_elements = function (self)
 	self._collectibles_divider = UIWidget.init(specific_widget_definitions.collectibles_divider)
 	self._level_description_widget = UIWidget.init(specific_widget_definitions.level_description)
 	self._private_checkbox_widget = UIWidget.init(specific_widget_definitions.private_checkbox)
+	self._private_checkbox_disabled_reasons = {}
 	self._node_info_widget = nil
 
 	local twitch_connection = Managers.twitch and (Managers.twitch:is_connected() or Managers.twitch:is_activated())
 
 	if Managers.state.game_mode:game_mode_key() == "weave" or twitch_connection then
-		local content = self._private_checkbox_widget.content
-
-		content.is_disabled = true
+		self._private_checkbox_disabled_reasons.weave_or_twitch = true
 	end
 
 	local player_list_widgets = {}
@@ -535,6 +534,19 @@ IngamePlayerListUI._create_player_portrait = function (self, portrait_frame, por
 	self._player_portrait_widget = widget
 end
 
+IngamePlayerListUI._create_player_insignia = function (self, player_data)
+	if player_data.is_bot_player then
+		return
+	end
+
+	local player = player_data.player
+	local versus_level = ExperienceSettings.get_versus_player_level(player)
+	local insignia_widget_def = UIWidgets.create_small_insignia("player_insignia", versus_level)
+	local insignia_widget = UIWidget.init(insignia_widget_def)
+
+	self._player_insignia_widget = insignia_widget
+end
+
 IngamePlayerListUI._setup_weave_display_info = function (self)
 	if Managers.state.game_mode:game_mode_key() == "weave" then
 		local lobby = Managers.state.network:lobby()
@@ -866,6 +878,7 @@ IngamePlayerListUI._update_player_information = function (self, dt, t)
 				player_data.career_index = career_index
 
 				local portrait_widget = self:_create_portrait_frame_widget(portrait_frame_name, portrait_image, player_level_text)
+				local insignia_widget = self:_create_insignia_widget(player_data)
 				local background_color = widget.style.background.color
 				local career_color = Colors.color_definitions[career_name]
 
@@ -876,6 +889,7 @@ IngamePlayerListUI._update_player_information = function (self, dt, t)
 				player_data.portrait_widget = portrait_widget
 				player_data.hero_name = display_name
 				player_data.portrait_frame = portrait_frame
+				player_data.insignia_widget = insignia_widget
 
 				if player_data.is_local_player then
 					player_data.sync_local_player_info = true
@@ -888,6 +902,14 @@ IngamePlayerListUI._update_player_information = function (self, dt, t)
 				local portrait_offset = portrait_widget.offset
 
 				portrait_offset[2] = offset[2]
+			end
+
+			local insignia_widget = player_data.insignia_widget
+
+			if insignia_widget then
+				local insignia_offset = insignia_widget.offset
+
+				insignia_offset[2] = offset[2]
 			end
 
 			local career_display_name = career_settings.display_name
@@ -914,6 +936,7 @@ IngamePlayerListUI._update_player_information = function (self, dt, t)
 				self:_set_simple_widget_texture("player_passive_icon", passive_icon)
 				self:_set_widget_text("player_career_name", Localize(career_display_name))
 				self:_create_player_portrait(portrait_frame_name, portrait_image, player_level_text)
+				self:_create_player_insignia(player_data)
 				self:_set_widget_text("player_hero_name", Localize(ingame_display_name))
 			end
 		end
@@ -930,6 +953,19 @@ IngamePlayerListUI._create_portrait_frame_widget = function (self, frame_setting
 	widget_content.frame_settings_name = frame_settings_name
 
 	return widget
+end
+
+IngamePlayerListUI._create_insignia_widget = function (self, player_data)
+	if player_data.is_bot_player then
+		return
+	end
+
+	local player = player_data.player
+	local versus_level = ExperienceSettings.get_versus_player_level(player)
+	local insignia_widget_def = UIWidgets.create_small_insignia("player_list_insignia", versus_level)
+	local insignia_widget = UIWidget.init(insignia_widget_def)
+
+	return insignia_widget
 end
 
 IngamePlayerListUI._get_ping_texture_by_ping_value = function (self, ping_value)
@@ -1063,34 +1099,7 @@ IngamePlayerListUI.update = function (self, dt, t)
 			self:_update_difficulty()
 		end
 
-		local private_checkbox_content = self._private_checkbox_widget.content
-
-		if self._local_player.is_server and not self._is_in_inn and not private_checkbox_content.is_disabled then
-			local private_checkbox_hotspot = private_checkbox_content.button_hotspot
-
-			if private_checkbox_hotspot.on_hover_enter then
-				WwiseWorld.trigger_event(self._wwise_world, "Play_hud_hover")
-			end
-
-			if self._private_setting_enabled and private_checkbox_hotspot.on_release then
-				local is_private = Managers.matchmaking:is_game_private()
-				local map_save_data = self._map_save_data
-
-				map_save_data.private_enabled = not is_private
-
-				WwiseWorld.trigger_event(self._wwise_world, "Play_hud_select")
-				self:_set_privacy_enabled(map_save_data.private_enabled, true)
-
-				PlayerData.map_view_data = map_save_data
-
-				Managers.save:auto_save(SaveFileName, SaveData, callback(self, "on_save_ended_callback"))
-
-				local matchmaking_manager = Managers.matchmaking
-
-				matchmaking_manager:set_in_progress_game_privacy(map_save_data.private_enabled)
-			end
-		end
-
+		self:_update_private_checkbox()
 		self:_sync_missions()
 		self:_update_fade_in_duration(dt)
 		self:_draw(dt)
@@ -1432,7 +1441,6 @@ IngamePlayerListUI._update_dynamic_widget_information = function (self, dt, t)
 			local total_health = status_extension:is_dead() and 0 or health_extension:current_health()
 			local total_health_percent = status_extension:is_dead() and 0 or health_extension:current_health_percent()
 			local health_percent = status_extension:is_dead() and 0 or health_extension:current_permanent_health_percent()
-			local is_wounded = status_extension:is_wounded()
 			local is_knocked_down = (status_extension:is_knocked_down() or status_extension:get_is_ledge_hanging()) and total_health_percent > 0
 			local is_ready_for_assisted_respawn = status_extension:is_ready_for_assisted_respawn()
 			local needs_help = status_extension:is_grabbed_by_pack_master() or status_extension:is_hanging_from_hook() or status_extension:is_pounced_down() or status_extension:is_grabbed_by_corruptor() or status_extension:is_in_vortex() or status_extension:is_grabbed_by_chaos_spawn()
@@ -1572,6 +1580,44 @@ IngamePlayerListUI._update_difficulty = function (self)
 	end
 end
 
+IngamePlayerListUI._update_private_checkbox = function (self)
+	local difficulty_key = Managers.state.difficulty:get_difficulty()
+	local human_players = Managers.player:human_players()
+	local players_below_difficulty_requirement = DifficultyManager.players_below_required_power_level(difficulty_key, human_players)
+
+	self._private_checkbox_disabled_reasons.power_level = not table.is_empty(players_below_difficulty_requirement) or nil
+
+	local private_checkbox_content = self._private_checkbox_widget.content
+
+	private_checkbox_content.is_disabled = not table.is_empty(self._private_checkbox_disabled_reasons)
+
+	if self._local_player.is_server and not self._is_in_inn and not private_checkbox_content.is_disabled then
+		local private_checkbox_hotspot = private_checkbox_content.button_hotspot
+
+		if private_checkbox_hotspot.on_hover_enter then
+			WwiseWorld.trigger_event(self._wwise_world, "Play_hud_hover")
+		end
+
+		if self._private_setting_enabled and private_checkbox_hotspot.on_release then
+			local is_private = Managers.matchmaking:is_game_private()
+			local map_save_data = self._map_save_data
+
+			map_save_data.private_enabled = not is_private
+
+			WwiseWorld.trigger_event(self._wwise_world, "Play_hud_select")
+			self:_set_privacy_enabled(map_save_data.private_enabled, true)
+
+			PlayerData.map_view_data = map_save_data
+
+			Managers.save:auto_save(SaveFileName, SaveData, callback(self, "on_save_ended_callback"))
+
+			local matchmaking_manager = Managers.matchmaking
+
+			matchmaking_manager:set_in_progress_game_privacy(map_save_data.private_enabled)
+		end
+	end
+end
+
 IngamePlayerListUI._draw = function (self, dt)
 	local ui_renderer = self._ui_renderer
 	local ui_top_renderer = self._ui_top_renderer
@@ -1625,6 +1671,12 @@ IngamePlayerListUI._draw = function (self, dt)
 		UIRenderer.draw_widget(ui_top_renderer, player_portrait_widget)
 	end
 
+	local player_insignia_widget = self._player_insignia_widget
+
+	if player_insignia_widget then
+		UIRenderer.draw_widget(ui_top_renderer, player_insignia_widget)
+	end
+
 	local static_widgets = self._static_widgets
 
 	if static_widgets then
@@ -1668,6 +1720,13 @@ IngamePlayerListUI._draw = function (self, dt)
 
 		if portrait_widget then
 			UIRenderer.draw_widget(ui_top_renderer, portrait_widget)
+		end
+
+		local is_versus = Managers.mechanism:current_mechanism_name() == "versus"
+		local insignia_widget = player.insignia_widget
+
+		if insignia_widget and (is_versus or Application.user_setting("toggle_versus_level_in_all_game_modes")) then
+			UIRenderer.draw_widget(ui_top_renderer, insignia_widget)
 		end
 	end
 

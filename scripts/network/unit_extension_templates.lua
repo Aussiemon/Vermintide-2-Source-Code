@@ -430,6 +430,7 @@ local unit_templates = {
 			"AIUnitFadeExtension",
 			"AiHuskBaseExtension",
 			"UnitFlowOverrideExtension",
+			"AIGroupMember",
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
@@ -447,6 +448,7 @@ local unit_templates = {
 				"BuffExtension",
 				"DialogueActorExtension",
 				"AiHuskBaseExtension",
+				"AIGroupMember",
 			},
 		},
 	},
@@ -522,6 +524,7 @@ local unit_templates = {
 			"DialogueActorExtension",
 			"AiHuskBaseExtension",
 			"AIInventoryExtension",
+			"AIGroupMember",
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
@@ -539,6 +542,7 @@ local unit_templates = {
 				"BuffExtension",
 				"DialogueActorExtension",
 				"AiHuskBaseExtension",
+				"AIGroupMember",
 			},
 		},
 	},
@@ -709,6 +713,7 @@ local unit_templates = {
 			"GenericUnitInteractableExtension",
 			"LookatTargetExtension",
 			"PingTargetExtension",
+			"AIGroupMember",
 		},
 	},
 	ai_unit_chaos_exalted_champion = {
@@ -980,6 +985,7 @@ local unit_templates = {
 			"AIInventoryExtension",
 			"GenericUnitAimExtension",
 			"SoundSectorExtension",
+			"AIGroupMember",
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
@@ -1003,6 +1009,7 @@ local unit_templates = {
 				"AiHuskBaseExtension",
 				"GenericUnitAimExtension",
 				"SoundSectorExtension",
+				"AIGroupMember",
 			},
 		},
 	},
@@ -1048,6 +1055,7 @@ local unit_templates = {
 			"AIShieldUserHuskExtension",
 			"GenericUnitAimExtension",
 			"SoundSectorExtension",
+			"AIGroupMember",
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
@@ -1070,6 +1078,53 @@ local unit_templates = {
 				"DialogueActorExtension",
 				"AiHuskBaseExtension",
 				"GenericUnitAimExtension",
+				"SoundSectorExtension",
+				"AIGroupMember",
+			},
+		},
+	},
+	ai_unit_human_pleb = {
+		base_template = "ai_unit_base",
+		go_type = "ai_unit",
+		self_owned_extensions = {
+			"AILineOfSightExtension",
+			"AIEnemySlotExtension",
+			"SoundSectorExtension",
+		},
+		husk_extensions = {
+			"SoundSectorExtension",
+		},
+		remove_when_killed = {
+			self_owned_extensions = {
+				"AILineOfSightExtension",
+				"AIEnemySlotExtension",
+				"SoundSectorExtension",
+			},
+			husk_extensions = {
+				"SoundSectorExtension",
+			},
+		},
+	},
+	ai_unit_human_soldier = {
+		base_template = "ai_unit_base",
+		go_type = "ai_unit_with_inventory",
+		self_owned_extensions = {
+			"AILineOfSightExtension",
+			"AIInventoryExtension",
+			"AIEnemySlotExtension",
+			"SoundSectorExtension",
+		},
+		husk_extensions = {
+			"AIInventoryExtension",
+			"SoundSectorExtension",
+		},
+		remove_when_killed = {
+			self_owned_extensions = {
+				"AILineOfSightExtension",
+				"AIEnemySlotExtension",
+				"SoundSectorExtension",
+			},
+			husk_extensions = {
 				"SoundSectorExtension",
 			},
 		},
@@ -1174,6 +1229,7 @@ local unit_templates = {
 			"EnemyOutlineExtension",
 			"AIUnitFadeExtension",
 			"AiHuskBaseExtension",
+			"AIGroupMember",
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
@@ -1191,6 +1247,7 @@ local unit_templates = {
 				"BuffExtension",
 				"DialogueActorExtension",
 				"AiHuskBaseExtension",
+				"AIGroupMember",
 			},
 		},
 	},
@@ -1229,6 +1286,7 @@ local unit_templates = {
 			"EnemyOutlineExtension",
 			"AIUnitFadeExtension",
 			"AiHuskBaseExtension",
+			"AIGroupMember",
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
@@ -1239,6 +1297,7 @@ local unit_templates = {
 				"AIVolumeExtension",
 				"AISimpleExtension",
 				"AIEnemySlotExtension",
+				"AIGroupMember",
 			},
 			husk_extensions = {
 				"AiHuskLocomotionExtension",
@@ -1246,6 +1305,7 @@ local unit_templates = {
 				"BuffExtension",
 				"DialogueActorExtension",
 				"AiHuskBaseExtension",
+				"AIGroupMember",
 			},
 		},
 	},
@@ -1289,6 +1349,7 @@ local unit_templates = {
 			"AIUnitFadeExtension",
 			"AiHuskBaseExtension",
 			"GenericUnitAnimationMovementExtension",
+			"AIGroupMember",
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
@@ -1301,6 +1362,7 @@ local unit_templates = {
 				"AISimpleExtension",
 				"GenericUnitAnimationMovementExtension",
 				"AIEnemySlotExtension",
+				"AIGroupMember",
 			},
 			husk_extensions = {
 				"AiHuskLocomotionExtension",
@@ -1309,6 +1371,7 @@ local unit_templates = {
 				"DialogueActorExtension",
 				"AiHuskBaseExtension",
 				"GenericUnitAnimationMovementExtension",
+				"AIGroupMember",
 			},
 		},
 	},
@@ -1352,6 +1415,7 @@ local unit_templates = {
 			"AIUnitFadeExtension",
 			"StormfiendBeamExtension",
 			"AiHuskBaseExtension",
+			"AIGroupMember",
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
@@ -1364,6 +1428,7 @@ local unit_templates = {
 				"StormfiendBeamExtension",
 				"AISimpleExtension",
 				"AIEnemySlotExtension",
+				"AIGroupMember",
 			},
 			husk_extensions = {
 				"AiHuskLocomotionExtension",
@@ -1372,6 +1437,7 @@ local unit_templates = {
 				"DialogueActorExtension",
 				"StormfiendBeamExtension",
 				"AiHuskBaseExtension",
+				"AIGroupMember",
 			},
 		},
 	},
@@ -1424,6 +1490,7 @@ local unit_templates = {
 			"EnemyOutlineExtension",
 			"AIUnitFadeExtension",
 			"AiHuskBaseExtension",
+			"AIGroupMember",
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
@@ -1434,6 +1501,7 @@ local unit_templates = {
 				"AIVolumeExtension",
 				"AISimpleExtension",
 				"AIEnemySlotExtension",
+				"AIGroupMember",
 			},
 			husk_extensions = {
 				"AiHuskLocomotionExtension",
@@ -1441,6 +1509,7 @@ local unit_templates = {
 				"BuffExtension",
 				"DialogueActorExtension",
 				"AiHuskBaseExtension",
+				"AIGroupMember",
 			},
 		},
 	},
@@ -2221,6 +2290,11 @@ local unit_templates = {
 		},
 		husk_extensions = {
 			"ObjectiveUnitExtension",
+		},
+	},
+	objective_group = {
+		self_owned_extensions = {
+			"ObjectiveGroupExtension",
 		},
 	},
 	nurgle_liquid_blob = {

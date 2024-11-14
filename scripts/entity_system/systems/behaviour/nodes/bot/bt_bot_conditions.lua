@@ -1165,28 +1165,21 @@ BTConditions.cant_reach_ally = function (blackboard)
 	end
 
 	local self_unit = blackboard.unit
-	local level_settings = LevelHelper:current_level_settings()
-	local disable_bot_main_path_teleport_check = level_settings.disable_bot_main_path_teleport_check
-	local is_forwards
+	local conflict_director = Managers.state.conflict
+	local self_segment = conflict_director:get_player_unit_segment(self_unit)
+	local target_segment = conflict_director:get_player_unit_segment(follow_unit)
 
-	if not disable_bot_main_path_teleport_check then
-		local conflict_director = Managers.state.conflict
-		local self_segment = conflict_director:get_player_unit_segment(self_unit)
-		local target_segment = conflict_director:get_player_unit_segment(follow_unit)
-
-		if not self_segment or not target_segment then
-			return false
-		end
-
-		local is_backwards = target_segment < self_segment
-
-		if is_backwards then
-			return false
-		end
-
-		is_forwards = self_segment < target_segment
+	if not self_segment or not target_segment then
+		return false
 	end
 
+	local is_backwards = target_segment < self_segment
+
+	if is_backwards then
+		return false
+	end
+
+	local is_forwards = self_segment < target_segment
 	local bot_whereabouts_extension = ScriptUnit.extension(self_unit, "whereabouts_system")
 	local follow_unit_whereabouts_extension = ScriptUnit.extension(follow_unit, "whereabouts_system")
 	local self_position = bot_whereabouts_extension:last_position_on_navmesh()
@@ -1200,7 +1193,7 @@ BTConditions.cant_reach_ally = function (blackboard)
 	local navigation_extension = blackboard.navigation_extension
 	local fails, last_success = navigation_extension:successive_failed_paths()
 
-	return blackboard.moving_toward_follow_position and fails > ((disable_bot_main_path_teleport_check or is_forwards) and 1 or 5) and t - last_success > 5
+	return blackboard.moving_toward_follow_position and fails > (is_forwards and 1 or 5) and t - last_success > 5
 end
 
 local FOLLOW_TELEPORT_DISTANCE_SQ = 1600
@@ -1213,17 +1206,12 @@ BTConditions.should_teleport = function (blackboard)
 	end
 
 	local self_unit = blackboard.unit
-	local level_settings = LevelHelper:current_level_settings()
-	local disable_bot_main_path_teleport_check = level_settings.disable_bot_main_path_teleport_check
+	local conflict_director = Managers.state.conflict
+	local self_segment = conflict_director:get_player_unit_segment(self_unit) or 1
+	local target_segment = conflict_director:get_player_unit_segment(follow_unit)
 
-	if not disable_bot_main_path_teleport_check then
-		local conflict_director = Managers.state.conflict
-		local self_segment = conflict_director:get_player_unit_segment(self_unit) or 1
-		local target_segment = conflict_director:get_player_unit_segment(follow_unit)
-
-		if not target_segment or target_segment < self_segment then
-			return false
-		end
+	if not target_segment or target_segment < self_segment then
+		return false
 	end
 
 	local has_priority_target = blackboard.target_unit and blackboard.target_unit == blackboard.priority_target_enemy

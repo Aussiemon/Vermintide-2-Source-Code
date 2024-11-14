@@ -34,8 +34,6 @@ end
 StateLoadingRunning._init_network = function (self)
 	local loading_context = self.parent.parent.loading_context
 
-	Managers.state.event = EventManager:new()
-
 	if not self.parent:has_registered_rpcs() then
 		self.parent:register_rpcs()
 	end
@@ -46,7 +44,7 @@ StateLoadingRunning._init_network = function (self)
 
 	if loading_context.join_lobby_data or loading_context.join_server_data then
 		self.parent:set_matchmaking(false)
-		Managers.lobby:setup_network_options()
+		LobbySetup.setup_network_options()
 		self.parent:setup_join_lobby(nil, loading_context.setup_voip)
 		self.parent:clear_network_loading_context()
 		Managers.transition:show_icon_background()

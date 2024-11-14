@@ -35,6 +35,13 @@ weapon_template.actions = {
 					sub_action = "spawn_summon_area",
 				},
 				{
+					action = "action_career_hold",
+					auto_chain = true,
+					release_required = "action_career_hold",
+					start_time = 0,
+					sub_action = "spawn_summon_area",
+				},
+				{
 					action = "action_wield",
 					input = "action_wield",
 					start_time = 0,

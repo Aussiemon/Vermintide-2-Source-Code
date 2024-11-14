@@ -157,6 +157,8 @@ SurroundingAwareSystem.on_add_extension = function (self, world, unit, extension
 	end
 
 	if extension_init_data.side_id then
+		extension.side_id = extension_init_data.side_id
+
 		Managers.state.side:add_unit_to_side(unit, extension_init_data.side_id)
 	end
 
@@ -596,6 +598,8 @@ SurroundingAwareSystem.update_events = function (self, context, t)
 						event_data[array_data[array_data_index]] = array_data[array_data_index + 1]
 					end
 
+					found_units[target] = true
+
 					if is_source then
 						dialogue_input:trigger_dialogue_event(TRIGGER_ON_SELF[event_name], event_data)
 					else
@@ -614,17 +618,21 @@ SurroundingAwareSystem.update_events = function (self, context, t)
 				end
 
 				for observer_unit, _ in pairs(self.global_observers) do
-					local dialogue_extension = ScriptUnit.extension(observer_unit, "dialogue_system")
-					local dialogue_input = dialogue_extension.input
-					local is_source = unit == observer_unit
+					if not found_units[observer_unit] then
+						local dialogue_extension = ScriptUnit.extension(observer_unit, "dialogue_system")
+						local dialogue_input = dialogue_extension.input
+						local is_source = unit == observer_unit
 
-					if not is_source then
-						dialogue_input:trigger_dialogue_event(event_name, event_data)
-					elseif TRIGGER_ON_SELF[event_name] then
-						dialogue_input:trigger_dialogue_event(TRIGGER_ON_SELF[event_name], event_data)
+						if not is_source then
+							dialogue_input:trigger_dialogue_event(event_name, event_data)
+						elseif TRIGGER_ON_SELF[event_name] then
+							dialogue_input:trigger_dialogue_event(TRIGGER_ON_SELF[event_name], event_data)
+						end
 					end
 				end
 			end
+
+			table.clear(found_units)
 		end
 
 		i = i + 4 + num_args

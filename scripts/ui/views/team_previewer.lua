@@ -101,8 +101,10 @@ TeamPreviewer._spawn_hero = function (self, hero_previewer, hero_data)
 
 	local callback = callback(self, "cb_hero_unit_spawned_skin_preview", hero_previewer, hero_data)
 
-	hero_previewer:request_spawn_hero_unit(hero_data.hero_name, hero_data.career_index, callback, hero_data.skin_name)
+	hero_previewer:request_spawn_hero_unit(hero_data.hero_name, hero_data.career_index, callback, hero_data.skin_name, hero_data.breed)
 end
+
+local EMPTY_TABLE = {}
 
 TeamPreviewer.cb_hero_unit_spawned_skin_preview = function (self, hero_previewer, hero_data)
 	local preview_items = hero_data.preview_items
@@ -121,7 +123,7 @@ TeamPreviewer.cb_hero_unit_spawned_skin_preview = function (self, hero_previewer
 				local slot_name = slot_names[1]
 				local slot = InventorySettings.slots_by_name[slot_name]
 
-				hero_previewer:equip_item(item_name, slot, nil, item.skin_name)
+				hero_previewer:equip_item(item_name, slot, nil, item.skin_name ~= "n/a" and item.skin_name)
 			end
 		end
 	end
@@ -130,9 +132,28 @@ TeamPreviewer.cb_hero_unit_spawned_skin_preview = function (self, hero_previewer
 		hero_previewer:wield_weapon_slot(weapon_slot, hero_data)
 	end
 
-	local preview_idle_animation = hero_data.preview_animation or "idle"
+	local preview_idle_animation = "idle"
+	local weapon_pose_anim_event = hero_data.weapon_pose_anim_event
 
-	hero_previewer:play_character_animation(preview_idle_animation)
+	if weapon_pose_anim_event and table.is_empty(hero_data.breed or EMPTY_TABLE) then
+		hero_previewer:play_character_animation(weapon_pose_anim_event)
+	elseif hero_data.breed and not table.is_empty(hero_data.breed or EMPTY_TABLE) then
+		local random_value = Math.random(6)
+
+		if hero_data.random_seed then
+			local random_seed
+
+			random_seed, random_value = Math.next_random(hero_data.random_seed, 1, 6)
+		end
+
+		local anim_event = string.format("parading_pose_%02d", random_value)
+
+		hero_previewer:play_character_animation(anim_event)
+	elseif hero_data.preview_animation then
+		hero_previewer:play_character_animation(hero_data.preview_animation)
+	else
+		hero_previewer:play_character_animation(preview_idle_animation)
+	end
 end
 
 TeamPreviewer.update_hero_arrangement = function (self, hero_arrangement, lookat_target, orientate_towards_camera)

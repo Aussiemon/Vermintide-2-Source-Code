@@ -28,6 +28,9 @@ end
 
 DamageDataIndex.STRIDE = #data_fields
 data_fields = nil
+
+local RECENT_ATTACKER_DAMAGE_WINDOW = 2
+
 GenericHealthExtension = class(GenericHealthExtension)
 
 GenericHealthExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -56,6 +59,8 @@ GenericHealthExtension.init = function (self, extension_init_context, unit, exte
 	self.damage = extension_init_data.damage or 0
 	self.predicted_damage = 0
 	self.last_damage_data = {}
+	self._health_system = extension_init_context.owning_system
+	self._recent_attackers = {}
 
 	self:set_max_health(health)
 
@@ -63,14 +68,19 @@ GenericHealthExtension.init = function (self, extension_init_context, unit, exte
 	self._min_health_percentage = nil
 	self._recent_damage_type = nil
 	self._recent_hit_react_type = nil
-	self._recent_attackers = {}
 	self._last_damage_t = nil
 	self._damage_cap = extension_init_data.damage_cap_per_hit or Unit.get_data(unit, "damage_cap_per_hit")
 	self._damage_cap_per_hit = self._damage_cap or self.health
 end
 
 GenericHealthExtension.destroy = function (self)
-	return
+	if self._recent_attackers then
+		for unique_id, data in pairs(self._recent_attackers) do
+			self._health_system:return_recent_attacker(data)
+
+			self._recent_attackers[unique_id] = nil
+		end
+	end
 end
 
 GenericHealthExtension.freeze = function (self)
@@ -96,6 +106,14 @@ GenericHealthExtension.reset = function (self)
 	table.clear(self.last_damage_data)
 
 	HEALTH_ALIVE[self.unit] = true
+
+	if self._recent_attackers then
+		for unique_id, data in pairs(self._recent_attackers) do
+			self._health_system:return_recent_attacker(data)
+
+			self._recent_attackers[unique_id] = nil
+		end
+	end
 end
 
 GenericHealthExtension.hot_join_sync = function (self, peer_id)
@@ -237,7 +255,7 @@ GenericHealthExtension._add_to_damage_history_buffer = function (self, unit, att
 	temp_table[DamageDataIndex.DIRECTION] = damage_direction_table
 	temp_table[DamageDataIndex.DAMAGE_SOURCE_NAME] = damage_source_name or "n/a"
 	temp_table[DamageDataIndex.HIT_RAGDOLL_ACTOR_NAME] = hit_ragdoll_actor or "n/a"
-	temp_table[DamageDataIndex.SOURCE_ATTACKER_UNIT] = source_attacker_unit
+	temp_table[DamageDataIndex.SOURCE_ATTACKER_UNIT] = source_attacker_unit or attacker_unit
 	temp_table[DamageDataIndex.HIT_REACT_TYPE] = hit_react_type or "light"
 	temp_table[DamageDataIndex.CRITICAL_HIT] = is_critical_strike or false
 	temp_table[DamageDataIndex.FIRST_HIT] = first_hit or false
@@ -282,10 +300,34 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 		damage_amount = DamageUtils.networkify_damage(raw_damage)
 	end
 
-	if not source_attacker_unit then
-		local last_attacker_id = self.last_damage_data.attacker_unit_id
+	local attacker_player = AiUtils.get_actual_attacker_player(attacker_unit, unit, damage_source_name)
 
-		source_attacker_unit = last_attacker_id and Managers.state.unit_storage:unit(last_attacker_id)
+	if not source_attacker_unit then
+		if attacker_player and ALIVE[attacker_player.player_unit] then
+			source_attacker_unit = attacker_player.player_unit
+		end
+
+		source_attacker_unit = AiUtils.get_actual_attacker_unit(source_attacker_unit or attacker_unit)
+
+		if not source_attacker_unit then
+			local last_attacker_id = self.last_damage_data.attacker_unit_id
+
+			source_attacker_unit = last_attacker_id and Managers.state.unit_storage:unit(last_attacker_id)
+		end
+	end
+
+	if attacker_player then
+		local bb = BLACKBOARDS[source_attacker_unit]
+		local attacker_breed = ALIVE[source_attacker_unit] and Unit.get_data(source_attacker_unit, "breed") or bb and bb.breed or ALIVE[attacker_unit] and Unit.get_data(attacker_unit, "breed")
+		local attacker_player_unique_id = attacker_player:unique_id()
+		local owner_player = Managers.player:owner(unit)
+		local owner_player_unique_id = owner_player and owner_player:unique_id()
+
+		if attacker_player_unique_id ~= owner_player_unique_id then
+			local damage_t = Managers.time:time("game")
+
+			self:_register_attacker(attacker_player_unique_id, attacker_breed, damage_t)
+		end
 	end
 
 	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, first_hit, total_hits, attack_type, backstab_multiplier)
@@ -299,10 +341,6 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 	local damage_t = Managers.time:time("game")
 
 	self._last_damage_t = damage_t
-
-	if damage_amount > 0 then
-		self:_register_attacker(attacker_unit, source_attacker_unit, damage_t)
-	end
 
 	StatisticsUtil.register_damage(unit, damage_table, self.statistics_db)
 	self:save_kill_feed_data(attacker_unit, damage_table, hit_zone_name, damage_type, damage_source_name, source_attacker_unit)
@@ -498,28 +536,42 @@ GenericHealthExtension.save_kill_feed_data = function (self, attacker_unit, dama
 	end
 
 	if not registered_damage then
-		local area_damage_extension = ScriptUnit.has_extension(attacker_unit, "area_damage_system")
+		local area_damage_system = Managers.state.entity:system("area_damage_system")
+		local source_attacker_unit_data = area_damage_system:has_source_attacker_unit_data(attacker_unit)
 
-		if area_damage_extension then
-			local source_attacker_unit_data = area_damage_extension.source_attacker_unit_data
-
-			if source_attacker_unit_data then
-				last_damage_data.breed = source_attacker_unit_data.breed
-				last_damage_data.attacker_unique_id = source_attacker_unit_data.attacker_unique_id
-				last_damage_data.attacker_side = source_attacker_unit_data.attacker_side
-			end
+		if source_attacker_unit_data then
+			last_damage_data.breed = source_attacker_unit_data.breed
+			last_damage_data.attacker_unique_id = source_attacker_unit_data.attacker_unique_id
+			last_damage_data.attacker_side = source_attacker_unit_data.attacker_side
 		end
 	end
 end
 
-GenericHealthExtension._register_attacker = function (self, attacker_unit, source_attacker_unit, t)
-	local unit = source_attacker_unit or AiUtils.get_actual_attacker_unit(attacker_unit)
+GenericHealthExtension._register_attacker = function (self, attacker_player_unique_id, attacker_breed, damage_t)
+	local recent_attackers = self._recent_attackers
+	local recent = recent_attackers[attacker_player_unique_id]
+	local last_until = damage_t + RECENT_ATTACKER_DAMAGE_WINDOW
 
-	if unit then
-		self._recent_attackers[unit] = t
+	if recent then
+		self._health_system:refresh_recent_attacker(recent, attacker_breed, last_until)
+	else
+		recent_attackers[attacker_player_unique_id] = self._health_system:rent_recent_attacker(attacker_breed, last_until)
 	end
 end
 
-GenericHealthExtension.was_attacked_by = function (self, unit)
-	return self._recent_attackers[unit]
+GenericHealthExtension.was_attacked_by = function (self, player_unique_id)
+	local t = Managers.time:time("game")
+	local recent_data = self._recent_attackers[player_unique_id]
+
+	if recent_data and t > recent_data.t then
+		self._health_system:return_recent_attacker(recent_data)
+
+		return false
+	end
+
+	return recent_data
+end
+
+GenericHealthExtension.recent_attackers = function (self)
+	return self._recent_attackers
 end

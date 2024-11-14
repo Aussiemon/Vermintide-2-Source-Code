@@ -540,6 +540,7 @@ function flow_callback_overcharge_explode_player_bot(params)
 		local max_overcharge = overcharge_extension:get_max_value()
 
 		overcharge_extension:add_charge(max_overcharge)
+		overcharge_extension:add_charge(max_overcharge)
 	end
 end
 

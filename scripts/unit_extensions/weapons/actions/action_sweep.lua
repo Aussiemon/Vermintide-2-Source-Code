@@ -222,9 +222,9 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 	table.clear(self._hit_units)
 	buff_extension:trigger_procs("on_sweep")
 
-	self._unlimited_cleave = false
+	self._unlimited_cleave = not not new_action.unlimited_cleave
 
-	if is_critical_strike then
+	if not self._unlimited_cleave and is_critical_strike then
 		self._unlimited_cleave = buff_extension:has_buff_perk("crit_unlimited_cleave")
 	end
 
@@ -287,7 +287,7 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 	end
 
 	local weapon_unit = self.weapon_unit
-	local rotation = unit_world_rotation(weapon_unit, 0)
+	local rotation = self:_weapon_sweep_rotation(new_action, weapon_unit)
 	local weapon_up_dir = Quaternion.up(rotation)
 	local weapon_up_offset_mod = new_action.weapon_up_offset_mod or 0
 	local weapon_up_offset = weapon_up_dir * weapon_up_offset_mod
@@ -408,7 +408,7 @@ ActionSweep._update_sweep_runtime = function (self, dt, t, current_action, curre
 	local start_position = self._stored_position:unbox()
 	local start_rotation = self._stored_rotation:unbox()
 	local end_position = POSITION_LOOKUP[weapon_unit]
-	local end_rotation = unit_world_rotation(weapon_unit, 0)
+	local end_rotation = self:_weapon_sweep_rotation(current_action, weapon_unit)
 	local aborted = false
 	local is_within_damage_window
 
@@ -1051,8 +1051,12 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 						first_person_extension:play_hud_sound_event("Play_hud_matchmaking_countdown")
 					end
 
-					if current_action.knockback_data and not hit_unit_is_ai then
-						self:_push_target(owner_unit, hit_unit, current_action.knockback_data, blocking, hit_unit_is_hero)
+					if current_action.knockback_data then
+						local hit_unit_status_extension = ScriptUnit.has_extension(hit_unit, "status_system")
+
+						if hit_unit_status_extension and not hit_unit_status_extension:is_knocked_down() then
+							self:_push_target(owner_unit, hit_unit, current_action.knockback_data, blocking, hit_unit_is_hero)
+						end
 					end
 
 					if abort_attack then
@@ -1264,7 +1268,7 @@ ActionSweep._play_character_impact = function (self, is_server, attacker_unit, h
 	local owner_unit = self.owner_unit
 	local target_settings = damage_profile.targets and damage_profile.targets[target_index] or damage_profile.default_target
 	local attack_template_name = target_settings.attack_template
-	local attack_template = AttackTemplates[attack_template_name]
+	local attack_template = DamageUtils.get_attack_template(attack_template_name)
 	local predicted_damage = 0
 	local target_invulerable = false
 
@@ -1410,23 +1414,18 @@ ActionSweep.hit_level_object = function (self, hit_units, hit_unit, owner_unit, 
 	hit_units[hit_unit] = true
 	self._has_hit_environment = true
 
-	local no_player_damage = unit_get_data(hit_unit, "no_damage_from_players")
+	local hit_zone_name = "full"
 
-	if not no_player_damage then
-		local hit_zone_name = "full"
+	self._amount_of_mass_hit = self._amount_of_mass_hit + 1
 
-		self._amount_of_mass_hit = self._amount_of_mass_hit + 1
+	local target_index = math.ceil(self._amount_of_mass_hit)
+	local damage_profile = self._damage_profile
+	local damage_source = self.item_name
+	local has_melee_boost, melee_boost_curve_multiplier = self:_get_power_boost()
+	local power_level = self._power_level
+	local is_critical_strike = self._is_critical_strike or has_melee_boost
 
-		local target_index = math.ceil(self._amount_of_mass_hit)
-		local damage_profile = self._damage_profile
-		local damage_profile_id = self._damage_profile_id
-		local damage_source = self.item_name
-		local has_melee_boost, melee_boost_curve_multiplier = self:_get_power_boost()
-		local power_level = self._power_level
-		local is_critical_strike = self._is_critical_strike or has_melee_boost
-
-		DamageUtils.damage_level_unit(hit_unit, owner_unit, hit_zone_name, power_level, melee_boost_curve_multiplier, is_critical_strike, damage_profile, target_index, attack_direction, damage_source)
-	end
+	DamageUtils.damage_level_unit(hit_unit, owner_unit, hit_zone_name, power_level, melee_boost_curve_multiplier, is_critical_strike, damage_profile, target_index, attack_direction, damage_source)
 
 	local first_person_hit_anim = current_action.first_person_hit_anim
 
@@ -1544,4 +1543,20 @@ ActionSweep._populate_sweep_action_data = function (self, action, overrides)
 
 		overridable_settings[key] = overrides and overrides[key] or action[key]
 	end
+end
+
+ActionSweep._weapon_sweep_rotation = function (self, action, weapon_unit)
+	local weapon_rotation = unit_world_rotation(weapon_unit, 0)
+	local rotation_offset = action.sweep_rotation_offset
+
+	if rotation_offset then
+		local new_rotation = weapon_rotation
+
+		new_rotation = Quaternion.multiply(Quaternion.axis_angle(Quaternion.up(weapon_rotation), rotation_offset.yaw or 0), new_rotation)
+		new_rotation = Quaternion.multiply(Quaternion.axis_angle(Quaternion.right(weapon_rotation), rotation_offset.pitch or 0), new_rotation)
+		new_rotation = Quaternion.multiply(Quaternion.axis_angle(Quaternion.forward(weapon_rotation), rotation_offset.roll or 0), new_rotation)
+		weapon_rotation = new_rotation
+	end
+
+	return weapon_rotation
 end

@@ -1445,7 +1445,7 @@ local function create_viewport_highlight_text(scenegraph_id)
 	}
 end
 
-local function create_upgrade_button(scenegraph_id, size, text, font_size, disable_with_gamepad)
+local function create_upgrade_button(scenegraph_id, size, text, font_size)
 	local icon = "athanor_icon_upgrade"
 	local icon_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(icon)
 	local icon_size = icon_settings.size
@@ -1634,7 +1634,6 @@ local function create_upgrade_button(scenegraph_id, size, text, font_size, disab
 			icon = icon,
 			loading_icon = loading_icon,
 			title_text = text or "n/a",
-			disable_with_gamepad = disable_with_gamepad,
 		},
 		style = {
 			tooltip = {
@@ -1958,7 +1957,6 @@ local function create_upgrade_button(scenegraph_id, size, text, font_size, disab
 	}
 end
 
-local masked = true
 local bottom_widgets = {
 	viewport_button_highlight_1 = create_viewport_highlight("viewport_button_highlight_1"),
 	viewport_button_highlight_2 = create_viewport_highlight("viewport_button_highlight_2"),

@@ -51,6 +51,7 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 	local items = function_result.items
 	local unlocked_weapon_skins = function_result.unlocked_weapon_skins
 	local new_cosmetics = function_result.new_cosmetics
+	local new_unlocked_weapon_poses = function_result.new_unlocked_weapon_poses
 	local updated_statistics = function_result.updated_statistics
 	local consume_data = function_result.consumed_chest
 	local chest_backend_id = consume_data and consume_data.ItemInstanceId
@@ -93,6 +94,18 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 		end
 	end
 
+	if new_unlocked_weapon_poses then
+		for i = 1, #new_unlocked_weapon_poses do
+			local backend_id = backend_mirror:add_item(nil, {
+				ItemId = new_unlocked_weapon_poses[i],
+			})
+
+			if backend_id then
+				loot[#loot + 1] = backend_id
+			end
+		end
+	end
+
 	if updated_statistics then
 		local player = Managers.player and Managers.player:local_player_safe()
 		local statistics_db = Managers.player:statistics_db()
@@ -112,12 +125,18 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 		end
 	end
 
+	local chest_inventory = function_result.chest_inventory
+
+	if chest_inventory then
+		backend_mirror:set_read_only_data("chest_inventory", chest_inventory, true)
+	end
+
 	local id = data.id
 
 	self._loot_requests[id] = loot
 end
 
-BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_won, quick_play_bonus, difficulty, level_key, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_backend_id, game_mode_key, game_time, end_of_level_rewards_arguments)
+BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_won, quick_play_bonus, difficulty, level_key, hero_name, start_experience, end_experience, versus_start_experience, versus_end_experience, loot_profile_name, deed_item_name, deed_backend_id, game_mode_key, game_time, end_of_level_rewards_arguments)
 	local id = self:_new_id()
 	local remote_player_ids_and_characters = self:_get_remote_player_network_ids_and_characters()
 
@@ -133,6 +152,8 @@ BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_wo
 		loot_profile_name = loot_profile_name,
 		start_experience = start_experience,
 		end_experience = end_experience,
+		vs_start_experience = versus_start_experience,
+		vs_end_experience = versus_end_experience,
 		hero_name = hero_name,
 		deed_item_name = deed_item_name,
 		deed_backend_id = deed_backend_id,
@@ -159,7 +180,6 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 
 	local function_result = result.FunctionResult
 	local id = data.id
-	local rewards = function_result.Rewards
 	local experience = function_result.Experience
 	local experience_pool = function_result.ExperiencePool
 	local recent_quickplay_games = function_result.RecentQuickplayGames
@@ -167,7 +187,9 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 	local vs_profile_data = function_result.vs_profile_data
 	local score_breakdown = function_result.ScoreBreakdown
 	local items = function_result.ItemsGranted or function_result.Result
+	local item_rewards = function_result.ItemRewards or function_result.Rewards
 	local currency_granted = function_result.CurrencyGranted
+	local currency_rewards = function_result.currencyRewards
 	local essence_rewards = function_result.EssenceRewards
 	local cosmetic_rewards = function_result.cosmetic_rewards
 	local weapon_skin_rewards = function_result.weapon_skin_rewards
@@ -181,7 +203,7 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 	local loot_request = {}
 	local backend_mirror = self._backend_mirror
 
-	for item_type, item_data in pairs(rewards) do
+	for item_type, item_data in pairs(item_rewards) do
 		local backend_id, item
 
 		for i = 1, num_items do
@@ -252,6 +274,12 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 		end
 	end
 
+	local chest_inventory = result.FunctionResult.chest_inventory
+
+	if chest_inventory then
+		backend_mirror:set_read_only_data("chest_inventory", chest_inventory, true)
+	end
+
 	if items_revoked then
 		for i = 1, #items_revoked do
 			local item_backend_id = items_revoked[i].ItemInstanceId
@@ -297,6 +325,18 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 				loot_request.essence = currency_data
 
 				backend_mirror:set_essence(currency_data.new_total)
+			elseif key == "SM" then
+				loot_request.shillings = currency_data
+
+				local peddler_interface = Managers.backend:get_interface("peddler")
+
+				peddler_interface:set_chips(key, currency_data.new_total)
+			elseif key == "VS" then
+				loot_request.versus_currency = currency_data
+
+				local peddler_interface = Managers.backend:get_interface("peddler")
+
+				peddler_interface:set_chips(key, currency_data.new_total)
 			else
 				fassert(false, string.format("currency '%s' not supported", key))
 			end
@@ -308,6 +348,12 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 		local new_total_essence = final_essence_reward.new_total
 
 		backend_mirror:set_essence(new_total_essence)
+	end
+
+	if currency_rewards then
+		for item_type, data in pairs(currency_rewards) do
+			loot_request[item_type] = data
+		end
 	end
 
 	backend_mirror:set_total_essence(total_essence)
@@ -527,6 +573,18 @@ BackendInterfaceLootPlayfab.achievement_rewards_request_cb = function (self, dat
 		end
 	end
 
+	local chest_inventory = function_result.chest_inventory
+
+	if chest_inventory then
+		backend_mirror:set_read_only_data("chest_inventory", chest_inventory, true)
+	end
+
+	local achievement_reward_levels = function_result.achievement_reward_levels
+
+	if achievement_reward_levels then
+		backend_mirror:set_read_only_data("achievement_reward_levels", achievement_reward_levels, true)
+	end
+
 	backend_mirror:set_achievement_claimed(achievement_id)
 
 	self._loot_requests[id] = loot
@@ -722,6 +780,18 @@ BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards_request_cb = func
 		end
 	end
 
+	local chest_inventory = function_result.chest_inventory
+
+	if chest_inventory then
+		backend_mirror:set_read_only_data("chest_inventory", chest_inventory, true)
+	end
+
+	local achievement_reward_levels = function_result.achievement_reward_levels
+
+	if achievement_reward_levels then
+		backend_mirror:set_read_only_data("achievement_reward_levels", achievement_reward_levels, true)
+	end
+
 	if awarded_achievement_ids then
 		for i = 1, #awarded_achievement_ids do
 			local achievement_id = awarded_achievement_ids[i].achievement_id
@@ -773,4 +843,38 @@ end
 
 BackendInterfaceLootPlayfab.generate_reward_loot_id = function (self)
 	return self:_new_id()
+end
+
+BackendInterfaceLootPlayfab.get_power_level_settings = function (self)
+	return self._backend_mirror:get_power_level_settings()
+end
+
+BackendInterfaceLootPlayfab.debug_override_power_level_settings = function (self, debug_data)
+	self._backend_mirror:debug_override_power_level_settings(debug_data)
+end
+
+BackendInterfaceLootPlayfab.get_rarity_tables = function (self)
+	return self._backend_mirror:get_rarity_tables()
+end
+
+BackendInterfaceLootPlayfab.get_formatted_rarity_tables = function (self)
+	return self._backend_mirror:get_formatted_rarity_tables()
+end
+
+BackendInterfaceLootPlayfab.get_highest_chest_level = function (self, chest_name)
+	local max
+	local chest_inventory = cjson.decode(self._backend_mirror:get_read_only_data("chest_inventory"))
+	local chest_levels = chest_inventory[chest_name]
+
+	if chest_levels then
+		for lvl_key, num_chests in pairs(chest_levels) do
+			if num_chests > 0 then
+				local level = string.split(lvl_key, "_")[2]
+
+				max = math.max(max or 0, level)
+			end
+		end
+	end
+
+	return max
 end

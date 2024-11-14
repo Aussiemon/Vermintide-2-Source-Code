@@ -19,7 +19,7 @@ CareerSettings.we_thornsister = {
 	preview_wield_slot = "ranged",
 	profile_name = "wood_elf",
 	required_dlc = "woods",
-	sort_order = 1,
+	sort_order = 4,
 	sound_character = "wood_elf_sister",
 	talent_tree_index = 4,
 	breed = PlayerBreeds.hero_we_thornsister,
@@ -110,6 +110,9 @@ CareerSettings.we_thornsister = {
 		slot_frame = {
 			"frame",
 		},
+		slot_pose = {
+			"weapon_pose",
+		},
 	},
 	loadout_equipment_slots = {
 		"melee",
@@ -117,6 +120,7 @@ CareerSettings.we_thornsister = {
 		"necklace",
 		"ring",
 		"trinket",
+		"weapon_pose",
 	},
 }
 OverchargeData = OverchargeData or {}

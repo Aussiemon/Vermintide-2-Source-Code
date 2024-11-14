@@ -708,6 +708,8 @@ BackendManagerPlayFab._reason_localize_key = function (self, reason, error_code)
 		elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR then
 			if error_code == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_THIRD_PARTY_PROBLEM then
 				return ERROR_CODES[error_code]
+			elseif error_code == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ACCOUNT_BANNED then
+				return ERROR_CODES[error_code]
 			end
 
 			return "backend_err_playfab"
@@ -1103,6 +1105,12 @@ BackendManagerPlayFab.is_pending_request = function (self)
 	local mirror = self._backend_mirror
 
 	return mirror and mirror:request_queue():is_pending_request() or false
+end
+
+BackendManagerPlayFab.is_mirror_ready = function (self)
+	local mirror = self._backend_mirror
+
+	return mirror and mirror:ready() and not mirror:get_current_commit_id() and not mirror:have_queued_commit()
 end
 
 local EMPTY_TABLE = {}

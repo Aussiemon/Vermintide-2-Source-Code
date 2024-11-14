@@ -40,6 +40,8 @@ Session.register_rpcs = function (self, network_event_delegate)
 end
 
 Session.rpc_backend_session_join = function (self, channel_id, session_id)
+	session_id = tonumber(session_id)
+
 	BackendSession.join(session_id)
 end
 

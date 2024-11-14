@@ -24,10 +24,6 @@ PlayerBotNavigation.init = function (self, extension_init_context, unit, extensi
 end
 
 PlayerBotNavigation.destroy = function (self)
-	if not GwNavAStar.processing_finished(self._astar) then
-		GwNavAStar.cancel(self._astar)
-	end
-
 	GwNavAStar.destroy(self._astar)
 end
 

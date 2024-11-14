@@ -13,33 +13,6 @@ InteractionDefinitions.carousel_dark_pact_climb = {
 		swap_to_3p = false,
 		timeout_duration = 5,
 	},
-	server = {
-		start = function (world, interactor_unit, interactable_unit, data, config, t)
-			data.interaction_timeout = t + config.timeout_duration
-		end,
-		update = function (world, interactor_unit, interactable_unit, data, config, dt, t)
-			local status_extension = ScriptUnit.extension(interactor_unit, "status_system")
-			local breed_action = status_extension:breed_action()
-
-			if t > data.interaction_timeout or breed_action and breed_action.name == "climbing" then
-				return InteractionResult.SUCCESS
-			end
-
-			return InteractionResult.ONGOING
-		end,
-		stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
-			return
-		end,
-		can_interact = function (interactor_unit, interactable_unit)
-			local status_extension = ScriptUnit.extension(interactor_unit, "status_system")
-
-			if not status_extension.breed_action then
-				return
-			end
-
-			return not status_extension:breed_action()
-		end,
-	},
 	client = {
 		start = function (world, interactor_unit, interactable_unit, data, config, t)
 			local status_extension = ScriptUnit.extension(interactor_unit, "status_system")
@@ -77,6 +50,17 @@ InteractionDefinitions.carousel_dark_pact_climb = {
 
 			if climb_point_ignored_weapon_states[current_weapon_state] then
 				return false
+			end
+
+			local breed = Unit.get_data(interactor_unit, "breed")
+			local is_boss = breed.boss
+
+			if is_boss then
+				local boss_allowed = Unit.get_data(interactable_unit, "allow_boss_traversal")
+
+				if not boss_allowed then
+					return false
+				end
 			end
 
 			return true

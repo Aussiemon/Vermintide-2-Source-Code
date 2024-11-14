@@ -93,19 +93,8 @@ vs_gutter_runner_claws.right_hand_attachment_node_linking = AttachmentNodeLinkin
 vs_gutter_runner_claws.left_hand_attachment_node_linking = AttachmentNodeLinking.vs_gutter_runner_claws.left
 vs_gutter_runner_claws.crosshair_style = "dot"
 
-local vs_warpfire_thrower_gun = table.clone(weapon_template)
-
-vs_warpfire_thrower_gun.right_hand_attachment_node_linking = nil
-vs_warpfire_thrower_gun.left_hand_attachment_node_linking = AttachmentNodeLinking.vs_warpfire_thrower_gun.left
-vs_warpfire_thrower_gun.unit_extension_template = "single_weapon_unit"
-vs_warpfire_thrower_gun.single_weapon_template_name = "warpfire_gun"
-vs_warpfire_thrower_gun.third_person_extension_template = "single_weapon_unit"
-vs_warpfire_thrower_gun.uses_weapon_system_on_3p = true
-vs_warpfire_thrower_gun.crosshair_style = "dot"
-
 return {
 	vs_packmaster_claw = vs_packmaster_claw,
 	vs_poison_wind_globadier_orb = vs_poison_wind_globadier_orb,
 	vs_gutter_runner_claws = vs_gutter_runner_claws,
-	vs_warpfire_thrower_gun = vs_warpfire_thrower_gun,
 }

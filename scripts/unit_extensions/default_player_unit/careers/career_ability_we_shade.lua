@@ -87,8 +87,6 @@ CareerAbilityWEShade._run_ability = function (self)
 
 		first_person_extension:animation_event("shade_stealth_ability")
 		career_extension:set_state("kerillian_activate_shade")
-
-		MOOD_BLACKBOARD.skill_shade = true
 	end
 
 	if Managers.state.network:game() then

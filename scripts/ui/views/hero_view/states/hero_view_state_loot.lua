@@ -249,6 +249,8 @@ HeroViewStateLoot.on_enter = function (self, params, optional_ignore_item_popula
 	self._current_page_index = 1
 	self._viewports_dirty = false
 	self._num_chests = 1
+
+	Managers.state.event:trigger("tutorial_trigger", "loot_menu_opened")
 end
 
 HeroViewStateLoot.post_update_on_enter = function (self)
@@ -1076,6 +1078,8 @@ HeroViewStateLoot._has_grid_item = function (self, item)
 	return item_grid:has_item(item)
 end
 
+local chest_category_scratch_tbl = {}
+
 HeroViewStateLoot._select_grid_item = function (self, item, t, reset_num_chests)
 	local widgets_by_name = self._widgets_by_name
 	local item_grid = self._item_grid
@@ -1089,24 +1093,29 @@ HeroViewStateLoot._select_grid_item = function (self, item, t, reset_num_chests)
 	local num_chests_to_multi_open = 2
 
 	if item then
+		local unit_name, sound_event, package_name
 		local item_data = item.data
-		local chest_category = item_data.chest_category
+
+		chest_category_scratch_tbl[1] = item_data.chest_category
+
+		local chest_categories = item_data.chest_categories or chest_category_scratch_tbl
 		local chest_tier = item_data.chest_tier
 		local chests_by_category = LootChestData.chests_by_category
 
 		num_chests = item.RemainingUses
 		num_chests_to_multi_open = math.clamp(num_chests, 2, num_loot_options)
 
-		local unit_name, sound_event, package_name
+		for i = 1, #chest_categories do
+			local chest_category = chest_categories[i]
+			local chests_data = chests_by_category[chest_category]
 
-		for key, chests_data in pairs(chests_by_category) do
-			if key == chest_category then
+			if chests_data then
 				local chest_unit_names = chests_data.chest_unit_names
 
 				for index, chest_unit_name in ipairs(chest_unit_names) do
 					if index == chest_tier then
 						unit_name = chest_unit_name
-						sound_event = "play_gui_chest_appear_" .. key .. "_" .. tostring(index)
+						sound_event = "play_gui_chest_appear_" .. chest_category .. "_" .. tostring(index)
 
 						break
 					end
@@ -1123,6 +1132,10 @@ HeroViewStateLoot._select_grid_item = function (self, item, t, reset_num_chests)
 						end
 					end
 				end
+			end
+
+			if unit_name then
+				break
 			end
 		end
 
@@ -1876,6 +1889,25 @@ HeroViewStateLoot._setup_rewards = function (self, rewards)
 
 				data.world_previewer = world_previewer
 				content.is_loading = true
+			elseif slot_type == "weapon_pose" then
+				local world_previewer
+
+				if USE_DELAYED_SPAWN then
+					world_previewer = MenuWorldPreviewer:new(self.ingame_ui_context, UISettings.hero_skin_camera_position_by_character, "HeroViewStateLootindex" .. index, USE_DELAYED_SPAWN)
+				else
+					world_previewer = MenuWorldPreviewer:new(self.ingame_ui_context, UISettings.hero_skin_camera_position_by_character, "HeroViewStateLootindex" .. index)
+
+					world_previewer:on_enter(data.preview_widget)
+				end
+
+				world_previewer:force_hide_character()
+
+				local profile_name, profile_index, career_name, career_index = self:_get_hero_wield_info_by_item(item)
+
+				self:_spawn_hero_with_weapon_pose(world_previewer, profile_name, career_index, item)
+
+				data.world_previewer = world_previewer
+				content.is_loading = true
 			elseif slot_type == "crafting_material" or slot_type == "deed" or slot_type == "trinket" or slot_type == "necklace" or slot_type == "ring" then
 				local texture_name
 
@@ -2036,6 +2068,56 @@ HeroViewStateLoot._spawn_hero_with_hat = function (self, world_previewer, hero_n
 	world_previewer:request_spawn_hero_unit(hero_name, career_index, false, callback, 1, nil, optional_skin)
 end
 
+HeroViewStateLoot._spawn_hero_with_weapon_pose = function (self, world_previewer, hero_name, career_index, weapon_pose)
+	local callback = callback(self, "cb_hero_unit_spawned_weapon_pose_preview", world_previewer, hero_name, career_index, weapon_pose)
+
+	world_previewer:request_spawn_hero_unit(hero_name, career_index, false, callback, 1)
+end
+
+HeroViewStateLoot.cb_hero_unit_spawned_weapon_pose_preview = function (self, world_previewer, hero_name, career_index, weapon_pose)
+	local profile_index = FindProfileIndex(hero_name)
+	local profile = SPProfiles[profile_index]
+	local careers = profile.careers
+	local career_settings = careers[career_index]
+	local preview_idle_animation = career_settings.preview_idle_animation
+	local preview_wield_slot = career_settings.preview_wield_slot
+	local preview_items = career_settings.preview_items
+	local weapon_pose_item_data = weapon_pose.data
+	local weapon_pose_anim_event = weapon_pose_item_data.data.anim_event
+	local weapon_pose_parent = weapon_pose_item_data.parent
+	local parent_item = ItemMasterList[weapon_pose_parent]
+	local parent_item_name = parent_item.name
+	local weapon_pose_slot_type = parent_item.slot_type
+
+	if preview_items then
+		world_previewer:set_wielded_weapon_slot(weapon_pose_slot_type)
+
+		for _, item_data in ipairs(preview_items) do
+			local item_name = item_data.item_name
+			local item_template = ItemMasterList[item_name]
+			local slot_type = item_template.slot_type
+
+			if slot_type ~= weapon_pose_slot_type then
+				local slot_names = InventorySettings.slot_names_by_type[slot_type]
+				local slot_name = slot_names[1]
+				local slot = InventorySettings.slots_by_name[slot_name]
+
+				world_previewer:equip_item(item_name, slot)
+			end
+		end
+
+		local slot_names = InventorySettings.slot_names_by_type[weapon_pose_slot_type]
+		local slot_name = slot_names[1]
+		local slot = InventorySettings.slots_by_name[slot_name]
+
+		world_previewer:equip_item(parent_item_name, slot)
+
+		local play_animation = true
+
+		world_previewer:set_pose_animation(weapon_pose_anim_event, play_animation)
+	end
+end
+
 HeroViewStateLoot.cb_hero_unit_spawned_skin_preview = function (self, world_previewer, hero_name, career_index)
 	local profile_index = FindProfileIndex(hero_name)
 	local profile = SPProfiles[profile_index]
@@ -2165,7 +2247,10 @@ HeroViewStateLoot._open_chest = function (self, selected_item, num_chests)
 	end
 
 	local selected_item_data = selected_item.data
-	local chest_category = selected_item_data.chest_category
+
+	chest_category_scratch_tbl[1] = selected_item_data.chest_category
+
+	local chest_categories = selected_item_data.chest_categories or chest_category_scratch_tbl
 	local chest_tier = selected_item_data.chest_tier
 	local chests_by_category = LootChestData.chests_by_category
 
@@ -2174,18 +2259,26 @@ HeroViewStateLoot._open_chest = function (self, selected_item, num_chests)
 
 	local unit_name
 
-	for key, chests_data in pairs(chests_by_category) do
-		if key == chest_category then
+	for i = 1, #chest_categories do
+		local chest_category = chest_categories[i]
+		local chests_data = chests_by_category[chest_category]
+
+		if chests_data then
+			local found_match = false
 			local chest_unit_names = chests_data.chest_unit_names
 
 			for index, chest_unit_name in ipairs(chest_unit_names) do
 				if index == chest_tier then
-					local sound_event = "play_gui_chest_open_" .. key .. "_" .. tostring(index)
+					local sound_event = "play_gui_chest_open_" .. chest_category .. "_" .. tostring(index)
 
 					self:play_sound(sound_event)
 
-					return
+					found_match = true
 				end
+			end
+
+			if found_match then
+				break
 			end
 		end
 	end

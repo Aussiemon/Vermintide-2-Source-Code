@@ -91,7 +91,6 @@ local first_aid_kit_02 = table.clone(weapon_template)
 
 first_aid_kit_02.left_hand_unit = "units/weapons/player/wpn_first_aid_kit_02/wpn_first_aid_kit_02"
 first_aid_kit_02.gui_texture = "hud_teammate_consumable_icon_medkit"
-Weapons.healthkit = weapon_template
 
 return {
 	healthkit = table.clone(weapon_template),

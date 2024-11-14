@@ -491,6 +491,7 @@ NetworkLookup.anims = {
 	"dig_ground",
 	"order",
 	"alerted",
+	"alerted_02",
 	"alerted_2",
 	"alerted_3",
 	"alerted_4",
@@ -606,6 +607,7 @@ NetworkLookup.anims = {
 	"move_fwd_walk_2",
 	"move_fwd_walk_3",
 	"move_fwd_walk_4",
+	"move_fwd_1",
 	"move_fwd_4",
 	"move_fwd_5",
 	"move_fwd_6",
@@ -861,6 +863,7 @@ NetworkLookup.anims = {
 	"float_start_left",
 	"float_start_right",
 	"float_fwd",
+	"idle_hammer_low",
 }
 NetworkLookup.interest_point_anims = {
 	"idle_passive_sleep",
@@ -889,6 +892,7 @@ NetworkLookup.interest_point_anims = {
 	"idle_passive_bang_door",
 	"idle_passive_bang_door_2",
 	"idle_passive_guard",
+	"idle_hammer_low",
 }
 
 DLCUtils.append("anim_lookup", NetworkLookup.anims)

@@ -705,6 +705,12 @@ weapon_template.tooltip_detail = {
 	},
 }
 
+local weapon_template_vs = table.clone(weapon_template)
+
+weapon_template_vs.actions.action_one.default.impact_data.damage_profile = "fire_spark_vs"
+weapon_template_vs.actions.action_one.rapid_left.impact_data.damage_profile = "fire_spark_vs"
+
 return {
 	staff_spark_spear_template_1 = table.clone(weapon_template),
+	staff_spark_spear_template_1_vs = table.clone(weapon_template),
 }

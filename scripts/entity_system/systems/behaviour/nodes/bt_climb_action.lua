@@ -30,6 +30,7 @@ BTClimbAction.enter = function (self, unit, blackboard, t)
 	blackboard.climb_upwards = true
 	blackboard.climb_entrance_pos = Vector3Box(entrance_pos)
 	blackboard.climb_exit_pos = Vector3Box(exit_pos)
+	blackboard.climb_action_in_combat = blackboard.in_combat
 
 	local action_data = self._tree_node.action_data
 
@@ -106,6 +107,7 @@ BTClimbAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.climb_moving_to_enter_entrance_timeout = nil
 	blackboard.units_catapulted = nil
 	blackboard.jump_down_land_animation = nil
+	blackboard.climb_action_in_combat = nil
 
 	if not destroy then
 		LocomotionUtils.set_animation_translation_scale(unit, Vector3(1, 1, 1))
@@ -147,6 +149,10 @@ BTClimbAction.run = function (self, unit, blackboard, t, dt)
 	local is_on_edge = blackboard.smart_object_data.is_on_edge
 
 	if blackboard.smart_object_data ~= blackboard.next_smart_object_data.smart_object_data then
+		return "failed"
+	end
+
+	if blackboard.climb_action_in_combat ~= blackboard.in_combat then
 		return "failed"
 	end
 

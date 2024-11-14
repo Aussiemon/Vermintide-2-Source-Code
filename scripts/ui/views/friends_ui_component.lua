@@ -273,6 +273,25 @@ FriendsUIComponent._update_list = function (self, active_tab)
 	local item_contents = active_tab.content.list_content
 	local item_styles = list_style.item_styles
 	local num_draws = list_style.num_draws
+	local is_in_dedicated_server_lobby = false
+	local matchmaking_manager = Managers.matchmaking and Managers.matchmaking
+	local matchmaking_type = matchmaking_manager and matchmaking_manager.lobby:lobby_data("matchmaking_type")
+	local mechanism_name = Managers.level_transition_handler:get_current_mechanism()
+	local is_in_inn = Managers.level_transition_handler:in_hub_level()
+
+	if mechanism_name == "versus" then
+		if not is_in_inn then
+			if matchmaking_type and NetworkLookup.matchmaking_types[tonumber(matchmaking_type)] == "versus" then
+				is_in_dedicated_server_lobby = true
+			end
+		elseif is_in_inn then
+			local matchmaking_search_info = matchmaking_manager and matchmaking_manager:search_info()
+
+			if matchmaking_manager and matchmaking_manager:is_game_matchmaking() and matchmaking_search_info and matchmaking_search_info.quick_game then
+				is_in_dedicated_server_lobby = true
+			end
+		end
+	end
 
 	for i = 1, num_draws do
 		local content = item_contents[i]
@@ -293,11 +312,17 @@ FriendsUIComponent._update_list = function (self, active_tab)
 
 		local top_visible = math.point_is_inside_2d_box(_update_list_temp_pos_table, mask_pos, mask_size)
 		local visible = lower_visible or top_visible
+		local playing_game_info = content.playing_game_info
+		local is_friend_in_dedicated_server_lobby = false
+
+		if playing_game_info and (playing_game_info.ip or playing_game_info.server_port) then
+			is_friend_in_dedicated_server_lobby = true
+		end
 
 		content.visible = visible
-		content.invite_button.visible = visible
 		content.profile_button.visible = visible
-		content.invite_button.visible = visible
+		content.invite_button.visible = visible and not is_in_dedicated_server_lobby
+		content.join_button.visible = visible and not is_in_dedicated_server_lobby and not is_friend_in_dedicated_server_lobby
 	end
 end
 
@@ -424,7 +449,7 @@ FriendsUIComponent._populate_tab = function (self, widget, list, allow_invite)
 		if allowed_to_initiate_join_lobby and playing_this_game then
 			local playing_game = friend.playing_game
 
-			if playing_game and playing_game.lobby then
+			if playing_game and (playing_game.lobby or playing_game.ip) then
 				can_join = true
 			end
 		end
@@ -533,11 +558,18 @@ end
 FriendsUIComponent._join_player = function (self, content)
 	local playing_game_info = content.playing_game_info
 	local lobby_id = playing_game_info.lobby
+	local ip, port = playing_game_info.ip, playing_game_info.server_port
 
 	if lobby_id then
 		local lobby_data = LobbyInternal.get_lobby_data_from_id(lobby_id)
 
 		lobby_data.id = lobby_id
 		self._join_lobby_data = lobby_data
+	elseif ip and port then
+		self._join_lobby_data = {
+			server_info = {
+				ip_port = ip .. ":" .. port,
+			},
+		}
 	end
 end

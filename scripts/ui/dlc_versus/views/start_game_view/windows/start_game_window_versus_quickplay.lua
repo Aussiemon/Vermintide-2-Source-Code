@@ -102,7 +102,6 @@ StartGameWindowVersusQuickplay._handle_gamepad_activity = function (self)
 
 	if not mouse_active then
 		if not self.gamepad_active_last_frame or force_update then
-			self.gamepad_active_last_frame = true
 			self._input_index = 1
 
 			local input_funcs = selector_input_definitions[self._input_index]
@@ -110,6 +109,8 @@ StartGameWindowVersusQuickplay._handle_gamepad_activity = function (self)
 			if input_funcs and input_funcs.enter_requirements(self) then
 				input_funcs.on_enter(self)
 			end
+
+			self.gamepad_active_last_frame = true
 		end
 	elseif self.gamepad_active_last_frame or force_update then
 		self.gamepad_active_last_frame = false
@@ -128,7 +129,7 @@ StartGameWindowVersusQuickplay._update_can_play = function (self)
 
 	local eac_untrusted_disclaimer = self._widgets_by_name.eac_untrusted_disclaimer
 
-	eac_untrusted_disclaimer.content.visible = not can_play
+	eac_untrusted_disclaimer.content.visible = not not script_data["eac-untrusted"]
 
 	local input_desc = "versus_quickplay_default"
 
@@ -196,6 +197,12 @@ StartGameWindowVersusQuickplay._handle_input = function (self, dt, t)
 			end
 		end
 	end
+
+	local consume = true
+
+	if input_service:get("right_stick_press", consume) then
+		parent:set_window_input_focus("versus_additional_quickplay_settings")
+	end
 end
 
 StartGameWindowVersusQuickplay._play_sound = function (self, event)
@@ -203,20 +210,11 @@ StartGameWindowVersusQuickplay._play_sound = function (self, event)
 end
 
 StartGameWindowVersusQuickplay._can_play = function (self)
-	local local_player_peer_id = Managers.player:local_player():network_id()
-	local is_player_alone_in_party, is_party_leader
-	local party = Managers.party:get_local_player_party()
-	local is_player_alone_in_party = party and party.num_used_slots == 1
-
-	if DEDICATED_SERVER then
-		is_party_leader = Managers.party:client_is_friend_party_leader(local_player_peer_id) or Managers.party:is_leader(local_player_peer_id)
-	else
-		is_party_leader = Managers.party:is_leader(local_player_peer_id) or self._ingame_ui_context.is_server
+	if script_data["eac-untrusted"] then
+		return false
 	end
 
-	local can_play = (is_player_alone_in_party or is_party_leader) and not script_data["eac-untrusted"]
-
-	return can_play
+	return true
 end
 
 StartGameWindowVersusQuickplay._option_selected = function (self, widget_name, button_name, t)
@@ -239,12 +237,12 @@ StartGameWindowVersusQuickplay._verify_selection_index = function (self, input_i
 
 	local input_funcs = selector_input_definitions[input_index]
 
-	while input_funcs and input_index < num_inputs and not input_funcs.enter_requirements() do
+	while input_funcs and input_index < num_inputs and not input_funcs.enter_requirements(self) do
 		input_index = input_index + input_change
 		input_funcs = selector_input_definitions[input_index]
 	end
 
-	if input_funcs and input_funcs.enter_requirements() then
+	if input_funcs and input_funcs.enter_requirements(self) then
 		verified_index = input_index
 	end
 

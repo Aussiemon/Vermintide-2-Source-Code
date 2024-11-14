@@ -201,7 +201,7 @@ EnemyCharacterStateTunneling.update = function (self, unit, input, dt, context, 
 
 		Mover.set_position(mover, exit_pos)
 		Unit.set_local_position(unit, 0, exit_pos)
-		status_extension:set_invisible(true, true, "tunneling")
+		status_extension:set_invisible(true, nil, "tunneling")
 		locomotion_extension:set_mover_filter_property("dark_pact_noclip", true)
 
 		self.state = "transition_video"
@@ -256,7 +256,7 @@ EnemyCharacterStateTunneling.update = function (self, unit, input, dt, context, 
 	end
 
 	if self.state == "fade_out" and t > self.fade_t then
-		status_extension:set_invisible(false, true, "tunneling")
+		status_extension:set_invisible(false, nil, "tunneling")
 
 		self.state = "end"
 	end

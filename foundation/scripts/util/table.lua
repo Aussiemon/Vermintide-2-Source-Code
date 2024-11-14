@@ -108,6 +108,36 @@ table.compare = function (t1, t2, ignore_keys)
 	return true
 end
 
+table.recursive_compare = function (t1, t2)
+	local return_value = true
+
+	for key_t1, value_t1 in pairs(t1) do
+		if type(value_t1) == "table" then
+			local value_t2 = t2[key_t1]
+
+			if type(value_t2) == "table" then
+				return_value = table.recursive_compare(value_t1, t2[key_t1])
+
+				if not return_value then
+					break
+				end
+			else
+				return_value = false
+
+				break
+			end
+		else
+			for key_t2, value_t2 in pairs(t2) do
+				if key_t1 == key_t2 and value_t1 ~= value_t2 then
+					return false
+				end
+			end
+		end
+	end
+
+	return return_value
+end
+
 table.create_copy = function (copy, original)
 	if not copy then
 		return table.clone(original)
@@ -262,8 +292,10 @@ table.find_by_key = function (t, search_key, search_value)
 	return nil
 end
 
-table.index_of = function (t, element)
-	for i = 1, #t do
+table.index_of = function (t, element, start_index)
+	start_index = start_index or 1
+
+	for i = start_index, #t do
 		if t[i] == element then
 			return i
 		end
@@ -952,9 +984,7 @@ table.flat = function (t, max_depth, current_depth)
 
 	local out = {}
 
-	for i = 1, #t do
-		local value = t[i]
-
+	for k, value in pairs(t) do
 		if type(value) == "table" and current_depth <= max_depth then
 			table.append(out, table.flat(value, max_depth, current_depth))
 		else

@@ -38,7 +38,6 @@ StartGameWindowAreaSelectionConsole.on_enter = function (self, params, offset)
 
 	self:create_ui_elements(params, offset)
 
-	params.return_layout_name = self.parent:get_selected_game_mode_layout_name()
 	self._area_unavailable = true
 
 	self.parent:set_input_description("select_area_confirm")
@@ -261,9 +260,6 @@ StartGameWindowAreaSelectionConsole.on_exit = function (self, params)
 	self._has_exited = true
 
 	self:_destroy_video_widget()
-
-	params.return_layout_name = nil
-
 	self:_play_sound("Stop_hud_menu_area_music")
 end
 
@@ -402,6 +398,12 @@ StartGameWindowAreaSelectionConsole._handle_input = function (self, dt, t)
 	if not self._area_unavailable and gamepad_confirm_pressed then
 		self:_on_select_button_pressed()
 	end
+
+	if input_service:get("toggle_menu", true) then
+		local layout_name = "custom_game"
+
+		self.parent:set_layout_by_name(layout_name)
+	end
 end
 
 StartGameWindowAreaSelectionConsole._on_select_button_pressed = function (self)
@@ -427,12 +429,7 @@ StartGameWindowAreaSelectionConsole._on_select_button_pressed = function (self)
 
 		if requirements_fulfilled then
 			local parent = self.parent
-			local selected_layout_name = parent:get_selected_layout_name()
 			local new_layout_name = "mission_selection"
-
-			if selected_layout_name == "area_selection" then
-				new_layout_name = "mission_selection"
-			end
 
 			parent:set_selected_area_name(area_name)
 			parent:set_layout_by_name(new_layout_name)

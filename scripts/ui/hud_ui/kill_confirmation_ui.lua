@@ -156,7 +156,7 @@ KillConfirmationUI.add_badge = function (self, hash, badge, add_to_queue, num_ba
 
 	local victim_name = badge.victim_player:name()
 
-	content.text_name = string.format(badge.text, victim_text_color[2], victim_text_color[3], victim_text_color[4], victim_text_color[1], victim_name)
+	content.text_name = string.format(Localize(badge.text), victim_text_color[2], victim_text_color[3], victim_text_color[4], victim_text_color[1], victim_name)
 
 	self:_start_animation("on_enter", 1, widget)
 end

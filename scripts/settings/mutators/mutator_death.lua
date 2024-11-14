@@ -221,9 +221,7 @@ return {
 		data.offset = 1
 	end,
 	server_update_function = function (context, data, dt, t)
-		local game_session = Network.game_session()
-
-		if game_session == nil then
+		if not Managers.state.network or not Managers.state.network:game() then
 			return
 		end
 

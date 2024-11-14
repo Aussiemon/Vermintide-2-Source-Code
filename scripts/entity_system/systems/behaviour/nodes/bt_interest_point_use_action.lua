@@ -9,6 +9,12 @@ BTInterestPointUseAction.init = function (self, ...)
 end
 
 BTInterestPointUseAction.name = "BTInterestPointUseAction"
+BTInterestPointUseAction.action_setup = {
+	idle_hammer_low = {
+		to_passive = true,
+		wield = true,
+	},
+}
 
 BTInterestPointUseAction.enter = function (self, unit, blackboard, t)
 	local interest_point_system_api = blackboard.system_api.ai_interest_point_system
@@ -18,6 +24,20 @@ BTInterestPointUseAction.enter = function (self, unit, blackboard, t)
 	local animations_n = point.animations_n
 	local animation_index = math.random(1, animations_n)
 	local animation = animations[animation_index]
+	local action_setup = BTInterestPointUseAction.action_setup[animation]
+
+	if action_setup then
+		if action_setup.to_passive then
+			AiUtils.enter_passive(unit, blackboard)
+		end
+
+		if action_setup.wield then
+			local network_manager = Managers.state.network
+			local unit_id = network_manager:unit_game_object_id(unit)
+
+			network_manager.network_transmit:send_rpc_all("rpc_ai_inventory_wield", unit_id, 1)
+		end
+	end
 
 	Managers.state.network:anim_event(unit, animation)
 

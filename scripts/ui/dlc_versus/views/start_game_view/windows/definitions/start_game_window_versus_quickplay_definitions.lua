@@ -412,7 +412,7 @@ local widget_definitions = {
 	quickplay_title = UIWidgets.create_simple_text(Localize("vs_quick_play_title"), "quickplay_title", nil, nil, quickplay_title_style),
 	quickplay_description = UIWidgets.create_simple_text(Localize("vs_quick_play_description"), "quickplay_description", nil, nil, quickplay_description_style),
 	quickplay_divider = UIWidgets.create_simple_texture("divider_01_top", "quickplay_divider"),
-	play_button = UIWidgets.create_start_game_deus_play_button("play_button", scenegraph_definition.play_button.size, Localize("start_game_window_play"), 34, disable_with_gamepad),
+	play_button = UIWidgets.create_start_game_deus_play_button("play_button", scenegraph_definition.play_button.size, Localize("start_game_window_play"), 34),
 	eac_untrusted_disclaimer = UIWidgets.create_simple_text("*Versus quickplay disabled in modded realm", "play_button", nil, nil, eac_untrusted_disclaimer_text_style),
 }
 local selector_input_definitions = {
@@ -421,7 +421,7 @@ local selector_input_definitions = {
 		enter_requirements = function (self)
 			local gamepad_active = Managers.input:is_device_active("gamepad")
 
-			return not gamepad_active
+			return gamepad_active and not self.gamepad_active_last_frame
 		end,
 		on_enter = function (self, dt, t)
 			local selection_widgets_by_name = self._widgets_by_name

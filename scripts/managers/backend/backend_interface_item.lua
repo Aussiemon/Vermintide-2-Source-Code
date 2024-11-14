@@ -799,7 +799,7 @@ end
 
 BackendInterfaceItem.get_item_template = function (self, item_data, backend_id)
 	local template_name = item_data.temporary_template or item_data.template
-	local item_template = Weapons[template_name]
+	local item_template = WeaponUtils.get_weapon_template(template_name)
 	local modified_item_template
 
 	if item_template then

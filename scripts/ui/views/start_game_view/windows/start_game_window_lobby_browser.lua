@@ -58,7 +58,7 @@ StartGameWindowLobbyBrowser.on_enter = function (self, params, offset)
 	self._career_name = local_player:career_name()
 	self._ui_animations = {}
 
-	local network_options = Managers.lobby:network_options()
+	local network_options = LobbySetup.network_options()
 	local lobby_finder = LobbyFinder:new(network_options, MatchmakingSettings.MAX_NUM_LOBBIES, true)
 
 	self.lobby_finder = lobby_finder
@@ -506,7 +506,7 @@ StartGameWindowLobbyBrowser._handle_weave_data = function (self, lobby_data)
 	local weave_identifier = Localize("lb_unknown")
 
 	if weave_name ~= "false" then
-		local weave_name_data = string.split(weave_name, "_")
+		local weave_name_data = string.split_deprecated(weave_name, "_")
 
 		weave_identifier = "Weave " .. weave_name_data[2]
 
@@ -590,11 +590,12 @@ StartGameWindowLobbyBrowser._handle_weave_data = function (self, lobby_data)
 
 	level_name_widget.content.text = weave_template and weave_template.display_name and Localize(weave_template.display_name) or ""
 
+	local matchmaking_settings = Managers.matchmaking.get_matchmaking_settings_for_mechanism(lobby_data.mechanism)
 	local num_players_text = "n/a"
 	local num_players = lobby_data.num_players
 
 	if num_players then
-		num_players_text = string.format("%s/%s", num_players, tostring(MatchmakingSettings.MAX_NUMBER_OF_PLAYERS))
+		num_players_text = string.format("%s/%s", num_players, tostring(matchmaking_settings.MAX_NUMBER_OF_PLAYERS))
 	end
 
 	info_box_widgets_weave.info_frame_players_text.content.text = num_players_text
@@ -663,9 +664,10 @@ StartGameWindowLobbyBrowser._handle_lobby_data = function (self, game_type, lobb
 
 	local num_players_text = "n/a"
 	local num_players = lobby_data.num_players
+	local matchmaking_settings = Managers.matchmaking.get_matchmaking_settings_for_mechanism(lobby_data.mechanism)
 
 	if num_players then
-		num_players_text = string.format("%s/%s", num_players, tostring(MatchmakingSettings.MAX_NUMBER_OF_PLAYERS))
+		num_players_text = string.format("%s/%s", num_players, tostring(matchmaking_settings.MAX_NUMBER_OF_PLAYERS))
 	end
 
 	info_box_widgets_lobbies.info_frame_players_text.content.text = num_players_text
@@ -1155,9 +1157,10 @@ StartGameWindowLobbyBrowser._valid_lobby = function (self, lobby_data)
 	end
 
 	local mission_id = lobby_data.selected_mission_id or lobby_data.mission_id
+	local matchmaking_settings = Managers.matchmaking.get_matchmaking_settings_for_mechanism(lobby_data.mechanism)
 	local num_players = tonumber(lobby_data.num_players)
 
-	if not mission_id or num_players == MatchmakingSettings.MAX_NUMBER_OF_PLAYERS then
+	if not mission_id or num_players == matchmaking_settings.MAX_NUMBER_OF_PLAYERS then
 		return false
 	end
 
@@ -1227,10 +1230,14 @@ StartGameWindowLobbyBrowser._valid_lobby = function (self, lobby_data)
 				return false
 			end
 
-			local has_required_power_level = Managers.matchmaking:has_required_power_level(lobby_data, self._profile_name, self._career_name)
+			local private_game = MatchmakingManager.is_lobby_private(lobby_data)
 
-			if not has_required_power_level then
-				return false
+			if not private_game then
+				local has_required_power_level = Managers.matchmaking:has_required_power_level(lobby_data, self._profile_name, self._career_name)
+
+				if not has_required_power_level then
+					return false
+				end
 			end
 		end
 

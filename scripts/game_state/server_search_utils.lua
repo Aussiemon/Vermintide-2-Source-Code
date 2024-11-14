@@ -50,15 +50,19 @@ end
 
 ServerSearchUtils.filter_game_server_search = function (servers, network_options, soft_filters, network_hash, black_listed_servers, search_time)
 	table.array_remove_if(servers, function (server)
-		local wrong_version = server.network_hash ~= network_hash
+		local ignore_network_hash = Development.parameter("ignore_network_hash") or Managers.mechanism:setting("ignore_network_hash")
 
-		if wrong_version then
-			printf("Removing server %s with wrong version %s", server.server_info.ip_port, server.network_hash)
+		if not ignore_network_hash then
+			local wrong_version = server.network_hash ~= network_hash
 
-			server.matching_fail = "wrong network hash"
+			if wrong_version then
+				printf("Removing server %s with wrong version %s", server.server_info.ip_port, server.network_hash)
+
+				server.matching_fail = "wrong network hash"
+			end
+
+			return wrong_version
 		end
-
-		return wrong_version
 	end)
 	table.array_remove_if(servers, function (server)
 		if not script_data.blacklisting_disabled_vs then
@@ -124,6 +128,11 @@ ServerSearchUtils.filter_game_server_search = function (servers, network_options
 		end)
 	end
 
+	local official_dedicated_server_lookup = tostring(NetworkLookup.host_types.official_dedicated_server)
+
+	table.array_remove_if(servers, function (server)
+		return server.host_type == official_dedicated_server_lookup
+	end)
 	table.array_remove_if(servers, function (server)
 		local ping = server.server_info.ping or math.huge
 

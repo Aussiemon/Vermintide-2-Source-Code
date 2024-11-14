@@ -614,6 +614,7 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 		frame = frame_settings.texture,
 		glow_frame = glow_frame_settings.texture,
 	}
+	local lock_size = math.min(97, size[2] - 8)
 	local style = {
 		frame = {
 			texture_size = frame_settings.texture_size,
@@ -675,7 +676,7 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 		},
 		lock_rect = {
 			color = {
-				100,
+				150,
 				0,
 				0,
 				0,
@@ -691,14 +692,20 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 			},
 		},
 		lock = {
+			horizontal_alignment = "center",
+			vertical_alignment = "center",
 			color = {
 				255,
 				255,
 				255,
 				255,
 			},
+			texture_size = {
+				lock_size,
+				lock_size,
+			},
 			size = {
-				97,
+				100,
 				size[2],
 			},
 			offset = {

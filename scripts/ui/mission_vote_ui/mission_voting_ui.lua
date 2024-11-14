@@ -862,16 +862,6 @@ MissionVotingUI._set_deus_custom_game_presentation = function (self, difficulty,
 end
 
 MissionVotingUI._set_versus_quickplay_presentation = function (self, difficulty)
-	local difficulty_settings = DifficultySettings[difficulty]
-	local difficulty_display_name = difficulty_settings.display_name
-	local difficulty_display_image = difficulty_settings.display_image
-	local difficulty_frame_texture = difficulty_settings.completed_frame_texture or "map_frame_00"
-	local adventure_game_widgets_by_name = self._adventure_game_widgets_by_name
-	local game_option_1 = adventure_game_widgets_by_name.game_option_1
-
-	game_option_1.content.option_text = Localize(difficulty_display_name)
-	game_option_1.content.icon = difficulty_display_image
-	game_option_1.content.icon_frame = difficulty_frame_texture
 	self._presentation_type = "versus_quickplay"
 end
 
@@ -995,9 +985,10 @@ MissionVotingUI.update = function (self, dt, t)
 				local vote_template = active_voting and active_voting.template
 
 				if vote_template then
+					local input_service = self.input_manager:get_service("mission_voting")
+
 					if gamepad_active and vote_template.gamepad_support then
 						local vote_options = vote_template.vote_options
-						local input_service = self.input_manager:get_service("mission_voting")
 
 						for i = 1, #vote_options do
 							local vote_option = vote_options[i]
@@ -1009,10 +1000,10 @@ MissionVotingUI.update = function (self, dt, t)
 								break
 							end
 						end
-					elseif UIUtils.is_button_pressed(widgets_by_name.button_confirm) then
+					elseif UIUtils.is_button_pressed(widgets_by_name.button_confirm) or input_service:get("confirm_press") then
 						voting_manager:vote(1)
 						self:on_vote_casted(true)
-					elseif UIUtils.is_button_pressed(widgets_by_name.button_abort) then
+					elseif UIUtils.is_button_pressed(widgets_by_name.button_abort) or input_service:get("toggle_menu") then
 						voting_manager:vote(2)
 						self:on_vote_casted(false)
 					elseif UIUtils.is_button_hover_enter(widgets_by_name.button_confirm) or UIUtils.is_button_hover_enter(widgets_by_name.button_abort) then

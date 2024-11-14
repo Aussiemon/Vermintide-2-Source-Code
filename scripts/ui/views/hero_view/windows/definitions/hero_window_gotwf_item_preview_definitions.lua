@@ -294,7 +294,7 @@ local title_text_style = {
 	upper_case = false,
 	use_shadow = true,
 	vertical_alignment = "top",
-	word_wrap = true,
+	word_wrap = false,
 	text_color = Colors.get_color_table_with_alpha("white", 255),
 	offset = {
 		0,

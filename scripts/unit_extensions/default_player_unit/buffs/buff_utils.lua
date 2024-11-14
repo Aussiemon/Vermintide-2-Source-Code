@@ -107,16 +107,13 @@ local function _get_particle_link_node(fx, link_target)
 	return fx.link_node and unit_node(link_target, fx.link_node) or 0
 end
 
-BuffUtils.create_attached_particles = function (world, particle_fx, unit, is_first_person)
+BuffUtils.create_attached_particles = function (world, particle_fx, unit, is_first_person, buff_id, end_t)
 	if not world or not particle_fx then
 		return nil
 	end
 
-	local stop_fx = {}
-	local destroy_fx = {}
-	local fx_ids = {
-		stop_fx = stop_fx,
-		destroy_fx = destroy_fx,
+	local fx_state = {
+		end_t = end_t,
 	}
 
 	for i = 1, #particle_fx do
@@ -148,23 +145,55 @@ BuffUtils.create_attached_particles = function (world, particle_fx, unit, is_fir
 					end
 				end
 
+				if fx.material_variables then
+					for i = 1, #fx.material_variables do
+						local data = fx.material_variables[i]
+						local cloud_name = data.cloud_name
+						local material_variable = data.material_variable
+						local value = data.value or data.dynamic_value()
+
+						ScriptWorld.set_material_variable_for_particles(world, fx_id, cloud_name, material_variable, value)
+					end
+				end
+
 				if fx.continuous then
 					if fx.destroy_policy == "stop" then
+						local stop_fx = fx_state.stop_fx or {}
+
+						fx_state.stop_fx = stop_fx
 						stop_fx[#stop_fx + 1] = fx_id
 					else
+						local destroy_fx = fx_state.destroy_fx or {}
+
+						fx_state.destroy_fx = destroy_fx
 						destroy_fx[#destroy_fx + 1] = fx_id
 					end
+				end
+
+				if fx.update then
+					local update_fx = fx_state.update_fx or {}
+
+					fx_state.update_fx = update_fx
+					update_fx[fx_id] = fx.update
 				end
 			end
 		end
 	end
 
-	return fx_ids
+	return fx_state
 end
 
-BuffUtils.destroy_attached_particles = function (world, fx_ids)
-	if fx_ids and world then
-		local destroy_fx = fx_ids.destroy_fx
+BuffUtils.update_attached_particles = function (world, fx_state, t)
+	local update_fx = fx_state.update_fx
+
+	for fx_id, update_func in pairs(update_fx) do
+		update_func(fx_id, world, t, fx_state.end_t)
+	end
+end
+
+BuffUtils.destroy_attached_particles = function (world, fx_state)
+	if fx_state and world then
+		local destroy_fx = fx_state.destroy_fx
 
 		if destroy_fx then
 			for i = 1, #destroy_fx do
@@ -172,7 +201,7 @@ BuffUtils.destroy_attached_particles = function (world, fx_ids)
 			end
 		end
 
-		local stop_fx = fx_ids.stop_fx
+		local stop_fx = fx_state.stop_fx
 
 		if stop_fx then
 			for i = 1, #stop_fx do
@@ -283,6 +312,14 @@ BuffUtils.generate_infinite_burn_variants = function (buff_templates)
 					sub_buff.duration = nil
 					sub_buff.on_max_stacks_overflow_func = "reapply_infinite_burn"
 					sub_buff.max_stacks = 1
+
+					local max_stacks_func = sub_buff.max_stacks_func
+
+					if max_stacks_func ~= nil then
+						sub_buff.max_stacks_func = function (...)
+							return math.min(max_stacks_func(...), 1)
+						end
+					end
 
 					if sub_buff.time_between_dot_damages then
 						sub_buff.time_between_dot_damages = sub_buff.time_between_dot_damages / 2

@@ -321,6 +321,12 @@ weapon_template.actions = {
 
 				return true
 			end,
+			enter_function = function (attacker_unit)
+				Managers.state.entity:system("weapon_system"):change_synced_weapon_state(attacker_unit, "targeting", true)
+			end,
+			finish_function = function (attacker_unit)
+				Managers.state.entity:system("weapon_system"):change_synced_weapon_state(attacker_unit, nil, true)
+			end,
 			zoom_thresholds = {
 				"zoom_in_trueflight",
 				"zoom_in",
@@ -592,6 +598,121 @@ weapon_template.tooltip_detail = {
 	},
 	heavy = {
 		action_name = "action_one",
+	},
+}
+
+weapon_template.on_wield = function (weapon_unit_extension, hand, owner_unit, is_local_player)
+	if not is_local_player then
+		return
+	end
+
+	Managers.state.entity:system("weapon_system"):change_synced_weapon_state(owner_unit, "wielding", true)
+end
+
+local fingers_r_1p = {
+	"ep_r_index",
+	"ep_r_middle",
+	"ep_r_ring",
+	"ep_r_pinky",
+	"ep_r_thumb",
+}
+
+local function init_state_data(state_data, tp_unit)
+	if state_data.particle_ids then
+		table.clear(state_data.particle_ids)
+	else
+		state_data.particle_ids = {}
+	end
+
+	if not state_data.nodes then
+		state_data.nodes = {}
+
+		local fp_extension = ScriptUnit.has_extension(tp_unit, "first_person_system")
+
+		if fp_extension then
+			local mesh_unit = fp_extension:get_first_person_mesh_unit()
+
+			for i = 1, #fingers_r_1p do
+				local finger = fingers_r_1p[i]
+
+				state_data.nodes[finger] = Unit.node(mesh_unit, finger)
+			end
+		end
+	end
+end
+
+weapon_template.synced_states = {
+	wielding = {
+		enter = function (self, owner_unit, weapon_unit, state_data, is_local_player, world)
+			if not is_local_player then
+				return
+			end
+
+			init_state_data(state_data, owner_unit)
+
+			local mesh_unit = ScriptUnit.extension(owner_unit, "first_person_system"):get_first_person_mesh_unit()
+
+			for i = 1, #fingers_r_1p do
+				local node = state_data.nodes[fingers_r_1p[i]]
+
+				state_data.particle_ids[node] = ScriptWorld.create_particles_linked(world, "fx/magic_thorn_sister_finger_trail", mesh_unit, node, "destroy")
+			end
+
+			state_data.timer = 0.7
+		end,
+		update = function (self, owner_unit, weapon_unit, state_data, is_local_player, world, dt)
+			if not state_data.timer then
+				return
+			end
+
+			state_data.timer = state_data.timer - dt
+
+			if state_data.timer < 0 then
+				Managers.state.entity:system("weapon_system"):change_synced_weapon_state(owner_unit, nil, true)
+			end
+		end,
+		leave = function (self, owner_unit, weapon_unit, state_data, is_local_player, world, next_state, is_destroy)
+			if not is_local_player then
+				return
+			end
+
+			for node in pairs(state_data.particle_ids) do
+				local particle_id = state_data.particle_ids[node]
+
+				World.stop_spawning_particles(world, particle_id)
+			end
+		end,
+	},
+	targeting = {
+		enter = function (self, owner_unit, weapon_unit, state_data, is_local_player, world)
+			if not is_local_player then
+				return
+			end
+
+			init_state_data(state_data, owner_unit)
+
+			local mesh_unit = ScriptUnit.extension(owner_unit, "first_person_system"):get_first_person_mesh_unit()
+
+			for i = 1, #fingers_r_1p do
+				local node = state_data.nodes[fingers_r_1p[i]]
+
+				state_data.particle_ids[node] = ScriptWorld.create_particles_linked(world, "fx/magic_thorn_sister_finger_trail", mesh_unit, node, "destroy")
+			end
+		end,
+		update = function (self, owner_unit, weapon_unit, state_data, is_local_player, world, dt)
+			return
+		end,
+		leave = function (self, owner_unit, weapon_unit, state_data, is_local_player, world, next_state, is_destroy)
+			if not is_local_player then
+				return
+			end
+
+			for node in pairs(state_data.particle_ids) do
+				local particle_id = state_data.particle_ids[node]
+
+				World.stop_spawning_particles(world, particle_id)
+			end
+		end,
 	},
 }
 

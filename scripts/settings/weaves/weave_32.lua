@@ -17,11 +17,7 @@ return {
 			show_bar = true,
 			spawning_seed = 2156845,
 			objective_settings = {
-				objective_lists = {
-					{
-						kill_enemies = {},
-					},
-				},
+				objective_lists = "weave_32",
 			},
 			bonus_time_on_complete = WeaveSettings.bonus_time,
 			system_seeds = {

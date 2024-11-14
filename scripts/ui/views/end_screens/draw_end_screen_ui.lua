@@ -1,0 +1,76 @@
+﻿-- chunkname: @scripts/ui/views/end_screens/draw_end_screen_ui.lua
+
+require("scripts/ui/views/end_screens/base_end_screen_ui")
+require("scripts/ui/act_presentation/act_presentation_ui")
+
+local definitions = local_require("scripts/ui/views/end_screens/draw_end_screen_ui_definitions")
+
+DrawEndScreenUI = class(DrawEndScreenUI, BaseEndScreenUI)
+
+DrawEndScreenUI.init = function (self, ingame_ui_context, input_service, screen_context, params)
+	DrawEndScreenUI.super.init(self, ingame_ui_context, input_service, definitions, params)
+	fassert(screen_context.show_act_presentation ~= nil, "show_act_presentation not set.")
+
+	if screen_context.show_act_presentation then
+		fassert(screen_context.level_key, "No level_key set in screen_context")
+
+		self._level_key = screen_context.level_key
+
+		fassert(screen_context.previous_completed_difficulty_index, "No previous_completed_difficulty_index set in screen_context")
+
+		self._previous_completed_difficulty_index = screen_context.previous_completed_difficulty_index
+		self._act_presentation_ui = ActPresentationUI:new(ingame_ui_context)
+	end
+
+	self:_play_sound("play_gui_splash_victory")
+end
+
+DrawEndScreenUI._destroy = function (self)
+	if self._act_presentation_ui then
+		self._act_presentation_ui:destroy()
+
+		self._act_presentation_ui = nil
+	end
+end
+
+DrawEndScreenUI._start = function (self)
+	local scenegraph_definition = definitions.scenegraph_definition
+	local params = {
+		draw_flags = self._draw_flags,
+		wwise_world = self._wwise_world,
+	}
+
+	self._draw_anim_id = self._ui_animator:start_animation("draw", self._widgets_by_name, scenegraph_definition, params)
+
+	if self._act_presentation_ui then
+		self._act_presentation_ui:start(self._level_key, self._previous_completed_difficulty_index)
+	end
+end
+
+DrawEndScreenUI._update = function (self, dt)
+	if self._completed then
+		return
+	end
+
+	if self._draw_anim_id and self._ui_animator:is_animation_completed(self._draw_anim_id) then
+		self._draw_anim_id = nil
+	end
+
+	local act_presentation_ui = self._act_presentation_ui
+
+	if act_presentation_ui and act_presentation_ui.active then
+		act_presentation_ui:update(dt)
+	end
+
+	local act_presentation_done = not act_presentation_ui or act_presentation_ui:presentation_completed()
+
+	if self._draw_anim_id == nil and act_presentation_done then
+		if Managers.state.game_mode:setting("display_end_of_match_score_view") then
+			local screen_name, screen_config, params = Managers.state.game_mode:get_end_of_round_screen_settings()
+
+			Managers.ui:activate_end_screen_ui(screen_name, screen_config, params)
+		else
+			self:_on_completed()
+		end
+	end
+end

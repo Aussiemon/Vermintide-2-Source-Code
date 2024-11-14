@@ -84,9 +84,6 @@ CareerAbilityChaosTrollVomit.stop = function (self, reason)
 end
 
 CareerAbilityChaosTrollVomit._start = function (self)
-	local career_extension = self._career_extension
-
-	career_extension:start_activated_ability_cooldown(self._ability_data.ability_id)
 	self:_play_vo()
 end
 

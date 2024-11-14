@@ -323,6 +323,20 @@ local scenegraph_definition = {
 			0,
 		},
 	},
+	versus_reward_presentation = {
+		horizontal_alignment = "center",
+		parent = "window",
+		vertical_alignment = "top",
+		size = {
+			game_option_size[1],
+			game_option_size[2] + 470,
+		},
+		position = {
+			0,
+			-36,
+			3,
+		},
+	},
 	switch_mechanism_title = {
 		horizontal_alignment = "center",
 		parent = "window",
@@ -2968,6 +2982,243 @@ local function create_reward_presentation(scenegraph_id, size, frame_settings_na
 	return widget
 end
 
+local function create_versus_reward_presentation(scenegraph_id, size, frame_settings_name)
+	local background_texture = "game_options_versus"
+	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
+
+	frame_settings_name = frame_settings_name or "menu_frame_08"
+
+	local frame_settings = UIFrameSettings[frame_settings_name]
+	local frame_width = frame_settings.texture_sizes.corner[1]
+	local widget = {
+		element = {
+			passes = {
+				{
+					content_id = "button_hotspot",
+					pass_type = "hotspot",
+				},
+				{
+					content_id = "background",
+					pass_type = "texture_uv",
+					style_id = "background",
+				},
+				{
+					pass_type = "texture_frame",
+					style_id = "frame",
+					texture_id = "frame",
+				},
+				{
+					pass_type = "text",
+					style_id = "title_text",
+					text_id = "title_text",
+				},
+				{
+					pass_type = "text",
+					style_id = "title_text_shadow",
+					text_id = "title_text",
+				},
+				{
+					pass_type = "texture",
+					style_id = "title_bg",
+					texture_id = "title_bg",
+				},
+				{
+					pass_type = "texture",
+					style_id = "title_edge",
+					texture_id = "title_edge",
+				},
+			},
+		},
+		content = {
+			title_bg = "playername_bg_02",
+			title_edge = "game_option_divider",
+			button_hotspot = {},
+			frame = frame_settings.texture,
+			option_text = Localize("start_game_window_adventure_reward_desc"),
+			title_text = Localize("lb_game_type_versus_quickplay"),
+			background = {
+				uvs = {
+					{
+						0,
+						1 - math.min(size[2] / background_texture_settings.size[2], 1),
+					},
+					{
+						math.min(size[1] / background_texture_settings.size[1], 1),
+						1,
+					},
+				},
+				texture_id = background_texture,
+			},
+		},
+		style = {
+			frame = {
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+				offset = {
+					0,
+					0,
+					10,
+				},
+				size = size,
+				texture_size = frame_settings.texture_size,
+				texture_sizes = frame_settings.texture_sizes,
+			},
+			background = {
+				texture_tiling_size = {
+					400,
+					150,
+				},
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+				offset = {
+					0,
+					0,
+					0,
+				},
+			},
+			title_bg = {
+				size = {
+					size[1],
+					40,
+				},
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+				offset = {
+					0,
+					size[2] - 38 - frame_width,
+					2,
+				},
+			},
+			title_edge = {
+				size = {
+					size[1],
+					5,
+				},
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+				offset = {
+					0,
+					size[2] - 38 - frame_width,
+					4,
+				},
+			},
+			title_text = {
+				font_size = 32,
+				font_type = "hell_shark_header",
+				horizontal_alignment = "left",
+				localize = false,
+				upper_case = true,
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				default_text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				offset = {
+					frame_width + 5,
+					-frame_width,
+					10,
+				},
+			},
+			title_text_shadow = {
+				font_size = 32,
+				font_type = "hell_shark_header",
+				horizontal_alignment = "left",
+				localize = false,
+				upper_case = true,
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				default_text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					frame_width + 5 + 2,
+					-(frame_width + 2),
+					9,
+				},
+			},
+			option_text = {
+				font_size = 28,
+				font_type = "hell_shark_header",
+				horizontal_alignment = "center",
+				localize = false,
+				upper_case = false,
+				vertical_alignment = "bottom",
+				word_wrap = true,
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				default_text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				offset = {
+					frame_width,
+					frame_width + 10,
+					10,
+				},
+				size = {
+					size[1] - frame_width * 2,
+					size[2],
+				},
+			},
+			option_text_shadow = {
+				font_size = 28,
+				font_type = "hell_shark_header",
+				horizontal_alignment = "center",
+				localize = false,
+				upper_case = false,
+				vertical_alignment = "bottom",
+				word_wrap = true,
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				default_text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					frame_width + 2,
+					frame_width + 8,
+					9,
+				},
+				size = {
+					size[1] - frame_width * 2,
+					size[2],
+				},
+			},
+			button_disabled_rect = {
+				color = {
+					150,
+					5,
+					5,
+					5,
+				},
+				offset = {
+					frame_width,
+					frame_width,
+					15,
+				},
+				size = {
+					size[1] - frame_width * 2,
+					size[2] - frame_width * 2,
+				},
+			},
+		},
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			0,
+		},
+	}
+
+	return widget
+end
+
 local function create_weave_quickplay_presentation(scenegraph_id, size)
 	local background_texture = "weaves_icon"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
@@ -4519,8 +4770,7 @@ local deus_weekly_event_widgets = {
 	}),
 }
 local versus_quickplay_widgets = {
-	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size, Localize("start_game_window_difficulty"), "difficulty_option_1", "game_options_bg_02"),
-	reward_presentation = create_reward_presentation("reward_presentation", scenegraph_definition.reward_presentation.size),
+	reward_presentation = create_versus_reward_presentation("versus_reward_presentation", scenegraph_definition.versus_reward_presentation.size),
 }
 local versus_custom_widgets = {
 	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size, Localize("start_game_window_mission"), nil, "game_options_bg_01"),

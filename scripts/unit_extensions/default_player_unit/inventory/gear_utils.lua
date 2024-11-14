@@ -83,6 +83,7 @@ GearUtils.create_equipment = function (world, slot_name, item_data, unit_1p, uni
 		id = slot_name,
 		item_data = item_data,
 		item_template = item_template,
+		item_template_name = item_template.name,
 		skin = item_units.skin,
 		right_unit_3p = right_hand_weapon_unit_3p,
 		right_ammo_unit_3p = right_hand_ammo_unit_3p,
@@ -331,6 +332,16 @@ GearUtils.link_units = function (world, attachment_node_linking, link_table, sou
 	end
 end
 
+GearUtils.unlink = function (world, unit)
+	World.unlink_unit(world, unit)
+
+	local weapon_extension = ScriptUnit.has_extension(unit, "weapon_system")
+
+	if weapon_extension and weapon_extension.unlink_damage_unit then
+		weapon_extension:unlink_damage_unit()
+	end
+end
+
 GearUtils.restore_scene_graph = function (scene_graph_links)
 	if scene_graph_links then
 		for i, link in ipairs(scene_graph_links) do
@@ -344,6 +355,7 @@ end
 
 GearUtils.destroy_wielded = function (world, wielded_unit)
 	Unit.flow_event(wielded_unit, "lua_unwield")
+	GearUtils.unlink(world, wielded_unit)
 
 	local unit_spawner = Managers.state.unit_spawner
 
@@ -365,6 +377,7 @@ GearUtils.destroy_equipment = function (world, equipment)
 	end
 
 	if equipment.right_hand_ammo_unit_3p and Unit.alive(equipment.right_hand_ammo_unit_3p) then
+		GearUtils.unlink(world, equipment.right_hand_ammo_unit_3p)
 		unit_spawner:mark_for_deletion(equipment.right_hand_ammo_unit_3p)
 	end
 
@@ -373,6 +386,7 @@ GearUtils.destroy_equipment = function (world, equipment)
 	end
 
 	if equipment.right_hand_ammo_unit_1p and Unit.alive(equipment.right_hand_ammo_unit_1p) then
+		GearUtils.unlink(world, equipment.right_hand_ammo_unit_1p)
 		unit_spawner:mark_for_deletion(equipment.right_hand_ammo_unit_1p)
 	end
 
@@ -381,6 +395,7 @@ GearUtils.destroy_equipment = function (world, equipment)
 	end
 
 	if equipment.left_hand_ammo_unit_3p and Unit.alive(equipment.left_hand_ammo_unit_3p) then
+		GearUtils.unlink(world, equipment.left_hand_ammo_unit_3p)
 		unit_spawner:mark_for_deletion(equipment.left_hand_ammo_unit_3p)
 	end
 
@@ -389,6 +404,7 @@ GearUtils.destroy_equipment = function (world, equipment)
 	end
 
 	if equipment.left_hand_ammo_unit_1p and Unit.alive(equipment.left_hand_ammo_unit_1p) then
+		GearUtils.unlink(world, equipment.left_hand_ammo_unit_1p)
 		unit_spawner:mark_for_deletion(equipment.left_hand_ammo_unit_1p)
 	end
 
@@ -422,34 +438,42 @@ GearUtils.destroy_slot = function (world, unit, slot_data, equipment, allow_dest
 		local unit_spawner = Managers.state.unit_spawner
 
 		if right_hand_weapon_unit_3p then
+			GearUtils.unlink(world, right_hand_weapon_unit_3p)
 			unit_spawner:mark_for_deletion(right_hand_weapon_unit_3p)
 		end
 
 		if right_hand_ammo_unit_3p then
+			GearUtils.unlink(world, right_hand_ammo_unit_3p)
 			unit_spawner:mark_for_deletion(right_hand_ammo_unit_3p)
 		end
 
 		if right_hand_weapon_unit_1p then
+			GearUtils.unlink(world, right_hand_weapon_unit_1p)
 			unit_spawner:mark_for_deletion(right_hand_weapon_unit_1p)
 		end
 
 		if right_hand_ammo_unit_1p then
+			GearUtils.unlink(world, right_hand_ammo_unit_1p)
 			unit_spawner:mark_for_deletion(right_hand_ammo_unit_1p)
 		end
 
 		if left_hand_weapon_unit_3p then
+			GearUtils.unlink(world, left_hand_weapon_unit_3p)
 			unit_spawner:mark_for_deletion(left_hand_weapon_unit_3p)
 		end
 
 		if left_hand_ammo_unit_3p then
+			GearUtils.unlink(world, left_hand_ammo_unit_3p)
 			unit_spawner:mark_for_deletion(left_hand_ammo_unit_3p)
 		end
 
 		if left_hand_weapon_unit_1p then
+			GearUtils.unlink(world, left_hand_weapon_unit_1p)
 			unit_spawner:mark_for_deletion(left_hand_weapon_unit_1p)
 		end
 
 		if left_hand_ammo_unit_1p then
+			GearUtils.unlink(world, left_hand_ammo_unit_1p)
 			unit_spawner:mark_for_deletion(left_hand_ammo_unit_1p)
 		end
 	end
@@ -490,8 +514,12 @@ GearUtils.hot_join_sync = function (peer_id, unit, equipment, additional_items)
 	local profile_synchronizer = Managers.state.network.profile_synchronizer
 	local resyncing_loadout = not profile_synchronizer:is_peer_all_synced(peer_id)
 
-	if not resyncing_loadout and equipment.wielded then
-		RPC.rpc_wield_equipment(channel_id, unit_object_id, NetworkLookup.equipment_slots[equipment.wielded_slot])
+	if not resyncing_loadout then
+		if equipment.wielded then
+			RPC.rpc_wield_equipment(channel_id, unit_object_id, NetworkLookup.equipment_slots[equipment.wielded_slot])
+		end
+	else
+		Crashify.print_exception("[GearUtils] Hot joining peer has not fully synced player packages and cannot safely wield equipment. This has a high risk of crashing until the wielding player wields something else.")
 	end
 
 	for slot_name, data in pairs(additional_items) do
@@ -578,7 +606,7 @@ GearUtils.create_grenade_extension_init_data = function (owner_unit, item_name, 
 			sub_action_name = lookup_data.sub_action_name,
 		},
 	}
-	local item_template = Weapons[lookup_data.item_template_name]
+	local item_template = WeaponUtils.get_weapon_template(lookup_data.item_template_name)
 
 	if current_action.is_impact_type then
 		extension_init_data.area_damage_system = GearUtils._setup_extension_init_data_type_impact(item_template, item_name)

@@ -57,7 +57,13 @@ BTSpawningAction.enter = function (self, unit, blackboard, t)
 		spawn_animation = spawn_animation[random_index]
 	end
 
-	network_manager:anim_event(unit, spawn_animation)
+	if spawn_animation == "to_combat" then
+		AiUtils.enter_combat(unit, blackboard)
+	elseif spawn_animation == "to_passive" then
+		AiUtils.enter_passive(unit, blackboard)
+	elseif spawn_animation then
+		network_manager:anim_event(unit, spawn_animation)
+	end
 
 	blackboard.spawn_last_pos = Vector3Box(POSITION_LOOKUP[unit])
 	blackboard.spawn_immovable_time = 0
@@ -109,6 +115,13 @@ BTSpawningAction.leave = function (self, unit, blackboard, t, reason, destroy)
 		end
 
 		LocomotionUtils.set_animation_translation_scale(unit, Vector3(1, 1, 1))
+
+		if blackboard.optional_spawn_data and blackboard.optional_spawn_data.horde_ability_caller_peer_id then
+			local horde_ability_system = Managers.state.entity:system("versus_horde_ability_system")
+			local unit_id = Managers.state.unit_storage:go_id(unit)
+
+			horde_ability_system:server_register_horde_unit(unit_id, blackboard.optional_spawn_data.horde_ability_caller_peer_id)
+		end
 	end
 end
 

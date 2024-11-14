@@ -58,7 +58,7 @@ CreditsView.on_exit = function (self)
 	self.active = nil
 	self.exiting = nil
 
-	Managers.music:trigger_event(IS_WINDOWS and "Play_hud_select" or "Play_console_menu_select")
+	Managers.music:trigger_event(IS_WINDOWS and "Play_console_menu_back" or "Play_console_menu_select")
 end
 
 CreditsView.exit = function (self, return_to_game)

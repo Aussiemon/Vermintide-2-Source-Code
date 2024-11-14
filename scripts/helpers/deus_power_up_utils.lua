@@ -320,10 +320,10 @@ end
 
 DeusPowerUpUtils.string_to_power_ups = function (power_ups_string)
 	local power_ups = {}
-	local power_up_data_strings = string.split(power_ups_string, ",")
+	local power_up_data_strings = string.split_deprecated(power_ups_string, ",")
 
 	for _, power_up_data_string in ipairs(power_up_data_strings) do
-		local power_up_data = string.split(power_up_data_string, "/")
+		local power_up_data = string.split_deprecated(power_up_data_string, "/")
 		local power_up_name = power_up_data[1]
 		local rarity = power_up_data[2]
 		local power_up_client_id_string = power_up_data[3]

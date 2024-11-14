@@ -9,6 +9,7 @@ ActionGeiserTargeting.init = function (self, world, item_name, is_server, owner_
 	self.first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
 	self.unit_id = Managers.state.network.unit_storage:go_id(owner_unit)
+	self._is_server = is_server
 end
 
 ActionGeiserTargeting.client_owner_start_action = function (self, new_action, t)
@@ -27,8 +28,12 @@ ActionGeiserTargeting.client_owner_start_action = function (self, new_action, t)
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 
 	self.buff_extension = buff_extension
-	self.targeting_effect_id = World.create_particles(world, effect_name, Vector3.zero())
-	self.targeting_variable_id = World.find_particles_variable(world, effect_name, "charge_radius")
+
+	if not self._is_server then
+		self.targeting_effect_id = World.create_particles(world, effect_name, Vector3.zero())
+		self.targeting_variable_id = World.find_particles_variable(world, effect_name, "charge_radius")
+	end
+
 	self.charge_time = buff_extension:apply_buffs_to_value(new_action.charge_time, "reduced_ranged_charge_time")
 	self.angle = math.degrees_to_radians(new_action.angle)
 	self.time_to_shoot = t
@@ -199,10 +204,12 @@ ActionGeiserTargeting.client_owner_post_update = function (self, dt, t, world, c
 
 	self.radius = radius
 
-	local scale = radius * 2
+	if self.targeting_effect_id then
+		local scale = radius * 2
 
-	World.move_particles(world, self.targeting_effect_id, position)
-	World.set_particles_variable(world, self.targeting_effect_id, self.targeting_variable_id, Vector3(scale, scale, 1))
+		World.move_particles(world, self.targeting_effect_id, position)
+		World.set_particles_variable(world, self.targeting_effect_id, self.targeting_variable_id, Vector3(scale, scale, 1))
+	end
 
 	local owner_unit = self.owner_unit
 	local owner_player = Managers.player:owner(owner_unit)
@@ -241,11 +248,7 @@ ActionGeiserTargeting.finish = function (self, reason, data)
 	chain_action_data.charge_value = self.charge_value
 	chain_action_data.position = self.position
 
-	if data and data.new_sub_action == "geiser_launch" then
-		World.stop_spawning_particles(world, self.targeting_effect_id)
-
-		chain_action_data.targeting_effect_id = self.targeting_effect_id
-	else
+	if self.targeting_effect_id then
 		World.destroy_particles(world, self.targeting_effect_id)
 
 		self.targeting_effect_id = nil

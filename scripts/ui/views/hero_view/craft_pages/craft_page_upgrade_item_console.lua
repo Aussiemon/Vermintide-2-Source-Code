@@ -130,7 +130,11 @@ CraftPageUpgradeItemConsole.setup_recipe_requirements = function (self)
 
 			requirement_index = requirement_index + 1
 
-			if has_required_amount then
+			local is_red_dust = item_key == "crafting_material_dust_4"
+
+			if is_red_dust and ExperienceSettings.get_highest_character_level() < LootChestData.LEVEL_USED_FOR_POOL_LEVELS then
+				has_all_requirements = false
+			elseif has_required_amount then
 				material_items[#material_items + 1] = required_backend_id
 			else
 				has_all_requirements = false

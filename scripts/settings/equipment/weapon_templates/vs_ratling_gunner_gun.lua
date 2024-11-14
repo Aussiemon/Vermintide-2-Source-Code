@@ -1,12 +1,12 @@
 ﻿-- chunkname: @scripts/settings/equipment/weapon_templates/vs_ratling_gunner_gun.lua
 
-local spinup_time = 1.5
+local spinup_time = 1
 local windup_decay = 0.2
 local initial_rps = 15
 local max_rps = 20
 local time_at_max_rps = 3
 local max_ammo = 120
-local reload_time = 5
+local reload_time = 4
 local SPINUP_ANIMATION_TIME = 2.1666666666666665
 local SPINUP_ANIMATION_SCALE = SPINUP_ANIMATION_TIME / spinup_time
 local WINDUP_SPEED = 1 / spinup_time
@@ -59,6 +59,7 @@ weapon_template.actions = {
 			hold_input = "action_one_hold",
 			initial_windup = 0,
 			kind = "minigun_spin",
+			reload_when_out_of_ammo = true,
 			weapon_action_hand = "left",
 			windup_max = 1,
 			windup_start_on_zero = true,
@@ -113,6 +114,7 @@ weapon_template.actions = {
 			power_level = 100,
 			rps_loss_per_second = 1.5,
 			shot_count = 1,
+			spread_template_override = "vs_ratling_gunner_gun_shooting",
 			weapon_action_hand = "left",
 			chain_condition_func = shoot_condition_func,
 			enter_function = function (owner_unit, input_extension, remaining_time, weapon_extension)
@@ -132,6 +134,7 @@ weapon_template.actions = {
 					buff_name = "planted_fast_decrease_movement",
 					external_multiplier = 0.4,
 					start_time = 0,
+					end_time = math.huge,
 				},
 			},
 			allowed_chain_actions = {
@@ -152,6 +155,7 @@ weapon_template.actions = {
 		default = {
 			anim_end_event = "cooldown_ready",
 			anim_event = "wind_up_start",
+			crosshair_style = "dot",
 			kind = "dummy",
 			weapon_action_hand = "either",
 			condition_func = reload_condition_func,
@@ -178,19 +182,20 @@ weapon_template.actions = {
 				end
 			end,
 			total_time = reload_time,
+			buff_data = {
+				{
+					buff_name = "planted_fast_decrease_movement",
+					external_multiplier = 0.6,
+					start_time = 0,
+					end_time = math.huge,
+				},
+			},
 			allowed_chain_actions = {
 				{
 					action = "action_two",
 					input = "action_two",
 					start_time = 0,
 					sub_action = "default",
-				},
-			},
-			buff_data = {
-				{
-					buff_name = "planted_fast_decrease_movement",
-					external_multiplier = 0.6,
-					start_time = 0,
 				},
 			},
 		},
@@ -224,6 +229,8 @@ weapon_template.outer_block_angle = 360
 weapon_template.block_fatigue_point_multiplier = 0.5
 weapon_template.outer_block_fatigue_point_multiplier = 2
 weapon_template.sound_event_block_within_arc = "weapon_foley_blunt_1h_block_wood"
+weapon_template.crosshair_style = "default"
+weapon_template.default_spread_template = "vs_ratling_gunner_gun"
 weapon_template.buffs = {
 	change_dodge_distance = {
 		external_optional_multiplier = 1.2,
@@ -386,7 +393,7 @@ weapon_template.synced_states = {
 
 			if is_local_player then
 				WwiseWorld.trigger_event(wwise_world, "Play_player_ratling_gunner_shooting_loop", use_occlusion, wwise_source_id)
-				WwiseWorld.trigger_event(wwise_world, "Play_player_enemy_vce_ratling_gunner_shoot_start", use_occlusion, wwise_source_id)
+				Managers.state.vce:trigger_vce(owner_unit, wwise_world, "Play_player_enemy_vce_ratling_gunner_shoot_start", use_occlusion, wwise_source_id)
 			else
 				WwiseWorld.trigger_event(wwise_world, "Play_ratling_gunner_shooting_loop", use_occlusion, wwise_source_id)
 			end
@@ -443,6 +450,14 @@ weapon_template.synced_states = {
 			if is_local_player then
 				state_data.time_in_reload = 0
 			end
+
+			local owner_player = Managers.player:owner(owner_unit)
+
+			if owner_player.remote or owner_player.bot_player then
+				local wwise_world = Managers.world:wwise_world(world)
+
+				WwiseWorld.trigger_event(wwise_world, "Play_player_ratling_gunner_weapon_reload_husk", weapon_unit)
+			end
 		end,
 		update = function (self, owner_unit, weapon_unit, state_data, is_local_player, world, dt)
 			if not is_local_player then
@@ -464,18 +479,22 @@ weapon_template.synced_states = {
 					weapon_extension:set_custom_data("reload_progress", 0)
 				end
 
-				if not is_local_player then
+				local owner_player = Managers.player:owner(owner_unit)
+
+				if owner_player.remote or owner_player.bot_player then
 					Unit.animation_event(owner_unit, "no_anim_upperbody")
 					Unit.animation_event(owner_unit, "to_combat")
 					Unit.animation_event(owner_unit, "idle")
+
+					local wwise_world = Managers.world:wwise_world(world)
+
+					WwiseWorld.trigger_event(wwise_world, "Stop_player_ratling_gunner_weapon_reload_husk", weapon_unit)
 				end
 			end
 		end,
 	},
 }
 weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.vs_ratling_gunner_gun.left
-weapon_template.unit_extension_template = "weapon_unit_ammo"
-weapon_template.crosshair_style = "dot"
 weapon_template.ammo_data = {
 	ammo_hand = "left",
 	ammo_immediately_available = true,

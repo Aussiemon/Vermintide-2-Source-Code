@@ -18,6 +18,13 @@ MoodHandler.init = function (self, world)
 	self.environment_variables_type_map = type_map
 	self.environment_variables_to_set = {}
 	self.environment_weight_remainder = 1
+	self._local_moods = {}
+	self._mood_timers = {}
+
+	for mood, _ in pairs(MoodSettings) do
+		self._local_moods[mood] = {}
+		self._mood_timers[mood] = {}
+	end
 end
 
 MoodHandler.destroy = function (self)
@@ -87,7 +94,7 @@ MoodHandler.parse_environment_settings = function (self, environment)
 	return variables, type_map
 end
 
-MoodHandler.set_mood = function (self, next_mood)
+MoodHandler._set_active_mood = function (self, next_mood)
 	if Development.parameter("screen_space_player_camera_reactions") == false then
 		return
 	end
@@ -174,6 +181,7 @@ MoodHandler.handle_particles = function (self, current_mood, next_mood)
 end
 
 MoodHandler.update = function (self, dt)
+	self:_update_mood_timers()
 	self:update_mood_blends(dt)
 	self:update_environment_variables()
 end
@@ -321,5 +329,95 @@ MoodHandler.apply_environment_variables = function (self, shading_environment)
 
 			ShadingEnvironment.set_vector4(shading_environment, var_name, set_x, set_y, set_z, set_w)
 		end
+	end
+end
+
+MoodHandler.set_mood = function (self, mood_name, reason, value)
+	local had_mood = self:has_mood(mood_name)
+
+	if not value and not had_mood then
+		return
+	end
+
+	self:_set_mood_internal(mood_name, reason, value)
+
+	if value and had_mood then
+		return
+	end
+
+	self:_update_mood_priority()
+end
+
+MoodHandler._set_mood_internal = function (self, mood_name, reason, value)
+	self._local_moods[mood_name][reason] = value or nil
+
+	if mood_name ~= "default" then
+		local mood_template = MoodSettings[mood_name]
+
+		if mood_template.hold_time then
+			if value then
+				local t = Managers.time:time("game")
+
+				self._mood_timers[mood_name][reason] = t + mood_template.hold_time
+			else
+				self._mood_timers[mood_name][reason] = nil
+			end
+		end
+	end
+end
+
+MoodHandler.clear_mood = function (self, mood_name)
+	local had_mood = self:has_mood(mood_name)
+
+	if not had_mood then
+		return
+	end
+
+	table.clear(self._local_moods[mood_name])
+	table.clear(self._mood_timers[mood_name])
+	self:_update_mood_priority()
+end
+
+MoodHandler.has_mood = function (self, mood_name)
+	return not table.is_empty(self._local_moods[mood_name])
+end
+
+MoodHandler._update_mood_timers = function (self)
+	local dirty = false
+	local t = Managers.time:time("game")
+
+	for mood_name, timers in pairs(self._mood_timers) do
+		for reason, end_t in pairs(timers) do
+			if end_t < t then
+				self:set_mood(mood_name, reason, false)
+
+				dirty = dirty or table.is_empty(timers)
+			end
+		end
+	end
+
+	if dirty then
+		self:_update_mood_priority()
+	end
+end
+
+MoodHandler._update_mood_priority = function (self)
+	local mood_priority = MoodPriority
+	local wanted_mood
+
+	for i = 1, #mood_priority do
+		local mood = mood_priority[i]
+
+		if self:has_mood(mood) then
+			wanted_mood = mood
+
+			break
+		end
+	end
+
+	wanted_mood = wanted_mood or "default"
+
+	if wanted_mood ~= self.current_mood then
+		self:_set_active_mood(wanted_mood)
 	end
 end

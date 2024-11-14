@@ -15,13 +15,10 @@ BetaOverlay.init = function (self, world)
 	local top_world = Managers.world:world("top_ingame_view")
 	local label = script_data.text_watermark
 
-	if type(label) ~= "string" then
-		label = "ALPHA"
-	end
-
 	self._world = world
 	self._label = label
-	self._watermark = script_data.watermark or "vs_goat"
+	self._watermark = script_data.watermark
+	self._watermark_condition = script_data.watermark_condition
 
 	if script_data.qr_watermark then
 		self._data = self:_generate_qr()
@@ -123,11 +120,11 @@ BetaOverlay._generate_qr = function (self)
 end
 
 local watermarks = {
-	cat = function (parent)
+	default = function (parent)
 		parent:_create_gui()
 	end,
-	vs_goat = function (parent)
-		if parent._mechanism_key == "versus" then
+	mechanism = function (parent)
+		if parent._mechanism_key == parent._watermark_condition then
 			parent:_create_gui()
 		end
 	end,

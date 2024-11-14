@@ -832,7 +832,7 @@ UIRenderer.draw_gradient_mask_texture = function (self, material, lower_left_cor
 	local gui_retained = self.gui_retained
 	local gui_position = UIScaleVectorToResolution(lower_left_corner)
 	local gui_size = UIScaleVectorToResolution(size)
-	local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(material)
+	local texture_settings = UIAtlasHelper.has_atlas_settings_by_texture_name(material) and UIAtlasHelper.get_atlas_settings_by_texture_name(material)
 	local gui_material = Gui.material(retained_id and gui_retained or gui, texture_settings and texture_settings.material_name or material)
 
 	Material.set_scalar(gui_material, "gradient_threshold", gradient_threshold)
@@ -1207,11 +1207,12 @@ UIRenderer.draw_justified_text = function (self, text, font_material, font_size,
 
 	color = color and Color(color[1] * alpha_multiplier, color[2], color[3], color[4])
 
-	local flags = 0
+	local flags = Gui.FormatDirectives
 	local font = Fonts[font_name]
+	local font_flags = font and font[4]
 
-	if font then
-		flags = font[4] or 0
+	if font_flags then
+		flags = bit.bor(flags, font_flags)
 	end
 
 	local scaled_justify_width = justify_width * RESOLUTION_LOOKUP.scale
@@ -1882,8 +1883,6 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 			local retained_id = retained_ids[retained_id_index]
 
 			UIRenderer.script_draw_bitmap_uv(gui_retained, self.render_settings, texture_id, uvs_u, Vector3(tile_pos_x, y_pos + y_size - tile_horizontal_size_y, layer), tile_horizontal_size_vec, color, masked, saturated, retained_id)
-
-			retained_id_index = retained_id_index + 1
 		else
 			UIRenderer.script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs_u, Vector3(tile_pos_x, y_pos + y_size - tile_horizontal_size_y, layer), tile_horizontal_size_vec, color, masked, saturated)
 		end

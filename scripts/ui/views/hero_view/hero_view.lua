@@ -8,6 +8,7 @@ require("scripts/ui/views/hero_view/states/hero_view_state_loot")
 require("scripts/ui/views/hero_view/states/hero_view_state_achievements")
 require("scripts/ui/views/hero_view/states/hero_view_state_keep_decorations")
 require("scripts/ui/views/hero_view/states/hero_view_state_weave_forge")
+require("scripts/ui/views/hero_view/states/hero_view_state_handbook")
 require("scripts/settings/news_feed_templates")
 DLCUtils.map_list("hero_view", function (hero_view_ui_data)
 	require(hero_view_ui_data.filename)
@@ -572,12 +573,12 @@ HeroView._handle_view_popups = function (self)
 	end
 end
 
-HeroView.exit = function (self, return_to_game, ignore_sound)
+HeroView.exit = function (self, return_to_game, ignore_sound, no_fade)
 	local exit_transition = "exit_menu"
 
 	self.exiting = true
 
-	if self.is_in_inn and not self._force_ingame_menu then
+	if not no_fade and self.is_in_inn and not self._force_ingame_menu then
 		self.ingame_ui:transition_with_fade(exit_transition)
 	else
 		self.ingame_ui:handle_transition(exit_transition)
@@ -616,10 +617,10 @@ HeroView.unsuspend = function (self)
 	self.suspended = nil
 end
 
-HeroView.close_menu = function (self, return_to_main_screen, ignore_sound)
+HeroView.close_menu = function (self, return_to_main_screen, ignore_sound, no_fade)
 	local return_to_game = not return_to_main_screen
 
-	self:exit(return_to_game, ignore_sound)
+	self:exit(return_to_game, ignore_sound, no_fade)
 end
 
 HeroView.destroy = function (self)

@@ -40,7 +40,7 @@ GenericImpactProjectileUnitExtension.update = function (self, unit, input, _, co
 		return
 	end
 
-	self:_execute_impact(recent_impacts, num_impacts)
+	self:_execute_impact(recent_impacts, num_impacts, 1)
 
 	if self.impact_template_name == "vfx_impact" then
 		return
@@ -54,8 +54,9 @@ GenericImpactProjectileUnitExtension.update = function (self, unit, input, _, co
 	local STRIDE = ProjectileImpactDataIndex.STRIDE
 	local network_manager = self.network_manager
 	local self_unit_id = network_manager:unit_game_object_id(self.unit)
+	local num_units_hits = num_impacts / STRIDE
 
-	for i = 1, num_impacts / STRIDE do
+	for i = 1, num_units_hits do
 		local j = (i - 1) * STRIDE
 		local unit = recent_impacts[j + UNIT]
 		local position = recent_impacts[j + POSITION]:unbox()
@@ -73,24 +74,24 @@ GenericImpactProjectileUnitExtension.update = function (self, unit, input, _, co
 
 		if unit_id then
 			if self.is_server then
-				network_manager.network_transmit:send_rpc_clients("rpc_generic_impact_projectile_impact", self_unit_id, game_object_id, level_unit_id, position, direction, normal, actor_index)
+				network_manager.network_transmit:send_rpc_clients("rpc_generic_impact_projectile_impact", self_unit_id, game_object_id, level_unit_id, position, direction, normal, actor_index, num_units_hits)
 			else
-				network_manager.network_transmit:send_rpc_server("rpc_generic_impact_projectile_impact", self_unit_id, game_object_id, level_unit_id, position, direction, normal, actor_index)
+				network_manager.network_transmit:send_rpc_server("rpc_generic_impact_projectile_impact", self_unit_id, game_object_id, level_unit_id, position, direction, normal, actor_index, num_units_hits)
 			end
 		end
 	end
 end
 
-GenericImpactProjectileUnitExtension._execute_impact = function (self, recent_impacts, num_impacts)
+GenericImpactProjectileUnitExtension._execute_impact = function (self, recent_impacts, num_impacts, impact_counter)
 	local impact = ProjectileTemplates.impact_templates[self.impact_template_name]
 	local explosion_template = ExplosionUtils.get_template(self.explosion_template_name)
 	local server_stop = false
 
 	if self.is_server then
-		server_stop = impact.server.execute(self.world, self.damage_source, self.unit, recent_impacts, num_impacts, self.owner_unit, explosion_template)
+		server_stop = impact.server.execute(self.world, self.damage_source, self.unit, recent_impacts, num_impacts, self.owner_unit, explosion_template, impact_counter)
 	end
 
-	local client_stop = impact.client.execute(self.world, self.damage_source, self.unit, recent_impacts, num_impacts, self.owner_unit, explosion_template)
+	local client_stop = impact.client.execute(self.world, self.damage_source, self.unit, recent_impacts, num_impacts, self.owner_unit, explosion_template, impact_counter)
 
 	if server_stop or client_stop then
 		self.locomotion_extension:stop()
@@ -103,16 +104,16 @@ local rpc_dummy_impact = {
 	[ProjectileImpactDataIndex.NORMAL] = Vector3Box(),
 }
 
-GenericImpactProjectileUnitExtension.impact = function (self, unit, position, direction, normal, actor_index)
+GenericImpactProjectileUnitExtension.impact = function (self, unit, position, direction, normal, actor, impact_counter)
 	rpc_dummy_impact[ProjectileImpactDataIndex.UNIT] = unit
 
 	rpc_dummy_impact[ProjectileImpactDataIndex.POSITION]:store(position)
 	rpc_dummy_impact[ProjectileImpactDataIndex.DIRECTION]:store(direction)
 	rpc_dummy_impact[ProjectileImpactDataIndex.NORMAL]:store(normal)
 
-	rpc_dummy_impact[ProjectileImpactDataIndex.ACTOR_INDEX] = actor_index
+	rpc_dummy_impact[ProjectileImpactDataIndex.ACTOR_INDEX] = actor
 
-	self:_execute_impact(rpc_dummy_impact, ProjectileImpactDataIndex.STRIDE)
+	self:_execute_impact(rpc_dummy_impact, ProjectileImpactDataIndex.STRIDE, impact_counter)
 end
 
 local dummy_impact = {}

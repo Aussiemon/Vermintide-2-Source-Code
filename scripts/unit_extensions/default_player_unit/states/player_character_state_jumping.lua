@@ -53,7 +53,7 @@ PlayerCharacterStateJumping.on_enter = function (self, unit, input, dt, context,
 		local direction = Quaternion.forward(ladder_rotation)
 
 		velocity_jump = direction * movement_settings_table.ladder.jump_backwards_force
-		self.temp_params.ladder_shaking = params.ladder_shaking
+		self.temp_params.shaking_ladder_unit = params.shaking_ladder_unit
 	else
 		velocity_jump = Vector3(velocity_current.x, velocity_current.y, jump_speed)
 	end

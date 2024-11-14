@@ -16,23 +16,23 @@ local function random_color()
 end
 
 BadgeDefinitions.kill_hero = {
-	text = "Eliminated {#color(%d,%d,%d,%d)}%s{#reset()}!",
+	text = "vs_kill_notification_elimination",
 	texture_id = "badge_generic_01",
 	bg_color = {
 		255,
-		126,
+		139,
 		0,
 		0,
 	},
 	victim_text_color = {
 		255,
-		187,
+		139,
 		0,
 		0,
 	},
 }
 BadgeDefinitions.knock_down_hero = {
-	text = "{#color(%d,%d,%d,%d)}%s{#reset()} Knocked Down!",
+	text = "vs_kill_notification_knockdown",
 	texture_id = "badge_generic_02",
 	bg_color = {
 		255,
@@ -42,23 +42,23 @@ BadgeDefinitions.knock_down_hero = {
 	},
 	victim_text_color = {
 		255,
-		187,
+		139,
 		0,
 		0,
 	},
 }
 BadgeDefinitions.kill_pactsworn = {
-	text = "Eliminated {#color(%d,%d,%d,%d)}%s{#reset()}!",
+	text = "vs_kill_notification_elimination",
 	texture_id = "badge_generic_01",
 	bg_color = {
 		255,
-		126,
+		139,
 		0,
 		0,
 	},
 	victim_text_color = {
 		255,
-		187,
+		139,
 		0,
 		0,
 	},

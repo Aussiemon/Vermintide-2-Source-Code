@@ -91,6 +91,8 @@ settings.inventory_package_list = {
 	"units/weapons/player/wpn_dw_rakegun_t3/wpn_dw_rakegun_t3_magic_01_3p",
 	"units/weapons/player/wpn_brw_sword_03_t2/wpn_brw_sword_03_t2_magic_01",
 	"units/weapons/player/wpn_brw_sword_03_t2/wpn_brw_sword_03_t2_magic_01_3p",
+	"units/weapons/player/wpn_brw_sword_03_t2/wpn_brw_flaming_sword_03_t2_magic_01",
+	"units/weapons/player/wpn_brw_sword_03_t2/wpn_brw_flaming_sword_03_t2_magic_01_3p",
 	"units/weapons/player/wpn_brw_mace_02/wpn_brw_mace_02_magic_01",
 	"units/weapons/player/wpn_brw_mace_02/wpn_brw_mace_02_magic_01_3p",
 	"units/weapons/player/wpn_brw_beam_staff_02/wpn_brw_beam_staff_02_magic_01",

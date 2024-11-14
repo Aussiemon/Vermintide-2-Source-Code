@@ -304,41 +304,6 @@ CameraManager.shading_callback = function (self, world, shading_env, viewport)
 			end
 		end
 
-		local colors
-		local local_player = Managers.player:local_player()
-
-		if local_player then
-			local peer_id = local_player:network_id()
-			local local_player_id = local_player:local_player_id()
-			local party = Managers.party:get_party_from_player_id(peer_id, local_player_id)
-			local side = Managers.state.side.side_by_party[party]
-
-			if side then
-				local side_name = side:name()
-
-				if side_name == "heroes" then
-					colors = OutlineSettings.colors
-				elseif side_name == "dark_pact" then
-					colors = OutlineSettingsVS.colors
-				end
-			end
-		end
-
-		if colors then
-			for name, settings in pairs(colors) do
-				local c = settings.color
-				local color = Vector3(c[2] / 255, c[3] / 255, c[4] / 255)
-				local multiplier = settings.outline_multiplier
-
-				if settings.pulsate then
-					multiplier = settings.outline_multiplier * 0.5 + math.sin(Application.time_since_launch() * settings.pulse_multiplier) * settings.outline_multiplier * 0.5
-				end
-
-				ShadingEnvironment.set_vector3(shading_env, settings.variable, color)
-				ShadingEnvironment.set_scalar(shading_env, settings.outline_multiplier_variable, multiplier)
-			end
-		end
-
 		if self._frame == 0 then
 			self._frame = 1
 
@@ -1445,4 +1410,16 @@ CameraManager._update_transition = function (self, viewport_name, nodes, dt)
 	end
 
 	return values
+end
+
+CameraManager.set_mood = function (self, mood_name, reason, value)
+	self.mood_handler:set_mood(mood_name, reason, value)
+end
+
+CameraManager.clear_mood = function (self, mood_name)
+	self.mood_handler:clear_mood(mood_name)
+end
+
+CameraManager.has_mood = function (self, mood_name)
+	self.mood_handler:has_mood(mood_name)
 end

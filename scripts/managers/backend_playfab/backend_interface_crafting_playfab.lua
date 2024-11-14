@@ -97,8 +97,14 @@ BackendInterfaceCraftingPlayfab.craft_request_cb = function (self, id, result)
 		for i = 1, #modified_items do
 			local item = modified_items[i]
 			local backend_id = item.ItemInstanceId
+			local amount = item.UsesIncrementedBy or 1
 
 			backend_mirror:update_item(backend_id, item)
+
+			result[i] = {
+				backend_id,
+				[3] = amount,
+			}
 		end
 	end
 

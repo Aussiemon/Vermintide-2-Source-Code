@@ -11,7 +11,7 @@ StateDedicatedServerInit.on_enter = function (self, params)
 end
 
 StateDedicatedServerInit._init_network = function (self)
-	Managers.lobby:setup_network_options()
+	LobbySetup.setup_network_options()
 
 	local platform = PLATFORM
 
@@ -41,7 +41,7 @@ StateDedicatedServerInit._init_network = function (self)
 		print("GAMELIFTPROP NOPE")
 	end
 
-	local network_options = Managers.lobby:network_options()
+	local network_options = LobbySetup.network_options()
 	local game_server_name = script_data.server_name or script_data.settings.server_name
 
 	cprint("Network Options:")

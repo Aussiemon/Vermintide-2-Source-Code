@@ -36,7 +36,7 @@ BackendUtils.get_loadout_item = function (career_name, slot, is_bot)
 		local career_settings = CareerSettings[career_name]
 
 		if career_settings.required_dlc and Managers.unlock:is_dlc_unlocked(career_settings.required_dlc) then
-			Crashify.print_exception("[BackendUtils] Failed to find loadout item in slot %q for career %q", slot, career_name)
+			Crashify.print_exception("BackendUtils", "Failed to find loadout item in slot %q for career %q", slot, career_name)
 		end
 
 		return
@@ -54,7 +54,7 @@ BackendUtils.try_set_loadout_item = function (career_name, slot_name, item_key)
 
 		BackendUtils.set_loadout_item(backend_id, career_name, slot_name)
 	elseif CosmeticUtils.is_cosmetic_slot(slot_name) then
-		Crashify.print_exception("[BackendUtils] Failed to set loadout item %q in slot %q for career %q", item_key, slot_name, career_name)
+		Crashify.print_exception("BackendUtils", "Failed to set loadout item %q in slot %q for career %q", item_key, slot_name, career_name)
 	end
 
 	return item
@@ -209,7 +209,9 @@ BackendUtils.get_item_units = function (item_data, backend_id, skin, career_name
 		return units
 	end
 
-	fassert(false, "no left hand or right hand unit defined for : " .. item_data.backend_id)
+	if item_data.item_type ~= "chips" then
+		fassert(false, "no left hand or right hand unit defined for : " .. (item_data.backend_id or item_data.display_name))
+	end
 end
 
 BackendUtils.format_profile_hash = function (hash, num_chars, block_length, block_divider)
@@ -301,7 +303,24 @@ local CURRENCY_LOOKUP = {
 		[25] = "shillings_04",
 		[50] = "shillings_05",
 		[100] = "shillings_06",
+		large = "shillings_large",
+		medium = "shillings_medium",
+		small = "shillings_small",
 	},
+	VS = {
+		[5] = "versus_currency_01",
+		[25] = "versus_currency_02",
+		[50] = "versus_currency_03",
+		large = "versus_currency_large",
+		medium = "versus_currency_medium",
+		small = "versus_currency_small",
+	},
+}
+
+CURRENCY_DESC_LOOKUP = {
+	ES = "achv_menu_es_currency_reward_claimed ",
+	SM = "achv_menu_curreny_reward_claimed",
+	VS = "achv_menu_vs_currency_reward_claimed",
 }
 
 BackendUtils.get_fake_currency_item = function (currency_code, amount)
@@ -310,10 +329,19 @@ BackendUtils.get_fake_currency_item = function (currency_code, amount)
 	fassert(lookup, "Unsupported currency code '%s'", currency_code)
 
 	local item_key = lookup[amount]
+	local description = CURRENCY_DESC_LOOKUP[currency_code]
 
-	item_key = item_key or amount >= 1 and amount < 50 and "shillings_small" or amount >= 50 and amount < 100 and "shillings_medium" or "shillings_large"
+	if not item_key then
+		if amount >= 1 and amount < 50 then
+			item_key = CURRENCY_LOOKUP[currency_code].small
+		elseif amount >= 50 and amount < 100 then
+			item_key = CURRENCY_LOOKUP[currency_code].medium
+		else
+			item_key = CURRENCY_LOOKUP[currency_code].large
+		end
+	end
 
 	local data = Currencies[item_key]
 
-	return table.clone(data), item_key
+	return table.clone(data), item_key, description
 end

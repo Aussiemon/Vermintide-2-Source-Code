@@ -215,9 +215,8 @@ CareerAbilityESHuntsman._run_ability = function (self, skip_cooldown)
 		first_person_extension:play_hud_sound_event("Play_career_ability_markus_huntsman_loop")
 		first_person_extension:animation_event("shade_stealth_ability")
 		career_extension:set_state("markus_activate_huntsman")
-
-		MOOD_BLACKBOARD.skill_huntsman_surge = false
-		MOOD_BLACKBOARD.skill_huntsman_stealth = true
+		Managers.state.camera:set_mood("skill_huntsman_surge", "skill_huntsman_surge", false)
+		Managers.state.camera:set_mood("skill_huntsman_stealth", "skill_huntsman_stealth", true)
 	end
 
 	if local_player or is_server and bot_player then

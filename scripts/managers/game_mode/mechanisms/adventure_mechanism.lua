@@ -210,6 +210,8 @@ AdventureMechanism.choose_next_state = function (self, next_state)
 		}
 
 		fassert(acceptable_states[next_state], "State (%s) is not an acceptable transition from current state (%s)", next_state, state)
+	elseif Development.parameter("weave_name") and state == "ingame" then
+		-- Nothing
 	else
 		ferror("Not allowed to choose next state in current state (%s)", state)
 	end
@@ -263,17 +265,6 @@ AdventureMechanism.get_hub_level_key = function (self)
 	return self._debug_hub_level_key or AdventureMechanism.get_starting_level()
 end
 
-AdventureMechanism.allocate_slot = function (self, sender, profile_index)
-	local network_server = Managers.mechanism:network_server()
-	local profile_synchronizer = network_server.profile_synchronizer
-
-	if profile_synchronizer:try_reserve_profile_for_peer(sender, profile_index) then
-		return true
-	end
-
-	return false
-end
-
 AdventureMechanism.get_level_seed = function (self, level_seed, optional_system)
 	local weave_manager = Managers.weave
 
@@ -286,16 +277,21 @@ AdventureMechanism.get_level_seed = function (self, level_seed, optional_system)
 	return level_seed
 end
 
-AdventureMechanism.get_end_of_level_rewards_arguments = function (self, game_won, quickplay, statistics_db, stats_id)
+AdventureMechanism.get_end_of_level_rewards_arguments = function (self, game_won, quickplay, statistics_db, stats_id, level_key, hero_name)
 	local is_weave_game_mode = self._current_game_mode == WEAVE_GAME_MODE_KEY
 	local kill_count = statistics_db:get_stat(stats_id, "kills_total")
 	local weave_tier, weave_progress
+	local first_time_completion = false
 
 	if is_weave_game_mode then
 		local weave_manager = Managers.weave
 
 		weave_tier = weave_manager:get_weave_tier()
 		weave_progress = weave_manager:current_bar_score()
+	elseif game_won then
+		local num_times_completed = statistics_db:get_persistent_stat(stats_id, "completed_levels_" .. hero_name, level_key)
+
+		first_time_completion = num_times_completed == 1
 	end
 
 	local ignore_dlc_check = false
@@ -323,6 +319,7 @@ AdventureMechanism.get_end_of_level_rewards_arguments = function (self, game_won
 		weave_progress = weave_progress,
 		kill_count = kill_count,
 		chest_upgrade_data = chest_upgrade_data,
+		first_time_completion = first_time_completion,
 	}
 end
 
@@ -523,25 +520,6 @@ AdventureMechanism._build_side_compositions = function (self, state)
 	return side_compositions
 end
 
-AdventureMechanism.profile_available = function (self, profile_synchronizer, profile_name, career_name)
-	local profile_index = FindProfileIndex(profile_name)
-	local party = Managers.party:get_party(1)
-	local occupied_slots = party.occupied_slots
-
-	for i = 1, #occupied_slots do
-		local status = occupied_slots[i]
-		local peer_id = status.peer_id
-		local local_player_id = status.local_player_id
-		local player_profile_id, player_career_id = profile_synchronizer:profile_by_peer(peer_id, local_player_id)
-
-		if player_profile_id == profile_index then
-			return false
-		end
-	end
-
-	return true
-end
-
 AdventureMechanism.get_state = function (self)
 	return self._state
 end
@@ -571,13 +549,6 @@ AdventureMechanism.rpc_sync_adventure_data_to_peer = function (self, channel_id,
 		weave_manager:set_next_weave(next_weave_name)
 		weave_manager:set_next_objective(next_weave_objective_index)
 	end
-end
-
-AdventureMechanism.profile_available_for_peer = function (self, profile_synchronizer, peer_id, local_player_id, profile_name, career_name)
-	local profile_index = FindProfileIndex(profile_name)
-	local reserver_peer_id = profile_synchronizer:get_profile_index_reservation(profile_index)
-
-	return not reserver_peer_id or reserver_peer_id == peer_id
 end
 
 AdventureMechanism.should_play_level_introduction = function (self)
@@ -639,4 +610,18 @@ AdventureMechanism.get_starting_level = function ()
 	local keep_variation_data = Managers.backend:get_level_variation_data()
 
 	return keep_variation_data.hub_level or HUB_LEVEL_NAME
+end
+
+AdventureMechanism.reserved_party_id_by_peer = function (self, peer_id)
+	return 1
+end
+
+AdventureMechanism.try_reserve_profile_for_peer_by_mechanism = function (self, profile_synchronizer, peer_id, profile_index, career_index, allow_switching)
+	local party_id = self:reserved_party_id_by_peer(peer_id)
+
+	return profile_synchronizer:try_reserve_profile_for_peer(party_id, peer_id, profile_index, career_index)
+end
+
+AdventureMechanism.entered_mechanism_due_to_switch = function (self)
+	Managers.chat:set_chat_enabled(true)
 end

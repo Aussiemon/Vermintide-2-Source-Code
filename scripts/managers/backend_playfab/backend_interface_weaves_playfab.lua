@@ -10,6 +10,7 @@ local LOADOUT_INTERFACE_OVERRIDES = {
 	slot_frame = "items",
 	slot_hat = "items",
 	slot_melee = "weaves",
+	slot_pose = "items",
 	slot_ranged = "weaves",
 	slot_skin = "items",
 }
@@ -657,22 +658,27 @@ BackendInterfaceWeavesPlayFab.get_career_magic_level = function (self, career_na
 	return magic_level
 end
 
-BackendInterfaceWeavesPlayFab.career_upgrade_cost = function (self, career_name)
+BackendInterfaceWeavesPlayFab.career_upgrade_cost = function (self, num_levels, career_name)
 	local current_magic_level = self:get_career_magic_level(career_name)
-	local new_magic_level = current_magic_level + 1
+	local new_magic_level = math.clamp(current_magic_level + num_levels, 1, self:max_magic_level())
 
-	if new_magic_level > self:max_magic_level() then
+	if new_magic_level == current_magic_level then
 		return nil, nil
 	end
 
-	local magic_level_settings = self._progression_settings.magic_levels[new_magic_level]
-	local essence_cost = magic_level_settings.essence_cost
+	local essence_cost = 0
+
+	for i = current_magic_level + 1, new_magic_level do
+		local magic_level_settings = self._progression_settings.magic_levels[i]
+
+		essence_cost = essence_cost + magic_level_settings.essence_cost
+	end
 
 	return essence_cost, new_magic_level
 end
 
-BackendInterfaceWeavesPlayFab.upgrade_career_magic_level = function (self, career_name, external_cb)
-	local cost, new_magic_level = self:career_upgrade_cost(career_name)
+BackendInterfaceWeavesPlayFab.upgrade_career_magic_level = function (self, num_levels, career_name, external_cb)
+	local cost, new_magic_level = self:career_upgrade_cost(num_levels, career_name)
 
 	if not cost then
 		external_cb(false)
@@ -773,22 +779,27 @@ BackendInterfaceWeavesPlayFab.get_item_power_level = function (self, item_backen
 	return power_level
 end
 
-BackendInterfaceWeavesPlayFab.magic_item_upgrade_cost = function (self, item_backend_id)
+BackendInterfaceWeavesPlayFab.magic_item_upgrade_cost = function (self, num_levels, item_backend_id)
 	local current_magic_level = self:get_item_magic_level(item_backend_id)
-	local new_magic_level = current_magic_level + 1
+	local new_magic_level = math.clamp(current_magic_level + num_levels, 1, self:max_magic_level())
 
-	if new_magic_level > self:max_magic_level() then
+	if new_magic_level == current_magic_level then
 		return nil, nil
 	end
 
-	local magic_level_settings = self._progression_settings.magic_levels[new_magic_level]
-	local essence_cost = magic_level_settings.essence_cost
+	local essence_cost = 0
+
+	for i = current_magic_level + 1, new_magic_level do
+		local magic_level_settings = self._progression_settings.magic_levels[i]
+
+		essence_cost = essence_cost + magic_level_settings.essence_cost
+	end
 
 	return essence_cost, new_magic_level
 end
 
-BackendInterfaceWeavesPlayFab.upgrade_item_magic_level = function (self, item_backend_id, external_cb)
-	local cost, new_magic_level = self:magic_item_upgrade_cost(item_backend_id)
+BackendInterfaceWeavesPlayFab.upgrade_item_magic_level = function (self, num_levels, item_backend_id, external_cb)
+	local cost, new_magic_level = self:magic_item_upgrade_cost(num_levels, item_backend_id)
 
 	if not cost then
 		external_cb(false)
@@ -935,25 +946,30 @@ BackendInterfaceWeavesPlayFab.forge_magic_level_cap = function (self)
 	return magic_level_cap
 end
 
-BackendInterfaceWeavesPlayFab.forge_upgrade_cost = function (self)
+BackendInterfaceWeavesPlayFab.forge_upgrade_cost = function (self, num_levels)
 	local current_forge_level = self._forge_level
-	local new_forge_level = current_forge_level + 1
+	local new_forge_level = math.clamp(current_forge_level + num_levels, 1, self:forge_max_level())
 
-	if new_forge_level > self:forge_max_level() then
+	if new_forge_level == current_forge_level then
 		return nil, nil
 	end
 
-	local forge_level_settings = self._progression_settings.forge_levels[new_forge_level]
-	local essence_cost = forge_level_settings.essence_cost
+	local essence_cost = 0
+
+	for i = current_forge_level + 1, new_forge_level do
+		local forge_level_settings = self._progression_settings.forge_levels[i]
+
+		essence_cost = essence_cost + forge_level_settings.essence_cost
+	end
 
 	return essence_cost, new_forge_level
 end
 
-BackendInterfaceWeavesPlayFab.upgrade_forge = function (self, external_cb)
-	local cost, new_forge_level = self:forge_upgrade_cost()
+BackendInterfaceWeavesPlayFab.upgrade_forge = function (self, num_levels, external_cb)
+	local cost, new_forge_level = self:forge_upgrade_cost(num_levels)
 
 	if not cost then
-		extenal_cb(false)
+		external_cb(false)
 
 		return
 	end

@@ -25,7 +25,10 @@ PassiveAbilityEngineer.init = function (self, extension_init_context, unit, exte
 	self._heat_cooldown_pause_t = 0
 	self._weapon_visual_heat = 0
 	self._prev_weapon_visual_heat = 0
-	self._visual_heat_cooldown_speed = Weapons.bardin_engineer_career_skill_weapon.visual_heat_cooldown_speed
+
+	local weapon_template = WeaponUtils.get_weapon_template("bardin_engineer_career_skill_weapon")
+
+	self._visual_heat_cooldown_speed = weapon_template.visual_heat_cooldown_speed
 	self._heat_particles_spawned = false
 	self._last_ability_charge = 0
 	self._wind_down_progress = 0
@@ -224,9 +227,15 @@ PassiveAbilityEngineer._add_5_2_bombs = function (self)
 	local item_name = "grenade_frag_01"
 	local slot_name = "slot_grenade"
 	local inventory_extension = self._inventory_extension
+	local num_starting_bombs = CareerConstants.dr_engineer.num_starting_bombs
+
+	if Managers.mechanism:current_mechanism_name() == "versus" then
+		num_starting_bombs = 1
+	end
+
 	local num_already_have = inventory_extension:get_total_item_count(slot_name)
 
-	for i = num_already_have + 1, CareerConstants.dr_engineer.num_starting_bombs do
+	for i = num_already_have + 1, num_starting_bombs do
 		local interactor_game_object_id = NetworkConstants.invalid_game_object_id
 		local engineer_unit_id = Managers.state.unit_storage:go_id(self._owner_unit)
 		local slot_id = NetworkLookup.equipment_slots[slot_name]

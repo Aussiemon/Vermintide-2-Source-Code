@@ -24,76 +24,7 @@ return {
 				"capture_point_1_event_small_no_chaos",
 			},
 			objective_settings = {
-				objective_lists = {
-					{
-						kill_enemies = {},
-						capture_point_001 = {
-							is_scored = true,
-							on_start_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("capture_point_3_event_no_chaos", spawner_id)
-							end,
-							on_complete_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:stop_terror_event("capture_point_3_event_no_chaos", spawner_id)
-							end,
-						},
-						capture_point_002 = {
-							is_scored = true,
-							on_start_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("capture_point_specials_raid", spawner_id)
-							end,
-							on_complete_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:stop_terror_event("capture_point_specials_raid", spawner_id)
-							end,
-						},
-						capture_point_003 = {
-							is_scored = true,
-							on_start_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("capture_point_1_event_large_skaven", spawner_id)
-							end,
-							on_complete_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:stop_terror_event("capture_point_1_event_large_skaven", spawner_id)
-							end,
-						},
-						capture_point_004 = {
-							is_scored = true,
-							on_start_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("capture_point_1_event_medium_no_chaos", spawner_id)
-							end,
-							on_complete_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:stop_terror_event("capture_point_1_event_medium_no_chaos", spawner_id)
-							end,
-						},
-						capture_point_008 = {
-							is_scored = true,
-							on_start_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("capture_point_1_event_small_no_chaos", spawner_id)
-							end,
-							on_complete_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:stop_terror_event("capture_point_1_event_small_no_chaos", spawner_id)
-							end,
-						},
-					},
-				},
+				objective_lists = "weave_34",
 			},
 			bonus_time_on_complete = WeaveSettings.bonus_time,
 			system_seeds = {

@@ -49,10 +49,13 @@ DeusMapUI._create_ui_elements = function (self)
 	local widgets = {}
 	local peers = self._deus_run_controller:get_peers()
 	local portrait_frame_widgets = {}
+	local insignia_widgets = {}
 
 	for i = 1, 4 do
 		local name = "player_portrait_frame_" .. i
 		local widget_definition, widget
+		local insignia_name = "player_insignia_" .. i
+		local insignia_widget_definition, insignia_widget
 
 		if peers[i] then
 			local profile_index, career_index = self._deus_run_controller:get_player_profile(peers[i], REAL_PLAYER_LOCAL_ID)
@@ -60,6 +63,10 @@ DeusMapUI._create_ui_elements = function (self)
 			local frame_settings_name = self._deus_run_controller:get_player_frame(peers[i], profile_index, career_index)
 
 			widget_definition = UIWidgets.deus_create_player_portraits_frame("player_" .. i .. "_portrait", frame_settings_name, level_text, false)
+
+			local versus_level = self._deus_run_controller:get_versus_player_level(peers[i])
+
+			insignia_widget_definition = UIWidgets.create_small_insignia("player_" .. i .. "_insignia", versus_level)
 
 			local server_peer_id = self._deus_run_controller:get_server_peer_id()
 
@@ -79,14 +86,19 @@ DeusMapUI._create_ui_elements = function (self)
 			end
 		else
 			widget_definition = UIWidgets.deus_create_player_portraits_frame("player_" .. i .. "_portrait", "default", " ", false)
+			insignia_widget_definition = UIWidgets.create_small_insignia("player_" .. i .. "_insignia", 0)
 		end
 
 		widget = UIWidget.init(widget_definition)
 		portrait_frame_widgets[#portrait_frame_widgets + 1] = widget
 		widgets_by_name[name] = widget
+		insignia_widget = UIWidget.init(insignia_widget_definition)
+		insignia_widgets[#insignia_widgets + 1] = insignia_widget
+		widgets_by_name[insignia_name] = widget
 	end
 
 	self._portrait_frame_widgets = portrait_frame_widgets
+	self._insignia_widgets = insignia_widgets
 	self._ui_scenegraph = ui_scenegraph
 	self._widgets_by_name = widgets_by_name
 	self._anim_data = anim_data
@@ -256,6 +268,14 @@ DeusMapUI._update_portrait_frame = function (self, frame_name, level_text, index
 	self._widgets_by_name["player_portrait_frame_" .. index] = new_frame_widget
 end
 
+DeusMapUI._update_insignia = function (self, versus_level, index)
+	local insignia_widget_definition = UIWidgets.create_small_insignia("player_" .. index .. "_insignia", versus_level)
+	local insignia_widget = UIWidget.init(insignia_widget_definition)
+
+	self._insignia_widgets[index] = insignia_widget
+	self._widgets_by_name["player_insignia_" .. index] = insignia_widget
+end
+
 DeusMapUI.update_player_data = function (self, player_data)
 	self._player_data = player_data
 
@@ -267,6 +287,7 @@ DeusMapUI.update_player_data = function (self, player_data)
 		local player_portrait = widgets_by_name["player_" .. i .. "_portrait"]
 		local player_texts = widgets_by_name["player_" .. i .. "_texts"]
 		local player_portrait_frame = widgets_by_name["player_portrait_frame_" .. i]
+		local player_insignia = widgets_by_name["player_insignia_" .. i]
 		local should_be_visible = not not data
 
 		player_portrait.content.visible = should_be_visible
@@ -281,6 +302,12 @@ DeusMapUI.update_player_data = function (self, player_data)
 				self:_update_portrait_frame(frame_settings_name, level, i)
 
 				player_portrait_frame.content.level = level
+			end
+
+			local versus_level = data.versus_level
+
+			if player_insignia.content.level ~= versus_level then
+				self:_update_insignia(versus_level, i)
 			end
 
 			player_texts.content.name_text = data.name or ""

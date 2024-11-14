@@ -11,7 +11,7 @@ local function get_weapon_packages(stored_purchase, career_name)
 	local item_template = BackendUtils.get_item_template(item_data, backend_id)
 	local item_units = BackendUtils.get_item_units(item_data, backend_id, skin, career_name)
 
-	return WeaponUtils.get_weapon_packages(item_template, item_units, false)
+	return WeaponUtils.get_weapon_packages(item_template, item_units, false, career_name)
 end
 
 DeusChestPreloadExtension.init = function (self, extension_init_context, unit, extension_init_data)

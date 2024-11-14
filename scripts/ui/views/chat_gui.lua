@@ -578,7 +578,9 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 			local mechanism = Managers.mechanism:game_mechanism()
 
 			if mechanism.get_chat_channel then
-				channel_id, message_target = mechanism:get_chat_channel(Managers.player:local_player(), alt_chat_input)
+				local peer_id = Network.peer_id()
+
+				channel_id, message_target = mechanism:get_chat_channel(peer_id, alt_chat_input)
 			end
 
 			self.channel_id = channel_id or 1
@@ -844,7 +846,9 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 				local mechanism = Managers.mechanism:game_mechanism()
 
 				if mechanism.get_chat_channel then
-					channel_id, message_target = mechanism:get_chat_channel(Managers.player:local_player(), alt_chat_input)
+					local peer_id = Network.peer_id()
+
+					channel_id, message_target = mechanism:get_chat_channel(peer_id, alt_chat_input)
 				end
 
 				self.channel_id = channel_id or 1

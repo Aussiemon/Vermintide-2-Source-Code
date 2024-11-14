@@ -46,6 +46,10 @@ local GRID_SIZE_BY_TYPE = {
 		1,
 		1,
 	},
+	cosmetic_bundle = {
+		1,
+		1,
+	},
 }
 local BACKFILL_ITEM_ORDER = {
 	"dlc",
@@ -609,14 +613,24 @@ StoreWindowFeatured._get_default_featured_grid_content = function (self, optiona
 	local os_time = os.time() * 1000
 	local num_items = optional_num_items or 9
 	local used_ids = optional_used_ids or {}
+	local item_currency_settings = DLCSettings.store.currency_ui_settings
 
 	local function comparator(a, b)
 		if a.steam_itemdefid or b.steam_itemdefid then
 			return false
 		end
 
-		local sale_percentage_a = a.current_prices.SM / a.regular_prices.SM
-		local sale_percentage_b = b.current_prices.SM / b.regular_prices.SM
+		local sale_percentage_a, sale_percentage_b
+
+		for currency, settings in pairs(item_currency_settings) do
+			if a.current_prices[currency] and a.regular_prices[currency] then
+				sale_percentage_a = a.current_prices[currency] / a.regular_prices[currency]
+			end
+
+			if b.current_prices[currency] and b.regular_prices[currency] then
+				sale_percentage_b = b.current_prices[currency] / b.regular_prices[currency]
+			end
+		end
 
 		if sale_percentage_a ~= sale_percentage_b then
 			return sale_percentage_a < sale_percentage_b
@@ -639,6 +653,8 @@ StoreWindowFeatured._get_default_featured_grid_content = function (self, optiona
 		local item = hero_items[i]
 		local item_key = item.key
 		local item_owned = backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key)
+		local item_data = item.data
+		local item_type = item_data.item_type
 
 		if not used_ids[item_key] and not item_owned then
 			default_grid_content[#default_grid_content + 1] = hero_items[i]

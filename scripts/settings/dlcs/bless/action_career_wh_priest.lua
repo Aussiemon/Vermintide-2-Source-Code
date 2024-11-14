@@ -73,6 +73,13 @@ ActionCareerWHPriestUtility._add_buffs_to_target = function (target_unit, warrio
 
 	if talent_extension:has_talent("victor_priest_6_1") then
 		params = MechanismOverrides.get(spell_params_improved)
+		params.external_optional_duration = spell_params_improved.external_optional_duration
+
+		local mechanism_name = Managers.mechanism:current_mechanism_name()
+
+		if spell_params_improved.mechanism_overrides[mechanism_name] then
+			params.external_optional_duration = spell_params_improved.mechanism_overrides[mechanism_name].external_optional_duration
+		end
 	end
 
 	params.attacker_unit = warrior_priest_unit

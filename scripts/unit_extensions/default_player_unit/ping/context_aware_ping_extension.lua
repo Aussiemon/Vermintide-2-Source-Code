@@ -112,12 +112,13 @@ ContextAwarePingExtension.ping_attempt = function (self, unit, unit_to_ping, t, 
 	return true
 end
 
-ContextAwarePingExtension.ping_world_position_attempt = function (self, unit, position, t, ping_type, social_wheel_event_id)
+ContextAwarePingExtension.ping_world_position_attempt = function (self, unit, position, t, ping_type, social_wheel_event_id, is_double_press)
 	if not self._world_markers_enabled then
 		return
 	end
 
 	ping_type = ping_type or PingTypes.CONTEXT
+	is_double_press = not not is_double_press
 
 	if IgnoreCooldownPingTypes[ping_type] then
 		social_wheel_event_id = social_wheel_event_id or NetworkLookup.social_wheel_events["n/a"]
@@ -125,7 +126,7 @@ ContextAwarePingExtension.ping_world_position_attempt = function (self, unit, po
 		local network_manager = Managers.state.network
 		local pinger_unit_id = network_manager:unit_game_object_id(unit)
 
-		network_manager.network_transmit:send_rpc_server("rpc_ping_world_position", pinger_unit_id, position, ping_type, social_wheel_event_id)
+		network_manager.network_transmit:send_rpc_server("rpc_ping_world_position", pinger_unit_id, position, ping_type, social_wheel_event_id, is_double_press)
 
 		if not IgnoreFreeEvents[ping_type] then
 			self:_consume_ping_event()
@@ -159,7 +160,7 @@ ContextAwarePingExtension.ping_world_position_attempt = function (self, unit, po
 		local network_manager = Managers.state.network
 		local pinger_unit_id = network_manager:unit_game_object_id(unit)
 
-		network_manager.network_transmit:send_rpc_server("rpc_ping_world_position", pinger_unit_id, position, ping_type, social_wheel_event_id)
+		network_manager.network_transmit:send_rpc_server("rpc_ping_world_position", pinger_unit_id, position, ping_type, social_wheel_event_id, is_double_press)
 
 		if not IgnoreFreeEvents[ping_type] then
 			self:_consume_ping_event()
@@ -317,7 +318,7 @@ ContextAwarePingExtension._check_raycast = function (self, unit)
 end
 
 ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, unit, context)
-	if not self._listen_for_double_press and self._ping_context and self._can_ping then
+	if self._ping_context and self._can_ping then
 		local ping_context = self._ping_context
 		local ping_released = self._input_extension:get("ping_release")
 		local ping_held = self._input_extension:get("ping_hold")
@@ -333,7 +334,9 @@ ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, uni
 				if Unit.alive(unit_to_ping) then
 					self:ping_attempt(unit, unit_to_ping, t, ping_type)
 				elseif ping_context.position then
-					self:ping_world_position_attempt(unit, ping_context.position:unbox(), t, ping_type)
+					local social_wheel_event_id
+
+					self:ping_world_position_attempt(unit, ping_context.position:unbox(), t, ping_type, social_wheel_event_id, ping_context.is_double_press)
 				end
 			end
 
@@ -353,7 +356,7 @@ ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, uni
 			self._social_wheel_context = nil
 			self._can_ping = false
 		end
-	elseif not self._can_ping or not self._listen_for_double_press then
+	elseif not self._can_ping then
 		local input_extension = self._input_extension
 		local ping = input_extension:get("ping")
 		local ping_only = input_extension:get("ping_only")
@@ -404,7 +407,10 @@ ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, uni
 				elseif position then
 					ping_type = ping_type or ping_only and PingTypes.MOVEMENT_GENERIC or PingTypes.CONTEXT
 
-					self:ping_world_position_attempt(unit, position, t, ping_type)
+					local social_wheel_event_id
+					local is_double_press = self._double_press_counter >= 1
+
+					self:ping_world_position_attempt(unit, position, t, ping_type, social_wheel_event_id, is_double_press)
 				end
 			elseif social_wheel_only then
 				self._social_wheel_context = {
@@ -413,7 +419,8 @@ ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, uni
 					distance = social_wheel_unit_distance,
 					position = stored_ping_position,
 				}
-			elseif ping and not self._listen_for_double_press then
+			elseif ping then
+				local is_double_press = self._double_press_counter >= 1
 				local social_wheel_delay = Application.user_setting("social_wheel_delay") or DefaultUserSettings.get("user_settings", "social_wheel_delay")
 
 				self._ping_context = {
@@ -422,6 +429,7 @@ ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, uni
 					distance = ping_unit_distance,
 					position = stored_ping_position,
 					ping_type = ping_type,
+					is_double_press = is_double_press,
 				}
 				self._social_wheel_context = {
 					unit = social_wheel_unit,
@@ -432,12 +440,10 @@ ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, uni
 				}
 
 				if Managers.state.game_mode:setting("allow_double_ping") then
-					self._listen_for_double_press = true
-					self._double_press_start_time = t
-					self._double_press_end_time = t + self._double_press_listen_duration
-				else
-					self._can_ping = true
+					self:_start_listen_for_double_press(t)
 				end
+
+				self._can_ping = true
 			elseif photomode_only then
 				self._social_wheel_context = {
 					min_t = 0,
@@ -450,22 +456,21 @@ ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, uni
 		end
 	end
 
-	if not self._can_ping then
-		if self._listen_for_double_press and self._double_press_end_time and t >= self._double_press_end_time then
-			if self._double_press_counter == 2 and self._ping_context then
-				self._ping_context.ping_type = PingTypes.ENEMY_POSITION
-				self._ping_context.position = self._ping_position
-			end
-
+	if self._listen_for_double_press then
+		if t >= self._double_press_end_time then
 			self:_reset_listen_for_double_press()
-
-			self._can_ping = true
-		end
-
-		if self._listen_for_double_press and self._double_press_start_time and t < self._double_press_end_time and (self._input_extension:get("ping") or self._input_extension:get("ping_only")) then
+		elseif self._input_extension:get("ping") or self._input_extension:get("ping_only") then
 			self._double_press_counter = self._double_press_counter + 1
+
+			self:_start_listen_for_double_press(t)
 		end
 	end
+end
+
+ContextAwarePingExtension._start_listen_for_double_press = function (self, t)
+	self._listen_for_double_press = true
+	self._double_press_start_time = t
+	self._double_press_end_time = t + self._double_press_listen_duration
 end
 
 ContextAwarePingExtension._reset_listen_for_double_press = function (self)

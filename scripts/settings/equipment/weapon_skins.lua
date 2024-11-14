@@ -7673,7 +7673,7 @@ WeaponSkins.matching_weapon_skin_item_key = function (skin_name)
 		WeaponSkins._matching_weapon_skin_item_keys = {}
 
 		for item_key, item_data in pairs(ItemMasterList) do
-			if item_data.skin_combination_table then
+			if item_data.skin_combination_table and (not item_data.mechanisms or not table.find(item_data.mechanisms, "versus")) then
 				local skin_tables = WeaponSkins.skin_combinations[item_data.skin_combination_table]
 				local skin_item_key = item_key .. "_skin"
 

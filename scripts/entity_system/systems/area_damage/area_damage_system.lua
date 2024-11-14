@@ -47,6 +47,7 @@ AreaDamageSystem.init = function (self, entity_system_creation_context, system_n
 	self.liquid_extensions = {}
 	self.liquid_extension_indexes = {}
 	self.num_liquid_extensions = 0
+	self._source_attacker_unit_data = {}
 
 	self:_create_aoe_damage_buffer()
 end
@@ -69,11 +70,33 @@ AreaDamageSystem.on_add_extension = function (self, world, unit, extension_name,
 		self.num_liquid_extensions = new_index
 	end
 
+	local source_attacker = extension_init_data.source_attacker_unit
+
+	if source_attacker then
+		local data = {
+			source_attacker_unit = source_attacker,
+			breed = Unit.get_data(source_attacker, "breed"),
+		}
+
+		self._source_attacker_unit_data[unit] = data
+
+		local player = Managers.player:owner(source_attacker)
+
+		if player then
+			data.attacker_unique_id = player:unique_id()
+			data.attacker_side = Managers.state.side.side_by_unit[source_attacker]
+		end
+	end
+
 	if extension.is_transient and self.is_server then
 		Managers.level_transition_handler.transient_package_loader:add_unit(unit, extension.transient_name_override)
 	end
 
 	return extension
+end
+
+AreaDamageSystem.has_source_attacker_unit_data = function (self, unit)
+	return self._source_attacker_unit_data[unit]
 end
 
 AreaDamageSystem.on_remove_extension = function (self, unit, extension_name)
@@ -92,6 +115,8 @@ AreaDamageSystem.on_remove_extension = function (self, unit, extension_name)
 		liquid_extension_indexes[extension] = nil
 		self.num_liquid_extensions = num_liquid_extensions - 1
 	end
+
+	self._source_attacker_unit_data[unit] = nil
 
 	if extension.is_transient and self.is_server then
 		Managers.level_transition_handler.transient_package_loader:remove_unit(unit)

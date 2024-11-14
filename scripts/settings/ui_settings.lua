@@ -747,6 +747,7 @@ UISettings.slot_icons = {
 	melee_ranged = "tabs_icon_melee_ranged",
 	necklace = "tabs_icon_necklace",
 	portrait_frame = "tabs_icon_portrait_frame",
+	pose = "tabs_icon_prestige",
 	ranged = "tabs_icon_ranged",
 	ring = "tabs_icon_charm",
 	skins = "tabs_icon_character_skins",
@@ -754,9 +755,12 @@ UISettings.slot_icons = {
 }
 UISettings.item_type_store_icons = {
 	bundle = "store_tag_icon_bundle",
+	chips = "store_tag_icon_versus_coin",
+	cosmetic_bundle = "store_tag_icon_skin",
 	frame = "store_tag_icon_portrait_frame",
 	hat = "store_tag_icon_hat",
 	skin = "store_tag_icon_skin",
+	weapon_pose_bundle = "store_tag_icon_pose",
 	weapon_skin = "store_tag_icon_weapon",
 }
 
@@ -1082,6 +1086,36 @@ UISettings.hero_hat_camera_position_by_character = {
 		y = -2.1,
 		z = 0.88,
 	},
+	vs_chaos_troll = {
+		x = 0.8,
+		y = -0.2,
+		z = 1.4,
+	},
+	vs_gutter_runner = {
+		x = 0.6,
+		y = -0.9,
+		z = 0.2,
+	},
+	vs_packmaster = {
+		x = 0.6,
+		y = -0.8,
+		z = 0.1,
+	},
+	vs_ratling_gunner = {
+		x = 0.6,
+		y = -0.8,
+		z = 0.1,
+	},
+	vs_warpfire_thrower = {
+		x = 0.6,
+		y = -0.8,
+		z = 0.1,
+	},
+	vs_poison_wind_globadier = {
+		x = 0.6,
+		y = -0.8,
+		z = 0.2,
+	},
 	default = {
 		x = 0,
 		y = 0,
@@ -1118,6 +1152,36 @@ UISettings.hero_skin_camera_position_by_character = {
 		x = 0,
 		y = -1.2,
 		z = 0.25,
+	},
+	vs_chaos_troll = {
+		x = 0.8,
+		y = -0.2,
+		z = 1.4,
+	},
+	vs_gutter_runner = {
+		x = 0,
+		y = -1,
+		z = 0,
+	},
+	vs_packmaster = {
+		x = 0,
+		y = -1,
+		z = 0,
+	},
+	vs_ratling_gunner = {
+		x = 0,
+		y = -1,
+		z = 0,
+	},
+	vs_warpfire_thrower = {
+		x = 0,
+		y = -1,
+		z = 0,
+	},
+	vs_poison_wind_globadier = {
+		x = 0,
+		y = -1,
+		z = 0,
 	},
 	default = {
 		x = 0,
@@ -2435,6 +2499,7 @@ UISettings.crosshair_styles = {
 		enabled = true,
 	},
 }
+UISettings.INSIGNIA_OFFSET = 45
 UISettings.default_loadout_settings = {
 	we_shade = {
 		{

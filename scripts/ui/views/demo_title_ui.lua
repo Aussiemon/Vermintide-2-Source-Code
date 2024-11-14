@@ -48,7 +48,7 @@ DemoTitleUI._setup_gui = function (self)
 	self._render_settings = {
 		snap_pixel_positions = true,
 	}
-	self._ui_renderer = UIRenderer.create(self._world, "material", "materials/ui/ui_1080p_hud_single_textures", "material", "materials/ui/ui_1080p_title_screen", "material", "materials/ui/ui_1080p_start_screen", "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_hud_atlas_textures", "material", "materials/ui/ui_1080p_chat", "material", attract_mode_video.video_name)
+	self._ui_renderer = UIRenderer.create(self._world, "material", "materials/ui/ui_1080p_hud_single_textures", "material", "materials/ui/ui_1080p_title_screen", "material", "materials/ui/ui_1080p_start_screen", "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_versus_available_common", "material", "materials/ui/ui_1080p_hud_atlas_textures", "material", "materials/ui/ui_1080p_chat", "material", attract_mode_video.video_name)
 
 	local materials = {}
 

@@ -93,6 +93,14 @@ local transitions = {
 
 		self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_game_topic"), "end_game", Localize("popup_choice_yes"), "cancel_popup_hero_view", Localize("popup_choice_no"))
 	end,
+	quit_game_hero_view_legacy = function (self)
+		self:_cancel_popup()
+
+		local warning_message_data = Managers.mechanism:mechanism_setting("progress_loss_warning_message_data")
+		local text = warning_message_data ~= nil and warning_message_data.is_allowed() and Localize("exit_game_popup_text") .. "\n\n" .. Localize(warning_message_data.message) or Localize("quit_game_popup_text")
+
+		self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_game_topic"), "end_game", Localize("popup_choice_yes"), "cancel_popup", Localize("popup_choice_no"))
+	end,
 	return_to_title_screen = function (self)
 		self:_cancel_popup()
 
@@ -566,6 +574,8 @@ local view_settings = {
 			"material",
 			"materials/ui/ui_1080p_common",
 			"material",
+			"materials/ui/ui_1080p_versus_available_common",
+			"material",
 			"materials/ui/ui_1080p_chat",
 			"material",
 			"materials/fonts/gw_fonts",
@@ -578,6 +588,10 @@ local view_settings = {
 			materials[#materials + 1] = "materials/ui/ui_1080p_inn_single_textures"
 			materials[#materials + 1] = "material"
 			materials[#materials + 1] = "materials/ui/ui_1080p_lock_test"
+			materials[#materials + 1] = "material"
+			materials[#materials + 1] = "materials/ui/ui_1080p_pose_cosmetics"
+			materials[#materials + 1] = "material"
+			materials[#materials + 1] = "video/tutorial_videos/tutorial_videos"
 
 			for _, settings in pairs(AreaSettings) do
 				local video_settings = settings.video_settings
@@ -649,6 +663,8 @@ local view_settings = {
 			"material",
 			"materials/ui/ui_1080p_common",
 			"material",
+			"materials/ui/ui_1080p_versus_available_common",
+			"material",
 			"materials/ui/ui_1080p_chat",
 			"material",
 			"materials/fonts/gw_fonts",
@@ -659,6 +675,8 @@ local view_settings = {
 			materials[#materials + 1] = "materials/ui/ui_1080p_achievement_atlas_textures"
 			materials[#materials + 1] = "material"
 			materials[#materials + 1] = "materials/ui/ui_1080p_inn_single_textures"
+			materials[#materials + 1] = "material"
+			materials[#materials + 1] = "materials/ui/ui_1080p_pose_cosmetics"
 
 			for _, settings in pairs(AreaSettings) do
 				local video_settings = settings.video_settings
@@ -755,6 +773,7 @@ local view_settings = {
 			disable_for_mechanism = default_disable_for_mechanism,
 		},
 		hotkey_map = {
+			can_interact_func = "_handle_versus_matchmaking",
 			error_message = "matchmaking_ready_interaction_message_map",
 			in_transition = "start_game_view_force",
 			in_transition_menu = "start_game_view",
@@ -767,7 +786,7 @@ local view_settings = {
 					not_matchmaking = false,
 				},
 				versus = {
-					matchmaking = true,
+					matchmaking = false,
 					matchmaking_ready = true,
 					not_matchmaking = false,
 				},
@@ -777,6 +796,12 @@ local view_settings = {
 					not_matchmaking = false,
 				},
 			},
+			inject_transition_params_func = function (params)
+				if Managers.matchmaking:is_in_versus_custom_game_lobby() then
+					params.menu_sub_state_name = "versus_player_hosted_lobby"
+					params.hide_panel_title_buttons = true
+				end
+			end,
 		},
 		hotkey_inventory = {
 			error_message = "matchmaking_ready_interaction_message_inventory",
@@ -801,7 +826,7 @@ local view_settings = {
 			in_transition_menu = "hero_view",
 			transition_state = "achievements",
 			view = "hero_view",
-			disable_for_mechanism = disable_for_mechanism_versus_disabled,
+			disable_for_mechanism = default_disable_for_mechanism,
 		},
 		hotkey_weave_forge = {
 			can_interact_func = "weaves_requirements_fulfilled",

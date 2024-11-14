@@ -129,9 +129,9 @@ EnemyCharacterStateDead.update = function (self, unit, input, dt, context, t)
 		self.despawned = true
 
 		if player.local_player then
-			MOOD_BLACKBOARD.knocked_down = false
-			MOOD_BLACKBOARD.wounded = false
-			MOOD_BLACKBOARD.bleeding_out = false
+			Managers.state.camera:clear_mood("knocked_down")
+			Managers.state.camera:clear_mood("wounded")
+			Managers.state.camera:clear_mood("bleeding_out")
 		end
 	end
 end

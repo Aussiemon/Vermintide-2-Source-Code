@@ -14,6 +14,7 @@ BackendInterfaceItemPlayfab.init = function (self, backend_mirror)
 	self._default_loadout_overrides = {}
 	self._selected_career_custom_loadouts = {}
 	self._bot_loadouts = {}
+	self._dirty_weapon_pose_skins = {}
 	self._modified_templates = {}
 	self._last_id = 0
 	self._delete_deeds_request = {}
@@ -31,6 +32,7 @@ local loadout_slots = {
 	"slot_ring",
 	"slot_trinket_1",
 	"slot_frame",
+	"slot_pose",
 }
 
 BackendInterfaceItemPlayfab._refresh = function (self)
@@ -524,9 +526,79 @@ BackendInterfaceItemPlayfab.get_loadout_item_id = function (self, career_name, s
 		local cosmetics = self._backend_mirror:get_unlocked_cosmetics()
 
 		return cosmetics[item_id]
+	elseif slot_name == "slot_pose" and item_id then
+		local item = ItemMasterList[item_id]
+		local parent = item.parent
+		local unlocked_weapon_poses = self:get_unlocked_weapon_poses()
+
+		return unlocked_weapon_poses[parent] and unlocked_weapon_poses[parent][item_id]
 	end
 
 	return loadout and loadout[slot_name]
+end
+
+BackendInterfaceItemPlayfab.get_unlocked_weapon_poses = function (self)
+	local mirror = self._backend_mirror
+
+	return mirror:get_unlocked_weapon_poses()
+end
+
+BackendInterfaceItemPlayfab.get_dirty_weapon_pose_data = function (self)
+	return {
+		equipped_weapon_pose_skin = self._dirty_weapon_pose_skins,
+	}
+end
+
+BackendInterfaceItemPlayfab.clear_dirty_weapon_pose_data = function (self)
+	table.clear(self._dirty_weapon_pose_skins)
+end
+
+BackendInterfaceItemPlayfab.get_equipped_weapon_pose_skins = function (self)
+	local mirror = self._backend_mirror
+
+	return mirror:get_equipped_weapon_pose_skins()
+end
+
+BackendInterfaceItemPlayfab.get_equipped_weapon_pose_skin = function (self, parent_item_name)
+	local mirror = self._backend_mirror
+
+	return mirror:get_equipped_weapon_pose_skin(parent_item_name)
+end
+
+BackendInterfaceItemPlayfab.get_weapon_pose_from_pose_key = function (self, pose_key)
+	local items = self:get_all_fake_backend_items()
+
+	for id, item in pairs(items) do
+		if item.item_type == "weapon_pose" then
+			return id, item
+		end
+	end
+end
+
+BackendInterfaceItemPlayfab.get_backend_id_from_unlocked_weapon_poses = function (self, item_id)
+	local base_item = ItemMasterList[item_id]
+	local parent_name = base_item.parent
+	local unlocked_weapon_poses = self:get_unlocked_weapon_poses()
+	local parent_unlocked_poses = unlocked_weapon_poses[parent_name]
+
+	return parent_unlocked_poses and parent_unlocked_poses[item_id]
+end
+
+BackendInterfaceItemPlayfab.set_weapon_pose_skin = function (self, parent_item_name, weapon_skin_backend_id, result_callback)
+	if weapon_skin_backend_id then
+		local equipped_weapon_pose_skins = self._backend_mirror:get_equipped_weapon_pose_skins()
+		local current_weapon_pose_skin = equipped_weapon_pose_skins[parent_item_name]
+		local current_weapon_pose_skin_backend_id = self:get_weapon_skin_from_skin_key(current_weapon_pose_skin)
+
+		if current_weapon_pose_skin_backend_id ~= weapon_skin_backend_id then
+			local weapon_skin_item = self:get_item_from_id(weapon_skin_backend_id)
+			local skin_key = weapon_skin_item.skin
+
+			self._dirty_weapon_pose_skins[parent_item_name] = skin_key
+
+			self._backend_mirror:set_weapon_pose_skin(parent_item_name, skin_key)
+		end
+	end
 end
 
 BackendInterfaceItemPlayfab.get_cosmetic_loadout = function (self, career_name, is_bot)
@@ -580,6 +652,10 @@ BackendInterfaceItemPlayfab.set_loadout_item = function (self, item_id, career_n
 		item_id = item.override_id or item.ItemId
 	end
 
+	if slot_name == "slot_pose" then
+		item_id = item.override_id or item.ItemId
+	end
+
 	self._backend_mirror:set_character_data(career_name, slot_name, item_id, nil, optional_loadout_index)
 
 	self._dirty = true
@@ -607,7 +683,7 @@ BackendInterfaceItemPlayfab.get_unseen_item_rewards = function (self)
 		local reward = unseen_rewards[index]
 		local reward_type = reward.reward_type
 
-		if reward_type == "item" or reward_type == "keep_decoration_painting" or reward_type == "weapon_skin" or CosmeticUtils.is_cosmetic_item(reward_type) then
+		if reward_type == "item" or reward_type == "loot_chest" or reward_type == "keep_decoration_painting" or reward_type == "weapon_skin" or CosmeticUtils.is_cosmetic_item(reward_type) then
 			unseen_items = unseen_items or {}
 			unseen_items[#unseen_items + 1] = reward
 
@@ -755,7 +831,7 @@ end
 
 BackendInterfaceItemPlayfab.get_item_template = function (self, item_data, backend_id)
 	local template_name = item_data.temporary_template or item_data.template
-	local item_template = Weapons[template_name]
+	local item_template = WeaponUtils.get_weapon_template(template_name)
 	local modified_item_templates = self._modified_templates
 	local modified_item_template
 

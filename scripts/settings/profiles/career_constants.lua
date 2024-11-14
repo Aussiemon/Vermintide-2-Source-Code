@@ -17,6 +17,8 @@ CareerConstants = {
 		talent_4_2_crit = 0.08,
 		talent_4_2_damage_taken = 0.2,
 		talent_4_3_stack_duration = 1.5,
+		talent_6_2_starting_rps = 1,
+		talent_6_2_starting_rps_vs = 0.5,
 	},
 	wh_priest = {
 		ability_base_duration = 5,

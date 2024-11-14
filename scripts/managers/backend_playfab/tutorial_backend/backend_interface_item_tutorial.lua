@@ -413,7 +413,7 @@ end
 
 BackendInterfaceItemTutorial.get_item_template = function (self, item_data, backend_id)
 	local template_name = item_data.temporary_template or item_data.template
-	local item_template = Weapons[template_name]
+	local item_template = WeaponUtils.get_weapon_template(template_name)
 	local modified_item_templates = self._modified_templates
 	local modified_item_template
 
@@ -455,4 +455,28 @@ end
 
 BackendInterfaceItemTutorial.set_game_mode_specific_items = function (self, game_mode)
 	return
+end
+
+local WEAPON_POSE_DATA = {
+	equipped_weapon_pose_skin = {},
+}
+
+BackendInterfaceItemTutorial.get_dirty_weapon_pose_data = function (self)
+	return WEAPON_POSE_DATA
+end
+
+local UNLOCKED_WEAPON_POSES = {}
+
+BackendInterfaceItemTutorial.get_unlocked_weapon_poses = function (self)
+	return UNLOCKED_WEAPON_POSES
+end
+
+local EQUIPPED_WEAPON_POSES = {}
+
+BackendInterfaceItemTutorial.get_equipped_weapon_pose_skins = function (self)
+	return EQUIPPED_WEAPON_POSES
+end
+
+BackendInterfaceItemTutorial.get_equipped_weapon_pose_skin = function (self, parent_item_name)
+	return nil
 end

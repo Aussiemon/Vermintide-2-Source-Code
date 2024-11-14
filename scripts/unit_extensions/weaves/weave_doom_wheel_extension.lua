@@ -1,16 +1,11 @@
 ﻿-- chunkname: @scripts/unit_extensions/weaves/weave_doom_wheel_extension.lua
 
-WeaveDoomWheelExtension = class(WeaveDoomWheelExtension)
+WeaveDoomWheelExtension = class(WeaveDoomWheelExtension, BaseObjectiveExtension)
 WeaveDoomWheelExtension.NAME = "WeaveDoomWheelExtension"
 
 WeaveDoomWheelExtension.init = function (self, extension_init_context, unit, extension_init_data)
-	self._extension_init_context = extension_init_context
-	self._extension_init_data = extension_init_data
-	self._is_server = extension_init_context.is_server
-	self._objective_name = extension_init_data.objective_name
-	self._score = extension_init_data.score or 0
-	self._game_object_id = nil
-	self._unit = unit
+	WeaveDoomWheelExtension.super.init(self, extension_init_context, unit, extension_init_data)
+
 	self._is_done = false
 	self._num_sockets = 0
 	self._num_closed_sockets = 0
@@ -23,65 +18,46 @@ WeaveDoomWheelExtension.init = function (self, extension_init_context, unit, ext
 	self._max_timer = extension_init_data.timer or 10
 	self._timer = self._max_timer
 	self.keep_alive = true
-	self._weave_objective_system = Managers.state.entity:system("weave_objective_system")
 
 	local terror_event_spawner_id = extension_init_data.terror_event_spawner_id
 
 	Unit.set_data(unit, "terror_event_spawner_id", terror_event_spawner_id)
 end
 
-WeaveDoomWheelExtension.get_objective_settings = function (self)
-	return WeaveObjectiveSettings[WeaveDoomWheelExtension.NAME]
-end
+WeaveDoomWheelExtension.extensions_ready = function (self)
+	self._objective_socket_extension = ScriptUnit.has_extension(self._unit, "objective_socket_system")
 
-WeaveDoomWheelExtension.score = function (self)
-	return self._score
-end
-
-WeaveDoomWheelExtension.activate = function (self, game_object_id, objective_data)
-	self._objective_socket_extension = ScriptUnit.extension(self._unit, "objective_socket_system")
-	self._objective_socket_extension.distance = math.huge
-	self._num_sockets = self._objective_socket_extension.num_sockets
-
-	if self._is_server then
-		local game_object_data_table = {
-			go_type = NetworkLookup.go_types.weave_objective,
-			objective_name = NetworkLookup.weave_objective_names[self._objective_name],
-			value = self:get_percentage_done() * 100,
-		}
-		local callback = callback(self, "cb_game_session_disconnect")
-
-		self._game_object_id = Managers.state.network:create_game_object("weave_objective", game_object_data_table, callback)
-	else
-		self._game_object_id = game_object_id
+	if self._objective_socket_extension then
+		self._objective_socket_extension.distance = math.huge
+		self._num_sockets = self._objective_socket_extension.num_sockets
 	end
 end
 
-WeaveDoomWheelExtension.complete = function (self)
-	if not self._disabled and self._on_fuze_complete_func then
+WeaveDoomWheelExtension.display_name = function (self)
+	return "objective_destroy_doom_wheels_name_single"
+end
+
+WeaveDoomWheelExtension.initial_sync_data = function (self, game_object_data_table)
+	game_object_data_table.value = self:get_percentage_done()
+end
+
+WeaveDoomWheelExtension._set_objective_data = function (self, objective_data)
+	return
+end
+
+WeaveDoomWheelExtension._activate = function (self)
+	return
+end
+
+WeaveDoomWheelExtension.complete = function (self, last_leaf_objective)
+	if self._on_fuze_complete_func then
 		self._on_fuze_complete_func(self._unit)
 	end
 
-	self:deactivate()
+	WeaveDoomWheelExtension.super.complete(self, last_leaf_objective)
 end
 
-WeaveDoomWheelExtension.should_disable = function (self)
-	return not self._is_server or self._num_closed_sockets >= self._num_sockets
-end
-
-WeaveDoomWheelExtension.disable = function (self)
-	self._disabled = true
-end
-
-WeaveDoomWheelExtension.deactivate = function (self)
-	if self._is_server then
-		local game_session = Network.game_session()
-
-		if game_session then
-			GameSession.destroy_game_object(game_session, self._game_object_id)
-		end
-	end
-
+WeaveDoomWheelExtension._deactivate = function (self)
 	Unit.flow_event(self._unit, "force_destroy")
 
 	local position = Unit.local_position(self._unit, 0)
@@ -90,30 +66,10 @@ WeaveDoomWheelExtension.deactivate = function (self)
 		local x_offset = math.random(-10, 10) / 10
 		local y_offset = math.random(-10, 10) / 10
 		local z_offset = math.random(-10, 10) / 10
+		local objective_system = Managers.state.entity:system("objective_system")
+		local weave_essence_handler = objective_system:weave_essence_handler()
 
-		self._weave_objective_system:spawn_essence_unit(position + Vector3(0, 0, 0.5) + Vector3(x_offset, y_offset, z_offset))
-	end
-
-	self._game_object_id = nil
-end
-
-WeaveDoomWheelExtension.cb_game_session_disconnect = function (self)
-	return
-end
-
-WeaveDoomWheelExtension.objective_name = function (self)
-	return self._objective_name
-end
-
-WeaveDoomWheelExtension.update = function (self, dt, t)
-	if not self._game_object_id then
-		return
-	end
-
-	if self._is_server then
-		self:_server_update(dt, t)
-	else
-		self:_client_update(dt, t)
+		weave_essence_handler:spawn_essence_unit(position + Vector3(0, 0, 0.5) + Vector3(x_offset, y_offset, z_offset))
 	end
 end
 
@@ -133,11 +89,7 @@ WeaveDoomWheelExtension._server_update = function (self, dt, t)
 			self._on_socket_progress_func(self._unit, num_closed_sockets, self._num_sockets)
 		end
 
-		local game_session = Network.game_session()
-
-		if game_session and self._game_object_id then
-			GameSession.set_game_object_field(game_session, self._game_object_id, "value", self:get_percentage_done() * 100)
-		end
+		self:server_set_value(self:get_percentage_done())
 	end
 
 	if num_closed_sockets >= self._num_sockets then
@@ -158,15 +110,11 @@ WeaveDoomWheelExtension._server_update = function (self, dt, t)
 				self._on_fuze_start_func = nil
 			end
 
-			if self._on_fuze_progress_func and not self._disabled then
+			if self._on_fuze_progress_func then
 				self._on_fuze_progress_func(self._unit, self._timer, self._max_timer)
 			end
 
-			local game_session = Network.game_session()
-
-			if game_session and self._game_object_id then
-				GameSession.set_game_object_field(game_session, self._game_object_id, "value", self:get_percentage_done() * 100)
-			end
+			self:server_set_value(self:get_percentage_done())
 		end
 	end
 end
@@ -180,12 +128,12 @@ WeaveDoomWheelExtension.is_done = function (self)
 end
 
 WeaveDoomWheelExtension.get_percentage_done = function (self)
+	if self._num_sockets == 0 then
+		return 0
+	end
+
 	local socket_percentage = self._num_closed_sockets / self._num_sockets
 	local timer_percentage = 1 - self._timer / self._max_timer
 
 	return math.clamp((socket_percentage + timer_percentage) / 2, 0, 1)
-end
-
-WeaveDoomWheelExtension.get_score = function (self)
-	return self._score
 end

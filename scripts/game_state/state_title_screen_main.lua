@@ -293,10 +293,6 @@ StateTitleScreenMain._update_input = function (self, dt, t)
 
 			self._start_pressed = false
 		elseif IS_WINDOWS then
-			if not GameSettingsDevelopment.skip_start_screen and not Development.parameter("skip_start_screen") then
-				Managers.music:trigger_event("hud_menu_press_start")
-			end
-
 			self._state = StateTitleScreenInitNetwork
 
 			self._title_start_ui:set_start_pressed(true)
@@ -308,7 +304,7 @@ StateTitleScreenMain._update_input = function (self, dt, t)
 				return
 			end
 
-			if not Managers.account:all_lobbies_freed() then
+			if not Managers.account:all_sessions_cleaned_up() then
 				self._start_pressed = false
 
 				return

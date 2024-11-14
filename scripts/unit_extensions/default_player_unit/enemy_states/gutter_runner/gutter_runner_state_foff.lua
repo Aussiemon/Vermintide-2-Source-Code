@@ -6,7 +6,6 @@ GutterRunnerStateFoff.init = function (self, character_state_init_context, name)
 	GutterRunnerStateFoff.super.init(self, character_state_init_context, "gutter_runner_foff")
 
 	self._network_manager = Managers.state.network
-	self.explosion_template = self._breed.foff_explosion_template
 end
 
 GutterRunnerStateFoff.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
@@ -60,36 +59,16 @@ end
 
 GutterRunnerStateFoff.foff = function (self)
 	local unit = self._unit
-	local position = POSITION_LOOKUP[unit] + Vector3(0, 1.5, 0)
-	local rotation = Unit.local_rotation(unit, 0)
-	local explosion_template = self.explosion_template
-	local scale = 1
 	local csm = self._csm
 	local player = Managers.player:owner(unit)
 	local local_player = player.local_player
-	local network_manager = self._network_manager
-	local network_transmit = network_manager.network_transmit
-	local is_server = Managers.player.is_server
+	local go_id = Managers.state.network:unit_game_object_id(unit) or NetworkConstants.invalid_game_object_id
+	local effect_name = "fx/chr_gutter_foff"
 
-	if is_server then
-		Managers.state.entity:system("area_damage_system"):create_explosion(unit, position, rotation, explosion_template, scale, "overcharge", nil, false)
-	end
-
-	local buff_extension = self._buff_extension
-	local buff_to_add = "vs_gutter_runner_smoke_bomb_invisible"
-	local buff_template_name_id = NetworkLookup.buff_templates[buff_to_add]
-	local unit_object_id = network_manager:unit_game_object_id(unit)
-
-	if is_server then
-		buff_extension:add_buff(buff_to_add, {
-			attacker_unit = unit,
-		})
-		network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
-	else
-		network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
-	end
-
-	self._status_extension:set_invisible(true, nil, "gutter_runner_f")
+	Managers.state.network.network_transmit:send_rpc_server("rpc_play_particle_effect", NetworkLookup.effects[effect_name], go_id, 0, Vector3.zero(), Quaternion.identity(), false)
+	self._buff_extension:add_buff("vs_gutter_runner_smoke_bomb_invisible", {
+		attacker_unit = unit,
+	})
 
 	if local_player then
 		local first_person_extension = self._first_person_extension
@@ -97,8 +76,6 @@ GutterRunnerStateFoff.foff = function (self)
 
 		first_person_extension:play_unit_sound_event("Play_versus_gutterrunner_vanish_fps", unit, 0)
 		career_extension:set_state("vs_gutter_runner_smoke_bomb_invisible")
-
-		MOOD_BLACKBOARD.gutter_runner_f = true
 	end
 
 	csm:change_state("standing")

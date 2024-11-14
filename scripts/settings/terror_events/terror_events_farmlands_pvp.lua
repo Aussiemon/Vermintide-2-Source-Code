@@ -20,9 +20,6 @@ local terror_event_blueprints = {
 			max_active_enemies = 100,
 		},
 		{
-			"disable_kick",
-		},
-		{
 			"event_horde",
 			composition_type = "event_small",
 			spawner_id = "oak_hill_event_spawner",
@@ -53,12 +50,12 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 90,
 			condition = function (t)
-				return count_event_breed("skaven_slave") < 2 and count_event_breed("skaven_clan_rat") < 2 and count_event_breed("skaven_clan_rat_with_shield") < 2 and count_event_breed("skaven_storm_vermin_commander") < 1 and count_event_breed("skaven_plague_monk") < 1
+				return count_event_breed("skaven_slave") < 2 and count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_clan_rat_with_shield") < 3 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("skaven_plague_monk") < 1
 			end,
 		},
 		{
 			"delay",
-			duration = 10,
+			duration = 5,
 		},
 		{
 			"flow_event",

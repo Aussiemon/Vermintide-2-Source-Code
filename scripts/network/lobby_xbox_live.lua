@@ -121,7 +121,7 @@ LobbyInternal.get_lobby = function (lobby_browser, index)
 	lobby_data.template_name = xbox_lobby_data.template_name
 
 	for i = 1, #xbox_lobby_data.keywords do
-		local key_value = string.split(xbox_lobby_data.keywords[i], ":")
+		local key_value = string.split_deprecated(xbox_lobby_data.keywords[i], ":")
 		local key = key_value[1]
 		local value = tonumber(key_value[2]) or key_value[2]
 

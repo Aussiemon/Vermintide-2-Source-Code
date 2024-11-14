@@ -399,8 +399,8 @@ HeroDioramaUI._set_hero_profile = function (self, profile_index, career_index)
 
 	local profile = SPProfiles[profile_index]
 	local profile_name = profile.display_name
-	local experience = ExperienceSettings.get_versus_profile_experience()
-	local level_text = ExperienceSettings.get_versus_profile_level_from_experience(experience) or ""
+	local experience = ExperienceSettings.get_versus_experience()
+	local level_text = ExperienceSettings.get_versus_level_from_experience(experience) or ""
 	local player_portrait_frame = self:_get_portrait_frame(profile_index, career_index)
 	local portrait_texture = career_index and UIUtils.get_portrait_image_by_profile_index(profile_index, career_index) or "unit_frame_portrait_default"
 

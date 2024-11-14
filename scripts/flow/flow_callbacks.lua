@@ -321,6 +321,10 @@ function flow_callback_select_output_by_number(params)
 	return ret
 end
 
+function flow_callback_set_simple_animation_speed(params)
+	Unit.set_simple_animation_speed(params.unit, params.speed, params.group)
+end
+
 function flow_query_number_of_active_players(params)
 	local output_value = 0
 	local side_manager = Managers.state.side
@@ -383,10 +387,10 @@ function flow_callback_weave_item_gizmo_spawned(params)
 	local entity_manager = Managers.state.entity
 
 	if entity_manager then
-		local weave_item_spawner_system = entity_manager:system("weave_item_spawner_system")
+		local objective_item_spawner_system = entity_manager:system("objective_item_spawner_system")
 
-		if weave_item_spawner_system then
-			weave_item_spawner_system:item_gizmo_spawned(params.unit)
+		if objective_item_spawner_system then
+			objective_item_spawner_system:item_gizmo_spawned(params.unit)
 		end
 	end
 end
@@ -396,10 +400,10 @@ function flow_callback_versus_item_gizmo_spawned(params)
 		local entity_manager = Managers.state.entity
 
 		if entity_manager then
-			local versus_item_spawner_system = entity_manager:system("versus_item_spawner_system")
+			local objective_item_spawner_system = entity_manager:system("objective_item_spawner_system")
 
-			if versus_item_spawner_system then
-				versus_item_spawner_system:item_gizmo_spawned(params.unit)
+			if objective_item_spawner_system then
+				objective_item_spawner_system:item_gizmo_spawned(params.unit)
 			end
 		end
 	end
@@ -579,20 +583,21 @@ function flow_wield_slot(params)
 end
 
 function flow_query_wielded_weapon(params)
+	local null_reference = Unit.null_reference()
 	local player_unit = params.player_unit
 	local equipment
 
 	if not unit_alive(player_unit) then
-		flow_return_table.righthandweapon3p = nil
-		flow_return_table.righthandammo3p = nil
-		flow_return_table.righthandweapon = nil
-		flow_return_table.righthandammo1p = nil
-		flow_return_table.lefthandweapon3p = nil
-		flow_return_table.lefthandammo3p = nil
-		flow_return_table.lefthandweapon = nil
-		flow_return_table.lefthandammo1p = nil
-		flow_return_table.aliverighthandammo1p = nil
-		flow_return_table.alivelefthandammo1p = nil
+		flow_return_table.righthandweapon3p = null_reference
+		flow_return_table.righthandammo3p = null_reference
+		flow_return_table.righthandweapon = null_reference
+		flow_return_table.righthandammo1p = null_reference
+		flow_return_table.lefthandweapon3p = null_reference
+		flow_return_table.lefthandammo3p = null_reference
+		flow_return_table.lefthandweapon = null_reference
+		flow_return_table.lefthandammo1p = null_reference
+		flow_return_table.aliverighthandammo1p = null_reference
+		flow_return_table.alivelefthandammo1p = null_reference
 
 		return flow_return_table
 	end
@@ -614,14 +619,14 @@ function flow_query_wielded_weapon(params)
 	local left_hand_wielded_unit = equipment.left_hand_wielded_unit
 	local left_hand_ammo_unit_1p = equipment.left_hand_ammo_unit_1p
 
-	flow_return_table.righthandweapon3p = right_hand_wielded_unit_3p
-	flow_return_table.righthandammo3p = right_hand_ammo_unit_3p
-	flow_return_table.righthandweapon = right_hand_wielded_unit
-	flow_return_table.righthandammo1p = right_hand_ammo_unit_1p
-	flow_return_table.lefthandweapon3p = left_hand_wielded_unit_3p
-	flow_return_table.lefthandammo3p = left_hand_ammo_unit_3p
-	flow_return_table.lefthandweapon = left_hand_wielded_unit
-	flow_return_table.lefthandammo1p = left_hand_ammo_unit_1p
+	flow_return_table.righthandweapon3p = right_hand_wielded_unit_3p or null_reference
+	flow_return_table.righthandammo3p = right_hand_ammo_unit_3p or null_reference
+	flow_return_table.righthandweapon = right_hand_wielded_unit or null_reference
+	flow_return_table.righthandammo1p = right_hand_ammo_unit_1p or null_reference
+	flow_return_table.lefthandweapon3p = left_hand_wielded_unit_3p or null_reference
+	flow_return_table.lefthandammo3p = left_hand_ammo_unit_3p or null_reference
+	flow_return_table.lefthandweapon = left_hand_wielded_unit or null_reference
+	flow_return_table.lefthandammo1p = left_hand_ammo_unit_1p or null_reference
 
 	if right_hand_ammo_unit_1p and Unit.alive(right_hand_ammo_unit_1p) then
 		flow_return_table.aliverighthandammo1p = true
@@ -639,35 +644,29 @@ function flow_query_wielded_weapon(params)
 end
 
 function flow_query_wielded_weapon_rarity(params)
+	flow_return_table.rarity = ""
+
 	local player = Managers.player:local_player()
 
 	if not player then
-		flow_return_table.rarity = nil
-
 		return flow_return_table
 	end
 
 	local player_unit = player.player_unit
 
 	if not unit_alive(player_unit) then
-		flow_return_table.rarity = nil
-
 		return flow_return_table
 	end
 
 	local inventory_extension = ScriptUnit.has_extension(player_unit, "inventory_system")
 
 	if not inventory_extension then
-		flow_return_table.rarity = nil
-
 		return flow_return_table
 	end
 
 	local slot_data = inventory_extension:get_wielded_slot_data()
 
 	if not slot_data then
-		flow_return_table.rarity = nil
-
 		return flow_return_table
 	end
 
@@ -675,8 +674,6 @@ function flow_query_wielded_weapon_rarity(params)
 	local backend_id = item_data.backend_id
 
 	if not backend_id then
-		flow_return_table.rarity = nil
-
 		return flow_return_table
 	end
 
@@ -684,14 +681,12 @@ function flow_query_wielded_weapon_rarity(params)
 	local item = backend_items:get_item_from_id(backend_id)
 
 	if not item then
-		flow_return_table.rarity = nil
-
 		return flow_return_table
 	end
 
 	local rarity = item.rarity
 
-	flow_return_table.rarity = rarity
+	flow_return_table.rarity = rarity or ""
 
 	return flow_return_table
 end
@@ -1230,7 +1225,12 @@ end
 function flow_callback_set_flow_object_set_enabled(params)
 	fassert(params.set, "[Flow Callback : Set Flow Object Set Enabled] No set set.")
 	fassert(params.enabled ~= nil, "[Flow Callback : Set Flow Object Set Enabled] No enabled set.")
-	Managers.state.game_mode:flow_cb_set_flow_object_set_enabled(params.set, params.enabled)
+
+	if Managers.state.game_mode then
+		Managers.state.game_mode:flow_cb_set_flow_object_set_enabled(params.set, params.enabled)
+	else
+		Managers.state.event:trigger("set_flow_object_set_enabled", params.set, params.enabled)
+	end
 end
 
 function flow_callback_set_flow_object_set_particles_enabled(params)
@@ -1384,34 +1384,12 @@ function flow_callback_projectile_bounce(params)
 	locomotion_extension:bounce(touching_unit, position, normal, separation_distance, impulse_force)
 end
 
-local temp = {}
-
 function flow_callback_get_random_player(params)
-	local players = Managers.player:human_and_bot_players()
+	local unit = PlayerUtils.get_random_alive_hero() or Unit.null_reference()
 
-	table.clear(temp)
+	flow_return_table.playerunit = unit
 
-	local unit_list = temp
-	local unit_list_n = 0
-
-	for _, player in pairs(players) do
-		local unit = player.player_unit
-
-		if HEALTH_ALIVE[unit] then
-			unit_list_n = unit_list_n + 1
-			unit_list[unit_list_n] = unit
-		end
-	end
-
-	if unit_list_n > 0 then
-		local unit = unit_list[math.random(1, unit_list_n)]
-
-		flow_return_table.playerunit = unit
-
-		return flow_return_table
-	end
-
-	return nil
+	return flow_return_table
 end
 
 function flow_callback_get_local_player_unit(params)
@@ -1421,30 +1399,28 @@ function flow_callback_get_local_player_unit(params)
 	if player_unit and Unit.alive(player_unit) then
 		flow_return_table.localplayer = player_unit
 	else
-		flow_return_table.localplayer = nil
+		flow_return_table.localplayer = Unit.null_reference()
 	end
 
 	return flow_return_table
 end
 
-function flow_callback_get_random_player_or_global_observer(params)
-	local players = Managers.player:human_and_bot_players()
-	local surrounding_aware_system = Managers.state.entity:system("surrounding_aware_system")
-	local global_observers = surrounding_aware_system.global_observers
+local temp = {}
 
+function flow_callback_get_random_player_or_global_observer(params)
 	table.clear(temp)
 
 	local unit_list = temp
 	local unit_list_n = 0
+	local player_unit = PlayerUtils.get_random_alive_hero()
 
-	for _, player in pairs(players) do
-		local unit = player.player_unit
-
-		if HEALTH_ALIVE[unit] then
-			unit_list_n = unit_list_n + 1
-			unit_list[unit_list_n] = unit
-		end
+	if player_unit then
+		unit_list[1] = player_unit
+		unit_list_n = 1
 	end
+
+	local surrounding_aware_system = Managers.state.entity:system("surrounding_aware_system")
+	local global_observers = surrounding_aware_system.global_observers
 
 	for unit in pairs(global_observers) do
 		unit_list_n = unit_list_n + 1
@@ -1455,11 +1431,11 @@ function flow_callback_get_random_player_or_global_observer(params)
 		local unit = unit_list[math.random(1, unit_list_n)]
 
 		flow_return_table.unit = unit
-
-		return flow_return_table
+	else
+		flow_return_table.unit = Unit.null_reference()
 	end
 
-	return nil
+	return flow_return_table
 end
 
 function flow_callback_get_random_global_observer(params)
@@ -1541,53 +1517,7 @@ function flow_callback_trigger_networked_dialogue_event(params)
 	end
 end
 
-function flow_callback_trigger_ensured_dialogue_event(params)
-	local is_server = Managers.player.is_server
-
-	if not is_server then
-		return
-	end
-
-	local unit = params.source
-
-	fassert(unit, "Calling flow_callback_trigger_dialogue_event without passing unit")
-
-	if ScriptUnit.has_extension(unit, "dialogue_system") then
-		local event_table = {}
-
-		if params.argument1_name then
-			event_table[params.argument1_name] = tonumber(params.argument1) or params.argument1
-		end
-
-		if params.argument2_name then
-			event_table[params.argument2_name] = tonumber(params.argument2) or params.argument2
-		end
-
-		if params.argument3_name then
-			event_table[params.argument3_name] = tonumber(params.argument3) or params.argument3
-		end
-
-		local dialogue_system = Managers.state.entity:system("dialogue_system")
-
-		dialogue_system:queue_ensured_dialogue_event(unit, params.concept, event_table, params.identifier)
-	else
-		print(string.format("[flow_callback_trigger_networked_dialogue_event] No extension found belonging to system \"dialogue_system\" for unit %s", tostring(unit)))
-	end
-end
-
-function flow_callback_trigger_ensured_dialogue_event_on_players(params)
-	local players = Managers.player:players()
-
-	for _, player in pairs(players) do
-		local unit = player.player_unit
-
-		if ALIVE[unit] then
-			params.source = unit
-
-			flow_callback_trigger_ensured_dialogue_event(params)
-		end
-	end
-end
+flow_callback_trigger_ensured_dialogue_event = flow_callback_trigger_dialogue_event
 
 function flow_callback_trigger_dialogue_event_on_players(params)
 	local players = Managers.player:players()
@@ -1602,6 +1532,8 @@ function flow_callback_trigger_dialogue_event_on_players(params)
 		end
 	end
 end
+
+flow_callback_trigger_ensured_dialogue_event_on_players = flow_callback_trigger_dialogue_event_on_players
 
 function flow_callback_change_outline_params(params)
 	if DEDICATED_SERVER then
@@ -1926,10 +1858,10 @@ function flow_callback_wwise_trigger_event_with_environment(params)
 	local unit = params.unit
 	local node_name = params.unit_node
 	local event = params.name
-	local existing_source_id = params.existing_source_id
 	local use_occlusion = params.use_occlusion or false
 	local sound_environment_system = Managers.state.entity:system("sound_environment_system")
 	local wwise_world = sound_environment_system.wwise_world
+	local existing_source_id = params.existing_source_id and WwiseWorld.has_source(wwise_world, params.existing_source_id) and params.existing_source_id or nil
 	local source
 
 	if unit and node_name and node_name ~= "" then
@@ -2252,7 +2184,7 @@ function flow_is_carrying_explosive_barrel(params)
 	local player_unit = params.player_unit
 
 	if not unit_alive(player_unit) then
-		flow_return_table.has_barrel = nil
+		flow_return_table.has_barrel = false
 
 		return flow_return_table
 	end
@@ -2283,7 +2215,7 @@ function flow_is_carrying_torch(params)
 	local player_unit = params.player_unit
 
 	if not unit_alive(player_unit) then
-		flow_return_table.has_torch = nil
+		flow_return_table.has_torch = false
 
 		return flow_return_table
 	end
@@ -2343,9 +2275,9 @@ function flow_query_slots_status(params)
 	local player_unit = params.player_unit
 
 	if not unit_alive(player_unit) then
-		flow_return_table.healthkit = nil
-		flow_return_table.grenade = nil
-		flow_return_table.potion = nil
+		flow_return_table.healthkit = false
+		flow_return_table.grenade = false
+		flow_return_table.potion = false
 
 		return flow_return_table
 	end
@@ -2716,6 +2648,15 @@ function flow_callback_limited_item_spawner_group_deactivate(params)
 	Managers.state.entity:system("limited_item_track_system"):deactivate_group(group_name)
 end
 
+function flow_callback_decal_set_sort_order(params)
+	local unit = params.unit
+	local sort_order = params.sort_order
+
+	if sort_order then
+		Unit.set_sort_order(unit, sort_order)
+	end
+end
+
 function flow_callback_blood_collision(params)
 	if Managers.state.decal ~= nil then
 		local actor = params.actor
@@ -2790,11 +2731,7 @@ function flow_callback_objective_unit_set_active_generic(params)
 end
 
 local function get_objective_system()
-	if Managers.weave:get_active_weave() then
-		return Managers.state.entity:system("weave_objective_system")
-	elseif Managers.mechanism:current_mechanism_name() == "versus" then
-		return Managers.state.entity:system("versus_objective_system")
-	end
+	return Managers.state.entity:system("objective_system")
 end
 
 function flow_callback_objective_get_num_current_main_objectives(params)
@@ -2804,7 +2741,7 @@ function flow_callback_objective_get_num_current_main_objectives(params)
 		return
 	end
 
-	flow_return_table.out_value = #objective_system:current_main_objectives()
+	flow_return_table.out_value = #objective_system:active_objectives()
 
 	return flow_return_table
 end
@@ -2817,18 +2754,6 @@ function flow_callback_objective_get_total_main_objectives(params)
 	end
 
 	flow_return_table.out_value = objective_system:num_main_objectives()
-
-	return flow_return_table
-end
-
-function flow_callback_objective_get_total_num_completed_objectives(params)
-	local objective_system = get_objective_system()
-
-	if not objective_system then
-		return
-	end
-
-	flow_return_table.out_value = objective_system:num_total_completed_objectives()
 
 	return flow_return_table
 end
@@ -2857,63 +2782,6 @@ function flow_callback_objective_get_current_completed_sub_objectives(params)
 	return flow_return_table
 end
 
-function flow_callback_objective_get_num_current_sub_objectives()
-	local objective_system = get_objective_system()
-
-	if not objective_system then
-		return
-	end
-
-	flow_return_table.out_value = objective_system:num_current_sub_objectives()
-
-	return flow_return_table
-end
-
-function flow_callback_objective_complete_current_objectives(params)
-	if not Managers.player.is_server then
-		return
-	end
-
-	local objective_system = get_objective_system()
-
-	if not objective_system then
-		return
-	end
-
-	local current_main_objectives = objective_system:current_main_objectives()
-	local current_sub_objectives = objective_system:current_sub_objectives()
-
-	for _, data in pairs(current_sub_objectives) do
-		for _, extension in ipairs(data.extensions) do
-			extension._is_done = true
-		end
-	end
-
-	for _, extension in pairs(current_main_objectives) do
-		extension._completed = true
-	end
-end
-
-function flow_callback_objective_complete_sub_objective(params)
-	if not Managers.player.is_server then
-		return
-	end
-
-	local objective_system = get_objective_system()
-
-	if not objective_system then
-		return
-	end
-
-	local current_sub_objectives = objective_system:current_sub_objectives()
-
-	for _, data in pairs(current_sub_objectives) do
-		for _, extension in ipairs(data.extensions) do
-			extension._completed = true
-		end
-	end
-end
-
 function flow_callback_objective_complete_current_objective_by_name(params)
 	if not Managers.player.is_server then
 		return
@@ -2926,72 +2794,6 @@ function flow_callback_objective_complete_current_objective_by_name(params)
 	end
 
 	objective_system:complete_objective(params.name)
-end
-
-function flow_callback_objective_is_objective_completed(params)
-	local objective_system = get_objective_system()
-
-	if not objective_system then
-		return false
-	end
-
-	local objective = objective_system._objectives_by_name[params.name]
-
-	if not objective then
-		return false
-	end
-
-	if not objective:is_active() then
-		return false
-	end
-
-	return {
-		out_value = objective:is_done(),
-	}
-end
-
-function flow_callback_objective_last_objective_by_name_completed(params)
-	if not Managers.player.is_server then
-		return false
-	end
-
-	local objective_system = get_objective_system()
-
-	if not objective_system then
-		return false
-	end
-
-	local objective = objective_system._last_main_objective_completed
-
-	if not objective then
-		return false
-	end
-
-	return {
-		out_value = objective:objective_name() == params.name,
-	}
-end
-
-function flow_callback_objective_last_completed_objective_name(params)
-	if not Managers.player.is_server then
-		return
-	end
-
-	local objective_system = get_objective_system()
-
-	if not objective_system then
-		return
-	end
-
-	local objective = objective_system._last_main_objective_completed
-
-	if not objective then
-		return
-	end
-
-	return {
-		out_value = objective:objective_name(),
-	}
 end
 
 function flow_callback_umbra_set_gate_closed(params)
@@ -4152,6 +3954,14 @@ function flow_callback_barrel_explode(params)
 	health_extension:add_damage(unit, 1, "full", "grenade", Unit.world_position(unit, 0), Vector3(1, 0, 0))
 end
 
+function flow_callback_kill_unit(params)
+	local unit = params.unit
+	local health_extension = ScriptUnit.extension(unit, "health_system")
+
+	health_extension:set_max_health(1)
+	health_extension:add_damage(unit, 1, "full", "forced", Unit.local_position(unit, 0), Vector3(0, 0, 1))
+end
+
 function flow_callback_set_mutator_active(params)
 	local mutator_name = params.mutator
 	local active = params.active
@@ -5301,6 +5111,39 @@ function flow_callback_hazard_push_damage_player_and_husks(params)
 	end
 end
 
+function flow_callback_push_nearby_players(params)
+	local source_unit = params.source_unit
+	local source_pos = Unit.local_position(source_unit, 0)
+	local radius_sq = (params.range or 5)^2
+	local magnitude = params.force or 5
+	local local_player_only = params.local_player_only
+	local direction = Quaternion.forward(Unit.local_rotation(source_unit, 0))
+	local velocity = direction * magnitude
+
+	if local_player_only then
+		local player = Managers.player:local_player()
+		local player_unit = player and player.player_unit
+
+		if player_unit and radius_sq > Vector3.distance_squared(POSITION_LOOKUP[player_unit], source_pos) then
+			local locomotion_extension = ScriptUnit.extension(player_unit, "locomotion_system")
+
+			locomotion_extension:add_external_velocity(velocity, magnitude)
+		end
+	else
+		local players = Managers.player:players()
+
+		for _, player in pairs(players) do
+			local player_unit = player.player_unit
+
+			if player_unit and radius_sq > Vector3.distance_squared(POSITION_LOOKUP[player_unit], source_pos) then
+				local locomotion_extension = ScriptUnit.extension(player_unit, "locomotion_system")
+
+				locomotion_extension:add_external_velocity(velocity, magnitude)
+			end
+		end
+	end
+end
+
 function flow_callback_start_disrupt_ritual(params)
 	fassert(params.unit, "[flow_callbacks] DISRUPT RITUAL: No level unit name provided [required]")
 	fassert(params.volume_name, "[flow_callbacks] DISRUPT RITUAL: No volume name provided [required]")
@@ -5801,4 +5644,168 @@ function flow_callback_whaling_village_elevator_speedrun(params)
 	local achievement_manager = Managers.state.achievement
 
 	achievement_manager:trigger_event("dwarf_elevator_speedrun")
+end
+
+function flow_callback_register_combination_puzzle(params)
+	local group_name_id = params.puzzle_group
+	local puzzle_id = params.puzzle_name or ""
+	local puzzle_combination = params.puzzle_combination
+	local ordered = params.ordered
+	local completed_level_event = params.completed_level_event
+	local hot_join_sync_completion = params.hot_join_sync_completion
+
+	if not group_name_id or not puzzle_combination then
+		return
+	end
+
+	local entity_manager = Managers.state.entity
+	local puzzle_system = entity_manager and entity_manager:system("puzzle_system")
+
+	if puzzle_system then
+		puzzle_system:register_puzzle(group_name_id, puzzle_id, puzzle_combination, ordered, completed_level_event, hot_join_sync_completion)
+	else
+		ferror("Puzzle '%s' was registered before systems were created", group_name_id)
+	end
+end
+
+function flow_callback_register_random_match_puzzle(params)
+	local group_name_id = params.puzzle_group
+	local puzzle_id = params.puzzle_name or ""
+	local possible_values = params.possible_values
+	local num_needed_matches = params.num_needed_matches
+	local completed_level_event = params.completed_level_event
+	local hot_join_sync_completion = params.hot_join_sync_completion
+
+	if not group_name_id or not possible_values or not num_needed_matches then
+		return
+	end
+
+	local max_needed = 6
+
+	possible_values = string.split_deprecated(possible_values, ",")
+
+	local seed = Managers.mechanism:get_level_seed() + HashUtils.fnv32_hash(group_name_id) + HashUtils.fnv32_hash(puzzle_id)
+	local combination = FrameTable.alloc_table()
+
+	for i = 1, math.min(num_needed_matches, max_needed) do
+		local index
+
+		seed, index = Math.next_random(seed, 1, #possible_values)
+
+		local start_index
+
+		if table.contains(combination, possible_values[index]) then
+			start_index = index
+
+			repeat
+				index = math.index_wrapper(index + 1, #possible_values)
+			until not table.contains(combination, possible_values[index]) or index == start_index
+		end
+
+		combination[i] = possible_values[index]
+		flow_return_table["chosen_value" .. i] = possible_values[index]
+	end
+
+	for i = num_needed_matches + 1, max_needed do
+		flow_return_table["chosen_value" .. i] = ""
+	end
+
+	combination = table.concat(combination, ",")
+
+	local ordered = false
+	local entity_manager = Managers.state.entity
+	local puzzle_system = entity_manager and entity_manager:system("puzzle_system")
+
+	if puzzle_system then
+		puzzle_system:register_puzzle(group_name_id, puzzle_id, combination, ordered, completed_level_event, hot_join_sync_completion)
+	end
+
+	return flow_return_table
+end
+
+function flow_callback_string_to_numeric(params)
+	local value = tonumber(params.string)
+
+	flow_return_table.value = value or 0
+	flow_return_table.success = not not value
+
+	return flow_return_table
+end
+
+local bool_lut = {
+	FALSE = false,
+	False = false,
+	TRUE = true,
+	True = true,
+	["false"] = false,
+	["true"] = true,
+}
+
+function flow_callback_string_to_bool(params)
+	local value = bool_lut[params.string]
+
+	flow_return_table.value = value or false
+	flow_return_table.success = value ~= nil
+
+	return flow_return_table
+end
+
+function flow_callback_string_to_bool(params)
+	local value = bool_lut[params.string]
+
+	flow_return_table.value = value or false
+	flow_return_table.success = value ~= nil
+
+	return flow_return_table
+end
+
+function flow_callback_get_mechanism_name(params)
+	local name = Managers.mechanism:current_mechanism_name()
+
+	flow_return_table.name = name
+
+	return flow_return_table
+end
+
+function flow_callbacks_flow_helper_register_check_unit_line_of_sight(params)
+	if not Managers.state.network then
+		return
+	end
+
+	local owner_unit = params.owner_unit
+	local source_unit = params.raycast_from_unit
+	local unit_to_check = params.unit_to_check
+	local flow_event_enter = params.flow_event_enter
+	local flow_event_leave = params.flow_event_leave
+	local collision_filter = params.collision_filter
+	local debug_draw = params.debug_draw
+
+	Managers.state.flow_helper:register_line_of_sight_check(owner_unit, source_unit, unit_to_check, flow_event_enter, flow_event_leave, collision_filter, debug_draw)
+end
+
+function flow_callbacks_flow_helper_unregister_check_unit_line_of_sight(params)
+	if not Managers.state.network then
+		return
+	end
+
+	local owner_unit = params.owner_unit
+	local unit_to_check = params.unit_to_check
+
+	Managers.state.flow_helper:unregister_line_of_sight_check(owner_unit, unit_to_check)
+end
+
+function flow_force_abort_interactable(params)
+	if not Managers.state.network or not Managers.state.network.is_server then
+		return
+	end
+
+	local interactable_unit = params.interactable_unit
+	local interactable_extension = ScriptUnit.extension(interactable_unit, "interactable_system")
+	local interactor_unit = interactable_extension:is_being_interacted_with()
+
+	if not interactor_unit then
+		return
+	end
+
+	InteractionHelper:complete_interaction(interactor_unit, interactable_unit, InteractionResult.FAILURE)
 end

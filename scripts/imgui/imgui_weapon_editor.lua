@@ -280,7 +280,7 @@ end
 ImguiWeaponEditor._apply_to_existing_items = function (self)
 	for backend_id, modified_item_template in pairs(Managers.backend:get_interface("items")._modified_templates) do
 		printf("[ImguiWeaponEditor] Updating %s (%s)", backend_id, modified_item_template.name)
-		table.merge(modified_item_template, Weapons[modified_item_template.name])
+		table.merge(modified_item_template, WeaponUtils.get_weapon_template(modified_item_template.name))
 	end
 end
 

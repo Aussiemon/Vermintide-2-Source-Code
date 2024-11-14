@@ -471,7 +471,15 @@ AIInventoryExtension.wield_item_set = function (self, item_set_index, ignore_ani
 	local anim_state_event = item_set.inventory_configuration.anim_state_event
 
 	if not ignore_animation_event and anim_state_event then
-		Managers.state.network:anim_event(unit, anim_state_event)
+		local blackboard = BLACKBOARDS[unit]
+
+		if anim_state_event == "to_combat" then
+			AiUtils.enter_combat(unit, blackboard)
+		elseif anim_state_event == "to_passive" then
+			AiUtils.enter_passive(unit, blackboard)
+		elseif anim_state_event then
+			Managers.state.network:anim_event(unit, anim_state_event)
+		end
 	end
 
 	local equip_anim = item_set.equip_anim

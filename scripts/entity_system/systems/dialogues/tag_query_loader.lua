@@ -61,8 +61,6 @@ function tag_query_errorfunc(arg)
 	return arg .. "\n" .. debug.traceback()
 end
 
-local DEBUG_VO_FILE
-
 TagQueryLoader.load_file = function (self, filename)
 	local file_function = require(filename)
 

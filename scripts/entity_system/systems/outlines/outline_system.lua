@@ -34,6 +34,7 @@ OutlineSystem.init = function (self, context, system_name)
 	self.unit_extension_data = {}
 	self.frozen_unit_extension_data = {}
 	self.units = {}
+	self._initial_outline_data = {}
 	self.current_index = 0
 	self.darkness_system = Managers.state.entity:system("darkness_system")
 	self.cutscene_system = Managers.state.entity:system("cutscene_system")
@@ -42,11 +43,14 @@ OutlineSystem.init = function (self, context, system_name)
 
 	self._game_mode = game_mode_manager and game_mode_manager:game_mode()
 	self._pulsing_units = {}
+	self._event_manager = Managers.state.event
+
+	self._event_manager:register(self, "on_player_joined_party", "on_player_joined_party")
 end
 
 OutlineSystem.add_ext_functions = {
 	PlayerOutlineExtension = function (extension)
-		extension:add_outline({
+		local id = extension:add_outline({
 			method = "never",
 			outline_color = OutlineSettings.colors.ally,
 			flag = OutlineSettings.flags.non_wall_occluded,
@@ -54,9 +58,11 @@ OutlineSystem.add_ext_functions = {
 
 		extension.apply_method = "unit_and_childs"
 		extension.pinged_method = "never"
+
+		return id
 	end,
 	PlayerHuskOutlineExtension = function (extension)
-		extension:add_outline({
+		local id = extension:add_outline({
 			method = "outside_distance_or_not_visible",
 			outline_color = OutlineSettings.colors.ally,
 			distance = OutlineSettings.ranges.player_husk,
@@ -78,9 +84,11 @@ OutlineSystem.add_ext_functions = {
 		end
 
 		extension:update_override_method_player_setting()
+
+		return id
 	end,
 	MinionOutlineExtension = function (extension)
-		extension:add_outline({
+		local id = extension:add_outline({
 			method = "outside_distance_or_not_visible",
 			outline_color = OutlineSettings.colors.necromancer_command,
 			distance = OutlineSettings.ranges.player_husk,
@@ -102,9 +110,11 @@ OutlineSystem.add_ext_functions = {
 		end
 
 		extension:update_override_method_minion_setting()
+
+		return id
 	end,
 	PickupOutlineExtension = function (extension)
-		extension:add_outline({
+		local id = extension:add_outline({
 			method = "within_distance_and_not_in_dark",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.pickup,
@@ -113,9 +123,11 @@ OutlineSystem.add_ext_functions = {
 
 		extension.apply_method = "unit"
 		extension.pinged_method = "not_in_dark"
+
+		return id
 	end,
 	AIOutlineExtension = function (extension)
-		extension:add_outline({
+		local id = extension:add_outline({
 			method = "never",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.player_husk,
@@ -124,9 +136,11 @@ OutlineSystem.add_ext_functions = {
 
 		extension.apply_method = "unit"
 		extension.pinged_method = "not_in_dark"
+
+		return id
 	end,
 	DoorOutlineExtension = function (extension)
-		extension:add_outline({
+		local id = extension:add_outline({
 			method = "within_distance_and_not_in_dark",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.doors,
@@ -135,9 +149,11 @@ OutlineSystem.add_ext_functions = {
 
 		extension.apply_method = "unit"
 		extension.pinged_method = "not_in_dark"
+
+		return id
 	end,
 	SmallDoorOutlineExtension = function (extension)
-		extension:add_outline({
+		local id = extension:add_outline({
 			method = "within_distance_and_not_in_dark",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.small_doors,
@@ -146,9 +162,11 @@ OutlineSystem.add_ext_functions = {
 
 		extension.apply_method = "unit"
 		extension.pinged_method = "not_in_dark"
+
+		return id
 	end,
 	ObjectiveOutlineExtension = function (extension)
-		extension:add_outline({
+		local id = extension:add_outline({
 			method = "within_distance",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.objective,
@@ -157,9 +175,11 @@ OutlineSystem.add_ext_functions = {
 
 		extension.apply_method = "unit"
 		extension.pinged_method = "always"
+
+		return id
 	end,
 	ObjectiveLightOutlineExtension = function (extension)
-		extension:add_outline({
+		local id = extension:add_outline({
 			method = "within_distance",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.objective_light,
@@ -168,9 +188,11 @@ OutlineSystem.add_ext_functions = {
 
 		extension.apply_method = "unit"
 		extension.pinged_method = "always"
+
+		return id
 	end,
 	ElevatorOutlineExtension = function (extension)
-		extension:add_outline({
+		local id = extension:add_outline({
 			method = "within_distance",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.elevators,
@@ -179,9 +201,11 @@ OutlineSystem.add_ext_functions = {
 
 		extension.apply_method = "unit"
 		extension.pinged_method = "not_in_dark"
+
+		return id
 	end,
 	ConditionalInteractOutlineExtension = function (extension)
-		extension:add_outline({
+		local id = extension:add_outline({
 			method = "conditional_within_distance",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.doors,
@@ -190,9 +214,11 @@ OutlineSystem.add_ext_functions = {
 
 		extension.apply_method = "unit"
 		extension.pinged_method = "always"
+
+		return id
 	end,
 	ConditionalPickupOutlineExtension = function (extension)
-		extension:add_outline({
+		local id = extension:add_outline({
 			method = "conditional_within_distance",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.pickup,
@@ -201,9 +227,11 @@ OutlineSystem.add_ext_functions = {
 
 		extension.apply_method = "unit"
 		extension.pinged_method = "always"
+
+		return id
 	end,
 	EnemyOutlineExtension = function (extension)
-		extension:add_outline({
+		local id = extension:add_outline({
 			method = "never",
 			outline_color = OutlineSettings.colors.knocked_down,
 			flag = OutlineSettings.flags.non_wall_occluded,
@@ -211,9 +239,11 @@ OutlineSystem.add_ext_functions = {
 
 		extension.apply_method = "unit_and_childs"
 		extension.pinged_method = "not_in_dark"
+
+		return id
 	end,
 	SmallPickupOutlineExtension = function (extension)
-		extension:add_outline({
+		local id = extension:add_outline({
 			method = "within_distance_and_not_in_dark",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.small_pickup,
@@ -222,9 +252,11 @@ OutlineSystem.add_ext_functions = {
 
 		extension.apply_method = "unit"
 		extension.pinged_method = "not_in_dark"
+
+		return id
 	end,
 	GenericOutlineExtension = function (extension)
-		extension:add_outline({
+		local id = extension:add_outline({
 			method = "within_distance",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.interactable,
@@ -233,9 +265,11 @@ OutlineSystem.add_ext_functions = {
 
 		extension.apply_method = "unit"
 		extension.pinged_method = "not_in_dark"
+
+		return id
 	end,
 	DarkPactPlayerOutlineExtension = function (extension)
-		extension:add_outline({
+		local id = extension:add_outline({
 			method = "never",
 			outline_color = OutlineSettingsVS.colors.ally,
 			flag = OutlineSettings.flags.non_wall_occluded,
@@ -243,6 +277,8 @@ OutlineSystem.add_ext_functions = {
 
 		extension.apply_method = "unit_and_childs"
 		extension.pinged_method = "show_versus_dark_pact_outline"
+
+		return id
 	end,
 	DarkPactPlayerHuskOutlineExtension = function (extension)
 		local is_ally
@@ -263,7 +299,7 @@ OutlineSystem.add_ext_functions = {
 			end
 		end
 
-		extension:add_outline({
+		local id = extension:add_outline({
 			method = "always_same_side",
 			outline_color = is_ally and OutlineSettingsVS.colors.ally or OutlineSettings.colors.knocked_down,
 			distance = OutlineSettings.ranges.player_husk,
@@ -272,14 +308,21 @@ OutlineSystem.add_ext_functions = {
 
 		extension.apply_method = "unit_and_childs"
 		extension.pinged_method = "show_versus_dark_pact_outline"
+
+		return id
 	end,
 }
 
 OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 	local extension = OutlineExtension:new()
 	local setup_func = OutlineSystem.add_ext_functions[extension_name]
+	local id = setup_func(extension)
 
-	setup_func(extension)
+	self._initial_outline_data[extension] = {
+		setup_func = setup_func,
+		id = id,
+	}
+
 	ScriptUnit.set_extension(unit, "outline_system", extension, {})
 
 	self.unit_extension_data[unit] = extension
@@ -293,6 +336,35 @@ OutlineSystem.on_remove_extension = function (self, unit, extension_name)
 
 	self:_cleanup_extension(unit, extension_name)
 	ScriptUnit.remove_extension(unit, self.NAME)
+end
+
+OutlineSystem.on_player_joined_party = function (self, peer_id, local_player_id, party_id)
+	if Managers.mechanism:current_mechanism_name() == "versus" then
+		self:_reinitialize_outlines(peer_id, party_id)
+	end
+end
+
+OutlineSystem._reinitialize_outlines = function (self, peer_id, party_id)
+	local is_participating_party = Managers.party:is_game_participating_party(party_id)
+
+	if peer_id ~= Network.peer_id() or not is_participating_party then
+		return
+	end
+
+	for extension, data in pairs(self._initial_outline_data) do
+		local setup_func = data.setup_func
+		local temp_id = setup_func(extension)
+
+		extension:swap_delete_outline(temp_id, data.id)
+
+		if extension.update_override_method_player_setting then
+			extension.update_override_method_player_setting()
+		end
+
+		if extension.update_override_method_minion_setting then
+			extension.update_override_method_minion_setting()
+		end
+	end
 end
 
 OutlineSystem.on_freeze_extension = function (self, unit, extension_name)
@@ -312,6 +384,7 @@ OutlineSystem._cleanup_extension = function (self, unit, extension_name)
 		return
 	end
 
+	self._initial_outline_data[extension] = nil
 	self.unit_extension_data[unit] = nil
 
 	table.swap_delete(self.units, table.index_of(self.units, unit))
@@ -335,10 +408,11 @@ OutlineSystem.freeze = function (self, unit, extension_name, reason)
 	fassert(extension_name == "EnemyOutlineExtension", "Only support for freezing enemy outline extensions")
 
 	if extension.outlined then
-		local c = extension.outline_color.channel
-		local channel = Color(c[1], c[2], c[3], c[4])
+		local outline_settings = extension.outline_color
+		local c = outline_settings.color
+		local color = Color(c[1], c[2], c[3], c[4])
 
-		self:outline_unit(unit, extension.flag, channel, false, extension.apply_method, extension.reapply)
+		self:outline_unit(unit, extension.flag, color, false, extension.apply_method, outline_settings)
 
 		extension.outlined = false
 	end
@@ -391,10 +465,11 @@ OutlineSystem.set_disabled = function (self, disabled)
 			local extension = unit_extension_data[unit]
 
 			if extension and extension.outlined then
-				local c = extension.outline_color.channel
-				local channel = Color(c[1], c[2], c[3], c[4])
+				local outline_settings = extension.outline_color
+				local c = outline_settings.color
+				local color = Color(c[1], c[2], c[3], c[4])
 
-				self:outline_unit(unit, extension.flag, channel, false, extension.apply_method, extension.reapply)
+				self:outline_unit(unit, extension.flag, color, false, extension.apply_method, outline_settings)
 
 				extension.outlined = false
 			end
@@ -435,11 +510,12 @@ OutlineSystem.update = function (self, context, t)
 		local extension = extensions[unit]
 
 		if extension then
+			local outline_settings = extension.outline_color
 			local method = extension.method
 			local flag_swiched = extension.prev_flag and extension.prev_flag ~= extension.flag
 
 			if flag_swiched then
-				self:outline_unit(unit, extension.prev_flag, Color(0, 0, 0, 0), false, extension.apply_method)
+				self:outline_unit(unit, extension.prev_flag, Color(0, 0, 0, 0), false, extension.apply_method, outline_settings)
 
 				extension.prev_flag = nil
 			end
@@ -451,10 +527,10 @@ OutlineSystem.update = function (self, context, t)
 			end
 
 			if extension.outlined ~= do_outline or extension.reapply then
-				local c = extension.outline_color.channel
-				local channel = Color(c[1], c[2], c[3], c[4])
+				local c = outline_settings.color
+				local color = Color(255, c[2], c[3], c[4])
 
-				self:outline_unit(unit, extension.flag, channel, do_outline, extension.apply_method)
+				self:outline_unit(unit, extension.flag, color, do_outline, extension.apply_method, outline_settings)
 
 				extension.outlined = do_outline
 			end
@@ -508,11 +584,12 @@ OutlineSystem._update_pulsing = function (self, dt, t)
 		local extension = self.unit_extension_data[unit]
 
 		if extension then
-			local c = extension.outline_color.channel
+			local outline_settings = extension.outline_color
+			local c = outline_settings.color
 			local t_val = pulse_function(t)
-			local channel = Color(c[1] * t_val, c[2] * t_val, c[3] * t_val, c[4] * t_val)
+			local color = Color(c[1] * t_val, c[2] * t_val, c[3] * t_val, c[4] * t_val)
 
-			self:outline_unit(unit, extension.flag, channel, true, extension.apply_method)
+			self:outline_unit(unit, extension.flag, color, true, extension.apply_method, outline_settings)
 
 			extension.outlined = true
 		else
@@ -521,7 +598,7 @@ OutlineSystem._update_pulsing = function (self, dt, t)
 	end
 end
 
-OutlineSystem.outline_unit = function (self, unit, flag, channel, do_outline, apply_method)
+OutlineSystem.outline_unit = function (self, unit, flag, color, do_outline, apply_method, outline_settings)
 	if Unit.has_data(unit, "outlined_meshes") then
 		local i = 0
 
@@ -537,7 +614,8 @@ OutlineSystem.outline_unit = function (self, unit, flag, channel, do_outline, ap
 				for j = 0, num_materials - 1 do
 					local material = Mesh.material(mesh, j)
 
-					Material.set_color(material, "outline_color", channel)
+					Material.set_color(material, "outline_color", color)
+					Material.set_scalar(material, "outline_pulse_multiplier", outline_settings.pulsate and outline_settings.pulse_multiplier or 0)
 				end
 			end
 
@@ -545,10 +623,12 @@ OutlineSystem.outline_unit = function (self, unit, flag, channel, do_outline, ap
 		end
 	elseif apply_method == "unit_and_childs" then
 		Unit.set_shader_pass_flag_for_meshes_in_unit_and_childs(unit, flag, do_outline)
-		Unit.set_color_for_materials_in_unit_and_childs(unit, "outline_color", channel)
+		Unit.set_color_for_materials_in_unit_and_childs(unit, "outline_color", color)
+		Unit.set_scalar_for_materials_in_unit_and_childs(unit, "outline_pulse_multiplier", outline_settings.pulsate and outline_settings.pulse_multiplier or 0)
 	elseif apply_method == "unit" then
 		Unit.set_shader_pass_flag_for_meshes(unit, flag, do_outline)
-		Unit.set_color_for_materials(unit, "outline_color", channel)
+		Unit.set_color_for_materials(unit, "outline_color", color)
+		Unit.set_scalar_for_materials(unit, "outline_pulse_multiplier", outline_settings.pulsate and outline_settings.pulse_multiplier or 0)
 	else
 		error(sprintf("Non-existant apply method %s", apply_method))
 	end
@@ -719,4 +799,8 @@ OutlineSystem.show_versus_dark_pact_outline = function (self, unit, extension)
 	end
 
 	return not self:has_gutter_runner_invisible_buff(unit, extension)
+end
+
+OutlineSystem.destroy = function (self)
+	self._event_manager:unregister("on_player_joined_party", self)
 end

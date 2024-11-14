@@ -23,6 +23,8 @@ require("scripts/ui/views/hero_view/windows/hero_window_hero_power_console")
 require("scripts/ui/views/hero_view/windows/hero_window_cosmetics_loadout_console")
 require("scripts/ui/views/hero_view/windows/hero_window_cosmetics_loadout_inventory_console")
 require("scripts/ui/views/hero_view/windows/hero_window_loadout_selection_console")
+require("scripts/ui/views/hero_view/windows/hero_window_cosmetics_loadout_pose_inventory_console")
+require("scripts/ui/views/hero_view/windows/hero_window_dark_pact_character_selection_console")
 require("scripts/ui/views/hero_view/windows/hero_window_ingame_view")
 require("scripts/ui/views/hero_view/windows/hero_window_character_preview")
 require("scripts/ui/views/hero_view/windows/hero_window_item_customization")
@@ -94,6 +96,10 @@ HeroViewStateOverview.on_enter = function (self, params)
 	self.skin_sync_id = 0
 	self.disabled_backend_ids_sync_id = 0
 	self._disabled_backend_ids = {}
+	self.character_pose_animation_sync_id = 0
+	self._current_pose_animation_event = nil
+	self.temporary_loadout_sync_id = 0
+	self._temporary_loadout = {}
 
 	if IS_WINDOWS then
 		self._friends_component_ui = FriendsUIComponent:new(ingame_ui_context)
@@ -329,10 +335,6 @@ HeroViewStateOverview._change_window = function (self, window_index, window_name
 	end
 
 	active_windows[window_index] = window
-end
-
-HeroViewStateOverview.get_selected_layout_name = function (self)
-	return self:get_layout_name()
 end
 
 HeroViewStateOverview.get_selected_layout_name = function (self)
@@ -666,7 +668,9 @@ HeroViewStateOverview._handle_friend_joining = function (self)
 		local join_lobby_data = friends_component_ui:join_lobby_data()
 
 		if join_lobby_data and Managers.matchmaking:allowed_to_initiate_join_lobby() then
-			Managers.matchmaking:request_join_lobby(join_lobby_data)
+			Managers.matchmaking:request_join_lobby(join_lobby_data, {
+				friend_join = true,
+			})
 			self:close_menu(true)
 
 			return true
@@ -742,9 +746,11 @@ end
 
 HeroViewStateOverview._handle_input = function (self, dt, t)
 	local input_blocked = self._input_blocked
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local input_paused = self._input_paused and gamepad_active
 	local window_focused = self._window_focused
 
-	if input_blocked then
+	if input_blocked or input_paused then
 		return
 	end
 
@@ -755,7 +761,6 @@ HeroViewStateOverview._handle_input = function (self, dt, t)
 	local widgets_by_name = self._widgets_by_name
 	local input_service = self.parent:input_service()
 	local input_pressed = input_service:get("toggle_menu", true)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local back_pressed = gamepad_active and input_service:get("back_menu", true)
 	local close_on_exit = self._close_on_exit
 	local exit_button = widgets_by_name.exit_button
@@ -1004,6 +1009,65 @@ HeroViewStateOverview.get_selected_cosmetic_slot_index = function (self)
 	return self._selected_cosmetic_slot_index or 1
 end
 
+HeroViewStateOverview.set_temporary_loadout_item = function (self, item, skip_wield_anim)
+	local item_data = item.data
+	local slot_type = item_data.slot_type
+
+	self._temporary_loadout[slot_type] = item
+	self._skip_wield_anim = skip_wield_anim
+	self.temporary_loadout_sync_id = self.temporary_loadout_sync_id + 1
+	self.character_pose_animation_sync_id = self.character_pose_animation_sync_id + 1
+end
+
+HeroViewStateOverview.clear_temporary_loadout = function (self)
+	table.clear(self._temporary_loadout)
+
+	self._skip_wield_anim = nil
+	self.loadout_sync_id = self.loadout_sync_id + 1
+end
+
+HeroViewStateOverview.get_temporary_loadout_item = function (self, slot_type)
+	return self._temporary_loadout[slot_type], self._skip_wield_anim
+end
+
+HeroViewStateOverview.set_character_pose_animation = function (self, anim_event)
+	self._current_pose_animation_event = anim_event
+	self.character_pose_animation_sync_id = self.character_pose_animation_sync_id + 1
+end
+
+local EMPTY_TABLE = {}
+
+HeroViewStateOverview.clear_character_animation = function (self, blueprint_name)
+	self._current_pose_animation_event = nil
+
+	local backend_items = Managers.backend:get_interface("items")
+	local hero_name = self.hero_name
+	local career_index = self.career_index
+	local profile_index = FindProfileIndex(hero_name)
+	local profile = SPProfiles[profile_index]
+	local career_data = profile.careers[career_index]
+	local career_name = career_data.name
+	local weapon_pose_backend_id = backend_items:get_loadout_item_id(career_name, "slot_pose")
+	local unlocked_weapon_poses = backend_items:get_unlocked_weapon_poses()
+	local unlocked_weapon_poses_for_blueprint = unlocked_weapon_poses[blueprint_name] or EMPTY_TABLE
+
+	if table.find(unlocked_weapon_poses_for_blueprint, weapon_pose_backend_id) then
+		local weapon_pose = backend_items:get_item_from_id(weapon_pose_backend_id)
+		local weapon_pose_item_data = weapon_pose.data
+		local anim_event = weapon_pose_item_data.data.anim_event
+
+		self._current_pose_animation_event = anim_event
+	else
+		self._current_pose_animation_event = nil
+	end
+
+	self.character_pose_animation_sync_id = self.character_pose_animation_sync_id + 1
+end
+
+HeroViewStateOverview.get_character_animation_event = function (self)
+	return self._current_pose_animation_event
+end
+
 HeroViewStateOverview._set_loadout_item = function (self, item, strict_slot_name)
 	local hero_name = self.hero_name
 	local career_index = self.career_index
@@ -1051,7 +1115,7 @@ HeroViewStateOverview._set_loadout_item = function (self, item, strict_slot_name
 				local cosmetic_system = Managers.state.entity:system("cosmetic_system")
 
 				cosmetic_system:set_equipped_frame(unit, frame_data.name)
-			elseif slot_type ~= "skin" then
+			elseif slot_type ~= "skin" and slot_type ~= "weapon_pose" then
 				self._equip_request = {
 					slot_type = slot_type,
 					slot_name = slot_name,
@@ -1147,6 +1211,32 @@ HeroViewStateOverview._get_slot_by_type = function (self, slot_type)
 			return slot
 		end
 	end
+end
+
+HeroViewStateOverview.window_layout_on_exit = function (self, layout_name)
+	local window_layout = self:get_layout_setting_by_name(layout_name)
+
+	if window_layout and window_layout.on_exit then
+		window_layout.on_exit(self)
+	end
+end
+
+HeroViewStateOverview.pause_input = function (self, pause)
+	self._input_paused = pause
+end
+
+HeroViewStateOverview.input_paused = function (self)
+	return self._input_paused
+end
+
+HeroViewStateOverview.set_background_mood = function (self, mood_setting)
+	local background_world_name = "character_preview"
+	local world = Managers.world:world(background_world_name)
+
+	World.set_data(world, "shading_settings", {
+		mood_setting,
+		1,
+	})
 end
 
 HeroViewStateOverview.set_loadout_dirty = function (self)

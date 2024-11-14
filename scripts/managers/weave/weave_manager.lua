@@ -544,7 +544,7 @@ WeaveManager.start_objective = function (self)
 	local objective_template = self:get_active_objective_template()
 	local start_flow_event = objective_template.objective_start_flow_event
 	local objective_settings = objective_template.objective_settings
-	local objective_lists = objective_settings and objective_settings.objective_lists
+	local objective_lists = ObjectiveLists[objective_settings and objective_settings.objective_lists]
 
 	if start_flow_event then
 		LevelHelper:flow_event(self._world, start_flow_event)
@@ -552,10 +552,11 @@ WeaveManager.start_objective = function (self)
 
 	self._track_kills = objective_template.track_kills
 
-	if objective_lists then
-		local weave_objective_system = Managers.state.entity:system("weave_objective_system")
+	if objective_lists and self._is_server then
+		local objective_system = Managers.state.entity:system("objective_system")
 
-		weave_objective_system:activate_objectives(objective_lists)
+		objective_system:server_register_objectives(objective_settings.objective_lists)
+		objective_system:server_activate_first_objective()
 	end
 
 	local objective_text = objective_template.display_name
@@ -776,9 +777,9 @@ WeaveManager._objective_completed = function (self)
 		self._objective_ui_mission_name = "objective_complete"
 	end
 
-	local weave_objective_system = Managers.state.entity:system("weave_objective_system")
+	local objective_system = Managers.state.entity:system("objective_system")
 
-	weave_objective_system:deactivate()
+	objective_system:deactivate_all_objectives()
 end
 
 WeaveManager._calculate_score = function (self)
@@ -824,9 +825,9 @@ WeaveManager.ai_killed = function (self, killed_unit, killer_unit, death_data, k
 		self:_track_ai_killed(death_data.breed.name)
 	end
 
-	local weave_objective_system = Managers.state.entity:system("weave_objective_system")
+	local objective_system = Managers.state.entity:system("objective_system")
 
-	weave_objective_system:on_ai_killed(killed_unit, killer_unit, death_data, killing_blow)
+	objective_system:on_ai_killed(killed_unit, killer_unit, death_data, killing_blow)
 end
 
 WeaveManager._track_ai_killed = function (self, breed_name)
@@ -846,6 +847,15 @@ WeaveManager._track_ai_killed = function (self, breed_name)
 		local amount = 1 / enemy_count * 100
 
 		self:increase_bar_score(amount)
+	end
+end
+
+WeaveManager.objective_set_completed = function (self)
+	local mission_system = Managers.state.entity:system("mission_system")
+	local active_missions = mission_system:get_missions()
+
+	if active_missions and active_missions.weave_collect_limited_item_objective then
+		mission_system:end_mission("weave_collect_limited_item_objective", true)
 	end
 end
 

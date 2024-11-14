@@ -4,6 +4,96 @@ ProjectileTemplates = {}
 
 local check_for_afro_hit
 
+local function _check_globadier_globe_vo(position, radius, owner_unit)
+	local owner_player = Managers.player:owner(owner_unit)
+
+	if not owner_player then
+		return
+	end
+
+	local owner_position = POSITION_LOOKUP[owner_unit]
+
+	if not owner_position then
+		return
+	end
+
+	local owner_side = Managers.state.side.side_by_unit[owner_unit]
+
+	if not owner_side then
+		return
+	end
+
+	local hit_distance_sq = radius * radius
+	local close_distance_from_edge = DialogueSettings.vs_globadier_missing_globe_vo_range_from_edge
+	local close_distance_sq = (radius + close_distance_from_edge) * (radius + close_distance_from_edge)
+	local not_even_close = true
+	local all_hit_disabled = true
+	local num_players_hit = 0
+	local enemy_player_units = owner_side.ENEMY_PLAYER_AND_BOT_UNITS
+
+	for i = 1, #enemy_player_units do
+		local enemy_unit = enemy_player_units[i]
+
+		if ALIVE[enemy_unit] then
+			local dist_sq = Vector3.distance_squared(Vector3.flat(POSITION_LOOKUP[enemy_unit]), Vector3.flat(position))
+
+			if dist_sq < close_distance_sq then
+				not_even_close = false
+
+				if dist_sq < hit_distance_sq then
+					num_players_hit = num_players_hit + 1
+
+					if all_hit_disabled then
+						local status_extension = ScriptUnit.extension(enemy_unit, "status_system")
+
+						if status_extension and not status_extension:is_disabled() then
+							all_hit_disabled = false
+						end
+					end
+				end
+			end
+		end
+	end
+
+	local nearby_ally_dist_sq = DialogueSettings.default_hear_distance * DialogueSettings.default_hear_distance
+
+	if num_players_hit == 0 then
+		if not_even_close then
+			local ally_units = owner_side.PLAYER_AND_BOT_UNITS
+
+			for i = 1, #ally_units do
+				local ally_unit = ally_units[i]
+
+				if ALIVE[ally_unit] and ally_unit ~= owner_unit and nearby_ally_dist_sq > Vector3.distance_squared(POSITION_LOOKUP[ally_unit], owner_position) then
+					local dialogue_input = ScriptUnit.extension_input(ally_unit, "dialogue_system")
+
+					dialogue_input:trigger_dialogue_event("vs_globadier_missing_globe")
+				end
+			end
+		end
+	else
+		if num_players_hit >= DialogueSettings.vs_globadier_many_heroes_hit_num then
+			local ally_units = owner_side.PLAYER_AND_BOT_UNITS
+
+			for i = 1, #ally_units do
+				local ally_unit = ally_units[i]
+
+				if ALIVE[ally_unit] and nearby_ally_dist_sq > Vector3.distance_squared(POSITION_LOOKUP[ally_unit], owner_position) then
+					local dialogue_input = ScriptUnit.extension_input(ally_unit, "dialogue_system")
+
+					dialogue_input:trigger_dialogue_event("vs_globadier_hitting_many")
+				end
+			end
+		end
+
+		if num_players_hit == 1 and all_hit_disabled then
+			local dialogue_input = ALIVE[owner_unit] and ScriptUnit.extension_input(owner_unit, "dialogue_system")
+
+			dialogue_input:trigger_dialogue_event("vs_globe_on_disabled_hero")
+		end
+	end
+end
+
 ProjectileTemplates.trajectory_templates = {
 	straight_target_traversal = {
 		unit = {
@@ -378,18 +468,23 @@ ProjectileTemplates.impact_templates = {
 	},
 	vs_globadier_impact = {
 		server = {
-			execute = function (world, damage_source, unit, recent_impacts, num_impacts, owner_unit)
-				local first_hit_position = Vector3Box.unbox(recent_impacts[ProjectileImpactDataIndex.POSITION])
+			execute = function (world, damage_source, unit, recent_impacts, num_impacts, owner_unit, explosion_template, impact_counter)
+				local hit_position = Vector3Box.unbox(recent_impacts[ProjectileImpactDataIndex.POSITION])
 
-				Unit.set_local_position(unit, 0, first_hit_position)
+				Unit.set_local_position(unit, 0, hit_position)
 
 				local unit_id = Managers.state.unit_storage:go_id(unit)
 
-				Managers.state.network.network_transmit:send_rpc_all("rpc_area_damage", unit_id, first_hit_position)
+				Managers.state.network.network_transmit:send_rpc_all("rpc_area_damage", unit_id, hit_position)
 
 				if not Unit.alive(owner_unit) then
 					return true
 				end
+
+				local radius = 3
+				local area_damage_extension = ScriptUnit.has_extension(unit, "area_damage_system")
+
+				radius = area_damage_extension and area_damage_extension.radius or radius
 
 				local ai_base_extension = ScriptUnit.has_extension(owner_unit, "ai_system")
 
@@ -409,7 +504,7 @@ ProjectileTemplates.impact_templates = {
 						if player_unit ~= nil then
 							local unit_position = POSITION_LOOKUP[player_unit]
 							local distance_sq = Vector3.distance_squared(unit_position, area_damage_position)
-							local is_inside_radius = distance_sq < 9
+							local is_inside_radius = distance_sq < radius * radius
 
 							if is_inside_radius then
 								players_inside = players_inside + 1
@@ -429,14 +524,16 @@ ProjectileTemplates.impact_templates = {
 					end
 				end
 
+				_check_globadier_globe_vo(hit_position, radius, owner_unit)
+
 				return true
 			end,
 		},
 		client = {
-			execute = function (world, damage_source, unit, recent_impacts, num_impacts, owner_unit)
-				local first_hit_position = Vector3Box.unbox(recent_impacts[ProjectileImpactDataIndex.POSITION])
+			execute = function (world, damage_source, unit, recent_impacts, num_impacts, owner_unit, explosion_template, impact_counter)
+				local hit_position = Vector3Box.unbox(recent_impacts[ProjectileImpactDataIndex.POSITION])
 
-				Unit.set_local_position(unit, 0, first_hit_position)
+				Unit.set_local_position(unit, 0, hit_position)
 
 				local is_player_unit = DamageUtils.is_player_unit(owner_unit)
 
@@ -444,10 +541,8 @@ ProjectileTemplates.impact_templates = {
 					local owner_player = Managers.player:owner(owner_unit)
 					local owner_is_local = owner_player and owner_player.local_player
 
-					if owner_is_local then
-						local wwise_world = Managers.world:wwise_world(world)
-
-						WwiseWorld.trigger_event(wwise_world, "player_versus_globadier_fps_globe_impact")
+					if owner_is_local and not (impact_counter > 1) then
+						WwiseUtils.trigger_position_event(world, "player_versus_globadier_fps_globe_impact", hit_position)
 					end
 				end
 

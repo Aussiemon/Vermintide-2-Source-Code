@@ -46,7 +46,7 @@ GutterRunnerStateProwling.on_enter = function (self, unit, input, dt, context, t
 		self.last_input_direction:store(local_move_vector)
 	end
 
-	local move_anim_3p, move_anim_1p = CharacterStateHelper.get_move_animation(self._locomotion_extension, input_extension, status_extension)
+	local move_anim_3p, move_anim_1p = CharacterStateHelper.get_move_animation(self._locomotion_extension, input_extension, status_extension, self.move_anim_3p)
 
 	self.move_anim_3p = move_anim_3p
 	self.move_anim_1p = move_anim_1p
@@ -70,11 +70,15 @@ GutterRunnerStateProwling.on_enter = function (self, unit, input, dt, context, t
 	self._right_wpn_particle_name = "fx/wpnfx_gutter_runner_enemy_in_range_1p"
 	self._right_wpn_particle_node_name = "g_wpn_right_claw"
 
-	self:check_enemies_in_range_vfx()
+	self._ghost_mode_extension:set_external_no_spawn_reason("prowling", true)
 end
 
-GutterRunnerStateProwling.on_exit = function (self, unit, input, dt, context, t, next_state)
+GutterRunnerStateProwling.on_exit = function (self, unit, input, dt, context, t, next_state, is_destroy)
 	EnemyCharacterState.on_exit(self, unit, input, dt, context, t, next_state)
+
+	if is_destroy or not Managers.state.network:game() then
+		return
+	end
 
 	self._pounce_ready = nil
 
@@ -84,6 +88,7 @@ GutterRunnerStateProwling.on_exit = function (self, unit, input, dt, context, t,
 
 	self:_set_priming_progress(0)
 	self:set_breed_action("n/a")
+	self._ghost_mode_extension:set_external_no_spawn_reason("prowling", nil)
 end
 
 GutterRunnerStateProwling.update = function (self, unit, input, dt, context, t)
@@ -104,12 +109,11 @@ GutterRunnerStateProwling.update = function (self, unit, input, dt, context, t)
 		return
 	end
 
-	self:check_enemies_in_range_vfx()
-	self:_update_priming(t, dt)
-
 	local exit = false
 
 	if input_extension:get("action_one_release") then
+		self:_update_priming(t, dt, true)
+
 		if self._done_priming then
 			self:_start_pounce()
 
@@ -119,6 +123,8 @@ GutterRunnerStateProwling.update = function (self, unit, input, dt, context, t)
 		end
 
 		self._pounce_ready = true
+	else
+		self:_update_priming(t, dt, false)
 	end
 
 	if input_extension:get("action_two") or exit then
@@ -175,8 +181,10 @@ GutterRunnerStateProwling.update = function (self, unit, input, dt, context, t)
 	local is_moving = CharacterStateHelper.has_move_input(input_extension)
 
 	if not self.is_bot then
-		local move_acceleration_up_dt = movement_settings_table.move_acceleration_up * dt
-		local move_acceleration_down_dt = movement_settings_table.move_acceleration_down * dt
+		local breed_move_acceleration_up = self._breed and self._breed.breed_move_acceleration_up
+		local breed_move_acceleration_down = self._breed and self._breed.breed_move_acceleration_down
+		local move_acceleration_up_dt = breed_move_acceleration_up * dt or movement_settings_table.move_acceleration_up * dt
+		local move_acceleration_down_dt = breed_move_acceleration_down * dt or movement_settings_table.move_acceleration_down * dt
 
 		if is_moving then
 			current_movement_speed_scale = math.min(1, current_movement_speed_scale + move_acceleration_up_dt)
@@ -205,13 +213,17 @@ GutterRunnerStateProwling.update = function (self, unit, input, dt, context, t)
 	CharacterStateHelper.move_on_ground(first_person_extension, input_extension, locomotion_extension, move_input_direction, final_move_speed, unit)
 	CharacterStateHelper.look(input_extension, self._player.viewport_name, first_person_extension, status_extension, inventory_extension)
 
-	local move_anim_3p, move_anim_1p = CharacterStateHelper.get_move_animation(locomotion_extension, input_extension, status_extension)
+	local move_anim_3p, move_anim_1p = CharacterStateHelper.get_move_animation(locomotion_extension, input_extension, status_extension, self.move_anim_3p)
 
-	if move_anim_3p ~= self.move_anim_3p or move_anim_1p ~= self.move_anim_1p then
+	if move_anim_3p ~= self.move_anim_3p then
 		CharacterStateHelper.play_animation_event(unit, move_anim_3p)
-		CharacterStateHelper.play_animation_event_first_person(first_person_extension, move_anim_1p)
 
 		self.move_anim_3p = move_anim_3p
+	end
+
+	if move_anim_1p ~= self.move_anim_1p then
+		CharacterStateHelper.play_animation_event_first_person(first_person_extension, move_anim_1p)
+
 		self.move_anim_1p = move_anim_1p
 	end
 
@@ -241,10 +253,14 @@ GutterRunnerStateProwling._set_priming_progress = function (self, progress)
 	local ability_data = career_extension:get_activated_ability_data(ability_id)
 
 	ability_data.priming_progress = progress
+
+	self._first_person_extension:animation_set_variable("pounce_charge", progress, true)
 end
 
-GutterRunnerStateProwling._update_priming = function (self, t, dt)
-	if t > self._prime_time then
+local grace_period = 0.025
+
+GutterRunnerStateProwling._update_priming = function (self, t, dt, allow_grace_period)
+	if t > self._prime_time or allow_grace_period and t > self._prime_time - grace_period then
 		if not self._done_priming then
 			self._first_person_extension:play_hud_sound_event("Play_versus_gutterrunner_jump_charge_end")
 		end
@@ -257,7 +273,6 @@ GutterRunnerStateProwling._update_priming = function (self, t, dt)
 	local time_fraction = time_past / pounce_prime_time
 
 	self:_set_priming_progress(time_fraction)
-	self:check_enemies_in_range_vfx()
 end
 
 GutterRunnerStateProwling._stop_priming = function (self, t)

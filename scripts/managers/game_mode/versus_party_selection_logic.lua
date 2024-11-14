@@ -72,11 +72,7 @@ VersusPartySelectionLogic.party_states = {
 			local current_picker_index = party_data.current_picker_index
 
 			parent:set_player_state("player_has_picked_character", party.party_id, current_picker_index)
-
-			local profile_index, career_index = parent:_ensure_picker_has_character(party_data, current_picker_index)
-			local peer_id = parent:_peer_from_picker_data(party_data, current_picker_index)
-
-			parent:_lock_hero_character(peer_id or current_picker_index, profile_index, career_index, party_data)
+			parent:_ensure_picker_has_character(party_data, current_picker_index)
 		end,
 		run = function (parent, party_data, party, timer, t, dt)
 			if party_data.current_picker_index >= #party_data.picker_list then
@@ -89,10 +85,7 @@ VersusPartySelectionLogic.party_states = {
 	parading = {
 		enter = function (parent, party_data, party)
 			local duration = Managers.state.game_mode:setting("character_picking_settings").parading_duration
-			local mechanism = Managers.mechanism:game_mechanism()
-			local all_players_have_saved_hero = mechanism:all_peers_have_saved_hero(parent._pick_data_per_party)
 
-			print("[VersusPartySelectionLogic] Some player dont have a saved hero")
 			parent:set_timer(duration)
 		end,
 		run = function (parent, party_data, party, timer, t, dt, party_selection_logic)
@@ -484,14 +477,18 @@ VersusPartySelectionLogic.hot_join_sync = function (self, peer_id)
 				local party = Managers.party:get_party(party_id)
 				local slots_data = party.slots_data
 				local slot_data = slots_data[player_data.slot_id]
+				local picker_data = picker_list[picker_id]
+				local status = picker_data.status
 				local melee_name, ranged_name, skin_name, hat_name, frame_name = slot_data.slot_melee, slot_data.slot_ranged, slot_data.slot_skin, slot_data.slot_hat, slot_data.slot_frame
 				local melee_id = NetworkLookup.item_names[melee_name or "n/a"]
 				local ranged_id = NetworkLookup.item_names[ranged_name or "n/a"]
 				local skin_id = NetworkLookup.item_names[skin_name or "n/a"]
 				local hat_id = NetworkLookup.item_names[hat_name or "n/a"]
 				local frame_id = NetworkLookup.item_names[frame_name or "n/a"]
+				local level = status.level
+				local versus_level = status.versus_level
 
-				self._network_transmit:send_rpc("rpc_sync_player_loadout", peer_id, party_id, picker_id, profile_index, career_index, melee_id, ranged_id, skin_id, hat_id, frame_id)
+				self._network_transmit:send_rpc("rpc_sync_player_loadout", peer_id, party_id, picker_id, profile_index, career_index, melee_id, ranged_id, skin_id, hat_id, frame_id, level, versus_level)
 			end
 
 			self._network_transmit:send_rpc("rpc_set_player_state", peer_id, player_state_id, party_id, picker_id)
@@ -591,15 +588,15 @@ VersusPartySelectionLogic._make_available_profile_lookup = function (self, affil
 	return profile_lookup
 end
 
-VersusPartySelectionLogic.get_character_or_random = function (self, profile_index, career_index, party_data, is_bot)
-	if profile_index and career_index and not self:_is_hero_locked(profile_index, career_index, party_data) then
+VersusPartySelectionLogic.get_character_or_random = function (self, peer_id_or_pick_index, profile_index, career_index, party_data, is_bot)
+	if profile_index and career_index and not self:_is_hero_locked(peer_id_or_pick_index, profile_index, party_data) then
 		return profile_index, career_index
 	end
 
-	return self:get_random_available_character(party_data, is_bot)
+	return self:get_random_available_character(peer_id_or_pick_index, party_data, is_bot)
 end
 
-VersusPartySelectionLogic.get_random_available_character = function (self, party_data, is_bot)
+VersusPartySelectionLogic.get_random_available_character = function (self, peer_id_or_pick_index, party_data, is_bot)
 	local random_profile_indices = self._random_profile_indices or table.select_map(SPProfiles, function (_, profile)
 		if profile.affiliation == "heroes" then
 			return profile.index
@@ -627,7 +624,7 @@ VersusPartySelectionLogic.get_random_available_character = function (self, party
 			local p_idx, c_idx = random_profile_indices[p_i], random_career_indices[c_i]
 			local career_name = SPProfiles[p_i].careers[c_i].name
 
-			if PlayerUtils.get_career_override(career_name) and not self:_is_hero_locked(p_idx, c_idx, party_data) then
+			if PlayerUtils.get_career_override(career_name) and not self:_is_hero_locked(peer_id_or_pick_index, p_idx, party_data) then
 				profile_index, career_index = p_idx, c_idx
 
 				break
@@ -642,50 +639,30 @@ VersusPartySelectionLogic.get_random_available_character = function (self, party
 	return profile_index, career_index
 end
 
-VersusPartySelectionLogic._lock_hero_character = function (self, peer_or_pick_id, profile_index, career_index, party_data)
-	local lock_data = party_data.lock_datas[peer_or_pick_id] or {}
-
-	party_data.lock_datas[peer_or_pick_id] = lock_data
-	lock_data.profile_index = profile_index
-	lock_data.career_index = career_index
-
-	local is_player = type(peer_or_pick_id) == "string"
-
-	printf("[VersusPartySelectionLogic] %s %s in party %s locked in %s %s (%s)", is_player and "Peer" or "BOT in slot", peer_or_pick_id, party_data.party_id, profile_index, career_index, SPProfiles[profile_index].careers[career_index].display_name)
-
-	if is_player and self:_is_hero_party(party_data.party_id) then
-		local profile = SPProfiles[profile_index]
-
-		self._profile_requester:request_profile(peer_or_pick_id, 1, profile.display_name, profile.careers[career_index].display_name, false)
-	end
-end
-
-VersusPartySelectionLogic._is_hero_locked = function (self, profile_index, career_index, party_data)
+VersusPartySelectionLogic._is_hero_locked = function (self, peer_id_or_pick_index, profile_index, party_data)
 	if self._settings.duplicate_hero_careers_allowed then
 		return false
 	end
 
-	local current_picker_index = party_data.current_picker_index
-	local lock_datas = party_data.lock_datas
-	local picker_list = party_data.picker_list
+	if not profile_index then
+		return false
+	end
 
-	for i = 1, current_picker_index - 1 do
-		local status = picker_list[i].status
-		local lock_data = lock_datas[status.peer_id or i]
+	local party_id = party_data.party_id
+	local occupying_peer = self._profile_synchronizer:get_profile_index_reservation(party_id, profile_index)
 
-		if lock_data then
-			local locked_profile_index = lock_data.profile_index
+	if occupying_peer and occupying_peer ~= peer_id_or_pick_index then
+		return true
+	end
 
-			if locked_profile_index == profile_index then
-				if not self._settings.duplicate_hero_profiles_allowed then
-					return true
-				end
+	local mechanism = Managers.mechanism:game_mechanism()
 
-				local locked_career_index = lock_data.career_index
+	for slot_id = 1, #party_data.picker_list do
+		if slot_id ~= peer_id_or_pick_index then
+			local other_profile_index = mechanism:get_saved_bot(party_id, slot_id)
 
-				if locked_career_index == career_index then
-					return true
-				end
+			if other_profile_index == profile_index then
+				return true
 			end
 		end
 	end
@@ -753,6 +730,10 @@ end
 
 VersusPartySelectionLogic.sync_hovered_item = function (self, peer_id, local_player_id, profile_index, career_index)
 	self:_sync_hovered_item(peer_id, local_player_id, profile_index, career_index)
+
+	if not Managers.state.network or not Managers.state.network:game() then
+		return
+	end
 
 	if self._is_server then
 		self._network_transmit:send_rpc_clients("rpc_pre_game_sync_hovered_item", peer_id, local_player_id, profile_index, career_index)
@@ -842,7 +823,6 @@ VersusPartySelectionLogic._setup_picking_order = function (self, is_server)
 			state = "startup",
 			picker_list = picker_list,
 			party_id = i,
-			lock_datas = {},
 		}
 	end
 end
@@ -871,10 +851,10 @@ VersusPartySelectionLogic.sync_player_loadout = function (self, profile_index, c
 	local syncing_own_loadout = (local_party and local_party.party_id) == party_id and local_picker_list_id == picker_list_id
 	local party_data = self._pick_data_per_party[party_id]
 	local is_bot = VersusPartySelectionLogicUtility.picker_index_is_bot(party_data, picker_list_id)
-	local melee_id, ranged_id, skin_id, hat_id, frame_id
+	local melee_id, ranged_id, skin_id, hat_id, frame_id, level, versus_level
 
 	if profile_index and profile_index > 0 and (syncing_own_loadout or self._is_server and is_bot) then
-		melee_id, ranged_id, skin_id, hat_id, frame_id = self:_get_loadout(profile_index, career_index)
+		melee_id, ranged_id, skin_id, hat_id, frame_id, level, versus_level = self:_get_loadout(profile_index, career_index, is_bot)
 
 		local peer_id, local_player_id = self:_peer_from_picker_data(party_data, picker_list_id)
 		local sync_cosmetics = self:_is_hero_party(party_id) and local_player_id
@@ -885,19 +865,19 @@ VersusPartySelectionLogic.sync_player_loadout = function (self, profile_index, c
 			CosmeticUtils.sync_local_player_cosmetics(player, profile_index, career_index)
 		end
 	else
-		melee_id, ranged_id, skin_id, hat_id, frame_id = 1, 1, 1, 1, 1
+		melee_id, ranged_id, skin_id, hat_id, frame_id, level, versus_level = 1, 1, 1, 1, 1, 1, 0
 	end
 
-	self:_set_loadout(party_id, picker_list_id, profile_index, career_index, melee_id, ranged_id, skin_id, hat_id, frame_id)
+	self:_set_loadout(party_id, picker_list_id, profile_index, career_index, melee_id, ranged_id, skin_id, hat_id, frame_id, level, versus_level)
 
 	if self._is_server then
-		self._network_transmit:send_rpc_clients("rpc_sync_player_loadout", party_id, picker_list_id, profile_index, career_index, melee_id, ranged_id, skin_id, hat_id, frame_id)
+		self._network_transmit:send_rpc_clients("rpc_sync_player_loadout", party_id, picker_list_id, profile_index, career_index, melee_id, ranged_id, skin_id, hat_id, frame_id, level, versus_level)
 	else
-		self._network_transmit:send_rpc_server("rpc_sync_player_loadout", party_id, picker_list_id, profile_index, career_index, melee_id, ranged_id, skin_id, hat_id, frame_id)
+		self._network_transmit:send_rpc_server("rpc_sync_player_loadout", party_id, picker_list_id, profile_index, career_index, melee_id, ranged_id, skin_id, hat_id, frame_id, level, versus_level)
 	end
 end
 
-VersusPartySelectionLogic._set_loadout = function (self, party_id, pick_id, profile_index, career_index, melee_id, ranged_id, skin_id, hat_id, frame_id)
+VersusPartySelectionLogic._set_loadout = function (self, party_id, pick_id, profile_index, career_index, melee_id, ranged_id, skin_id, hat_id, frame_id, level, versus_level)
 	local party = Managers.party:get_party(party_id)
 	local party_data = self._pick_data_per_party[party_id]
 	local picker_list = party_data.picker_list
@@ -908,6 +888,8 @@ VersusPartySelectionLogic._set_loadout = function (self, party_id, pick_id, prof
 	status.selected_career_index = career_index
 	status.profile_index = profile_index
 	status.career_index = career_index
+	status.level = level
+	status.versus_level = versus_level
 
 	local slots_data = party.slots_data
 	local slot_data = slots_data[picker_data.slot_id]
@@ -917,16 +899,11 @@ VersusPartySelectionLogic._set_loadout = function (self, party_id, pick_id, prof
 	slot_data.slot_skin = NetworkLookup.item_names[skin_id]
 	slot_data.slot_hat = NetworkLookup.item_names[hat_id]
 	slot_data.slot_frame = NetworkLookup.item_names[frame_id]
-
-	if self._is_server then
-		local mechanism = Managers.mechanism:game_mechanism()
-
-		mechanism:set_saved_hero(status.peer_id, status.local_player_id, party_id, profile_index, career_index)
-	end
 end
 
-VersusPartySelectionLogic._get_loadout = function (self, profile_index, career_index)
+VersusPartySelectionLogic._get_loadout = function (self, profile_index, career_index, is_bot)
 	local profile = SPProfiles[profile_index]
+	local hero_name = profile.display_name
 	local career = profile.careers[career_index]
 	local career_name = career.display_name
 	local item_slot_types_by_slot_name = career.item_slot_types_by_slot_name
@@ -941,8 +918,12 @@ VersusPartySelectionLogic._get_loadout = function (self, profile_index, career_i
 	local skin_id = skin and NetworkLookup.item_names[skin.key] or 1
 	local hat_id = hat and NetworkLookup.item_names[hat.key] or 1
 	local frame_id = hat and NetworkLookup.item_names[portrait_frame.key] or 1
+	local hero_attributes = Managers.backend:get_interface("hero_attributes")
+	local experience = hero_attributes:get(hero_name, "experience")
+	local level = ExperienceSettings.get_level(experience)
+	local versus_level = is_bot and 0 or ExperienceSettings.get_versus_level()
 
-	return melee_id, ranged_id, skin_id, hat_id, frame_id
+	return melee_id, ranged_id, skin_id, hat_id, frame_id, level, versus_level
 end
 
 VersusPartySelectionLogic.settings = function (self)
@@ -1057,16 +1038,18 @@ VersusPartySelectionLogic._try_pick_hero = function (self, party_data, picker_in
 	local party_id = party_data.party_id
 	local is_bot = VersusPartySelectionLogicUtility.picker_index_is_bot(party_data, picker_index)
 	local mechanism = Managers.mechanism:game_mechanism()
-	local peer_id, local_player_id, slot_id = self:_peer_from_picker_data(party_data, picker_index)
+	local peer_id, _, slot_id = self:_peer_from_picker_data(party_data, picker_index)
 	local current_profile_idx, current_career_idx
 
 	if is_bot then
 		current_profile_idx, current_career_idx = mechanism:get_saved_bot(party_id, slot_id)
 	else
-		current_profile_idx, current_career_idx = mechanism:get_saved_hero(peer_id, local_player_id)
+		current_profile_idx, current_career_idx = Managers.mechanism:get_persistent_profile_index_reservation(peer_id)
 	end
 
-	if self:_is_hero_locked(current_profile_idx, current_career_idx, party_data) then
+	local peer_id_or_pick_index = is_bot and slot_id or peer_id
+
+	if self:_is_hero_locked(peer_id_or_pick_index, current_profile_idx, party_data) then
 		current_profile_idx, current_career_idx = nil
 	end
 
@@ -1094,18 +1077,28 @@ VersusPartySelectionLogic._try_pick_hero = function (self, party_data, picker_in
 
 		force_sync = true
 
-		if not profile_index or not career_index or profile_index == 0 or career_index == 0 or self:_is_hero_locked(profile_index, career_index, party_data) then
-			profile_index, career_index = self:get_character_or_random(profile_index, career_index, party_data, is_bot)
+		if not profile_index or not career_index or profile_index == 0 or career_index == 0 then
+			profile_index, career_index = self:get_character_or_random(is_bot and slot_id or peer_id, profile_index, career_index, party_data, is_bot)
+
+			printf("[VersusPartySelectionLogic] No profile provided for %s %s. Fallbacking to %s %s.", is_bot and "BOT in slot" or "Peer", is_bot and picker_index or peer_id, profile_index, career_index)
+		elseif self:_is_hero_locked(peer_id_or_pick_index, profile_index, party_data) then
+			local failed_profile_index, failed_career_index = profile_index, career_index
+
+			profile_index, career_index = self:get_character_or_random(is_bot and slot_id or peer_id, profile_index, career_index, party_data, is_bot)
+
+			printf("[VersusPartySelectionLogic] %s %s tried to pick locked hero %s %s. Fallbacking to %s %s.", is_bot and "BOT in slot" or "Peer", is_bot and picker_index or peer_id, failed_profile_index, failed_career_index, profile_index, career_index)
 		end
 
 		if is_bot then
 			mechanism:set_saved_bot(party_id, slot_id, profile_index, career_index)
-		else
-			mechanism:set_saved_hero(peer_id, local_player_id, party_id, profile_index, career_index)
+
+			break
 		end
 
-		if slot_already_picked then
-			self:_lock_hero_character(peer_id or picker_index, profile_index, career_index, party_data)
+		local success = Managers.mechanism:try_reserve_profile_for_peer_by_mechanism(peer_id, profile_index, career_index, true)
+
+		if not success then
+			Crashify.print_exception("VersusPartySelectionLogic", "gave peer %s in party %s hero %s, but could not reserve it", peer_id, party_id, profile_index)
 		end
 	until true
 
@@ -1122,7 +1115,7 @@ VersusPartySelectionLogic.rpc_party_select_request_pick_hero = function (self, c
 	local got_profile, got_career = self:_try_pick_hero(party_data, picker_index, profile_index, career_index)
 	local fail_context = got_profile == profile_index and "" or string.format(", but got hero %s %s", got_profile, got_career)
 
-	printf("[VersusPartySelectionLogic] Peer %s in party %s wants to pick hero %s %s%s", CHANNEL_TO_PEER_ID[channel_id], party_id, profile_index, career_index, fail_context)
+	printf("[VersusPartySelectionLogic] Peer %s in party %s tried to pick hero %s %s%s", CHANNEL_TO_PEER_ID[channel_id], party_id, profile_index, career_index, fail_context)
 end
 
 VersusPartySelectionLogic.rpc_set_party_array = function (self, channel_id, party_id, party_array, current_picker_index)
@@ -1172,7 +1165,7 @@ VersusPartySelectionLogic.rpc_set_party_state = function (self, channel_id, part
 	pick_data.state = self._party_states_lookup[new_state_id]
 end
 
-VersusPartySelectionLogic.rpc_sync_player_loadout = function (self, channel_id, party_id, pick_id, profile_index, career_index, melee_id, ranged_id, skin_id, hat_id, frame_id)
+VersusPartySelectionLogic.rpc_sync_player_loadout = function (self, channel_id, party_id, pick_id, profile_index, career_index, melee_id, ranged_id, skin_id, hat_id, frame_id, level, versus_level)
 	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
 	if not peer_id then
@@ -1187,7 +1180,6 @@ VersusPartySelectionLogic.rpc_sync_player_loadout = function (self, channel_id, 
 			return
 		end
 
-		local mechanism = Managers.mechanism:game_mechanism()
 		local picker_list = pick_data.picker_list
 		local picker_data = picker_list[pick_id]
 		local state = picker_data.state
@@ -1196,14 +1188,14 @@ VersusPartySelectionLogic.rpc_sync_player_loadout = function (self, channel_id, 
 		if ClientStateLookup[state] > ClientStateLookup.player_picking_character and (status.selected_profile_index ~= profile_index or status.selected_career_index ~= career_index) then
 			print("[VersusPartySelectionLogic] Client tried to change loadout of a different character after a character has already been picked. Bouncing back request.")
 
-			local real_profile_idx, real_career_idx = mechanism:get_saved_hero(status.peer_id, status.local_player_id)
+			local real_profile_idx, real_career_idx = Managers.mechanism:get_persistent_profile_index_reservation(status.peer_id)
 
-			self._network_transmit:send_rpc("rpc_sync_player_loadout", peer_id, party_id, pick_id, real_profile_idx, real_career_idx, 1, 1, 1, 1, 1)
+			self._network_transmit:send_rpc("rpc_sync_player_loadout", peer_id, party_id, pick_id, real_profile_idx, real_career_idx, 1, 1, 1, 1, 1, 1, 0)
 
 			return
 		end
 
-		self._network_transmit:send_rpc_clients_except("rpc_sync_player_loadout", peer_id, party_id, pick_id, profile_index, career_index, melee_id, ranged_id, skin_id, hat_id, frame_id)
+		self._network_transmit:send_rpc_clients_except("rpc_sync_player_loadout", peer_id, party_id, pick_id, profile_index, career_index, melee_id, ranged_id, skin_id, hat_id, frame_id, level, versus_level)
 	end
 
 	local _, local_party, local_picker_list_id = self:_local_party_data()
@@ -1213,7 +1205,7 @@ VersusPartySelectionLogic.rpc_sync_player_loadout = function (self, channel_id, 
 		print("[VersusPartySelectionLogic] Local player was assigned to", profile_index, career_index)
 		self:sync_player_loadout(profile_index, career_index, local_party_id, local_picker_list_id)
 	else
-		self:_set_loadout(party_id, pick_id, profile_index, career_index, melee_id, ranged_id, skin_id, hat_id, frame_id)
+		self:_set_loadout(party_id, pick_id, profile_index, career_index, melee_id, ranged_id, skin_id, hat_id, frame_id, level, versus_level)
 	end
 end
 

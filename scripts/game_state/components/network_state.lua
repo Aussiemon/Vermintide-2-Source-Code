@@ -243,17 +243,35 @@ NetworkState.set_loaded_or_loading_packages = function (self, loaded_or_loading_
 	self._loaded_or_loading_packages = loaded_or_loading_packages
 end
 
-NetworkState.get_profile_index_reservation = function (self, profile_index)
-	local key = self._shared_state:get_key("profile_index_reservation", nil, nil, profile_index)
+NetworkState.get_profile_index_reservation = function (self, party_id, profile_index)
+	local key = self._shared_state:get_key("profile_index_reservation", nil, nil, profile_index, nil, party_id)
 	local value = self._shared_state:get_server(key)
 
 	return value ~= "" and value or nil
 end
 
-NetworkState.set_profile_index_reservation = function (self, profile_index, peer_id)
-	local key = self._shared_state:get_key("profile_index_reservation", nil, nil, profile_index)
+NetworkState.set_profile_index_reservation = function (self, party_id, profile_index, career_index, peer_id)
+	local key = self._shared_state:get_key("profile_index_reservation", nil, nil, profile_index, nil, party_id)
 
 	self._shared_state:set_server(key, peer_id or "")
+
+	if peer_id and peer_id ~= "" then
+		local persistent_hero_reservation_key = self._shared_state:get_key("persistent_hero_reservation", peer_id)
+
+		if self._shared_state:get_server(persistent_hero_reservation_key) ~= profile_index then
+			self._shared_state:set_server(persistent_hero_reservation_key, {
+				profile_index = profile_index,
+				career_index = career_index,
+			})
+		end
+	end
+end
+
+NetworkState.get_persistent_profile_index_reservation = function (self, peer_id)
+	local key = self._shared_state:get_key("persistent_hero_reservation", peer_id)
+	local data = self._shared_state:get_server(key, peer_id)
+
+	return data.profile_index, data.career_index
 end
 
 NetworkState.get_peers_with_full_profiles = function (self)

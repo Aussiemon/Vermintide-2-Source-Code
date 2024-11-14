@@ -42,7 +42,7 @@ PlayerCharacterStateWalking.on_enter = function (self, unit, input, dt, context,
 		self.last_input_direction:store(local_move_vector)
 	end
 
-	local move_anim_3p, move_anim_1p = CharacterStateHelper.get_move_animation(self.locomotion_extension, input_extension, status_extension)
+	local move_anim_3p, move_anim_1p = CharacterStateHelper.get_move_animation(self.locomotion_extension, input_extension, status_extension, self.move_anim_3p)
 
 	self.move_anim_3p = move_anim_3p
 	self.move_anim_1p = move_anim_1p
@@ -413,7 +413,7 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 		return
 	end
 
-	local move_anim_3p, move_anim_1p = CharacterStateHelper.get_move_animation(locomotion_extension, input_extension, status_extension)
+	local move_anim_3p, move_anim_1p = CharacterStateHelper.get_move_animation(locomotion_extension, input_extension, status_extension, self.move_anim_3p)
 
 	if move_anim_1p ~= self.move_anim_1p then
 		CharacterStateHelper.play_animation_event_first_person(first_person_extension, move_anim_1p)

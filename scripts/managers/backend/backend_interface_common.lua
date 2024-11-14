@@ -134,10 +134,40 @@ local filter_macros = {
 
 		return item_data.item_type
 	end,
-	chest_category = function (item, backend_id)
+	selection = function (item, backend_id)
 		local item_data = item.data
 
-		return item_data.chest_category
+		return item_data.selection
+	end,
+	default_selection = function (item, backend_id)
+		local item_data = item.data
+
+		return item_data.selection == "default" or item_data.selection == nil
+	end,
+	is_pactsworn_item = function (item, backend_id)
+		local is_pactsworn = false
+		local item_data = item.data
+		local can_wield = item_data.can_wield
+
+		if can_wield ~= CanWieldAllItemTemplates and (item_data.item_type == "skin" or item_data.item_type == "cosmetic_bundle") then
+			for i = 1, #can_wield do
+				local career_name = can_wield[i]
+				local profile = PROFILES_BY_CAREER_NAMES[career_name]
+
+				if profile.affiliation == "dark_pact" then
+					is_pactsworn = true
+
+					break
+				end
+			end
+		end
+
+		return is_pactsworn
+	end,
+	chest_categories = function (item, backend_id)
+		local item_data = item.data
+
+		return item_data.chest_categories
 	end,
 	discounted_items = function (item, backend_id)
 		local item_data = item.data
@@ -500,6 +530,7 @@ local filter_macros = {
 			"weapon_skin",
 			"frame",
 			"skin",
+			"weapon_pose",
 		}, item_data.slot_type)
 
 		return is_cosmetic or mechanisms and table.contains(mechanisms, "versus")
@@ -512,6 +543,7 @@ local filter_macros = {
 			"weapon_skin",
 			"frame",
 			"skin",
+			"weapon_pose",
 		}, item_data.slot_type)
 
 		return is_cosmetic or not mechanisms or table.contains(mechanisms, "adventure")
@@ -529,6 +561,7 @@ local filter_macros = {
 			"weapon_skin",
 			"frame",
 			"skin",
+			"weapon_pose",
 		}, item_data.slot_type)
 
 		if is_cosmetic then
@@ -542,7 +575,7 @@ local filter_macros = {
 		local is_item_for_mechanism = mechanisms and table.contains(mechanisms, current_mechanism)
 		local default_mechanism = not mechanisms and Managers.mechanism:mechanism_setting("default_inventory")
 
-		return is_item_for_mechanism or default_mechanism
+		return is_item_for_mechanism or default_mechanism or false
 	end,
 	owned = function (item, backend_id)
 		local owned = item.owned
@@ -555,6 +588,33 @@ local filter_macros = {
 
 		if fake_items[backend_id] then
 			return true
+		end
+	end,
+	gather_weapon_pose_blueprints = function (item, backend_id, params)
+		local item_data = item.data
+		local slot_type = item_data.slot_type
+
+		if slot_type == "melee" or slot_type == "ranged" then
+			local backend_items = Managers.backend:get_interface("items")
+			local rarity = backend_items:get_item_rarity(backend_id)
+
+			if rarity == "default" then
+				local unlocked_weapon_poses = backend_items:get_unlocked_weapon_poses()
+				local item_id = string.gsub(item.ItemId, "^vs_", "")
+				local item_weapon_poses = unlocked_weapon_poses[item_id] or EMPTY_TABLE
+
+				return not table.is_empty(item_weapon_poses)
+			end
+		end
+
+		return false
+	end,
+	weapon_pose_parent = function (item, backend_id)
+		local item_data = item.data
+		local slot_type = item_data.slot_type
+
+		if slot_type == "weapon_pose" then
+			return item_data.parent
 		end
 	end,
 	is_event_item = function (item, backend_id)

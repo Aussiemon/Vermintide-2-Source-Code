@@ -42,6 +42,9 @@ AnimationSystem.init = function (self, entity_system_creation_context, system_na
 
 	self.anim_variable_update_list = {}
 	self._networked_animation_variables = {}
+	self._animation_safe_callbacks_buffer_1 = {}
+	self._animation_safe_callbacks_buffer_2 = {}
+	self._animation_safe_callbacks = self._animation_safe_callbacks_buffer_1
 end
 
 AnimationSystem.destroy = function (self)
@@ -474,4 +477,22 @@ AnimationSystem.start_anim_variable_update_by_time = function (self, unit, anim_
 
 	self.network_transmit:send_rpc_clients("rpc_anim_set_variable_by_time", unit_id, anim_variable_index, int_16bit_duration, scale)
 	self:_set_variable_by_time(unit, anim_variable_index, duration, scale)
+end
+
+AnimationSystem.add_safe_animation_callback = function (self, cb)
+	self._animation_safe_callbacks[#self._animation_safe_callbacks + 1] = cb
+end
+
+AnimationSystem.run_safe_animation_callbacks = function (self)
+	local animation_safe_callbacks = self._animation_safe_callbacks
+
+	self._animation_safe_callbacks = self._animation_safe_callbacks == self._animation_safe_callbacks_buffer_1 and self._animation_safe_callbacks_buffer_2 or self._animation_safe_callbacks_buffer_1
+
+	for i = 1, #animation_safe_callbacks do
+		local safe_callback = animation_safe_callbacks[i]
+
+		safe_callback()
+
+		animation_safe_callbacks[i] = nil
+	end
 end

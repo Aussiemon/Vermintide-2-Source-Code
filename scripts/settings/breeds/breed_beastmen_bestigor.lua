@@ -74,7 +74,6 @@ local breed_data = {
 	trigger_dialogue_on_target_switch = true,
 	unit_template = "ai_unit_beastmen_bestigor",
 	use_backstab_vo = true,
-	use_charge_nav_layers = true,
 	use_navigation_path_splines = true,
 	uses_attack_sfx_callback = true,
 	vortexable = true,

@@ -46,6 +46,8 @@ CameraStateHelper.set_camera_rotation = function (camera_unit, camera_extension)
 	local look_rotation = Quaternion.multiply(yaw_rotation, pitch_rotation)
 
 	Unit.set_local_rotation(camera_unit, 0, look_rotation)
+
+	return Vector3.length_squared(look_delta) > 0
 end
 
 CameraStateHelper.set_follow_camera_position = function (camera_unit, position, position_offset, snap_camera, dt)
@@ -68,6 +70,18 @@ CameraStateHelper.set_follow_camera_position = function (camera_unit, position, 
 
 	fassert(Vector3.is_valid(new_position), "Camera position invalid.")
 	Unit.set_local_position(camera_unit, 0, new_position)
+end
+
+CameraStateHelper.set_camera_rotation_observe_static = function (camera_unit, target_unit)
+	local target_rotation = Unit.local_rotation(target_unit, 0)
+
+	target_rotation = Quaternion.look(Quaternion.forward(target_rotation), Vector3.up())
+
+	local right = Quaternion.right(target_rotation)
+	local offset = Quaternion.axis_angle(right, -math.pi * 0.07)
+	local new_rotation = Quaternion.multiply(offset, target_rotation)
+
+	Unit.set_local_rotation(camera_unit, 0, new_rotation)
 end
 
 CameraStateHelper.get_valid_unit_to_observe = function (reverse, optional_side, optional_current_unit, optional_observer_player)

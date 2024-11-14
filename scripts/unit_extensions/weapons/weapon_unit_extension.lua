@@ -24,6 +24,7 @@ require("scripts/unit_extensions/weapons/actions/action_true_flight_bow")
 require("scripts/unit_extensions/weapons/actions/action_true_flight_bow_aim")
 require("scripts/unit_extensions/weapons/actions/action_bullet_spray")
 require("scripts/unit_extensions/weapons/actions/action_flamethrower")
+require("scripts/unit_extensions/weapons/actions/action_warpfire_thrower")
 require("scripts/unit_extensions/weapons/actions/action_aim")
 require("scripts/unit_extensions/weapons/actions/action_reload")
 require("scripts/unit_extensions/weapons/actions/action_shotgun")
@@ -87,6 +88,7 @@ local action_classes = {
 	throw_grimoire = ActionThrowGrimoire,
 	healing_draught = ActionHealingDraught,
 	flamethrower = ActionFlamethrower,
+	warpfire_thrower = ActionWarpfireThrower,
 	minigun = ActionMinigun,
 	minigun_spin = ActionMinigunSpin,
 	career_dr_three = ActionCareerDRRanger,
@@ -212,7 +214,7 @@ WeaponUnitExtension.init = function (self, extension_init_context, unit, extensi
 	if weapon_template_name then
 		self._weapon_template_name = weapon_template_name
 
-		local template = Weapons[weapon_template_name]
+		local template = WeaponUtils.get_weapon_template(weapon_template_name)
 		local custom_data = template.custom_data
 
 		if custom_data then
@@ -260,14 +262,20 @@ WeaponUnitExtension.extensions_ready = function (self, world, unit)
 	self._talent_extension = ScriptUnit.has_extension(owner_unit, "talent_system")
 end
 
+WeaponUnitExtension.unlink_damage_unit = function (self)
+	if self.actual_damage_unit then
+		World.unlink_unit(self.world, self.actual_damage_unit)
+	end
+end
+
 WeaponUnitExtension.destroy = function (self)
 	Managers.state.event:unregister("on_game_options_changed", self)
 
-	if self._synced_weapon_states then
-		for synced_state, weapon_state in pairs(self._synced_weapon_states) do
-			if weapon_state.leave then
-				weapon_state:leave(self.owner_unit, self.unit, self._synced_weapon_state_data, self:_is_local_player(), self.world, nil, true)
-			end
+	if self._synced_weapon_state then
+		local weapon_state = self._synced_weapon_states[self._synced_weapon_state]
+
+		if weapon_state.leave then
+			weapon_state:leave(self.owner_unit, self.unit, self._synced_weapon_state_data, self:_is_local_player(), self.world, nil, true)
 		end
 	end
 
@@ -288,6 +296,10 @@ WeaponUnitExtension.destroy = function (self)
 
 	for id in pairs(self.looping_audio_events) do
 		self:stop_looping_audio(id)
+	end
+
+	if self.first_person_unit then
+		World.unlink_unit(self.world, self.actual_damage_unit)
 	end
 end
 
@@ -477,6 +489,24 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 		time_to_complete = time_to_complete / action_time_scale
 
 		local skin_data = get_skin_action_override_data(self.weapon_skin_anim_overrides, current_action_settings)
+		local pre_action_anim = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "pre_action_anim_event")
+
+		if pre_action_anim then
+			local anim_time_scale = ActionUtils.get_action_time_scale(owner_unit, current_action_settings, true)
+
+			anim_time_scale = math.clamp(anim_time_scale, NetworkConstants.animation_variable_float.min, NetworkConstants.animation_variable_float.max)
+
+			if type(pre_action_anim) == "table" then
+				for i = 1, #pre_action_anim do
+					self:_play_3p_anim(pre_action_anim[i], pre_action_anim[i], owner_unit, nil, anim_time_scale)
+					self:_play_1p_anim(pre_action_anim[i], pre_action_anim[i], first_person_unit, nil, anim_time_scale)
+				end
+			else
+				self:_play_3p_anim(pre_action_anim, pre_action_anim, owner_unit, nil, anim_time_scale)
+				self:_play_1p_anim(pre_action_anim, pre_action_anim, first_person_unit, nil, anim_time_scale)
+			end
+		end
+
 		local event = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event")
 		local event_1p = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event_1p") or event
 		local event_3p = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event_3p") or event
@@ -711,7 +741,7 @@ WeaponUnitExtension._finish_action = function (self, reason, data)
 end
 
 WeaponUnitExtension._weapon_template = function (self)
-	return Weapons[self._weapon_template_name]
+	return WeaponUtils.get_weapon_template(self._weapon_template_name)
 end
 
 WeaponUnitExtension.anim_end_event = function (self, reason, current_action_settings)
@@ -1373,13 +1403,21 @@ WeaponUnitExtension.on_wield = function (self, hand_name)
 	end
 
 	if self._weapon_wield then
-		self._weapon_wield(self, hand_name)
+		self._weapon_wield(self, hand_name, self.owner_unit, self:_is_local_player())
 	end
 end
 
 WeaponUnitExtension.on_unwield = function (self, hand_name)
 	if self._weapon_unwield then
 		self._weapon_unwield(self, hand_name)
+	end
+
+	if self._synced_weapon_state then
+		local weapon_state = self._synced_weapon_states[self._synced_weapon_state]
+
+		if weapon_state.leave then
+			weapon_state:leave(self.owner_unit, self.unit, self._synced_weapon_state_data, self:_is_local_player(), self.world, nil, false)
+		end
 	end
 end
 

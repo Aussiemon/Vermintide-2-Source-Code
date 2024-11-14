@@ -43,6 +43,7 @@ dofile("scripts/settings/equipment/item_master_list_exported")
 dofile("scripts/settings/equipment/item_master_list_weapon_skins")
 dofile("scripts/settings/equipment/item_master_list_test_items")
 dofile("scripts/settings/equipment/item_master_list_steam_items")
+dofile("scripts/settings/equipment/item_master_list_weapon_poses")
 DLCUtils.dofile_list("item_master_list_file_names")
 
 for i = 1, #ItemMasertListUpdateQueue do
@@ -142,8 +143,7 @@ end
 ItemMasterListMeta = ItemMasterListMeta or {}
 
 ItemMasterListMeta.__index = function (table, key)
-	error(string.format("ItemMasterList has no item %q", tostring(key)))
-	error(string.format("IMPORTANT: This error might be caused by old data in local save files. Clear local data by deleting backend_local.sav"))
+	Crashify.print_exception("[ItemMasterList]", "ItemMaster List has no item %s", key)
 end
 
 setmetatable(ItemMasterList, ItemMasterListMeta)

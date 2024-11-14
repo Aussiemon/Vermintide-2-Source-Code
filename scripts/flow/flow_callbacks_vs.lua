@@ -13,10 +13,10 @@ function flow_query_ghost_mode_active(params)
 		return
 	end
 
-	local ghost_mode_extension = ScriptUnit.extension(unit, "ghost_mode_system")
-	local is_in_ghost_mode = ghost_mode_extension:is_in_ghost_mode()
+	local ghost_mode_extension = ScriptUnit.has_extension(unit, "ghost_mode_system")
+	local is_in_ghost_mode = ghost_mode_extension and ghost_mode_extension:is_in_ghost_mode()
 
-	flow_return_table.active = is_in_ghost_mode
+	flow_return_table.active = not not is_in_ghost_mode
 	flow_return_table.not_active = not is_in_ghost_mode
 
 	return flow_return_table

@@ -6,7 +6,7 @@ local spawn_unit_templates_vs = {
 			local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 			local above, below = 1, 2.5
 
-			if ChaosTrollStateVomiting.position_on_navmesh(position, nav_world, above, below) then
+			local function safe_navigation_callback()
 				local dir = Quaternion.forward(rotation)
 				local extension_init_data = {
 					area_damage_system = {
@@ -21,6 +21,10 @@ local spawn_unit_templates_vs = {
 
 				liquid_area_damage_extension:ready()
 			end
+
+			local ai_navigation_system = Managers.state.entity:system("ai_navigation_system")
+
+			ai_navigation_system:add_safe_navigation_callback(safe_navigation_callback)
 		end,
 	},
 	vortex = {

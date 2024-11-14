@@ -124,23 +124,23 @@ WeaveProgressUI._update_bonus_objectives = function (self, dt, t)
 	end
 
 	local entity_system = Managers.state and Managers.state.entity
-	local weave_objective_system = entity_system and entity_system:system("weave_objective_system")
+	local objective_system = entity_system and entity_system:system("objective_system")
 	local current_objective_index = Managers.weave:get_active_objective()
 	local objectives_ordered = weave_template.objectives_ordered
 	local current_objective_ordered = objectives_ordered[current_objective_index]
 
-	if weave_objective_system then
-		local current_objectives = weave_objective_system:current_main_objectives()
+	if objective_system then
+		local active_objectives = objective_system:active_objectives()
 
-		for _, objective in pairs(current_objectives) do
-			local objective_name = objective:objective_name()
+		for _, objective_name in ipairs(active_objectives) do
+			local objective = objective_system:extension_by_objective_name(objective_name)
 
 			TEMP_TABLE[objective_name] = true
 
 			if not bonus_objective_lookup[objective_name] then
-				local objective_settings = objective:get_objective_settings()
+				local display_name = objective:display_name()
 
-				if objective_settings then
+				if display_name then
 					local sort_index = table.find(current_objective_ordered, objective_name)
 
 					OBJECTIVES_TO_ADD[#OBJECTIVES_TO_ADD + 1] = {
@@ -155,27 +155,26 @@ WeaveProgressUI._update_bonus_objectives = function (self, dt, t)
 
 		for _, objective_data in ipairs(OBJECTIVES_TO_ADD) do
 			local objective_name = objective_data.objective:objective_name()
-			local objective_settings = objective_data.objective:get_objective_settings()
-			local score = objective_data.objective:score()
-			local display_name = objective_settings.display_name
+			local display_name = objective_data.objective:display_name()
+			local stack = objective_data.objective:is_stacking_objective()
 
-			if objective_settings.stack then
-				if not STACKS_ADDED[objective_settings.stack] then
-					local widget_definition = definitions.create_bonus_objective_func(display_name, score, table.size(bonus_objective_widgets) + table.size(bonus_objective_stack_widgets), objective_settings.stack, objective_name)
-					local stack = bonus_objective_stack_widgets[objective_settings.stack] or {}
+			if stack then
+				if not STACKS_ADDED[stack] then
+					local widget_definition = definitions.create_bonus_objective_func(display_name, table.size(bonus_objective_widgets) + table.size(bonus_objective_stack_widgets), stack, objective_name)
+					local stack_widgets = bonus_objective_stack_widgets[stack] or {}
 
-					stack[#stack + 1] = UIWidget.init(widget_definition)
-					bonus_objective_stack_widgets[objective_settings.stack] = stack
-					bonus_objective_lookup[objective_name] = stack[#stack]
-					STACKS_ADDED[objective_settings.stack] = true
+					stack_widgets[#stack_widgets + 1] = UIWidget.init(widget_definition)
+					bonus_objective_stack_widgets[stack] = stack_widgets
+					bonus_objective_lookup[objective_name] = stack_widgets[#stack_widgets]
+					STACKS_ADDED[stack] = true
 				else
-					local bonus_objective = bonus_objective_stack_widgets[objective_settings.stack][#bonus_objective_stack_widgets[objective_settings.stack]]
+					local bonus_objective = bonus_objective_stack_widgets[stack][#bonus_objective_stack_widgets[stack]]
 
 					bonus_objective.content.stack[#bonus_objective.content.stack + 1] = objective_name
 					bonus_objective_lookup[objective_name] = bonus_objective
 				end
 			else
-				local widget_definition = definitions.create_bonus_objective_func(display_name, score, table.size(bonus_objective_widgets) + table.size(bonus_objective_stack_widgets))
+				local widget_definition = definitions.create_bonus_objective_func(display_name, table.size(bonus_objective_widgets) + table.size(bonus_objective_stack_widgets))
 
 				bonus_objective_widgets[objective_name] = UIWidget.init(widget_definition)
 				bonus_objective_lookup[objective_name] = bonus_objective_widgets[objective_name]
@@ -188,7 +187,6 @@ WeaveProgressUI._update_bonus_objectives = function (self, dt, t)
 
 				local text = widget.content.objective_name_id
 				local objective_style = widget.style.objective_name
-				local score_style = widget.style.score
 				local font, scaled_font_size = UIFontByResolution(objective_style)
 				local text_width = UIRenderer.text_size(self._ui_renderer, text, font[1], scaled_font_size)
 				local texture_size = table.clone(widget.style.checkmark.texture_size)
@@ -209,9 +207,6 @@ WeaveProgressUI._update_bonus_objectives = function (self, dt, t)
 						self._animations["objective_color_r_" .. objective_name] = UIAnimation.init(UIAnimation.function_by_time, objective_style.text_color, 2, 255, 192, 0.5, math.easeInCubic)
 						self._animations["objective_color_g_" .. objective_name] = UIAnimation.init(UIAnimation.function_by_time, objective_style.text_color, 3, 255, 192, 0.5, math.easeInCubic)
 						self._animations["objective_color_b_" .. objective_name] = UIAnimation.init(UIAnimation.function_by_time, objective_style.text_color, 4, 255, 192, 0.5, math.easeInCubic)
-						self._animations["score_color_r_" .. objective_name] = UIAnimation.init(UIAnimation.function_by_time, score_style.text_color, 2, 255, 192, 0.5, math.easeInCubic)
-						self._animations["score_color_g_" .. objective_name] = UIAnimation.init(UIAnimation.function_by_time, score_style.text_color, 3, 255, 192, 0.5, math.easeInCubic)
-						self._animations["score_color_b_" .. objective_name] = UIAnimation.init(UIAnimation.function_by_time, score_style.text_color, 4, 255, 192, 0.5, math.easeInCubic)
 					end
 				end
 			end
@@ -254,6 +249,8 @@ WeaveProgressUI._update_animations = function (self, dt)
 		end
 	end
 end
+
+local WEAVE_SCORE = DEBUG and 0 or nil
 
 WeaveProgressUI._update_bar = function (self, dt, t)
 	local weave_manager = Managers.weave
@@ -316,7 +313,7 @@ WeaveProgressUI._draw = function (self, dt, t)
 	local bonus_objective_stack_widgets = self._bonus_objective_stack_widgets
 
 	if table.size(bonus_objective_stack_widgets) > 0 then
-		for stack_name, stack in pairs(bonus_objective_stack_widgets) do
+		for _, stack in pairs(bonus_objective_stack_widgets) do
 			for _, widget in pairs(stack) do
 				UIRenderer.draw_widget(ui_renderer, widget)
 			end

@@ -28,10 +28,6 @@ AttackTemplates.heroic_killing_blow_proc = {
 		255,
 	},
 }
-AttackTemplates.slashing_buffed_damage = {
-	damage_type = "slashing_buffed",
-	sound_type = "light",
-}
 AttackTemplates.potion_damage_player = {
 	damage = 10,
 	damage_type = "slashing",
@@ -290,18 +286,6 @@ AttackTemplates.light_blunt_HS = {
 	damage_type = "light_blunt",
 	sound_type = "light",
 }
-AttackTemplates.light_stab_linesman = {
-	damage_type = "light_stab_linesman",
-	sound_type = "light",
-}
-AttackTemplates.stab_linesman = {
-	damage_type = "stab_linesman",
-	sound_type = "medium",
-}
-AttackTemplates.heavy_stab_linesman = {
-	damage_type = "heavy_stab_linesman",
-	sound_type = "heavy",
-}
 AttackTemplates.light_stab_smiter = {
 	damage_type = "light_stab_smiter",
 	sound_type = "light",
@@ -344,24 +328,6 @@ AttackTemplates.heavy_thrust_fencer = {
 }
 AttackTemplates.heavy_stab_fencer = {
 	damage_type = "heavy_stab_fencer",
-	sound_type = "heavy",
-	stagger_angle = "stab",
-	stagger_value = 2,
-}
-AttackTemplates.light_stab_tank = {
-	damage_type = "light_stab_tank",
-	sound_type = "light",
-	stagger_angle = "stab",
-	stagger_value = 1,
-}
-AttackTemplates.stab_tank = {
-	damage_type = "stab_tank",
-	sound_type = "medium",
-	stagger_angle = "stab",
-	stagger_value = 1,
-}
-AttackTemplates.heavy_stab_tank = {
-	damage_type = "heavy_stab_tank",
 	sound_type = "heavy",
 	stagger_angle = "stab",
 	stagger_value = 2,
@@ -438,6 +404,11 @@ AttackTemplates.heal_bandage = {
 	heal_percent = 0.8,
 	heal_type = "bandage",
 	sound_type = "light",
+	mechanism_overrides = {
+		versus = {
+			heal_percent = 1,
+		},
+	},
 }
 AttackTemplates.healing_draught = {
 	heal_amount = 40,

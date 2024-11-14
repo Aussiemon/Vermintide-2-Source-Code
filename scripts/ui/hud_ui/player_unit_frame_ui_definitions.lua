@@ -32,9 +32,23 @@ local scenegraph_definition = {
 			SIZE_Y,
 		},
 	},
-	pivot = {
+	pivot_parent = {
 		horizontal_alignment = "center",
 		parent = "root",
+		vertical_alignment = "bottom",
+		position = {
+			50,
+			0,
+			5,
+		},
+		size = {
+			0,
+			0,
+		},
+	},
+	pivot = {
+		horizontal_alignment = "center",
+		parent = "pivot_parent",
 		vertical_alignment = "bottom",
 		position = {
 			0,
@@ -47,15 +61,42 @@ local scenegraph_definition = {
 		},
 	},
 	player_status = {
-		parent = "pivot",
+		horizontal_alignment = "center",
+		parent = "root",
+		vertical_alignment = "bottom",
 		position = {
+			0 + UISettings.INSIGNIA_OFFSET,
 			0,
-			0,
-			0,
+			5,
 		},
 		size = {
 			86,
 			108,
+		},
+	},
+	insignia_pivot_parent = {
+		horizontal_alignment = "left",
+		parent = "root",
+		vertical_alignment = "bottom",
+		position = {
+			0,
+			0,
+			10,
+		},
+		size = portrait_area,
+	},
+	insignia_pivot = {
+		horizontal_alignment = "left",
+		parent = "insignia_pivot_parent",
+		vertical_alignment = "top",
+		position = {
+			40,
+			-25,
+			0,
+		},
+		size = {
+			0,
+			0,
 		},
 	},
 	portrait_pivot_parent = {
@@ -63,7 +104,7 @@ local scenegraph_definition = {
 		parent = "root",
 		vertical_alignment = "bottom",
 		position = {
-			80,
+			80 + UISettings.INSIGNIA_OFFSET,
 			80,
 			10,
 		},
@@ -116,9 +157,10 @@ local scenegraph_definition = {
 	},
 }
 local inventory_consumable_icons = {
-	[1] = "hud_inventory_icon_heal_01",
-	[2] = "hud_inventory_icon_bomb",
-	[3] = "hud_inventory_icon_potion",
+	"hud_inventory_icon_heal_01",
+	"hud_inventory_icon_bomb",
+	"hud_inventory_icon_potion",
+	grenade_engineer = "hud_inventory_icon_bomb",
 	grenade_fire_01 = "hud_inventory_icon_bomb",
 	grenade_fire_02 = "hud_inventory_icon_bomb",
 	grenade_frag_01 = "hud_inventory_icon_bomb",
@@ -839,6 +881,7 @@ local widget_definitions = {
 	health_dynamic = create_dynamic_health_widget(),
 	ability_dynamic = create_dynamic_ability_widget(),
 	respawn_dynamic = create_respawn_countdown_widget(),
+	versus_insignia_static = UIWidgets.create_small_insignia("insignia_pivot", 1, nil, nil, nil, RETAINED_MODE_ENABLED),
 }
 local features_list = {
 	ability = true,
@@ -852,6 +895,7 @@ local widget_name_by_feature = {
 		default = "default_static",
 		level = "default_static",
 		portrait_frame = "portrait_static",
+		versus_insignia = "versus_insignia_static",
 	},
 	dynamic = {
 		ability = "ability_dynamic",

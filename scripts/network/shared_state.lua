@@ -31,16 +31,17 @@ local function get_or_create_table(table, key)
 	return val
 end
 
-local function set(state, owner, key_type, peer_id, local_player_id, profile_index, career_index, value)
+local function set(state, owner, key_type, peer_id, local_player_id, profile_index, career_index, party_id, value)
 	state = get_or_create_table(state, owner)
 	state = get_or_create_table(state, key_type)
 	state = get_or_create_table(state, peer_id)
 	state = get_or_create_table(state, local_player_id)
 	state = get_or_create_table(state, profile_index)
-	state[career_index] = value
+	state = get_or_create_table(state, career_index)
+	state[party_id] = value
 end
 
-local function get(state, owner, key_type, peer_id, local_player_id, profile_index, career_index)
+local function get(state, owner, key_type, peer_id, local_player_id, profile_index, career_index, party_id)
 	state = state[owner]
 
 	if not state then
@@ -73,18 +74,25 @@ local function get(state, owner, key_type, peer_id, local_player_id, profile_ind
 
 	state = state[career_index]
 
+	if not state then
+		return
+	end
+
+	state = state[party_id]
+
 	return state
 end
 
-local function set_server(state, key_type, peer_id, local_player_id, profile_index, career_index, value)
+local function set_server(state, key_type, peer_id, local_player_id, profile_index, career_index, party_id, value)
 	state = get_or_create_table(state, key_type)
 	state = get_or_create_table(state, peer_id)
 	state = get_or_create_table(state, local_player_id)
 	state = get_or_create_table(state, profile_index)
-	state[career_index] = value
+	state = get_or_create_table(state, career_index)
+	state[party_id] = value
 end
 
-local function get_server(state, key_type, peer_id, local_player_id, profile_index, career_index)
+local function get_server(state, key_type, peer_id, local_player_id, profile_index, career_index, party_id)
 	state = state[key_type]
 
 	if not state then
@@ -110,6 +118,12 @@ local function get_server(state, key_type, peer_id, local_player_id, profile_ind
 	end
 
 	state = state[career_index]
+
+	if not state then
+		return
+	end
+
+	state = state[party_id]
 
 	return state
 end
@@ -142,7 +156,7 @@ local function get_server_rpc_for_type(type)
 	end
 end
 
-local function get_full_cached_key(cache_tree, key_type, peer_id, local_player_id, profile_index, career_index)
+local function get_full_cached_key(cache_tree, key_type, peer_id, local_player_id, profile_index, career_index, party_id)
 	local cache = cache_tree
 
 	cache = get_or_create_table(cache, key_type)
@@ -163,6 +177,10 @@ local function get_full_cached_key(cache_tree, key_type, peer_id, local_player_i
 		cache = get_or_create_table(cache, career_index)
 	end
 
+	if party_id then
+		cache = get_or_create_table(cache, party_id)
+	end
+
 	if not cache.__val then
 		local key = {
 			key_type = key_type,
@@ -170,6 +188,7 @@ local function get_full_cached_key(cache_tree, key_type, peer_id, local_player_i
 			local_player_id = local_player_id or 0,
 			profile_index = profile_index or 0,
 			career_index = career_index or 0,
+			party_id = party_id or 0,
 		}
 
 		cache.__val = key
@@ -206,6 +225,11 @@ local function check_if_key_belongs_to_spec(spec, key)
 
 	fassert(career_index == 0 or composite_keys and composite_keys.career_index, "[SharedState] key type '%s' does not have career_index as key parameter", tostring(key_type))
 	fassert(career_index ~= 0 or not composite_keys or not composite_keys.career_index, "[SharedState] key type '%s' needs career_index as key parameter", tostring(key_type))
+
+	local party_id = key.party_id
+
+	fassert(party_id == 0 or composite_keys and composite_keys.party_id, "[SharedState] key type '%s' does not have party_id as key parameter", tostring(key_type))
+	fassert(party_id ~= 0 or not composite_keys or not composite_keys.party_id, "[SharedState] key type '%s' needs party_id as key parameter", tostring(key_type))
 end
 
 local function create_key_type_lookup_from_spec(spec)
@@ -261,7 +285,7 @@ local function dprintf(...)
 	end
 end
 
-local function send_set_peer_rpc(channel_id, context, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
+local function send_set_peer_rpc(channel_id, context, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value)
 	local encoded_value_type = type(encoded_value)
 	local rpc = get_rpc_for_type(encoded_value_type)
 
@@ -269,21 +293,21 @@ local function send_set_peer_rpc(channel_id, context, owner, key_type_lookup, pe
 		local encoded_len = #encoded_value
 
 		if encoded_len == 0 then
-			RPC[rpc](channel_id, context, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value, true)
+			RPC[rpc](channel_id, context, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value, true)
 		else
 			for i = 1, encoded_len, STRING_CHUNK_SIZE do
 				local string_chunk = encoded_value:sub(i, i + STRING_CHUNK_SIZE - 1)
 				local complete = encoded_len < i + STRING_CHUNK_SIZE
 
-				RPC[rpc](channel_id, context, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, string_chunk, complete)
+				RPC[rpc](channel_id, context, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, string_chunk, complete)
 			end
 		end
 	else
-		RPC[rpc](channel_id, context, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
+		RPC[rpc](channel_id, context, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value)
 	end
 end
 
-local function send_set_server_rpc(channel_id, context, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
+local function send_set_server_rpc(channel_id, context, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value)
 	local encoded_value_type = type(encoded_value)
 	local rpc = get_server_rpc_for_type(encoded_value_type)
 
@@ -291,17 +315,17 @@ local function send_set_server_rpc(channel_id, context, key_type_lookup, peer_id
 		local encoded_len = #encoded_value
 
 		if encoded_len == 0 then
-			RPC[rpc](channel_id, context, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value, true)
+			RPC[rpc](channel_id, context, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value, true)
 		else
 			for i = 1, encoded_len, STRING_CHUNK_SIZE do
 				local string_chunk = encoded_value:sub(i, i + STRING_CHUNK_SIZE - 1)
 				local complete = encoded_len < i + STRING_CHUNK_SIZE
 
-				RPC[rpc](channel_id, context, key_type_lookup, peer_id, local_player_id, profile_index, career_index, string_chunk, complete)
+				RPC[rpc](channel_id, context, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, string_chunk, complete)
 			end
 		end
 	else
-		RPC[rpc](channel_id, context, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
+		RPC[rpc](channel_id, context, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value)
 	end
 end
 
@@ -489,8 +513,8 @@ SharedState.is_peer_fully_synced = function (self, peer_id)
 	end
 end
 
-SharedState.get_key = function (self, key_type, peer_id, local_player_id, profile_index, career_index)
-	return get_full_cached_key(self._key_cache, key_type, peer_id, local_player_id, profile_index, career_index)
+SharedState.get_key = function (self, key_type, peer_id, local_player_id, profile_index, career_index, party_id)
+	return get_full_cached_key(self._key_cache, key_type, peer_id, local_player_id, profile_index, career_index, party_id)
 end
 
 SharedState.set_peer = function (self, owner, key, value)
@@ -500,10 +524,10 @@ SharedState.set_peer = function (self, owner, key, value)
 
 	fassert(value ~= nil, "value can't be nil")
 	fassert(type(value) == self._spec.peer[key.key_type].type, "value type is not the same as the spec defines.")
-	set(self._peer_state, owner, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, value)
+	set(self._peer_state, owner, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, key.party_id, value)
 
 	if owner == self._peer_id then
-		dprintf("%s: <set %s> %s:%s:%d:%d:%d = %s", self._original_context, owner, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, printable_value(value))
+		dprintf("%s: <set %s> %s:%s:%d:%d:%d:%d = %s", self._original_context, owner, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, key.party_id, printable_value(value))
 
 		local encoder = self._spec.peer[key.key_type].encode
 		local encoded_value = encoder and encoder(value) or value
@@ -516,17 +540,17 @@ SharedState.set_peer = function (self, owner, key, value)
 					if peer_id ~= self._peer_id then
 						local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-						send_set_peer_rpc(channel_id, self._context, self._peer_id, self._key_type_lookup[key.key_type], key.peer_id, key.local_player_id, key.profile_index, key.career_index, encoded_value)
+						send_set_peer_rpc(channel_id, self._context, self._peer_id, self._key_type_lookup[key.key_type], key.peer_id, key.local_player_id, key.profile_index, key.career_index, key.party_id, encoded_value)
 					end
 				end
 			end
 		else
 			local channel_id = PEER_ID_TO_CHANNEL[self._server_peer_id]
 
-			send_set_peer_rpc(channel_id, self._context, self._peer_id, self._key_type_lookup[key.key_type], key.peer_id, key.local_player_id, key.profile_index, key.career_index, encoded_value)
+			send_set_peer_rpc(channel_id, self._context, self._peer_id, self._key_type_lookup[key.key_type], key.peer_id, key.local_player_id, key.profile_index, key.career_index, key.party_id, encoded_value)
 		end
 	else
-		dprintf("%s: <set prediction %s> %s:%s:%d:%d:%d = %s", self._original_context, owner, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, printable_value(value))
+		dprintf("%s: <set prediction %s> %s:%s:%d:%d:%d:%d = %s", self._original_context, owner, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, key.party_id, printable_value(value))
 	end
 
 	self:_increment_revision()
@@ -587,10 +611,10 @@ SharedState.set_server = function (self, key, value)
 
 	fassert(value ~= nil, "value can't be nil")
 	fassert(type(value) == self._spec.server[key.key_type].type, "value type is not the same as the spec defines.")
-	set_server(self._server_state, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, value)
+	set_server(self._server_state, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, key.party_id, value)
 
 	if self._is_server then
-		dprintf("%s: <set server> %s:%s:%d:%d:%d = %s", self._original_context, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, printable_value(value))
+		dprintf("%s: <set server> %s:%s:%d:%d:%d:%d = %s", self._original_context, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, key.party_id, printable_value(value))
 
 		local encoder = self._spec.server[key.key_type].encode
 		local encoded_value = encoder and encoder(value) or value
@@ -602,12 +626,12 @@ SharedState.set_server = function (self, key, value)
 				if peer_id ~= self._peer_id then
 					local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-					send_set_server_rpc(channel_id, self._context, self._key_type_lookup[key.key_type], key.peer_id, key.local_player_id, key.profile_index, key.career_index, encoded_value)
+					send_set_server_rpc(channel_id, self._context, self._key_type_lookup[key.key_type], key.peer_id, key.local_player_id, key.profile_index, key.career_index, key.party_id, encoded_value)
 				end
 			end
 		end
 	else
-		dprintf("%s: <set server prediction> %s:%s:%d:%d:%d = %s", self._original_context, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, printable_value(value))
+		dprintf("%s: <set server prediction> %s:%s:%d:%d:%d:%d = %s", self._original_context, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, key.party_id, printable_value(value))
 	end
 
 	self:_increment_revision()
@@ -622,7 +646,7 @@ SharedState.get_peer = function (self, owner, key)
 		return self._spec.peer[key.key_type].default_value
 	end
 
-	local value = get(self._peer_state, owner, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index)
+	local value = get(self._peer_state, owner, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, key.party_id)
 
 	return value or self._spec.peer[key.key_type].default_value
 end
@@ -636,7 +660,7 @@ SharedState.get_server = function (self, key)
 		return self._spec.server[key.key_type].default_value
 	end
 
-	local value = get_server(self._server_state, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index)
+	local value = get_server(self._server_state, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, key.party_id)
 
 	return value or self._spec.server[key.key_type].default_value
 end
@@ -655,11 +679,13 @@ SharedState.rpc_shared_state_request_sync = function (self, channel_id, context)
 			for peer_id, peer_id_state in pairs(key_type_state) do
 				for local_player_id, local_player_id_state in pairs(peer_id_state) do
 					for profile_index, profile_index_state in pairs(local_player_id_state) do
-						for career_index, value in pairs(profile_index_state) do
-							local encoder = self._spec.server[key_type].encode
-							local encoded_value = encoder and encoder(value) or value
+						for career_index, career_index_state in pairs(profile_index_state) do
+							for party_id, value in pairs(career_index_state) do
+								local encoder = self._spec.server[key_type].encode
+								local encoded_value = encoder and encoder(value) or value
 
-							send_set_server_rpc(channel_id, self._context, self._key_type_lookup[key_type], peer_id, local_player_id, profile_index, career_index, encoded_value)
+								send_set_server_rpc(channel_id, self._context, self._key_type_lookup[key_type], peer_id, local_player_id, profile_index, career_index, party_id, encoded_value)
+							end
 						end
 					end
 				end
@@ -705,7 +731,7 @@ SharedState.rpc_shared_state_full_sync_complete = function (self, channel_id, co
 	end
 end
 
-SharedState.rpc_shared_state_set_int = function (self, channel_id, context, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
+SharedState.rpc_shared_state_set_int = function (self, channel_id, context, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value)
 	if self:_is_destroyed() then
 		return
 	end
@@ -714,10 +740,10 @@ SharedState.rpc_shared_state_set_int = function (self, channel_id, context, owne
 		return
 	end
 
-	self:_set_rpc(channel_id, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
+	self:_set_rpc(channel_id, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value)
 end
 
-SharedState.rpc_shared_state_set_string = function (self, channel_id, context, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value, complete)
+SharedState.rpc_shared_state_set_string = function (self, channel_id, context, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value, complete)
 	if self:_is_destroyed() then
 		return
 	end
@@ -732,12 +758,12 @@ SharedState.rpc_shared_state_set_string = function (self, channel_id, context, o
 		if complete then
 			local full_value = table.concat(self._batched_string_buffer, "")
 
-			self:_set_rpc(channel_id, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, full_value)
+			self:_set_rpc(channel_id, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, full_value)
 
 			self._batched_string_buffer = nil
 		end
 	elseif complete then
-		self:_set_rpc(channel_id, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
+		self:_set_rpc(channel_id, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value)
 	else
 		self._batched_string_buffer = {
 			encoded_value,
@@ -745,7 +771,7 @@ SharedState.rpc_shared_state_set_string = function (self, channel_id, context, o
 	end
 end
 
-SharedState.rpc_shared_state_set_bool = function (self, channel_id, context, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
+SharedState.rpc_shared_state_set_bool = function (self, channel_id, context, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value)
 	if self:_is_destroyed() then
 		return
 	end
@@ -754,10 +780,10 @@ SharedState.rpc_shared_state_set_bool = function (self, channel_id, context, own
 		return
 	end
 
-	self:_set_rpc(channel_id, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
+	self:_set_rpc(channel_id, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value)
 end
 
-SharedState.rpc_shared_state_set_server_int = function (self, channel_id, context, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
+SharedState.rpc_shared_state_set_server_int = function (self, channel_id, context, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value)
 	if self:_is_destroyed() then
 		return
 	end
@@ -766,10 +792,10 @@ SharedState.rpc_shared_state_set_server_int = function (self, channel_id, contex
 		return
 	end
 
-	self:_set_server_rpc(channel_id, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
+	self:_set_server_rpc(channel_id, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value)
 end
 
-SharedState.rpc_shared_state_set_server_string = function (self, channel_id, context, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value, complete)
+SharedState.rpc_shared_state_set_server_string = function (self, channel_id, context, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value, complete)
 	if self:_is_destroyed() then
 		return
 	end
@@ -784,12 +810,12 @@ SharedState.rpc_shared_state_set_server_string = function (self, channel_id, con
 		if complete then
 			local full_value = table.concat(self._batched_string_buffer, "")
 
-			self:_set_server_rpc(channel_id, key_type_lookup, peer_id, local_player_id, profile_index, career_index, full_value)
+			self:_set_server_rpc(channel_id, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, full_value)
 
 			self._batched_string_buffer = nil
 		end
 	elseif complete then
-		self:_set_server_rpc(channel_id, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
+		self:_set_server_rpc(channel_id, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value)
 	else
 		self._batched_string_buffer = {
 			encoded_value,
@@ -797,7 +823,7 @@ SharedState.rpc_shared_state_set_server_string = function (self, channel_id, con
 	end
 end
 
-SharedState.rpc_shared_state_set_server_bool = function (self, channel_id, context, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
+SharedState.rpc_shared_state_set_server_bool = function (self, channel_id, context, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value)
 	if self:_is_destroyed() then
 		return
 	end
@@ -806,7 +832,7 @@ SharedState.rpc_shared_state_set_server_bool = function (self, channel_id, conte
 		return
 	end
 
-	self:_set_server_rpc(channel_id, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
+	self:_set_server_rpc(channel_id, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value)
 end
 
 SharedState.rpc_shared_state_client_left = function (self, channel_id, context, peer_id)
@@ -830,13 +856,13 @@ SharedState.rpc_shared_state_client_left = function (self, channel_id, context, 
 	end
 end
 
-SharedState._set_rpc = function (self, sender_channel_id, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
+SharedState._set_rpc = function (self, sender_channel_id, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value)
 	local key_type = self._key_type_lookup[key_type_lookup]
 	local decoder = self._spec.peer[key_type].decode
 	local value = decoder and decoder(encoded_value) or encoded_value
 
-	dprintf("%s: <rpc set %s> %s:%s:%d:%d:%d = %s", self._original_context, owner, key_type, peer_id, local_player_id, profile_index, career_index, printable_value(value))
-	set(self._peer_state, owner, key_type, peer_id, local_player_id, profile_index, career_index, value)
+	dprintf("%s: <rpc set %s> %s:%s:%d:%d:%d:%d = %s", self._original_context, owner, key_type, peer_id, local_player_id, profile_index, career_index, party_id, printable_value(value))
+	set(self._peer_state, owner, key_type, peer_id, local_player_id, profile_index, career_index, party_id, value)
 
 	if self._is_server then
 		local sender_peer_id = CHANNEL_TO_PEER_ID[sender_channel_id]
@@ -848,7 +874,7 @@ SharedState._set_rpc = function (self, sender_channel_id, owner, key_type_lookup
 				if connected_peer_id ~= sender_peer_id and connected_peer_id ~= self._peer_id then
 					local channel_id = PEER_ID_TO_CHANNEL[connected_peer_id]
 
-					send_set_peer_rpc(channel_id, self._context, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
+					send_set_peer_rpc(channel_id, self._context, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value)
 				end
 			end
 		end
@@ -865,7 +891,7 @@ SharedState._set_rpc = function (self, sender_channel_id, owner, key_type_lookup
 	end
 end
 
-SharedState._set_server_rpc = function (self, sender_channel_id, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
+SharedState._set_server_rpc = function (self, sender_channel_id, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value)
 	local atomic_set_server_cache = self._atomic_set_server_cache
 
 	if atomic_set_server_cache then
@@ -877,7 +903,8 @@ SharedState._set_server_rpc = function (self, sender_channel_id, key_type_lookup
 		atomic_set_server_cache[index + 3] = local_player_id
 		atomic_set_server_cache[index + 4] = profile_index
 		atomic_set_server_cache[index + 5] = career_index
-		atomic_set_server_cache[index + 6] = encoded_value
+		atomic_set_server_cache[index + 6] = party_id
+		atomic_set_server_cache[index + 7] = encoded_value
 
 		return
 	end
@@ -886,8 +913,8 @@ SharedState._set_server_rpc = function (self, sender_channel_id, key_type_lookup
 	local decoder = self._spec.server[key_type].decode
 	local value = decoder and decoder(encoded_value) or encoded_value
 
-	dprintf("%s: <rpc set server> %s:%s:%d:%d:%d = %s", self._original_context, key_type, peer_id, local_player_id, profile_index, career_index, printable_value(value))
-	set_server(self._server_state, key_type, peer_id, local_player_id, profile_index, career_index, value)
+	dprintf("%s: <rpc set server> %s:%s:%d:%d:%d:%d = %s", self._original_context, key_type, peer_id, local_player_id, profile_index, career_index, party_id, printable_value(value))
+	set_server(self._server_state, key_type, peer_id, local_player_id, profile_index, career_index, party_id, value)
 	self:_increment_revision()
 
 	local callbacks = self._callbacks.server_data_updated
@@ -904,11 +931,13 @@ SharedState._send_all = function (self, channel_id, player_id, player_state)
 		for peer_id, peer_id_state in pairs(key_type_state) do
 			for local_player_id, local_player_id_state in pairs(peer_id_state) do
 				for profile_index, profile_index_state in pairs(local_player_id_state) do
-					for career_index, value in pairs(profile_index_state) do
-						local encoder = self._spec.peer[key_type].encode
-						local encoded_value = encoder and encoder(value) or value
+					for career_index, career_index_state in pairs(profile_index_state) do
+						for party_id, value in pairs(career_index_state) do
+							local encoder = self._spec.peer[key_type].encode
+							local encoded_value = encoder and encoder(value) or value
 
-						send_set_peer_rpc(channel_id, self._context, player_id, self._key_type_lookup[key_type], peer_id, local_player_id, profile_index, career_index, encoded_value)
+							send_set_peer_rpc(channel_id, self._context, player_id, self._key_type_lookup[key_type], peer_id, local_player_id, profile_index, career_index, party_id, encoded_value)
+						end
 					end
 				end
 			end
@@ -981,18 +1010,21 @@ SharedState.rpc_shared_state_end_atomic_set_server = function (self, context)
 		return
 	end
 
-	fassert(self._atomic_set_server_cache, "rpc_shared_state_end_atomic_set_server received when rpc_shared_state_start_atomic_set_server had not been called before")
+	local atomic_set_server_cache = self._atomic_set_server_cache
 
-	for i = 1, #self._atomic_set_server_cache, 7 do
-		local sender_channel_id = self._atomic_set_server_cache[i]
-		local key_type_lookup = self._atomic_set_server_cache[i + 1]
-		local peer_id = self._atomic_set_server_cache[i + 2]
-		local local_player_id = self._atomic_set_server_cache[i + 3]
-		local profile_index = self._atomic_set_server_cache[i + 4]
-		local career_index = self._atomic_set_server_cache[i + 5]
-		local encoded_value = self._atomic_set_server_cache[i + 6]
+	fassert(atomic_set_server_cache, "rpc_shared_state_end_atomic_set_server received when rpc_shared_state_start_atomic_set_server had not been called before")
 
-		self:_set_server_rpc(sender_channel_id, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
+	for i = 1, #atomic_set_server_cache, 7 do
+		local sender_channel_id = atomic_set_server_cache[i]
+		local key_type_lookup = atomic_set_server_cache[i + 1]
+		local peer_id = atomic_set_server_cache[i + 2]
+		local local_player_id = atomic_set_server_cache[i + 3]
+		local profile_index = atomic_set_server_cache[i + 4]
+		local career_index = atomic_set_server_cache[i + 5]
+		local party_id = atomic_set_server_cache[i + 6]
+		local encoded_value = atomic_set_server_cache[i + 7]
+
+		self:_set_server_rpc(sender_channel_id, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value)
 	end
 end
 
@@ -1009,7 +1041,7 @@ local function check_spec_part(spec_part)
 		fassert(elem_spec.composite_keys, "spec %s invalid, missing composite_keys", key_type)
 
 		for key_param, _ in pairs(elem_spec.composite_keys) do
-			fassert(key_param == "peer_id" or key_param == "local_player_id" or key_param == "profile_index" or key_param == "career_index", "spec %s invalid, invalid key_param %s, must be one of peer_id, local_player_id, profile_index, career_index", key_type)
+			fassert(key_param == "peer_id" or key_param == "local_player_id" or key_param == "profile_index" or key_param == "career_index" or key_param == "party_id", "spec %s invalid, invalid key_param %s, must be one of peer_id, local_player_id, profile_index, career_index, party_id", key_type)
 		end
 
 		fassert(not elem_spec.clear_when_peer_id_leaves or elem_spec.clear_when_peer_id_leaves and elem_spec.composite_keys.peer_id, "--")

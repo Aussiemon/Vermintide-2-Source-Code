@@ -77,6 +77,7 @@ CharacterSelectionStateCharacter.on_enter = function (self, params)
 
 	self._hero_preview_skin = nil
 	self.use_user_skins = true
+	self.use_loadout_items = false
 
 	local hero_name = self._hero_name
 	local profile_id = params.profile_id
@@ -338,15 +339,13 @@ CharacterSelectionStateCharacter._update_available_profiles = function (self)
 
 	for i, profile_index in ipairs(profiles) do
 		local profile_settings = SPProfiles[profile_index]
-		local profile_name = profile_settings.display_name
 		local is_profile_available = false
 
 		if player then
 			local peer_id = player:network_id()
-			local local_player_id = player:local_player_id()
-			local profile_name = profile_settings.display_name
+			local _, party_id = Managers.party:get_party_from_unique_id(player:unique_id())
 
-			is_profile_available = mechanism_manager:profile_available_for_peer(peer_id, local_player_id, profile_name)
+			is_profile_available = mechanism_manager:profile_available_for_peer(party_id, peer_id, profile_index)
 		end
 
 		local is_currently_played_profile = own_player_profile_index == profile_index
@@ -1248,7 +1247,28 @@ CharacterSelectionStateCharacter.cb_hero_unit_spawned = function (self, hero_nam
 	local career_settings = careers[career_index]
 	local preview_animation = career_settings.preview_animation
 	local preview_wield_slot = career_settings.preview_wield_slot
-	local preview_items = career_settings.preview_items
+	local preview_items = table.clone(career_settings.preview_items)
+	local career_name = career_settings.name
+
+	if self.use_loadout_items then
+		table.clear(preview_items)
+
+		preview_wield_slot = preview_wield_slot or "melee"
+
+		local slot_names = InventorySettings.slot_names_by_type[preview_wield_slot]
+		local slot_name = slot_names[1]
+		local weapon_item = BackendUtils.get_loadout_item(career_name, slot_name)
+		local weapon_item_name = weapon_item.key
+		local hat_item = BackendUtils.get_loadout_item(career_name, "slot_hat")
+		local hat_item_name = hat_item.key
+
+		preview_items[#preview_items + 1] = {
+			item_name = weapon_item_name,
+		}
+		preview_items[#preview_items + 1] = {
+			item_name = hat_item_name,
+		}
+	end
 
 	if preview_items then
 		for _, item_data in ipairs(preview_items) do
@@ -1274,7 +1294,6 @@ CharacterSelectionStateCharacter.cb_hero_unit_spawned = function (self, hero_nam
 	end
 
 	if self.use_user_skins then
-		local career_name = career_settings.name
 		local item = BackendUtils.get_loadout_item(career_name, "slot_hat")
 
 		if item then
@@ -1294,7 +1313,7 @@ CharacterSelectionStateCharacter.cb_hero_unit_spawned = function (self, hero_nam
 		preview_animation = skin_item_data and skin_item_data.career_select_preview_animation or preview_animation
 	end
 
-	if preview_animation then
+	if preview_animation and not self.use_loadout_items then
 		self.world_previewer:play_character_animation(preview_animation)
 	end
 end

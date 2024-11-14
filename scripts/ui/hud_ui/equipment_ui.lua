@@ -553,7 +553,8 @@ EquipmentUI._sync_player_equipment = function (self)
 						self:_set_widget_dirty(widget)
 					end
 
-					local can_shoot_func = Weapons[item_data.template].actions.action_one.default.condition_func
+					local weapon_template = WeaponUtils.get_weapon_template(item_data.template)
+					local can_shoot_func = weapon_template.actions.action_one.default.condition_func
 
 					if can_reload and not can_shoot_func(player_unit, nil) then
 						local t = Managers.time:time("ui")

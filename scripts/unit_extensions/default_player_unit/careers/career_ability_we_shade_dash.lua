@@ -77,8 +77,6 @@ CareerAbilityWEShadeDash.init = function (self, extension_init_context, unit, ex
 					first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_enter")
 					first_person_extension:animation_event("shade_stealth_ability")
 					career_extension:set_state("kerillian_activate_shade")
-
-					MOOD_BLACKBOARD.skill_shade = true
 				end
 			end
 		end,

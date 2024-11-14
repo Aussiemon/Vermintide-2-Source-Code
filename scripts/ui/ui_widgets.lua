@@ -5605,7 +5605,7 @@ UIWidgets.create_simple_uv_rotated_texture = function (texture, uvs, angle, pivo
 	}
 end
 
-UIWidgets.create_simple_uv_texture = function (texture, uvs, scenegraph_id, masked, retained, color, offset, disable_with_gamepad)
+UIWidgets.create_simple_uv_texture = function (texture, uvs, scenegraph_id, masked, retained, color, offset, disable_with_gamepad, texture_size)
 	if type(offset) ~= "table" then
 		offset = {
 			0,
@@ -5634,6 +5634,7 @@ UIWidgets.create_simple_uv_texture = function (texture, uvs, scenegraph_id, mask
 		},
 		style = {
 			texture_id = {
+				texture_size = texture_size,
 				masked = masked,
 				offset = {
 					0,

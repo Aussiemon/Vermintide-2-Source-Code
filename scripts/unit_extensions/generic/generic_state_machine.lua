@@ -50,7 +50,9 @@ GenericStateMachine.update = function (self, unit, input, dt, context, t)
 	end
 
 	if self.state_next ~= nil then
-		self.state_current:on_exit(unit, input, dt, context, t, self.state_next)
+		local is_destroy = false
+
+		self.state_current:on_exit(unit, input, dt, context, t, self.state_next, is_destroy)
 
 		local state = self.states[self.state_next]
 
@@ -73,12 +75,12 @@ GenericStateMachine.change_state = function (self, state_next, state_next_params
 	self.state_next_params = state_next_params
 end
 
-GenericStateMachine.exit_current_state = function (self)
+GenericStateMachine.exit_current_state = function (self, is_destroy)
 	if self.state_current then
 		local t = Managers.time:time("game")
 		local input, context, next_state, dt
 
-		self.state_current:on_exit(self.unit, input, dt, context, t, next_state)
+		self.state_current:on_exit(self.unit, input, dt, context, t, next_state, is_destroy)
 
 		self.state_current = nil
 	end

@@ -94,7 +94,17 @@ BuffUI._sync_buffs = function (self)
 
 		for i = 1, #buffs do
 			local buff = buffs[i]
-			local icon = not buff.removed and buff.template.icon
+			local icon
+
+			if not buff.removed then
+				local template = buff.template
+
+				icon = template.icon
+
+				if template.icon_modifier_func then
+					icon = template.icon_modifier_func(player_unit, icon)
+				end
+			end
 
 			if icon then
 				local new_widget = self:_add_buff(buff, icon)

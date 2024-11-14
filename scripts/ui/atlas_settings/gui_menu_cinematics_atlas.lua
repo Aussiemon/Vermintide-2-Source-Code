@@ -7,12 +7,12 @@ menu_cinematics_atlas = {
 			222,
 		},
 		uv00 = {
-			0.583984,
-			0.664063,
+			0.77832,
+			0.443359,
 		},
 		uv11 = {
-			0.776367,
-			0.880859,
+			0.970703,
+			0.660156,
 		},
 	},
 	bless_thumbnail = {
@@ -22,6 +22,20 @@ menu_cinematics_atlas = {
 		},
 		uv00 = {
 			0.583984,
+			0.664063,
+		},
+		uv11 = {
+			0.776367,
+			0.880859,
+		},
+	},
+	bogenhafen_thumbnail = {
+		size = {
+			394,
+			222,
+		},
+		uv00 = {
+			0.583984,
 			0.443359,
 		},
 		uv11 = {
@@ -29,7 +43,7 @@ menu_cinematics_atlas = {
 			0.660156,
 		},
 	},
-	bogenhafen_thumbnail = {
+	celebrate_thumbnail = {
 		size = {
 			394,
 			222,
@@ -40,20 +54,6 @@ menu_cinematics_atlas = {
 		},
 		uv11 = {
 			0.970703,
-			0.439453,
-		},
-	},
-	celebrate_thumbnail = {
-		size = {
-			394,
-			222,
-		},
-		uv00 = {
-			0.583984,
-			0.222656,
-		},
-		uv11 = {
-			0.776367,
 			0.439453,
 		},
 	},
@@ -63,6 +63,20 @@ menu_cinematics_atlas = {
 			222,
 		},
 		uv00 = {
+			0.583984,
+			0.222656,
+		},
+		uv11 = {
+			0.776367,
+			0.439453,
+		},
+	},
+	holly_thumbnail = {
+		size = {
+			394,
+			222,
+		},
+		uv00 = {
 			0.77832,
 			0.001953,
 		},
@@ -71,7 +85,7 @@ menu_cinematics_atlas = {
 			0.21875,
 		},
 	},
-	holly_thumbnail = {
+	honduras_thumbnail = {
 		size = {
 			394,
 			222,
@@ -85,7 +99,7 @@ menu_cinematics_atlas = {
 			0.21875,
 		},
 	},
-	honduras_thumbnail = {
+	karak_thumbnail = {
 		size = {
 			394,
 			222,
@@ -97,20 +111,6 @@ menu_cinematics_atlas = {
 		uv11 = {
 			0.582031,
 			0.880859,
-		},
-	},
-	karak_thumbnail = {
-		size = {
-			394,
-			222,
-		},
-		uv00 = {
-			0.389648,
-			0.443359,
-		},
-		uv11 = {
-			0.582031,
-			0.660156,
 		},
 	},
 	lake_thumbnail = {
@@ -120,6 +120,20 @@ menu_cinematics_atlas = {
 		},
 		uv00 = {
 			0.389648,
+			0.443359,
+		},
+		uv11 = {
+			0.582031,
+			0.660156,
+		},
+	},
+	morris_thumbnail = {
+		size = {
+			394,
+			222,
+		},
+		uv00 = {
+			0.389648,
 			0.222656,
 		},
 		uv11 = {
@@ -127,7 +141,7 @@ menu_cinematics_atlas = {
 			0.439453,
 		},
 	},
-	morris_thumbnail = {
+	penny_thumbnail = {
 		size = {
 			394,
 			222,
@@ -141,7 +155,7 @@ menu_cinematics_atlas = {
 			0.21875,
 		},
 	},
-	penny_thumbnail = {
+	prologue_thumbnail = {
 		size = {
 			394,
 			222,
@@ -155,7 +169,7 @@ menu_cinematics_atlas = {
 			0.880859,
 		},
 	},
-	prologue_thumbnail = {
+	scorpion_thumbnail = {
 		size = {
 			394,
 			222,
@@ -169,7 +183,7 @@ menu_cinematics_atlas = {
 			0.660156,
 		},
 	},
-	scorpion_thumbnail = {
+	shovel_thumbnail = {
 		size = {
 			394,
 			222,
@@ -183,7 +197,7 @@ menu_cinematics_atlas = {
 			0.439453,
 		},
 	},
-	shovel_thumbnail = {
+	tower_thumbnail = {
 		size = {
 			394,
 			222,
@@ -197,7 +211,7 @@ menu_cinematics_atlas = {
 			0.21875,
 		},
 	},
-	tower_thumbnail = {
+	trails_thumbnail = {
 		size = {
 			394,
 			222,
@@ -211,7 +225,7 @@ menu_cinematics_atlas = {
 			0.880859,
 		},
 	},
-	trails_thumbnail = {
+	vermintide_thumbnail = {
 		size = {
 			394,
 			222,
@@ -225,7 +239,7 @@ menu_cinematics_atlas = {
 			0.660156,
 		},
 	},
-	vermintide_thumbnail = {
+	versus_thumbnail = {
 		size = {
 			394,
 			222,

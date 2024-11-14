@@ -11,10 +11,6 @@ GutterRunnerStatePinning.init = function (self, character_state_init_context)
 	self._foff_ability_id = self._career_extension:ability_id("foff")
 end
 
-GutterRunnerStatePinning.on_enter_animation = function (self)
-	local unit = self._unit
-end
-
 GutterRunnerStatePinning.change_to_third_person_camera = function (self)
 	CharacterStateHelper.change_camera_state(self._player, "follow_third_person")
 
@@ -28,7 +24,6 @@ GutterRunnerStatePinning.pounce_down = function (self, unit, target_unit, t)
 	local target_position = POSITION_LOOKUP[target_unit]
 
 	locomotion_extension:set_wanted_velocity(Vector3.zero())
-	locomotion_extension:teleport_to(target_position)
 
 	local mover = Unit.mover(unit)
 
@@ -37,12 +32,26 @@ GutterRunnerStatePinning.pounce_down = function (self, unit, target_unit, t)
 
 	local mover_position = Mover.position(mover)
 
-	Unit.set_local_position(unit, 0, mover_position)
+	locomotion_extension:teleport_to(mover_position)
+
+	local flat_unit_rot = Quaternion.flat_no_roll(Unit.local_rotation(unit, 0))
+
+	Unit.set_local_rotation(unit, 0, flat_unit_rot)
+	self._locomotion_extension:set_disable_rotation_update()
+
+	local network_manager = Managers.state.network
+	local unit_id = network_manager:unit_game_object_id(unit)
+
+	if Managers.state.network.is_server then
+		network_manager.network_transmit:send_rpc_clients("rpc_teleport_unit_to", unit_id, mover_position, flat_unit_rot)
+	else
+		network_manager.network_transmit:send_rpc_server("rpc_teleport_unit_to", unit_id, mover_position, flat_unit_rot)
+	end
+
 	StatusUtils.set_pounced_down_network("pounced_down", target_unit, true, unit)
 
 	local target_status_extension = ScriptUnit.extension(target_unit, "status_system")
 
-	target_status_extension:set_pounced_down(true, unit)
 	target_status_extension:add_pacing_intensity(CurrentIntensitySettings.intensity_add_pounced_down)
 
 	local blackboard = self._blackboard
@@ -78,7 +87,6 @@ GutterRunnerStatePinning.on_enter = function (self, unit, input, dt, context, t,
 	CharacterStateHelper.stop_weapon_actions(self._inventory_extension, "pinning_enemy")
 	CharacterStateHelper.stop_career_abilities(self._career_extension, "pinning_enemy")
 	self._locomotion_extension:set_forced_velocity(Vector3:zero())
-	self:on_enter_animation()
 	self:change_to_third_person_camera()
 
 	self._next_stab_time = t

@@ -881,7 +881,15 @@ MusicManager._update_side_state = function (self, dt, t)
 	end
 
 	if not player.player_unit or not Unit.alive(player.player_unit) then
-		return
+		local party = Managers.party:get_local_player_party()
+
+		if party and party.name then
+			music_player:set_group_state("game_faction", party.name)
+
+			return
+		else
+			return
+		end
 	end
 
 	local side_name = self:_get_side_name()
@@ -919,7 +927,7 @@ MusicManager._update_versus_game_state = function (self, music_player, dt, t)
 	local game_mode_key = game_mode_manager:game_mode_key()
 	local game_mode_state = game_mode:game_mode_state()
 
-	if game_mode_key == "inn_vs" or game_mode_state == "initial_state" or game_mode_state == "character_selection_state" then
+	if game_mode_key == "inn_vs" or game_mode:is_in_pre_match_state() then
 		music_player:set_group_state("versus_state", "menu")
 
 		return
@@ -939,12 +947,13 @@ MusicManager._update_versus_game_state = function (self, music_player, dt, t)
 
 	local win_conditions = Managers.mechanism:game_mechanism():win_conditions()
 	local side_close_to_winning = win_conditions:get_side_close_to_winning()
+	local heroes_close_to_safe_zone = win_conditions:heroes_close_to_safe_zone()
 
-	if side_close_to_winning then
+	if side_close_to_winning or heroes_close_to_safe_zone then
 		local state
-		local side_name = self:_get_side_name()
+		local player_team_close_to_safe_zone = heroes_close_to_safe_zone and side_name == "heroes"
 
-		state = side_name == side_close_to_winning and "close_to_win" or "time_is_running_out"
+		state = (side_name == side_close_to_winning or player_team_close_to_safe_zone) and "close_to_win" or "time_is_running_out"
 
 		music_player:set_group_state("versus_state", state)
 	elseif is_dark_pact then

@@ -1935,6 +1935,96 @@ Paintings.ver_dark_elves_page_58 = {
 		wood = true,
 	},
 }
+Paintings.hor_empire_page_050 = {
+	artist = "painting_empire_page_050_artist",
+	description = "painting_empire_page_050_description",
+	display_name = "painting_empire_page_050_name",
+	frame = "wood",
+	icon = "icon_painting_1",
+	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_empire_page_050_description",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true,
+	},
+}
+Paintings.ver_dwarfs_page_57 = {
+	artist = "painting_dwarfs_page_57_artist",
+	description = "painting_dwarfs_page_57_description",
+	display_name = "painting_dwarfs_page_57_name",
+	frame = "wood",
+	icon = "icon_painting_2",
+	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_dwarfs_page_57_description",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true,
+	},
+}
+Paintings.ver_empire_page_033 = {
+	artist = "painting_empire_page_033_artist",
+	description = "painting_empire_page_033_description",
+	display_name = "painting_empire_page_033_name",
+	frame = "wood",
+	icon = "icon_painting_2",
+	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_empire_page_033_description",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true,
+	},
+}
+Paintings.ver_empire_page_041 = {
+	artist = "painting_empire_page_041_artist",
+	description = "painting_empire_page_041_description",
+	display_name = "painting_empire_page_041_name",
+	frame = "wood",
+	icon = "icon_painting_2",
+	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_empire_page_041_description",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true,
+	},
+}
+Paintings.ver_empire_page_039 = {
+	artist = "painting_empire_page_039_artist",
+	description = "painting_empire_page_039_description",
+	display_name = "painting_empire_page_039_name",
+	frame = "wood",
+	icon = "icon_painting_2",
+	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_empire_page_039_description",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true,
+	},
+}
+Paintings.ver_wood_elves_page_048 = {
+	artist = "painting_wood_elves_page_048_artist",
+	description = "painting_wood_elves_page_048_description",
+	display_name = "painting_wood_elves_page_048_name",
+	frame = "wood",
+	icon = "icon_painting_2",
+	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_wood_elves_page_048_description",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true,
+	},
+}
 DefaultPaintings = {
 	"hor_none",
 	"ver_none",
@@ -2069,6 +2159,12 @@ local painting_order = {
 	"ver_dark_elves_page_58",
 	"ver_dark_elves_page_52",
 	"hor_high_elves_page_004",
+	"ver_dwarfs_page_57",
+	"hor_empire_page_050",
+	"ver_empire_page_033",
+	"ver_empire_page_041",
+	"ver_empire_page_039",
+	"ver_wood_elves_page_048",
 }
 
 PaintingOrder = PaintingOrder or {}

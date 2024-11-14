@@ -177,3 +177,24 @@ end
 ExtensionSystemBase.destroy = function (self)
 	return
 end
+
+local RETURN_TABLE = {}
+
+ExtensionSystemBase.get_extensions_from_extension_name = function (self, extension_name)
+	fassert(self.update_list[extension_name], "[ExtensionSystemBase:get_extensions_from_type] There is no extension called %q", extension_name)
+	table.clear(RETURN_TABLE)
+
+	for unit, data in pairs(self.update_list[extension_name].pre_update) do
+		RETURN_TABLE[unit] = data
+	end
+
+	for unit, data in pairs(self.update_list[extension_name].update) do
+		RETURN_TABLE[unit] = data
+	end
+
+	for unit, data in pairs(self.update_list[extension_name].post_update) do
+		RETURN_TABLE[unit] = data
+	end
+
+	return RETURN_TABLE
+end

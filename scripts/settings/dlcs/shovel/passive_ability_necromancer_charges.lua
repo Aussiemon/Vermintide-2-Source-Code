@@ -283,15 +283,12 @@ PassiveAbilityNecromancerCharges.kill_pets = function (self, peer_id)
 	end
 
 	if self._has_army then
-		local commander_ext = self._commander_extension
-		local t = Managers.time:time("game")
-
-		for pet_unit in pairs(self._spawned_pets) do
+		for pet_unit, template_name in pairs(self._spawned_pets) do
 			if HEALTH_ALIVE[pet_unit] then
-				local template = commander_ext:controlled_unit_template(pet_unit)
 				local army_template = "necromancer_pet_army"
 
-				if template.name ~= army_template then
+				if template_name ~= army_template then
+					self:_remove_unit(pet_unit)
 					AiUtils.kill_unit(pet_unit)
 				end
 			end

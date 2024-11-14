@@ -267,6 +267,7 @@ settings.mechanism_settings = {
 	deus = {
 		check_matchmaking_hero_availability = true,
 		class_name = "DeusMechanism",
+		default_difficulty = "hard",
 		default_inventory = true,
 		disable_difficulty_check = true,
 		display_name = "area_selection_morris_name",

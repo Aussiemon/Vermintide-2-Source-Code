@@ -16,6 +16,8 @@ local UI_RENDERER_MATERIALS = {
 	"material",
 	"materials/ui/ui_1080p_common",
 	"material",
+	"materials/ui/ui_1080p_versus_available_common",
+	"material",
 	"materials/fonts/gw_fonts",
 	"material",
 	"materials/ui/ui_1080p_morris_single_textures",
@@ -365,8 +367,8 @@ GameModeMapDeus._are_all_peers_in_same_state = function (self)
 	return true
 end
 
-GameModeMapDeus.player_entered_game_session = function (self, peer_id, local_player_id)
-	GameModeMapDeus.super.player_entered_game_session(self, peer_id, local_player_id)
+GameModeMapDeus.player_entered_game_session = function (self, peer_id, local_player_id, requested_party_index)
+	GameModeMapDeus.super.player_entered_game_session(self, peer_id, local_player_id, requested_party_index)
 
 	local status = Managers.party:get_player_status(peer_id, local_player_id)
 

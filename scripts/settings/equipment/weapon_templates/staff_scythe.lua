@@ -2022,7 +2022,6 @@ weapon_template.actions = {
 				{
 					action = "action_three",
 					auto_chain = true,
-					release_required = "action_three",
 					start_time = 0.7,
 					sub_action = "special_action_attack",
 				},

@@ -14,8 +14,6 @@ PackmasterStateWalking.on_enter = function (self, unit, input, dt, context, t, p
 
 	self._right_wpn_particle_node_name = "g_skaven_packmaster_claw"
 	self._right_wpn_particle_name = "fx/wpnfx_packmaster_enemy_in_range_1p"
-
-	self:check_enemies_in_range_vfx()
 end
 
 PackmasterStateWalking.update = function (self, unit, input, dt, context, t)
@@ -24,8 +22,6 @@ PackmasterStateWalking.update = function (self, unit, input, dt, context, t)
 	if handled then
 		return
 	end
-
-	self:check_enemies_in_range_vfx()
 
 	local csm = self._csm
 	local career_extension = self._career_extension

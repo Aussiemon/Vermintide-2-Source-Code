@@ -936,6 +936,26 @@ WeaponTraits.combinations = {
 			"trinket_grenade_damage_taken",
 		},
 	},
+	trollhammer_torpedo = {
+		{
+			"ranged_restore_stamina_headshot",
+		},
+		{
+			"ranged_reduce_cooldown_on_crit",
+		},
+		{
+			"ranged_increase_power_level_vs_armour_crit",
+		},
+		{
+			"ranged_consecutive_hits_increase_power",
+		},
+		{
+			"melee_timed_block_cost",
+		},
+		{
+			"melee_increase_damage_on_block",
+		},
+	},
 }
 
 BuffUtils.copy_talent_buff_names(WeaponTraits.buff_templates)

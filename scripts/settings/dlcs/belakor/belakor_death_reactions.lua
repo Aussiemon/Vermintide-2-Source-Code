@@ -69,7 +69,7 @@ local death_reactions = {
 							local buff_extension = ScriptUnit.has_extension(last_attacker_unit, "buff_system")
 
 							if buff_extension then
-								buff_extension:trigger_procs("on_barrel_exploded", position, rotation, item_name)
+								buff_extension:trigger_procs("on_barrel_exploded", position, rotation, item_name, unit)
 							end
 						end
 					end

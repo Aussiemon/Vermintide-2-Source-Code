@@ -245,10 +245,6 @@ DeusCursedChestExtension._clear_objective_unit = function (self)
 	self._objective_unit = nil
 	self._objective_unit_timeout = nil
 
-	if self._objective_unit_running_astar then
-		GwNavAStar.cancel(self._objective_unit_astar)
-	end
-
 	GwNavAStar.destroy(self._objective_unit_astar)
 
 	self._objective_unit_astar = nil

@@ -191,7 +191,7 @@ TalentExtension._update_talent_weapon_index = function (self, talent_ids)
 		end
 	end
 
-	if previous_weapon_index ~= self.talent_career_weapon_index then
+	if previous_weapon_index ~= self.talent_career_weapon_index and not talents_available then
 		self._needs_loadout_resync = true
 	end
 end
@@ -317,14 +317,6 @@ TalentExtension.initial_talent_synced = function (self)
 end
 
 TalentExtension._check_talent_package_dendencies = function (self, talent_ids, initial_setup)
-	local career_settings = self.career_extension:career_settings()
-
-	if career_settings.talent_packages then
-		self._needs_loadout_resync = true
-
-		return
-	end
-
 	local new_dependencies = {}
 	local new_dependencies_n = 0
 	local hero_name = self._hero_name

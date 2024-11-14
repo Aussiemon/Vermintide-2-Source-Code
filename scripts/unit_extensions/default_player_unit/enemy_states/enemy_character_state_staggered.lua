@@ -85,7 +85,8 @@ EnemyCharacterStateStaggered._select_animation = function (self, unit, impact_ve
 end
 
 EnemyCharacterStateStaggered.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
-	MOOD_BLACKBOARD.staggered = true
+	Managers.state.camera:set_mood("staggered", self, true)
+
 	self._exit_anim_triggered = false
 
 	CharacterStateHelper.move_on_ground(self._first_person_extension, input, self._locomotion_extension, Vector3(0, 0, 0), 0, unit)
@@ -139,6 +140,10 @@ EnemyCharacterStateStaggered.on_enter = function (self, unit, input, dt, context
 		self._locomotion_extension:enable_animation_driven_movement(false)
 	end
 
+	if self._player.local_player and not self._player.bot_player then
+		WwiseWorld.trigger_event(self._wwise_world, "Play_versus_hud_pactsworn_stagger_1p")
+	end
+
 	if self._breed.boss and self._stagger_type > 1 then
 		local buff_system = Managers.state.entity:system("buff_system")
 
@@ -152,8 +157,7 @@ EnemyCharacterStateStaggered.on_exit = function (self, unit, input, dt, context,
 	self._locomotion_extension:enable_script_driven_movement()
 	self._first_person_extension:set_wanted_player_height("stand", t)
 	self:set_breed_action("n/a")
-
-	MOOD_BLACKBOARD.staggered = false
+	Managers.state.camera:set_mood("staggered", self, false)
 end
 
 EnemyCharacterStateStaggered.update = function (self, unit, input, dt, context, t)

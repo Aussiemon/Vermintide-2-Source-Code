@@ -409,9 +409,7 @@ AiBreedSnippets.on_chaos_dummy_troll_update = function (unit, blackboard)
 
 		blackboard.play_alert = nil
 
-		local network_manager = Managers.state.network
-
-		network_manager:anim_event(unit, "to_combat")
+		AiUtils.enter_combat(unit, blackboard)
 	end
 
 	if idle_sound_timer and idle_sound_timer < t then
@@ -1994,6 +1992,42 @@ AiBreedSnippets.update_enemy_sighting_within_commander_sticky = function (blackb
 		end
 
 		blackboard.last_in_combat_t = blackboard.target_unit and t or blackboard.last_in_combat_t
+	end
+end
+
+AiBreedSnippets.on_human_soldier_spawn = function (unit, blackboard, t)
+	blackboard.ignore_interest_points = true
+end
+
+AiBreedSnippets.on_human_pleb_spawn = function (unit, blackboard, t)
+	local t = Managers.time:time("game")
+
+	blackboard.pleb_wait = t + 3
+end
+
+AiBreedSnippets.on_human_pleb_update = function (unit, blackboard, t)
+	local t = Managers.time:time("game")
+
+	if unit == script_data.debug_unit and blackboard.goal_destination then
+		local goal_destination = blackboard.goal_destination:unbox()
+
+		QuickDrawer:sphere(goal_destination, 1, Colors.get("yellow"))
+	end
+
+	if t > blackboard.pleb_wait and not blackboard.goal_destination then
+		local navigation_extension = blackboard.navigation_extension
+
+		blackboard.pleb_wait = t + 5
+
+		local nav_world = blackboard.nav_world
+		local center_pos = POSITION_LOOKUP[unit]
+		local tries = 10
+		local check_spawn_volumes = false
+		local pos = ConflictUtils.get_spawn_pos_on_circle(nav_world, center_pos, 30, 5, tries, check_spawn_volumes, nil, nil, 2, 2)
+
+		if pos then
+			blackboard.goal_destination = Vector3Box(pos)
+		end
 	end
 end
 

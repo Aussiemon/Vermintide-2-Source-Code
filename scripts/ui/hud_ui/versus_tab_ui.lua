@@ -51,7 +51,7 @@ VersusTabUI.init = function (self, parent, ingame_ui_context)
 
 	self:_create_ui_elements()
 
-	self._objective_system = Managers.state.entity:system("versus_objective_system")
+	self._objective_system = Managers.state.entity:system("objective_system")
 	self._objectives_initialized = false
 	self._win_conditions = Managers.mechanism:game_mechanism():win_conditions()
 
@@ -140,15 +140,6 @@ VersusTabUI.update = function (self, dt, t)
 			self._opponent_party_id = opponent_party_id
 		end
 
-		local world = self._ui_renderer.world
-		local shading_env = World.get_data(world, "shading_environment")
-
-		if shading_env then
-			ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", 1)
-			ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", 0.75)
-			ShadingEnvironment.apply(shading_env)
-		end
-
 		self:_update_objectives(dt, t)
 		self:_update_score(party_id, opponent_party_id)
 		self:_update_animations(dt, t)
@@ -223,6 +214,12 @@ VersusTabUI._draw = function (self, dt)
 
 					if portrait_widget then
 						UIRenderer.draw_widget(ui_renderer, portrait_widget)
+					end
+
+					local insignia_widget = player_slot.insignia_widget
+
+					if insignia_widget then
+						UIRenderer.draw_widget(ui_renderer, insignia_widget)
 					end
 				end
 			end
@@ -348,27 +345,9 @@ VersusTabUI.set_active = function (self, active)
 		}
 
 		self._ui_animator:start_animation("on_enter", self._widgets_by_name, scenegraph_definition, anim_params)
-
-		local world = self._ui_renderer.world
-		local shading_env = World.get_data(world, "shading_environment")
-
-		if shading_env then
-			ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", 1)
-			ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", 0.75)
-			ShadingEnvironment.apply(shading_env)
-		end
-
 		Managers.input:enable_gamepad_cursor()
+		self:_create_player_slots()
 	else
-		local world = self._ui_renderer.world
-		local shading_env = World.get_data(world, "shading_environment")
-
-		if shading_env then
-			ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", 0)
-			ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", 0)
-			ShadingEnvironment.apply(shading_env)
-		end
-
 		chat_gui:hide_chat()
 		Managers.input:disable_gamepad_cursor()
 	end
@@ -570,12 +549,21 @@ VersusTabUI._update_party_slots_data = function (self, party_id, team_slots, tea
 				if profile_updated then
 					local is_player_controlled = player:is_player_controlled()
 					local player_portrait_frame = self:_get_portrait_frame(profile_index, career_index)
-					local level_text = player and (is_player_controlled and "-" or UISettings.bots_level_display_text) or ""
+					local level_text = player and (is_player_controlled and ExperienceSettings.get_player_level(player) or UISettings.bots_level_display_text)
 					local portrait_texture = self:_get_hero_portrait(profile_index, career_index)
 					local player_frame_scenegraph_id = "team_" .. team .. "_player_frame_" .. j
 					local portrait_widget = self:_create_portrait_frame(player_frame_scenegraph_id, player_portrait_frame, level_text, portrait_texture)
 
 					player_slot.portrait_widget = portrait_widget
+
+					if is_player_controlled then
+						local player_insignia_scenegraph_id = "team_" .. team .. "_player_insignia_" .. j
+						local versus_level = ExperienceSettings.get_versus_player_level(player) or 0
+						local insignia_widget_def = UIWidgets.create_small_insignia(player_insignia_scenegraph_id, versus_level)
+						local insignia_widget = UIWidget.init(insignia_widget_def)
+
+						player_slot.insignia_widget = insignia_widget
+					end
 				end
 
 				is_local_player = player.local_player
@@ -1293,7 +1281,7 @@ VersusTabUI._update_objectives = function (self, dt, t)
 		if self:_is_dark_pact() then
 			description = Localize("level_objective_pactsworn")
 		else
-			description = self._objective_system:current_objective_description()
+			description = self._objective_system:first_active_objective_description()
 		end
 
 		self:_set_objective_text(description)
@@ -1413,7 +1401,7 @@ VersusTabUI._is_dark_pact = function (self)
 end
 
 VersusTabUI._get_current_set = function (self)
-	local rounds_played = self._win_conditions:num_rounds_played()
+	local rounds_played = self._win_conditions:get_current_round()
 
 	return math.round(rounds_played / 2)
 end

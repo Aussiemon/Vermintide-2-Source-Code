@@ -1789,6 +1789,7 @@ UIWidgets.create_player_panel = function (scenegraph_id, talent_tooltip_scenegra
 	local frame_settings = UIFrameSettings.menu_frame_09
 	local background_texture = "talent_tree_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
+	local insignia_offset = UISettings.INSIGNIA_OFFSET
 
 	return {
 		element = {
@@ -2845,7 +2846,7 @@ UIWidgets.create_player_panel = function (scenegraph_id, talent_tooltip_scenegra
 				horizontal_alignment = "left",
 				vertical_alignment = "top",
 				texture_size = {
-					200,
+					200 - insignia_offset,
 					18,
 				},
 				color = {
@@ -2855,7 +2856,7 @@ UIWidgets.create_player_panel = function (scenegraph_id, talent_tooltip_scenegra
 					0,
 				},
 				offset = {
-					150,
+					150 + insignia_offset,
 					-82,
 					14,
 				},
@@ -2865,7 +2866,7 @@ UIWidgets.create_player_panel = function (scenegraph_id, talent_tooltip_scenegra
 				horizontal_alignment = "left",
 				vertical_alignment = "top",
 				texture_size = {
-					200,
+					200 - insignia_offset,
 					18,
 				},
 				color = {
@@ -2875,7 +2876,7 @@ UIWidgets.create_player_panel = function (scenegraph_id, talent_tooltip_scenegra
 					255,
 				},
 				offset = {
-					150,
+					150 + insignia_offset,
 					-82,
 					13,
 				},
@@ -2884,7 +2885,7 @@ UIWidgets.create_player_panel = function (scenegraph_id, talent_tooltip_scenegra
 				horizontal_alignment = "left",
 				vertical_alignment = "top",
 				full_size = {
-					194,
+					194 - insignia_offset,
 					10,
 				},
 				texture_size = {
@@ -2898,7 +2899,7 @@ UIWidgets.create_player_panel = function (scenegraph_id, talent_tooltip_scenegra
 					255,
 				},
 				offset = {
-					153,
+					153 + insignia_offset,
 					-100,
 					13,
 				},
@@ -2911,7 +2912,7 @@ UIWidgets.create_player_panel = function (scenegraph_id, talent_tooltip_scenegra
 					20,
 				},
 				texture_size = {
-					200,
+					200 - insignia_offset,
 					30,
 				},
 				tile_offset = {
@@ -2919,7 +2920,7 @@ UIWidgets.create_player_panel = function (scenegraph_id, talent_tooltip_scenegra
 					false,
 				},
 				offset = {
-					150,
+					150 + insignia_offset,
 					-82,
 					10,
 				},
@@ -2938,7 +2939,7 @@ UIWidgets.create_player_panel = function (scenegraph_id, talent_tooltip_scenegra
 					35,
 				},
 				offset = {
-					150,
+					150 + insignia_offset,
 					-80,
 					15,
 				},
@@ -2953,11 +2954,11 @@ UIWidgets.create_player_panel = function (scenegraph_id, talent_tooltip_scenegra
 				horizontal_alignment = "left",
 				vertical_alignment = "top",
 				texture_size = {
-					160,
+					160 - insignia_offset,
 					35,
 				},
 				offset = {
-					170,
+					170 + insignia_offset,
 					-80,
 					15,
 				},
@@ -3395,11 +3396,11 @@ UIWidgets.create_player_panel = function (scenegraph_id, talent_tooltip_scenegra
 				horizontal_alignment = "left",
 				vertical_alignment = "bottom",
 				size = {
-					210,
+					210 - insignia_offset,
 					30,
 				},
 				offset = {
-					150,
+					150 + insignia_offset,
 					121,
 					3,
 				},
@@ -3414,11 +3415,11 @@ UIWidgets.create_player_panel = function (scenegraph_id, talent_tooltip_scenegra
 				horizontal_alignment = "left",
 				vertical_alignment = "bottom",
 				size = {
-					210,
+					210 - insignia_offset,
 					30,
 				},
 				offset = {
-					152,
+					152 + insignia_offset,
 					119,
 					2,
 				},
@@ -3433,11 +3434,11 @@ UIWidgets.create_player_panel = function (scenegraph_id, talent_tooltip_scenegra
 				upper_case = true,
 				vertical_alignment = "top",
 				size = {
-					210,
+					210 - insignia_offset,
 					30,
 				},
 				offset = {
-					150,
+					150 + insignia_offset,
 					90,
 					3,
 				},
@@ -3454,11 +3455,11 @@ UIWidgets.create_player_panel = function (scenegraph_id, talent_tooltip_scenegra
 				upper_case = true,
 				vertical_alignment = "top",
 				size = {
-					210,
+					210 - insignia_offset,
 					30,
 				},
 				offset = {
-					152,
+					152 + insignia_offset,
 					88,
 					2,
 				},
@@ -3592,7 +3593,7 @@ UIWidgets.create_objective_score_widget = function (scenegraph_id, size, offset)
 				offset = {
 					0,
 					0,
-					10,
+					2,
 				},
 				color = Colors.get_color_table_with_alpha("white", 255),
 			},
@@ -4076,7 +4077,7 @@ UIWidgets.create_total_score_progress_bar = function (scenegraph_id, size, max_s
 	local icon_texture_sizes = {}
 	local icon_texture_colors = {}
 
-	for i = 1, amount do
+	for i = 1, amount - 1 do
 		icon_textures[i] = separator_icon
 		icon_texture_sizes[i] = texture_size
 		icon_texture_colors[i] = {
@@ -4160,7 +4161,7 @@ UIWidgets.create_total_score_progress_bar = function (scenegraph_id, size, max_s
 		{
 			pass_type = "text",
 			style_id = "current_score",
-			text_id = "current_score",
+			text_id = "current_score_text",
 		},
 		{
 			pass_type = "multi_texture",
@@ -4173,6 +4174,7 @@ UIWidgets.create_total_score_progress_bar = function (scenegraph_id, size, max_s
 		bar_fill_threashold = 0,
 		current_bar_fil_threshold = 0,
 		current_score_background = "bar_frame_01_back",
+		current_score_text = "0",
 		is_winning = true,
 		left_detail_l = "button_detail_01",
 		left_detail_w = "button_detail_01_gold",
@@ -4262,7 +4264,10 @@ UIWidgets.create_total_score_progress_bar = function (scenegraph_id, size, max_s
 		},
 		bar_fill = {
 			gradient_threshold = 0.3,
-			size = size,
+			size = {
+				size[1] - max_score_size[1] + 4,
+				size[2],
+			},
 			default_offset = {
 				0,
 				0,
@@ -4533,7 +4538,7 @@ UIWidgets.create_total_score_progress_bar = function (scenegraph_id, size, max_s
 				5,
 				3,
 			},
-			draw_count = amount,
+			draw_count = amount - 1,
 		},
 	}
 
@@ -5265,7 +5270,7 @@ UIWidgets.create_dark_pact_onboarding_tutorial_widget = function (scenegraph_id,
 					4,
 					400,
 				},
-				color = Colors.get_color_table_with_alpha("white", 255),
+				color = Colors.get_color_table_with_alpha("black", 255),
 			},
 			bottom_detail = {
 				angle = math.degrees_to_radians(-90),
@@ -5282,7 +5287,7 @@ UIWidgets.create_dark_pact_onboarding_tutorial_widget = function (scenegraph_id,
 					4,
 					400,
 				},
-				color = Colors.get_color_table_with_alpha("white", 255),
+				color = Colors.get_color_table_with_alpha("black", 255),
 			},
 			background = {
 				vertical_alignment = "center",
@@ -5298,6 +5303,7 @@ UIWidgets.create_dark_pact_onboarding_tutorial_widget = function (scenegraph_id,
 				color = Colors.get_color_table_with_alpha("white", 255),
 			},
 			hero_text = {
+				dynamic_font_size = true,
 				font_size = 40,
 				font_type = "hell_shark_header",
 				horizontal_alignment = "left",
@@ -5306,9 +5312,9 @@ UIWidgets.create_dark_pact_onboarding_tutorial_widget = function (scenegraph_id,
 				use_shadow = false,
 				vertical_alignment = "top",
 				word_wrap = false,
-				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
-					10,
+					0,
 					-10,
 					4,
 				},
@@ -5329,7 +5335,7 @@ UIWidgets.create_dark_pact_onboarding_tutorial_widget = function (scenegraph_id,
 				},
 				text_color = Colors.get_color_table_with_alpha("light_gray", 255),
 				offset = {
-					10,
+					0,
 					92,
 					4,
 				},
@@ -5347,7 +5353,7 @@ UIWidgets.create_dark_pact_onboarding_tutorial_widget = function (scenegraph_id,
 				},
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
-					10,
+					0,
 					8,
 					4,
 				},
@@ -5480,7 +5486,7 @@ UIWidgets.create_hero_onboarding_tutorial_widget = function (scenegraph_id, size
 					4,
 					400,
 				},
-				color = Colors.get_color_table_with_alpha("white", 255),
+				color = Colors.get_color_table_with_alpha("black", 255),
 			},
 			bottom_detail = {
 				angle = math.degrees_to_radians(-90),
@@ -5497,7 +5503,7 @@ UIWidgets.create_hero_onboarding_tutorial_widget = function (scenegraph_id, size
 					4,
 					400,
 				},
-				color = Colors.get_color_table_with_alpha("white", 255),
+				color = Colors.get_color_table_with_alpha("black", 255),
 			},
 			background = {
 				vertical_alignment = "center",
@@ -5514,22 +5520,22 @@ UIWidgets.create_hero_onboarding_tutorial_widget = function (scenegraph_id, size
 			},
 			hero_text = {
 				dynamic_font_size = true,
-				font_size = 58,
+				font_size = 40,
 				font_type = "hell_shark_header",
 				horizontal_alignment = "right",
 				localize = false,
 				upper_case = true,
 				use_shadow = false,
-				vertical_alignment = "top",
+				vertical_alignment = "center",
 				word_wrap = false,
 				size = {
 					size[1],
 					50,
 				},
-				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
 					-25,
-					size[2] - 60,
+					size[2] - 65,
 					4,
 				},
 			},
@@ -5570,7 +5576,7 @@ UIWidgets.create_hero_onboarding_tutorial_widget = function (scenegraph_id, size
 				},
 			},
 			ability_1_name = {
-				font_size = 30,
+				font_size = 24,
 				font_type = "hell_shark",
 				horizontal_alignment = "right",
 				localize = false,
@@ -5584,14 +5590,14 @@ UIWidgets.create_hero_onboarding_tutorial_widget = function (scenegraph_id, size
 				},
 				text_color = Colors.get_color_table_with_alpha("font_title", 255),
 				offset = {
-					0,
+					-10,
 					size[2] - 110,
 					2,
 				},
 			},
 			ability_1_description = {
 				dynamic_font_size_word_wrap = true,
-				font_size = 24,
+				font_size = 20,
 				font_type = "hell_shark",
 				horizontal_alignment = "right",
 				localize = false,
@@ -5602,9 +5608,9 @@ UIWidgets.create_hero_onboarding_tutorial_widget = function (scenegraph_id, size
 					size[1] - (64 * icon_size_multiplier + 25),
 					80,
 				},
-				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				text_color = Colors.get_color_table_with_alpha("light_gray", 255),
 				offset = {
-					0,
+					-10,
 					size[2] - (64 * icon_size_multiplier + 60 + 50),
 					2,
 				},
@@ -5634,7 +5640,7 @@ UIWidgets.create_hero_onboarding_tutorial_widget = function (scenegraph_id, size
 				},
 			},
 			ability_2_name = {
-				font_size = 30,
+				font_size = 24,
 				font_type = "hell_shark",
 				horizontal_alignment = "right",
 				localize = false,
@@ -5648,14 +5654,14 @@ UIWidgets.create_hero_onboarding_tutorial_widget = function (scenegraph_id, size
 				},
 				text_color = Colors.get_color_table_with_alpha("font_title", 255),
 				offset = {
-					0,
+					-10,
 					size[2] - 245,
 					2,
 				},
 			},
 			ability_2_description = {
 				dynamic_font_size_word_wrap = true,
-				font_size = 24,
+				font_size = 20,
 				font_type = "hell_shark",
 				horizontal_alignment = "right",
 				localize = false,
@@ -5666,9 +5672,9 @@ UIWidgets.create_hero_onboarding_tutorial_widget = function (scenegraph_id, size
 					size[1] - (64 * icon_size_multiplier + 25),
 					80,
 				},
-				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				text_color = Colors.get_color_table_with_alpha("light_gray", 255),
 				offset = {
-					0,
+					-10,
 					30,
 					2,
 				},
@@ -5744,8 +5750,8 @@ UIWidgets.create_dark_pact_overcharge_bar_widget = function (scenegraph_id, over
 			},
 			icon = {
 				size = {
-					34,
-					34,
+					0,
+					0,
 				},
 				offset = {
 					size[1],
@@ -5753,16 +5759,16 @@ UIWidgets.create_dark_pact_overcharge_bar_widget = function (scenegraph_id, over
 					5,
 				},
 				color = {
-					100,
-					0,
-					0,
-					1,
+					255,
+					255,
+					255,
+					255,
 				},
 			},
 			icon_shadow = {
 				size = {
-					34,
-					34,
+					0,
+					0,
 				},
 				offset = {
 					size[1] + 2,
@@ -5783,7 +5789,7 @@ UIWidgets.create_dark_pact_overcharge_bar_widget = function (scenegraph_id, over
 					5,
 				},
 				color = {
-					204,
+					255,
 					255,
 					255,
 					255,
@@ -5797,5 +5803,2016 @@ UIWidgets.create_dark_pact_overcharge_bar_widget = function (scenegraph_id, over
 			0,
 		},
 		scenegraph_id = scenegraph_id,
+	}
+end
+
+UIWidgets.create_versus_gameplay_hint_widget = function (scenegraph_id, data, optional_offset, optional_size)
+	local has_input = data.close_input
+	local size = optional_size or {
+		400,
+		360,
+	}
+	local input_data = data.input_data
+	local foot_text_string
+
+	if data.foot_text then
+		if input_data then
+			local input_text = "$KEY;" .. input_data.input_service_name .. "__" .. input_data.input_action .. ":"
+
+			foot_text_string = string.format(Localize(data.foot_text), input_text)
+		else
+			foot_text_string = Localize(data.foot_text)
+		end
+	end
+
+	local title_string = Localize(data.title_text)
+	local body_string = Localize(data.body_text)
+	local element = {
+		passes = {
+			{
+				pass_type = "texture",
+				style_id = "detail_bottom",
+				texture_id = "detail",
+			},
+			{
+				pass_type = "texture",
+				style_id = "detail_top",
+				texture_id = "detail",
+				content_change_function = function (content, style)
+					style.offset[2] = content.size[2] - 4
+				end,
+			},
+			{
+				pass_type = "texture",
+				style_id = "background",
+				texture_id = "background",
+				content_change_function = function (content, style)
+					style.size[2] = content.size[2]
+				end,
+			},
+			{
+				pass_type = "text",
+				style_id = "title_text",
+				text_id = "title_text",
+				content_change_function = function (content, style)
+					style.offset[2] = content.size[2] - 40 - 12
+				end,
+			},
+			{
+				pass_type = "text",
+				style_id = "body_text",
+				text_id = "body_text",
+				content_change_function = function (content, style)
+					style.size = {
+						content.size[1] - 20,
+						content.size[2],
+					}
+					style.area_size = {
+						content.size[1] - 24,
+						content.size[2],
+					}
+				end,
+			},
+		},
+	}
+	local content = {
+		background = "simple_rect_texture",
+		detail = "radial_chat_bg_line_horz",
+		title_text = title_string,
+		body_text = body_string,
+		size = size,
+	}
+	local style = {
+		detail_top = {
+			offset = {
+				0,
+				size[2] - 4,
+				4,
+			},
+			texture_size = {
+				400,
+				4,
+			},
+			color = Colors.get_color_table_with_alpha("black", 255),
+		},
+		detail_bottom = {
+			offset = {
+				0,
+				0,
+				4,
+			},
+			texture_size = {
+				400,
+				4,
+			},
+			color = Colors.get_color_table_with_alpha("black", 255),
+		},
+		background = {
+			size = size,
+			offset = {
+				0,
+				0,
+				1,
+			},
+			color = Colors.get_color_table_with_alpha("black", 165),
+		},
+		title_text = {
+			dynamic_font_size = true,
+			font_size = 40,
+			font_type = "hell_shark_header",
+			horizontal_alignment = "left",
+			localize = false,
+			upper_case = true,
+			use_shadow = false,
+			vertical_alignment = "top",
+			word_wrap = false,
+			text_color = Colors.get_color_table_with_alpha("white", 255),
+			size = {
+				size[1] - 20,
+				40,
+			},
+			offset = {
+				20,
+				size[2] - 40 - 12,
+				4,
+			},
+		},
+		body_text = {
+			dynamic_font_size_word_wrap = true,
+			font_size = 18,
+			font_type = "hell_shark",
+			horizontal_alignment = "left",
+			localize = false,
+			upper_case = false,
+			use_shadow = false,
+			vertical_alignment = "top",
+			word_wrap = true,
+			size = {
+				size[1] - 20,
+				size[2],
+			},
+			area_size = {
+				size[1] - 20,
+				size[2],
+			},
+			text_color = Colors.get_color_table_with_alpha("light_gray", 255),
+			offset = {
+				20,
+				-52,
+				4,
+			},
+		},
+	}
+
+	if data.duration then
+		local id = "duration_bar"
+		local duration_bar_pass = {
+			pass_type = "texture_uv",
+			content_id = id,
+			style_id = id,
+		}
+		local duration_bar_content = {
+			texture_id = "crafting_bar",
+			uvs = {
+				{
+					0,
+					0,
+				},
+				{
+					1,
+					1,
+				},
+			},
+		}
+		local duration_bar_style = {
+			vertical_alignment = "left",
+			offset = {
+				0,
+				6,
+				8,
+			},
+			texture_size = {
+				400,
+				8,
+			},
+			color = Colors.get_color_table_with_alpha("local_player_picking", 255),
+		}
+
+		element.passes[#element.passes + 1] = duration_bar_pass
+		content[id] = duration_bar_content
+		style[id] = duration_bar_style
+	end
+
+	if data.foot_text then
+		local id = "foot_text"
+		local foot_text_pass = {
+			pass_type = "text",
+			text_id = id,
+			style_id = id,
+		}
+		local foot_text = foot_text_string
+		local foot_text_style = {
+			dynamic_font_size_word_wrap = true,
+			font_size = 20,
+			font_type = "hell_shark",
+			horizontal_alignment = "left",
+			localize = false,
+			upper_case = false,
+			use_shadow = false,
+			vertical_alignment = "center",
+			word_wrap = true,
+			size = {
+				size[1] - 88,
+				48,
+			},
+			area_size = {
+				size[1] - 88,
+				48,
+			},
+			text_color = Colors.get_color_table_with_alpha("white", 255),
+			offset = {
+				88,
+				30,
+				4,
+			},
+		}
+
+		element.passes[#element.passes + 1] = foot_text_pass
+		content[id] = foot_text
+		style[id] = foot_text_style
+	end
+
+	if data.icon then
+		local id = "foot_icon"
+		local foot_icon_pass = {
+			pass_type = "texture",
+			texture_id = id,
+			style_id = id,
+		}
+		local foot_icon = data.icon
+		local foot_icon_style = {
+			vertical_alignment = "left",
+			offset = {
+				20,
+				20,
+				8,
+			},
+			texture_size = {
+				60,
+				60,
+			},
+			color = Colors.get_color_table_with_alpha("white", 255),
+		}
+
+		element.passes[#element.passes + 1] = foot_icon_pass
+		content[id] = foot_icon
+		style[id] = foot_icon_style
+	end
+
+	local widget = {}
+
+	widget.element = element
+	widget.content = content
+	widget.style = style
+	widget.scenegraph_id = scenegraph_id
+	widget.offset = optional_offset or {
+		0,
+		0,
+		0,
+	}
+
+	return widget
+end
+
+UIWidgets.create_large_insignia = function (scenegraph_id, optional_level, masked, color, texture_size, offset, retained_mode)
+	local widget_def = {}
+	local element = {
+		passes = {},
+	}
+	local passes = element.passes
+	local content = {}
+	local style = {}
+	local level = optional_level or ExperienceSettings.get_versus_level()
+	local insignia_main_uvs, insignia_addon_uvs = UIAtlasHelper.get_insignia_texture_settings_from_level(level)
+	local texture_size = texture_size or {
+		100,
+		276,
+	}
+
+	passes[#passes + 1] = {
+		content_id = "insignia_main",
+		pass_type = "texture_uv",
+		style_id = "insignia_main",
+		retained_mode = retained_mode,
+	}
+	passes[#passes + 1] = {
+		content_id = "insignia_addon",
+		pass_type = "texture_uv",
+		style_id = "insignia_addon",
+		content_check_function = function (content, style)
+			return content.uvs
+		end,
+		retained_mode = retained_mode,
+	}
+	style.insignia_main = {
+		horizontal_alignment = "center",
+		vertical_alignment = "center",
+		texture_size = texture_size,
+		color = color,
+		offset = {
+			0,
+			0,
+			1,
+		},
+		retained_mode = retained_mode,
+	}
+	style.insignia_addon = {
+		horizontal_alignment = "center",
+		vertical_alignment = "center",
+		texture_size = texture_size,
+		color = color,
+		retained_mode = retained_mode,
+	}
+	content.insignia_main = {
+		uvs = insignia_main_uvs,
+		texture_id = masked and "insignias_main_masked" or "insignias_main",
+	}
+	content.insignia_addon = {
+		uvs = insignia_addon_uvs,
+		texture_id = masked and "insignias_addon_masked" or "insignias_addon",
+	}
+	content.level = level
+	widget_def.element = element
+	widget_def.content = content
+	widget_def.style = style
+	widget_def.scenegraph_id = scenegraph_id
+	widget_def.offset = offset or {
+		0,
+		0,
+		0,
+	}
+
+	return widget_def
+end
+
+UIWidgets.create_small_insignia = function (scenegraph_id, optional_level, masked, color, offset, retained_mode)
+	local widget_def = {}
+	local element = {
+		passes = {},
+	}
+	local passes = element.passes
+	local content = {}
+	local style = {}
+	local level = optional_level or ExperienceSettings.get_versus_level()
+	local insignia_main_uvs, insignia_addon_uvs = UIAtlasHelper.get_insignia_texture_settings_from_level(level)
+	local texture_size = {
+		50,
+		138,
+	}
+
+	passes[#passes + 1] = {
+		content_id = "insignia_main",
+		pass_type = "texture_uv",
+		style_id = "insignia_main",
+		retained_mode = retained_mode,
+	}
+	passes[#passes + 1] = {
+		content_id = "insignia_addon",
+		pass_type = "texture_uv",
+		style_id = "insignia_addon",
+		content_check_function = function (content, style)
+			return content.uvs
+		end,
+		retained_mode = retained_mode,
+	}
+	style.insignia_main = {
+		horizontal_alignment = "center",
+		vertical_alignment = "center",
+		texture_size = texture_size,
+		color = color or {
+			255,
+			255,
+			255,
+			255,
+		},
+		offset = {
+			0,
+			0,
+			1,
+		},
+	}
+	style.insignia_addon = {
+		horizontal_alignment = "center",
+		vertical_alignment = "center",
+		texture_size = texture_size,
+		color = color or {
+			255,
+			255,
+			255,
+			255,
+		},
+	}
+	content.insignia_main = {
+		uvs = insignia_main_uvs,
+		texture_id = masked and "insignias_main_small_masked" or "insignias_main_small",
+	}
+	content.insignia_addon = {
+		uvs = insignia_addon_uvs,
+		texture_id = masked and "insignias_addon_small_masked" or "insignias_addon_small",
+	}
+	content.level = level
+	content.visible = level > 0
+	widget_def.element = element
+	widget_def.content = content
+	widget_def.style = style
+	widget_def.scenegraph_id = scenegraph_id
+	widget_def.offset = offset or {
+		0,
+		0,
+		0,
+	}
+
+	return widget_def
+end
+
+UIWidgets.create_ceremony_award = function (scenegraph_id, award_data, offset)
+	local widget_def = {}
+	local element = {
+		passes = {},
+	}
+	local passes = element.passes
+	local content = {}
+	local style = {}
+	local player_name = award_data.player_name
+	local level = award_data.level
+	local is_you = award_data.peer_id == Network.peer_id()
+	local is_mvp = award_data.is_mvp
+	local header = award_data.header
+	local sub_header = award_data.sub_header
+	local team_color = award_data.team_color
+	local insignia_main_uvs, insignia_addon_uvs = UIAtlasHelper.get_insignia_texture_settings_from_level(level)
+	local texture_size = {
+		50,
+		138,
+	}
+
+	passes[#passes + 1] = {
+		pass_type = "text",
+		style_id = "mvp",
+		text_id = "mvp",
+		content_check_function = function (content, style)
+			return content.is_mvp
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "text",
+		style_id = "mvp_masked",
+		text_id = "mvp",
+		content_check_function = function (content, style)
+			return content.is_mvp
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "texture",
+		style_id = "shine",
+		texture_id = "shine",
+		content_check_function = function (content, style)
+			return content.is_mvp
+		end,
+		content_change_function = function (content, style)
+			local t = Application.time_since_launch()
+			local delta = t % 2 / 2
+
+			style.offset[1] = math.lerp(-393, 393, delta)
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "text",
+		style_id = "mvp_shadow",
+		text_id = "mvp",
+		content_check_function = function (content, style)
+			return content.is_mvp
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "rotated_texture",
+		style_id = "sparkle",
+		texture_id = "sparkle",
+		content_check_function = function (content, style)
+			return content.is_mvp
+		end,
+		content_change_function = function (content, style)
+			local time = Application.time_since_launch() % 2 / 2
+
+			style.angle = math.pi * 2 * time
+			style.color[1] = math.sin(time * math.pi) * 255
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "rotated_texture",
+		style_id = "sparkle_2",
+		texture_id = "sparkle",
+		content_check_function = function (content, style)
+			return content.is_mvp
+		end,
+		content_change_function = function (content, style)
+			local time = (Application.time_since_launch() + 1.5) % 2 / 2
+
+			style.angle = math.pi * 2 * time
+			style.color[1] = math.sin(time * math.pi) * 255
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "text",
+		style_id = "header",
+		text_id = "header",
+		content_check_function = function (content, style)
+			return not content.is_mvp
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "text",
+		style_id = "header_shadow",
+		text_id = "header",
+		content_check_function = function (content, style)
+			return not content.is_mvp
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "text",
+		style_id = "sub_header",
+		text_id = "sub_header",
+		content_check_function = function (content, style)
+			return not content.is_mvp
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "text",
+		style_id = "sub_header_shadow",
+		text_id = "sub_header",
+		content_check_function = function (content, style)
+			return not content.is_mvp
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "text",
+		style_id = "player_name",
+		text_id = "player_name",
+		content_change_function = function (content)
+			local widget_offset = content.widget_offset
+
+			if not widget_offset then
+				return
+			end
+
+			local camera = award_data.camera
+			local world_pos = award_data.world_pos
+			local pos = Camera.world_to_screen(camera, Vector3(world_pos[1], world_pos[2], world_pos[3]))
+
+			pos = UIInverseScaleVectorToResolution(pos, true)
+			widget_offset[1] = pos[1] - 145
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "text",
+		style_id = "player_name_shadow",
+		text_id = "player_name_shadow",
+		content_change_function = function (content)
+			local widget_offset = content.widget_offset
+
+			if not widget_offset then
+				return
+			end
+
+			local camera = award_data.camera
+			local world_pos = award_data.world_pos
+			local pos = Camera.world_to_screen(camera, Vector3(world_pos[1], world_pos[2], world_pos[3]))
+
+			pos = UIInverseScaleVectorToResolution(pos, true)
+			widget_offset[1] = pos[1] - 145
+		end,
+	}
+	passes[#passes + 1] = {
+		content_id = "insignia_main",
+		pass_type = "texture_uv",
+		style_id = "insignia_main",
+		content_check_function = function (content, style)
+			return content.parent.level > 0
+		end,
+	}
+	passes[#passes + 1] = {
+		content_id = "divider",
+		pass_type = "texture_uv",
+		style_id = "divider",
+	}
+	passes[#passes + 1] = {
+		content_id = "insignia_addon",
+		pass_type = "texture_uv",
+		style_id = "insignia_addon",
+		content_check_function = function (content, style)
+			return content.uvs and content.parent.level > 0
+		end,
+	}
+	style.mvp = {
+		dynamic_font_size = true,
+		font_size = 80,
+		font_type = "hell_shark_header",
+		horizontal_alignment = "left",
+		localize = false,
+		upper_case = true,
+		vertical_alignment = "top",
+		area_size = {
+			200,
+			100,
+		},
+		text_color = Colors.get_color_table_with_alpha("dark_golden_rod", 255),
+		offset = {
+			60,
+			-25,
+			1,
+		},
+	}
+	style.mvp_masked = {
+		dynamic_font_size = true,
+		font_size = 80,
+		font_type = "hell_shark_header_masked",
+		horizontal_alignment = "left",
+		localize = false,
+		upper_case = true,
+		vertical_alignment = "top",
+		area_size = {
+			200,
+			100,
+		},
+		text_color = Colors.get_color_table_with_alpha("white", 255),
+		offset = {
+			60,
+			-25,
+			2,
+		},
+	}
+	style.mvp_shadow = {
+		dynamic_font_size = true,
+		font_size = 80,
+		font_type = "hell_shark_header",
+		horizontal_alignment = "left",
+		localize = false,
+		upper_case = true,
+		vertical_alignment = "top",
+		area_size = {
+			200,
+			100,
+		},
+		text_color = Colors.get_color_table_with_alpha("black", 255),
+		offset = {
+			62,
+			-27,
+			0,
+		},
+	}
+	style.shine = {
+		horizontal_alignment = "left",
+		vertical_alignment = "top",
+		texture_size = {
+			393,
+			256,
+		},
+		offset = {
+			-393,
+			0,
+			10,
+		},
+	}
+	style.sparkle = {
+		angle = 0,
+		horizontal_alignment = "left",
+		vertical_alignment = "bottom",
+		texture_size = {
+			128,
+			128,
+		},
+		pivot = {
+			64,
+			64,
+		},
+		color = {
+			255,
+			255,
+			255,
+			255,
+		},
+		offset = {
+			0,
+			-10,
+			5,
+		},
+	}
+	style.sparkle_2 = {
+		angle = 0,
+		horizontal_alignment = "left",
+		vertical_alignment = "bottom",
+		texture_size = {
+			128,
+			128,
+		},
+		pivot = {
+			64,
+			64,
+		},
+		color = {
+			255,
+			255,
+			255,
+			255,
+		},
+		offset = {
+			130,
+			15,
+			5,
+		},
+	}
+	style.header = {
+		dynamic_font_size = true,
+		font_size = 48,
+		font_type = "hell_shark_header",
+		horizontal_alignment = "left",
+		localize = false,
+		upper_case = true,
+		vertical_alignment = "top",
+		area_size = {
+			200,
+			100,
+		},
+		text_color = Colors.get_color_table_with_alpha("white", 255),
+		offset = {
+			60,
+			-25,
+			1,
+		},
+	}
+	style.header_shadow = {
+		dynamic_font_size = true,
+		font_size = 48,
+		font_type = "hell_shark_header",
+		horizontal_alignment = "left",
+		localize = false,
+		upper_case = true,
+		vertical_alignment = "top",
+		area_size = {
+			200,
+			100,
+		},
+		text_color = Colors.get_color_table_with_alpha("black", 255),
+		offset = {
+			62,
+			-27,
+			0,
+		},
+	}
+	style.sub_header = {
+		dynamic_font_size = true,
+		font_size = 22,
+		font_type = "hell_shark",
+		horizontal_alignment = "left",
+		localize = false,
+		vertical_alignment = "bottom",
+		area_size = {
+			200,
+			100,
+		},
+		text_color = Colors.get_color_table_with_alpha("font_default", 255),
+		offset = {
+			60,
+			45,
+			1,
+		},
+	}
+	style.sub_header_shadow = {
+		dynamic_font_size = true,
+		font_size = 22,
+		font_type = "hell_shark",
+		horizontal_alignment = "left",
+		localize = false,
+		vertical_alignment = "bottom",
+		area_size = {
+			200,
+			100,
+		},
+		text_color = Colors.get_color_table_with_alpha("black", 255),
+		offset = {
+			62,
+			43,
+			0,
+		},
+	}
+	style.player_name = {
+		dynamic_font_size = true,
+		font_size = 26,
+		font_type = "hell_shark",
+		horizontal_alignment = "left",
+		localize = false,
+		vertical_alignment = "bottom",
+		area_size = {
+			200,
+			100,
+		},
+		text_color = {
+			255,
+			255,
+			255,
+			255,
+		},
+		offset = {
+			60,
+			5,
+			1,
+		},
+	}
+	style.player_name_shadow = {
+		dynamic_font_size = true,
+		font_size = 26,
+		font_type = "hell_shark",
+		horizontal_alignment = "left",
+		localize = false,
+		vertical_alignment = "bottom",
+		area_size = {
+			200,
+			100,
+		},
+		text_color = {
+			255,
+			0,
+			0,
+			0,
+		},
+		offset = {
+			62,
+			3,
+			0,
+		},
+	}
+	style.insignia_main = {
+		horizontal_alignment = "center",
+		vertical_alignment = "center",
+		texture_size = texture_size,
+		color = {
+			255,
+			255,
+			255,
+			255,
+		},
+		offset = {
+			0,
+			0,
+			1,
+		},
+	}
+	style.divider = {
+		horizontal_alignment = "left",
+		vertical_alignment = "bottom",
+		texture_size = {
+			152,
+			2,
+		},
+		color = team_color or {
+			255,
+			255,
+			255,
+			255,
+		},
+		offset = {
+			60,
+			40,
+			1,
+		},
+	}
+	style.insignia_addon = {
+		horizontal_alignment = "center",
+		vertical_alignment = "center",
+		texture_size = texture_size,
+		color = {
+			255,
+			255,
+			255,
+			255,
+		},
+	}
+	content.insignia_main = {
+		texture_id = "insignias_main_small",
+		uvs = insignia_main_uvs,
+	}
+	content.insignia_addon = {
+		texture_id = "insignias_addon_small",
+		uvs = insignia_addon_uvs,
+	}
+	content.level = level
+	content.award_data = award_data
+	content.divider = {
+		texture_id = "horizontal_gradient",
+		uvs = {
+			{
+				1,
+				0,
+			},
+			{
+				0,
+				1,
+			},
+		},
+	}
+	content.is_mvp = is_mvp
+	content.mvp = Localize("vs_award_mvp_name")
+	content.header = header
+	content.sub_header = sub_header
+	content.player_name = (is_you and "{#color(255,255,255)}(You) {#reset()}" or "") .. string.format("{#color(%d,%d,%d)}%s{#reset()}", team_color[2], team_color[3], team_color[4], UIRenderer.crop_text(player_name, is_you and 10 or 17))
+	content.player_name_shadow = (is_you and "(You) " or "") .. string.format("%s", UIRenderer.crop_text(player_name, is_you and 10 or 17))
+	content.shine = "diagonal_shine"
+	content.sparkle = "sparkle_effect"
+	widget_def.element = element
+	widget_def.content = content
+	widget_def.style = style
+	widget_def.scenegraph_id = scenegraph_id
+	widget_def.offset = offset or {
+		0,
+		0,
+		0,
+	}
+
+	return widget_def
+end
+
+local amount_text_style = {
+	dynamic_font_size = false,
+	font_size = 130,
+	font_type = "hell_shark_header",
+	horizontal_alignment = "left",
+	localize = false,
+	upper_case = true,
+	vertical_alignment = "top",
+	area_size = {
+		500,
+		200,
+	},
+	text_color = Colors.get_color_table_with_alpha("white", 255),
+	offset = {
+		20,
+		-130,
+		1,
+	},
+}
+
+UIWidgets.create_screen_ceremony_award = function (scenegraph_id, award_data, offset, ui_renderer)
+	local widget_def = {}
+	local element = {
+		passes = {},
+	}
+	local passes = element.passes
+	local content = {}
+	local style = {}
+	local player_name = award_data.player_name
+	local level = award_data.level
+	local amount = award_data.amount
+	local is_you = award_data.peer_id == Network.peer_id()
+	local is_mvp = award_data.is_mvp
+	local is_local = award_data.is_local
+	local header = award_data.header
+	local award_material = award_data.award_material or "circle"
+	local award_mask_material = award_data.award_mask_material or nil
+	local sub_header = is_mvp and Localize("vs_award_mvp_sub_header") or award_data.sub_header
+	local team_color = award_data.team_color
+	local insignia_main_uvs, insignia_addon_uvs = UIAtlasHelper.get_insignia_texture_settings_from_level(level)
+	local texture_size = {
+		50,
+		138,
+	}
+	local text_width = UIUtils.get_text_width(ui_renderer, amount_text_style, amount)
+
+	passes[#passes + 1] = {
+		pass_type = "text",
+		style_id = "mvp",
+		text_id = "mvp",
+		content_check_function = function (content, style)
+			return content.is_mvp
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "text",
+		style_id = "mvp_masked",
+		text_id = "mvp",
+		content_check_function = function (content, style)
+			return content.is_mvp
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "texture",
+		style_id = "shine",
+		texture_id = "shine",
+		content_check_function = function (content, style)
+			return content.is_mvp
+		end,
+		content_change_function = function (content, style)
+			local t = content.shine_timer
+			local delta = t % 2 / 2
+
+			style.offset[1] = math.lerp(-393, 393, delta)
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "text",
+		style_id = "mvp_shadow",
+		text_id = "mvp",
+		content_check_function = function (content, style)
+			return content.is_mvp
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "rotated_texture",
+		style_id = "sparkle",
+		texture_id = "sparkle",
+		content_check_function = function (content, style)
+			return content.is_mvp
+		end,
+		content_change_function = function (content, style)
+			local time = Application.time_since_launch() % 2 / 2
+
+			style.angle = math.pi * 2 * time
+			style.color[1] = math.sin(time * math.pi) * 255
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "rotated_texture",
+		style_id = "sparkle_2",
+		texture_id = "sparkle",
+		content_check_function = function (content, style)
+			return content.is_mvp
+		end,
+		content_change_function = function (content, style)
+			local time = (Application.time_since_launch() + 1) % 2 / 2
+
+			style.angle = math.pi * 2 * time
+			style.color[1] = math.sin(time * math.pi) * 255
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "texture",
+		style_id = "background",
+		texture_id = "background",
+	}
+	passes[#passes + 1] = {
+		pass_type = "texture",
+		style_id = "award",
+		texture_id = "award_texture",
+	}
+	passes[#passes + 1] = {
+		pass_type = "texture",
+		style_id = "award_shine_mask",
+		texture_id = "award_shine_mask",
+		content_change_function = function (content, style)
+			local t = content.shine_timer
+			local delta = t % 2 / 2
+
+			style.offset[1] = math.lerp(-393, 393, delta)
+
+			local _, dt = Managers.time:time_and_delta("main")
+
+			content.shine_timer = content.shine_timer + dt
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "texture",
+		style_id = "award_shine",
+		texture_id = "award_shine",
+		content_check_function = function (content)
+			return content.award_shine
+		end,
+	}
+	passes[#passes + 1] = {
+		content_id = "team_bg",
+		pass_type = "texture_uv",
+		style_id = "team_bg",
+	}
+	passes[#passes + 1] = {
+		pass_type = "texture",
+		style_id = "frame_top",
+		texture_id = "frame",
+	}
+	passes[#passes + 1] = {
+		pass_type = "texture",
+		style_id = "frame_bottom",
+		texture_id = "frame",
+	}
+	passes[#passes + 1] = {
+		pass_type = "rotated_texture",
+		style_id = "frame_right",
+		texture_id = "frame",
+	}
+	passes[#passes + 1] = {
+		pass_type = "texture",
+		style_id = "frame_middle",
+		texture_id = "frame",
+	}
+	passes[#passes + 1] = {
+		content_id = "insignia_main",
+		pass_type = "texture_uv",
+		style_id = "insignia_main",
+		content_check_function = function (content, style)
+			return content.parent.level > 0
+		end,
+	}
+	passes[#passes + 1] = {
+		content_id = "insignia_addon",
+		pass_type = "texture_uv",
+		style_id = "insignia_addon",
+		content_check_function = function (content, style)
+			return content.uvs and content.parent.level > 0
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "text",
+		style_id = "header",
+		text_id = "header",
+		content_check_function = function (content, style)
+			return not content.is_mvp
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "text",
+		style_id = "header_shadow",
+		text_id = "header",
+		content_check_function = function (content, style)
+			return not content.is_mvp
+		end,
+	}
+	passes[#passes + 1] = {
+		pass_type = "text",
+		style_id = "sub_header",
+		text_id = "sub_header",
+	}
+	passes[#passes + 1] = {
+		pass_type = "text",
+		style_id = "sub_header_shadow",
+		text_id = "sub_header",
+	}
+	passes[#passes + 1] = {
+		pass_type = "text",
+		style_id = "player_name",
+		text_id = "player_name",
+	}
+	passes[#passes + 1] = {
+		pass_type = "text",
+		style_id = "player_name_shadow",
+		text_id = "player_name_shadow",
+	}
+	style.mvp = {
+		dynamic_font_size = false,
+		font_size = 100,
+		font_type = "hell_shark_header",
+		horizontal_alignment = "left",
+		localize = false,
+		upper_case = true,
+		vertical_alignment = "top",
+		area_size = {
+			500,
+			200,
+		},
+		text_color = Colors.get_color_table_with_alpha("dark_golden_rod", 255),
+		offset = {
+			210,
+			-70,
+			1,
+		},
+	}
+	style.mvp_masked = {
+		dynamic_font_size = false,
+		font_size = 100,
+		font_type = "hell_shark_header_masked",
+		horizontal_alignment = "left",
+		localize = false,
+		upper_case = true,
+		vertical_alignment = "top",
+		area_size = {
+			500,
+			200,
+		},
+		text_color = Colors.get_color_table_with_alpha("white", 255),
+		offset = {
+			210,
+			-70,
+			2,
+		},
+	}
+	style.mvp_shadow = {
+		dynamic_font_size = false,
+		font_size = 100,
+		font_type = "hell_shark_header",
+		horizontal_alignment = "left",
+		localize = false,
+		upper_case = true,
+		vertical_alignment = "top",
+		area_size = {
+			500,
+			200,
+		},
+		text_color = Colors.get_color_table_with_alpha("black", 255),
+		offset = {
+			212,
+			-72,
+			0,
+		},
+	}
+	style.shine = {
+		horizontal_alignment = "left",
+		vertical_alignment = "top",
+		texture_size = {
+			393,
+			256,
+		},
+		offset = {
+			-183,
+			-70,
+			10,
+		},
+	}
+	style.sparkle = {
+		angle = 0,
+		horizontal_alignment = "left",
+		vertical_alignment = "bottom",
+		texture_size = {
+			128,
+			128,
+		},
+		pivot = {
+			64,
+			64,
+		},
+		color = {
+			255,
+			255,
+			255,
+			255,
+		},
+		offset = {
+			160,
+			95,
+			5,
+		},
+	}
+	style.sparkle_2 = {
+		angle = 0,
+		horizontal_alignment = "left",
+		vertical_alignment = "top",
+		texture_size = {
+			128,
+			128,
+		},
+		pivot = {
+			64,
+			64,
+		},
+		color = {
+			255,
+			255,
+			255,
+			255,
+		},
+		offset = {
+			310,
+			-20,
+			5,
+		},
+	}
+	style.background = {
+		horizontal_alignment = "left",
+		vertical_alignment = "top",
+		texture_size = {
+			450,
+			160,
+		},
+		offset = {
+			110,
+			-70,
+			0,
+		},
+		color = {
+			255,
+			255,
+			255,
+			255,
+		},
+	}
+	style.award = {
+		horizontal_alignment = "left",
+		vertical_alignment = "top",
+		texture_size = {
+			225,
+			230,
+		},
+		offset = {
+			-15,
+			-35,
+			10,
+		},
+		color = {
+			255,
+			255,
+			255,
+			255,
+		},
+	}
+	style.award_shine = {
+		horizontal_alignment = "left",
+		vertical_alignment = "top",
+		texture_size = {
+			225,
+			230,
+		},
+		offset = {
+			-15,
+			-35,
+			11,
+		},
+		color = {
+			255,
+			255,
+			255,
+			255,
+		},
+	}
+	style.award_shine_mask = {
+		horizontal_alignment = "left",
+		vertical_alignment = "top",
+		texture_size = {
+			393,
+			256,
+		},
+		offset = {
+			-15,
+			-22,
+			12,
+		},
+		color = {
+			255,
+			255,
+			255,
+			255,
+		},
+	}
+	style.team_bg = {
+		horizontal_alignment = "left",
+		vertical_alignment = "top",
+		texture_size = {
+			450,
+			50,
+		},
+		offset = {
+			110,
+			-180,
+			1,
+		},
+		color = {
+			255,
+			255,
+			255,
+			255,
+		},
+	}
+
+	local thickness = 20
+
+	style.frame_top = {
+		horizontal_alignment = "left",
+		vertical_alignment = "top",
+		texture_size = {
+			450,
+			thickness,
+		},
+		offset = {
+			110,
+			-70 + thickness,
+			3,
+		},
+		color = {
+			255,
+			255,
+			255,
+			255,
+		},
+	}
+	style.frame_bottom = {
+		horizontal_alignment = "left",
+		vertical_alignment = "top",
+		texture_size = {
+			450,
+			thickness,
+		},
+		offset = {
+			110,
+			-230 + thickness,
+			3,
+		},
+		color = {
+			255,
+			255,
+			255,
+			255,
+		},
+	}
+	style.frame_right = {
+		horizontal_alignment = "left",
+		vertical_alignment = "top",
+		texture_size = {
+			156,
+			thickness,
+		},
+		offset = {
+			404,
+			-70 + thickness,
+			4,
+		},
+		angle = -math.pi * 0.5,
+		pivot = {
+			156,
+			0,
+		},
+		color = {
+			255,
+			255,
+			255,
+			255,
+		},
+	}
+	style.frame_middle = {
+		horizontal_alignment = "left",
+		vertical_alignment = "top",
+		texture_size = {
+			446,
+			thickness,
+		},
+		offset = {
+			110,
+			-180 + thickness,
+			3,
+		},
+		color = {
+			255,
+			255,
+			255,
+			255,
+		},
+	}
+	style.insignia_main = {
+		horizontal_alignment = "right",
+		vertical_alignment = "top",
+		texture_size = {
+			50,
+			138,
+		},
+		color = {
+			255,
+			255,
+			255,
+			255,
+		},
+		offset = {
+			50,
+			-70,
+			10,
+		},
+	}
+	style.insignia_addon = {
+		horizontal_alignment = "right",
+		vertical_alignment = "top",
+		texture_size = {
+			50,
+			138,
+		},
+		color = {
+			255,
+			255,
+			255,
+			255,
+		},
+		offset = {
+			50,
+			-70,
+			9,
+		},
+	}
+
+	local stupid_offset = UTF8Utils.string_length(header) > 10 and 15 or 0
+
+	style.header = {
+		dynamic_font_size = true,
+		font_size = 65,
+		font_type = "hell_shark_header",
+		horizontal_alignment = "left",
+		localize = false,
+		upper_case = true,
+		vertical_alignment = "bottom",
+		area_size = {
+			255,
+			200,
+		},
+		text_color = Colors.get_color_table_with_alpha("white", 255),
+		offset = {
+			215,
+			140 + stupid_offset,
+			3,
+		},
+	}
+	style.header_shadow = {
+		dynamic_font_size = true,
+		font_size = 65,
+		font_type = "hell_shark_header",
+		horizontal_alignment = "left",
+		localize = false,
+		upper_case = true,
+		vertical_alignment = "bottom",
+		area_size = {
+			255,
+			200,
+		},
+		text_color = Colors.get_color_table_with_alpha("black", 255),
+		offset = {
+			213,
+			138 + stupid_offset,
+			2,
+		},
+	}
+	style.sub_header = {
+		dynamic_font_size = true,
+		font_size = 30,
+		font_type = "hell_shark_header",
+		horizontal_alignment = "left",
+		localize = false,
+		upper_case = true,
+		vertical_alignment = "bottom",
+		word_wrap = false,
+		area_size = {
+			255,
+			200,
+		},
+		text_color = Colors.get_color_table_with_alpha("font_default", 255),
+		offset = {
+			220,
+			120 + stupid_offset * 0.5,
+			3,
+		},
+	}
+	style.sub_header_shadow = {
+		dynamic_font_size = true,
+		font_size = 30,
+		font_type = "hell_shark_header",
+		horizontal_alignment = "left",
+		localize = false,
+		upper_case = true,
+		vertical_alignment = "bottom",
+		word_wrap = false,
+		area_size = {
+			255,
+			200,
+		},
+		text_color = Colors.get_color_table_with_alpha("black", 255),
+		offset = {
+			222,
+			118 + stupid_offset * 0.5,
+			2,
+		},
+	}
+	style.player_name = {
+		dynamic_font_size = true,
+		font_size = 30,
+		font_type = "hell_shark",
+		horizontal_alignment = "left",
+		localize = false,
+		vertical_alignment = "bottom",
+		area_size = {
+			500,
+			100,
+		},
+		text_color = {
+			255,
+			255,
+			255,
+			255,
+		},
+		offset = {
+			220,
+			80,
+			3,
+		},
+	}
+	style.player_name_shadow = {
+		dynamic_font_size = true,
+		font_size = 30,
+		font_type = "hell_shark",
+		horizontal_alignment = "left",
+		localize = false,
+		vertical_alignment = "bottom",
+		area_size = {
+			500,
+			200,
+		},
+		text_color = {
+			255,
+			0,
+			0,
+			0,
+		},
+		offset = {
+			222,
+			78,
+			2,
+		},
+	}
+	content.insignia_main = {
+		texture_id = "insignias_main_small",
+		uvs = insignia_main_uvs,
+	}
+	content.insignia_addon = {
+		texture_id = "insignias_addon_small",
+		uvs = insignia_addon_uvs,
+	}
+	content.level = level
+	content.award_data = award_data
+	content.divider = {
+		texture_id = "horizontal_gradient",
+		uvs = {
+			{
+				1,
+				0,
+			},
+			{
+				0,
+				1,
+			},
+		},
+	}
+	content.is_mvp = is_mvp
+	content.mvp = Localize("vs_award_mvp_name")
+	content.header = header
+	content.sub_header = sub_header
+	content.player_name = (is_you and "{#color(128,128,128)}(You) {#reset()}" or "") .. string.format("{#color(%d,%d,%d)}%s{#reset()}", team_color[2], team_color[3], team_color[4], UIRenderer.crop_text(player_name, is_you and 10 or 17))
+	content.player_name_shadow = (is_you and "(You) " or "") .. string.format("%s", UIRenderer.crop_text(player_name, is_you and 10 or 17))
+	content.shine = "diagonal_shine"
+	content.award_shine_mask = "diagonal_shine_write_mask"
+	content.award_shine = award_mask_material
+	content.amount = amount
+	content.sparkle = "sparkle_effect"
+	content.shine_timer = 0
+	content.background = "award_bg"
+	content.award_texture = award_material
+	content.team_bg = {
+		uvs = {
+			{
+				0,
+				0.3125,
+			},
+			{
+				0.9,
+				1,
+			},
+		},
+		texture_id = is_local and "award_bg_local_team" or "award_bg_opponent_team",
+	}
+	content.frame = "divider_01_bottom"
+	widget_def.element = element
+	widget_def.content = content
+	widget_def.style = style
+	widget_def.scenegraph_id = scenegraph_id
+	widget_def.offset = offset or {
+		0,
+		0,
+		0,
+	}
+
+	return widget_def
+end
+
+UIWidgets.create_dark_pact_hud_ability_icon_widget = function (scenegraph_id, settings)
+	return {
+		element = {
+			passes = {
+				{
+					pass_type = "texture",
+					style_id = "texture_icon_bg",
+					texture_id = "texture_icon",
+				},
+				{
+					pass_type = "texture",
+					style_id = "texture_icon",
+					texture_id = "texture_icon",
+					content_check_function = function (content)
+						return content.is_cooldown
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "icon_mask",
+					texture_id = "icon_mask",
+					content_change_function = function (content, style, _, dt)
+						style.color[1] = 255 * math.abs(math.sin(Managers.time:time("ui") * 2.5))
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "texture_frame",
+					texture_id = "texture_frame",
+				},
+				{
+					pass_type = "gradient_mask_texture",
+					style_id = "texture_cooldown",
+					texture_id = "texture_cooldown",
+					content_check_function = function (content)
+						return content.is_cooldown
+					end,
+					content_change_function = function (content, style, _, dt)
+						style.color[1] = 255 * math.abs(math.sin(Managers.time:time("ui") * 2.5))
+					end,
+				},
+				{
+					pass_type = "text",
+					style_id = "input",
+					text_id = "input",
+					content_change_function = function (content, style)
+						local gamepad_active = Managers.input:is_device_active("gamepad")
+
+						if content.gamepad_active ~= gamepad_active then
+							content.gamepad_active = gamepad_active
+
+							local input = gamepad_active and content.settings.gamepad_input or content.settings.input_action
+							local input_service = Managers.input:get_service("Player")
+							local _, input_text, keymap_binding = UISettings.get_gamepad_input_texture_data(input_service, input, gamepad_active)
+
+							if keymap_binding and keymap_binding[1] == "mouse" or gamepad_active then
+								content.input = string.format("$KEY;Player__%s:", input)
+								style.offset[1] = 68
+							else
+								content.input = input_text
+								style.offset[1] = 40
+							end
+						end
+					end,
+				},
+			},
+		},
+		content = {
+			gris = "rect_masked",
+			icon_mask = "dark_pact_ability_icon_gradient_mask",
+			input = "n/a",
+			is_cooldown = false,
+			progress = 0,
+			set_unsaturated = false,
+			texture_cooldown = "dark_pact_ability_icon_cooldown_gradient",
+			texture_frame = "health_bar_ability_icon_frame",
+			texture_icon = settings and settings.icon or "icons_placeholder",
+			settings = settings or {},
+		},
+		style = {
+			texture_icon_bg = {
+				saturated = false,
+				size = {
+					56,
+					56,
+				},
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+				offset = {
+					12,
+					14,
+					1,
+				},
+			},
+			texture_icon = {
+				masked = true,
+				saturated = false,
+				size = {
+					56,
+					56,
+				},
+				color = {
+					255,
+					100,
+					100,
+					100,
+				},
+				offset = {
+					12,
+					14,
+					2,
+				},
+			},
+			icon_mask = {
+				size = {
+					56,
+					56,
+				},
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+				offset = {
+					12,
+					14,
+					2,
+				},
+			},
+			texture_cooldown = {
+				size = {
+					56,
+					56,
+				},
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+				offset = {
+					12,
+					14,
+					3,
+				},
+			},
+			texture_frame = {
+				size = {
+					80,
+					80,
+				},
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+				offset = {
+					0,
+					0,
+					4,
+				},
+			},
+			input = {
+				font_size = 26,
+				font_type = "hell_shark",
+				horizontal_alignment = "center",
+				localize = false,
+				upper_case = false,
+				use_shadow = true,
+				vertical_alignment = "center",
+				size = {
+					0,
+					0,
+				},
+				area_size = {
+					20,
+					20,
+				},
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					68,
+					100,
+					6,
+				},
+			},
+		},
+		offset = {
+			0,
+			0,
+			0,
+		},
+		scenegraph_id = scenegraph_id,
+	}
+end
+
+UIWidgets.create_dark_pact_selection_widget = function (scenegraph_id)
+	return {
+		element = {
+			passes = {
+				{
+					pass_type = "texture",
+					style_id = "portrait_frame",
+					texture_id = "portrait_frame",
+				},
+				{
+					pass_type = "texture",
+					style_id = "portrait",
+					texture_id = "portrait",
+				},
+				{
+					pass_type = "texture",
+					style_id = "portrait_frame_selected",
+					texture_id = "portrait_frame_selected",
+				},
+				{
+					content_id = "hotspot",
+					pass_type = "hotspot",
+					style_id = "hotspot",
+				},
+			},
+		},
+		content = {
+			portrait = "icons_placeholder",
+			portrait_frame = "pactsworn_frame_iron",
+			portrait_frame_selected = "pactsworn_frame_highlight",
+			selected = false,
+			hotspot = {},
+		},
+		style = {
+			portrait = {
+				texture_size = {
+					140,
+					140,
+				},
+				default_size = {
+					140,
+					140,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					0,
+					0,
+					3,
+				},
+				default_offset = {
+					0,
+					0,
+					3,
+				},
+			},
+			portrait_frame = {
+				texture_size = {
+					140,
+					140,
+				},
+				default_size = {
+					140,
+					140,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					0,
+					0,
+					5,
+				},
+				default_offset = {
+					0,
+					0,
+					5,
+				},
+			},
+			hotspot = {
+				size = {
+					140,
+					140,
+				},
+				default_size = {
+					140,
+					140,
+				},
+				offset = {
+					0,
+					0,
+					3,
+				},
+				default_offset = {
+					0,
+					0,
+					3,
+				},
+			},
+			portrait_frame_selected = {
+				texture_size = {
+					168,
+					168,
+				},
+				default_size = {
+					168,
+					168,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					-14,
+					-14,
+					10,
+				},
+				default_offset = {
+					-14,
+					-14,
+					10,
+				},
+			},
+		},
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			1,
+		},
 	}
 end

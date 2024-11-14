@@ -11,7 +11,6 @@ GameplayInfoUI = class(GameplayInfoUI)
 GameplayInfoUI.init = function (self, parent, ingame_ui_context)
 	self._parent = parent
 	self._ui_renderer = ingame_ui_context.ui_renderer
-	self._input_manager = ingame_ui_context.input_manager
 	self._render_settings = {
 		alpha_multiplier = 1,
 		snap_pixel_positions = true,
@@ -78,12 +77,15 @@ GameplayInfoUI._update_button_prompts = function (self)
 		input_service_name = "Player"
 		input_action = "ghost_mode_exit"
 
+		local input_text_format = "$KEY;%s__%s:"
 		local input_service = Managers.input:get_service(input_service_name)
-		local _, input_text = UISettings.get_gamepad_input_texture_data(input_service, input_action, self._gamepad_active)
+		local _, input_text, keymap_binding = UISettings.get_gamepad_input_texture_data(input_service, input_action, self._gamepad_active)
 		local spawn_input_text = ""
 
 		if self._gamepad_active then
-			spawn_input_text = " $KEY;" .. input_service_name .. "__" .. input_action .. ":"
+			spawn_input_text = string.format(input_text_format, input_service_name, input_action)
+		elseif keymap_binding and keymap_binding[1] == "mouse" or self._gamepad_active then
+			spawn_input_text = string.format(input_text_format, input_service_name, input_action)
 		else
 			spawn_input_text = input_text and "{#color(193,91,36)}[" .. input_text .. "] {#reset()}" or ""
 		end
@@ -123,20 +125,11 @@ GameplayInfoUI._update_button_prompts = function (self)
 			sub_text = Localize("vs_spawning_w8_to_spawn")
 		elseif reason == "in_safe_zone" then
 			sub_text = "Can't spawn in hero safe zone"
+		else
+			sub_text = Localize("vs_spawning_w8_to_spawn")
 		end
 	elseif event == "ghost_catchup" then
-		if not self._target_unit then
-			return false
-		end
-
-		local career_name = ScriptUnit.extension(self._target_unit, "career_system"):career_name()
-
-		input_service_name = "Player"
-		input_action = "ghost_mode_enter"
-
-		local tele_text = string.format(Localize("vs_spawning_ghost_catchup"), Localize(career_name))
-
-		self:_set_tele_prompt(input_service_name, input_action, tele_text)
+		self:_update_catchup_tele_prompt()
 
 		return
 	elseif event == "hide_teleport" then
@@ -211,13 +204,13 @@ end
 GameplayInfoUI.update = function (self, dt, t)
 	local animations = self._animations
 	local ui_animator = self._ui_animator
-	local input_manager = self._input_manager
-	local gamepad_active = input_manager:is_device_active("gamepad")
+	local gamepad_active = Managers.input:is_device_active("gamepad")
 
 	if gamepad_active ~= self._gamepad_active then
 		self._gamepad_active = gamepad_active
 
 		self:_update_button_prompts()
+		self:_update_catchup_tele_prompt()
 	end
 
 	ui_animator:update(dt)
@@ -242,7 +235,7 @@ GameplayInfoUI._draw = function (self, dt)
 
 	local ui_renderer = self._ui_renderer
 	local ui_scenegraph = self._ui_scenegraph
-	local input_service = self._input_manager:get_service("ingame_menu")
+	local input_service = Managers.input:get_service("ingame_menu")
 	local render_settings = self._render_settings
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
@@ -267,7 +260,7 @@ end
 GameplayInfoUI._set_tele_prompt = function (self, input_service_name, input_action, suffix_text, prefix_text, prefix_color, hide)
 	local widgets_by_name = self._widgets_by_name
 	local ui_scenegraph = self._ui_scenegraph
-	local input_manager = self._input_manager
+	local input_manager = Managers.input
 	local ui_renderer = self._ui_renderer
 	local input_service = input_service_name and input_manager:get_service(input_service_name)
 	local gamepad_active = input_manager:is_device_active("gamepad")
@@ -303,4 +296,12 @@ GameplayInfoUI._start_animation = function (self, animation_name, id, widget)
 		id = animation_id,
 		name = animation_name,
 	}
+end
+
+GameplayInfoUI._update_catchup_tele_prompt = function (self)
+	local input_service_name = "Player"
+	local input_action = "ghost_mode_enter"
+	local tele_text = Localize("vs_spawning_ghost_catchup")
+
+	self:_set_tele_prompt(input_service_name, input_action, tele_text)
 end

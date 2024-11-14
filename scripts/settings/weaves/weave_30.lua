@@ -24,51 +24,7 @@ return {
 				"capture_point_1_event_small",
 			},
 			objective_settings = {
-				objective_lists = {
-					{
-						kill_enemies = {},
-						weave_target_spawner_004 = {
-							is_scored = true,
-							on_complete_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("weave_spot_event_boss_rat_ogre_nodelay", spawner_id)
-							end,
-						},
-						weave_target_spawner_006 = {
-							is_scored = true,
-							on_complete_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("capture_point_1_event_small", spawner_id)
-							end,
-						},
-						weave_target_spawner_028 = {
-							is_scored = true,
-							on_complete_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("weave_spot_event_boss_minotaur_nodelay", spawner_id)
-							end,
-						},
-						weave_target_spawner_024 = {
-							is_scored = true,
-							on_complete_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("objective_event_beastmen", spawner_id)
-							end,
-						},
-						weave_target_spawner_035 = {
-							is_scored = true,
-							on_complete_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("weave_spot_event_boss_stormfiend_nodelay", spawner_id)
-							end,
-						},
-					},
-				},
+				objective_lists = "weave_30",
 			},
 			bonus_time_on_complete = WeaveSettings.bonus_time,
 			system_seeds = {

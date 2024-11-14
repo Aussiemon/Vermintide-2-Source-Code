@@ -23,7 +23,8 @@ EnemyCharacterStateJumping.on_enter = function (self, unit, input, dt, context, 
 	self._breed = Unit.get_data(unit, "breed")
 
 	local breed = self._breed
-	local jump_speed = 4.25
+	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
+	local jump_speed = movement_settings_table.jump.initial_vertical_speed
 
 	if script_data.use_super_jumps then
 		jump_speed = jump_speed * 2
@@ -44,7 +45,6 @@ EnemyCharacterStateJumping.on_enter = function (self, unit, input, dt, context, 
 		velocity_current = velocity_current * PlayerUnitMovementSettings.backwards_jump_velocity_scale
 	end
 
-	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local breed_multiplier = breed.movement_speed_multiplier
 	local current_max_move_speed = movement_settings_table.move_speed
 	local ghost_mode_extension = ScriptUnit.extension(unit, "ghost_mode_system")
@@ -67,17 +67,22 @@ EnemyCharacterStateJumping.on_enter = function (self, unit, input, dt, context, 
 	locomotion_extension:set_forced_velocity(velocity_jump)
 	locomotion_extension:set_wanted_velocity(velocity_jump)
 
-	if CharacterStateHelper.has_move_input(input_extension) then
-		local move_anim = "jump_fwd"
+	local move_anim
 
-		CharacterStateHelper.play_animation_event(unit, move_anim)
-	else
-		local move_anim = "jump_idle"
+	move_anim = CharacterStateHelper.has_move_input(input_extension) and "jump_fwd" or "jump_idle"
 
-		CharacterStateHelper.play_animation_event(unit, move_anim)
+	CharacterStateHelper.play_animation_event(unit, move_anim)
+
+	local item_template = inventory_extension:get_wielded_slot_item_template()
+
+	self._play_fp_anim = item_template and item_template.jump_anim_enabled_1p
+
+	if self._play_fp_anim then
+		CharacterStateHelper.play_animation_event_first_person(first_person_extension, move_anim)
 	end
 
 	first_person_extension:play_camera_effect_sequence("jump", t)
+	CharacterStateHelper.ghost_mode(self._ghost_mode_extension, input_extension)
 	CharacterStateHelper.look(input_extension, player.viewport_name, first_person_extension, status_extension, self._inventory_extension)
 	CharacterStateHelper.update_weapon_actions(t, unit, input_extension, inventory_extension, self._health_extension)
 	ScriptUnit.extension(unit, "whereabouts_system"):set_jumped()
@@ -245,6 +250,7 @@ EnemyCharacterStateJumping.common_movement = function (self, in_ghost_mode, dt, 
 	local final_move_speed = buffed_move_speed * movement_settings_table.player_speed_scale
 
 	CharacterStateHelper.move_in_air_pactsworn(self._first_person_extension, input_extension, self._locomotion_extension, final_move_speed, unit)
+	CharacterStateHelper.ghost_mode(self._ghost_mode_extension, input_extension)
 	CharacterStateHelper.look(input_extension, self._player.viewport_name, self._first_person_extension, status_extension, self._inventory_extension)
 end
 

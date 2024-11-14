@@ -2,10 +2,20 @@
 
 local versus_capture_point_objective_extension_testify = script_data.testify and require("scripts/unit_extensions/objectives/testify/versus_capture_point_objective_extension_testify")
 
-VersusCapturePointObjectiveExtension = class(VersusCapturePointObjectiveExtension, VersusBaseObjectiveExtension)
+VersusCapturePointObjectiveExtension = class(VersusCapturePointObjectiveExtension, BaseObjectiveExtension)
 VersusCapturePointObjectiveExtension.NAME = "VersusCapturePointObjectiveExtension"
 
-VersusCapturePointObjectiveExtension._activate = function (self, game_object_id, objective_data)
+VersusCapturePointObjectiveExtension.init = function (self, ...)
+	VersusCapturePointObjectiveExtension.super.init(self, ...)
+
+	local _, extents = Unit.box(self._unit)
+	local radius = math.max(extents.x, extents.y)
+
+	self._inside_radius = radius * math.max(self._scale.x, self._scale.y)
+	self._percentage = 0
+end
+
+VersusCapturePointObjectiveExtension._set_objective_data = function (self, objective_data)
 	local capture_point_default_settings = GameModeSettings.versus.objectives.capture_point
 
 	self._capture_rate_multiplier = objective_data.capture_rate_multiplier or capture_point_default_settings.capture_rate_multiplier
@@ -15,14 +25,11 @@ VersusCapturePointObjectiveExtension._activate = function (self, game_object_id,
 	self._time_per_section = objective_data.time_per_section or capture_point_default_settings.time_per_section
 	self._score_for_completion = objective_data.score_for_completion or capture_point_default_settings.score_for_completion
 	self._time_for_completion = objective_data.time_for_completion or capture_point_default_settings.time_for_completion
-	self._on_complete_sound_event = objective_data.on_complete_sound_event or capture_point_default_settings.on_complete_sound_event
+	self._on_last_leaf_complete_sound_event = objective_data.on_last_leaf_complete_sound_event or capture_point_default_settings.on_last_leaf_complete_sound_event
 	self._capture_time_remaining = self._capture_time
+end
 
-	local _, extents = Unit.box(self._unit)
-	local radius = math.max(extents.x, extents.y)
-
-	self._inside_radius = radius * math.max(self._scale.x, self._scale.y)
-
+VersusCapturePointObjectiveExtension._activate = function (self)
 	local mesh = Unit.mesh(self._unit, "g_projector002")
 
 	self._material = Mesh.material(mesh, "projector")
@@ -31,10 +38,6 @@ VersusCapturePointObjectiveExtension._activate = function (self, game_object_id,
 
 	self._hero_side = Managers.state.side:get_side_from_name("heroes")
 
-	if not self._is_server then
-		self._percentage = 0
-	end
-
 	if not DEDICATED_SERVER then
 		self:play_local_unit_sound("Play_versus_objective_capture_world_loop")
 	end
@@ -42,9 +45,6 @@ end
 
 VersusCapturePointObjectiveExtension._deactivate = function (self)
 	if not DEDICATED_SERVER then
-		local complete_event = self._on_complete_sound_event[self._local_side:name()]
-
-		self:play_local_sound(complete_event)
 		self:play_local_unit_sound("Stop_versus_objective_capture_loop")
 		self:play_local_unit_sound("Stop_versus_objective_capture_ticking_loop")
 	end
@@ -64,7 +64,7 @@ VersusCapturePointObjectiveExtension._server_update = function (self, dt, t)
 
 			local percentage_done = self:get_percentage_done()
 
-			self:set_game_object_field("value", math.ceil(percentage_done * 100))
+			self:server_set_value(percentage_done)
 
 			if percentage_done >= (self._current_section + 1) * (1 / self._num_sections) then
 				self:on_section_completed()
@@ -78,15 +78,9 @@ VersusCapturePointObjectiveExtension._server_update = function (self, dt, t)
 end
 
 VersusCapturePointObjectiveExtension._client_update = function (self, dt, t)
-	local game_session = Network.game_session()
-
-	if not game_session or not self._game_object_id then
-		return
-	end
-
 	local previous_percentage = self:get_percentage_done()
 
-	self._percentage = GameSession.game_object_field(game_session, self._game_object_id, "value") / 100
+	self._percentage = self:client_get_value()
 
 	self:_update_local_player(dt, t, previous_percentage)
 end
@@ -103,7 +97,7 @@ VersusCapturePointObjectiveExtension._update_local_player = function (self, dt, 
 		self._audio_system:set_global_parameter("versus_checkpoint", percentage_done * 100)
 	end
 
-	if self._local_side:name() ~= "heroes" then
+	if self:_local_side():name() ~= "heroes" then
 		return
 	end
 

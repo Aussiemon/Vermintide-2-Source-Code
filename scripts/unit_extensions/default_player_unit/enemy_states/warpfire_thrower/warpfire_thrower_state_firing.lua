@@ -1,5 +1,7 @@
 ﻿-- chunkname: @scripts/unit_extensions/default_player_unit/enemy_states/warpfire_thrower/warpfire_thrower_state_firing.lua
 
+local buff_perk_names = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
+
 WarpfireThrowerStateFiring = class(WarpfireThrowerStateFiring, EnemyCharacterState)
 
 WarpfireThrowerStateFiring.init = function (self, character_state_init_context)
@@ -195,9 +197,6 @@ WarpfireThrowerStateFiring._stop_priming = function (self)
 end
 
 WarpfireThrowerStateFiring._close_range_attack = function (self, unit, blackboard, warpfire_data, t)
-	local blackboard = self.blackboard
-	local warpfire_data = blackboard.warpfire_data
-	local buff_system = Managers.state.entity:system("buff_system")
 	local enemies_in_range = EnemyCharacterStateHelper.get_enemies_in_line_of_sight(unit, self.first_person_unit, self._physics_world)
 
 	if not enemies_in_range then
@@ -207,15 +206,33 @@ WarpfireThrowerStateFiring._close_range_attack = function (self, unit, blackboar
 	for i = 1, #enemies_in_range do
 		local enemy_data = enemies_in_range[i]
 		local hit_unit = enemy_data.unit
+		local is_valid_target = DamageUtils.is_enemy(unit, hit_unit)
 
-		if DamageUtils.is_enemy(unit, hit_unit) then
-			local buff_name = enemy_data.distance <= warpfire_data.close_attack_range and warpfire_data.buff_name_close or warpfire_data.buff_name_far
-			local params = {}
+		if is_valid_target then
+			local target_buff_extension = ScriptUnit.has_extension(hit_unit, "buff_system")
+			local target_power_block_perk = target_buff_extension and target_buff_extension:has_buff_perk(buff_perk_names.power_block)
+			local target_status_extension = ScriptUnit.has_extension(hit_unit, "status_system")
+			local target_blocking, shield_block
 
-			params.attacker_unit = unit
+			if target_status_extension then
+				target_blocking, shield_block = target_status_extension:is_blocking()
+			end
 
-			buff_system:add_buff_synced(hit_unit, buff_name, BuffSyncType.All, params)
-			buff_system:add_buff_synced(hit_unit, "warpfire_thrower_fire_slowdown", BuffSyncType.All, params)
+			if target_power_block_perk and target_blocking and shield_block then
+				is_valid_target = not DamageUtils.check_ranged_block(unit, hit_unit, "blocked_berzerker")
+			end
+
+			if is_valid_target then
+				local buff_name = enemy_data.distance <= warpfire_data.close_attack_range and warpfire_data.buff_name_close or warpfire_data.buff_name_far
+				local params = {}
+
+				params.attacker_unit = unit
+
+				local buff_system = Managers.state.entity:system("buff_system")
+
+				buff_system:add_buff_synced(hit_unit, buff_name, BuffSyncType.All, params)
+				buff_system:add_buff_synced(hit_unit, "warpfire_thrower_fire_slowdown", BuffSyncType.All, params)
+			end
 		end
 	end
 end
@@ -252,8 +269,6 @@ WarpfireThrowerStateFiring._update_warpfire_attack = function (self, unit, t, dt
 
 		blackboard.close_attack_cooldown = t + warpfire_data.close_attack_cooldown
 	end
-
-	Managers.state.event:trigger("on_warpfire_thrower_ammo_changed", self._unit, self._current_flame_time)
 end
 
 local debug_draw = false
@@ -406,8 +421,10 @@ WarpfireThrowerStateFiring._update_movement = function (self, unit, t, dt, progr
 	local current_movement_speed_scale = self.current_movement_speed_scale
 
 	if not self.is_bot then
-		local move_acceleration_up_dt = movement_settings_table.move_acceleration_up * dt
-		local move_acceleration_down_dt = movement_settings_table.move_acceleration_down * dt
+		local breed_move_acceleration_up = self._breed and self._breed.breed_move_acceleration_up
+		local breed_move_acceleration_down = self._breed and self._breed.breed_move_acceleration_down
+		local move_acceleration_up_dt = breed_move_acceleration_up * dt or movement_settings_table.move_acceleration_up * dt
+		local move_acceleration_down_dt = breed_move_acceleration_down * dt or movement_settings_table.move_acceleration_down * dt
 
 		if is_moving then
 			current_movement_speed_scale = math.min(1, current_movement_speed_scale + move_acceleration_up_dt)
@@ -442,13 +459,12 @@ WarpfireThrowerStateFiring._update_movement = function (self, unit, t, dt, progr
 		self.last_input_direction:store(move_input_direction)
 	end
 
-	local move_anim_3p, move_anim_1p = CharacterStateHelper.get_move_animation(self._locomotion_extension, input_extension, self._status_extension)
+	local move_anim_3p = CharacterStateHelper.get_move_animation(self._locomotion_extension, input_extension, self._status_extension, self.move_anim_3p)
 
-	if move_anim_3p ~= self.move_anim_3p or move_anim_1p ~= self.move_anim_1p then
+	if move_anim_3p ~= self.move_anim_3p then
 		CharacterStateHelper.play_animation_event(unit, move_anim_3p)
 
 		self.move_anim_3p = move_anim_3p
-		self.move_anim_1p = move_anim_1p
 	end
 
 	if self._previous_state == "jumping" or self._previous_state == "falling" then

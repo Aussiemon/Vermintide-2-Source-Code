@@ -2,7 +2,6 @@
 
 local definitions = local_require("scripts/ui/views/hero_view/windows/store/definitions/store_window_panel_definitions")
 local widget_definitions = definitions.widgets
-local top_widget_definitions = definitions.top_widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local INPUT_ACTION_NEXT = "cycle_next"
@@ -24,12 +23,58 @@ StoreWindowPanel.on_enter = function (self, params, offset)
 	self._layout_settings = params.layout_settings
 	self._animations = {}
 	self._ui_animations = {}
+	self._currency_types = DLCSettings.store.currency_types
+	self._currency_ui_settings = DLCSettings.store.currency_ui_settings
+	self._currencies = {}
 
 	self:_create_ui_elements(params, offset)
 	self:_setup_input_buttons()
 end
 
 StoreWindowPanel._create_ui_elements = function (self, params, offset)
+	local currency_types = self._currency_types
+	local currency_ui_settings = self._currency_ui_settings
+	local top_widget_definitions = {}
+
+	for i = 1, #currency_types do
+		local currency_type = currency_types[i]
+		local scenegraph_node_name = "currency_node_" .. currency_type
+		local scenegraph_node = {}
+
+		scenegraph_node.parent = "panel"
+		scenegraph_node.size = {
+			200,
+			70,
+		}
+		scenegraph_node.position = {
+			-92 - 200 * (i - 1),
+			0,
+			20,
+		}
+		scenegraph_node.horizontal_alignment = "right"
+		scenegraph_node.vertical_alignment = "bottom"
+		scenegraph_definition[scenegraph_node_name] = scenegraph_node
+
+		local currency_ui_setting = currency_ui_settings[currency_type]
+		local background_ui_settings = currency_ui_setting.background_ui_settings
+
+		top_widget_definitions["currency_panel_widget_" .. currency_type] = UIWidgets.create_store_panel_currency_widget(scenegraph_node_name, currency_ui_setting.frame, currency_ui_setting.icon_big, background_ui_settings.texture, background_ui_settings.size)
+		top_widget_definitions["currency_text_tooltip_" .. currency_type] = UIWidgets.create_additional_option_tooltip(scenegraph_node_name, {
+			200,
+			70,
+		}, {
+			"weave_progression_slot_titles",
+		}, {
+			title = Localize(currency_ui_setting.tooltip_title),
+			description = Localize(currency_ui_setting.tooltip_description),
+			input = Localize(currency_ui_setting.tooltip_input),
+		}, 400, "right", "bottom", true, {
+			0,
+			-22,
+			0,
+		})
+	end
+
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self._widgets, self._widgets_by_name = UIUtils.create_widgets(widget_definitions)
 	self._top_widgets, self._top_widgets_by_name = UIUtils.create_widgets(top_widget_definitions)
@@ -543,45 +588,63 @@ StoreWindowPanel._sync_wallet_matchmaking_location = function (self)
 
 		local ui_scenegraph = self._ui_scenegraph
 		local offset_value = is_game_matchmaking and 390 or 0
+		local currency_types = self._currency_types
 
-		ui_scenegraph.currency_area.position[1] = scenegraph_definition.currency_area.position[1] - offset_value
+		for i = 1, #currency_types do
+			local currency_type = currency_types[i]
+			local node_name = "currency_node_" .. currency_type
+
+			ui_scenegraph[node_name].position[1] = scenegraph_definition[node_name].position[1] - offset_value
+		end
 	end
 end
 
 StoreWindowPanel._sync_player_wallet = function (self)
-	local currency_type = "SM"
-	local backend_store = Managers.backend:get_interface("peddler")
-	local currency_amount = backend_store:get_chips(currency_type)
+	local currency_types = self._currency_types
+	local background_total_size = 0
+	local dirty = false
 
-	if currency_amount ~= self._currency_amount then
-		self._currency_amount = currency_amount
+	for i = 1, #currency_types do
+		local currency_type = currency_types[i]
+		local backend_store = Managers.backend:get_interface("peddler")
+		local currency_amount = backend_store:get_chips(currency_type)
 
-		local top_widgets_by_name = self._top_widgets_by_name
-		local widget_currency_icon = top_widgets_by_name.currency_icon
-		local widget_currency_text = top_widgets_by_name.currency_text
-		local currency_text = UIUtils.comma_value(tostring(currency_amount))
+		if currency_amount ~= self._currencies[currency_type] then
+			self._currencies[currency_type] = currency_amount
+			dirty = true
+		end
+	end
 
-		widget_currency_text.content.text = currency_text
+	if dirty then
+		for i = 1, #currency_types do
+			local currency_type = currency_types[i]
+			local currency_amount = self._currencies[currency_type]
+			local top_widgets_by_name = self._top_widgets_by_name
+			local widget = top_widgets_by_name["currency_panel_widget_" .. currency_type]
+			local content = widget.content
+			local style = widget.style
+			local currency_text = UIUtils.comma_value(tostring(currency_amount))
 
-		local ui_renderer = self._ui_renderer
-		local text_width = UIUtils.get_text_width(ui_renderer, widget_currency_text.style.text, currency_text)
-		local icon_width = scenegraph_definition.currency_icon.size[1]
-		local text_spacing = 10
-		local total_length = icon_width + text_width + text_spacing * 2
-		local ui_scenegraph = self._ui_scenegraph
-		local background_margin = 60
-		local background_size = total_length + background_margin
+			content.currency_text = currency_text
 
-		ui_scenegraph.currency_area.size[1] = background_size
+			local ui_renderer = self._ui_renderer
+			local text_width = UIUtils.get_text_width(ui_renderer, style.currency_text, currency_text)
+			local icon_width = style.currency_icon.texture_size[1]
+			local text_spacing = 10
+			local total_length = icon_width + text_width + text_spacing * 2
+			local ui_scenegraph = self._ui_scenegraph
+			local background_margin = 60
+			local background_size = total_length + background_margin
 
-		local frame_background_margin = 12
+			ui_scenegraph["currency_node_" .. currency_type].size[1] = background_size
+			scenegraph_definition["currency_node_" .. currency_type].position[1] = -92 - background_total_size
 
-		ui_scenegraph.currency_area_frame.size[1] = background_size + frame_background_margin
+			local is_game_matchmaking = Managers.matchmaking:is_game_matchmaking()
+			local offset_value = is_game_matchmaking and 390 or 0
 
-		local is_game_matchmaking = Managers.matchmaking:is_game_matchmaking()
-		local offset_value = is_game_matchmaking and 390 or 0
-
-		ui_scenegraph.currency_area.position[1] = scenegraph_definition.currency_area.position[1] - offset_value
+			ui_scenegraph["currency_node_" .. currency_type].position[1] = scenegraph_definition["currency_node_" .. currency_type].position[1] - offset_value
+			background_total_size = background_total_size + background_size
+		end
 	end
 end
 

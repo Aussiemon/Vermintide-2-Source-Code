@@ -437,7 +437,7 @@ local animations = {
 				if params.current_round > 1 then
 					for team = 1, 2 do
 						for round = 1, params.current_round - 1 do
-							local widget_name = "round_" .. round .. "team_" .. team .. "_score_bar"
+							local widget_name = "round_" .. round .. "_team_" .. team .. "_score_bar"
 							local team_score_bar = widgets[widget_name]
 							local team_content = team_score_bar.content
 							local team_style = team_score_bar.style
@@ -463,7 +463,7 @@ local animations = {
 
 				for team = 1, 2 do
 					local current_round = params.current_round
-					local widget_name = "round_" .. current_round .. "team_" .. team .. "_score_bar"
+					local widget_name = "round_" .. current_round .. "_team_" .. team .. "_score_bar"
 					local team_score_bar = widgets[widget_name]
 					local team_content = team_score_bar.content
 					local team_style = team_score_bar.style
@@ -532,6 +532,7 @@ local animations = {
 					local current_score = team_style.current_score
 
 					current_score.offset[1] = current_score.default_offset[1] + (team_content.bar_size[1] - team_content.current_score_size[1] - 65) * math.max(0, team_progress)
+					team_content.current_score_text = math.floor(team_content.current_score * anim_fraction)
 					team_content.current_bar_fil_threshold = team_progress
 				end
 			end,

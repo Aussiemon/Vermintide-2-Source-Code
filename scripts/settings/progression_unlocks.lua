@@ -35,11 +35,6 @@ progression_unlocks.es_huntsman = {
 	title = "es_huntsman",
 	unlock_type = "career",
 	value = "es_huntsman",
-	mechanism_overrides = {
-		versus = {
-			level_requirement = 0,
-		},
-	},
 }
 progression_unlocks.es_knight = {
 	description = "end_screen_career_unlocked",
@@ -48,11 +43,6 @@ progression_unlocks.es_knight = {
 	title = "es_knight",
 	unlock_type = "career",
 	value = "es_knight",
-	mechanism_overrides = {
-		versus = {
-			level_requirement = 0,
-		},
-	},
 }
 progression_unlocks.dr_ranger = {
 	description = "n/a",
@@ -69,11 +59,6 @@ progression_unlocks.dr_ironbreaker = {
 	title = "dr_ironbreaker",
 	unlock_type = "career",
 	value = "dr_ironbreaker",
-	mechanism_overrides = {
-		versus = {
-			level_requirement = 0,
-		},
-	},
 }
 progression_unlocks.dr_slayer = {
 	description = "end_screen_career_unlocked",
@@ -82,11 +67,6 @@ progression_unlocks.dr_slayer = {
 	title = "dr_slayer",
 	unlock_type = "career",
 	value = "dr_slayer",
-	mechanism_overrides = {
-		versus = {
-			level_requirement = 0,
-		},
-	},
 }
 progression_unlocks.wh_captain = {
 	description = "end_screen_career_unlocked",
@@ -103,11 +83,6 @@ progression_unlocks.wh_bountyhunter = {
 	title = "wh_bountyhunter",
 	unlock_type = "career",
 	value = "wh_bountyhunter",
-	mechanism_overrides = {
-		versus = {
-			level_requirement = 0,
-		},
-	},
 }
 progression_unlocks.wh_zealot = {
 	description = "end_screen_career_unlocked",
@@ -116,11 +91,6 @@ progression_unlocks.wh_zealot = {
 	title = "wh_zealot",
 	unlock_type = "career",
 	value = "wh_zealot",
-	mechanism_overrides = {
-		versus = {
-			level_requirement = 0,
-		},
-	},
 }
 progression_unlocks.we_waywatcher = {
 	description = "end_screen_career_unlocked",
@@ -137,11 +107,6 @@ progression_unlocks.we_maidenguard = {
 	title = "we_maidenguard",
 	unlock_type = "career",
 	value = "we_maidenguard",
-	mechanism_overrides = {
-		versus = {
-			level_requirement = 0,
-		},
-	},
 }
 progression_unlocks.we_shade = {
 	description = "end_screen_career_unlocked",
@@ -150,11 +115,6 @@ progression_unlocks.we_shade = {
 	title = "we_shade",
 	unlock_type = "career",
 	value = "we_shade",
-	mechanism_overrides = {
-		versus = {
-			level_requirement = 0,
-		},
-	},
 }
 progression_unlocks.bw_adept = {
 	description = "end_screen_career_unlocked",
@@ -171,11 +131,6 @@ progression_unlocks.bw_scholar = {
 	title = "bw_scholar",
 	unlock_type = "career",
 	value = "bw_scholar",
-	mechanism_overrides = {
-		versus = {
-			level_requirement = 0,
-		},
-	},
 }
 progression_unlocks.bw_unchained = {
 	description = "end_screen_career_unlocked",
@@ -184,11 +139,6 @@ progression_unlocks.bw_unchained = {
 	title = "bw_unchained",
 	unlock_type = "career",
 	value = "bw_unchained",
-	mechanism_overrides = {
-		versus = {
-			level_requirement = 0,
-		},
-	},
 }
 
 DLCUtils.merge("progression_unlocks", progression_unlocks)

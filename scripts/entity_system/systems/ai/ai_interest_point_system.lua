@@ -139,10 +139,6 @@ AIInterestPointSystem.destroy = function (self)
 
 	local astar = self.astar
 
-	if not GwNavAStar.processing_finished(astar) then
-		GwNavAStar.cancel(astar)
-	end
-
 	GwNavAStar.destroy(astar)
 	table.for_each(self.reachable_interest_points, clear_table)
 	self.network_event_delegate:unregister(self)

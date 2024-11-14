@@ -3984,41 +3984,47 @@ local summary_widgets = {
 	summary_quest_book = create_quest_book("summary_quest_book"),
 	summary_achievement_flag = UIWidgets.create_simple_texture("achievement_menu_flag", "summary_achievement_flag"),
 }
-local category_tab_widgets = {}
 
-for i = 1, 8 do
-	local first_entry = i == 1
-	local scenegraph_id = "category_tab_" .. i
-	local scenegraph_list_id = "category_tab_" .. i .. "_list"
-	local previous_scenegraph_id = "category_tab_" .. i - 1
-	local previous_scenegraph_list_id = "category_tab_" .. i - 1 .. "_list"
+function create_category_tab_widgets()
+	local category_tab_widgets = {}
+	local num_categories = Managers.state.achievement:num_achievement_categories()
 
-	scenegraph_definition[scenegraph_id] = {
-		horizontal_alignment = "center",
-		parent = first_entry and "category_root" or previous_scenegraph_list_id,
-		vertical_alignment = first_entry and "top" or "bottom",
-		size = tab_size,
-		position = {
-			first_entry and -15 or 0,
-			first_entry and -20 or -(tab_size[2] + tab_list_entry_spacing),
-			0,
-		},
-	}
-	scenegraph_definition[scenegraph_list_id] = {
-		horizontal_alignment = "center",
-		vertical_alignment = "top",
-		parent = scenegraph_id,
-		size = {
-			tab_size[1],
-			0,
-		},
-		position = {
-			0,
-			-(tab_size[2] + tab_list_entry_spacing),
-			0,
-		},
-	}
-	category_tab_widgets[i] = create_tab(scenegraph_id, tab_size, "n/a", scenegraph_list_id)
+	for i = 1, num_categories + 1 do
+		local first_entry = i == 1
+		local scenegraph_id = "category_tab_" .. i
+		local scenegraph_list_id = "category_tab_" .. i .. "_list"
+		local previous_scenegraph_id = "category_tab_" .. i - 1
+		local previous_scenegraph_list_id = "category_tab_" .. i - 1 .. "_list"
+
+		scenegraph_definition[scenegraph_id] = {
+			horizontal_alignment = "center",
+			parent = first_entry and "category_root" or previous_scenegraph_list_id,
+			vertical_alignment = first_entry and "top" or "bottom",
+			size = tab_size,
+			position = {
+				first_entry and -15 or 0,
+				first_entry and -20 or -(tab_size[2] + tab_list_entry_spacing),
+				0,
+			},
+		}
+		scenegraph_definition[scenegraph_list_id] = {
+			horizontal_alignment = "center",
+			vertical_alignment = "top",
+			parent = scenegraph_id,
+			size = {
+				tab_size[1],
+				0,
+			},
+			position = {
+				0,
+				-(tab_size[2] + tab_list_entry_spacing),
+				0,
+			},
+		}
+		category_tab_widgets[i] = create_tab(scenegraph_id, tab_size, "n/a", scenegraph_list_id)
+	end
+
+	return category_tab_widgets
 end
 
 local quest_entry_definition = create_quest_widget("achievement_entry", achievement_entry_size)
@@ -4115,7 +4121,7 @@ return {
 	widgets = widgets,
 	overlay_widgets = overlay_widgets,
 	summary_widgets = summary_widgets,
-	category_tab_widgets = category_tab_widgets,
+	create_category_tab_widgets_func = create_category_tab_widgets,
 	scenegraph_definition = scenegraph_definition,
 	animation_definitions = animation_definitions,
 	quest_entry_definition = quest_entry_definition,

@@ -96,6 +96,7 @@ local item_widget_definition_functions = {
 	header_text = "create_store_header_text_definition",
 	item = "create_store_item_definition",
 	spacing = "create_store_list_spacing_definition",
+	weapon_pose = "create_store_pose_item_definition",
 }
 local PRODUCT_PLACEHOLDER_TEXTURE_PATH = "gui/1080p/single_textures/generic/transparent_placeholder_texture"
 
@@ -139,6 +140,7 @@ HeroViewStateStore.on_enter = function (self, params)
 	self._unseen_product_reward_queue = {}
 	self.tab_cat = {}
 	self._layout_renderers = {}
+	self._temporary_pages = {}
 
 	if IS_WINDOWS then
 		self._friends_component_ui = FriendsUIComponent:new(ingame_ui_context)
@@ -707,16 +709,21 @@ HeroViewStateStore._get_layout_setting = function (self, index)
 end
 
 HeroViewStateStore.page_exists = function (self, page_name)
-	return StoreLayoutConfig.pages[page_name] ~= nil
+	return StoreLayoutConfig.pages[page_name] ~= nil or self._temporary_pages[page_name] ~= nil
 end
 
-HeroViewStateStore.go_to_store_path = function (self, path_array, keep_global_shader_flags)
+HeroViewStateStore.get_page = function (self, page_name)
+	return StoreLayoutConfig.pages[page_name] or self._temporary_pages[page_name]
+end
+
+HeroViewStateStore.go_to_store_path = function (self, path_array, keep_global_shader_flags, page_override)
 	if not keep_global_shader_flags then
 		self:_remove_page_global_shader_flag_overrides()
 	end
 
 	local pages = StoreLayoutConfig.pages
-	local page = pages[path_array[#path_array]]
+	local page_name = path_array[#path_array]
+	local page = page_override or pages[path_array[#path_array]] or self._temporary_pages[page_name]
 	local layout = page.layout
 	local sound_event_enter = page.sound_event_enter
 
@@ -728,9 +735,15 @@ HeroViewStateStore.go_to_store_path = function (self, path_array, keep_global_sh
 
 	self:set_layout_by_name(layout)
 
+	self._temporary_pages[page_name] = page_override or self._temporary_pages[page_name]
+
 	if not keep_global_shader_flags then
 		self:_apply_page_global_shader_flag_overrides(page)
 	end
+end
+
+HeroViewStateStore.get_temporary_page = function (self, page_name)
+	return self._temporary_pages[page_name]
 end
 
 HeroViewStateStore._apply_page_global_shader_flag_overrides = function (self, page)
@@ -753,7 +766,8 @@ HeroViewStateStore._remove_page_global_shader_flag_overrides = function (self)
 		return
 	end
 
-	local page = pages[path_array[#path_array]]
+	local page_name = path_array[#path_array]
+	local page = pages[page_name] or self._temporary_pages[page_name]
 	local global_shader_flag_overrides = page.global_shader_flag_overrides
 
 	if not global_shader_flag_overrides then
@@ -1171,6 +1185,19 @@ HeroViewStateStore.can_afford_item = function (self, item)
 	local currency_type = "SM"
 	local regular_prices = item.regular_prices
 	local current_prices = item.current_prices
+	local item_currency_settings = DLCSettings.store.currency_ui_settings
+
+	for currency, settings in pairs(item_currency_settings) do
+		local has_regular_price = regular_prices[currency]
+		local has_current_price = current_prices[currency]
+
+		if has_regular_price and has_current_price then
+			currency_type = currency
+
+			break
+		end
+	end
+
 	local item_price = current_prices[currency_type] or regular_prices[currency_type]
 	local owned_currency_amount = self:get_wallet_currency_amount(currency_type)
 
@@ -1630,6 +1657,10 @@ HeroViewStateStore.populate_product_widget = function (self, widget, product)
 		local settings = product.settings
 
 		self:_populate_dlc_logo_widget(widget, settings, product_id)
+	elseif product_type == "collection_item" then
+		self:_populate_collection_item(widget, product, product_id)
+	elseif product_type == "weapon_pose" then
+		self:_populate_pose_item(widget, product, product_id)
 	end
 end
 
@@ -1641,7 +1672,7 @@ HeroViewStateStore.destroy_product_widget = function (self, widget, product, for
 		local product_id = product.product_id
 		local product_type = product.type
 
-		if product_type == "item" then
+		if product_type == "item" or product_type == "collection_item" or product_type == "weapon_pose" then
 			self:_unload_texture_by_reference(reference_name, force_unload)
 		elseif product_type == "dlc" then
 			self:_unload_texture_by_reference(reference_name, force_unload)
@@ -1819,18 +1850,26 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 			real_currency = true
 			price_text = Localize(reason)
 		else
-			local currency_type = "SM"
-			local regular_price = item.regular_prices[currency_type]
-			local current_price = item.current_prices[currency_type]
+			local item_currency_settings = DLCSettings.store.currency_ui_settings
 
-			if current_price ~= regular_price then
-				local discount = 1 - current_price / regular_price
+			for currency_type, settings in pairs(item_currency_settings) do
+				if item.regular_prices[currency_type] and item.current_prices[currency_type] then
+					local regular_price = item.regular_prices[currency_type]
+					local current_price = item.current_prices[currency_type]
 
-				self:_calculate_discount_textures(widget, math.round(100 * discount))
+					if current_price ~= regular_price then
+						local discount = 1 - current_price / regular_price
+
+						self:_calculate_discount_textures(widget, math.round(100 * discount))
+					end
+
+					real_currency = false
+					price_text = UIUtils.comma_value(tostring(current_price))
+					content.price_icon = settings.icon_small
+
+					break
+				end
 			end
-
-			real_currency = false
-			price_text = UIUtils.comma_value(tostring(current_price))
 		end
 
 		if item_data.show_old_price then
@@ -1843,12 +1882,14 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 	local backend_items = Managers.backend:get_interface("items")
 	local item_key = item.key
 	local item_owned = backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key) or backend_items:has_bundle_contents(item.data.bundle_contains)
+	local item_data = item.data
+	local item_type = item_data.item_type
 
 	content.owned = item_owned
 
 	local item_type_icon = item_type_store_icons[item_type] or item_type_store_icons.default
 
-	content.type_tag_icon = rarity and item_type_icon .. "_" .. rarity or item_type_icon
+	content.type_tag_icon = rarity and item_type_icon and item_type_icon .. "_" .. rarity or item_type_icon
 
 	if item_data.item_type == "bundle" then
 		content.bundle_content_amount_text = string.format("%dx ", #item_data.bundle_contains)
@@ -1876,6 +1917,127 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 
 		local function callback()
 			local texture_path = item_data.store_texture or "gui/1080p/single_textures/store_item_icons/" .. texture_name .. "/" .. texture_name
+
+			self:_set_material_diffuse(top_gui, new_material_name, texture_path)
+
+			content.icon = new_material_name
+		end
+
+		self:_load_texture_package(package_name, reference_name, callback)
+	else
+		Application.warning("Icon package not accessable for product_id: (%s) and package_name: (%s)", product_id, package_name)
+
+		content.icon = "icons_placeholder"
+	end
+end
+
+HeroViewStateStore._populate_collection_item = function (self, widget, product, product_id)
+	local item = product.item
+	local item_data = item.data
+	local content = widget.content
+	local style = widget.style
+	local masked = true
+	local ui_top_renderer = self._ui_top_renderer
+	local top_gui = ui_top_renderer.gui
+	local bundle = item_data.bundle
+
+	if bundle then
+		local bundled_items = bundle.BundledItems
+
+		if bundled_items then
+			local backend_items = Managers.backend:get_interface("items")
+			local items_owned = true
+
+			for i = 1, #bundled_items do
+				local bundled_item_key = bundled_items[i]
+
+				if not backend_items:has_item(bundled_item_key) then
+					items_owned = false
+
+					break
+				end
+			end
+
+			content.owned = items_owned
+		end
+	end
+
+	self._reference_id = (self._reference_id or 0) + 1
+
+	local reference_name = product_id .. "_" .. self._reference_id
+	local texture_name = "store_item_icon_" .. product_id
+	local package_name = item_data.store_texture_package or "resource_packages/store/item_icons/" .. texture_name
+	local package_available = Application.can_get("package", package_name)
+
+	if package_available then
+		content.reference_name = reference_name
+		content.category_texture.texture_id = nil
+
+		local new_material_name = masked and texture_name .. "_masked" or texture_name
+		local template_material_name = masked and "template_store_diffuse_masked" or "template_store_diffuse"
+
+		self:_create_material_instance(top_gui, new_material_name, template_material_name, reference_name)
+
+		local function callback()
+			local texture_path = item_data.store_texture or "gui/1080p/single_textures/store_item_icons/" .. texture_name .. "/" .. texture_name
+
+			self:_set_material_diffuse(top_gui, new_material_name, texture_path)
+
+			content.category_texture.texture_id = new_material_name
+		end
+
+		self:_load_texture_package(package_name, reference_name, callback)
+	else
+		Application.warning("Icon package not accessable for product_id: (%s) and package_name: (%s)", product_id, package_name)
+
+		content.icon = "icons_placeholder"
+	end
+end
+
+HeroViewStateStore._populate_pose_item = function (self, widget, product, product_id)
+	local item = product.item
+	local parent_item = item.parent
+	local pose_index = item.pose_index
+	local item_type = item.item_type
+	local rarity = item.rarity
+	local item_key = item.key
+	local content = widget.content
+	local style = widget.style
+	local item_type_store_icons = UISettings.item_type_store_icons
+	local item_type_icon = item_type_store_icons[item_type] or item_type_store_icons.default
+
+	content.type_tag_icon = rarity and item_type_icon and item_type_icon .. "_" .. rarity or item_type_icon
+
+	local rarity_background = item_backgrounds_by_rarirty[rarity]
+
+	content.background = rarity_background
+
+	local backend_items = Managers.backend:get_interface("items")
+
+	content.owned = backend_items:has_item(item_key)
+
+	local masked = true
+	local ui_top_renderer = self._ui_top_renderer
+	local top_gui = ui_top_renderer.gui
+
+	self._reference_id = (self._reference_id or 0) + 1
+
+	local reference_name = product_id .. "_" .. self._reference_id
+	local texture_name = parent_item .. string.format("_%02d", pose_index)
+	local package_name = "resource_packages/pose_packages/" .. parent_item
+	local package_available = Application.can_get("package", package_name)
+
+	if package_available then
+		content.reference_name = reference_name
+		content.icon = nil
+
+		local new_material_name = masked and texture_name .. "_masked" or texture_name
+		local template_material_name = masked and "template_store_diffuse_masked" or "template_store_diffuse"
+
+		self:_create_material_instance(top_gui, new_material_name, template_material_name, reference_name)
+
+		local function callback()
+			local texture_path = item.store_texture or "gui/1080p/single_textures/icons_poses_social_wheel/" .. texture_name .. "_glow"
 
 			self:_set_material_diffuse(top_gui, new_material_name, texture_path)
 
@@ -2834,7 +2996,7 @@ end
 HeroViewStateStore.animate_store_product = function (self, widget, dt, optional_hover)
 	local product_type = widget.product_type
 
-	if not product_type or product_type == "item" or product_type == "dlc" then
+	if not product_type or product_type == "item" or product_type == "dlc" or product_type == "weapon_pose" then
 		self:_animate_item_product(widget, dt, optional_hover)
 	elseif product_type == "dlc_header_video" then
 		self:_animate_dlc_video_button(widget, dt, optional_hover)

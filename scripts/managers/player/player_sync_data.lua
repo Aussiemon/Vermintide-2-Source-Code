@@ -28,6 +28,8 @@ PlayerSyncData.init = function (self, player, network_manager)
 			slot_melee_skin = NetworkLookup.weapon_skins["n/a"],
 			slot_ranged = NetworkLookup.item_names["n/a"],
 			slot_ranged_skin = NetworkLookup.weapon_skins["n/a"],
+			slot_pose = NetworkLookup.item_names["n/a"],
+			slot_pose_skin = NetworkLookup.item_names["n/a"],
 			playerlist_build_privacy = Application.user_setting("playerlist_build_privacy"),
 		}
 		local callback = callback(self, "cb_game_session_disconnect")
@@ -49,7 +51,7 @@ PlayerSyncData._calc_highest_unlocked_difficulty = function (self)
 		local highest_rank = 0
 
 		for difficulty_key, difficulty_settings in pairs(DifficultySettings) do
-			if highest_rank < difficulty_settings.rank then
+			if DefaultDifficultyLookup[difficulty_key] and highest_rank < difficulty_settings.rank then
 				highest_rank = difficulty_settings.rank
 				highest_unlocked_difficulty = difficulty_key
 			end
@@ -62,29 +64,26 @@ PlayerSyncData._calc_highest_unlocked_difficulty = function (self)
 		return "versus_base"
 	end
 
-	local best_aquired_power_level = self._player:best_aquired_power_level()
 	local highest_unlocked_difficulty = "normal"
 	local highest_rank = 2
 
 	for difficulty_key, difficulty_settings in pairs(DifficultySettings) do
-		local difficulty_approved = true
+		if DefaultDifficultyLookup[difficulty_key] then
+			local difficulty_approved = true
 
-		if best_aquired_power_level < difficulty_settings.required_power_level then
-			difficulty_approved = false
-		end
+			if difficulty_settings.extra_requirement_name then
+				local extra_requirement_name = difficulty_settings.extra_requirement_name
+				local requirement_data = ExtraDifficultyRequirements[extra_requirement_name]
 
-		if difficulty_settings.extra_requirement_name then
-			local extra_requirement_name = difficulty_settings.extra_requirement_name
-			local requirement_data = ExtraDifficultyRequirements[extra_requirement_name]
-
-			if not requirement_data.requirement_function() then
-				difficulty_approved = false
+				if not requirement_data.requirement_function() then
+					difficulty_approved = false
+				end
 			end
-		end
 
-		if difficulty_approved and highest_rank < difficulty_settings.rank then
-			highest_unlocked_difficulty = difficulty_key
-			highest_rank = difficulty_settings.rank
+			if difficulty_approved and highest_rank < difficulty_settings.rank then
+				highest_unlocked_difficulty = difficulty_key
+				highest_rank = difficulty_settings.rank
+			end
 		end
 	end
 
@@ -129,7 +128,7 @@ PlayerSyncData.destroy = function (self)
 			self._network_manager:destroy_game_object(self._game_object_id)
 		end
 
-		Managers.state.event:unregister(self, "on_game_options_changed")
+		Managers.state.event:unregister("on_game_options_changed", self)
 	end
 
 	self._game_object_id = nil

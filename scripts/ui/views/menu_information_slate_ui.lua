@@ -5,6 +5,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local widget_definitions = definitions.widget_definitions
 local animation_definitions = definitions.animation_definitions
 local body_parsing_data = definitions.body_parsing_data
+local create_switch_panel_func = definitions.create_switch_panel_func
 
 MenuInformationSlateUI = class(MenuInformationSlateUI)
 
@@ -24,6 +25,8 @@ MenuInformationSlateUI.init = function (self, ui_renderer, input_service)
 	self._scrollbar_alpha = 0
 	self._current_information_data_index = 1
 	self._information_data = {}
+	self._animations = {}
+	self._ui_animations = {}
 
 	self:_fetch_backend_information()
 end
@@ -79,8 +82,12 @@ MenuInformationSlateUI._create_ui_elements = function (self)
 end
 
 MenuInformationSlateUI._reset = function (self)
-	self._animations = {}
-	self._ui_animations = {}
+	for key, id in pairs(self._animations) do
+		self._ui_animator:stop_animation(id)
+	end
+
+	table.clear(self._animations)
+	table.clear(self._ui_animations)
 
 	local widgets = {}
 	local widgets_by_name = {}
@@ -113,9 +120,7 @@ MenuInformationSlateUI._fetch_backend_information = function (self)
 			self:_parse_information_data(slate_data)
 
 			if #self._information_data > 1 then
-				local next_slate_data = self._information_data[2]
-
-				self:_populate_switch_panel(next_slate_data)
+				self:_create_switch_panel()
 				self:_start_animation("animate_switch_panel_in")
 			end
 
@@ -207,9 +212,7 @@ MenuInformationSlateUI._parse_cdn_data = function (self, info)
 		self:_parse_information_data(slate_data)
 
 		if #self._information_data > 1 then
-			local next_slate_data = self._information_data[2]
-
-			self:_populate_switch_panel(next_slate_data)
+			self:_create_switch_panel()
 			self:_start_animation("animate_switch_panel_in")
 		end
 
@@ -217,28 +220,15 @@ MenuInformationSlateUI._parse_cdn_data = function (self, info)
 	end
 end
 
-MenuInformationSlateUI._populate_switch_panel = function (self, information_data)
-	self._ui_scenegraph.panel.local_position[2] = scenegraph_definition.panel.position[2] - 84
+MenuInformationSlateUI._create_switch_panel = function (self)
+	self._ui_scenegraph.panel.local_position[2] = scenegraph_definition.panel.position[2] - 50
 
-	local alert_type = information_data.alert_name
-	local alert_color = information_data.alert_color
-	local header = information_data.header
-	local switch_panel_widget = self._widgets_by_name.switch_panel
-	local switch_panel_content = switch_panel_widget.content
-	local switch_panel_style = switch_panel_widget.style
-	local base_width = switch_panel_content.base_width
-	local text_style = switch_panel_style.header
-	local font, size_of_font = UIFontByResolution(text_style)
-	local font_material, font_size = font[1], size_of_font
-	local width = UIRenderer.text_size(self._ui_renderer, string.upper(header), font_material, font_size)
-	local total_size = base_width + width + 20
+	local switch_panel_widget_def = create_switch_panel_func(self._information_data)
+	local switch_panel_widget = UIWidget.init(switch_panel_widget_def)
 
-	self._ui_scenegraph.switch_panel.size[1] = total_size
-	switch_panel_style.top_banner.texture_size[1] = total_size
-	switch_panel_style.background.texture_size[1] = total_size
-	switch_panel_style.top_banner.color = alert_color
-	switch_panel_style.dot_icon.color = alert_color
-	switch_panel_content.header = header
+	switch_panel_widget.content.current_index = self._current_information_data_index
+	self._switch_widget = switch_panel_widget
+	self._widgets_by_name.switch_panel = switch_panel_widget
 end
 
 MenuInformationSlateUI._parse_information_data = function (self, information_data)
@@ -284,7 +274,7 @@ MenuInformationSlateUI._parse_information_data = function (self, information_dat
 		end
 	end
 
-	local excess = math.abs(590 - math.abs(offset))
+	local excess = math.abs(offset) - 590
 
 	if excess > 0 then
 		local ui_scenegraph = self._ui_scenegraph
@@ -295,6 +285,12 @@ MenuInformationSlateUI._parse_information_data = function (self, information_dat
 		local optional_scroll_area_hotspot_widget, horizontal_scrollbar
 
 		self._scrollbar_ui = ScrollbarUI:new(ui_scenegraph, scroll_area_scenegraph_id, scroll_area_anchor_scenegraph_id, excess_area, enable_auto_scroll, optional_scroll_area_hotspot_widget, horizontal_scrollbar)
+	else
+		self._scrollbar_ui = nil
+
+		local scroll_area_scenegraph_id = "body_anchor"
+
+		self._ui_scenegraph[scroll_area_scenegraph_id].local_position[2] = 0
 	end
 
 	self._information_available = true
@@ -322,7 +318,7 @@ MenuInformationSlateUI._parse_text_data = function (self, data, idx, offset)
 		text_style.offset[1] = 20
 		offset = offset + spacing
 
-		local bullet_points = string.split(text, "|")
+		local bullet_points = string.split_deprecated(text, "|")
 
 		for bullet_point_idx, bullet_point in ipairs(bullet_points) do
 			local bullet_point_text_style = table.clone(text_style)
@@ -452,17 +448,26 @@ MenuInformationSlateUI._cb_on_backend_url_loaded = function (self, texture_name,
 	local texture_url = result[texture_name]
 
 	if not texture_url then
+		local use_amazon_cdn_fallback = false
+
+		self._material_references_to_unload[reference_name] = true
+
+		local cb = callback(self, "_cb_on_backend_image_loaded", material_name, reference_name, widget_cb, texture_name, use_amazon_cdn_fallback)
+
+		Managers.url_loader:load_resource(reference_name, "http://" .. CDN_SERVER .. "/vermintide2/" .. texture_name .. ".dds", cb, Application.guid())
+
 		return
 	end
 
 	self._material_references_to_unload[reference_name] = true
 
-	local cb = callback(self, "_cb_on_backend_image_loaded", material_name, reference_name, widget_cb)
+	local use_amazon_cdn_fallback = true
+	local cb = callback(self, "_cb_on_backend_image_loaded", material_name, reference_name, widget_cb, texture_name, use_amazon_cdn_fallback)
 
 	Managers.url_loader:load_resource(reference_name, texture_url, cb, texture_name)
 end
 
-MenuInformationSlateUI._cb_on_backend_image_loaded = function (self, material_name, reference_name, widget_cb, texture_resource)
+MenuInformationSlateUI._cb_on_backend_image_loaded = function (self, material_name, reference_name, widget_cb, texture_name, use_amazon_cdn_fallback, texture_resource)
 	if not self._cloned_materials_by_reference[reference_name] then
 		return
 	end
@@ -470,6 +475,14 @@ MenuInformationSlateUI._cb_on_backend_image_loaded = function (self, material_na
 	if texture_resource then
 		self:_set_material_diffuse_by_resource(material_name, texture_resource)
 		widget_cb()
+	elseif use_amazon_cdn_fallback then
+		local use_amazon_cdn_fallback = false
+
+		self._material_references_to_unload[reference_name] = true
+
+		local cb = callback(self, "_cb_on_backend_image_loaded", material_name, reference_name, widget_cb, texture_name, use_amazon_cdn_fallback)
+
+		Managers.url_loader:load_resource(reference_name, "http://" .. CDN_SERVER .. "/vermintide2/" .. texture_name .. ".dds", cb, Application.guid())
 	else
 		self._material_references_to_unload[reference_name] = nil
 
@@ -486,49 +499,83 @@ MenuInformationSlateUI._set_material_diffuse_by_resource = function (self, mater
 end
 
 MenuInformationSlateUI._update_input = function (self, dt, t)
-	if self._animations.expand or self._animations.collapse then
-		return
-	end
-
-	local input_pressed = IS_CONSOLE and self._input_service:get("special_1_press") or self._input_service:get("start_press")
+	local input_pressed = IS_CONSOLE and self._input_service:get("start_press") or self._input_service:get("special_1_press")
 
 	input_pressed = input_pressed or UIUtils.is_button_pressed(self._widgets_by_name.more_information, "hotspot")
 	input_pressed = input_pressed or UIUtils.is_button_pressed(self._widgets_by_name.less_information, "hotspot")
 
-	if input_pressed then
+	local is_animating = self._animations.expand or self._animations.collapse
+
+	if input_pressed and not is_animating then
 		if not self._expanded then
 			self._expanded = true
 
 			self:_start_animation("expand")
+			self:_play_sound("play_gui_info_slate_more_information_open")
 		else
 			self._expanded = false
 
 			self:_start_animation("collapse")
+			self:_play_sound("play_gui_info_slate_more_information_close")
 		end
+
+		return
+	elseif UIUtils.is_button_hover_enter(self._widgets_by_name.more_information, "hotspot") or UIUtils.is_button_hover_enter(self._widgets_by_name.less_information, "hotspot") then
+		self:_play_sound("play_gui_info_slate_more_information_hover")
 	end
 
 	if #self._information_data > 1 then
+		local old_index = self._current_information_data_index
 		local widget = self._widgets_by_name.switch_panel
 
-		if UIUtils.is_button_pressed(widget, "hotspot") then
-			self._current_information_data_index = 1 + self._current_information_data_index % #self._information_data
+		for i = 1, #self._information_data do
+			local slate_name = "slate_" .. i
 
-			local slate_data = self._information_data[self._current_information_data_index]
+			if UIUtils.is_button_pressed(widget, slate_name .. "_hotspot") then
+				self:_play_sound("play_gui_info_slate_tab_clicked")
 
-			self:_reset()
-			self:_parse_information_data(slate_data)
+				if i ~= self._current_information_data_index then
+					self._current_information_data_index = i
 
-			local next_slate_data_index = 1 + self._current_information_data_index % #self._information_data
-			local next_slate_data = self._information_data[next_slate_data_index]
+					break
+				end
+			elseif UIUtils.is_button_hover_enter(widget, slate_name .. "_hotspot") then
+				self:_play_sound("play_gui_info_slate_tab_hover")
 
-			self:_populate_switch_panel(next_slate_data)
+				break
+			end
+		end
 
-			self._expanded = false
+		if UIUtils.is_button_pressed(widget, "left_arrow_hotspot") or self._input_service:get("previous") or IS_WINDOWS and self._input_service:get("left") then
+			self._current_information_data_index = math.max(self._current_information_data_index - 1, 1)
 
-			self:_start_animation("collapse_instantly")
-			self:_start_animation("animate_in")
+			self:_play_sound("play_gui_info_slate_tab_arrow_clicked")
+		elseif UIUtils.is_button_pressed(widget, "right_arrow_hotspot") or self._input_service:get("next") or IS_WINDOWS and self._input_service:get("right") then
+			self._current_information_data_index = math.min(self._current_information_data_index + 1, #self._information_data)
+
+			self:_play_sound("play_gui_info_slate_tab_arrow_clicked")
+		elseif UIUtils.is_button_hover_enter(widget, "left_arrow_hotspot") or UIUtils.is_button_hover_enter(widget, "right_arrow_hotspot") then
+			self:_play_sound("play_gui_info_slate_tab_arrow_hover")
+		end
+
+		if old_index ~= self._current_information_data_index then
+			self:_populate_info_slate()
 		end
 	end
+end
+
+MenuInformationSlateUI._populate_info_slate = function (self)
+	local slate_data = self._information_data[self._current_information_data_index]
+
+	self:_reset()
+	self:_parse_information_data(slate_data)
+	self:_create_switch_panel()
+
+	self._expanded = false
+
+	self:_start_animation("collapse_instantly")
+	self:_start_animation("animate_in")
+	self:_play_sound("play_gui_info_slate_tab_changed")
 end
 
 MenuInformationSlateUI._update_animations = function (self, dt, t)
@@ -592,6 +639,16 @@ MenuInformationSlateUI._draw = function (self, dt, t)
 		end
 	end
 
+	if self._switch_widget then
+		local alpha_multiplier = render_settings.alpha_multiplier
+
+		render_settings.alpha_multiplier = self._switch_widget.content.alpha_value
+
+		UIRenderer.draw_widget(ui_renderer, self._switch_widget)
+
+		render_settings.alpha_multiplier = alpha_multiplier
+	end
+
 	UIRenderer.end_pass(ui_renderer)
 
 	if self._expanded then
@@ -599,7 +656,9 @@ MenuInformationSlateUI._draw = function (self, dt, t)
 
 		render_settings.alpha_multiplier = render_settings.scrollbar_alpha
 
-		self._scrollbar_ui:update(dt, t, ui_renderer, input_service, render_settings)
+		if self._scrollbar_ui then
+			self._scrollbar_ui:update(dt, t, ui_renderer, input_service, render_settings)
+		end
 
 		render_settings.alpha_multiplier = alpha_multiplier
 	end
@@ -651,4 +710,8 @@ MenuInformationSlateUI._reset_cloned_materials = function (self)
 
 		cloned_materials_by_reference[reference_name] = nil
 	end
+end
+
+MenuInformationSlateUI._play_sound = function (self, event)
+	return Managers.music:trigger_event(event)
 end

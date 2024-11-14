@@ -379,11 +379,16 @@ PlayerHuskLocomotionExtension.move_to_non_intersecting_position = function (self
 	end
 end
 
-PlayerHuskLocomotionExtension.teleport_to = function (self, pos, rot)
+PlayerHuskLocomotionExtension.teleport_to = function (self, pos, optional_rot)
 	local unit = self.unit
 	local mover = Unit.mover(unit)
 
 	Mover.set_position(mover, pos)
 	Unit.set_local_position(unit, 0, pos)
+
+	if optional_rot then
+		Unit.set_local_rotation(unit, 0, optional_rot)
+	end
+
 	self:move_to_non_intersecting_position()
 end

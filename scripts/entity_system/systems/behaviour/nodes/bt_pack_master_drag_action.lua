@@ -87,10 +87,6 @@ BTPackMasterDragAction.leave = function (self, unit, blackboard, t, reason, dest
 
 	blackboard.attack_cooldown = t + blackboard.action.cooldown
 
-	if not GwNavAStar.processing_finished(blackboard.destination_test_astar) then
-		GwNavAStar.cancel(blackboard.destination_test_astar)
-	end
-
 	GwNavAStar.destroy(blackboard.destination_test_astar)
 end
 

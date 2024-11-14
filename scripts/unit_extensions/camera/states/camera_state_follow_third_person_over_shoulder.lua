@@ -14,14 +14,17 @@ CameraStateFollowThirdPersonOverShoulder.on_enter = function (self, unit, input,
 	local follow_unit, follow_node = camera_extension:get_follow_data()
 	local viewport_name = camera_extension.viewport_name
 
-	self._follow_unit = follow_unit
-	self._follow_node = follow_node
+	if ALIVE[follow_unit] then
+		self._follow_unit = follow_unit
+		self._follow_node = follow_node
 
-	local camera_manager = Managers.state.camera
-	local root_look_dir = Vector3.normalize(Vector3.flat(Quaternion.forward(Unit.local_rotation(follow_unit, 0))))
-	local yaw = math.atan2(root_look_dir.y, root_look_dir.x)
+		local camera_manager = Managers.state.camera
+		local root_look_dir = Vector3.normalize(Vector3.flat(Quaternion.forward(Unit.local_rotation(follow_unit, 0))))
+		local yaw = math.atan2(root_look_dir.y, root_look_dir.x)
 
-	camera_manager:set_pitch_yaw(viewport_name, -0.6, yaw)
+		camera_manager:set_pitch_yaw(viewport_name, -0.6, yaw)
+	end
+
 	Unit.set_data(unit, "camera", "settings_node", "over_shoulder")
 end
 

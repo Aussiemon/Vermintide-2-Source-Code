@@ -19,67 +19,51 @@ MatchmakingStateWaitJoinPlayerHosted.on_enter = function (self, state_context)
 	self._current_lobby = Managers.state.network:lobby()
 	self._state_context = state_context
 	self._search_config = state_context.search_config
-	self._lobby_client = state_context.lobby_client
 
-	self:_sync_player_data()
-end
+	local lobby_client = Managers.lobby:query_lobby("matchmaking_join_lobby")
+	local match_started = lobby_client:lobby_data("match_started") == "true"
 
-MatchmakingStateWaitJoinPlayerHosted._sync_player_data = function (self)
-	local player = Managers.player:local_player()
-	local name = player:name()
-	local career_name = player:career_name()
-	local profile_id = player:profile_index()
-	local career_id = player:career_index()
-	local party_id = self._state_context.party_id
-	local slots = {
-		"slot_frame",
-		"slot_melee",
-		"slot_ranged",
-	}
-	local items_interface = Managers.backend:get_interface("items")
-	local versus_interface = Managers.backend:get_interface("versus")
-	local slot_data = {}
-
-	print("========================================")
-
-	for _, slot_name in pairs(slots) do
-		local item_id = versus_interface:get_loadout_item_id(career_name, slot_name)
-		local item_key = items_interface:get_key(item_id)
-
-		print(slot_name, item_key)
-
-		slot_data[slot_name] = NetworkLookup.item_names[item_key]
-	end
-
-	print("----------------------------------------")
-	table.dump(slot_data, "SLOT_SYNC_DATA", 2)
-	print("========================================")
-
-	local do_full_sync = true
-	local fake_party_id = 0
-	local peer_id = Network.peer_id()
-	local host = self._lobby_client:lobby_host()
-
-	self._network_transmit:send_rpc("rpc_matchmaking_sync_player_data", host, peer_id, name, profile_id, career_id, slot_data.slot_frame, slot_data.slot_melee, slot_data.slot_ranged, fake_party_id, do_full_sync)
+	self._next_transition_state = match_started and "start_lobby" or nil
+	self._match_host = lobby_client:lobby_host()
 end
 
 MatchmakingStateWaitJoinPlayerHosted.on_exit = function (self)
-	return
+	if not self._next_transition_state then
+		self:terminate()
+	end
+end
+
+MatchmakingStateWaitJoinPlayerHosted.terminate = function (self)
+	if Managers.lobby:query_lobby("matchmaking_join_lobby") then
+		Managers.lobby:destroy_lobby("matchmaking_join_lobby")
+	end
 end
 
 MatchmakingStateWaitJoinPlayerHosted.update = function (self, dt, t)
-	self._lobby_client:update(dt)
+	local lobby_client = Managers.lobby:query_lobby("matchmaking_join_lobby")
 
-	if self._lobby_client:failed() then
+	if not lobby_client then
+		return self:_lobby_failed()
+	end
+
+	lobby_client:update(dt)
+
+	if lobby_client:failed() then
+		return self:_lobby_failed()
+	end
+
+	local updated_host = lobby_client.lobby:lobby_host()
+
+	if updated_host and updated_host ~= self._match_host then
+		Managers.matchmaking:add_broken_lobby_client(lobby_client, t, true)
+
 		return self:_lobby_failed()
 	end
 end
 
 MatchmakingStateWaitJoinPlayerHosted._teardown_lobby = function (self)
-	if self._lobby_client ~= nil then
-		self._lobby_client:destroy()
-
-		self._lobby_client = nil
+	if Managers.lobby:query_lobby("matchmaking_join_lobby") then
+		Managers.lobby:destroy_lobby("matchmaking_join_lobby")
 	end
 
 	self._matchmaking_manager:reset_joining()
@@ -96,7 +80,7 @@ end
 MatchmakingStateWaitJoinPlayerHosted.get_transition = function (self)
 	if self._next_transition_state then
 		local start_lobby_data = {
-			lobby_client = self._lobby_client,
+			lobby_client = Managers.lobby:free_lobby("matchmaking_join_lobby"),
 		}
 
 		return self._next_transition_state, start_lobby_data
@@ -109,4 +93,9 @@ MatchmakingStateWaitJoinPlayerHosted.rpc_matchmaking_join_game = function (self,
 
 	self._matchmaking_manager.debug.text = "starting_game"
 	self._next_transition_state = "start_lobby"
+
+	local network_handler = Managers.mechanism:network_handler()
+	local match_handler = network_handler:get_match_handler()
+
+	match_handler:send_rpc_down("rpc_matchmaking_join_game")
 end

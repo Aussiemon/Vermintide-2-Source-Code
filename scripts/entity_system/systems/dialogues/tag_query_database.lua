@@ -77,9 +77,6 @@ local context_indexes = table.mirror_array_inplace({
 
 TagQueryDatabase.define_rule = function (self, rule_definition)
 	local dialogue_name = rule_definition.name
-
-	rule_definition.real_criterias = table.clone(rule_definition.criterias)
-
 	local criterias = {}
 
 	for i = 1, #rule_definition.criterias do
@@ -94,11 +91,30 @@ TagQueryDatabase.define_rule = function (self, rule_definition)
 
 	fassert(num_criterias <= (RuleDatabase.RULE_MAX_NUM_CRITERIA or 8), "Too many criteria in dialogue %s", dialogue_name)
 
-	local rule_id = RuleDatabase.add_rule(self.database, dialogue_name, num_criterias, criterias)
+	local probability = rule_definition.probability or 1
+
+	self:_optimize_rule_definition(rule_definition)
+
+	local rule_id = RuleDatabase.add_rule(self.database, dialogue_name, num_criterias, criterias, probability)
 
 	self.rule_id_mapping[rule_id] = rule_definition
 	self.rule_id_mapping[rule_definition.name] = rule_id
 	self.rules_n = self.rules_n + 1
+end
+
+local required_rule_definition_fields = table.set({
+	"name",
+	"n_criterias",
+	"response",
+	"on_done",
+})
+
+TagQueryDatabase._optimize_rule_definition = function (self, rule_definition)
+	for k, v in pairs(rule_definition) do
+		if not required_rule_definition_fields[k] then
+			rule_definition[k] = nil
+		end
+	end
 end
 
 local COMMON_CRITERIA_INDICES = table.mirror_array_inplace({
@@ -228,27 +244,45 @@ TagQueryDatabase.parse_criteria = function (self, criteria, criterias, parsed_cr
 	}
 end
 
-TagQueryDatabase.iterate_queries = function (self, t)
-	local num_iterations = #self.queries
-	local best_query
-	local best_query_value = 0
+local iteration_weight = {}
 
-	for i = 1, num_iterations do
+local function _iteration_sort(a, b)
+	return iteration_weight[a] > iteration_weight[b]
+end
+
+local iteration_scratch = {
+	[0] = 0,
+}
+
+TagQueryDatabase.iterate_queries = function (self, out_results, t)
+	table.clear(iteration_weight)
+
+	local result_i = 0
+
+	for i = 1, #self.queries do
 		local query = self:iterate_query(t)
 		local result = query.result
 
 		if result then
-			local validated_rule = query.validated_rule
-			local value = validated_rule.n_criterias
-
-			if best_query_value < value then
-				best_query_value = value
-				best_query = query
-			end
+			result_i = result_i + 1
+			iteration_scratch[result_i] = query
+			iteration_weight[query] = math.random(1, query.validated_rule.n_criterias)
 		end
 	end
 
-	return best_query
+	for i = result_i + 1, iteration_scratch[0] do
+		iteration_scratch[i] = nil
+	end
+
+	iteration_scratch[0] = result_i
+
+	table.sort(iteration_scratch, _iteration_sort)
+
+	for i = 1, result_i do
+		out_results[i] = iteration_scratch[i]
+	end
+
+	return result_i
 end
 
 local dummy_table = {}
@@ -293,34 +327,37 @@ TagQueryDatabase.has_queries = function (self)
 end
 
 TagQueryDatabase._debug_print_query = function (self, query, user_context_list, global_context)
-	print("--------------- STARTING NEW QUERY ---------------")
-	print("Query context:")
+	local query_print = {}
+
+	table.insert(query_print, "--------------- STARTING NEW QUERY ---------------")
+	table.insert(query_print, "Query context:")
 
 	for key, value in pairs(query.query_context) do
-		printf("\t%-15s: %-15s", key, tostring(value))
+		table.insert(query_print, string.format("\t%-15s: %-15s", key, tostring(value)))
 	end
 
-	print("User contexts:")
+	table.insert(query_print, "User contexts:")
 
 	for name, context in pairs(user_context_list) do
-		print("\t" .. name)
+		table.insert(query_print, "\t" .. name)
 
 		if type(context) == "table" then
 			for key, value in pairs(context) do
-				printf("\t\t%-15s : %-15s", key, tostring(value))
+				table.insert(query_print, string.format("\t\t%-15s : %-15s", key, tostring(value)))
 			end
 		end
 	end
 
-	print("Global context:")
+	table.insert(query_print, "Global context:")
 
 	if global_context then
 		for key, value in pairs(global_context) do
-			printf("\t%-15s : %-15s", key, tostring(value))
+			table.insert(query_print, string.format("\t%-15s : %-15s", key, tostring(value)))
 		end
 	end
 
-	print("--------------- END OF QUERY CONTEXTS ---------------")
+	table.insert(query_print, "--------------- END OF QUERY CONTEXTS ---------------")
+	print(table.concat(query_print, "\n"))
 end
 
 local dummy_table_2 = {}

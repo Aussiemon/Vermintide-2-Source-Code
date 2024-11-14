@@ -1,6 +1,6 @@
 ﻿-- chunkname: @scripts/unit_extensions/weaves/weave_kill_enemies_extension.lua
 
-WeaveKillEnemiesExtension = class(WeaveKillEnemiesExtension)
+WeaveKillEnemiesExtension = class(WeaveKillEnemiesExtension, BaseObjectiveExtension)
 WeaveKillEnemiesExtension.NAME = "WeaveKillEnemiesExtension"
 
 local BASE_SCORE_MULTIPLIER = {
@@ -14,13 +14,8 @@ local BASE_SCORE_MULTIPLIER = {
 }
 
 WeaveKillEnemiesExtension.init = function (self, extension_init_context, unit, extension_init_data)
-	self._extension_init_context = extension_init_context
-	self._extension_init_data = extension_init_data
-	self._is_server = extension_init_context.is_server
-	self._objective_name = extension_init_data.objective_name
-	self._score = extension_init_data.score or 0
-	self._game_object_id = nil
-	self._unit = unit
+	WeaveKillEnemiesExtension.super.init(self, extension_init_context, unit, extension_init_data)
+
 	self._on_start_func = extension_init_data.on_start_func
 	self._on_progress_func = extension_init_data.on_progress_func
 	self._on_complete_func = extension_init_data.on_complete_func
@@ -44,7 +39,6 @@ WeaveKillEnemiesExtension.init = function (self, extension_init_context, unit, e
 	self._hit_zones_allowed = extension_init_data.hit_zones_allowed
 	self._attacks_allowed = extension_init_data.attacks_allowed
 	self._damage_types_allowed = extension_init_data.damage_types_allowed
-	self._weave_objective_system = Managers.state.entity:system("weave_objective_system")
 
 	if not extension_init_context.is_server then
 		return
@@ -92,73 +86,24 @@ WeaveKillEnemiesExtension.init = function (self, extension_init_context, unit, e
 	end
 end
 
-WeaveKillEnemiesExtension.get_objective_settings = function (self)
-	return WeaveObjectiveSettings[WeaveKillEnemiesExtension.NAME]
+WeaveKillEnemiesExtension.initial_sync_data = function (self, game_object_data_table)
+	game_object_data_table.value = self:get_percentage_done()
 end
 
-WeaveKillEnemiesExtension.score = function (self)
-	return self._score
+WeaveKillEnemiesExtension._set_objective_data = function (self, objective_data)
+	return
 end
 
-WeaveKillEnemiesExtension.activate = function (self, game_object_id, objective_data)
+WeaveKillEnemiesExtension._activate = function (self)
 	local extension = ScriptUnit.has_extension(self._unit, "tutorial_system")
 
 	if extension then
 		extension:set_active(true)
 	end
-
-	if self._is_server then
-		local game_object_data_table = {
-			go_type = NetworkLookup.go_types.weave_objective,
-			objective_name = NetworkLookup.weave_objective_names[self._objective_name],
-			value = self:get_percentage_done() * 100,
-		}
-		local callback = callback(self, "cb_game_session_disconnect")
-
-		self._game_object_id = Managers.state.network:create_game_object("weave_objective", game_object_data_table, callback)
-	else
-		self._game_object_id = game_object_id
-	end
 end
 
-WeaveKillEnemiesExtension.complete = function (self)
-	if self._is_server and self._on_complete_func then
-		self._on_complete_func(self._unit)
-	end
-
-	self:deactivate()
-end
-
-WeaveKillEnemiesExtension.deactivate = function (self)
-	if self._is_server then
-		local game_session = Network.game_session()
-
-		if game_session then
-			GameSession.destroy_game_object(game_session, self._game_object_id)
-		end
-	end
-
-	self._game_object_id = nil
-end
-
-WeaveKillEnemiesExtension.objective_name = function (self)
-	return self._objective_name
-end
-
-WeaveKillEnemiesExtension.cb_game_session_disconnect = function (self)
+WeaveKillEnemiesExtension._deactivate = function (self)
 	return
-end
-
-WeaveKillEnemiesExtension.update = function (self, dt, t)
-	if not self._game_object_id then
-		return
-	end
-
-	if self._is_server then
-		return self:_server_update(dt, t)
-	else
-		return self:_client_update(dt, t)
-	end
 end
 
 WeaveKillEnemiesExtension._server_update = function (self, dt, t)
@@ -182,11 +127,11 @@ WeaveKillEnemiesExtension.get_percentage_done = function (self)
 		return 0
 	end
 
-	return math.clamp(self._num_killed / self._kills_required, 0, 1)
-end
+	if self._kills_required == 0 then
+		return 1
+	end
 
-WeaveKillEnemiesExtension.get_score = function (self)
-	return self._score
+	return math.clamp(self._num_killed / self._kills_required, 0, 1)
 end
 
 WeaveKillEnemiesExtension.on_ai_killed = function (self, killed_unit, killer_unit, death_data, killing_blow)
@@ -271,16 +216,14 @@ WeaveKillEnemiesExtension.on_ai_killed = function (self, killed_unit, killer_uni
 		local despawned = death_data.despawned
 
 		if not despawned then
-			self._weave_objective_system:add_score(score)
+			Managers.weave:increase_bar_score(score)
 			print("Spawn type: " .. spawn_type, "Score: " .. score, "Score Multiplier: ", score_multiplier)
 		end
 
 		Unit.set_data(killed_unit, "spawn_type", nil)
 	end
 
-	local game_session = Network.game_session()
-
-	if self._is_server and game_session and self._game_object_id then
-		GameSession.set_game_object_field(game_session, self._game_object_id, "value", self:get_percentage_done() * 100)
+	if self._is_server then
+		self:server_set_value(self:get_percentage_done())
 	end
 end

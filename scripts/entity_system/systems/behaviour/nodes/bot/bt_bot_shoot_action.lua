@@ -367,7 +367,7 @@ BTBotShootAction._aim = function (self, unit, blackboard, dt, t)
 	local target_unit = blackboard.target_unit
 	local shoot_bb = blackboard.shoot
 
-	if not Unit.alive(target_unit) then
+	if not HEALTH_ALIVE[target_unit] then
 		return not shoot_bb.stop_fire_t or t < shoot_bb.stop_fire_t
 	end
 

@@ -17,12 +17,26 @@ local scenegraph_definition = {
 			SIZE_Y,
 		},
 	},
-	pivot = {
+	pivot_parent = {
 		horizontal_alignment = "left",
 		parent = "root",
 		vertical_alignment = "top",
 		position = {
-			70,
+			50,
+			0,
+			1,
+		},
+		size = {
+			0,
+			0,
+		},
+	},
+	pivot = {
+		horizontal_alignment = "left",
+		parent = "pivot_parent",
+		vertical_alignment = "top",
+		position = {
+			0,
 			0,
 			1,
 		},
@@ -35,6 +49,34 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		parent = "pivot",
 		vertical_alignment = "center",
+		position = {
+			0,
+			0,
+			0,
+		},
+		size = {
+			0,
+			0,
+		},
+	},
+	insignia_pivot_parent = {
+		horizontal_alignment = "left",
+		parent = "root",
+		vertical_alignment = "top",
+		position = {
+			-40,
+			0,
+			1,
+		},
+		size = {
+			0,
+			0,
+		},
+	},
+	insignia_pivot = {
+		horizontal_alignment = "left",
+		parent = "insignia_pivot_parent",
+		vertical_alignment = "top",
 		position = {
 			0,
 			0,
@@ -124,6 +166,9 @@ local function create_static_widget()
 					style_id = "character_portrait",
 					texture_id = "character_portrait",
 					retained_mode = RETAINED_MODE_ENABLED,
+					content_change_function = function (content, style)
+						style.color = content.dim_portraits and Colors.get_color_table_with_alpha("dim_gray", 255) or Colors.get_color_table_with_alpha("white", 255)
+					end,
 				},
 				{
 					pass_type = "text",
@@ -345,7 +390,7 @@ local function create_dynamic_portait_widget()
 					style_id = "respawn_countdown_text",
 					text_id = "respawn_countdown_text",
 					content_check_function = function (content)
-						return content.state == "countdown"
+						return content.state == "countdown" or content.state == "fadeout"
 					end,
 				},
 			},
@@ -366,7 +411,7 @@ local function create_dynamic_portait_widget()
 			talk_indicator_highlight = "voip_wave",
 			talk_indicator_highlight_glow = "voip_wave_glow",
 			total_countdown_time = 0,
-			total_fadeout_time = 0.66,
+			total_fadeout_time = 0,
 		},
 		style = {
 			talk_indicator = {
@@ -477,10 +522,11 @@ local function create_dynamic_portait_widget()
 				},
 			},
 			respawn_countdown_text = {
-				font_size = 64,
-				font_type = "hell_shark",
+				font_size = 72,
+				font_type = "hell_shark_header",
 				horizontal_alignment = "center",
 				scenegraph_id = "portrait_pivot",
+				use_shadow = true,
 				vertical_alignment = "center",
 				word_wrap = true,
 				size = {
@@ -490,13 +536,18 @@ local function create_dynamic_portait_widget()
 				text_color = {
 					255,
 					255,
-					168,
-					0,
+					255,
+					255,
 				},
 				offset = {
 					-(86 * portrait_scale) / 2,
 					-(108 * portrait_scale) / 2,
 					50,
+				},
+				shadow_offset = {
+					2,
+					2,
+					0,
 				},
 			},
 		},
@@ -751,6 +802,7 @@ local widget_definitions = {
 	default_dynamic = create_dynamic_portait_widget(),
 	default_static = create_static_widget(),
 	health_dynamic = create_dynamic_health_widget(),
+	versus_insignia_static = UIWidgets.create_small_insignia("insignia_pivot", 1, nil, nil, nil, RETAINED_MODE_ENABLED),
 }
 local features_list = {
 	ability = false,
@@ -764,6 +816,7 @@ local widget_name_by_feature = {
 		level = "default_static",
 		player_name = "default_static",
 		portrait_frame = "portrait_static",
+		versus_insignia = "versus_insignia_static",
 	},
 	dynamic = {
 		damage = "damage_dynamic",

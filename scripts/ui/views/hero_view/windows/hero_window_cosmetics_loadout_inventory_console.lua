@@ -399,6 +399,15 @@ HeroWindowCosmeticsLoadoutInventoryConsole._handle_input = function (self, dt, t
 
 		if slot_type == "skin" then
 			parent:update_skin_sync()
+
+			if item_data.linked_weapon then
+				local backend_interface_items = Managers.backend:get_interface("items")
+				local linked_weapon_item = backend_interface_items:get_item_from_key(item_data.linked_weapon)
+
+				if linked_weapon_item then
+					parent:_set_loadout_item(linked_weapon_item)
+				end
+			end
 		end
 	end
 

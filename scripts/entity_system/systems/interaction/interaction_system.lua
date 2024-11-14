@@ -94,22 +94,7 @@ InteractionSystem.rpc_interaction_abort = function (self, channel_id, interactor
 
 	local interactor_unit = self.unit_storage:unit(interactor_go_id)
 
-	if Unit.alive(interactor_unit) then
-		local interactor_extension = ScriptUnit.extension(interactor_unit, "interactor_system")
-
-		if not interactor_extension:is_interacting() or interactor_extension:is_stopping() then
-			InteractionHelper.printf("Got abort when interaction had already finished, ignore request")
-
-			return
-		end
-
-		local interactable_unit = interactor_extension:interactable_unit()
-
-		if Unit.alive(interactable_unit) then
-			InteractionHelper:complete_interaction(interactor_unit, interactable_unit, InteractionResult.USER_ENDED)
-			interactor_extension:interaction_completed(InteractionResult.USER_ENDED)
-		end
-	end
+	InteractionHelper:abort_authoritative(interactor_unit)
 end
 
 InteractionSystem.rpc_sync_interaction_state = function (self, channel_id, unit_id, state_id, interaction_type_id, interactable_unit_id, start_time, duration, is_level_unit)

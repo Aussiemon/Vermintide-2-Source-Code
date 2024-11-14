@@ -7,7 +7,7 @@ PlayerUtils.unique_player_id = function (peer_id, local_player_id)
 end
 
 PlayerUtils.split_unique_player_id = function (unique_player_id)
-	local result = string.split(unique_player_id, ":")
+	local result = string.split_deprecated(unique_player_id, ":")
 
 	return result[1], tonumber(result[2])
 end
@@ -131,4 +131,12 @@ PlayerUtils.peer_id_compare = function (peer_a, peer_b)
 	end
 
 	return true
+end
+
+PlayerUtils.player_name = function (peer_id, lobby)
+	if HAS_STEAM then
+		return Steam.user_name(peer_id)
+	elseif IS_CONSOLE then
+		return lobby:user_name(peer_id) or "Remote #" .. tostring(peer_id:sub(-3, -1))
+	end
 end

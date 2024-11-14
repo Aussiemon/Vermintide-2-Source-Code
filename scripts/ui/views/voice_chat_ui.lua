@@ -231,12 +231,11 @@ local UI_REMOVE_DELAY = 0.3
 VoiceChatUI.init = function (self, ingame_ui_context)
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.player_manager = ingame_ui_context.player_manager
-	self.voip = ingame_ui_context.voip
-	self._lobby = ingame_ui_context.lobby
+	self._voip = ingame_ui_context.voip
 	self._cached_names = {}
 	self._talking_peers = {}
-	self._push_to_talk_talking = 0
-	self._push_to_talk_active = false
+	self._push_to_talk_end_t = 0
+	self._push_to_talk_talking = false
 	self._dirty = true
 	self._safe_rect = Application.user_setting("safe_rect") or 0
 
@@ -325,31 +324,20 @@ VoiceChatUI._update_safe_rect = function (self)
 	end
 end
 
-VoiceChatUI._gather_members = function (self, members_table)
-	table.clear(members_table)
+VoiceChatUI._update_talking_state = function (self)
+	local members = self._voip:members_in_own_room()
+	local members_table = members.get_members and members:get_members() or members
 
-	local lobby = self._lobby
-	local lobby_members = lobby and lobby:members()
-	local members = lobby_members and lobby_members:get_members()
-
-	if members then
-		for _, peer_id in ipairs(members) do
-			members_table[peer_id] = true
-		end
-	end
-end
-
-VoiceChatUI._update_talking_state = function (self, members_table)
-	for peer_id, _ in pairs(members_table) do
-		local is_talking = self.voip:is_talking(peer_id)
+	for _, peer_id in pairs(members_table) do
+		local is_talking = self._voip:is_talking(peer_id)
 		local was_talking = self._talking_peers[peer_id]
 
 		self._talking_peers[peer_id] = is_talking and self._timer + UI_REMOVE_DELAY or was_talking
-		self._dirty = not was_talking and is_talking or self._dirty
+		self._dirty = not not was_talking == not not is_talking or self._dirty
 	end
 
 	for peer_id, timer in pairs(self._talking_peers) do
-		if timer < self._timer then
+		if timer < self._timer or not table.find(members_table, peer_id) then
 			self._talking_peers[peer_id] = nil
 			self._dirty = true
 		end
@@ -359,20 +347,22 @@ VoiceChatUI._update_talking_state = function (self, members_table)
 end
 
 VoiceChatUI._evaluate_push_to_talk = function (self)
-	if not self.voip:push_to_talk_enabled() then
+	if not self._voip:push_to_talk_enabled() then
 		return
 	end
 
 	local my_peer_id = Network.peer_id()
-	local push_to_talk_active = self.voip:is_push_to_talk_active()
-	local push_to_talk_talking = self.voip:is_talking(my_peer_id)
-	local push_to_talk_was_active = self._push_to_talk_active
-	local push_to_talk_was_talking = self._push_to_talk_talking > self._timer
+	local push_to_talk_active = self._voip:is_push_to_talk_active()
+	local talking = self._voip:is_talking(my_peer_id)
+	local push_to_talk_was_talking = self._push_to_talk_talking
 
-	self._push_to_talk_active = push_to_talk_active
-	self._push_to_talk_talking = push_to_talk_talking and self._timer + UI_REMOVE_DELAY or self._push_to_talk_talking
-	self._talking_peers[my_peer_id] = push_to_talk_active and self._timer + UI_REMOVE_DELAY or self._talking_peers[my_peer_id]
-	self._dirty = not push_to_talk_was_active and push_to_talk_active or push_to_talk_was_talking ~= push_to_talk_talking or self._push_to_talk_talking < self._timer or self._dirty
+	self._push_to_talk_end_t = push_to_talk_active and talking and self._timer + UI_REMOVE_DELAY or self._push_to_talk_end_t
+	self._push_to_talk_talking = self._push_to_talk_end_t > self._timer
+
+	local push_to_talk_is_talking = self._push_to_talk_talking
+
+	self._talking_peers[my_peer_id] = push_to_talk_is_talking and self._push_to_talk_end_t or nil
+	self._dirty = push_to_talk_was_talking ~= push_to_talk_is_talking or self._dirty
 end
 
 VoiceChatUI._update_widgets = function (self)
@@ -420,8 +410,8 @@ VoiceChatUI._update_widgets = function (self)
 		name_widget_content.text = cropped_name
 		name_widget_element.dirty = true
 
-		if self.voip:push_to_talk_enabled() and peer_id == my_peer_id then
-			name_widget_content.visible = self._push_to_talk_talking > self._timer
+		if self._voip:push_to_talk_enabled() and peer_id == my_peer_id then
+			name_widget_content.visible = self._push_to_talk_end_t > self._timer
 		else
 			name_widget_content.visible = true
 		end
@@ -453,13 +443,10 @@ VoiceChatUI._update_widgets = function (self)
 	end
 end
 
-local MEMBERS_TABLE = {}
-
 VoiceChatUI.update = function (self, dt)
 	self:_update_timer()
 	self:_update_safe_rect()
-	self:_gather_members(MEMBERS_TABLE)
-	self:_update_talking_state(MEMBERS_TABLE)
+	self:_update_talking_state()
 	self:_update_widgets()
 	self:_draw(dt)
 end

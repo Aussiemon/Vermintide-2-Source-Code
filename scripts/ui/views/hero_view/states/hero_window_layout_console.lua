@@ -51,6 +51,11 @@ local windows = {
 		ignore_alignment = true,
 		name = "cosmetics_inventory",
 	},
+	pose_inventory = {
+		class_name = "HeroWindowCosmeticsLoadoutPoseInventoryConsole",
+		ignore_alignment = true,
+		name = "pose_inventory",
+	},
 	character_info = {
 		class_name = "HeroWindowCharacterInfo",
 		ignore_alignment = true,
@@ -85,6 +90,11 @@ local windows = {
 		class_name = "HeroWindowItemCustomization",
 		ignore_alignment = true,
 		name = "item_customization",
+	},
+	dark_pact_character_selection = {
+		class_name = "HeroWindowDarkPactCharacterSelectionConsole",
+		ignore_alignment = true,
+		name = "dark_pact_character_selection",
 	},
 }
 local window_layouts = {
@@ -187,6 +197,20 @@ local window_layouts = {
 		},
 	},
 	{
+		close_on_exit = false,
+		input_focus_window = "pose_inventory",
+		name = "pose_selection",
+		sound_event_enter = "play_gui_equipment_button",
+		sound_event_exit = "play_gui_equipment_close",
+		windows = {
+			background = 2,
+			character_info = 3,
+			hero_power = 5,
+			panel = 1,
+			pose_inventory = 4,
+		},
+	},
+	{
 		close_on_exit = true,
 		name = "system",
 		sound_event_enter = "Play_hud_button_open",
@@ -229,6 +253,39 @@ local window_layouts = {
 			item_customization = 4,
 			panel = 1,
 		},
+	},
+	{
+		close_on_exit = true,
+		name = "pactsworn_equipment",
+		sound_event_enter = "Play_hud_button_open",
+		sound_event_exit = "Play_hud_button_close",
+		windows = {
+			background = 2,
+			dark_pact_character_selection = 3,
+			panel = 1,
+		},
+		can_add_function = function (mechanism_name)
+			return mechanism_name == "versus"
+		end,
+		on_exit = function (parent)
+			local local_player = Managers.player:local_player()
+			local profile_index = local_player:profile_index()
+			local career_index = local_player:career_index()
+
+			parent:change_profile(profile_index, career_index)
+
+			local profile = SPProfiles[profile_index]
+
+			Managers.state.event:trigger("respawn_hero", {
+				hero_name = profile.display_name,
+				career_index = career_index,
+			})
+
+			local mood_settings = DLCSettings.carousel and DLCSettings.carousel.hero_window_mood_settings
+			local mood_setting = mood_settings.default or "default"
+
+			parent:set_background_mood(mood_setting)
+		end,
 	},
 }
 local MAX_ACTIVE_WINDOWS = 6

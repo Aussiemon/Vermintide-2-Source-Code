@@ -353,10 +353,10 @@ end
 
 DeusWeaponGeneration.deserialize_weapon = function (item_string)
 	local item_key, properties, traits, skin, power_level, rarity
-	local weapon_items = string.split(item_string, ",")
+	local weapon_items = string.split_deprecated(item_string, ",")
 
 	for _, weapon_item in ipairs(weapon_items) do
-		local prefix_and_value = string.split(weapon_item, "=")
+		local prefix_and_value = string.split_deprecated(weapon_item, "=")
 		local prefix = prefix_and_value[1]
 		local value = prefix_and_value[2]
 
@@ -368,7 +368,7 @@ DeusWeaponGeneration.deserialize_weapon = function (item_string)
 			traits = traits or {}
 			traits[#traits + 1] = value
 		elseif prefix == "property" then
-			local prop_name_and_value = string.split(value, ":")
+			local prop_name_and_value = string.split_deprecated(value, ":")
 
 			properties = properties or {}
 			properties[prop_name_and_value[1]] = tonumber(prop_name_and_value[2]) / FLOAT_CONVERSION_EPSILON

@@ -58,16 +58,23 @@ ProfileRequester.request_profile = function (self, peer_id, local_player_id, pro
 end
 
 ProfileRequester._request_profile = function (self, peer_id, local_player_id, request_id, profile_index, career_index, force_respawn)
-	local profile_name, career_name = hero_and_career_name_from_index(profile_index, career_index)
 	local allowed_to_switch_to_profile
-	local mechanism = Managers.mechanism:game_mechanism()
 
-	if mechanism.name == "Versus" then
-		allowed_to_switch_to_profile = Managers.mechanism:profile_available_for_peer(peer_id, local_player_id, profile_name, career_name)
-		allowed_to_switch_to_profile = allowed_to_switch_to_profile and mechanism:try_reserve_profile_for_peer(peer_id, profile_index)
-	else
-		allowed_to_switch_to_profile = self:profile_is_specator() or Managers.mechanism:profile_available_for_peer(peer_id, local_player_id, profile_name, career_name)
-		allowed_to_switch_to_profile = allowed_to_switch_to_profile and self._profile_synchronizer:try_reserve_profile_for_peer(peer_id, profile_index)
+	force_respawn = not not force_respawn
+
+	local party_id = Managers.mechanism:reserved_party_id_by_peer(peer_id)
+
+	allowed_to_switch_to_profile = self:profile_is_specator() or Managers.mechanism:profile_available_for_peer(party_id, peer_id, profile_index)
+
+	if allowed_to_switch_to_profile then
+		local override_profile_index, override_career_index
+
+		allowed_to_switch_to_profile, override_profile_index, override_career_index = Managers.mechanism:try_reserve_profile_for_peer_by_mechanism(peer_id, profile_index, career_index, force_respawn)
+
+		if override_profile_index then
+			profile_index = override_profile_index
+			career_index = override_career_index
+		end
 	end
 
 	local result_id

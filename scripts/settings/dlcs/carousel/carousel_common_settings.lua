@@ -9,23 +9,29 @@ settings.mechanism_settings = {
 		always_spawn_a_boss = true,
 		check_matchmaking_hero_availability = true,
 		class_name = "VersusMechanism",
+		close_start_menu_sound_event = "Play_vs_hud_play_menu_close",
 		disadvantaged_team_starts = true,
 		display_name = "area_selection_carousel_name",
 		file = "scripts/managers/game_mode/mechanisms/versus_mechanism",
 		hero_respawn_time = 1800,
-		keep_leaving_players_grace_period = 120,
 		loading_screen_override = "loading_screen_carousel",
+		num_bosses_to_spawn = 2,
+		override_boss_activation_distance = 1,
 		playfab_mirror = "PlayFabMirrorAdventure",
 		query_port = 27016,
 		rcon_port = 27015,
 		server_port = 27017,
 		server_universe = "carousel",
 		social_wheel = "VersusSocialWheelUI",
-		spawn_boss_every_section = true,
+		spawn_boss_every_section = false,
+		start_game_open_sound_event = "Play_vs_hud_play_menu_open",
+		start_game_play_sound_event = "versus_hud_player_lobby_searching_for_match",
 		steam_port = 8766,
 		sync_backend_id = true,
 		use_gamepad_layout = true,
 		using_ghost_mode_system = true,
+		vote_switch_mechanism_background = "vote_switch_mechanism_versus_background",
+		vote_switch_mechanism_text = "vote_switch_mechanism_versus_description",
 		states = {
 			"inn",
 			"round_1",
@@ -40,6 +46,7 @@ settings.mechanism_settings = {
 		deny_outline_color_change_for_party = {
 			dark_pact = true,
 		},
+		keep_leaving_players_grace_period = math.huge,
 		override_career_availability = {},
 		playable_boss_terror_events = {
 			vs_chaos_troll = {
@@ -49,7 +56,11 @@ settings.mechanism_settings = {
 		override_item_availability = {},
 		override_career_talents = {},
 		map_pool = {
+			"fort_pvp",
+			"military_pvp",
 			"bell_pvp",
+			"farmlands_pvp",
+			"forest_ambush_pvp",
 		},
 		party_data = {
 			heroes = {
@@ -102,8 +113,8 @@ settings.mechanism_settings = {
 }
 settings.network_lookups = {
 	inn_vs = "GameModeInnVs",
+	objective_names = "GameModeSettings.versus.objective_names",
 	versus = "GameModeVersus",
-	versus_objective_names = "GameModeSettings.versus.objective_names",
 	badges = {
 		table_name = "BadgeDefinitions",
 		base_table = {
@@ -137,6 +148,7 @@ settings.matchmaking_state_files = {
 	"scripts/managers/matchmaking/matchmaking_state_reserve_slots_player_hosted",
 	"scripts/managers/matchmaking/matchmaking_state_wait_join_player_hosted",
 	"scripts/managers/matchmaking/matchmaking_state_player_hosted_game",
+	"scripts/managers/matchmaking/matchmaking_state_flexmatch_host",
 }
 settings.career_setting_files = {
 	"scripts/settings/profiles/career_settings_vs",
@@ -152,9 +164,6 @@ settings.attachment_node_linking = {
 }
 settings.outline_settings = {
 	"scripts/settings/outline_settings_vs",
-}
-settings.cosmetics_files = {
-	"scripts/settings/equipment/cosmetics_vs",
 }
 settings.statistics_definitions = {
 	"scripts/managers/backend/statistics_definitions_vs",
@@ -181,14 +190,13 @@ settings.status_extensions = {
 }
 settings.systems = {
 	"scripts/entity_system/systems/ghost_mode/ghost_mode_system",
-	"scripts/entity_system/systems/versus/versus_objective_system",
-	"scripts/entity_system/systems/versus/versus_item_spawner_system",
+	"scripts/entity_system/systems/versus/versus_horde_ability_system",
 }
 settings.vote_template_filenames = {
 	"scripts/settings/dlcs/carousel/carousel_vote_templates",
 }
 settings.entity_extensions = {
-	"scripts/unit_extensions/objectives/versus_base_objective_extension",
+	"scripts/unit_extensions/objectives/base_objective_extension",
 	"scripts/unit_extensions/objectives/versus_volume_objective_extension",
 	"scripts/unit_extensions/objectives/versus_capture_point_objective_extension",
 	"scripts/unit_extensions/objectives/versus_interact_objective_extension",
@@ -196,6 +204,7 @@ settings.entity_extensions = {
 	"scripts/unit_extensions/objectives/versus_socket_objective_extension",
 	"scripts/unit_extensions/objectives/versus_target_objective_extension",
 	"scripts/unit_extensions/objectives/versus_mission_objective_extension",
+	"scripts/unit_extensions/objectives/versus_survive_event_objective_extension",
 }
 settings.player_breeds = {
 	"scripts/settings/breeds/breed_players_vs",
@@ -230,22 +239,17 @@ settings.anim_lookup = {
 	"swing_left",
 	"slam",
 	"attack_cleave_charge",
+	"attack_ogre_slam_charge",
 	"death_dissolve",
 	"death_crawl",
+	"attack_vomit_into",
+	"attack_jump_air",
 }
 settings.inventory_package_list = {
-	"units/beings/player/dark_pact_first_person_base/chaos_sorcerer/chr_first_person_base",
-	"units/beings/player/dark_pact_first_person_base/chaos_sorcerer/chr_first_person_bot_base",
-	"units/beings/player/dark_pact_first_person_base/chaos_spawn/chr_first_person_base",
-	"units/beings/player/dark_pact_first_person_base/chaos_spawn/chr_first_person_bot_base",
 	"units/beings/player/dark_pact_first_person_base/chaos_troll/chr_first_person_base",
 	"units/beings/player/dark_pact_first_person_base/chaos_troll/chr_first_person_bot_base",
 	"units/beings/player/dark_pact_first_person_base/skaven_common/chr_first_person_base",
 	"units/beings/player/dark_pact_first_person_base/skaven_common/chr_first_person_bot_base",
-	"units/beings/player/dark_pact_first_person_base/skaven_rat_ogre/chr_first_person_base",
-	"units/beings/player/dark_pact_first_person_base/skaven_rat_ogre/chr_first_person_bot_base",
-	"units/beings/player/dark_pact_first_person_base/skaven_stormfiend/chr_first_person_base",
-	"units/beings/player/dark_pact_first_person_base/skaven_stormfiend/chr_first_person_bot_base",
 	"units/beings/player/dark_pact_third_person_base/skaven_gutter_runner/chr_third_person_base",
 	"units/beings/player/dark_pact_third_person_base/skaven_gutter_runner/chr_third_person_base_husk",
 	"units/beings/player/dark_pact_skins/skaven_gutter_runner/skin_0000/first_person/chr_first_person_mesh",
@@ -258,14 +262,6 @@ settings.inventory_package_list = {
 	"units/beings/player/dark_pact_third_person_base/skaven_wind_globadier/chr_third_person_base_husk",
 	"units/beings/player/dark_pact_skins/skaven_wind_globadier/skin_0000/first_person/chr_first_person_mesh",
 	"units/beings/player/dark_pact_skins/skaven_wind_globadier/skin_0000/third_person/chr_third_person_mesh",
-	"units/beings/player/dark_pact_third_person_base/chaos_sorcerer_corruptor/chr_third_person_base",
-	"units/beings/player/dark_pact_third_person_base/chaos_sorcerer_corruptor/chr_third_person_base_husk",
-	"units/beings/player/dark_pact_skins/chaos_sorcerer_corruptor/skin_0000/first_person/chr_first_person_mesh",
-	"units/beings/player/dark_pact_skins/chaos_sorcerer_corruptor/skin_0000/third_person/chr_third_person_mesh",
-	"units/beings/player/dark_pact_third_person_base/chaos_sorcerer_vortex/chr_third_person_base",
-	"units/beings/player/dark_pact_third_person_base/chaos_sorcerer_vortex/chr_third_person_base_husk",
-	"units/beings/player/dark_pact_skins/chaos_sorcerer_vortex/skin_0000/first_person/chr_first_person_mesh",
-	"units/beings/player/dark_pact_skins/chaos_sorcerer_vortex/skin_0000/third_person/chr_third_person_mesh",
 	"units/beings/player/dark_pact_third_person_base/skaven_ratlinggunner/chr_third_person_base",
 	"units/beings/player/dark_pact_third_person_base/skaven_ratlinggunner/chr_third_person_base_husk",
 	"units/beings/player/dark_pact_skins/skaven_ratlinggunner/skin_0000/first_person/chr_first_person_mesh",
@@ -278,18 +274,6 @@ settings.inventory_package_list = {
 	"units/beings/player/dark_pact_third_person_base/chaos_troll/chr_third_person_base_husk",
 	"units/beings/player/dark_pact_skins/chaos_troll/skin_0000/first_person/chr_first_person_mesh",
 	"units/beings/player/dark_pact_skins/chaos_troll/skin_0000/third_person/chr_third_person_mesh",
-	"units/beings/player/dark_pact_third_person_base/chaos_spawn/chr_third_person_base",
-	"units/beings/player/dark_pact_third_person_base/chaos_spawn/chr_third_person_base_husk",
-	"units/beings/player/dark_pact_skins/chaos_spawn/skin_0000/first_person/chr_first_person_mesh",
-	"units/beings/player/dark_pact_skins/chaos_spawn/skin_0000/third_person/chr_third_person_mesh",
-	"units/beings/player/dark_pact_third_person_base/skaven_stormfiend/chr_third_person_base",
-	"units/beings/player/dark_pact_third_person_base/skaven_stormfiend/chr_third_person_base_husk",
-	"units/beings/player/dark_pact_skins/skaven_stormfiend/skin_0000/first_person/chr_first_person_mesh",
-	"units/beings/player/dark_pact_skins/skaven_stormfiend/skin_0000/third_person/chr_third_person_mesh",
-	"units/beings/player/dark_pact_third_person_base/skaven_rat_ogre/chr_third_person_base",
-	"units/beings/player/dark_pact_third_person_base/skaven_rat_ogre/chr_third_person_base_husk",
-	"units/beings/player/dark_pact_skins/skaven_rat_ogre/skin_0000/first_person/chr_first_person_mesh",
-	"units/beings/player/dark_pact_skins/skaven_rat_ogre/skin_0000/third_person/chr_third_person_mesh",
 	"units/weapons/player/dark_pact/wpn_skaven_packmaster_claw/wpn_skaven_packmaster_claw",
 	"units/weapons/player/dark_pact/wpn_skaven_packmaster_claw/wpn_skaven_packmaster_claw_3p",
 	"units/weapons/player/dark_pact/wpn_poison_wind_globe/wpn_poison_wind_globe_3p",
@@ -302,10 +286,6 @@ settings.inventory_package_list = {
 	"units/weapons/player/dark_pact/wpn_skaven_warpfiregun/wpn_skaven_warpfiregun_3p",
 	"units/weapons/player/dark_pact/wpn_skaven_ratlinggun/wpn_skaven_ratlinggun",
 	"units/weapons/player/dark_pact/wpn_skaven_ratlinggun/wpn_skaven_ratlinggun_3p",
-	"units/weapons/player/dark_pact/wpn_chaos_sorcerer_stick/wpn_sorcerer_stick",
-	"units/weapons/player/dark_pact/wpn_chaos_sorcerer_stick/wpn_sorcerer_stick_3p",
-	"units/weapons/player/dark_pact/wpn_chaos_sorcerer_book/wpn_chaos_sorcerer_book",
-	"units/weapons/player/dark_pact/wpn_chaos_sorcerer_book/wpn_chaos_sorcerer_book_3p",
 	"units/weapons/player/dark_pact/wpn_chaos_troll/wpn_chaos_troll_01",
 	"units/weapons/player/dark_pact/wpn_chaos_troll/wpn_chaos_troll_01_3p",
 }
@@ -315,12 +295,7 @@ settings.husk_lookup = {
 	"units/beings/player/dark_pact_third_person_base/skaven_wind_globadier/chr_third_person_base_husk",
 	"units/beings/player/dark_pact_third_person_base/skaven_ratlinggunner/chr_third_person_base_husk",
 	"units/beings/player/dark_pact_third_person_base/skaven_warpfire_thrower/chr_third_person_base_husk",
-	"units/beings/player/dark_pact_third_person_base/chaos_sorcerer_corruptor/chr_third_person_base_husk",
-	"units/beings/player/dark_pact_third_person_base/chaos_sorcerer_vortex/chr_third_person_base_husk",
-	"units/beings/player/dark_pact_third_person_base/chaos_spawn/chr_third_person_base_husk",
 	"units/beings/player/dark_pact_third_person_base/chaos_troll/chr_third_person_base_husk",
-	"units/beings/player/dark_pact_third_person_base/skaven_rat_ogre/chr_third_person_base_husk",
-	"units/beings/player/dark_pact_third_person_base/skaven_stormfiend/chr_third_person_base_husk",
 	"units/gameplay/versus_volume_objective",
 	"units/gameplay/versus_capture_point_objective",
 	"units/gameplay/versus_mission_objective",
@@ -337,11 +312,9 @@ settings.interactions_filenames = {
 	"scripts/settings/dlcs/carousel/carousel_interactions",
 }
 settings.network_go_types = {
-	"versus_objective",
 	"versus_volume_objective_unit",
 	"versus_capture_point_objective_unit",
 	"versus_mission_objective_unit",
-	"versus_dark_pact_climbing_interaction_unit",
 }
 settings.material_effect_mappings_file_names = {
 	"scripts/settings/material_effect_mappings_player_enemies",
@@ -371,6 +344,9 @@ settings.dialogue_events = {
 	"vw_wait",
 	"vw_cover_me",
 	"vw_answer_ping",
+	"hook_success",
+	"hook_fail",
+	"vs_ratling_hitting_shield",
 }
 settings.social_wheel_sfx_events = {
 	dark_pact = {

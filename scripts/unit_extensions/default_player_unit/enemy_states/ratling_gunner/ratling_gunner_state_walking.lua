@@ -14,8 +14,6 @@ RatlingGunnerStateWalking.on_enter = function (self, unit, input, dt, context, t
 
 	self._left_wpn_particle_node_name = "g_ratlinggun"
 	self._left_wpn_particle_name = "fx/wpnfx_gunner_enemy_in_range_1p"
-
-	self:check_enemies_in_range_vfx()
 end
 
 RatlingGunnerStateWalking.debug_display_ammo = function (self)

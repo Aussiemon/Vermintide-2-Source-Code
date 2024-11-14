@@ -943,10 +943,7 @@ function enter_state_patrolling(group)
 
 	formation_timer = 0
 
-	local anchors = group.anchors
-	local num_anchors = #anchors
 	local walk_speed = group.formation_settings.speeds.WALK_SPEED
-	local is_roaming_patrol = group.group_type == "roaming_patrol"
 	local indexed_members = group.indexed_members
 	local num_indexed_members = group.num_indexed_members
 
@@ -1325,7 +1322,6 @@ function enter_state_controlled_advance(group, t)
 
 	local indexed_members = group.indexed_members
 	local num_indexed_members = group.num_indexed_members
-	local network_manager = Managers.state.network
 
 	for i = 1, num_indexed_members do
 		local unit = indexed_members[i]
@@ -1333,7 +1329,7 @@ function enter_state_controlled_advance(group, t)
 		local navigation_extension = blackboard.navigation_extension
 
 		navigation_extension:set_max_speed(CONTROLLED_ADVANCE_SPEED)
-		network_manager:anim_event(unit, "to_combat")
+		AiUtils.enter_combat(unit, blackboard)
 	end
 
 	set_state(group, "controlled_advance")
@@ -1470,7 +1466,7 @@ function cleanup_after_combat(group)
 		local breed = blackboard.breed
 
 		if not blackboard.confirmed_player_sighting and (breed.passive_in_patrol == nil or breed.passive_in_patrol) then
-			network_manager:anim_event(unit, "to_passive")
+			AiUtils.enter_passive(unit, blackboard)
 		end
 
 		if ScriptUnit.has_extension(unit, "ai_slot_system") then

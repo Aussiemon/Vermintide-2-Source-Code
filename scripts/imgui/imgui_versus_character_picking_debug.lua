@@ -34,8 +34,8 @@ ImguiVersusCharacterPickingDebug._initialize = function (self)
 	self._closing_time = settings.character_picking_settings.closing_time
 	self._is_server = Managers.mechanism:is_server()
 	self._pick_data_per_party = {}
-	self._same_hero_allowed = settings.duplicate_hero_profiles_allowed
-	self._same_career_allowed = settings.duplicate_hero_careers_allowed
+	self._same_hero_allowed = not not settings.duplicate_hero_profiles_allowed
+	self._same_career_allowed = not not settings.duplicate_hero_careers_allowed
 	self._initialized = true
 end
 

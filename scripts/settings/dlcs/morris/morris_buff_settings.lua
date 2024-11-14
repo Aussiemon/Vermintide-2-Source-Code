@@ -77,7 +77,7 @@ local function trigger_deus_potion_end_sound_event(unit, buff, params, world)
 	end
 end
 
-local function spawn_barrel(item_name, position, rotation, velocity, explode_time, fuse_time, random_explosion_delay)
+local function spawn_barrel(item_name, position, rotation, velocity, explode_time, fuse_time, random_explosion_delay, source_attacker_unit)
 	local network_position = AiAnimUtils.position_network_scale(position, true)
 	local network_rotation = AiAnimUtils.rotation_network_scale(rotation, true)
 	local network_velocity = AiAnimUtils.velocity_network_scale(velocity, true)
@@ -86,6 +86,7 @@ local function spawn_barrel(item_name, position, rotation, velocity, explode_tim
 	local explosion_data = {
 		explode_time = t + explode_time + random_delay,
 		fuse_time = fuse_time,
+		attacker_unit_id = Managers.state.network:unit_game_object_id(source_attacker_unit),
 	}
 	local extension_init_data = {
 		projectile_locomotion_system = {
@@ -114,7 +115,7 @@ local function spawn_barrel(item_name, position, rotation, velocity, explode_tim
 	local unit_name = pickup_settings.unit_name
 	local unit_template_name = pickup_settings.unit_template_name or "pickup_unit"
 
-	Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, position, rotation)
+	return Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, position, rotation)
 end
 
 local function spawn_damage_drones(owner_unit, num_drones, radius, damage_profile_name)
@@ -650,8 +651,7 @@ dlc_settings.buff_function_templates = {
 				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
 				first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_enter_small")
-
-				MOOD_BLACKBOARD.killer_in_the_shadows = true
+				Managers.state.camera:set_mood("killer_in_the_shadows", "buff", true)
 			end
 		end
 	end,
@@ -669,8 +669,7 @@ dlc_settings.buff_function_templates = {
 					first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_exit")
 				end
 
-				MOOD_BLACKBOARD.killer_in_the_shadows = false
-
+				Managers.state.camera:set_mood("killer_in_the_shadows", "buff", false)
 				trigger_deus_potion_end_sound_event(unit, buff, params, world)
 			end
 		end
@@ -880,6 +879,8 @@ dlc_settings.buff_function_templates = {
 		local num_units = #player_and_bot_units
 		local buff_to_add = template.buff_to_add
 		local buff_system = Managers.state.entity:system("buff_system")
+		local owner_status_extension = ScriptUnit.extension(owner_unit, "status_system")
+		local owner_waiting_to_be_rescued = owner_status_extension:is_ready_for_assisted_respawn()
 
 		for i = 1, num_units do
 			local unit = player_and_bot_units[i]
@@ -891,7 +892,7 @@ dlc_settings.buff_function_templates = {
 				local buff_extension = ScriptUnit.extension(unit, "buff_system")
 				local knocked_down = status_extension:is_knocked_down()
 
-				if range_squared < distance_squared or not knocked_down then
+				if range_squared < distance_squared or not knocked_down or owner_waiting_to_be_rescued then
 					local buff = buff_extension:get_non_stacking_buff(buff_to_add)
 
 					if buff then
@@ -903,7 +904,7 @@ dlc_settings.buff_function_templates = {
 					end
 				end
 
-				if distance_squared < range_squared and knocked_down and not buff_extension:has_buff_type(buff_to_add) then
+				if distance_squared < range_squared and knocked_down and not owner_waiting_to_be_rescued and not buff_extension:has_buff_type(buff_to_add) then
 					local server_buff_id = buff_system:add_buff(unit, buff_to_add, owner_unit, true)
 					local buff = buff_extension:get_non_stacking_buff(buff_to_add)
 
@@ -1557,8 +1558,7 @@ dlc_settings.buff_function_templates = {
 				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
 				first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_enter_small")
-
-				MOOD_BLACKBOARD.hidden_escape = true
+				Managers.state.camera:set_mood("hidden_escape", "buff", true)
 			end
 		end
 	end,
@@ -1583,7 +1583,7 @@ dlc_settings.buff_function_templates = {
 					first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_exit")
 				end
 
-				MOOD_BLACKBOARD.hidden_escape = false
+				Managers.state.camera:set_mood("hidden_escape", "buff", false)
 			end
 		end
 	end,
@@ -1830,7 +1830,7 @@ dlc_settings.buff_function_templates = {
 			return
 		end
 
-		if not Network.game_session() then
+		if not Managers.state.network or not Managers.state.network:game() then
 			return
 		end
 
@@ -3142,6 +3142,15 @@ dlc_settings.proc_functions = {
 
 		ProcFunctions.spawn_drones_proc(owner_unit, buff, params)
 	end,
+	spawn_drones_proc_ability = function (owner_unit, buff, params)
+		local triggering_unit = params[1]
+
+		if triggering_unit ~= owner_unit then
+			return
+		end
+
+		ProcFunctions.spawn_drones_proc(owner_unit, buff, params)
+	end,
 	boon_range_02_delayed_add_on_hit = function (owner_unit, buff, params)
 		local hit_unit = params[1]
 		local buff_ext = ScriptUnit.has_extension(hit_unit, "buff_system")
@@ -3641,8 +3650,14 @@ dlc_settings.proc_functions = {
 			end
 		end
 	end,
-	apply_dot_to_adjecent_enemies = function (owner_unit, buff, params)
-		assert(is_server(), "'apply_dot_to_adjecent_enemies' is a server only buff func")
+	career_ability_apply_dot_to_adjecent_enemies = function (owner_unit, buff, params)
+		assert(is_server(), "'career_ability_apply_dot_to_adjecent_enemies' is a server only buff func")
+
+		local triggering_unit = params[1]
+
+		if triggering_unit ~= owner_unit then
+			return
+		end
 
 		local template = buff.template
 
@@ -3888,6 +3903,12 @@ dlc_settings.proc_functions = {
 			return
 		end
 
+		local exploded_barrel_unit = params[4]
+
+		if Unit.get_data(exploded_barrel_unit, "is_cluster_barrel") then
+			return
+		end
+
 		local template = buff.template
 		local position = params[1] + Vector3.up() * 0.1
 		local explode_time = template.explode_time
@@ -3902,8 +3923,9 @@ dlc_settings.proc_functions = {
 			local randomized_direction = Vector3(math.random() * 2 - 1, math.random() * 2 - 1, math.random() * 2 - 1)
 			local rotation = Quaternion.look(randomized_direction)
 			local velocity = Vector3(math.random() * max_horizontal_velocity * 2 - max_horizontal_velocity, math.random() * max_horizontal_velocity * 2 - max_horizontal_velocity, vertical_velocity)
+			local tiny_barrel = spawn_barrel(item_name, position, rotation, velocity, explode_time, fuse_time, random_explosion_delay, owner_unit)
 
-			spawn_barrel(item_name, position, rotation, velocity, explode_time, fuse_time, random_explosion_delay)
+			Unit.set_data(tiny_barrel, "is_cluster_barrel", true)
 		end
 	end,
 	add_buffs_on_melee_headshot = function (owner_unit, buff, params)
@@ -5213,6 +5235,12 @@ dlc_settings.explosion_templates = {
 				near_distance = 5,
 				near_scale = 1,
 				shake_name = "frag_grenade_explosion",
+			},
+			mechanism_overrides = {
+				versus = {
+					damage_profile = "dr_deus_01_explosion_vs",
+					damage_profile_glance = "dr_deus_01_glance_vs",
+				},
 			},
 		},
 	},

@@ -184,11 +184,14 @@ ImguiCareerDebug._draw_profile_combo = function (self, player)
 	if new_profile_index ~= profile_index then
 		local profile_requester = self:_get_profile_requester()
 		local wanted_profile_name, wanted_career_name = hero_and_career_name_from_index(new_profile_index, 1)
+		local peer_id = Network.peer_id()
+		local party_id = Managers.mechanism:reserved_party_id_by_peer(peer_id)
 
-		if not Managers.mechanism:profile_available(wanted_profile_name, wanted_career_name) then
+		if not Managers.mechanism:profile_available_for_peer(party_id, peer_id, new_profile_index) then
 			local other_player = self:_find_who_uses_profile(new_profile_index)
 			local profile_synchronizer = self:_get_profile_synchronizer()
-			local free_profile_index, free_career_index = profile_synchronizer:get_first_free_profile()
+			local party_id = 1
+			local free_profile_index, free_career_index = profile_synchronizer:get_first_free_profile(party_id)
 			local free_profile_name, free_career_name = hero_and_career_name_from_index(free_profile_index, free_career_index)
 
 			profile_requester:request_profile(other_player.peer_id, other_player:local_player_id(), free_profile_name, free_career_name, true)

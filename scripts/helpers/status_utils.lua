@@ -395,17 +395,17 @@ StatusUtils.set_pounced_down_network = function (status_name, pounced_unit, is_p
 		return
 	end
 
-	local target_status_extension = ScriptUnit.extension(pounced_unit, "status_system")
-
-	target_status_extension:set_pounced_down(is_pounced, pouncer_unit)
-
 	if not LEVEL_EDITOR_TEST then
 		local network_manager = Managers.state.network
 		local pounced_go_id = network_manager:unit_game_object_id(pounced_unit)
 		local pouncer_go_id = network_manager:unit_game_object_id(pouncer_unit) or NetworkConstants.invalid_game_object_id
 		local status_id = NetworkLookup.statuses[status_name]
 
-		if Managers.player.is_server then
+		if DEDICATED_SERVER then
+			network_manager.network_transmit:send_rpc_clients("rpc_status_change_bool", status_id, is_pounced, pounced_go_id, pouncer_go_id)
+		elseif Managers.player.is_server then
+			local target_status_extension = ScriptUnit.extension(pounced_unit, "status_system")
+
 			target_status_extension:set_pounced_down(is_pounced, pouncer_unit)
 		else
 			network_manager.network_transmit:send_rpc_server("rpc_status_change_bool", status_id, is_pounced, pounced_go_id, pouncer_go_id)

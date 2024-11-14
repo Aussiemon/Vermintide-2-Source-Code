@@ -9,24 +9,24 @@ EnemyCharacterStateHelper.get_enemies_in_line_of_sight = function (player_unit, 
 	local player_rotation = Unit.world_rotation(first_player_unit, 0)
 	local player_direction = Vector3.normalize(Quaternion.forward(player_rotation))
 	local player_breed = Unit.get_data(player_unit, "breed")
-	local side = Managers.state.side.side_by_unit[player_unit]
-	local enemy_units = side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS
 	local check_within_range_func
 
 	if player_breed.name == "vs_packmaster" then
-		return EnemyCharacterStateHelper._check_within_line_of_sight_packmaster(player_unit, first_player_unit, player_position, player_rotation, player_direction, enemy_units, physics_world, ...)
+		return EnemyCharacterStateHelper._check_within_line_of_sight_packmaster(player_unit, first_player_unit, player_position, player_rotation, player_direction, physics_world, ...)
 	elseif player_breed.name == "vs_ratling_gunner" then
-		return EnemyCharacterStateHelper._check_within_line_of_sight_ratling_gunner(player_unit, first_player_unit, player_position, player_rotation, player_direction, enemy_units, physics_world, ...)
+		return EnemyCharacterStateHelper._check_within_line_of_sight_ratling_gunner(player_unit, first_player_unit, player_position, player_rotation, player_direction, physics_world, ...)
 	elseif player_breed.name == "vs_warpfire_thrower" then
-		return EnemyCharacterStateHelper._check_within_line_of_sight_warpfire_thrower(player_unit, first_player_unit, player_position, player_rotation, player_direction, enemy_units, physics_world, ...)
+		return EnemyCharacterStateHelper._check_within_line_of_sight_warpfire_thrower(player_unit, first_player_unit, player_position, player_rotation, player_direction, physics_world, ...)
 	elseif player_breed.name == "vs_gutter_runner" then
-		return EnemyCharacterStateHelper._check_within_line_of_sight_gutter_runner(player_unit, first_player_unit, player_position, player_rotation, player_direction, enemy_units, physics_world, ...)
+		return EnemyCharacterStateHelper._check_within_line_of_sight_gutter_runner(player_unit, first_player_unit, player_position, player_rotation, player_direction, physics_world, ...)
 	elseif player_breed.name == "vs_poison_wind_globadier" then
-		return EnemyCharacterStateHelper._check_within_impact_globadier(player_unit, first_player_unit, player_position, player_rotation, player_direction, enemy_units, physics_world, ...)
+		return EnemyCharacterStateHelper._check_within_impact_globadier(player_unit, first_player_unit, player_position, player_rotation, player_direction, physics_world, ...)
 	end
 end
 
-EnemyCharacterStateHelper._check_within_line_of_sight_packmaster = function (player_unit, first_player_unit, player_position, player_rotation, player_direction, enemy_units, physics_world)
+EnemyCharacterStateHelper._check_within_line_of_sight_packmaster = function (player_unit, first_player_unit, player_position, player_rotation, player_direction, physics_world)
+	local side = Managers.state.side.side_by_unit[player_unit]
+	local enemy_units = side.ENEMY_PLAYER_AND_BOT_UNITS
 	local breed = PlayerBreeds.vs_packmaster
 	local range = breed.grab_hook_range
 	local dot_threshold = breed.grab_hook_cone_dot
@@ -34,11 +34,11 @@ EnemyCharacterStateHelper._check_within_line_of_sight_packmaster = function (pla
 	local best_distance = 0
 	local best_dot_value = 0
 
-	for enemy_unit, _ in pairs(enemy_units) do
+	for _, enemy_unit in ipairs(enemy_units) do
 		repeat
-			local target_status_extension = ScriptUnit.extension(enemy_unit, "status_system")
+			local target_status_extension = ScriptUnit.has_extension(enemy_unit, "status_system")
 
-			if target_status_extension:is_disabled() then
+			if not target_status_extension or target_status_extension:is_disabled() then
 				break
 			end
 
@@ -90,13 +90,13 @@ EnemyCharacterStateHelper.is_infront_player = function (player_position, player_
 	end
 end
 
-EnemyCharacterStateHelper._check_within_line_of_sight_ratling_gunner = function (player_unit, first_player_unit, player_position, player_rotation, player_direction, enemy_units, physics_world)
-	local enemy_unit = next(enemy_units)
+EnemyCharacterStateHelper._check_within_line_of_sight_ratling_gunner = function (player_unit, first_player_unit, player_position, player_rotation, player_direction, physics_world)
+	local side = Managers.state.side.side_by_unit[player_unit]
+	local enemy_units = side.ENEMY_PLAYER_AND_BOT_UNITS
 	local spread = LightWeightProjectiles.ratling_gunner_vs.spread * 2
-	local max_range = LightWeightProjectiles.ratling_gunner_vs.projectile_max_range
 	local in_range_units = {}
 
-	for enemy_unit, _ in pairs(enemy_units) do
+	for _, enemy_unit in ipairs(enemy_units) do
 		repeat
 			local enemy_position = Unit.world_position(enemy_unit, Unit.node(enemy_unit, "c_spine"))
 			local target_direction = Vector3.normalize(enemy_position - player_position)
@@ -124,7 +124,7 @@ EnemyCharacterStateHelper._check_within_line_of_sight_ratling_gunner = function 
 	return #in_range_units > 0 and in_range_units
 end
 
-EnemyCharacterStateHelper._check_within_line_of_sight_warpfire_thrower = function (player_unit, first_player_unit, player_position, player_rotation, player_direction, enemy_units, physics_world)
+EnemyCharacterStateHelper._check_within_line_of_sight_warpfire_thrower = function (player_unit, first_player_unit, player_position, player_rotation, player_direction, physics_world)
 	local breed = PlayerBreeds.vs_warpfire_thrower
 	local warpfire_data = BLACKBOARDS[player_unit].warpfire_data
 	local attack_half_range = warpfire_data.attack_range / 2
@@ -192,7 +192,7 @@ EnemyCharacterStateHelper._check_within_line_of_sight_warpfire_thrower = functio
 	return #enemies_in_range > 0 and enemies_in_range
 end
 
-EnemyCharacterStateHelper._check_within_line_of_sight_gutter_runner = function (player_unit, first_player_unit, player_position, player_rotation, player_direction, enemy_units, physics_world)
+EnemyCharacterStateHelper._check_within_line_of_sight_gutter_runner = function (player_unit, first_player_unit, player_position, player_rotation, player_direction, physics_world)
 	local breed = PlayerBreeds.vs_gutter_runner
 	local jump_speed = breed.pounce_speed
 	local pounce_upwards_amount = breed.pounce_upwards_amount
@@ -255,9 +255,11 @@ EnemyCharacterStateHelper._check_within_line_of_sight_gutter_runner = function (
 	}
 end
 
-EnemyCharacterStateHelper._check_within_impact_globadier = function (player_unit, first_player_unit, player_position, player_rotation, player_direction, enemy_units, physics_world, impact_position)
+EnemyCharacterStateHelper._check_within_impact_globadier = function (player_unit, first_player_unit, player_position, player_rotation, player_direction, physics_world, impact_position)
 	local breed = PlayerBreeds.vs_poison_wind_globadier
 	local radius = breed.globe_throw_aoe_radius
+	local side = Managers.state.side.side_by_unit[player_unit]
+	local enemy_units = side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS
 	local enemies = {}
 	local POSITION_LOOKUP = POSITION_LOOKUP
 

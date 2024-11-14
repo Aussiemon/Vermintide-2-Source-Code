@@ -157,7 +157,6 @@ weapon_template.actions = {
 				{
 					action = "weapon_reload",
 					auto_chain = true,
-					release_required = "action_two_hold",
 					start_time = 0,
 					sub_action = "auto_reload",
 				},
@@ -323,7 +322,6 @@ weapon_template.actions = {
 				{
 					action = "weapon_reload",
 					auto_chain = true,
-					release_required = "action_two_hold",
 					start_time = 0,
 					sub_action = "auto_reload",
 				},

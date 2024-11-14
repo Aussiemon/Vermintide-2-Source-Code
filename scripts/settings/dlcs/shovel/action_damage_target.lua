@@ -207,7 +207,8 @@ ActionDamageTarget._start_forced_action = function (self, t)
 	local power_level = self._power_level
 	local weapon_extension = self.weapon_extension
 	local item_template_name = self.current_action.lookup_data.item_template_name
-	local actions = Weapons[item_template_name].actions
+	local item_template = WeaponUtils.get_weapon_template(item_template_name)
+	local actions = item_template.actions
 
 	weapon_extension:start_action(action_name, sub_action_name, actions, t, power_level)
 end

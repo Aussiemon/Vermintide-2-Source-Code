@@ -21,9 +21,13 @@ GameModeSettings.versus.disable_rush_intervention = {
 }
 GameModeSettings.versus.use_floating_damage_numbers = true
 GameModeSettings.versus.damage_sound_param_cooldown = 3
-GameModeSettings.versus.max_health_kd = 200
-GameModeSettings.versus.min_streak_font_size = 50
-GameModeSettings.versus.max_streak_font_size = 100
+GameModeSettings.versus.max_health_kd = 250
+GameModeSettings.versus.healing_draught_heal_amount = 40
+GameModeSettings.versus.min_streak_font_size = 28
+GameModeSettings.versus.max_streak_font_size = 40
+GameModeSettings.versus.max_num_rewards_displayed = 7
+GameModeSettings.versus.round_start_pact_sworn_spawn_delay = 5
+GameModeSettings.versus.round_start_heroes_left_safe_zone_spawn_delay = 2
 GameModeSettings.versus.object_sets = {
 	versus = true,
 	versus_dark_pact = true,
@@ -62,7 +66,19 @@ GameModeSettings.versus.objectives = {
 		score_per_section = 0,
 		time_for_completion = 0,
 		time_per_section = 0,
-		on_complete_sound_event = {
+		on_last_leaf_complete_sound_event = {
+			dark_pact = "versus_objective_completed_pactsworn",
+			heroes = "versus_objective_completed_heroes",
+		},
+	},
+	survive_event = {
+		num_sections = 4,
+		score_for_completion = 0,
+		score_per_section = 0,
+		survive_time = 100,
+		time_for_completion = 100,
+		time_per_section = 0,
+		on_last_leaf_complete_sound_event = {
 			dark_pact = "versus_objective_completed_pactsworn",
 			heroes = "versus_objective_completed_heroes",
 		},
@@ -71,7 +87,7 @@ GameModeSettings.versus.objectives = {
 		scale = 1,
 		score_for_completion = 0,
 		time_for_completion = 0,
-		on_complete_sound_event = {
+		on_last_leaf_complete_sound_event = {
 			dark_pact = "versus_hud_checkpoint_reached_dark_pact",
 			heroes = "versus_hud_checkpoint_reached_heroes",
 		},
@@ -82,7 +98,7 @@ GameModeSettings.versus.objectives = {
 		score_per_socket = 0,
 		time_for_completion = 0,
 		time_per_socket = 0,
-		on_complete_sound_event = {
+		on_last_leaf_complete_sound_event = {
 			dark_pact = "versus_objective_completed_pactsworn",
 			heroes = "versus_objective_completed_heroes",
 		},
@@ -94,7 +110,7 @@ GameModeSettings.versus.objectives = {
 		score_per_section = 0,
 		time_for_completion = 0,
 		time_per_section = 0,
-		on_complete_sound_event = {
+		on_last_leaf_complete_sound_event = {
 			dark_pact = "versus_objective_completed_pactsworn",
 			heroes = "versus_objective_completed_heroes",
 		},
@@ -106,7 +122,7 @@ GameModeSettings.versus.objectives = {
 		time_for_completion = 0,
 		time_for_each_player_inside = 0,
 		volume_type = "all_alive",
-		on_complete_sound_event = {
+		on_last_leaf_complete_sound_event = {
 			dark_pact = "versus_hud_checkpoint_reached_dark_pact",
 			heroes = "versus_hud_checkpoint_reached_heroes",
 		},
@@ -118,7 +134,7 @@ GameModeSettings.versus.objectives = {
 		score_per_section = 0,
 		time_for_completion = 0,
 		time_per_section = 0,
-		on_complete_sound_event = {
+		on_last_leaf_complete_sound_event = {
 			dark_pact = "versus_hud_checkpoint_reached_dark_pact",
 			heroes = "versus_hud_checkpoint_reached_heroes",
 		},
@@ -127,7 +143,7 @@ GameModeSettings.versus.objectives = {
 		scale = 1,
 		score_for_completion = 0,
 		time_for_completion = 0,
-		on_complete_sound_event = {
+		on_last_leaf_complete_sound_event = {
 			dark_pact = "versus_hud_checkpoint_reached_dark_pact",
 			heroes = "versus_hud_checkpoint_reached_heroes",
 		},
@@ -438,10 +454,22 @@ GameModeSettings.versus.dark_pact_minimum_spawn_time = 5
 local death_time = GameModeSettings.versus.side_settings.dark_pact.spawn_times.delayed_death_time
 
 GameModeSettings.versus.dark_pact_respawn_timers = {
-	5 - death_time,
-	5 - death_time,
-	13 - death_time,
-	20 - death_time,
+	{
+		max = 5,
+		min = 5,
+	},
+	{
+		max = 5,
+		min = 5,
+	},
+	{
+		max = 14,
+		min = 8,
+	},
+	{
+		max = 20,
+		min = 12,
+	},
 }
 GameModeSettings.versus.dark_pact_bot_respawn_timers = {
 	[0] = 10,
@@ -450,7 +478,7 @@ GameModeSettings.versus.dark_pact_bot_respawn_timers = {
 	10,
 	20,
 }
-GameModeSettings.versus.dark_pact_catch_up_distance = 30
+GameModeSettings.versus.dark_pact_catch_up_distance = 40
 GameModeSettings.versus.dark_pact_minimum_spawn_distance = 10
 GameModeSettings.versus.boss_minimum_spawn_distance = 20
 GameModeSettings.versus.dark_pact_minimum_spawn_distance_vertical = 3.5
@@ -465,7 +493,7 @@ GameModeSettings.versus.additional_game_end_reasons = {
 	"party_two_won_early",
 	"draw",
 }
-GameModeSettings.versus.disable_achievements = true
+GameModeSettings.versus.disable_achievements = false
 GameModeSettings.versus.use_level_jumps = true
 GameModeSettings.versus.hide_level_jumps = false
 GameModeSettings.versus.show_selected_jump = true
@@ -528,15 +556,23 @@ GameModeSettings.versus.game_mode_states = {
 	"post_round_state",
 }
 GameModeSettings.versus.experience = {
-	complete_all_objectives = 300,
-	complete_match = 350,
+	challenges = 500,
+	complete_match = 500,
+	first_win_of_the_day = 500,
+	hero_kills = 25,
 	lose_match = 0,
-	win_match = 150,
+	rounds_played = 200,
+	special_kills = 10,
+	win_match = 300,
 }
 GameModeSettings.versus.mission_givers = {
 	{
 		dialogue_profile = "vs_pactsworn_mission_giver",
 		side_name = "dark_pact",
+	},
+	{
+		dialogue_profile = "vs_heroes_mission_giver",
+		side_name = "heroes",
 	},
 }
 GameModeSettings.inn_vs = table.clone(GameModeSettings.versus)
@@ -568,5 +604,5 @@ GameModeSettings.inn_vs.auto_force_start = {
 	enabled = true,
 	max_team_disparity = 1,
 	min_team_size = 2,
-	start_after_seconds = 90,
+	start_after_seconds = 30,
 }

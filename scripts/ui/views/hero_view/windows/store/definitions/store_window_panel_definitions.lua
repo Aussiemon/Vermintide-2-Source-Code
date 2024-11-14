@@ -252,62 +252,6 @@ local scenegraph_definition = {
 			10,
 		},
 	},
-	currency_area = {
-		horizontal_alignment = "right",
-		parent = "panel",
-		vertical_alignment = "bottom",
-		size = {
-			200,
-			70,
-		},
-		position = {
-			-92,
-			0,
-			20,
-		},
-	},
-	currency_area_frame = {
-		horizontal_alignment = "center",
-		parent = "currency_area",
-		vertical_alignment = "center",
-		size = {
-			200,
-			70,
-		},
-		position = {
-			0,
-			0,
-			0,
-		},
-	},
-	currency_icon = {
-		horizontal_alignment = "left",
-		parent = "currency_area",
-		vertical_alignment = "center",
-		size = {
-			64,
-			64,
-		},
-		position = {
-			30,
-			0,
-			1,
-		},
-	},
-	currency_text = {
-		horizontal_alignment = "left",
-		parent = "currency_icon",
-		vertical_alignment = "center",
-		size = {
-			64,
-			200,
-		},
-		position = {
-			71,
-			-2,
-			1,
-		},
-	},
 	mark_all_as_seen = {
 		horizontal_alignment = "right",
 		parent = "panel",
@@ -457,31 +401,6 @@ local widgets = {
 	entry_panel_selection = create_panel_button_selection("entry_panel_selection", scenegraph_definition.entry_panel_selection.size),
 	mark_all_seen_button = UIWidgets.create_store_panel_button("mark_all_as_seen", scenegraph_definition.mark_all_as_seen.size, "mark_all_as_seen", 22),
 }
-local top_widgets = {
-	currency_icon = UIWidgets.create_simple_texture("store_icon_currency_ingame_big", "currency_icon"),
-	currency_text = UIWidgets.create_simple_text("-", "currency_text", nil, nil, currency_text_style),
-	currency_area = UIWidgets.create_tiled_texture("currency_area", "menu_frame_bg_07", {
-		512,
-		256,
-	}, nil, nil, {
-		255,
-		255,
-		255,
-		255,
-	}),
-	currency_area_frame = UIWidgets.create_frame("currency_area_frame", scenegraph_definition.currency_area_frame.size, "button_frame_01_gold", 1),
-	currency_text_tooltip = UIWidgets.create_additional_option_tooltip("currency_area_frame", scenegraph_definition.currency_area_frame.size, {
-		"weave_progression_slot_titles",
-	}, {
-		title = Localize("menu_store_panel_currency_tooltip_title"),
-		description = Localize("menu_store_panel_currency_tooltip_desc"),
-		input = Localize("menu_store_panel_currency_tooltip_obtain_desc"),
-	}, 400, "right", "bottom", true, {
-		0,
-		-22,
-		0,
-	}),
-}
 local animation_definitions = {
 	on_enter = {
 		{
@@ -523,7 +442,6 @@ local animation_definitions = {
 
 return {
 	widgets = widgets,
-	top_widgets = top_widgets,
 	scenegraph_definition = scenegraph_definition,
 	animation_definitions = animation_definitions,
 }

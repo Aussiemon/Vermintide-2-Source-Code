@@ -268,7 +268,9 @@ HeroWindowCosmeticsLoadout._equip_item_presentation = function (self, item, slot
 
 		local item_content = content[hotspot_name]
 
-		item_content[item_icon_name] = inventory_icon
+		if item_content then
+			item_content[item_icon_name] = inventory_icon
+		end
 	end
 end
 

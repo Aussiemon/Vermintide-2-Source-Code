@@ -29,6 +29,7 @@ HeroPreviewer.init = function (self, ingame_ui_context, unique_id, delayed_spawn
 	self._delayed_spawn = delayed_spawn
 	self._activated = not delayed_spawn
 	self._loading_done = false
+	self._delayed_pose_animation = false
 	self._equipment_units[InventorySettings.slots_by_name.slot_melee.slot_index] = {}
 	self._equipment_units[InventorySettings.slots_by_name.slot_ranged.slot_index] = {}
 end
@@ -365,6 +366,9 @@ HeroPreviewer._set_character_visibility = function (self, visible)
 		if visible then
 			local skin_data = self.character_unit_skin_data
 			local material_changes = skin_data.material_changes
+			local equip_skin_event = skin_data.equip_skin_event or "using_skin_default"
+
+			Unit.flow_event(character_unit, equip_skin_event)
 
 			if material_changes then
 				local third_person_changes = material_changes.third_person
@@ -410,13 +414,14 @@ HeroPreviewer.play_character_animation = function (self, animation_event, force_
 	end
 end
 
-HeroPreviewer.request_spawn_hero_unit = function (self, profile_name, career_index, callback, optional_skin)
+HeroPreviewer.request_spawn_hero_unit = function (self, profile_name, career_index, callback, optional_skin, optional_breed)
 	self._requested_hero_spawn_data = {
 		frame_delay = 1,
 		profile_name = profile_name,
 		career_index = career_index,
 		callback = callback,
 		optional_skin = optional_skin,
+		optional_breed = optional_breed,
 	}
 
 	if self._delayed_spawn then
@@ -436,8 +441,9 @@ HeroPreviewer._handle_hero_spawn_request = function (self)
 			local career_index = requested_hero_spawn_data.career_index
 			local callback = requested_hero_spawn_data.callback
 			local optional_skin = requested_hero_spawn_data.optional_skin
+			local optional_breed = requested_hero_spawn_data.optional_breed
 
-			self:_load_hero_unit(profile_name, career_index, callback, optional_skin)
+			self:_load_hero_unit(profile_name, career_index, callback, optional_skin, nil, optional_breed)
 
 			self._requested_hero_spawn_data = nil
 		else
@@ -446,10 +452,10 @@ HeroPreviewer._handle_hero_spawn_request = function (self)
 	end
 end
 
-HeroPreviewer._load_hero_unit = function (self, profile_name, career_index, callback, optional_skin, optional_scale)
+HeroPreviewer._load_hero_unit = function (self, profile_name, career_index, callback, optional_skin, optional_scale, optional_breed)
 	self:_unload_all_packages()
 
-	self._current_profile_name = profile_name
+	self._current_profile_name = optional_breed and optional_breed.name or profile_name
 
 	local profile_index = FindProfileIndex(profile_name)
 	local profile = SPProfiles[profile_index]
@@ -458,6 +464,8 @@ HeroPreviewer._load_hero_unit = function (self, profile_name, career_index, call
 	local skin_item = BackendUtils.get_loadout_item(career_name, "slot_skin")
 	local item_data = skin_item and skin_item.data
 	local skin_name = optional_skin or item_data and item_data.name or career.base_skin
+
+	GlobalShaderFlags.set_global_shader_flag("NECROMANCER_CAREER_REMAP", career_name == "bw_necromancer")
 
 	self._current_career_name = career_name
 	self.character_unit_skin_data = nil
@@ -530,7 +538,6 @@ HeroPreviewer._spawn_hero_unit = function (self, skin_data, optional_scale, care
 	local unit_name = skin_data.third_person
 	local mesh_unit_name = skin_data.third_person_attachment.unit
 	local mesh_node_linking = skin_data.third_person_attachment.attachment_node_linking
-	local tint_data = skin_data.color_tint
 	local character_unit = World.spawn_unit(world, unit_name, Vector3Aux.unbox(self.character_location), Quaternion.axis_angle(Vector3.up(), self.character_rotation))
 	local mesh_unit = World.spawn_unit(world, mesh_unit_name, Vector3Aux.unbox(self.character_location), Quaternion.axis_angle(Vector3.up(), self.character_rotation))
 
@@ -546,6 +553,14 @@ HeroPreviewer._spawn_hero_unit = function (self, skin_data, optional_scale, care
 			Unit.set_material(mesh_unit, slot_name, material_name)
 		end
 	end
+
+	local material_settings = skin_data.material_settings
+
+	if material_settings then
+		CosmeticUtils.apply_material_settings(mesh_unit, material_settings)
+	end
+
+	local tint_data = skin_data.color_tint
 
 	if tint_data then
 		local gradient_variation = tint_data.gradient_variation
@@ -801,6 +816,7 @@ HeroPreviewer._poll_item_package_loading = function (self)
 	end
 
 	local item_info_by_slot = self._item_info_by_slot
+	local all_items_loaded = true
 
 	for slot_name, data in pairs(item_info_by_slot) do
 		if not data.loaded then
@@ -824,8 +840,14 @@ HeroPreviewer._poll_item_package_loading = function (self)
 				local spawn_data = data.spawn_data
 
 				self:_spawn_item(item_name, spawn_data)
+			else
+				all_items_loaded = false
 			end
 		end
+	end
+
+	if all_items_loaded and self._delayed_pose_animation then
+		self:trigger_pose_animation()
 	end
 end
 
@@ -954,6 +976,64 @@ end
 
 local function get_wield_anim(default, optional_switch, career_name)
 	return optional_switch and optional_switch[career_name] or default
+end
+
+HeroPreviewer.reset_pose_animation = function (self)
+	local wielded_slot_type = self._wielded_slot_type
+	local item_slot_info = self._item_info_by_slot[wielded_slot_type]
+	local item_name = item_slot_info.name
+	local item_template = ItemHelper.get_template_by_item_name(item_name)
+	local spawn_data = item_slot_info.spawn_data
+	local character_unit = self.character_unit
+	local character_visible = self:character_visible()
+	local wield_anim = item_template.wield_anim
+
+	if wield_anim then
+		local wield_anim = get_wield_anim(nil, item_template.wield_anim_career_3p, self._current_career_name) or get_wield_anim(wield_anim, item_template.wield_anim_career, self._current_career_name)
+
+		Unit.animation_event(character_unit, wield_anim)
+	end
+
+	self._pose_animation_event = nil
+end
+
+HeroPreviewer.set_pose_animation = function (self, pose_animation_event, play_animation)
+	self._pose_animation_event = pose_animation_event
+
+	if play_animation then
+		local character_unit = self.character_unit
+
+		if character_unit == nil then
+			return
+		end
+
+		local loading_done = self._loading_done
+
+		if not loading_done then
+			self._delayed_pose_animation = true
+
+			return
+		end
+
+		if pose_animation_event then
+			Unit.animation_event(character_unit, pose_animation_event)
+		else
+			self:reset_animation()
+		end
+	end
+end
+
+HeroPreviewer.trigger_pose_animation = function (self)
+	local pose_animation_event = self._pose_animation_event
+	local character_unit = self.character_unit
+
+	if character_unit == nil or pose_animation_event == nil then
+		return
+	end
+
+	Unit.animation_event(character_unit, pose_animation_event)
+
+	self._delayed_pose_animation = false
 end
 
 HeroPreviewer._spawn_item_unit = function (self, unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links, material_settings, skip_wield_anim)
@@ -1301,4 +1381,12 @@ HeroPreviewer.set_hero_look_target = function (self, look_target)
 	if look_target then
 		self.character_look_target = look_target
 	end
+end
+
+HeroPreviewer.get_character_unit = function (self)
+	return Unit.alive(self.character_unit) and self.character_unit or nil
+end
+
+HeroPreviewer.current_profile_name = function (self)
+	return self._current_profile_name
 end

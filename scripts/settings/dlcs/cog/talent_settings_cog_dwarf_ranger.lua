@@ -25,7 +25,7 @@ local buff_tweak_data = {
 	bardin_engineer_heal_share = {},
 	bardin_engineer_2_1 = {},
 	bardin_engineer_2_1_cooldown = {
-		duration = 180,
+		duration = 80,
 	},
 	bardin_engineer_ranged_pierce = {
 		bonus = 1,
@@ -221,9 +221,9 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				cooldown_buff = "bardin_engineer_2_1_cooldown",
-				update_frequency = 180,
+				update_frequency = 80,
 				update_func = "bardin_engineer_bomb_grant",
-				update_start_delay = 180,
+				update_start_delay = 80,
 				perks = {
 					buff_perks.no_explosion_friendly_fire,
 				},
@@ -500,7 +500,7 @@ local talent_trees = {
 		{
 			"bardin_engineer_improved_explosives",
 			"bardin_engineer_ranged_pierce",
-			"bardin_engineer_melee_power_ranged_power",
+			"bardin_engineer_upgraded_grenades",
 		},
 		{
 			"bardin_engineer_tank_unbalance",
@@ -514,7 +514,7 @@ local talent_trees = {
 		},
 		{
 			"bardin_engineer_stacking_damage_reduction",
-			"bardin_engineer_upgraded_grenades",
+			"bardin_engineer_melee_power_ranged_power",
 			"bardin_engineer_piston_powered",
 		},
 		{
@@ -569,7 +569,7 @@ local talents = {
 	},
 	{
 		buffer = "both",
-		description = "bardin_engineer_improved_explosives_desc",
+		description = "bardin_engineer_improved_explosives_desc_2",
 		icon = "bardin_engineer_fast_ability_charge",
 		name = "bardin_engineer_improved_explosives",
 		num_ranks = 1,
@@ -780,6 +780,15 @@ local talents = {
 		buffs = {
 			"bardin_engineer_5_2",
 		},
+		mechanism_overrides = {
+			versus = {
+				description_values = {
+					{
+						value = 1,
+					},
+				},
+			},
+		},
 	},
 	{
 		buffer = "both",
@@ -806,7 +815,7 @@ local talents = {
 		buffs = {},
 	},
 	{
-		description = "bardin_engineer_reduced_ability_fire_slowdown_desc",
+		description = "bardin_engineer_reduced_ability_fire_slowdown_desc_2",
 		icon = "bardin_engineer_reduced_ability_fire_slowdown",
 		name = "bardin_engineer_reduced_ability_fire_slowdown",
 		num_ranks = 1,
@@ -814,10 +823,20 @@ local talents = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_engineer_reduced_ability_fire_slowdown.display_multiplier,
+				value = CareerConstants.dr_engineer.talent_6_2_starting_rps,
 			},
 		},
 		buffs = {},
+		mechanism_overrides = {
+			versus = {
+				description_values = {
+					{
+						value_type = "percent",
+						value = CareerConstants.dr_engineer.talent_6_2_starting_rps_vs,
+					},
+				},
+			},
+		},
 	},
 	{
 		description = "bardin_engineer_increased_ability_bar_desc",

@@ -103,6 +103,7 @@ EndViewStateWeave.create_ui_elements = function (self, params)
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
 	self._hero_widgets = {}
+	self._hero_insignias = {}
 	self._ready_button_widget = widgets_by_name.ready_button
 	self._ready_timer_widget = widgets_by_name.ready_timer
 	self._player_name_widgets = {}
@@ -339,6 +340,7 @@ EndViewStateWeave.draw = function (self, input_service, dt)
 	draw_widgets(ui_top_renderer, self._widgets)
 	draw_widgets(ui_top_renderer, self._hero_widgets)
 	draw_widgets(ui_top_renderer, self._player_name_widgets)
+	draw_widgets(ui_top_renderer, self._hero_insignias)
 	UIRenderer.end_pass(ui_top_renderer)
 
 	if gamepad_active then
@@ -404,8 +406,9 @@ EndViewStateWeave._setup_team_results = function (self, players_session_scores)
 		local player_level = player_data.player_level
 		local is_player_controlled = player_data.is_player_controlled
 		local level_text = is_player_controlled and (player_level and tostring(player_level) or "-") or "BOT"
+		local versus_level = is_player_controlled and Application.user_setting("toggle_versus_level_in_all_game_modes") and player_data.versus_player_level or 0
 
-		self:_fill_portrait(i, portrait_frame, level_text, portrait_image, player_data.name)
+		self:_fill_portrait(i, portrait_frame, level_text, portrait_image, player_data.name, versus_level)
 	end
 
 	for i = #sorted_stat_ids + 1, self._player_count do
@@ -447,7 +450,7 @@ EndViewStateWeave._move_profile_selector = function (self, selection_index)
 	end
 end
 
-EndViewStateWeave._fill_portrait = function (self, slot, portrait_frame, level_text, portrait_image, player_name)
+EndViewStateWeave._fill_portrait = function (self, slot, portrait_frame, level_text, portrait_image, player_name, versus_level)
 	local hero_frame_count = self._player_count
 	local x_offset = player_frame_spacing * (slot - hero_frame_count / 2 - 0.5)
 	local portrait_frame = portrait_frame or "default"
@@ -463,6 +466,16 @@ EndViewStateWeave._fill_portrait = function (self, slot, portrait_frame, level_t
 		0,
 	}
 	self._hero_widgets[slot] = hero_widget
+
+	local widget_definition = UIWidgets.create_small_insignia("player_insignia", versus_level or 0)
+	local insignia_widget = UIWidget.init(widget_definition, self.ui_top_renderer)
+
+	insignia_widget.offset = {
+		x_offset,
+		0,
+		0,
+	}
+	self._hero_insignias[slot] = insignia_widget
 
 	if player_name then
 		local name = UIRenderer.crop_text_width(self.ui_renderer, player_name, player_name_width, hero_widget_definitions.player_name.style.text)

@@ -21,12 +21,15 @@ end
 DifficultyManager.set_difficulty = function (self, difficulty, tweak)
 	fassert(tweak and tweak >= -10 and tweak <= 10, "tweak must be a number from -10 to 10")
 
+	if difficulty == "versus_base" then
+		tweak = 0
+	end
+
 	self.difficulty = difficulty
 	self.difficulty_setting = DifficultySettings[difficulty]
 	self.difficulty_rank = self.difficulty_setting.rank
 	self.fallback_difficulty = self.difficulty_setting.fallback_difficulty
 	self.difficulty_tweak = tweak
-	self.difficulty_rank = DifficultySettings[difficulty].rank
 
 	SET_BREED_DIFFICULTY(difficulty)
 
@@ -49,12 +52,8 @@ DifficultyManager.set_difficulty = function (self, difficulty, tweak)
 	end
 end
 
-DifficultyManager.get_level_difficulties = function (self, level_key)
-	local level_settings = level_key and LevelSettings[level_key]
-	local difficulty_settings = level_settings and level_settings.difficulties
-	local starting_difficulty = level_settings and level_settings.starting_difficulty
-
-	return difficulty_settings or DefaultDifficulties, starting_difficulty or DefaultStartingDifficulty
+DifficultyManager.get_default_difficulties = function (self)
+	return DefaultDifficulties, DefaultStartingDifficulty
 end
 
 DifficultyManager.get_difficulty = function (self)
@@ -126,7 +125,7 @@ end
 
 local player_below_difficulty_rank = {}
 
-DifficultyManager.players_below_difficulty_rank = function (difficulty_key, players)
+DifficultyManager.players_locked_difficulty_rank = function (difficulty_key, players)
 	table.clear(player_below_difficulty_rank)
 
 	local difficulty_settings = DifficultySettings[difficulty_key]

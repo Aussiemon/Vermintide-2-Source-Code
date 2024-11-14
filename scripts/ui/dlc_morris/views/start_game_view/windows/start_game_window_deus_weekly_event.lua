@@ -238,7 +238,7 @@ StartGameWindowDeusWeeklyEvent._evaluate_rewards = function (self, data, difficu
 		local desc = Localize("cw_weekly_expedition_xp_reward")
 
 		reward_data.desc = string.format(desc, amount)
-	elseif reward_type == "item" or reward_type == "weapon_skin" then
+	elseif reward_type == "item" or reward_type == "loot_chest" or reward_type == "weapon_skin" then
 		local item_name = first_reward.item_name or first_reward.weapon_skin_name
 		local item = item_name and ItemMasterList[item_name]
 

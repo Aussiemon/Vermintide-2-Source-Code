@@ -23,48 +23,7 @@ return {
 				"weave_spot_event_skaven_gutter_runner",
 			},
 			objective_settings = {
-				objective_lists = {
-					{
-						kill_enemies = {},
-						weave_prop_skaven_doom_wheel_01_spawner_002 = {
-							is_scored = true,
-							timer = 10,
-							on_socket_start_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("weave_spot_event_skaven_gutter_runner", spawner_id)
-							end,
-						},
-						weave_limited_item_track_spawner_002 = {
-							template_name = "explosive_barrel_spawner",
-							on_first_pickup_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("weave_spot_event_special_mixed", spawner_id)
-							end,
-						},
-					},
-					{
-						kill_enemies = {},
-						weave_prop_skaven_doom_wheel_01_spawner_001 = {
-							is_scored = true,
-							timer = 10,
-							on_socket_start_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("weave_spot_event_boss_minotaur", spawner_id)
-							end,
-						},
-						weave_limited_item_track_spawner_003 = {
-							template_name = "explosive_barrel_spawner",
-							on_first_pickup_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("weave_spot_event_boss_chaos_spawn_nodelay", spawner_id)
-							end,
-						},
-					},
-				},
+				objective_lists = "weave_7",
 			},
 			bonus_time_on_complete = WeaveSettings.bonus_time,
 			system_seeds = {

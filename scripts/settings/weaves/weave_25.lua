@@ -22,50 +22,7 @@ return {
 				"capture_point_2_event",
 			},
 			objective_settings = {
-				objective_lists = {
-					{
-						kill_enemies = {},
-						capture_point_007 = {
-							is_scored = true,
-							on_start_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("capture_point_1_event_medium", spawner_id)
-							end,
-							on_complete_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:stop_terror_event("capture_point_1_event_medium", spawner_id)
-							end,
-						},
-						capture_point_008 = {
-							is_scored = true,
-							on_start_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("capture_point_3_event", spawner_id)
-							end,
-							on_complete_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:stop_terror_event("capture_point_3_event", spawner_id)
-							end,
-						},
-						capture_point_005 = {
-							is_scored = true,
-							on_start_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("capture_point_2_event", spawner_id)
-							end,
-							on_complete_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:stop_terror_event("capture_point_2_event", spawner_id)
-							end,
-						},
-					},
-				},
+				objective_lists = "weave_25",
 			},
 			bonus_time_on_complete = WeaveSettings.bonus_time,
 			system_seeds = {

@@ -311,7 +311,7 @@ LootItemUnitPreviewer._load_item_units = function (self, item)
 				material_settings = material_settings,
 			}
 		end
-	elseif slot_type == "frame" then
+	elseif slot_type == "frame" or slot_type == "chips" then
 		local unit = item_template.attachment_node.unit
 
 		if unit then

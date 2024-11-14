@@ -1151,6 +1151,144 @@ SpreadTemplates.fireball = {
 		},
 	},
 }
+SpreadTemplates.vs_warpfire_thrower_gun = {
+	continuous = {
+		still = {
+			max_pitch = 7,
+			max_yaw = 7,
+		},
+		moving = {
+			max_pitch = 8,
+			max_yaw = 8,
+		},
+		crouch_still = {
+			max_pitch = 7,
+			max_yaw = 7,
+		},
+		crouch_moving = {
+			max_pitch = 8,
+			max_yaw = 8,
+		},
+		zoomed_still = {
+			max_pitch = 7,
+			max_yaw = 7,
+		},
+		zoomed_moving = {
+			max_pitch = 8,
+			max_yaw = 8,
+		},
+		zoomed_crouch_still = {
+			max_pitch = 7,
+			max_yaw = 7,
+		},
+		zoomed_crouch_moving = {
+			max_pitch = 8,
+			max_yaw = 8,
+		},
+	},
+	immediate = {
+		being_hit = {
+			immediate_pitch = 1,
+			immediate_yaw = 1,
+		},
+		shooting = {
+			immediate_pitch = 1,
+			immediate_yaw = 1,
+		},
+	},
+}
+SpreadTemplates.vs_ratling_gunner_gun = {
+	continuous = {
+		still = {
+			max_pitch = 0.5,
+			max_yaw = 0.5,
+		},
+		moving = {
+			max_pitch = 0.75,
+			max_yaw = 0.75,
+		},
+		crouch_still = {
+			max_pitch = 0.5,
+			max_yaw = 0.5,
+		},
+		crouch_moving = {
+			max_pitch = 0.75,
+			max_yaw = 0.75,
+		},
+		zoomed_still = {
+			max_pitch = 0.5,
+			max_yaw = 0.5,
+		},
+		zoomed_moving = {
+			max_pitch = 0.75,
+			max_yaw = 0.75,
+		},
+		zoomed_crouch_still = {
+			max_pitch = 0.5,
+			max_yaw = 0.5,
+		},
+		zoomed_crouch_moving = {
+			max_pitch = 0.75,
+			max_yaw = 0.75,
+		},
+	},
+	immediate = {
+		being_hit = {
+			immediate_pitch = 1,
+			immediate_yaw = 1,
+		},
+		shooting = {
+			immediate_pitch = 1,
+			immediate_yaw = 1,
+		},
+	},
+}
+SpreadTemplates.vs_ratling_gunner_gun_shooting = {
+	continuous = {
+		still = {
+			max_pitch = 0.75,
+			max_yaw = 0.75,
+		},
+		moving = {
+			max_pitch = 0.75,
+			max_yaw = 0.75,
+		},
+		crouch_still = {
+			max_pitch = 0.75,
+			max_yaw = 0.75,
+		},
+		crouch_moving = {
+			max_pitch = 0.75,
+			max_yaw = 0.75,
+		},
+		zoomed_still = {
+			max_pitch = 0.75,
+			max_yaw = 0.75,
+		},
+		zoomed_moving = {
+			max_pitch = 0.75,
+			max_yaw = 0.75,
+		},
+		zoomed_crouch_still = {
+			max_pitch = 0.75,
+			max_yaw = 0.75,
+		},
+		zoomed_crouch_moving = {
+			max_pitch = 0.75,
+			max_yaw = 0.75,
+		},
+	},
+	immediate = {
+		being_hit = {
+			immediate_pitch = 1,
+			immediate_yaw = 1,
+		},
+		shooting = {
+			immediate_pitch = 1,
+			immediate_yaw = 1,
+		},
+	},
+}
 SpreadTemplates.maximum_pitch = 15
 SpreadTemplates.maximum_yaw = 15
 SpreadTemplates.fireball = SpreadTemplates.fireball or table.clone(SpreadTemplates.default)
@@ -1177,5 +1315,8 @@ SpreadTemplates.drake_pistol_charged = SpreadTemplates.drake_pistol_charged or t
 SpreadTemplates.rake_shot = table.create_copy(SpreadTemplates.rake_shot, SpreadTemplates.rake_shot) or table.clone(SpreadTemplates.default)
 SpreadTemplates.rake_twin_shot = table.create_copy(SpreadTemplates.rake_twin_shot, SpreadTemplates.rake_twin_shot) or table.clone(SpreadTemplates.default)
 SpreadTemplates.rake_twin_shot = SpreadTemplates.rake_twin_shot or table.clone(SpreadTemplates.default)
+SpreadTemplates.vs_warpfire_thrower_gun = SpreadTemplates.vs_warpfire_thrower_gun or table.clone(SpreadTemplates.default)
+SpreadTemplates.vs_ratling_gunner_gun = SpreadTemplates.vs_ratling_gunner_gun or table.clone(SpreadTemplates.default)
+SpreadTemplates.vs_ratling_gunner_gun_shooting = SpreadTemplates.vs_ratling_gunner_gun_shooting or table.clone(SpreadTemplates.default)
 
 DLCUtils.merge("spread_templates", SpreadTemplates)

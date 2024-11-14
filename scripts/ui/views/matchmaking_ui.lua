@@ -32,6 +32,7 @@ local WIND_COLORS = {
 	fire = Colors.get_table("fire"),
 	shadow = Colors.get_table("shadow"),
 }
+local state_to_display_name_overrides = {}
 
 MatchmakingUI = class(MatchmakingUI)
 
@@ -234,7 +235,10 @@ MatchmakingUI.update = function (self, dt, t)
 
 		self:_handle_gamepad_activity()
 
-		if Managers.party:is_leader(self._my_peer_id) then
+		local network_handler = Managers.mechanism:network_handler()
+		local match_handler = network_handler:get_match_handler()
+
+		if match_handler:is_leader(self._my_peer_id) then
 			local allow_cancel_matchmaking = self.matchmaking_manager:allow_cancel_matchmaking()
 
 			self._allow_cancel_matchmaking = allow_cancel_matchmaking and not has_mission_vote
@@ -291,7 +295,9 @@ MatchmakingUI._draw = function (self, ui_renderer, input_service, is_matchmaking
 
 	if self._show_detailed_matchmaking_info then
 		if self._active_mechanism == "versus" then
-			UIRenderer.draw_all_widgets(ui_renderer, self._versus_input_widgets)
+			if not Managers.state.voting:cancel_disabled() then
+				UIRenderer.draw_all_widgets(ui_renderer, self._versus_input_widgets)
+			end
 		elseif self._allow_cancel_matchmaking then
 			UIRenderer.draw_all_widgets(ui_renderer, self._cancel_input_widgets)
 		end
@@ -339,7 +345,6 @@ MatchmakingUI._update_matchmaking_info = function (self, t)
 		return
 	end
 
-	local matchmaking_type = matchmaking_info.matchmaking_type
 	local mechanism = matchmaking_info.mechanism
 
 	self._active_mechanism = mechanism
@@ -396,6 +401,7 @@ MatchmakingUI._update_matchmaking_info = function (self, t)
 		end
 	elseif mechanism == "versus" then
 		local detail_text = "mission_vote_quick_play"
+		local difficulty_text = "vs_ui_versus_tag"
 
 		if not matchmaking_info.quick_game then
 			local mission_id = matchmaking_info.mission_id
@@ -406,12 +412,14 @@ MatchmakingUI._update_matchmaking_info = function (self, t)
 				local level_settings = mission_id and LevelSettings[mission_id]
 				local display_name = level_settings and level_settings.display_name
 
-				detail_text = display_name and display_name or detail_text
+				detail_text = display_name or detail_text
 			end
+
+			difficulty_text = "player_hosted_title"
 		end
 
 		self:_set_detail_level_text(detail_text, true)
-		self:_set_detail_difficulty_text("vs_ui_versus_tag")
+		self:_set_detail_difficulty_text(difficulty_text)
 	else
 		local difficulty = matchmaking_info.difficulty
 
@@ -464,9 +472,7 @@ MatchmakingUI._update_matchmaking_info = function (self, t)
 end
 
 MatchmakingUI._update_status = function (self, dt)
-	if self._active_mechanism == "versus" then
-		local slot_reservations = Managers.matchmaking:get_reserved_slots()
-	else
+	if self._active_mechanism ~= "versus" then
 		local rotation_progresss = ((self._rotation_progresss or 0) + dt * 0.2) % 1
 
 		self._rotation_progresss = rotation_progresss
@@ -633,37 +639,6 @@ MatchmakingUI.update_debug = function (self)
 	debug_text = debug_text .. "\nHero: " .. Managers.matchmaking.debug.hero
 	debug_text = debug_text .. "\nProgression: " .. Managers.matchmaking.debug.progression
 	debug_text = debug_text .. "\n"
-
-	local witch_hunter_player, wood_elf_player, dwarf_ranger_player, bright_wizard_player, empire_soldier_player
-	local profiles_data = self.matchmaking_manager.debug.profiles_data
-
-	if profiles_data then
-		witch_hunter_player = profiles_data.player_slot_1 or "available"
-		bright_wizard_player = profiles_data.player_slot_2 or "available"
-		dwarf_ranger_player = profiles_data.player_slot_3 or "available"
-		wood_elf_player = profiles_data.player_slot_4 or "available"
-		empire_soldier_player = profiles_data.player_slot_5 or "available"
-	else
-		witch_hunter_player = lobby:lobby_data("player_slot_1") or "available"
-		bright_wizard_player = lobby:lobby_data("player_slot_2") or "available"
-		dwarf_ranger_player = lobby:lobby_data("player_slot_3") or "available"
-		wood_elf_player = lobby:lobby_data("player_slot_4") or "available"
-		empire_soldier_player = lobby:lobby_data("player_slot_5") or "available"
-	end
-
-	if rawget(_G, "Steam") and GameSettingsDevelopment.network_mode == "steam" then
-		witch_hunter_player = witch_hunter_player and witch_hunter_player ~= "available" and Steam.user_name(witch_hunter_player) or "available"
-		bright_wizard_player = bright_wizard_player and bright_wizard_player ~= "available" and Steam.user_name(bright_wizard_player) or "available"
-		dwarf_ranger_player = dwarf_ranger_player and dwarf_ranger_player ~= "available" and Steam.user_name(dwarf_ranger_player) or "available"
-		wood_elf_player = wood_elf_player and wood_elf_player ~= "available" and Steam.user_name(wood_elf_player) or "available"
-		empire_soldier_player = empire_soldier_player and empire_soldier_player ~= "available" and Steam.user_name(empire_soldier_player) or "available"
-	end
-
-	debug_text = debug_text .. "\nWitch hunter: \t" .. witch_hunter_player
-	debug_text = debug_text .. "\nBright wizard: \t" .. bright_wizard_player
-	debug_text = debug_text .. "\nDwarf ranger: \t" .. dwarf_ranger_player
-	debug_text = debug_text .. "\nWood elf: \t\t" .. wood_elf_player
-	debug_text = debug_text .. "\nEmpire Soldier: \t" .. empire_soldier_player
 	self.debug_box_widget.content.debug_text = debug_text
 end
 
@@ -802,30 +777,39 @@ MatchmakingUI._update_portraits = function (self, has_mission_vote)
 		end
 
 		for peer_id, _ in pairs(members) do
-			local portrait_index = self:_get_portrait_index(peer_id)
+			do
+				local portrait_index = self:_get_portrait_index(peer_id)
 
-			if not portrait_index then
-				portrait_index = self:_get_first_free_portrait_index()
-				portrait_index_table[portrait_index] = peer_id
-			end
+				if not portrait_index then
+					portrait_index = self:_get_first_free_portrait_index()
 
-			if has_mission_vote then
-				self:_set_player_is_voting(portrait_index, true)
-			else
-				self:_set_player_is_voting(portrait_index, false)
-			end
+					if not portrait_index then
+						goto label_1_0
+					end
 
-			local profile = profile_synchronizer:profile_by_peer(peer_id, 1)
-
-			if profile then
-				self:large_window_set_player_portrait(portrait_index, peer_id)
-
-				if player_manager:player_from_peer_id(peer_id) then
-					self:large_window_set_player_connecting(portrait_index, false)
+					portrait_index_table[portrait_index] = peer_id
 				end
-			else
-				self:large_window_set_player_connecting(portrait_index, true)
+
+				if has_mission_vote then
+					self:_set_player_is_voting(portrait_index, true)
+				else
+					self:_set_player_is_voting(portrait_index, false)
+				end
+
+				local profile = profile_synchronizer:profile_by_peer(peer_id, 1)
+
+				if profile then
+					self:large_window_set_player_portrait(portrait_index, peer_id)
+
+					if player_manager:player_from_peer_id(peer_id) then
+						self:large_window_set_player_connecting(portrait_index, false)
+					end
+				else
+					self:large_window_set_player_connecting(portrait_index, true)
+				end
 			end
+
+			::label_1_0::
 		end
 	end
 end
@@ -989,6 +973,7 @@ end
 MatchmakingUI._set_status_text = function (self, text)
 	local widget = self:_get_widget("status_text")
 
+	text = state_to_display_name_overrides[text] or text
 	widget.content.text = Localize(text)
 end
 

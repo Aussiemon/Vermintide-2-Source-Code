@@ -31,7 +31,10 @@ local object_sets_per_layout = {
 		equipment_view = true,
 	},
 	cosmetics_selection = {
-		cosmetics_view = true,
+		keep_current_object_set = true,
+	},
+	pose_selection = {
+		pose_cosmetics = true,
 	},
 	system = {
 		main_menu = true,
@@ -41,6 +44,9 @@ local object_sets_per_layout = {
 	},
 	item_customization = {
 		keep_current_object_set = true,
+	},
+	pactsworn_equipment = {
+		skaven_cosmetics_view = true,
 	},
 }
 local level_events_per_layout = {
@@ -65,6 +71,9 @@ local level_events_per_layout = {
 	cosmetics_selection = {
 		"cosmetics_view",
 	},
+	pose_selection = {
+		"cosmetics_view",
+	},
 	system = {
 		"main_menu",
 	},
@@ -73,6 +82,9 @@ local level_events_per_layout = {
 		"main_menu",
 		"cosmetics_view",
 		"crafting_view",
+	},
+	pactsworn_equipment = {
+		"cosmetics_view",
 	},
 }
 local character_visibility_per_layout = {
@@ -83,6 +95,8 @@ local character_visibility_per_layout = {
 	equipment = true,
 	equipment_selection = true,
 	forge = false,
+	pactsworn_equipment = true,
+	pose_selection = true,
 	system = false,
 	talents = false,
 }
@@ -91,11 +105,42 @@ local camera_move_duration_per_layout = {
 }
 local disable_camera_position_per_layout = {}
 local character_camera_location = {
+	pose_selection = {
+		witch_hunter = {
+			-0.6,
+			-1,
+			0.4,
+		},
+		bright_wizard = {
+			-0.5,
+			-0.8,
+			0.3,
+		},
+		dwarf_ranger = {
+			-0.5,
+			-0.7,
+			0,
+		},
+		wood_elf = {
+			-0.5,
+			-0.7,
+			0.2,
+		},
+		empire_soldier = {
+			-0.5,
+			-1,
+			0.3,
+		},
+	},
 	default = {
 		0,
 		0,
 		0,
 	},
+}
+local MOOD_PER_MECHANISM = {
+	adventure = "default",
+	versus = "menu_versus",
 }
 
 HeroWindowBackgroundConsole = class(HeroWindowBackgroundConsole)
@@ -137,6 +182,17 @@ HeroWindowBackgroundConsole.on_enter = function (self, params, offset)
 	Managers.state.event:register(self, "despawn_hero", "despawn_hero")
 end
 
+HeroWindowBackgroundConsole._get_with_mechanism = function (self, lookup)
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+
+	return lookup[mechanism_name] or lookup.default
+end
+
+local MOOD_PER_MECHANISM = {
+	default = "default",
+	versus = "menu_versus",
+}
+
 HeroWindowBackgroundConsole._create_viewport_definition = function (self)
 	return {
 		scenegraph_id = "screen",
@@ -148,6 +204,8 @@ HeroWindowBackgroundConsole._create_viewport_definition = function (self)
 				fov = 50,
 				layer = 960,
 				level_name = "levels/ui_keep_menu/world",
+				mood_setting = "default",
+				shading_environment = "environment/ui_end_screen",
 				viewport_name = "character_preview_viewport",
 				world_name = "character_preview",
 				world_flags = {
@@ -311,6 +369,8 @@ HeroWindowBackgroundConsole._update_character_visibility = function (self, layou
 	if draw_character then
 		local character_location = character_camera_location[layout_name] or character_camera_location.default
 
+		character_location = character_location[self.hero_name] or character_location
+
 		self.world_previewer:set_hero_location_lerped(character_location, 0.5)
 	end
 end
@@ -378,6 +438,8 @@ HeroWindowBackgroundConsole.post_update = function (self, dt, t)
 			self:_update_skin_sync()
 			self:_update_loadout_sync()
 			self:_update_wielded_slot()
+			self:_update_temporary_loadout_sync()
+			self:_update_character_pose_animation_sync()
 		end
 
 		self.world_previewer:post_update(dt, t)
@@ -409,6 +471,18 @@ HeroWindowBackgroundConsole.respawn_hero = function (self, optional_params, over
 		self._selected_loadout_slot_index = FORCE_RESYNC
 
 		self:_update_wielded_slot()
+
+		local profile_index = FindProfileIndex(self.hero_name)
+		local profile = SPProfiles[profile_index]
+
+		if profile.affiliation == "dark_pact" then
+			local career_data = profile.careers[self.career_index]
+			local preview_animation = career_data.preview_idle_animation
+
+			if preview_animation then
+				self.world_previewer:play_character_animation(preview_animation)
+			end
+		end
 	end
 
 	world_previewer:respawn_hero_unit(self.hero_name, self.career_index, false, callback, self._camera_move_duration)
@@ -439,6 +513,36 @@ HeroWindowBackgroundConsole._update_animations = function (self, dt)
 	end
 
 	local widgets_by_name = self._widgets_by_name
+end
+
+HeroWindowBackgroundConsole._update_temporary_loadout_sync = function (self)
+	local parent = self.parent
+	local temporary_loadout_sync_id = parent.temporary_loadout_sync_id
+
+	if temporary_loadout_sync_id > 0 and temporary_loadout_sync_id ~= self._temporary_loadout_sync_id then
+		self:_populate_temporary_loadout()
+
+		self._temporary_loadout_sync_id = temporary_loadout_sync_id
+	end
+end
+
+HeroWindowBackgroundConsole._update_character_pose_animation_sync = function (self)
+	local parent = self.parent
+	local character_pose_animation_sync_id = parent.character_pose_animation_sync_id
+
+	if character_pose_animation_sync_id > 0 and character_pose_animation_sync_id ~= self._character_pose_animation_sync_id then
+		local anim_event = self.parent:get_character_animation_event()
+
+		if anim_event then
+			local play_pose_animation = true
+
+			self.world_previewer:set_pose_animation(anim_event, play_pose_animation)
+		else
+			self.world_previewer:reset_pose_animation()
+		end
+
+		self._character_pose_animation_sync_id = character_pose_animation_sync_id
+	end
 end
 
 HeroWindowBackgroundConsole._update_loadout_sync = function (self)
@@ -557,7 +661,7 @@ HeroWindowBackgroundConsole._populate_loadout = function (self)
 		for _, slot in pairs(slots) do
 			local slot_name = slot.name
 			local slot_type = slot.type
-			local item = BackendUtils.get_loadout_item(career_name, slot_name)
+			local item, skip_wield_anim = self.parent:get_temporary_loadout_item(slot_type) or BackendUtils.get_loadout_item(career_name, slot_name)
 
 			if item then
 				local item_data = item.data
@@ -581,7 +685,44 @@ HeroWindowBackgroundConsole._populate_loadout = function (self)
 		end
 
 		if post_crashify_exception then
-			Crashify.print_exception("[Cosmetic] Failed to equip slot for career in hero previewer")
+			Crashify.print_exception("[Cosmetic]", "Failed to equip slot for career in hero previewer")
+		end
+	end
+end
+
+HeroWindowBackgroundConsole._populate_temporary_loadout = function (self)
+	local world_previewer = self.world_previewer
+	local slots = InventorySettings.slots_by_slot_index
+	local parent = self.parent
+	local post_crashify_exception = false
+
+	for _, slot in pairs(slots) do
+		local slot_type = slot.type
+		local item, skip_wield_anim = parent:get_temporary_loadout_item(slot_type)
+
+		if item then
+			local item_data = item.data
+			local item_name = item_data.name
+			local item_slot_type = slot.type
+			local current_item_name = world_previewer:item_name_by_slot_type(item_slot_type)
+
+			if item_name ~= current_item_name or item_slot_type == "melee" or item_slot_type == "ranged" then
+				local backend_id = item.backend_id
+				local item_info = world_previewer:get_equipped_item_info(slot)
+				local current_skin = item_info.skin_name
+				local optional_skin = item.skin
+				local should_reload_skin = current_skin ~= optional_skin
+
+				if not item_info or item_info.backend_id ~= backend_id or should_reload_skin then
+					world_previewer:equip_item(item_name, slot, backend_id, optional_skin, skip_wield_anim)
+
+					if not skip_wield_anim and (item_slot_type == "melee" or item_slot_type == "ranged") then
+						world_previewer:wield_weapon_slot(item_slot_type)
+					end
+				elseif not skip_wield_anim and (item_slot_type == "melee" or item_slot_type == "ranged") then
+					world_previewer:wield_weapon_slot(item_slot_type)
+				end
+			end
 		end
 	end
 end

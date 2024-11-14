@@ -76,18 +76,46 @@ AccountManager.update_presence = function (self)
 		return
 	end
 
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+
 	if is_in_hub_level then
 		Presence.set_presence("steam_display", to_boolean(script_data["eac-untrusted"]) and "#presence_modded_hub" or "#presence_official_hub")
 		Presence.set_presence("steam_player_group_size", PresenceHelper.lobby_num_players())
 		Presence.set_presence("hub_string", PresenceHelper.get_hub_presence())
 		Presence.set_presence("level", PresenceHelper.lobby_level())
-	else
+	elseif mechanism_name ~= "versus" then
 		Presence.set_presence("steam_display", to_boolean(script_data["eac-untrusted"]) and "#presence_modded" or "#presence_official")
 		Presence.set_presence("steam_player_group", lobby:id())
 		Presence.set_presence("steam_player_group_size", PresenceHelper.lobby_num_players())
 		Presence.set_presence("gamemode", PresenceHelper.lobby_gamemode(lobby_data))
 		Presence.set_presence("difficulty", PresenceHelper.lobby_difficulty())
 		Presence.set_presence("level", PresenceHelper.lobby_level())
+	else
+		Presence.set_presence("steam_display", "#presence_versus_official")
+
+		local num_players = PresenceHelper.lobby_num_players()
+
+		Presence.set_presence("steam_player_group_size", num_players)
+
+		local gamemode = PresenceHelper.lobby_gamemode(lobby_data)
+
+		Presence.set_presence("gamemode", gamemode)
+
+		local level = PresenceHelper.lobby_level()
+
+		Presence.set_presence("level", level)
+
+		local side = PresenceHelper.get_side()
+
+		Presence.set_presence("side", side)
+
+		local score = PresenceHelper.get_game_score()
+
+		Presence.set_presence("score", score)
+
+		local set = PresenceHelper.get_current_set()
+
+		Presence.set_presence("set", set)
 	end
 end
 
@@ -113,7 +141,7 @@ AccountManager.set_current_lobby = function (self, lobby)
 	return
 end
 
-AccountManager.all_lobbies_freed = function (self)
+AccountManager.all_sessions_cleaned_up = function (self)
 	return
 end
 

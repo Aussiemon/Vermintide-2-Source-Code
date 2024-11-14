@@ -127,7 +127,7 @@ TelemetryManager._ready_to_post_batch = function (self, t)
 end
 
 TelemetryManager.post_batch = function (self)
-	if not ENABLED or table.is_empty(self._events) then
+	if not self:has_events_to_post() then
 		return
 	end
 
@@ -155,6 +155,14 @@ TelemetryManager.post_batch = function (self)
 
 		Managers.rest_transport:post(ENDPOINT, payload, headers, callback(self, "cb_post_batch"))
 	end
+end
+
+TelemetryManager.has_events_to_post = function (self)
+	return ENABLED and not table.is_empty(self._events)
+end
+
+TelemetryManager.batch_in_flight = function (self)
+	return self._batch_in_flight
 end
 
 TelemetryManager._encode = function (self, events)

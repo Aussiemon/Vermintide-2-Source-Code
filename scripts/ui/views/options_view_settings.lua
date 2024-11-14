@@ -1196,14 +1196,23 @@ local function set_function(self, user_setting_name, widget_type, content, style
 		new_value = options_values[current_selection]
 	end
 
-	self.changed_user_settings[user_setting_name] = new_value
+	local setting_type = content.definition.setting_type or "user_settings"
 
+	self:_set_setting(setting_type, user_setting_name, new_value)
 	value_set_function(content, style, new_value)
 end
 
 local function setup_function(self, user_setting_name, widget_type, options, definition)
-	local default_value = DefaultUserSettings.get("user_settings", user_setting_name)
-	local current_value = Application.user_setting(user_setting_name)
+	local setting_type = definition.setting_type or "user_settings"
+	local default_value = DefaultUserSettings.get(setting_type, user_setting_name)
+	local current_value
+
+	if setting_type == "user_settings" then
+		current_value = Application.user_setting(user_setting_name)
+	else
+		current_value = Application.user_setting(setting_type, user_setting_name)
+	end
+
 	local menu_setting_name = definition.menu_setting_name
 
 	menu_setting_name = menu_setting_name or "menu_settings_" .. user_setting_name
@@ -1239,13 +1248,9 @@ local function setup_function(self, user_setting_name, widget_type, options, def
 end
 
 local function saved_value_function(self, user_setting_name, widget_type, widget, saved_function)
-	local saved_value = self.changed_user_settings[user_setting_name]
-
-	if saved_value == nil then
-		saved_value = Application.user_setting(user_setting_name)
-	end
-
-	local default_value = DefaultUserSettings.get("user_settings", user_setting_name)
+	local setting_type = widget.content.definition.setting_type or "user_settings"
+	local saved_value = self:_get_setting(setting_type, user_setting_name)
+	local default_value = DefaultUserSettings.get(setting_type, user_setting_name)
 
 	if saved_value == nil then
 		saved_value = default_value
@@ -1267,7 +1272,7 @@ local function saved_value_function(self, user_setting_name, widget_type, widget
 	saved_function(content, style, saved_value)
 end
 
-function generate_settings(settings_definition)
+local function generate_settings(settings_definition)
 	for _, definition in pairs(settings_definition) do
 		local setting_name = definition.setting_name
 
@@ -1706,7 +1711,6 @@ local keybind_settings_definition = {
 	{
 		keybind_description = "hotkey_weave_forge",
 		keymappings_key = "IngameMenuKeymaps",
-		required_dlc = "scorpion",
 		widget_type = "keybind",
 		actions = {
 			"hotkey_weave_forge",
@@ -1715,7 +1719,6 @@ local keybind_settings_definition = {
 	{
 		keybind_description = "hotkey_weave_play",
 		keymappings_key = "IngameMenuKeymaps",
-		required_dlc = "scorpion",
 		widget_type = "keybind",
 		actions = {
 			"hotkey_weave_play",
@@ -1724,7 +1727,6 @@ local keybind_settings_definition = {
 	{
 		keybind_description = "hotkey_weave_leaderboard",
 		keymappings_key = "IngameMenuKeymaps",
-		required_dlc = "scorpion",
 		widget_type = "keybind",
 		actions = {
 			"hotkey_weave_leaderboard",
@@ -2136,6 +2138,34 @@ local versus_settings_definition = {
 	},
 	{
 		setting_name = "toggle_pactsworn_help_ui",
+		widget_type = "stepper",
+		options = {
+			{
+				value = true,
+				text = Localize("menu_settings_on"),
+			},
+			{
+				value = false,
+				text = Localize("menu_settings_off"),
+			},
+		},
+	},
+	{
+		setting_name = "toggle_pactsworn_overhead_name_ui",
+		widget_type = "stepper",
+		options = {
+			{
+				value = true,
+				text = Localize("menu_settings_on"),
+			},
+			{
+				value = false,
+				text = Localize("menu_settings_off"),
+			},
+		},
+	},
+	{
+		setting_name = "toggle_versus_level_in_all_game_modes",
 		widget_type = "stepper",
 		options = {
 			{

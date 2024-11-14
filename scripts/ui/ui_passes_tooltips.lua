@@ -5256,21 +5256,38 @@ UITooltipPasses = {
 				return 0
 			end
 
+			local loot_interface = Managers.backend:get_interface("loot")
+			local rarity_tables = loot_interface:get_rarity_tables()
+			local reward_name = item_data.name
+
+			if rarity_tables[reward_name] then
+				data.style.title_text.text_color = Colors.get_color_table_with_alpha("font_default", 255)
+			else
+				data.style.title_text.text_color = Colors.get_color_table_with_alpha("corn_flower_blue", 255)
+			end
+
 			local style = data.style
 			local content = data.content
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
 			local total_height = frame_margin
-			local difficulty_key = item_data.chest_category
-			local difficulty_settings = DifficultySettings[difficulty_key]
+			local difficulty_keys = item_data.chest_categories
 
-			if not difficulty_settings then
+			if not difficulty_keys then
 				return 0
 			end
 
-			local difficulty_display_name = difficulty_settings.display_name
-			local title_text = content.prefix .. Localize(difficulty_display_name)
+			local difficulty_names = table.select_array(difficulty_keys, function (_, difficulty_key)
+				return DifficultySettings[difficulty_key] and Localize(DifficultySettings[difficulty_key].display_name)
+			end)
+
+			if table.is_empty(difficulty_names) then
+				return 0
+			end
+
+			local difficulty_display_name = table.concat(difficulty_names, ", ")
+			local title_text = content.prefix .. difficulty_display_name
 			local title_text_style = style.title_text
 			local title_text_shadow_style = style.title_text_shadow
 			local text_pass_data = data.text_pass_data
@@ -5322,7 +5339,7 @@ UITooltipPasses = {
 				},
 				text_size = {},
 				content = {
-					prefix = Localize("loot_chest_power_level_cap") .. " ",
+					prefix = Localize("tooltips_power"),
 				},
 				style = {
 					title_text = {
@@ -5375,13 +5392,58 @@ UITooltipPasses = {
 			local position_z = position[3]
 			local total_height = frame_margin
 			local power_level_key = item_data.power_level_key
-			local power_level_tables = LootChestData.power_level_tables
-			local power_level_table = power_level_tables[power_level_key]
-			local power_level_default_key = power_level_table.default
-			local power_thresholds = PowerLevelThresholds[power_level_default_key]
-			local min = power_thresholds.min
-			local max = power_thresholds.max
-			local title_text = content.prefix .. tostring(max)
+
+			if not power_level_key then
+				return 0
+			end
+
+			local loot_interface = Managers.backend:get_interface("loot")
+			local rarity_tables = loot_interface:get_rarity_tables()
+			local reward_name = item_data.name
+
+			if rarity_tables[reward_name] then
+				style.title_text.text_color = Colors.get_color_table_with_alpha("font_default", 255)
+			else
+				style.title_text.text_color = Colors.get_color_table_with_alpha("corn_flower_blue", 255)
+			end
+
+			local power_level_settings = loot_interface:get_power_level_settings()
+			local power_level_pivot_name = power_level_settings.power_level_tables[reward_name]
+			local power_level_pivots = power_level_settings.pivots[power_level_pivot_name]
+
+			if not power_level_pivots then
+				return 0
+			end
+
+			local chest_level
+			local achievement_id = ui_content.achievement_id
+
+			if achievement_id then
+				if AchievementManager.STORE_COMPLETED_LEVEL then
+					if ui_content.completed and not ui_content.claimed then
+						local statistics_interface = Managers.backend:get_interface("statistics")
+						local level_on_complete = statistics_interface:get_achievement_reward_level(achievement_id)
+
+						chest_level = level_on_complete and math.min(level_on_complete, LootChestData.LEVEL_USED_FOR_POOL_LEVELS)
+					else
+						return 0
+					end
+				elseif ui_content.claimed then
+					return 0
+				end
+			else
+				chest_level = loot_interface:get_highest_chest_level(reward_name)
+			end
+
+			chest_level = chest_level or ExperienceSettings.get_highest_hero_level()
+
+			local min, max = LootChestData.calculate_power_level(chest_level, power_level_pivots)
+			local chest_tier = item_data.chest_tier or 1
+			local bonus_pl_per_tier = power_level_settings.bonus_min_power_level_per_tier
+
+			min = math.min(min + (chest_tier - 1) * bonus_pl_per_tier, max)
+
+			local title_text = string.format("%s: %d - %d", content.prefix, math.round(min), math.round(max))
 			local title_text_style = style.title_text
 			local title_text_shadow_style = style.title_text_shadow
 			local text_pass_data = data.text_pass_data
@@ -5416,6 +5478,119 @@ UITooltipPasses = {
 				position[3] = start_layer + 6 + title_text_shadow_style.offset[3]
 
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, title_text_shadow_style, content, position, text_size, input_service, dt)
+			end
+
+			position[1] = position_x
+			position[2] = position_y
+			position[3] = position_z
+
+			return total_height
+		end,
+	},
+	item_rarity_rate = {
+		setup_data = function ()
+			local data = {
+				text_pass_data = {
+					text_id = "text",
+				},
+				text_size = {},
+				content = {
+					prefix = Localize("loot_chest_rarity_rates") .. " ",
+				},
+				style = {
+					title_text = {
+						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
+						font_size = setup_font_size(20),
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
+						offset = {
+							0,
+							0,
+							0,
+						},
+					},
+				},
+				format_rarity_rate = function (rarity_table, rarity)
+					local rate = rarity_table[rarity]
+					local val
+
+					val = rate == 0 and "0" or rate < 1 and "<1" or math.round(rate)
+
+					local color = Colors.color_definitions[rarity]
+
+					return string.format("{#color(%d,%d,%d,%d)}%s%%{#reset()}", color[2], color[3], color[4], color[1], val)
+				end,
+			}
+
+			return data
+		end,
+		draw = function (data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, item)
+			local item_data = item.data
+			local item_type = item_data.item_type
+
+			if item_type ~= "loot_chest" then
+				return 0
+			end
+
+			local reward_name = item_data.name
+
+			if not reward_name then
+				return 0
+			end
+
+			local alpha_multiplier = pass_data.alpha_multiplier
+			local alpha = 255 * alpha_multiplier
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
+			local frame_margin = data.frame_margin or 0
+			local style = data.style
+			local content = data.content
+			local position_x = position[1]
+			local position_y = position[2]
+			local position_z = position[3]
+			local total_height = frame_margin
+			local loot_interface = Managers.backend:get_interface("loot")
+			local rarity_tables = loot_interface:get_formatted_rarity_tables()
+			local rarity_table = rarity_tables[reward_name]
+
+			if not rarity_table then
+				return 0
+			end
+
+			local plentiful = data.format_rarity_rate(rarity_table, "plentiful")
+			local common = data.format_rarity_rate(rarity_table, "common")
+			local rare = data.format_rarity_rate(rarity_table, "rare")
+			local exotic = data.format_rarity_rate(rarity_table, "exotic")
+			local unique = data.format_rarity_rate(rarity_table, "unique")
+			local rarity_string = string.format("%s | %s | %s | %s | %s", plentiful, common, rare, exotic, unique)
+			local title_text = content.prefix .. rarity_string
+			local title_text_style = style.title_text
+			local text_pass_data = data.text_pass_data
+			local text_size = data.text_size
+			local text_width = size[1] - frame_margin * 2
+
+			text_size[1] = text_width
+			text_size[2] = 0
+
+			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text)
+			local text_height = title_text_height
+
+			total_height = total_height + title_text_height
+			text_size[2] = text_height
+
+			if draw then
+				local old_x_position = position[1] + frame_margin
+				local old_y_position = position[2] - total_height + frame_margin * 2
+
+				position[1] = old_x_position + title_text_style.offset[1]
+				position[2] = old_y_position - frame_margin + title_text_style.offset[2]
+				position[3] = start_layer + 6 + title_text_style.offset[3]
+				text_size[1] = text_width
+				content.text = title_text
+				title_text_style.text_color[1] = alpha
+
+				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, title_text_style, content, position, text_size, input_service, dt)
 			end
 
 			position[1] = position_x
@@ -9504,7 +9679,7 @@ UITooltipPasses = {
 		draw = function (data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, item)
 			local item_data = item.data
 			local template_name = item_data.temporary_template or item_data.template
-			local item_template = Weapons[template_name]
+			local item_template = WeaponUtils.get_weapon_template(template_name)
 			local tooltip_special_action_description = item_template and item_template.tooltip_special_action_description
 
 			if not tooltip_special_action_description then
@@ -9597,7 +9772,7 @@ UITooltipPasses = {
 		draw = function (data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, item)
 			local item_data = item.data
 			local template_name = item_data.temporary_template or item_data.template
-			local item_template = Weapons[template_name]
+			local item_template = WeaponUtils.get_weapon_template(template_name)
 			local tooltip_special_action_description = item_template and item_template.tooltip_special_action_description
 
 			if not tooltip_special_action_description then

@@ -69,9 +69,20 @@ ExperienceSettings.get_player_level = function (player)
 	return level
 end
 
-ExperienceSettings.get_account_level = function ()
+ExperienceSettings.get_highest_hero_level = function ()
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
-	local best_class, best_xp
+	local best_class, best_xp = nil, 0
+
+	for i = 1, 5 do
+		local profile = SPProfiles[i]
+		local experience = ExperienceSettings.get_experience(profile.display_name)
+
+		if best_xp < experience then
+			best_class = profile
+			best_xp = experience
+		end
+	end
+
 	local level = ExperienceSettings.get_level(best_xp)
 
 	return level, best_xp, best_class
@@ -169,6 +180,28 @@ ExperienceSettings.get_character_level = function (display_name)
 	local hero_experience = hero_attributes:get(display_name, "experience") or 0
 
 	return ExperienceSettings.get_level(hero_experience)
+end
+
+local hero_commendation_bonus_levels = {
+	[10] = 0.05,
+	[20] = 0.1,
+}
+
+ExperienceSettings.hero_commendation_experience_multiplier = function ()
+	local total_multiplier = 1
+
+	for i = 1, 5 do
+		local profile = SPProfiles[i]
+		local hero_level = ExperienceSettings.get_character_level(profile.display_name)
+
+		for commendation_level, multiplier in pairs(hero_commendation_bonus_levels) do
+			if commendation_level < hero_level then
+				total_multiplier = total_multiplier + multiplier
+			end
+		end
+	end
+
+	return total_multiplier
 end
 
 ExperienceSettings.max_experience = total_defined_experience

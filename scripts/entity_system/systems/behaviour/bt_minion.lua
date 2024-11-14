@@ -53,6 +53,7 @@ dofile("scripts/entity_system/systems/behaviour/trees/undead/ethereal_skeleton_w
 dofile("scripts/entity_system/systems/behaviour/trees/critters/critter_pig_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/critters/critter_rat_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/critters/critter_nurgling_behavior")
+dofile("scripts/entity_system/systems/behaviour/trees/human/human_pleb_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/training_dummy_behavior")
 DLCUtils.dofile_list("behaviour_trees")
 

@@ -349,6 +349,13 @@ weapon_template.tooltip_detail = {
 	},
 }
 
+local weapon_template_vs = table.clone(weapon_template)
+
+weapon_template_vs.actions.action_one.default.damage_profile = "flamethrower_spray_vs"
+weapon_template_vs.actions.action_one.shoot_charged.damage_profile = "flamethrower_vs"
+weapon_template_vs.actions.action_one.shoot_charged.initial_damage_profile = "flamethrower_initial_vs"
+
 return {
-	staff_flamethrower_template = weapon_template,
+	staff_flamethrower_template = table.clone(weapon_template),
+	staff_flamethrower_template_vs = table.clone(weapon_template_vs),
 }

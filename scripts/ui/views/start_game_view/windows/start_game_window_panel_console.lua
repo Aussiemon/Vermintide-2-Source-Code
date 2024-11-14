@@ -290,7 +290,7 @@ StartGameWindowPanelConsole._handle_input = function (self, dt, t)
 		input_made = true
 	end
 
-	if not input_made then
+	if not input_made and not self.parent:hide_panel_title_buttons() then
 		local input_service = parent:window_input_service()
 		local direction = input_service:get(INPUT_ACTION_PREVIOUS) and -1 or input_service:get(INPUT_ACTION_NEXT) and 1
 
@@ -328,7 +328,11 @@ StartGameWindowPanelConsole.draw = function (self, dt)
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 	UIRenderer.draw_all_widgets(ui_renderer, self._widgets)
-	UIRenderer.draw_all_widgets(ui_renderer, self._title_button_widgets)
+
+	if not self.parent:hide_panel_title_buttons() then
+		UIRenderer.draw_all_widgets(ui_renderer, self._title_button_widgets)
+	end
+
 	UIRenderer.end_pass(ui_renderer)
 end
 

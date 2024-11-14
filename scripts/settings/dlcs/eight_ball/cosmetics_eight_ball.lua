@@ -365,6 +365,7 @@ return {
 			package_name = "units/beings/player/empire_soldier_knight/skins/white/chr_empire_soldier_knight_white",
 			third_person = {
 				mtr_outfit = "units/beings/player/empire_soldier_knight/skins/white/mtr_outfit_white",
+				mtr_outfit_ds = "units/beings/player/empire_soldier_knight/skins/white/mtr_outfit_white_ds",
 			},
 			first_person = {
 				mtr_outfit = "units/beings/player/empire_soldier_knight/skins/white/mtr_outfit_white_1p",

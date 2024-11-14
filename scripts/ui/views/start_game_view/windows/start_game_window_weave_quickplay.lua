@@ -413,7 +413,7 @@ end
 
 StartGameWindowWeaveQuickplay._setup_difficulties = function (self)
 	local difficulty_widgets = {}
-	local difficulties = Managers.state.difficulty:get_level_difficulties()
+	local difficulties = Managers.state.difficulty:get_default_difficulties()
 	local widgets = self._widgets
 	local widgets_by_name = self._widgets_by_name
 	local widget_index_counter = 1

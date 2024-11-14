@@ -195,6 +195,11 @@ BackendInterfaceCraftingBase.weapon_skin_application_validation_func = function 
 	for i = 1, #cloned_backend_ids do
 		local backend_id = cloned_backend_ids[i]
 		local item = backend_items:get_item_from_id(backend_id)
+
+		if not item then
+			return false
+		end
+
 		local item_data = item.data
 		local item_slot_type = item_data.slot_type
 

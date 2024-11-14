@@ -35,7 +35,11 @@ WeaponUtils.find_allowed_chain_action = function (allowed_chain_actions, action_
 	return found_chain_action
 end
 
-WeaponUtils.get_weapon_packages = function (item_template, item_units, first_person)
+WeaponUtils.get_item_state_machine = function (item_template, career_name)
+	return item_template.state_machine_career and item_template.state_machine_career[career_name] or item_template.state_machine
+end
+
+WeaponUtils.get_weapon_packages = function (item_template, item_units, first_person, career_name)
 	local packages = {}
 	local left_hand_unit_name = item_units.left_hand_unit
 
@@ -98,7 +102,7 @@ WeaponUtils.get_weapon_packages = function (item_template, item_units, first_per
 	end
 
 	if first_person and item_template.load_state_machine ~= false then
-		local state_machine_name = item_template.state_machine
+		local state_machine_name = WeaponUtils.get_item_state_machine(item_template, career_name)
 
 		if state_machine_name then
 			packages[#packages + 1] = state_machine_name
@@ -198,7 +202,11 @@ WeaponUtils.get_used_actions = function (template)
 end
 
 WeaponUtils.is_valid_weapon_override = function (source_slot_data, destination_item_data)
-	local source_slot_weapon_template = source_slot_data and source_slot_data.item_template.name
+	local source_slot_weapon_template = source_slot_data and (source_slot_data.item_template_name or source_slot_data.item_template.name)
 
 	return not destination_item_data.valid_templates_to_replace or destination_item_data.valid_templates_to_replace[source_slot_weapon_template]
+end
+
+WeaponUtils.get_weapon_template = function (weapon_template_name)
+	return MechanismOverrides.get(rawget(Weapons, weapon_template_name))
 end

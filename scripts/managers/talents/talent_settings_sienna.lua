@@ -102,9 +102,6 @@ local buff_tweak_data = {
 	tranquility = {
 		multiplier = 3,
 	},
-	sienna_adept_activated_ability = {
-		duration = 0.4,
-	},
 	sienna_adept_vanguard = {},
 	sienna_adept_bloodlust = {},
 	sienna_adept_conqueror = {},
@@ -585,13 +582,6 @@ TalentBuffTemplates.bright_wizard = {
 				max_stacks = 1,
 				priority_buff = true,
 				stat_buff = "overcharge_regen",
-			},
-		},
-	},
-	sienna_adept_activated_ability = {
-		buffs = {
-			{
-				remove_buff_func = "end_sienna_adept_activated_ability",
 			},
 		},
 	},

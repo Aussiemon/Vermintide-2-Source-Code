@@ -25,7 +25,7 @@ ActionWield.client_owner_start_action = function (self, new_action, t, chain_att
 		first_person_extension:reset_aim_assist_multiplier()
 	end
 
-	local new_slot, scroll_value, swap_from_storage_type = CharacterStateHelper.wield_input(input_extension, inventory_extension, "action_wield", true)
+	local new_slot, scroll_value, swap_from_storage_type = CharacterStateHelper.wield_input(input_extension, inventory_extension, "action_wield")
 
 	self.new_slot = new_slot
 

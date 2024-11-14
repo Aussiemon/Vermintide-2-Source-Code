@@ -259,7 +259,7 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 				local sound_event = current_action.stagger_impact_sound_event or "blunt_hit"
 
 				if sound_event then
-					local attack_template = AttackTemplates[target_settings.attack_template]
+					local attack_template = DamageUtils.get_attack_template(target_settings.attack_template)
 					local sound_type = attack_template and attack_template.sound_type or "stun_heavy"
 					local husk = self.bot_player
 

@@ -12,7 +12,7 @@ HuskWeaponUnitExtension.init = function (self, extension_init_context, unit, ext
 	local weapon_template_name = item_data and item_data.template
 
 	if weapon_template_name then
-		local template = Weapons[weapon_template_name]
+		local template = WeaponUtils.get_weapon_template(weapon_template_name)
 
 		self._synced_weapon_state = nil
 		self._synced_weapon_states = template and template.synced_states

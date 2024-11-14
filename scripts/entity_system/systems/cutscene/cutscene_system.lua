@@ -72,6 +72,14 @@ CutsceneSystem.update = function (self)
 	end
 end
 
+CutsceneSystem.unsafe_entity_update = function (self)
+	local active_camera = self.active_camera
+
+	if active_camera then
+		active_camera:unsafe_entity_update()
+	end
+end
+
 CutsceneSystem.is_active = function (self)
 	return self.active_camera ~= nil
 end

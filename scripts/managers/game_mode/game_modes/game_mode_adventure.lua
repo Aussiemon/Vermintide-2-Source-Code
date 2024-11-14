@@ -36,13 +36,13 @@ GameModeAdventure.init = function (self, settings, world, ...)
 		local profile_index = FindProfileIndex(profile_name)
 		local career_index = 1
 		local is_bot = false
-		local success = self._profile_synchronizer:try_reserve_profile_for_peer(peer_id, profile_index)
+		local success = Managers.mechanism:try_reserve_profile_for_peer_by_mechanism(peer_id, profile_index, career_index, false)
 
 		fassert(success, "this should never happen in this particular situation")
+
+		local party_id = Managers.mechanism:reserved_party_id_by_peer(peer_id)
+
 		self._profile_synchronizer:assign_full_profile(peer_id, local_player_id, profile_index, career_index, is_bot)
-
-		local party_id = 1
-
 		Managers.party:request_join_party(peer_id, local_player_id, party_id)
 	end
 
@@ -132,21 +132,21 @@ GameModeAdventure.evaluate_end_conditions = function (self, round_started, dt, t
 	end
 end
 
-GameModeAdventure.player_entered_game_session = function (self, peer_id, local_player_id, wanted_party_index)
-	GameModeAdventure.super.player_entered_game_session(self, peer_id, local_player_id, wanted_party_index)
+GameModeAdventure.player_entered_game_session = function (self, peer_id, local_player_id, requested_party_index)
+	GameModeAdventure.super.player_entered_game_session(self, peer_id, local_player_id, requested_party_index)
 
 	if LAUNCH_MODE ~= "attract_benchmark" then
 		self._adventure_profile_rules:handle_profile_delegation_for_joining_player(peer_id, local_player_id)
 	end
 
 	if Network.peer_id() == peer_id then
-		self:remove_bot(peer_id, local_player_id)
+		local party_id = 1
+
+		self:remove_bot(party_id, peer_id, local_player_id)
 
 		local status = Managers.party:get_player_status(peer_id, local_player_id)
 
-		if status.party_id ~= 1 then
-			local party_id = 1
-
+		if status.party_id ~= party_id then
 			Managers.party:request_join_party(peer_id, local_player_id, party_id)
 		end
 	else
@@ -159,17 +159,16 @@ GameModeAdventure.player_left_game_session = function (self, peer_id, local_play
 	self._adventure_spawning:remove_delayed_client(peer_id, local_player_id)
 end
 
-GameModeAdventure.remove_bot = function (self, peer_id, local_player_id, update_safe)
+GameModeAdventure.remove_bot = function (self, party_id, peer_id, local_player_id, update_safe)
 	if #self._bot_players > 0 then
 		local profile_index = self._profile_synchronizer:profile_by_peer(peer_id, local_player_id)
-		local removed, bot_player = self:_remove_bot_by_profile(self._bot_players, profile_index, update_safe)
+		local removed, bot_player = self:_remove_bot_by_profile(profile_index, update_safe)
 
 		if not removed then
-			local update_safe = update_safe or false
-
+			update_safe = update_safe or false
 			bot_player = self._bot_players[#self._bot_players]
 
-			self:_remove_bot(self._bot_players, #self._bot_players, update_safe)
+			self:_remove_bot(bot_player, update_safe)
 		end
 
 		return bot_player
@@ -397,7 +396,7 @@ GameModeAdventure._handle_bots = function (self, t, dt)
 		local num_bots_to_add = math.min(delta, open_slots)
 
 		for i = 1, num_bots_to_add do
-			self:_add_bot(bot_players)
+			self:_add_bot()
 		end
 	elseif delta < 0 then
 		local num_bots_to_remove = math.abs(delta)
@@ -405,12 +404,13 @@ GameModeAdventure._handle_bots = function (self, t, dt)
 		for i = 1, num_bots_to_remove do
 			local update_safe = true
 
-			self:_remove_bot(bot_players, #bot_players, update_safe)
+			self:_remove_bot(bot_players[#bot_players], update_safe)
 		end
 	end
 end
 
-GameModeAdventure._add_bot = function (self, bot_players)
+GameModeAdventure._add_bot = function (self)
+	local bot_players = self._bot_players
 	local party_id = 1
 	local party = Managers.party:get_party(party_id)
 	local profile_index, career_index = self:_get_first_available_bot_profile(party)
@@ -424,10 +424,9 @@ GameModeAdventure._add_bot = function (self, bot_players)
 	bot_players[#bot_players + 1] = bot_player
 end
 
-GameModeAdventure._remove_bot = function (self, bot_players, index, update_safe)
-	local bot_player = bot_players[index]
-
-	fassert(bot_player, "No bot player at index (%s)", tostring(index))
+GameModeAdventure._remove_bot = function (self, bot_player, update_safe)
+	local bot_players = self._bot_players
+	local index = table.index_of(self._bot_players, bot_player)
 
 	if update_safe then
 		self:_remove_bot_update_safe(bot_player)
@@ -441,7 +440,8 @@ GameModeAdventure._remove_bot = function (self, bot_players, index, update_safe)
 	bot_players[last] = nil
 end
 
-GameModeAdventure._remove_bot_by_profile = function (self, bot_players, profile_index, update_safe)
+GameModeAdventure._remove_bot_by_profile = function (self, profile_index, update_safe)
+	local bot_players = self._bot_players
 	local bot_index
 	local num_current_bots = #bot_players
 
@@ -461,10 +461,9 @@ GameModeAdventure._remove_bot_by_profile = function (self, bot_players, profile_
 
 	if bot_index then
 		bot_player = bot_players[bot_index]
+		update_safe = update_safe or false
 
-		local update_safe = update_safe or false
-
-		self:_remove_bot(bot_players, bot_index, update_safe)
+		self:_remove_bot(bot_player, update_safe)
 
 		removed = true
 	end
@@ -477,7 +476,7 @@ GameModeAdventure._clear_bots = function (self, update_safe)
 	local num_bot_players = #bot_players
 
 	for i = num_bot_players, 1, -1 do
-		self:_remove_bot(bot_players, i, update_safe)
+		self:_remove_bot(bot_players[i], update_safe)
 	end
 end
 

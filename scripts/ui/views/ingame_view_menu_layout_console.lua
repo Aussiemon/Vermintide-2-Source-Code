@@ -79,6 +79,13 @@ local disable_for_mechanism_versus_disabled = {
 		not_matchmaking = false,
 	},
 }
+local HANDBOOK_OPTION = {
+	display_name = "tutorial_menu_header",
+	fade = true,
+	transition = "hero_view",
+	transition_state = "handbook",
+	disable_for_mechanism = default_disable_for_mechanism,
+}
 
 if IS_PS4 then
 	menu_layouts = {

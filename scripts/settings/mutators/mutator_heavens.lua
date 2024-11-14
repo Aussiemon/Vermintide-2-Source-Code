@@ -119,9 +119,11 @@ return {
 		data.has_left_safe_zone = true
 	end,
 	server_update_function = function (context, data, dt, t)
-		local game_session = Network.game_session()
+		if not Managers.state.network or not Managers.state.network:game() then
+			return
+		end
 
-		if not data.has_left_safe_zone or game_session == nil then
+		if not data.has_left_safe_zone then
 			return
 		end
 

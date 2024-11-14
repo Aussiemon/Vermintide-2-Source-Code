@@ -197,6 +197,19 @@ ModShim.wedges = {
 					end
 				end,
 			},
+			{
+				name = "OverchargeBarUI._update_overcharge",
+				func = function (vmf_mod, mod_func, mod_name, hooked_function, self, ...)
+					local player = Managers.player:local_player()
+					local party = player and player:get_party()
+
+					if party and party.name == "dark_pact" then
+						return hooked_function(self, ...)
+					else
+						return mod_func(hooked_function, self, ...)
+					end
+				end,
+			},
 		},
 	},
 }

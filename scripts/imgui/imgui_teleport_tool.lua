@@ -404,7 +404,7 @@ end
 
 ImguiTeleportTool._get_point_from_clipboard = function (self)
 	local input = Clipboard.get()
-	local data = string.split(input, "##")
+	local data = string.split_deprecated(input, "##")
 	local is_valid = true
 
 	is_valid = is_valid and #data == 4

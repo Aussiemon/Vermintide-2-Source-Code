@@ -2724,139 +2724,139 @@ MaterialEffectMappings.globadier_foot = {
 MaterialEffectMappings.enemy_troll_footstep_single_vs = {
 	sound = {
 		cloth = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "cloth",
 			},
 		},
 		dirt = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "dirt",
 			},
 		},
 		flesh = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "flesh",
 			},
 		},
 		forest_grass = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "forest_grass",
 			},
 		},
 		fruit = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "fruit",
 			},
 		},
 		grass = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "grass",
 			},
 		},
 		glass = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "glass",
 			},
 		},
 		hay = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "hay",
 			},
 		},
 		metal_solid = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "metal_solid",
 			},
 		},
 		metal_hollow = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "metal_hollow",
 			},
 		},
 		mud = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "mud",
 			},
 		},
 		plaster = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "stone",
 			},
 		},
 		sand = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "sand",
 			},
 		},
 		stone = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "stone",
 			},
 		},
 		stone_dirt = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "stone_dirt",
 			},
 		},
 		stone_wet = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "stone_wet",
 			},
 		},
 		water = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "water",
 			},
 		},
 		water_deep = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "water_deep",
 			},
 		},
 		wood_bridge = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "wood_bridge",
 			},
 		},
 		wood_solid = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "wood_solid",
 			},
 		},
 		wood_hollow = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "wood_hollow",
 			},
 		},
 		ice = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "ice",
 			},
 		},
 		snow = {
-			event = "Play_vs_troll_footstep_walk_1p",
+			event = "Play_vs_troll_footstep_walk",
 			parameters = {
 				material = "snow",
 			},
@@ -2893,139 +2893,139 @@ MaterialEffectMappings.enemy_troll_footstep_single_vs = {
 MaterialEffectMappings.enemy_troll_footstep_single_run_vs = {
 	sound = {
 		cloth = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "cloth",
 			},
 		},
 		dirt = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "dirt",
 			},
 		},
 		flesh = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "flesh",
 			},
 		},
 		forest_grass = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "forest_grass",
 			},
 		},
 		fruit = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "fruit",
 			},
 		},
 		grass = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "grass",
 			},
 		},
 		glass = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "glass",
 			},
 		},
 		hay = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "hay",
 			},
 		},
 		metal_solid = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "metal_solid",
 			},
 		},
 		metal_hollow = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "metal_hollow",
 			},
 		},
 		mud = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "mud",
 			},
 		},
 		plaster = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "stone",
 			},
 		},
 		sand = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "sand",
 			},
 		},
 		stone = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "stone",
 			},
 		},
 		stone_dirt = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "stone_dirt",
 			},
 		},
 		stone_wet = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "stone_wet",
 			},
 		},
 		water = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "water",
 			},
 		},
 		water_deep = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "water_deep",
 			},
 		},
 		wood_bridge = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "wood_bridge",
 			},
 		},
 		wood_solid = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "wood_solid",
 			},
 		},
 		wood_hollow = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "wood_hollow",
 			},
 		},
 		ice = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "ice",
 			},
 		},
 		snow = {
-			event = "Play_vs_troll_footstep_run_1p",
+			event = "Play_vs_troll_footstep_run",
 			parameters = {
 				material = "snow",
 			},
@@ -3226,5 +3226,539 @@ MaterialEffectMappings.enemy_troll_land_death = {
 	},
 	world_interaction = {
 		water = {},
+	},
+}
+MaterialEffectMappings.vs_chaos_troll_axe_light = {
+	decal = {
+		material_drawer_mapping = {
+			armored = "units/projection_decals/hit_metal_hollow_pierce_1",
+			dirt = "units/projection_decals/hit_dirt_pierce_1",
+			flesh = "units/projection_decals/hit_flesh_pierce_1",
+			forest_grass = "units/projection_decals/hit_grass_pierce_1",
+			fruit = "units/projection_decals/hit_fruit_pierce_1",
+			glass = "units/projection_decals/hit_glass_pierce_1",
+			grass = "units/projection_decals/hit_grass_pierce_1",
+			hay = "units/projection_decals/empty",
+			ice = "units/projection_decals/hit_ice_pierce_1",
+			metal_hollow = "units/projection_decals/hit_metal_hollow_pierce_1",
+			metal_solid = "units/projection_decals/hit_metal_solid_pierce_1",
+			mud = "units/projection_decals/hit_dirt_pierce_1",
+			sand = "units/projection_decals/hit_sand_pierce_1",
+			snow = "units/projection_decals/hit_snow_pierce_1",
+			stone = "units/projection_decals/hit_stone_pierce_1",
+			stone_dirt = "units/projection_decals/hit_stone_pierce_1",
+			stone_wet = "units/projection_decals/hit_stone_pierce_1",
+			water = "units/projection_decals/empty",
+			water_deep = "units/projection_decals/empty",
+			cloth = {
+				"units/projection_decals/hit_cloth_pierce_1",
+				"units/projection_decals/hit_cloth_pierce_2",
+			},
+			plaster = {
+				"units/projection_decals/hit_plaster_pierce_1",
+				"units/projection_decals/hit_plaster_pierce_2",
+			},
+			wood_bridge = {
+				"units/projection_decals/hit_wood_pierce_1",
+				"units/projection_decals/hit_wood_pierce_2",
+				"units/projection_decals/hit_wood_pierce_3",
+			},
+			wood_solid = {
+				"units/projection_decals/hit_wood_pierce_1",
+				"units/projection_decals/hit_wood_pierce_2",
+				"units/projection_decals/hit_wood_pierce_3",
+			},
+			wood_hollow = {
+				"units/projection_decals/hit_wood_pierce_1",
+				"units/projection_decals/hit_wood_pierce_2",
+				"units/projection_decals/hit_wood_pierce_3",
+			},
+		},
+		settings = {
+			depth = 0.6,
+			depth_offset = -0.2,
+			height = 0.3,
+			width = 0.5,
+		},
+	},
+	sound = {
+		cloth = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "cloth",
+			},
+		},
+		dirt = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "dirt",
+			},
+		},
+		flesh = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "cloth",
+				weapon_type = "1h_sword",
+			},
+		},
+		fruit = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "fruit",
+			},
+		},
+		forest_grass = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "forest_grass",
+			},
+		},
+		glass = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "glass",
+			},
+		},
+		grass = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "grass",
+			},
+		},
+		hay = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "hay",
+			},
+		},
+		ice = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "ice",
+			},
+		},
+		metal_hollow = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "metal_hollow",
+			},
+		},
+		armored = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "metal_hollow",
+			},
+		},
+		shield = {
+			event = "blunt_hit_shield_wood",
+			parameters = {
+				damage_type = "piercing",
+				material = "metal_hollow",
+			},
+		},
+		shield_metal = {
+			event = "blunt_hit_shield_metal",
+			parameters = {
+				damage_type = "piercing",
+				material = "metal_hollow",
+			},
+		},
+		metal_solid = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "metal_solid",
+			},
+		},
+		mud = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "mud",
+			},
+		},
+		plaster = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "plaster",
+			},
+		},
+		sand = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "grass",
+			},
+		},
+		stone = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "stone",
+			},
+		},
+		stone_dirt = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "stone_dirt",
+			},
+		},
+		stone_wet = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "stone_wet",
+			},
+		},
+		snow = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "snow",
+			},
+		},
+		water = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "water",
+			},
+		},
+		water_deep = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "water_deep",
+			},
+		},
+		wood_bridge = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "wood_bridge",
+			},
+		},
+		wood_hollow = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "wood_hollow",
+			},
+		},
+		wood_solid = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "wood_solid",
+			},
+		},
+	},
+	particles = {
+		armored = "fx/hit_armored",
+		cloth = "fx/hit_cloth_blunt",
+		dirt = "fx/hit_dirt_blunt",
+		flesh = "fx/hit_flesh_blunt",
+		forest_grass = "fx/hit_grass_blunt",
+		fruit = "fx/hit_fruit_blunt",
+		glass = "fx/hit_glass",
+		grass = "fx/hit_grass_blunt",
+		hay = "fx/hit_hay_blunt",
+		ice = "fx/hit_ice_blunt",
+		metal_hollow = "fx/hit_metal_hollow_blunt",
+		metal_solid = "fx/hit_metal_solid_blunt",
+		mud = "fx/hit_dirt_large",
+		plaster = "fx/hit_plaster_blunt",
+		sand = "fx/hit_sand",
+		shield = "fx/hit_enemy_shield",
+		shield_metal = "fx/hit_enemy_shield_metal",
+		snow = "fx/hit_snow_blunt",
+		stone = "fx/hit_stone_blunt",
+		stone_dirt = "fx/hit_stone_blunt",
+		stone_wet = "fx/hit_stone_blunt",
+		water = "fx/hit_water_blunt",
+		water_deep = "fx/hit_water_blunt",
+		wood_bridge = "fx/hit_wood_hollow_blunt",
+		wood_hollow = "fx/hit_wood_hollow_blunt",
+		wood_solid = "fx/hit_wood_solid_blunt",
+	},
+}
+MaterialEffectMappings.vs_chaos_troll_axe_heavy = {
+	decal = {
+		material_drawer_mapping = {
+			armored = "units/projection_decals/hit_metal_hollow_pierce_1",
+			dirt = "units/projection_decals/hit_dirt_pierce_1",
+			flesh = "units/projection_decals/hit_flesh_pierce_1",
+			forest_grass = "units/projection_decals/hit_grass_pierce_1",
+			fruit = "units/projection_decals/hit_fruit_pierce_1",
+			glass = "units/projection_decals/hit_glass_pierce_1",
+			grass = "units/projection_decals/hit_grass_pierce_1",
+			hay = "units/projection_decals/empty",
+			ice = "units/projection_decals/hit_ice_pierce_1",
+			metal_hollow = "units/projection_decals/hit_metal_hollow_pierce_1",
+			metal_solid = "units/projection_decals/hit_metal_solid_pierce_1",
+			mud = "units/projection_decals/hit_dirt_pierce_1",
+			sand = "units/projection_decals/hit_sand_pierce_1",
+			snow = "units/projection_decals/hit_snow_pierce_1",
+			stone = "units/projection_decals/hit_stone_pierce_1",
+			stone_dirt = "units/projection_decals/hit_stone_pierce_1",
+			stone_wet = "units/projection_decals/hit_stone_pierce_1",
+			water = "units/projection_decals/empty",
+			water_deep = "units/projection_decals/empty",
+			cloth = {
+				"units/projection_decals/hit_cloth_pierce_1",
+				"units/projection_decals/hit_cloth_pierce_2",
+			},
+			plaster = {
+				"units/projection_decals/hit_plaster_pierce_1",
+				"units/projection_decals/hit_plaster_pierce_2",
+			},
+			wood_bridge = {
+				"units/projection_decals/hit_wood_pierce_1",
+				"units/projection_decals/hit_wood_pierce_2",
+				"units/projection_decals/hit_wood_pierce_3",
+			},
+			wood_solid = {
+				"units/projection_decals/hit_wood_pierce_1",
+				"units/projection_decals/hit_wood_pierce_2",
+				"units/projection_decals/hit_wood_pierce_3",
+			},
+			wood_hollow = {
+				"units/projection_decals/hit_wood_pierce_1",
+				"units/projection_decals/hit_wood_pierce_2",
+				"units/projection_decals/hit_wood_pierce_3",
+			},
+		},
+		settings = {
+			depth = 0.6,
+			depth_offset = -0.2,
+			height = 0.3,
+			width = 0.5,
+		},
+	},
+	sound = {
+		cloth = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "cloth",
+			},
+		},
+		dirt = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "dirt",
+			},
+		},
+		flesh = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "cloth",
+				weapon_type = "1h_sword",
+			},
+		},
+		fruit = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "fruit",
+			},
+		},
+		forest_grass = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "forest_grass",
+			},
+		},
+		glass = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "glass",
+			},
+		},
+		grass = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "grass",
+			},
+		},
+		hay = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "hay",
+			},
+		},
+		ice = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "ice",
+			},
+		},
+		metal_hollow = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "metal_hollow",
+			},
+		},
+		armored = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "metal_hollow",
+			},
+		},
+		shield = {
+			event = "blunt_hit_shield_wood",
+			parameters = {
+				damage_type = "piercing",
+				material = "metal_hollow",
+			},
+		},
+		shield_metal = {
+			event = "blunt_hit_shield_metal",
+			parameters = {
+				damage_type = "piercing",
+				material = "metal_hollow",
+			},
+		},
+		metal_solid = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "metal_solid",
+			},
+		},
+		mud = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "mud",
+			},
+		},
+		plaster = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "plaster",
+			},
+		},
+		sand = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "grass",
+			},
+		},
+		stone = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "stone",
+			},
+		},
+		stone_dirt = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "stone_dirt",
+			},
+		},
+		stone_wet = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "stone_wet",
+			},
+		},
+		snow = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "snow",
+			},
+		},
+		water = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "water",
+			},
+		},
+		water_deep = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "water_deep",
+			},
+		},
+		wood_bridge = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "wood_bridge",
+			},
+		},
+		wood_hollow = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "wood_hollow",
+			},
+		},
+		wood_solid = {
+			event = "hammer_2h_hit_statics",
+			parameters = {
+				damage_type = "piercing",
+				material = "wood_solid",
+			},
+		},
+	},
+	particles = {
+		armored = "fx/hit_armored",
+		cloth = "fx/hit_cloth_blunt",
+		dirt = "fx/hit_dirt_large",
+		flesh = "fx/hit_flesh_blunt",
+		forest_grass = "fx/hit_dirt_large",
+		fruit = "fx/hit_fruit_blunt",
+		glass = "fx/hit_glass",
+		grass = "fx/hit_dirt_large",
+		hay = "fx/hit_hay_large",
+		ice = "fx/hit_ice_blunt",
+		metal_hollow = "fx/hit_metal_hollow_blunt",
+		metal_solid = "fx/hit_metal_solid_blunt",
+		mud = "fx/hit_dirt_large",
+		plaster = "fx/hit_plaster_blunt",
+		sand = "fx/hit_sand",
+		shield = "fx/hit_enemy_shield",
+		shield_metal = "fx/hit_enemy_shield_metal",
+		snow = "fx/hit_snow_blunt",
+		stone = "fx/hit_stone_large",
+		stone_dirt = "fx/hit_stone_large",
+		stone_wet = "fx/hit_stone_large",
+		water = "fx/hit_water_large",
+		water_deep = "fx/hit_water_large",
+		wood_bridge = "fx/hit_wood_large",
+		wood_hollow = "fx/hit_wood_large",
+		wood_solid = "fx/hit_wood_large",
 	},
 }

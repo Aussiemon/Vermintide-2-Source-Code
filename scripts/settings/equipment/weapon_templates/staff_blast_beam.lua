@@ -442,6 +442,14 @@ weapon_template.wwise_dep_right_hand = {
 	"wwise/staff",
 }
 
+local staff_blast_beam_vs = table.clone(weapon_template)
+
+staff_blast_beam_vs.actions.action_one.default.damage_profile = "beam_vs"
+staff_blast_beam_vs.actions.action_one.default.initial_damage_profile = "beam_initial_vs"
+staff_blast_beam_vs.actions.action_one.shoot_charged.damage_profile = "blast_vs"
+staff_blast_beam_vs.actions.action_two.charged_beam.damage_profile = "beam_shot_vs"
+
 return {
 	staff_blast_beam_template_1 = table.clone(weapon_template),
+	staff_blast_beam_template_1_vs = table.clone(staff_blast_beam_vs),
 }

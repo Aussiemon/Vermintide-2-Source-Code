@@ -557,7 +557,7 @@ StartGameView.exit = function (self, return_to_game, ignore_sound)
 	end
 
 	if not ignore_sound then
-		self:play_sound("Play_hud_button_close")
+		self:play_mechanism_sound("close_start_menu_sound_event", "Play_hud_button_close")
 	end
 
 	self.exiting = true
@@ -639,11 +639,19 @@ StartGameView.number_of_players = function (self)
 	return player_manager:num_human_players()
 end
 
-StartGameView.start_game = function (self, params)
-	local mechanism_manager = Managers.mechanism
+StartGameView.start_game = function (self, params, skip_vote)
+	if not skip_vote then
+		local mechanism_manager = Managers.mechanism
 
-	mechanism_manager:request_vote(params)
+		mechanism_manager:request_vote(params)
+	end
+
 	self:play_mechanism_sound("start_game_play_sound_event", "play_gui_lobby_button_play")
+
+	if params.matchmaking_type == "custom" and params.player_hosted == true and params.mechanism == "versus" then
+		return
+	end
+
 	self:close_menu()
 end
 

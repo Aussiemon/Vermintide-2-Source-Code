@@ -43,10 +43,10 @@ local scenegraph_definition = {
 		},
 	},
 }
-local min_streak_font_size = GameModeSettings.versus and GameModeSettings.versus.min_streak_font_size or 50
-local max_streak_font_size = GameModeSettings.versus and GameModeSettings.versus.max_streak_font_size or 100
+local min_streak_font_size = GameModeSettings.versus and GameModeSettings.versus.min_streak_font_size or 36
+local max_streak_font_size = GameModeSettings.versus and GameModeSettings.versus.max_streak_font_size or 64
 local default_text_style = {
-	font_size = 40,
+	font_size = 24,
 	font_type = "hell_shark_header",
 	horizontal_alignment = "center",
 	localize = false,
@@ -92,7 +92,7 @@ DamageNumbersUI.init = function (self, parent, ingame_ui_context)
 	local game_mode_settings = Managers.state.game_mode:settings()
 end
 
-DamageNumbersUI.update = function (self, dt, viewport_name)
+DamageNumbersUI.update = function (self, dt)
 	self._time = self._time + dt
 
 	self:draw(dt)
@@ -117,8 +117,8 @@ local SetupFuncs = {
 		data.random_y_offset = math.random(-60, 60)
 	end,
 	floating_damage = function (data, index)
-		local x_range = 250
-		local y_range = 200
+		local x_range = 50
+		local y_range = 125
 		local x = math.random() - 0.5
 
 		data.random_x_offset = x * x_range
@@ -145,6 +145,10 @@ local SetupFuncs = {
 		data.floating_speed_y = y_angle * floating_speed
 	end,
 }
+
+local function default_complete_function(unit_text, t)
+	return true
+end
 
 DamageNumbersUI.event_add_damage_number = function (self, damage, size, unit, time, color, is_critical_strike, z_offset_override, override_data)
 	override_data = override_data or dummy_table
@@ -217,6 +221,7 @@ DamageNumbersUI.destroy = function (self)
 
 	if Managers.state.event then
 		Managers.state.event:unregister("add_damage_number", self)
+		Managers.state.event:unregister(self, "alter_damage_number")
 	end
 end
 
@@ -229,30 +234,6 @@ DamageNumbersUI.create_ui_elements = function (self)
 	self.damage_text = UIWidget.init(widget_definitions.damage_text)
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
-end
-
-local pop_color = {
-	255,
-	255,
-	240,
-	240,
-}
-
-function default_complete_function(unit_text, t)
-	return true
-end
-
-local function pop_the_color(color, intensity)
-	local r = math.min(color[2] * intensity, 255)
-	local g = math.min(color[3] * intensity, 255)
-	local b = math.min(color[4] * intensity, 255)
-
-	return {
-		255,
-		r,
-		g,
-		b,
-	}
 end
 
 DamageNumberVariants = {
@@ -312,17 +293,17 @@ DamageNumberVariants = {
 			if unit_text.using_bucket_damage then
 				local raw_damage = unit_text.damage
 				local dmg_int = math.floor(raw_damage)
-				local dmg_dec = raw_damage % 1 * 10
+				local dmg_dec = raw_damage % 1 * 100
 
 				unit_text.dmg_int = dmg_int
 				unit_text.dmg_dec = dmg_dec
 
-				local ts = math.auto_lerp(0, 30, min_streak_font_size, max_streak_font_size, raw_damage)
+				local ts = math.auto_lerp(0, 75, min_streak_font_size, max_streak_font_size, raw_damage)
 
 				unit_text.size = ts
 
 				if dmg_dec > 0 then
-					unit_text.text = "{#size(" .. ts .. ")}" .. dmg_int .. "{#size(" .. math.floor(ts / 2) .. ")}" .. dmg_dec
+					unit_text.text = string.format("{#size(%s)}%s{#size(%s)}.%s", ts, dmg_int, math.floor(ts / 2), dmg_dec)
 				end
 			end
 
@@ -338,9 +319,9 @@ DamageNumberVariants = {
 			local dmg_dec = unit_text.dmg_dec
 
 			if dmg_dec > 0 then
-				unit_text.text = "{#size(" .. ts .. ")}" .. dmg_int .. "{#size(" .. math.floor(ts / 2) .. ")}" .. dmg_dec
+				unit_text.text = string.format("{#size(%s)}%s{#size(%s)}.%s", ts, dmg_int, math.floor(ts / 2), dmg_dec)
 			else
-				unit_text.text = "{#size(" .. ts .. ")}" .. dmg_int
+				unit_text.text = string.format("{#size(%s)}%s", ts, dmg_int)
 			end
 
 			local alpha = 255
@@ -357,19 +338,19 @@ DamageNumberVariants = {
 		pop_complete = function (unit_text, t, damage_text_widget)
 			unit_text.update_function = DamageNumberVariants.streak_damage_fadeout.update
 			unit_text.complete_function = default_complete_function
-			unit_text.time = t + 5
+			unit_text.time = t + 2
 			unit_text.starting_time = t
-			unit_text.floating_speed = 165
+			unit_text.floating_speed = 150
 
 			if unit_text.using_bucket_damage then
 				local raw_damage = unit_text.damage
 				local dmg_int = math.floor(raw_damage)
-				local dmg_dec = raw_damage % 1 * 10
+				local dmg_dec = raw_damage % 1 * 100
 
 				if dmg_dec > 0 then
-					local ts = math.auto_lerp(0, 30, min_streak_font_size, max_streak_font_size, raw_damage)
+					local ts = math.auto_lerp(0, 75, min_streak_font_size, max_streak_font_size, raw_damage)
 
-					unit_text.text = "{#size(" .. ts .. ")}" .. dmg_int .. "{#size(" .. math.floor(ts / 2) .. ")}" .. dmg_dec
+					unit_text.text = string.format("{#size(%s)}%s{#size(%s)}.%s", ts, dmg_int, ts / 2, dmg_dec)
 				end
 			end
 
@@ -390,8 +371,6 @@ DamageNumberVariants = {
 
 			damage_text_widget.offset[1] = x
 			damage_text_widget.offset[2] = y + 60 + ease_out_proggress * unit_text.floating_speed
-
-			Debug.text("STREAK-DAMAGE-FADEOUT %s, %s, %s", x, y, font_size)
 		end,
 	},
 	floating_radial_damage = {

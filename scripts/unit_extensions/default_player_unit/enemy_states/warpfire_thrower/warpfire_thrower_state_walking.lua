@@ -31,8 +31,6 @@ WarpfireThrowerStateWalking.on_enter = function (self, unit, input, dt, context,
 	self._fire_ability_id = self._career_extension:ability_id("fire")
 	self._left_wpn_particle_node_name = "p_fx"
 	self._left_wpn_particle_name = "fx/wpnfx_gunner_enemy_in_range_1p"
-
-	self:check_enemies_in_range_vfx()
 end
 
 WarpfireThrowerStateWalking.update = function (self, unit, input, dt, context, t)
@@ -42,16 +40,7 @@ WarpfireThrowerStateWalking.update = function (self, unit, input, dt, context, t
 		return
 	end
 
-	self:check_enemies_in_range_vfx()
-
 	local csm = self._csm
-	local career_extension = self._career_extension
-
-	if career_extension:ability_was_triggered(self._fire_ability_id) then
-		csm:change_state("warpfire_firing")
-
-		return
-	end
 
 	self:_update_taunt_dialogue(t)
 
@@ -59,4 +48,8 @@ WarpfireThrowerStateWalking.update = function (self, unit, input, dt, context, t
 	local in_ghost_mode = ghost_mode_extension:is_in_ghost_mode()
 
 	handled = self:common_movement(in_ghost_mode, dt)
+
+	if not handled then
+		CharacterStateHelper.update_weapon_actions(t, unit, self._input_extension, self._inventory_extension, self._health_extension)
+	end
 end

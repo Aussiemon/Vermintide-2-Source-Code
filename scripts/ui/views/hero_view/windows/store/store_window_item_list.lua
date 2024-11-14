@@ -279,11 +279,39 @@ end
 StoreWindowItemList._update_item_list = function (self)
 	if self._initialized then
 		local item = self._params.selected_product.item
+		local product_type = self._params.selected_product.product_type
 
-		if item then
+		if product_type == "collection" then
+			local backend_items = Managers.backend:get_interface("items")
+			local product_item = self._params.selected_product.product_item
+			local product_item_data = product_item.data
+			local bundle = product_item_data.bundle
+			local bundled_items = bundle and bundle.BundledItems
+			local items_owned = true
+
+			for i = 1, #bundled_items do
+				local bundled_item_name = bundled_items[i]
+
+				if not backend_items:has_item(bundled_item_name) then
+					items_owned = false
+
+					break
+				end
+			end
+
+			if items_owned then
+				for i = 1, #self._list_widgets do
+					local list_widget = self._list_widgets[i]
+
+					list_widget.content.owned = true
+				end
+			end
+		elseif item then
 			local backend_items = Managers.backend:get_interface("items")
 			local item_key = item.key
 			local item_owned = backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key) or backend_items:has_bundle_contents(item.data.bundle_contains)
+			local item_data = item.data
+			local item_type = item_data.item_type
 
 			item.owned = item_owned
 			self._list_widgets[self._selected_gamepad_grid_index].content.owned = item_owned
@@ -299,7 +327,7 @@ StoreWindowItemList._update_item_list = function (self)
 	local path_structure = StoreLayoutConfig.structure
 	local pages = StoreLayoutConfig.pages
 	local current_page_name = path[#path]
-	local current_page = pages[current_page_name]
+	local current_page = pages[current_page_name] or self._parent:get_temporary_page(current_page_name)
 	local product_type = current_page.type
 	local page_content = current_page.content
 	local layout = {}
@@ -309,14 +337,15 @@ StoreWindowItemList._update_item_list = function (self)
 		local added_filters = 0
 
 		for index, path_name in ipairs(path) do
-			local page = pages[path_name]
+			local page = pages[path_name] or self._parent:get_temporary_page(path_name)
+			local page_item_filter = page.item_filter
 
-			if page.item_filter then
+			if page_item_filter then
 				if added_filters > 0 then
 					item_filter = item_filter .. " and "
 				end
 
-				item_filter = item_filter .. page.item_filter
+				item_filter = item_filter .. page_item_filter
 				added_filters = added_filters + 1
 			end
 		end
@@ -332,15 +361,39 @@ StoreWindowItemList._update_item_list = function (self)
 		local insert_index = 0
 
 		for backend_id, item in pairs(items) do
-			local product = {
-				item = item,
-				type = product_type,
-				product_id = item.key,
-				sort_key = StoreLayoutConfig.make_sort_key(item),
-			}
+			local item_data = item.data
+			local bundle = item_data and item_data.bundle
 
-			insert_index = insert_index + 1
-			layout[insert_index] = product
+			if bundle then
+				for _, item_key in ipairs(bundle.BundledItems) do
+					local bundle_item = table.clone(ItemMasterList[item_key])
+
+					bundle_item.data = bundle_item
+
+					local product = {
+						item = bundle_item,
+						type = product_type,
+						product_id = item_data.key,
+						sort_key = bundle_item.key,
+						settings = {
+							hide_price = true,
+							icon_size = item_data.icon_size,
+						},
+					}
+
+					layout[#layout + 1] = product
+				end
+			else
+				local product = {
+					item = item,
+					type = product_type,
+					product_id = item.key,
+					sort_key = StoreLayoutConfig.make_sort_key(item),
+				}
+
+				insert_index = insert_index + 1
+				layout[insert_index] = product
+			end
 		end
 
 		table.sort(layout, StoreLayoutConfig.compare_sort_key)
@@ -375,6 +428,58 @@ StoreWindowItemList._update_item_list = function (self)
 					hide_price = true,
 				},
 			}
+		end
+	elseif product_type == "collection_item" then
+		local item_filter = ""
+		local added_filters = 0
+		local path_name = path[#path]
+		local page = pages[path_name] or self._parent:get_temporary_page(path_name)
+
+		if page.item_filter then
+			if added_filters > 0 then
+				item_filter = item_filter .. " and "
+			end
+
+			item_filter = item_filter .. page.item_filter
+			added_filters = added_filters + 1
+		end
+
+		local items
+
+		if added_filters > 0 then
+			items = self:_get_items_by_filter(item_filter)
+		else
+			items = self:_get_all_items()
+		end
+
+		for backend_id, item_bundle in pairs(items) do
+			local item_bundle_data = item_bundle.data
+			local bundle = item_bundle_data and item_bundle_data.bundle
+
+			for _, item_key in ipairs(bundle.BundledItems) do
+				local bundled_item = table.clone(ItemMasterList[item_key])
+
+				bundled_item.data = table.clone(bundled_item)
+				layout[#layout + 1] = {
+					product_type = "collection",
+					item = bundled_item,
+					product_item = item_bundle,
+					type = bundled_item.item_type,
+					product_id = item_bundle.key,
+					settings = {
+						hide_new = true,
+						hide_price = true,
+						part_of_bundle = true,
+						icon_size = item_bundle_data.icon_size,
+					},
+					parent_settings = {
+						icon_size = item_bundle_data.icon_size,
+					},
+					sort_key = StoreLayoutConfig.make_sort_key(bundled_item),
+				}
+			end
+
+			table.sort(layout, StoreLayoutConfig.compare_sort_key)
 		end
 	end
 

@@ -41,6 +41,18 @@ local scenegraph_definition = {
 			0,
 		},
 	},
+	pivot_parent = {
+		parent = "root",
+		position = {
+			50,
+			0,
+			1,
+		},
+		size = {
+			0,
+			0,
+		},
+	},
 	ability = {
 		horizontal_alignment = "right",
 		parent = "root",
@@ -53,12 +65,40 @@ local scenegraph_definition = {
 	},
 	portrait_pivot = {
 		horizontal_alignment = "left",
-		parent = "root",
+		parent = "pivot_parent",
 		vertical_alignment = "bottom",
 		position = {
 			80,
 			80,
 			10,
+		},
+		size = {
+			0,
+			0,
+		},
+	},
+	insignia_pivot_parent = {
+		horizontal_alignment = "left",
+		parent = "root",
+		vertical_alignment = "bottom",
+		position = {
+			40,
+			83,
+			1,
+		},
+		size = {
+			0,
+			0,
+		},
+	},
+	insignia_pivot = {
+		horizontal_alignment = "left",
+		parent = "insignia_pivot_parent",
+		vertical_alignment = "top",
+		position = {
+			0,
+			0,
+			0,
 		},
 		size = {
 			0,
@@ -73,9 +113,10 @@ if not IS_WINDOWS then
 end
 
 local inventory_consumable_icons = {
-	[1] = "hud_inventory_icon_heal_01",
-	[2] = "hud_inventory_icon_bomb",
-	[3] = "hud_inventory_icon_potion",
+	"hud_inventory_icon_heal_01",
+	"hud_inventory_icon_bomb",
+	"hud_inventory_icon_potion",
+	grenade_engineer = "hud_inventory_icon_bomb",
 	grenade_fire_01 = "hud_inventory_icon_bomb",
 	grenade_fire_02 = "hud_inventory_icon_bomb",
 	grenade_frag_01 = "hud_inventory_icon_bomb",
@@ -739,6 +780,7 @@ local widget_definitions = {
 	default_static = create_static_widget(),
 	health_dynamic = create_dynamic_health_widget(),
 	ability_dynamic = create_dynamic_ability_widget(),
+	versus_insignia_static = UIWidgets.create_small_insignia("insignia_pivot", 1, nil, nil, nil, RETAINED_MODE_ENABLED),
 }
 local features_list = {
 	ability = true,
@@ -751,6 +793,7 @@ local widget_name_by_feature = {
 		default = "default_static",
 		level = "default_static",
 		portrait_frame = "portrait_static",
+		versus_insignia = "versus_insignia_static",
 	},
 	dynamic = {
 		ability = "ability_dynamic",

@@ -1,11 +1,14 @@
 ﻿-- chunkname: @scripts/entity_system/systems/objective/objective_system_testify.lua
 
 local ObjectiveSystemTestify = {
-	versus_objective_add_time = function (objective_system, time)
-		objective_system:add_time(time)
+	versus_objective_add_time = function (_, time)
+		local win_conditions = Managers.mechanism:game_mechanism():win_conditions()
+
+		win_conditions:add_time(time)
 	end,
 	versus_current_objective_position = function (objective_system)
-		local _, extension = next(objective_system._main_objectives)
+		local _, objective_name = next(objective_system:active_leaf_objectives())
+		local extension = objective_system:extension_by_objective_name(objective_name)
 
 		if not extension then
 			return
@@ -26,29 +29,23 @@ local ObjectiveSystemTestify = {
 		return objective_data
 	end,
 	versus_complete_objectives = function (objective_system)
-		local _, extension = next(objective_system._main_objectives)
+		local objectives = objective_system:active_objectives()
 
-		if extension then
+		for _, objective_name in ipairs(objectives) do
+			local extension = objective_system:extension_by_objective_name(objective_name)
+
 			extension._completed = true
-		end
-
-		local _, sub_objectives_container = next(objective_system._sub_objectives)
-
-		if sub_objectives_container and sub_objectives_container.extensions then
-			local extensions = sub_objectives_container.extensions
-
-			for _, extension in ipairs(extensions) do
-				extension._completed = true
-			end
 		end
 	end,
 	versus_objective_name = function (objective_system)
-		local _, extension = next(objective_system._main_objectives)
+		local _, objective_name = next(objective_system:active_objectives())
+		local extension = objective_system:extension_by_objective_name(objective_name)
 
 		return extension:objective_name()
 	end,
 	versus_objective_type = function (objective_system)
-		local _, extension = next(objective_system._main_objectives)
+		local _, objective_name = next(objective_system:active_objectives())
+		local extension = objective_system:extension_by_objective_name(objective_name)
 
 		if not extension then
 			local _, extension_data = next(objective_system._objective_lists[#objective_system._objective_lists])
@@ -79,11 +76,12 @@ local ObjectiveSystemTestify = {
 
 		if first_bot_unit then
 			local player_position = Unit.local_position(first_bot_unit, 0) + Vector3(0, 0, 0.2)
+			local weave_essence_handler = objective_system:weave_essence_handler()
 
-			objective_system:spawn_essence_unit(player_position)
+			weave_essence_handler:spawn_essence_unit(player_position)
 		end
 
-		objective_system:add_score(2)
+		Managers.weave:increase_bar_score(2)
 	end,
 	get_num_main_objectives = function (objective_system)
 		return objective_system:num_main_objectives()
@@ -96,7 +94,7 @@ local ObjectiveSystemTestify = {
 		end
 
 		local name = next(objective_system._objective_lists[index])
-		local extension = objective_system._objectives_by_name[name]
+		local extension = objective_system:extension_by_objective_name(name)
 
 		if extension:is_done() then
 			return

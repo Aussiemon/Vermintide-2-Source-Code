@@ -498,13 +498,13 @@ ProjectileTrueFlightLocomotionExtension.find_new_target = function (self, positi
 
 		self.raycast_timer = t + time_between_raycasts
 
-		local target = self._find_target_func(self, position)
+		local target = self._find_target_func(self, position, true_flight_template)
 
 		return target
 	end
 end
 
-ProjectileTrueFlightLocomotionExtension.find_player_target = function (self, position)
+ProjectileTrueFlightLocomotionExtension.find_player_target = function (self, position, true_flight_template)
 	local player_units
 	local side = self.side
 
@@ -524,7 +524,7 @@ ProjectileTrueFlightLocomotionExtension.find_player_target = function (self, pos
 			local index = (i - 1) % players_n + 1
 			local unit = player_units[index]
 
-			if HEALTH_ALIVE[unit] and not self.hit_units[unit] and self._legitimate_target_func(self, unit, position) then
+			if HEALTH_ALIVE[unit] and not self.hit_units[unit] and self:_check_target_valid(unit, position, true_flight_template) then
 				return unit
 			end
 		end
@@ -533,7 +533,7 @@ end
 
 local ai_units = {}
 
-ProjectileTrueFlightLocomotionExtension.find_broadphase_target = function (self, position)
+ProjectileTrueFlightLocomotionExtension.find_broadphase_target = function (self, position, true_flight_template)
 	local broadphase_radius = TrueFlightTemplates[self.true_flight_template_name].broadphase_radius
 	local broadphase_categories = self.target_broadphase_categories
 
@@ -559,7 +559,7 @@ ProjectileTrueFlightLocomotionExtension.find_broadphase_target = function (self,
 		for i = 1, ai_units_n do
 			local unit = ai_units[i]
 
-			if ScriptUnit.has_extension(unit, "health_system") and HEALTH_ALIVE[unit] and not self.hit_units[unit] and self._legitimate_target_func(self, unit, position) then
+			if ScriptUnit.has_extension(unit, "health_system") and HEALTH_ALIVE[unit] and not self.hit_units[unit] and self:_check_target_valid(unit, position, true_flight_template) then
 				return unit
 			end
 		end
@@ -568,7 +568,7 @@ ProjectileTrueFlightLocomotionExtension.find_broadphase_target = function (self,
 	return nil
 end
 
-ProjectileTrueFlightLocomotionExtension.find_closest_highest_value_target = function (self, position)
+ProjectileTrueFlightLocomotionExtension.find_closest_highest_value_target = function (self, position, true_flight_template)
 	local template = TrueFlightTemplates[self.true_flight_template_name]
 	local broadphase_radius = template.broadphase_radius
 	local broadphase_categories = self.target_broadphase_categories
@@ -597,7 +597,7 @@ ProjectileTrueFlightLocomotionExtension.find_closest_highest_value_target = func
 			local unit = ai_units[i]
 			local breed = Unit.get_data(unit, "breed")
 
-			if not breed or breed.no_autoaim or not ScriptUnit.has_extension(unit, "health_system") or not HEALTH_ALIVE[unit] or self.hit_units[unit] or not self._legitimate_target_func(self, unit, position) then
+			if not breed or breed.no_autoaim or not ScriptUnit.has_extension(unit, "health_system") or not HEALTH_ALIVE[unit] or self.hit_units[unit] or not self:_check_target_valid(unit, position, true_flight_template) then
 				table.swap_delete(ai_units, i)
 
 				ai_units_n = ai_units_n - 1

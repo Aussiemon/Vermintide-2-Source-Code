@@ -26,7 +26,7 @@ StateLoadingVersusMigration._init_params = function (self, params)
 end
 
 StateLoadingVersusMigration._init_network = function (self)
-	Managers.lobby:setup_network_options()
+	LobbySetup.setup_network_options()
 
 	if not self.parent:has_registered_rpcs() then
 		self.parent:register_rpcs()
@@ -40,7 +40,11 @@ StateLoadingVersusMigration._init_network = function (self)
 	local host_to_migrate_to = self:get_host_to_migrate_to()
 	local host_peer_id = host_to_migrate_to.peer_id
 
-	if host_peer_id == Network.peer_id() then
+	if not host_peer_id then
+		Crashify.print_exception("[VersusMigration]", "Local player does not belong to any friend party")
+	end
+
+	if not host_peer_id or host_peer_id == Network.peer_id() then
 		self:set_up_lobby()
 	else
 		network_printf("Versus migration to host %s, trying to find its lobby...", host_to_migrate_to)

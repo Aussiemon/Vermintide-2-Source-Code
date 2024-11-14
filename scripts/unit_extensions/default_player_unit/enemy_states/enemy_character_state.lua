@@ -31,6 +31,7 @@ EnemyCharacterState.init = function (self, character_state_init_context, name)
 	self._first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 	self._status_extension = ScriptUnit.extension(unit, "status_system")
 	self._ghost_mode_extension = ScriptUnit.extension(unit, "ghost_mode_system")
+	self._overcharge_extension = ScriptUnit.extension(unit, "overcharge_system")
 	self._first_person_unit = self._first_person_extension:get_first_person_unit()
 	self._particle_ids = {}
 	self._left_wpn_particle_name = nil
@@ -150,7 +151,7 @@ EnemyCharacterState.update_movement = function (self, unit, t, dt, movement_spee
 	CharacterStateHelper.look(input_extension, self._player.viewport_name, first_person_extension, self._status_extension, self._inventory_extension)
 
 	if play_3p_anim or play_1p_anim then
-		local move_anim_3p, move_anim_1p = CharacterStateHelper.get_move_animation(self._locomotion_extension, input_extension, self._status_extension)
+		local move_anim_3p, move_anim_1p = CharacterStateHelper.get_move_animation(self._locomotion_extension, input_extension, self._status_extension, self.move_anim_3p)
 
 		if play_3p_anim and move_anim_3p ~= self.move_anim_3p then
 			CharacterStateHelper.play_animation_event(unit, move_anim_3p)

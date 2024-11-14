@@ -583,11 +583,11 @@ HeroWindowWeaveForgeOverview._update_animations = function (self, dt)
 	UIWidgetUtils.animate_default_button(widgets_by_name.upgrade_button, dt)
 end
 
-HeroWindowWeaveForgeOverview._is_button_pressed = function (self, widget)
+HeroWindowWeaveForgeOverview._is_button_pressed = function (self, widget, allow_double_click)
 	local content = widget.content
 	local hotspot = content.button_hotspot or content.hotspot
 
-	if hotspot.on_pressed then
+	if hotspot.on_pressed or allow_double_click and hotspot.on_double_click then
 		hotspot.on_pressed = false
 
 		if not hotspot.is_selected then
@@ -625,10 +625,7 @@ HeroWindowWeaveForgeOverview._is_button_selected = function (self, widget)
 end
 
 HeroWindowWeaveForgeOverview._sync_backend_loadout = function (self)
-	local backend_manger = Managers.backend
-	local backend_interface_items = backend_manger:get_interface("items")
-	local backend_interface_weaves = backend_manger:get_interface("weaves")
-	local essence_amount = backend_interface_weaves:get_essence()
+	local backend_interface_weaves = Managers.backend:get_interface("weaves")
 	local forge_level = backend_interface_weaves:get_forge_level()
 	local forge_max_level = backend_interface_weaves:forge_max_level()
 
@@ -638,8 +635,8 @@ HeroWindowWeaveForgeOverview._sync_backend_loadout = function (self)
 
 	local can_upgrade = forge_level < forge_max_level
 
-	self:_set_forge_upgrade_price_by_level(can_upgrade and forge_level + 1, essence_amount)
-	self:_setup_upgrade_tooltip(forge_level, forge_max_level)
+	self:_set_forge_upgrade_price_by_level(forge_level + (can_upgrade and 1 or 0))
+	self:_setup_upgrade_tooltip(1)
 end
 
 HeroWindowWeaveForgeOverview._handle_input = function (self, dt, t)
@@ -772,9 +769,10 @@ HeroWindowWeaveForgeOverview._draw = function (self, dt)
 	render_settings.alpha_multiplier = alpha_multiplier
 end
 
-HeroWindowWeaveForgeOverview._set_forge_upgrade_price_by_level = function (self, forge_level, current_essence_amount)
+HeroWindowWeaveForgeOverview._set_forge_upgrade_price_by_level = function (self, forge_level)
 	local backend_interface_weaves = Managers.backend:get_interface("weaves")
-	local cost = backend_interface_weaves:forge_upgrade_cost()
+	local current_essence_amount = backend_interface_weaves:get_essence()
+	local cost = backend_interface_weaves:forge_upgrade_cost(forge_level - self._forge_level)
 	local can_afford = cost and cost <= current_essence_amount or false
 
 	self:_set_essence_upgrade_cost(cost, can_afford)
@@ -833,18 +831,22 @@ HeroWindowWeaveForgeOverview._upgrade_forge = function (self)
 
 	upgrade_button.content.upgrading = true
 
+	local num_levels = 1
 	local backend_manger = Managers.backend
 	local backend_interface_weaves = backend_manger:get_interface("weaves")
 	local callback = callback(self, "_upgrade_forge_cb")
 
-	backend_interface_weaves:upgrade_forge(callback)
+	backend_interface_weaves:upgrade_forge(num_levels, callback)
 end
 
-HeroWindowWeaveForgeOverview._setup_upgrade_tooltip = function (self, athanor_level, max_athanor_level)
+HeroWindowWeaveForgeOverview._setup_upgrade_tooltip = function (self, num_levels)
 	local widgets_by_name = self._widgets_by_name
 	local upgrade_button = widgets_by_name.upgrade_button
 	local upgrade_tooltip_data
-	local next_athanor_level = athanor_level + 1
+	local backend_interface_weaves = Managers.backend:get_interface("weaves")
+	local athanor_level = backend_interface_weaves:get_forge_level()
+	local max_athanor_level = backend_interface_weaves:forge_max_level()
+	local next_athanor_level = athanor_level + num_levels
 
 	if next_athanor_level <= max_athanor_level then
 		upgrade_tooltip_data = {
@@ -861,9 +863,8 @@ HeroWindowWeaveForgeOverview._setup_upgrade_tooltip = function (self, athanor_le
 		for property_key, property_data in pairs(properties) do
 			local required_forge_level = backend_interface_weaves:get_property_required_forge_level(property_key) or 0
 
-			if required_forge_level == next_athanor_level then
+			if athanor_level < required_forge_level and required_forge_level <= next_athanor_level then
 				local icon = property_data.icon or "icons_placeholder"
-				local display_name = property_data.display_name
 				local mastery_costs = backend_interface_weaves:get_property_mastery_costs(property_key)
 				local title_text = UIUtils.get_weave_property_description(property_key, property_data, mastery_costs)
 
@@ -871,8 +872,21 @@ HeroWindowWeaveForgeOverview._setup_upgrade_tooltip = function (self, athanor_le
 				property_tooltips[#property_tooltips + 1] = {
 					text = title_text,
 					icon = icon,
+					required_forge_level = required_forge_level,
 				}
 			end
+		end
+
+		if property_tooltips then
+			table.sort(property_tooltips, function (a, b)
+				local a_lvl, b_lvl = a.required_forge_level, b.required_forge_level
+
+				if a_lvl == b_lvl then
+					return a.text <= b.text
+				end
+
+				return a_lvl < b_lvl
+			end)
 		end
 
 		upgrade_tooltip_data.property_unlock_table = property_tooltips
@@ -883,23 +897,30 @@ HeroWindowWeaveForgeOverview._setup_upgrade_tooltip = function (self, athanor_le
 		for trait_key, trait_data in pairs(weave_traits) do
 			local required_forge_level = backend_interface_weaves:get_trait_required_forge_level(trait_key) or 0
 
-			if required_forge_level == next_athanor_level then
+			if athanor_level < required_forge_level and required_forge_level <= next_athanor_level then
 				local display_name = trait_data.display_name
-				local trait_advanced_description = trait_data.advanced_description
 				local trait_icon = trait_data.icon
 				local title_text = Localize(display_name)
-				local description_text = ""
-
-				if trait_advanced_description then
-					description_text = UIUtils.get_trait_description(trait_key, trait_data)
-				end
 
 				trait_tooltips = trait_tooltips or {}
 				trait_tooltips[#trait_tooltips + 1] = {
 					text = title_text,
 					icon = trait_icon,
+					required_forge_level = required_forge_level,
 				}
 			end
+		end
+
+		if trait_tooltips then
+			table.sort(trait_tooltips, function (a, b)
+				local a_lvl, b_lvl = a.required_forge_level, b.required_forge_level
+
+				if a_lvl == b_lvl then
+					return a.text <= b.text
+				end
+
+				return a_lvl < b_lvl
+			end)
 		end
 
 		upgrade_tooltip_data.trait_unlock_table = trait_tooltips

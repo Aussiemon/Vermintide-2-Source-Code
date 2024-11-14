@@ -51,6 +51,7 @@ Side.init = function (self, definition, side_id)
 	self.PLAYER_POSITIONS = {}
 	self.PLAYER_AND_BOT_UNITS = {}
 	self.PLAYER_AND_BOT_POSITIONS = {}
+	self.NON_DISABLED_PLAYER_AND_BOT_UNITS = {}
 	self.ENEMY_PLAYER_UNITS = {}
 	self.ENEMY_PLAYER_POSITIONS = {}
 	self.ENEMY_PLAYER_AND_BOT_UNITS = {}

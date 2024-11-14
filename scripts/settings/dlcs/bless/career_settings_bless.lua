@@ -20,7 +20,7 @@ CareerSettings.wh_priest = {
 	preview_wield_slot = "melee",
 	profile_name = "witch_hunter",
 	required_dlc = "bless",
-	sort_order = 1,
+	sort_order = 4,
 	sound_character = "witch_hunter_priest",
 	talent_tree_index = 4,
 	breed = PlayerBreeds.hero_wh_priest,
@@ -107,6 +107,9 @@ CareerSettings.wh_priest = {
 		slot_frame = {
 			"frame",
 		},
+		slot_pose = {
+			"weapon_pose",
+		},
 	},
 	loadout_equipment_slots = {
 		"melee",
@@ -114,6 +117,7 @@ CareerSettings.wh_priest = {
 		"necklace",
 		"ring",
 		"trinket",
+		"weapon_pose",
 	},
 }
 OverchargeData = OverchargeData or {}

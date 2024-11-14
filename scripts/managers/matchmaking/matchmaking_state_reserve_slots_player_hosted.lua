@@ -31,7 +31,8 @@ MatchmakingStateReserveSlotsPlayerHosted.on_enter = function (self, state_contex
 
 	local join_lobby_data = state_context.join_lobby_data
 
-	self._lobby_client = LobbyClient:new(self._network_options, join_lobby_data)
+	Managers.lobby:make_lobby(LobbyClient, "matchmaking_join_lobby", self._network_options, join_lobby_data)
+
 	self._matchmaking_manager.debug.text = "Joining lobby"
 	self._matchmaking_manager.debug.state = "hosted by: " .. (join_lobby_data.host or "<no_host_name>")
 
@@ -42,19 +43,29 @@ MatchmakingStateReserveSlotsPlayerHosted.on_exit = function (self)
 	return
 end
 
+MatchmakingStateReserveSlotsPlayerHosted.terminate = function (self)
+	if Managers.lobby:query_lobby("matchmaking_join_lobby") then
+		Managers.lobby:destroy_lobby("matchmaking_join_lobby")
+	end
+end
+
 MatchmakingStateReserveSlotsPlayerHosted.update = function (self, dt, t)
-	local lobby_client = self._lobby_client
+	self:_update_states(dt, t)
+
+	return self._new_state, self._state_context
+end
+
+MatchmakingStateReserveSlotsPlayerHosted._update_states = function (self, dt, t)
+	local lobby_client = Managers.lobby:query_lobby("matchmaking_join_lobby")
 
 	if not lobby_client then
-		return
-	end
+		return self:_join_game_failed("failure_start_join_server")
+	else
+		lobby_client:update(dt)
 
-	lobby_client:update(dt)
-
-	if lobby_client:failed() then
-		self:_join_game_failed("failure_start_join_server")
-
-		return
+		if lobby_client:failed() then
+			return self:_join_game_failed("failure_start_join_server")
+		end
 	end
 
 	local host = lobby_client:lobby_host()
@@ -64,8 +75,6 @@ MatchmakingStateReserveSlotsPlayerHosted.update = function (self, dt, t)
 	if state == "waiting_to_join_lobby" then
 		if lobby_client:is_joined() and host ~= "0" then
 			self._matchmaking_manager.debug.text = "Connecting to host"
-
-			local host_name = LobbyInternal.user_name and LobbyInternal.user_name(host) or lobby_client.user_name and lobby_client:user_name(host) or "-"
 
 			mm_printf("Joined lobby, checking network hash...")
 
@@ -138,7 +147,7 @@ MatchmakingStateReserveSlotsPlayerHosted.update = function (self, dt, t)
 
 				return self:_reservation_success(true)
 			else
-				mm_printf_force("Failed to reserve slots  due to host responding '%s'. lobby_id=%s, host_id:%s", game_reply, lobby_id, host_name)
+				mm_printf_force("Failed to reserve slots  due to host responding '%s'. lobby_id=%s, host_id:%s", reservation_reply, lobby_id, host_name)
 
 				return self:_reservation_success(false)
 			end
@@ -146,8 +155,6 @@ MatchmakingStateReserveSlotsPlayerHosted.update = function (self, dt, t)
 	elseif state == "waiting_for_confirmation" then
 		-- Nothing
 	end
-
-	return self._new_state, self._state_context
 end
 
 MatchmakingStateReserveSlotsPlayerHosted._join_game_success = function (self, t)
@@ -191,7 +198,6 @@ MatchmakingStateReserveSlotsPlayerHosted._reservation_success = function (self, 
 
 	if success then
 		self._state = "done"
-		self._state_context.lobby_client = self._lobby_client
 		self._new_state = MatchmakingStateWaitJoinPlayerHosted
 	else
 		self:_cancel_join()
@@ -199,10 +205,8 @@ MatchmakingStateReserveSlotsPlayerHosted._reservation_success = function (self, 
 end
 
 MatchmakingStateReserveSlotsPlayerHosted._cancel_join = function (self)
-	if self._lobby_client ~= nil then
-		self._lobby_client:destroy()
-
-		self._lobby_client = nil
+	if Managers.lobby:query_lobby("matchmaking_join_lobby") then
+		Managers.lobby:destroy_lobby("matchmaking_join_lobby")
 	end
 
 	self._matchmaking_manager:reset_joining()
@@ -219,7 +223,7 @@ MatchmakingStateReserveSlotsPlayerHosted._cancel_join = function (self)
 			self._new_state = MatchmakingStateSearchPlayerHostedLobby
 		end
 	else
-		self._new_state = MatchmakingStateIdle
+		Managers.matchmaking:cancel_matchmaking()
 	end
 end
 
@@ -264,7 +268,6 @@ MatchmakingStateReserveSlotsPlayerHosted.rpc_matchmaking_reservation_success = f
 	end
 
 	if success then
-		self._state_context.lobby_client = self._lobby_client
 		self._new_state = MatchmakingStateWaitJoinPlayerHosted
 	else
 		self:_cancel_join()

@@ -1,6 +1,7 @@
 ﻿-- chunkname: @scripts/network/peer_states.lua
 
 PeerStates = {}
+SlotReservationConnectStatus = table.enum("PENDING", "FAILED", "SUCCEEDED")
 
 local time_between_resend_rpc_notify_connected = 2
 
@@ -14,17 +15,17 @@ PeerStates.Connecting = {
 		self.resend_timer = time_between_resend_rpc_notify_connected
 		self.resend_post_game_timer = time_between_resend_rpc_notify_connected
 	end,
-	rpc_notify_lobby_joined = function (self, wanted_profile_index, wanted_career_index, wanted_party_index, clan_tag, account_id)
+	rpc_notify_lobby_joined = function (self, wanted_profile_index, wanted_career_index, requested_party_index, clan_tag, account_id)
 		self.num_players = 1
 		self.has_received_rpc_notify_lobby_joined = true
 		self.clan_tag = clan_tag
 		self.account_id = account_id
 
-		printf("[PSM] Peer %s joined. Want to use profile index %q and join party %q", tostring(self.peer_id), tostring(wanted_profile_index), tostring(wanted_party_index))
+		printf("[PSM] Peer %s joined. Want to use profile index %q and join party %q", tostring(self.peer_id), tostring(wanted_profile_index), tostring(requested_party_index))
 
 		self.wanted_profile_index = wanted_profile_index
 		self.wanted_career_index = wanted_career_index
-		self.wanted_party_index = wanted_party_index
+		self.requested_party_index = requested_party_index
 
 		self.server:peer_connected(self.peer_id)
 	end,
@@ -34,6 +35,16 @@ PeerStates.Connecting = {
 	end,
 	rpc_level_loaded = function (self, level_id)
 		self.loaded_level = NetworkLookup.level_keys[level_id]
+	end,
+	rpc_provide_slot_reservation_info = function (self, peers, group_leader)
+		local match_handler = self.server:get_match_handler()
+
+		match_handler:register_pending_peer(self.peer_id, group_leader)
+
+		local mechanism_manager = Managers.mechanism
+		local slot_reservation_handler = mechanism_manager:get_slot_reservation_handler()
+
+		slot_reservation_handler:connecting_slot_reservation_info_received(self.peer_id, peers, group_leader)
 	end,
 	update = function (self, dt)
 		local ban_list_manager = Managers.ban_list
@@ -67,26 +78,52 @@ PeerStates.Connecting = {
 			return PeerStates.Disconnecting
 		end
 
-		if not self.has_received_rpc_notify_lobby_joined then
-			self.resend_timer = self.resend_timer - dt
+		local reservation_status = SlotReservationConnectStatus.SUCCEEDED
 
-			local resend_rpc_notify_connected = self.resend_timer < 0
+		if self.peer_id ~= self.server.my_peer_id then
+			local mechanism_manager = Managers.mechanism
+			local slot_reservation_handler = mechanism_manager:get_slot_reservation_handler()
 
-			if resend_rpc_notify_connected then
-				if PEER_ID_TO_CHANNEL[self.peer_id] then
-					local game_mode = Managers.state.game_mode and Managers.state.game_mode:game_mode()
+			if slot_reservation_handler then
+				reservation_status = slot_reservation_handler:handle_slot_reservation_for_connecting_peer(self, dt)
+			else
+				local match_handler = self.server:get_match_handler()
 
-					if game_mode and game_mode:is_joinable() then
-						self.server.network_transmit:send_rpc("rpc_notify_connected", self.peer_id)
-
-						self.resend_timer = time_between_resend_rpc_notify_connected
-					end
-				else
-					print("PeerState.Connecting lost connection, cannot send rpc_notify_connected")
-
-					return PeerStates.Disconnecting
+				if not match_handler:has_peer_data(self.peer_id) then
+					match_handler:register_pending_peer(self.peer_id, self.server.my_peer_id)
 				end
 			end
+		end
+
+		if reservation_status == SlotReservationConnectStatus.SUCCEEDED then
+			if not self.has_received_rpc_notify_lobby_joined then
+				self.resend_timer = self.resend_timer - dt
+
+				local resend_rpc_notify_connected = self.resend_timer < 0
+
+				if resend_rpc_notify_connected then
+					if PEER_ID_TO_CHANNEL[self.peer_id] then
+						local game_mode = Managers.state.game_mode and Managers.state.game_mode:game_mode()
+
+						if game_mode and game_mode:is_joinable() then
+							self.server.network_transmit:send_rpc("rpc_notify_connected", self.peer_id)
+
+							self.resend_timer = time_between_resend_rpc_notify_connected
+						end
+					else
+						print("PeerState.Connecting lost connection, cannot send rpc_notify_connected")
+
+						return PeerStates.Disconnecting
+					end
+				end
+			end
+		elseif reservation_status == SlotReservationConnectStatus.FAILED then
+			printf("[PSM] Disconnecting player (%s) due to not being able to reserve slots", self.peer_id)
+			self.server:disconnect_peer(self.peer_id, "host_has_no_backend_connection")
+
+			return PeerStates.Disconnecting
+		else
+			return
 		end
 
 		if not Development.parameter("allow_weave_joining") then
@@ -256,7 +293,9 @@ PeerStates.LoadingProfilePackages = {
 			self.wanted_profile_index = old_profile_index
 			self.wanted_career_index = old_career_index
 		elseif wanted_profile_index == 0 then
-			self.wanted_profile_index, self.wanted_career_index = profile_synchronizer:get_first_free_profile()
+			local any_party = self.requested_party_index or 1
+
+			self.wanted_profile_index, self.wanted_career_index = profile_synchronizer:get_first_free_profile(any_party)
 		elseif is_tutorial then
 			-- Nothing
 		else
@@ -338,6 +377,21 @@ PeerStates.WaitingForGameObjectSync = {
 		local peer_id = self.peer_id
 
 		if self.server:has_peer_synced_game_objects(peer_id) then
+			if peer_id ~= self.server.my_peer_id then
+				if not self.server:are_profile_packages_fully_synced_for_peer(peer_id) then
+					if not self._printed_hot_join_sync_delay then
+						printf("[PeerSM] %s :: Delaying hot join sync due to ongoing resync", peer_id)
+
+						self._printed_hot_join_sync_delay = true
+					end
+
+					return
+				end
+
+				self.server.game_network_manager:hot_join_sync(peer_id)
+				self.server:set_peer_hot_join_synced(peer_id, true)
+			end
+
 			if not self.game_started then
 				if IS_XB1 then
 					self.server.network_transmit:send_rpc("rpc_game_started", self.peer_id, Managers.account:round_id() or "")
@@ -355,13 +409,9 @@ PeerStates.WaitingForGameObjectSync = {
 				Managers.player:add_remote_player(self.peer_id, player_controlled, local_player_id, self.clan_tag, self.account_id)
 			end
 
-			local wanted_party_index = self.wanted_party_index or 0
+			local requested_party_index = self.requested_party_index
 
-			Managers.state.game_mode:player_entered_game_session(self.peer_id, 1, wanted_party_index)
-
-			if Managers.venture.challenge then
-				Managers.venture.challenge:player_entered_game_session(self.peer_id, 1)
-			end
+			Managers.state.game_mode:player_entered_game_session(self.peer_id, 1, requested_party_index)
 
 			return PeerStates.WaitingForPlayers
 		end
@@ -432,6 +482,10 @@ PeerStates.Disconnecting = {
 		printf("[PSM] Disconnecting peer %s", self.peer_id)
 		Network.write_dump_tag(string.format("%s disconnecting", self.peer_id))
 
+		local match_handler = self.server:get_match_handler()
+
+		match_handler:client_disconnected(self.peer_id)
+
 		self.is_ingame = nil
 
 		local server = self.server
@@ -477,16 +531,11 @@ PeerStates.Disconnecting = {
 			Managers.state.game_mode:player_left_game_session(peer_id, local_player_id)
 		end
 
-		if Managers.venture.challenge then
-			Managers.venture.challenge:player_left_game_session(peer_id, local_player_id)
-		end
-
+		Managers.mechanism:remote_client_disconnected(peer_id)
 		Managers.party:server_peer_left_session(peer_id, previous_state.approved_for_joining, previous_state.state_name)
 		server:set_peer_synced_game_objects(peer_id, false)
 	end,
 	update = function (self, dt)
-		local peer_id = self.peer_id
-
 		return PeerStates.Disconnected
 	end,
 	on_exit = function (self, new_state)
@@ -506,6 +555,7 @@ PeerStates.Disconnected = {
 			local enemy_package_loader = Managers.level_transition_handler.enemy_package_loader
 
 			enemy_package_loader:client_disconnected(peer_id)
+			Managers.mechanism:remote_client_disconnected(peer_id)
 		end
 
 		Managers.account:update_presence()

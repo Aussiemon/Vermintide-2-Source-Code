@@ -11,6 +11,8 @@ QuickDrawerStay = QuickDrawerStay or true
 
 local RPCS = {
 	"rpc_debug_command",
+	"rpc_propagate_debug_option",
+	"rpc_debug_option_propagation_response",
 }
 
 GLOBAL_TIME_SCALE = GLOBAL_TIME_SCALE or 1
@@ -131,6 +133,7 @@ DebugManager.update = function (self, dt, t)
 	end
 
 	self:update_time_scale(dt)
+	self:_update_sound_debug()
 
 	if script_data.player_mechanics_goodness_debug then
 		self:_adjust_player_speed()
@@ -261,6 +264,13 @@ DebugManager.unregister_update = function (self, name)
 end
 
 DebugManager.update_time_scale = function (self, dt)
+	if not not self._disable_time_travel ~= not not script_data.disable_time_travel then
+		self._disable_time_travel = not not script_data.disable_time_travel
+		time_scale_index = table.index_of(time_scale_list, 100)
+
+		self:set_time_scale(time_scale_index)
+	end
+
 	local time_paused = self.time_paused
 	local time_scale_index = self.time_scale_index
 	local input_manager = Managers.input
@@ -274,6 +284,10 @@ DebugManager.update_time_scale = function (self, dt)
 			self:set_time_scale(time_scale_index)
 		elseif Vector3.y(Mouse.axis(wheel_axis)) < 0 and GLOBAL_TIME_SCALE > 0.0001 then
 			time_scale_index = math.max(time_scale_index - 1, 1)
+
+			self:set_time_scale(time_scale_index)
+		elseif Mouse.button(Mouse.button_index("middle")) > 0.5 then
+			time_scale_index = table.index_of(time_scale_list, 100)
 
 			self:set_time_scale(time_scale_index)
 		end
@@ -549,6 +563,44 @@ DebugManager._update_paused_game = function (self, input, dt)
 	end
 end
 
+local HOT_RELOAD = true
+
+DebugManager._update_sound_debug = function (self)
+	local sound_debug = script_data.sound_debug
+	local sound_cue_breakpoint = script_data.sound_cue_breakpoint
+
+	if self._sound_debug ~= sound_debug or self._sound_cue_breakpoint ~= sound_cue_breakpoint or HOT_RELOAD then
+		self._sound_debug = sound_debug
+		self._sound_cue_breakpoint = sound_cue_breakpoint
+
+		local should_hook = sound_debug and sound_cue_breakpoint
+
+		if sound_debug then
+			Debug.hook(WwiseWorld, "trigger_event", function (original, wwise_world, event, ...)
+				if self._sound_debug then
+					printf("[sound_debug] Played sound: %s", event)
+				end
+
+				if self._sound_cue_breakpoint then
+					rawset(_G, "_sound_cue_breakpoint_set", rawget(_G, "_sound_cue_breakpoint_set") or {})
+
+					_sound_cue_breakpoint_set[event] = true
+
+					if self._sound_cue_breakpoint == event then
+						Script.do_break()
+					end
+				end
+
+				return original(wwise_world, event, ...)
+			end)
+		else
+			Debug.unhook(WwiseWorld, "trigger_event", true)
+		end
+
+		HOT_RELOAD = false
+	end
+end
+
 DebugManager._update_visuals = function (self)
 	local drawer = Managers.state.debug:drawer({
 		mode = "immediate",
@@ -774,6 +826,29 @@ DebugManager.rpc_debug_command = function (self, channel_id, debug_command_looku
 	elseif debug_command == "set_time_paused" then
 		self:set_time_paused()
 	end
+end
+
+DebugManager.propagate_debug_option = function (self, option_hash, setting_id, option_index, dont_save)
+	Managers.state.network.network_transmit:send_rpc_server("rpc_propagate_debug_option", option_hash, setting_id, option_index, not not dont_save)
+end
+
+DebugManager.rpc_propagate_debug_option = function (self, channel_id, option_hash_string, setting_id, option_index, dont_save)
+	if not rawget(_G, "DebugScreen") then
+		Managers.state.network.network_transmit:send_rpc("rpc_debug_option_propagation_response", CHANNEL_TO_PEER_ID[channel_id], "DebugScreen is missing")
+
+		return
+	end
+
+	local option_hash = tonumber(option_hash_string)
+	local error_msg = DebugScreen.handle_propagated_option(option_hash, setting_id, option_index, dont_save)
+
+	if error_msg then
+		Managers.state.network.network_transmit:send_rpc("rpc_debug_option_propagation_response", CHANNEL_TO_PEER_ID[channel_id], error_msg)
+	end
+end
+
+DebugManager.rpc_debug_option_propagation_response = function (self, channel_id, error_msg)
+	Debug.sticky_text("[DebugManager] Propagated debug option failed: %s", error_msg)
 end
 
 DebugManager._load_patched_items_into_backend = function (self)

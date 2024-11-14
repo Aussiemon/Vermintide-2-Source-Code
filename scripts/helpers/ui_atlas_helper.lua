@@ -19,6 +19,7 @@ require("scripts/ui/atlas_settings/gui_menus_atlas")
 require("scripts/ui/atlas_settings/gui_country_flags_atlas")
 require("scripts/ui/atlas_settings/gui_mission_selection_atlas")
 require("scripts/ui/atlas_settings/gui_lock_test_atlas")
+require("scripts/ui/atlas_settings/gui_pose_items_atlas")
 
 UIAtlasHelper = UIAtlasHelper or {}
 
@@ -66,15 +67,20 @@ local standalone_texture = {
 	controller_image_ps4 = true,
 	controller_image_xb1 = true,
 	crafting_button_fill = true,
+	crystals_01_child = true,
 	dark_pact_ability_effect = true,
 	dark_pact_ability_effect_bar_top = true,
+	dark_pact_ability_effect_halo = true,
 	dark_pact_ability_effect_top = true,
+	dark_pact_ability_icon_cooldown_gradient = true,
+	dark_pact_ability_icon_gradient_mask = true,
 	dark_pact_ability_progress_bar = true,
 	dark_pact_boss_player_hp_bar = true,
 	dark_pact_boss_player_hp_bar_color_tint = true,
 	dark_pact_overcharge_bar = true,
 	dark_pact_player_hp_bar = true,
 	dark_pact_player_hp_bar_color_tint = true,
+	dark_pact_selection_portrait_mask = true,
 	default = true,
 	demo_bg_01 = true,
 	demo_bg_02 = true,
@@ -364,6 +370,7 @@ local ui_atlas_setting_tables = {
 	gui_level_images_atlas = level_images_atlas,
 	gui_country_flags_atlas = country_flags_atlas,
 	gui_lock_test_atlas = lock_test_atlas,
+	gui_pose_items_atlas = pose_items_atlas,
 }
 local masked_materials = {
 	gui_achievement_icons_atlas = "gui_achievement_icons_atlas_masked",
@@ -377,6 +384,7 @@ local masked_materials = {
 	gui_lock_test_atlas = "gui_lock_test_atlas_masked",
 	gui_menu_buttons_atlas = "gui_menu_buttons_atlas_masked",
 	gui_menus_atlas = "gui_menus_atlas_masked",
+	gui_pose_items_atlas = "gui_pose_items_atlas_masked",
 	gui_season_emblems_atlas = "gui_season_emblems_atlas_masked",
 	gui_settings_atlas = "gui_settings_atlas_masked",
 	gui_start_screen_atlas = "gui_start_screen_atlas_masked",
@@ -392,6 +400,7 @@ local saturated_materials = {
 	gui_menu_buttons_atlas = "gui_menu_buttons_atlas_saturated",
 	gui_menus_atlas = "gui_menus_atlas_saturated",
 	gui_mission_selection_atlas = "gui_mission_selection_atlas_saturated",
+	gui_pose_items_atlas = "gui_pose_items_atlas_saturated",
 }
 local masked_saturated_materials = {
 	gui_achievement_icons_atlas = "gui_achievement_icons_atlas_masked_saturated",
@@ -400,6 +409,7 @@ local masked_saturated_materials = {
 	gui_items_atlas = "gui_items_atlas_masked_saturated",
 	gui_level_images_atlas = "gui_level_images_atlas_masked_saturated",
 	gui_lock_test_atlas = "gui_lock_test_atlas_masked_saturated",
+	gui_pose_items_atlas = "gui_pose_items_atlas_masked_saturated",
 }
 
 if not IS_WINDOWS then
@@ -415,6 +425,7 @@ local masked_point_sample_materials = {
 	gui_items_atlas = "gui_items_atlas_point_sample_masked",
 	gui_lock_test_atlas = "gui_lock_test_atlas_point_sample_masked",
 	gui_menus_atlas = "gui_menus_atlas_point_sample_masked",
+	gui_pose_items_atlas = "gui_pose_items_atlas_point_sample_masked",
 	gui_season_emblems_atlas = "gui_season_emblems_atlas_point_sample_masked",
 	gui_settings_atlas = "gui_settings_atlas_point_sample_masked",
 	gui_start_screen_atlas = "gui_start_screen_atlas_point_sample_masked",
@@ -444,6 +455,7 @@ local point_sample_materials = {
 	gui_menu_buttons_atlas = "gui_menu_buttons_atlas_point_sample",
 	gui_menus_atlas = "gui_menus_atlas_point_sample",
 	gui_popup_atlas = "gui_popup_atlas_point_sample",
+	gui_pose_items_atlas = "gui_pose_items_atlas_point_sample",
 	gui_season_emblems_atlas = "gui_season_emblems_atlas_point_sample",
 	gui_settings_atlas = "gui_settings_atlas_point_sample",
 	gui_splash_atlas = "gui_splash_atlas_point_sample",
@@ -607,4 +619,45 @@ UIAtlasHelper.add_standalone_texture_by_name = function (texture_name)
 	else
 		standalone_texture[texture_name] = true
 	end
+end
+
+UIAtlasHelper.get_insignia_texture_settings_from_level = function (level)
+	local level = math.min(level, ExperienceSettings.max_versus_level)
+	local insignia_uv_size = {
+		0.2,
+		0.1,
+	}
+	local insignia_level = math.floor((level - 1) / 50)
+	local insignia_type = math.floor((level - 1) / 5) % 10
+	local insignia_main_uvs = {
+		{
+			insignia_level * insignia_uv_size[1],
+			insignia_type * insignia_uv_size[2],
+		},
+		{
+			insignia_level * insignia_uv_size[1] + insignia_uv_size[1],
+			insignia_type * insignia_uv_size[2] + insignia_uv_size[2],
+		},
+	}
+	local insignia_addon_uv_size = {
+		0.25,
+		1,
+	}
+	local addon_level = math.floor(level - 1) % 5
+	local insignia_addon_uvs
+
+	if addon_level > 0 then
+		insignia_addon_uvs = {
+			{
+				(addon_level - 1) * insignia_addon_uv_size[1],
+				0,
+			},
+			{
+				(addon_level - 1) * insignia_addon_uv_size[1] + insignia_addon_uv_size[1],
+				1,
+			},
+		}
+	end
+
+	return insignia_main_uvs, insignia_addon_uvs
 end

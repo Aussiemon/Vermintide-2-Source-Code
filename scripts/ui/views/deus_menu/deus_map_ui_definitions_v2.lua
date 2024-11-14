@@ -4,8 +4,13 @@ require("scripts/ui/views/deus_menu/ui_widgets_deus")
 
 local RETAINED_MODE_ENABLED = false
 local portraits_pos = {
-	0,
+	UISettings.INSIGNIA_OFFSET + 20,
 	-55,
+	1,
+}
+local insignias_pos = {
+	-35,
+	0,
 	1,
 }
 local frame_pos = {
@@ -14,7 +19,7 @@ local frame_pos = {
 	2,
 }
 local texts_pos = {
-	50,
+	50 + UISettings.INSIGNIA_OFFSET + 20 + 10,
 	20,
 	0,
 }
@@ -151,6 +156,16 @@ local scenegraph_definition = {
 			0,
 		},
 	},
+	player_1_insignia = {
+		horizontal_alignment = "left",
+		parent = "player_1",
+		vertical_alignment = "top",
+		position = insignias_pos,
+		size = {
+			0,
+			0,
+		},
+	},
 	player_1_texts = {
 		horizontal_alignment = "center",
 		parent = "player_1",
@@ -190,6 +205,16 @@ local scenegraph_definition = {
 		parent = "player_2",
 		vertical_alignment = "center",
 		position = portraits_pos,
+		size = {
+			0,
+			0,
+		},
+	},
+	player_2_insignia = {
+		horizontal_alignment = "left",
+		parent = "player_2",
+		vertical_alignment = "top",
+		position = insignias_pos,
 		size = {
 			0,
 			0,
@@ -243,6 +268,16 @@ local scenegraph_definition = {
 			0,
 		},
 	},
+	player_3_insignia = {
+		horizontal_alignment = "left",
+		parent = "player_3",
+		vertical_alignment = "top",
+		position = insignias_pos,
+		size = {
+			0,
+			0,
+		},
+	},
 	player_3_texts = {
 		horizontal_alignment = "center",
 		parent = "player_3",
@@ -282,6 +317,16 @@ local scenegraph_definition = {
 		parent = "player_4",
 		vertical_alignment = "center",
 		position = portraits_pos,
+		size = {
+			0,
+			0,
+		},
+	},
+	player_4_insignia = {
+		horizontal_alignment = "left",
+		parent = "player_4",
+		vertical_alignment = "top",
+		position = insignias_pos,
 		size = {
 			0,
 			0,

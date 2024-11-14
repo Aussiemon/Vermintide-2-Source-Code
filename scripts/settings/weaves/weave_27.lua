@@ -25,65 +25,7 @@ return {
 				"objective_specials_raid",
 			},
 			objective_settings = {
-				objective_lists = {
-					{
-						kill_enemies = {},
-						weave_explosive_barrel_socket_007 = {
-							is_scored = true,
-							on_start_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("capture_point_1_event_small", spawner_id)
-							end,
-						},
-						weave_limited_item_track_spawner_001 = {
-							template_name = "gargoyle_head_spawner",
-							on_first_pickup_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("weave_spot_event_skaven_specials_small", spawner_id)
-							end,
-						},
-					},
-					{
-						kill_enemies = {},
-						weave_explosive_barrel_socket_003 = {
-							is_scored = true,
-							on_start_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("weave_spot_event_boss_minotaur_nodelay", spawner_id)
-							end,
-						},
-						weave_limited_item_track_spawner_006 = {
-							template_name = "gargoyle_head_spawner",
-							on_first_pickup_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("weave_spot_event_skaven_specials_medium", spawner_id)
-							end,
-						},
-					},
-					{
-						kill_enemies = {},
-						weave_explosive_barrel_socket_004 = {
-							is_scored = true,
-							on_start_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("objective_specials_raid", spawner_id)
-							end,
-						},
-						weave_limited_item_track_spawner_004 = {
-							template_name = "gargoyle_head_spawner",
-							on_first_pickup_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:start_terror_event("objective_event_beastmen", spawner_id)
-							end,
-						},
-					},
-				},
+				objective_lists = "weave_27",
 			},
 			bonus_time_on_complete = WeaveSettings.bonus_time,
 			system_seeds = {

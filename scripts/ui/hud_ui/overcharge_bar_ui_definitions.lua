@@ -4,6 +4,10 @@ local DEFAULT_BAR_SIZE = {
 	250,
 	16,
 }
+local DEFAULT_DARK_PACT_BAR_SIZE = {
+	250,
+	70,
+}
 local scenegraph_definition = {
 	screen = {
 		scale = "fit",
@@ -52,6 +56,17 @@ local scenegraph_definition = {
 			1,
 		},
 	},
+	charge_bar_dark_pact = {
+		horizontal_alignment = "center",
+		parent = "screen_bottom_pivot",
+		vertical_alignment = "center",
+		size = DEFAULT_DARK_PACT_BAR_SIZE,
+		position = {
+			0,
+			-120,
+			1,
+		},
+	},
 }
 local frame_settings = UIFrameSettings.frame_outer_glow_01
 local frame_corner = frame_settings.texture_sizes.corner
@@ -62,4 +77,5 @@ return {
 	scenegraph_definition = scenegraph_definition,
 	widget_definitions = widget_definitions,
 	DEFAULT_BAR_SIZE = DEFAULT_BAR_SIZE,
+	DEFAULT_DARK_PACT_BAR_SIZE = DEFAULT_DARK_PACT_BAR_SIZE,
 }

@@ -34,6 +34,10 @@ BackendInterfaceLootBenchmark.achievement_rewards_claimed = function (self, achi
 	return nil
 end
 
+BackendInterfaceLootBenchmark.get_achievement_rewards = function (self, achievement_id)
+	return nil
+end
+
 BackendInterfaceLootBenchmark.can_claim_achievement_rewards = function (self, achievement_id)
 	return false
 end

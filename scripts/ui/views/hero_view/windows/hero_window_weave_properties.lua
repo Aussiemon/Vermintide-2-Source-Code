@@ -235,7 +235,7 @@ end
 HeroWindowWeaveProperties._selected_item = function (self)
 	local params = self._params
 
-	return params.selected_item
+	return params.selected_item, params.selected_item and params.selected_item.backend_id
 end
 
 HeroWindowWeaveProperties._selected_unit_name = function (self)
@@ -635,7 +635,7 @@ HeroWindowWeaveProperties._populate_menu_option_widget = function (self, entry_d
 		content.icon = icon
 	end
 
-	local forge_level = self._forge_level
+	local forge_level = self:_forge_level()
 	local required_forge_level = entry_data.required_forge_level
 	local locked = forge_level < required_forge_level
 	local button_hotspot = content.button_hotspot
@@ -1138,7 +1138,10 @@ HeroWindowWeaveProperties.update = function (self, dt, t)
 		local response = self._upgrade_magic_level_response
 
 		if response ~= nil then
-			self:_upgrade_magic_level_done(response)
+			local success = response.success
+			local previous_level = response.previous_level
+
+			self:_upgrade_magic_level_done(success, previous_level)
 
 			self._upgrade_magic_level_done_time = nil
 			self._upgrade_magic_level_response = nil
@@ -1376,22 +1379,27 @@ HeroWindowWeaveProperties._upgrade_magic_level = function (self)
 	local item_backend_id = item and item.backend_id
 	local backend_manger = Managers.backend
 	local backend_interface_weaves = backend_manger:get_interface("weaves")
-	local callback = callback(self, "_upgrade_magic_level_cb")
+	local num_levels = 1
+	local magic_level = self:_magic_level_and_power()
+	local callback = callback(self, "_upgrade_magic_level_cb", magic_level)
 
 	if item_backend_id then
-		backend_interface_weaves:upgrade_item_magic_level(item_backend_id, callback)
+		backend_interface_weaves:upgrade_item_magic_level(num_levels, item_backend_id, callback)
 	else
-		backend_interface_weaves:upgrade_career_magic_level(career_name, callback)
+		backend_interface_weaves:upgrade_career_magic_level(num_levels, career_name, callback)
 	end
 end
 
-HeroWindowWeaveProperties._upgrade_magic_level_cb = function (self, success)
+HeroWindowWeaveProperties._upgrade_magic_level_cb = function (self, previous_level, success)
 	print("_upgrade_magic_level_cb")
 
-	self._upgrade_magic_level_response = success
+	self._upgrade_magic_level_response = {
+		success = success,
+		previous_level = previous_level,
+	}
 end
 
-HeroWindowWeaveProperties._upgrade_magic_level_done = function (self, success)
+HeroWindowWeaveProperties._upgrade_magic_level_done = function (self, success, previous_level)
 	self._params.upgrading = nil
 
 	self._parent:unblock_input()
@@ -1402,7 +1410,7 @@ HeroWindowWeaveProperties._upgrade_magic_level_done = function (self, success)
 	upgrade_button.content.upgrading = false
 	upgrade_button.content.button_hotspot.disable_button = false
 
-	self:_sync_backend_loadout(success)
+	self:_sync_backend_loadout(success, previous_level)
 
 	local selected_item = self:_selected_item()
 
@@ -1436,14 +1444,35 @@ HeroWindowWeaveProperties._upgrade_magic_level_done = function (self, success)
 	self:_start_transition_animation(animation_name)
 end
 
-HeroWindowWeaveProperties._magic_level = function (self)
-	return self._current_magic_level or 0
+HeroWindowWeaveProperties._magic_level_and_power = function (self)
+	local backend_interface_weaves = Managers.backend:get_interface("weaves")
+	local career_name = self._career_name
+	local _, item_backend_id = self:_selected_item()
+	local magic_level, magic_power
+
+	if item_backend_id then
+		magic_level = backend_interface_weaves:get_item_magic_level(item_backend_id)
+		magic_power = backend_interface_weaves:get_item_power_level(item_backend_id)
+		magic_power = UIUtils.presentable_hero_power_level_weaves(magic_power)
+	else
+		magic_level = backend_interface_weaves:get_career_magic_level(career_name)
+		magic_power = backend_interface_weaves:get_career_power_level(career_name)
+		magic_power = magic_power and UIUtils.presentable_hero_power_level_weaves(magic_power)
+	end
+
+	return magic_level or 0, magic_power or 0
 end
 
-HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
+HeroWindowWeaveProperties._forge_level = function (self)
+	local backend_interface_weaves = Managers.backend:get_interface("weaves")
+
+	return backend_interface_weaves:get_forge_level()
+end
+
+HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded, previous_level_if_upgraded)
 	local career_name = self._career_name
-	local item = self:_selected_item()
-	local item_backend_id = item and item.backend_id
+	local item, item_backend_id = self:_selected_item()
+	local magic_level, magic_power = self:_magic_level_and_power()
 	local backend_manger = Managers.backend
 	local backend_interface_weaves = backend_manger:get_interface("weaves")
 	local properties = backend_interface_weaves:get_loadout_properties(career_name, item_backend_id)
@@ -1454,33 +1483,20 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
 
 	self:_set_mastery_amount(initial_mastery, current_mastery, play_sound)
 
-	local title_text = ""
-	local sub_title_text = ""
-	local magic_level, max_magic_level, magic_power
+	local title_text, sub_title_text
 
 	if item_backend_id then
-		max_magic_level = backend_interface_weaves:max_magic_level()
-		magic_level = backend_interface_weaves:get_item_magic_level(item_backend_id)
-		magic_power = backend_interface_weaves:get_item_power_level(item_backend_id)
-		magic_power = UIUtils.presentable_hero_power_level_weaves(magic_power)
-
 		local item_data = item.data
 
 		title_text = Localize(item_data.display_name)
 		sub_title_text = Localize(item_data.item_type)
 	else
 		title_text = Localize("weave_amulet_name")
-		max_magic_level = backend_interface_weaves:max_magic_level()
-		magic_level = backend_interface_weaves:get_career_magic_level(career_name)
-		magic_power = backend_interface_weaves:get_career_power_level(career_name)
-		magic_power = magic_power and UIUtils.presentable_hero_power_level_weaves(magic_power)
 
 		local career_settings = CareerSettings[career_name]
 
 		sub_title_text = Localize(career_settings.display_name)
 	end
-
-	self._current_magic_level = magic_level
 
 	self:_set_title_text(title_text, sub_title_text)
 
@@ -1505,20 +1521,16 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
 		self._ui_scenegraph[level_title_widget.scenegraph_id].local_position[1] = 0
 	end
 
-	local forge_level = backend_interface_weaves:get_forge_level()
-
-	self._forge_level = forge_level
-
-	local forge_progression_steps = backend_interface_weaves:forge_max_level()
-	local is_max_forge_level = forge_progression_steps == forge_level
+	local max_magic_level = backend_interface_weaves:max_magic_level()
 	local magic_level_cap = backend_interface_weaves:forge_magic_level_cap()
 	local essence_amount = backend_interface_weaves:get_essence()
+	local num_levels = 1
 	local upgrade_cost
 
 	if item_backend_id then
-		upgrade_cost = backend_interface_weaves:magic_item_upgrade_cost(item_backend_id)
+		upgrade_cost = backend_interface_weaves:magic_item_upgrade_cost(num_levels, item_backend_id)
 	else
-		upgrade_cost = backend_interface_weaves:career_upgrade_cost(career_name)
+		upgrade_cost = backend_interface_weaves:career_upgrade_cost(num_levels, career_name)
 	end
 
 	local is_max_level = max_magic_level <= magic_level
@@ -1559,7 +1571,7 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
 
 			content.tooltip = tooltip_data
 
-			local is_new = unlock_level == magic_level and upgraded
+			local is_new = upgraded and previous_level_if_upgraded < unlock_level and unlock_level <= magic_level and upgraded
 
 			if is_new then
 				content.new = is_new
@@ -1623,7 +1635,7 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
 
 			content.tooltip = tooltip_data
 
-			local is_new = unlock_level == magic_level and upgraded
+			local is_new = upgraded and previous_level_if_upgraded < unlock_level and unlock_level <= magic_level and upgraded
 
 			if is_new then
 				content.new = is_new
@@ -1696,7 +1708,7 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
 
 			content.tooltip = tooltip_data
 
-			local is_new = unlock_level == magic_level and upgraded
+			local is_new = upgraded and previous_level_if_upgraded < unlock_level and unlock_level <= magic_level and upgraded
 
 			if is_new then
 				content.new = is_new
@@ -1747,14 +1759,18 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
 	end
 
 	self:_set_clear_button_enabled_state(can_clear_slots)
-	self:_setup_upgrade_tooltip(magic_level, max_magic_level, item)
+	self:_setup_upgrade_tooltip(1)
 end
 
-HeroWindowWeaveProperties._setup_upgrade_tooltip = function (self, magic_level, max_magic_level, item)
+HeroWindowWeaveProperties._setup_upgrade_tooltip = function (self, num_levels)
+	local item = self:_selected_item()
 	local widgets_by_name = self._widgets_by_name
 	local upgrade_button = widgets_by_name.upgrade_button
 	local upgrade_tooltip_data
-	local next_magic_level = magic_level + 1
+	local backend_interface_weaves = Managers.backend:get_interface("weaves")
+	local max_magic_level = backend_interface_weaves:max_magic_level()
+	local magic_level = self:_magic_level_and_power()
+	local next_magic_level = magic_level + num_levels
 
 	if next_magic_level <= max_magic_level then
 		upgrade_tooltip_data = {
@@ -1770,10 +1786,10 @@ HeroWindowWeaveProperties._setup_upgrade_tooltip = function (self, magic_level, 
 		if progression_properties then
 			local counter = 0
 
-			for slot_index, data in pairs(progression_properties) do
+			for _, data in pairs(progression_properties) do
 				local unlock_level = data.unlock_level
 
-				if unlock_level == next_magic_level then
+				if magic_level < unlock_level and unlock_level <= next_magic_level then
 					counter = counter + 1
 				end
 			end
@@ -1790,10 +1806,10 @@ HeroWindowWeaveProperties._setup_upgrade_tooltip = function (self, magic_level, 
 		if progression_talents then
 			local counter = 0
 
-			for slot_index, data in pairs(progression_talents) do
+			for _, data in pairs(progression_talents) do
 				local unlock_level = data.unlock_level
 
-				if unlock_level == next_magic_level then
+				if magic_level < unlock_level and unlock_level <= next_magic_level then
 					counter = counter + 1
 				end
 			end
@@ -1808,10 +1824,10 @@ HeroWindowWeaveProperties._setup_upgrade_tooltip = function (self, magic_level, 
 		if progression_traits then
 			local counter = 0
 
-			for slot_index, data in pairs(progression_traits) do
+			for _, data in pairs(progression_traits) do
 				local unlock_level = data.unlock_level
 
-				if unlock_level == next_magic_level then
+				if magic_level < unlock_level and unlock_level <= next_magic_level then
 					counter = counter + 1
 				end
 			end
@@ -1825,12 +1841,12 @@ HeroWindowWeaveProperties._setup_upgrade_tooltip = function (self, magic_level, 
 
 		local mastery_per_level = is_item and WeaveMasterySettings.item_mastery_per_magic_level or WeaveMasterySettings.career_mastery_per_magic_level
 
-		upgrade_tooltip_data.upgrade_mastery_text = "+" .. mastery_per_level .. " " .. Localize("menu_weave_forge_tooltip_mastery_title")
+		upgrade_tooltip_data.upgrade_mastery_text = "+" .. mastery_per_level * num_levels .. " " .. Localize("menu_weave_forge_tooltip_mastery_title")
 
 		if is_item then
 			local power_level_per_magic_level = PowerLevelFromMagicLevel.power_level_per_magic_level
 
-			upgrade_tooltip_data.upgrade_power_text = "+" .. power_level_per_magic_level .. " " .. Localize("menu_weave_forge_loadout_power_title")
+			upgrade_tooltip_data.upgrade_power_text = "+" .. power_level_per_magic_level * num_levels .. " " .. Localize("menu_weave_forge_loadout_power_title")
 		end
 	end
 
@@ -1885,7 +1901,7 @@ HeroWindowWeaveProperties._draw_slots = function (self, ui_renderer, dt)
 	local selecting_slot = false
 	local parent = self._parent
 	local input_service = parent:window_input_service()
-	local magic_level = self:_magic_level()
+	local magic_level = self:_magic_level_and_power()
 	local hover_enter = false
 	local hover_exit = false
 
@@ -2490,7 +2506,7 @@ HeroWindowWeaveProperties._find_next_available_slot = function (self, menu_optio
 	local slot_categories = category_slots_by_type[menu_option]
 	local category_slots = slot_categories[menu_category]
 	local num_category_slots = #category_slots
-	local magic_level = self:_magic_level()
+	local magic_level = self:_magic_level_and_power()
 	local start_index = 1
 	local index = start_index
 	local continue = true

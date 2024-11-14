@@ -113,8 +113,8 @@ GameModeInn.FAIL_LEVEL = function (self)
 	FAIL_LEVEL_VAR = true
 end
 
-GameModeInn.player_entered_game_session = function (self, peer_id, local_player_id, wanted_party_index)
-	GameModeInn.super.player_entered_game_session(self, peer_id, local_player_id, wanted_party_index)
+GameModeInn.player_entered_game_session = function (self, peer_id, local_player_id, requested_party_index)
+	GameModeInn.super.player_entered_game_session(self, peer_id, local_player_id, requested_party_index)
 
 	local status = Managers.party:get_player_status(peer_id, local_player_id)
 
@@ -408,4 +408,6 @@ GameModeInn._cb_start_menu_closed = function (self)
 	end
 
 	Managers.ui:ingame_ui().has_left_menu = true
+
+	Managers.state.event:trigger("tutorial_trigger", "keep_menu_left")
 end

@@ -299,6 +299,20 @@ ScriptWorld.free_flight_viewport = function (world, name)
 	return viewports[name]
 end
 
+ScriptWorld._run_safe_animation_callbacks = function ()
+	local entity_manager = Managers.state.entity
+
+	if not entity_manager then
+		return
+	end
+
+	local animation_system = entity_manager:system("animation_system")
+
+	if animation_system then
+		animation_system:run_safe_animation_callbacks()
+	end
+end
+
 ScriptWorld.update = function (world, dt, anim_callback, scene_callback)
 	if World.get_data(world, "active") then
 		if World.get_data(world, "paused") then
@@ -310,6 +324,8 @@ ScriptWorld.update = function (world, dt, anim_callback, scene_callback)
 		else
 			World.update_animations(world, dt)
 		end
+
+		ScriptWorld._run_safe_animation_callbacks()
 
 		if scene_callback then
 			World.update_scene_with_callback(world, dt, scene_callback)

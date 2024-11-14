@@ -103,8 +103,8 @@ template.create_widget_definition = function (scenegraph_id)
 		content = {
 			arrow = "console_consumable_icon_arrow_02",
 			distance_text = "",
-			icon = "world_marker_ping",
-			icon_pulse = "world_marker_ping",
+			icon = "ping_friendly",
+			icon_pulse = "ping_friendly",
 			text = "",
 			world_marker_icon_response_1 = "world_marker_ping_response_1",
 			world_marker_icon_response_2 = "world_marker_ping_response_2",
@@ -115,12 +115,12 @@ template.create_widget_definition = function (scenegraph_id)
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
 				texture_size = {
-					59.25,
-					59.25,
+					41,
+					41,
 				},
 				default_size = {
-					59.25,
-					59.25,
+					41,
+					41,
 				},
 				color = {
 					255,
@@ -138,12 +138,12 @@ template.create_widget_definition = function (scenegraph_id)
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
 				texture_size = {
-					56.25,
-					56.25,
+					40,
+					40,
 				},
 				default_size = {
-					56.25,
-					56.25,
+					40,
+					40,
 				},
 				color = {
 					255,
@@ -161,12 +161,12 @@ template.create_widget_definition = function (scenegraph_id)
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
 				texture_size = {
-					56.25,
-					56.25,
+					40,
+					40,
 				},
 				default_size = {
-					56.25,
-					56.25,
+					40,
+					40,
 				},
 				color = {
 					255,
@@ -352,13 +352,13 @@ template.create_widget_definition = function (scenegraph_id)
 				},
 				text_color = {
 					255,
-					255,
-					255,
-					255,
+					216,
+					216,
+					216,
 				},
 				offset = {
 					-75,
-					-110,
+					-102,
 					2,
 				},
 			},
@@ -420,7 +420,6 @@ local function update_response_animation(progress_timer, dt, style)
 end
 
 template.update_function = function (ui_renderer, widget, marker, settings, dt, t)
-	local animating = false
 	local content = widget.content
 	local style = widget.style
 	local is_inside_frustum = content.is_inside_frustum
@@ -432,7 +431,6 @@ template.update_function = function (ui_renderer, widget, marker, settings, dt, 
 		local progress, in_progress = update_spawn_pulse_animation(content.spawn_progress_timer, dt, style.icon_spawn_pulse)
 
 		content.spawn_progress_timer = in_progress and progress or nil
-		animating = in_progress
 	end
 
 	for i = 1, 3 do
@@ -444,7 +442,6 @@ template.update_function = function (ui_renderer, widget, marker, settings, dt, 
 			local progress, in_progress = update_response_animation(response.timer, dt, style[icon_id])
 
 			content[id].timer = in_progress and progress or nil
-			animating = animating or in_progress
 		end
 	end
 
@@ -453,5 +450,16 @@ template.update_function = function (ui_renderer, widget, marker, settings, dt, 
 	arrow_style.angle = angle + math.pi * 0.5
 	content.distance_text = distance > 1 and tostring(UIUtils.comma_value(math.floor(distance))) .. "m" or ""
 
-	return animating
+	local am = math.clamp(0.3 + (1 - content.forward_dot_dir) * 499.99999999999955, 0, 1)
+
+	if am ~= 1 then
+		local alpha = 255 * am
+
+		style.icon.color[1] = alpha
+		style.icon_bg.color[1] = alpha
+		style.arrow.color[1] = alpha
+		style.text.text_color[1] = alpha
+	end
+
+	return true
 end

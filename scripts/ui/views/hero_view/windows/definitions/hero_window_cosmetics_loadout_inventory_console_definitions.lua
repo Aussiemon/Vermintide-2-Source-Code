@@ -226,6 +226,16 @@ local category_settings = {
 		},
 		icon = UISettings.slot_icons.portrait_frame,
 	},
+	{
+		hero_specific_filter = true,
+		item_filter = "gather_weapon_pose_blueprints",
+		name = "poses",
+		display_name = Localize("inventory_screen_poses_title"),
+		item_types = {
+			"weapon_pose",
+		},
+		icon = UISettings.slot_icons.portrait_frame,
+	},
 }
 local widgets = {
 	item_grid = UIWidgets.create_grid("item_grid", scenegraph_definition.item_grid.size, 6, 5, 16, 10, false),

@@ -319,14 +319,19 @@ StoreWindowCategoryItemList._update_item_list = function (self)
 	local added_filters = 0
 
 	for index, path_name in ipairs(path) do
-		local page = pages[path_name]
+		local page = pages[path_name] or self._parent:get_temporary_page(path_name)
+		local page_item_filter = page.item_filter
+		local page_exclusive_filter = page.exclusive_filter
 
-		if page.item_filter then
+		if page_exclusive_filter then
+			item_filter = page_item_filter
+			added_filters = 1
+		elseif page_item_filter then
 			if added_filters > 0 then
 				item_filter = item_filter .. " and "
 			end
 
-			item_filter = item_filter .. page.item_filter
+			item_filter = item_filter .. page_item_filter
 			added_filters = added_filters + 1
 		end
 	end
@@ -342,15 +347,50 @@ StoreWindowCategoryItemList._update_item_list = function (self)
 	local insert_index = 0
 
 	for backend_id, item in pairs(items) do
-		local product = {
-			item = item,
-			type = product_type,
-			product_id = item.key,
-			sort_key = StoreLayoutConfig.make_sort_key(item),
-		}
+		local bundle_item_data = item.data
+		local bundle = bundle_item_data and bundle_item_data.bundle
 
-		insert_index = insert_index + 1
-		layout[insert_index] = product
+		if bundle then
+			for _, item_key in ipairs(bundle.BundledItems) do
+				local bundled_item = ItemMasterList[item_key]
+				local product = {
+					item = bundled_item,
+					type = bundled_item.item_type,
+					product_item = item,
+					product_id = bundle_item_data.key,
+					sort_key = Localize(bundle_item_data.display_name),
+					settings = {
+						hide_new = true,
+						hide_price = true,
+						icon_size = bundle_item_data.icon_size,
+					},
+					page_name = bundle_item_data.display_name,
+					page = {
+						category_button_texture = "store_category_icon_pactsworn",
+						exclusive_filter = true,
+						hide_preview_details = true,
+						layout = "item_list",
+						sort_order = 5,
+						sound_event_enter = "Play_hud_store_category_button",
+						type = "collection_item",
+						display_name = bundle_item_data.display_name,
+						item_filter = "item_type == " .. bundle_item_data.item_type .. " and item_key == " .. bundle_item_data.key,
+					},
+				}
+
+				layout[#layout + 1] = product
+			end
+		else
+			local product = {
+				item = item,
+				type = product_type,
+				product_id = item.key,
+				sort_key = StoreLayoutConfig.make_sort_key(item),
+			}
+
+			insert_index = insert_index + 1
+			layout[insert_index] = product
+		end
 	end
 
 	table.sort(layout, StoreLayoutConfig.compare_sort_key)
@@ -360,7 +400,7 @@ StoreWindowCategoryItemList._update_item_list = function (self)
 	self:_create_product_widgets(layout)
 
 	local current_page_name = path[#path]
-	local current_page = pages[current_page_name]
+	local current_page = pages[current_page_name] or self._parent:get_temporary_page(current_page_name)
 	local current_page_display_name = current_page.display_name
 
 	self:_set_title_texts(Localize(current_page_display_name))
@@ -453,14 +493,21 @@ StoreWindowCategoryItemList._on_list_index_pressed = function (self, index)
 	local entry = layout[index]
 	local product_id = entry.product_id
 	local parent = self._parent
+	local keep_global_shader_flags = true
 	local current_store_path = parent:get_store_path()
 	local new_path = table.clone(current_store_path)
 
-	new_path[#new_path + 1] = "all_items"
+	if entry.page then
+		local page_name = entry.page_name
 
-	local keep_global_shader_flags = true
+		new_path[#new_path + 1] = page_name
 
-	parent:go_to_product(product_id, new_path, nil, keep_global_shader_flags)
+		parent:go_to_store_path(new_path, keep_global_shader_flags, entry.page)
+	else
+		new_path[#new_path + 1] = "all_items"
+
+		parent:go_to_product(product_id, new_path, nil, keep_global_shader_flags)
+	end
 end
 
 StoreWindowCategoryItemList._create_product_widgets = function (self, layout)

@@ -3230,7 +3230,7 @@ DamageProfileTemplates.staff_fireball_charged = {
 			1,
 			4,
 			1,
-			0.1,
+			1,
 			0,
 		},
 		impact = {
@@ -3854,6 +3854,66 @@ DamageProfileTemplates.frag_grenade_glance.default_target.power_distribution.att
 DamageProfileTemplates.frag_grenade_glance.default_target.power_distribution.impact = 1.5
 DamageProfileTemplates.frag_grenade_glance.default_target.power_distribution.attack_template = "drakegun_glance"
 DamageProfileTemplates.frag_grenade_glance.default_target.power_distribution.damage_type = "grenade_glance"
+DamageProfileTemplates.engineer_grenade = {
+	charge_value = "grenade",
+	is_explosion = true,
+	no_stagger_damage_reduction_ranged = true,
+	armor_modifier = {
+		attack = {
+			1,
+			0.5,
+			1.5,
+			1,
+			1,
+			1,
+		},
+		impact = {
+			1,
+			0.5,
+			2,
+			1,
+			1,
+			1,
+		},
+	},
+	default_target = {
+		attack_template = "drakegun",
+		damage_type = "grenade",
+		power_distribution = {
+			attack = 1.5,
+			impact = 0.5,
+		},
+	},
+}
+DamageProfileTemplates.engineer_grenade_glance = {
+	charge_value = "grenade",
+	is_explosion = true,
+	no_stagger_damage_reduction_ranged = true,
+	armor_modifier = {
+		attack = {
+			1,
+			0.5,
+			3,
+			1,
+			1,
+		},
+		impact = {
+			1,
+			0.5,
+			1,
+			1,
+			1,
+		},
+	},
+	default_target = {
+		attack_template = "drakegun_glance",
+		damage_type = "grenade_glance",
+		power_distribution = {
+			attack = 0.5,
+			impact = 0.25,
+		},
+	},
+}
 DamageProfileTemplates.explosive_barrel = {
 	charge_value = "grenade",
 	is_explosion = true,

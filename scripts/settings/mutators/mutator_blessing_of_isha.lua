@@ -127,7 +127,7 @@ return {
 		return false
 	end,
 	server_player_disabled_function = function (context, data, disabling_event, target_unit, attacker_unit)
-		if not data.buff_active then
+		if target_unit ~= data.blessed_unit then
 			return
 		end
 
@@ -149,7 +149,7 @@ return {
 		end
 	end,
 	server_player_hit_function = function (context, data, hit_unit, attacker_unit, hit_data)
-		if not data.buff_active then
+		if hit_unit ~= data.blessed_unit then
 			return
 		end
 
@@ -176,6 +176,11 @@ return {
 
 		if #not_disabled_units == 1 then
 			local unit = not_disabled_units[1]
+
+			if data.blessed_unit ~= unit then
+				remove_invincibility_buffs(data.buff_ids)
+			end
+
 			local buff_extension = ScriptUnit.extension(unit, "buff_system")
 			local has_buff = buff_extension:has_buff_type("blessing_of_isha_invincibility")
 
@@ -186,10 +191,12 @@ return {
 			end
 
 			data.buff_active = true
+			data.blessed_unit = unit
 		else
 			remove_invincibility_buffs(data.buff_ids)
 
 			data.buff_active = false
+			data.blessed_unit = nil
 		end
 	end,
 }

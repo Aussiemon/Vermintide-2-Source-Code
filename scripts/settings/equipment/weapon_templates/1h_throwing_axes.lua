@@ -468,6 +468,24 @@ weapon_template.tooltip_detail = {
 	},
 }
 
+local weapon_template_vs = table.clone(weapon_template)
+
+weapon_template_vs.actions.weapon_reload.default.allowed_chain_actions = {
+	{
+		action = "action_wield",
+		input = "action_wield",
+		start_time = 0.2,
+		sub_action = "default",
+	},
+	{
+		action = "weapon_reload",
+		auto_chain = true,
+		start_time = 0.8,
+		sub_action = "catch",
+	},
+}
+
 return {
 	one_handed_throwing_axes_template = weapon_template,
+	one_handed_throwing_axes_template_vs = weapon_template_vs,
 }

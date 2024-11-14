@@ -16,7 +16,12 @@ ActionCareerDREngineer.client_owner_start_action = function (self, new_action, t
 
 	if self._talent_extension:has_talent("bardin_engineer_reduced_ability_fire_slowdown") then
 		self._max_rps = new_action.max_rps * 1.3
-		self._current_rps = self._max_rps
+
+		if Managers.mechanism:current_mechanism_name() == "versus" then
+			self._current_rps = math.max(self._current_rps, self._max_rps * CareerConstants.dr_engineer.talent_6_2_starting_rps_vs)
+		else
+			self._current_rps = math.max(self._current_rps, self._max_rps * CareerConstants.dr_engineer.talent_6_2_starting_rps)
+		end
 	end
 
 	Managers.state.achievement:trigger_event("crank_gun_fire_start", self.owner_unit)

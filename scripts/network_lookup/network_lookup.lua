@@ -20,9 +20,9 @@ require("scripts/settings/terror_event_blueprints")
 require("scripts/unit_extensions/generic/interactions")
 require("scripts/settings/survival_settings")
 require("scripts/settings/spawn_unit_templates")
-require("scripts/unit_extensions/weaves/weave_item_templates")
 require("scripts/settings/unlock_settings")
 require("scripts/entity_system/systems/projectile/drone_templates")
+require("scripts/settings/objective_lists")
 DLCUtils.require_list("statistics_database")
 require("scripts/settings/twitch_settings")
 require("scripts/unit_extensions/weapons/area_damage/liquid/damage_blob_templates")
@@ -170,7 +170,7 @@ for _, dlc in pairs(DLCSettings) do
 
 				NetworkLookup[name] = create_lookup(base_table, rawget(_G, table_name))
 			else
-				local table_names = string.split(table_data, ".")
+				local table_names = string.split_deprecated(table_data, ".")
 				local table_values = rawget(_G, table_names[1])
 
 				for i = 2, #table_names do
@@ -394,6 +394,8 @@ NetworkLookup.husks = {
 	"units/beings/enemies/chaos_sorcerer_tentacle/chr_chaos_sorcerer_tentacle",
 	"units/beings/enemies/chaos_vortex_sorcerer/chr_chaos_vortex_sorcerer",
 	"units/beings/enemies/chaos_spawn/chr_chaos_spawn",
+	"units/beings/npcs/pleb/chr_npc_pleb_male",
+	"units/beings/npcs/regimental_soldier/chr_npc_regimental_soldier_male",
 	"units/weapons/enemy/wpn_chaos_plague_vortex/wpn_chaos_plague_vortex",
 	"units/beings/critters/chr_critter_pig/chr_critter_pig",
 	"units/beings/critters/chr_critter_common_rat/chr_critter_common_rat",
@@ -589,6 +591,7 @@ NetworkLookup.go_types = {
 	"interest_point_level_unit",
 	"sync_unit",
 	"player_unit_health",
+	"dark_pact_horde_ability",
 	"liquid_aoe_unit",
 	"payload",
 	"rotating_hazard",
@@ -604,7 +607,7 @@ NetworkLookup.go_types = {
 	"game_mode_data",
 	"ai_unit_chaos_troll",
 	"destructible_objective_unit",
-	"weave_objective",
+	"objective",
 	"weave_capture_point_unit",
 	"weave_target_unit",
 	"weave_interaction_unit",
@@ -717,11 +720,7 @@ NetworkLookup.lobby_data = {
 	"selected_mission_id",
 	"num_players",
 	"matchmaking",
-	"player_slot_1",
-	"player_slot_2",
-	"player_slot_3",
-	"player_slot_4",
-	"player_slot_5",
+	"reserved_profiles",
 	"host",
 	"unique_server_name",
 	"difficulty",
@@ -771,6 +770,11 @@ NetworkLookup.matchmaking_types = {
 
 DLCUtils.append("matchmaking_types", NetworkLookup.matchmaking_types)
 
+NetworkLookup.host_types = {
+	"player_hosted",
+	"community_dedicated_server",
+	"official_dedicated_server",
+}
 NetworkLookup.buff_attack_types = {
 	"n/a",
 	"aoe",
@@ -956,19 +960,14 @@ NetworkLookup.damage_types = {
 	"warpfire_ground",
 	"warpfire_face",
 	"cutting_berserker",
-	"player_stunned_damage",
 	"piercing",
-	"slashing_buffed",
 	"slashing",
 	"blunt",
 	"projectile",
-	"player_overcharge_explosion_brw",
-	"player_overcharge_explosion_dwarf",
 	"knockdown_bleed",
 	"blade_storm",
 	"death_explosion",
 	"nurgle_ball",
-	"nurgle_geyser",
 	"light_slashing_linesman",
 	"light_slashing_linesman_hs",
 	"slashing_linesman",
@@ -997,18 +996,12 @@ NetworkLookup.damage_types = {
 	"blunt_tank",
 	"blunt_tank_uppercut",
 	"heavy_blunt_tank",
-	"light_stab_linesman",
-	"stab_linesman",
-	"heavy_stab_linesman",
 	"light_stab_smiter",
 	"stab_smiter",
 	"heavy_stab_smiter",
 	"light_stab_fencer",
 	"stab_fencer",
 	"heavy_stab_fencer",
-	"light_stab_tank",
-	"stab_tank",
-	"heavy_stab_tank",
 	"shot_sniper",
 	"shot_carbine",
 	"shot_machinegun",
@@ -1059,9 +1052,6 @@ NetworkLookup.damage_types = {
 	"push",
 	"pack_master_grab",
 	"overcharge",
-	"weapon_bleed_dot_dagger",
-	"weapon_bleed_dot_whc",
-	"weapon_bleed_dot_maidenguard",
 	"sync_health",
 	"killing_blow",
 	"execute",
@@ -1088,17 +1078,18 @@ end
 NetworkLookup.weave_names = create_lookup({
 	"n/a",
 }, WeaveSettings.templates)
-NetworkLookup.weave_objective_names = create_lookup({}, WeaveSettings.weave_objective_names)
-NetworkLookup.weave_item_template_names = create_lookup({}, WeaveItemTemplates)
+NetworkLookup.objective_names = create_lookup({
+	"n/a",
+}, WeaveSettings.weave_objective_names)
 
 if GameModeSettings.versus then
-	NetworkLookup.versus_objective_names = create_lookup({
-		"n/a",
-	}, GameModeSettings.versus.objective_names)
+	table.append(NetworkLookup.objective_names, table.keys(GameModeSettings.versus.objective_names))
+
 	NetworkLookup.versus_dark_pact_profile_order = table.shallow_copy(GameModeSettings.versus.dark_pact_profile_order)
 	NetworkLookup.versus_dark_pact_profile_rules = table.keys(GameModeSettings.versus.dark_pact_profile_rules)
 end
 
+NetworkLookup.objective_lists = create_lookup({}, ObjectiveLists)
 NetworkLookup.hit_react_types = {
 	"light",
 	"medium",
@@ -1302,6 +1293,7 @@ NetworkLookup.effects = {
 	"fx/chr_warp_fire_flamethrower_remains_01",
 	"fx/chr_warp_fire_flamethrower_01",
 	"fx/chr_warpfire_flamethrower_1p",
+	"fx/chr_warp_fire_flamethrower_01_1p_versus",
 	"fx/chr_warp_fire_explosion_01",
 	"fx/wpnfx_range_crit_01",
 	"fx/chaos_sorcerer_plague_wave_hit_01",
@@ -1374,6 +1366,7 @@ NetworkLookup.statuses = {
 	"dead",
 	"blocking",
 	"charge_blocking",
+	"block_broken",
 	"wounded",
 	"revived",
 	"pushed",
@@ -1405,6 +1398,8 @@ NetworkLookup.statuses = {
 	"in_end_zone",
 	"in_liquid",
 	"overpowered",
+	"reviving",
+	"gutter_runner_leaping",
 }
 NetworkLookup.grabbed_by_tentacle = {
 	"portal_hanging",
@@ -1595,6 +1590,8 @@ NetworkLookup.sound_events = {
 	"Play_hud_versus_score_points",
 	"Play_versus_hud_last_hero_down_riser",
 	"Stop_versus_hud_last_hero_down_riser",
+	"Stop_versus_hud_last_hero_down_riser_interrupted",
+	"Play_versus_pactsworn_horde_ability",
 	"Play_enemy_chaos_bulwark_stagger",
 	"Play_enemy_chaos_bulwark_stagger_break",
 	"Play_boon_aoe_zone_explode_attackspeed",
@@ -1992,7 +1989,6 @@ NetworkLookup.statistics = {
 	"vortex_sorcerer_killed_by_melee",
 	"ratling_gunner_killed_by_melee",
 	"ratling_gunner_killed_while_shooting",
-	"ratling_gunner_blocked_shot",
 	"chaos_spawn_killed_while_grabbing",
 	"chaos_spawn_killed_without_having_grabbed",
 	"chaos_troll_killed_without_regen",
@@ -2106,6 +2102,9 @@ NetworkLookup.matchmaking_regions = {
 	"africa",
 	"default",
 }
+NetworkLookup.join_methods = {
+	"party",
+}
 NetworkLookup.debug_commands = {
 	"load_patched_items_into_backend",
 	"set_time_scale",
@@ -2172,9 +2171,10 @@ NetworkLookup.weapon_skins = create_lookup({
 NetworkLookup.performance_titles = create_lookup({
 	"n/a",
 }, PerformanceTitles.titles)
-NetworkLookup.social_wheel_events = create_lookup({
-	"n/a",
-}, SocialWheelSettingsLookup)
+
+local base_social_wheel_lookup_table = table.clone(SocialWheelSettingsNetworkLookupBase)
+
+NetworkLookup.social_wheel_events = create_lookup(base_social_wheel_lookup_table, SocialWheelSettingsLookup)
 NetworkLookup.challenges = create_lookup({}, InGameChallengeTemplates)
 NetworkLookup.challenge_rewards = create_lookup({}, InGameChallengeRewards)
 NetworkLookup.challenge_categories = {}
@@ -2311,6 +2311,7 @@ NetworkLookup.dialogues = DialogueLookup
 NetworkLookup.dialogue_profiles = {
 	"inn_keeper",
 	"vs_pactsworn_mission_giver",
+	"vs_heroes_mission_giver",
 }
 
 table.append_unique(NetworkLookup.dialogue_profiles, table.values(table.select_map(SPProfiles, function (_, profile)

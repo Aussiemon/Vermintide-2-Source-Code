@@ -6,6 +6,7 @@ local weapon_template = {}
 weapon_template.actions = {
 	action_career_hold = {
 		default = {
+			aim_obstructed_by_walls = true,
 			aim_time = 0,
 			anim_end_event = "ability_finished",
 			anim_event = "scholar_burning_head_ability_charge",

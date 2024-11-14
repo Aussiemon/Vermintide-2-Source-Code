@@ -1,14 +1,11 @@
 ﻿-- chunkname: @scripts/unit_extensions/generic/interactions.lua
 
-InteractionResult = {
+InteractionResult = table.mirror_array_inplace({
 	"ONGOING",
 	"SUCCESS",
 	"FAILURE",
 	"USER_ENDED",
-}
-
-table.mirror_array_inplace(InteractionResult)
-
+})
 InteractionCustomChecks = InteractionCustomChecks or {}
 
 InteractionCustomChecks.dialogue_not_playing = function (interactor_unit, interactable_unit)
@@ -228,6 +225,10 @@ InteractionDefinitions.revive = {
 				end
 
 				event_data.target_name = ScriptUnit.extension(interactable_unit, "dialogue_system").context.player_profile
+
+				local status_ext = ScriptUnit.extension(interactor_unit, "status_system")
+
+				status_ext:set_reviving(true, interactable_unit)
 			end
 
 			data.duration = duration
@@ -277,6 +278,10 @@ InteractionDefinitions.revive = {
 					first_person_extension:set_wanted_player_height("knocked_down", t)
 				end
 			end
+
+			local status_ext = ScriptUnit.extension(interactor_unit, "status_system")
+
+			status_ext:set_reviving(false, interactable_unit)
 		end,
 		get_progress = function (data, config, t)
 			local duration = data.duration
@@ -1766,7 +1771,7 @@ InteractionDefinitions.heal = {
 		end,
 		stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
 			if result == InteractionResult.SUCCESS then
-				local attack_template = AttackTemplates[config.attack_template]
+				local attack_template = DamageUtils.get_attack_template(config.attack_template)
 				local health_extension = ScriptUnit.extension(interactable_unit, "health_system")
 				local interactor_buff_extension = ScriptUnit.extension(interactor_unit, "buff_system")
 				local heal_type = attack_template.heal_type
@@ -2392,10 +2397,16 @@ InteractionDefinitions.map_access.config.swap_to_3p = false
 InteractionDefinitions.map_access.client.stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
 	data.start_time = nil
 
+	local menu_sub_state_name
+	local is_in_versus_custom_lobby = Managers.matchmaking:is_in_versus_custom_game_lobby()
+
+	menu_sub_state_name = is_in_versus_custom_lobby and "versus_player_hosted_lobby" or nil
+
 	if result == InteractionResult.SUCCESS and not data.is_husk then
 		Managers.ui:handle_transition("start_game_view_force", {
 			menu_state_name = "play",
 			use_fade = true,
+			menu_sub_state_name = menu_sub_state_name,
 		})
 	end
 end
@@ -2405,9 +2416,13 @@ InteractionDefinitions.map_access.client.hud_description = function (interactabl
 end
 
 InteractionDefinitions.map_access.client.can_interact = function (interactor_unit, interactable_unit, data, config)
+	local is_in_versus_custom_lobby
+
+	is_in_versus_custom_lobby = Managers.matchmaking:is_in_versus_custom_game_lobby()
+
 	local is_game_matchmaking = Managers.matchmaking:is_game_matchmaking()
 
-	return not is_game_matchmaking
+	return not is_game_matchmaking or is_in_versus_custom_lobby
 end
 
 InteractionDefinitions.unlock_key_access = InteractionDefinitions.unlock_key_access or table.clone(InteractionDefinitions.smartobject)
@@ -2660,6 +2675,28 @@ InteractionDefinitions.difficulty_selection_access.client.hud_description = func
 	local current_difficulty = unit_get_data(interactable_unit, "current_difficulty")
 
 	return unit_get_data(interactable_unit, "interaction_data", "hud_description"), DifficultySettings[DefaultDifficulties[current_difficulty]].display_name
+end
+
+InteractionDefinitions.handbook_access = InteractionDefinitions.handbook_access or table.clone(InteractionDefinitions.smartobject)
+InteractionDefinitions.handbook_access.config.swap_to_3p = false
+
+InteractionDefinitions.handbook_access.client.stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
+	data.start_time = nil
+
+	if result == InteractionResult.SUCCESS and not data.is_husk then
+		Managers.ui:handle_transition("hero_view_force", {
+			menu_state_name = "handbook",
+			use_fade = true,
+		})
+	end
+end
+
+InteractionDefinitions.handbook_access.client.can_interact = function (interactor_unit, interactable_unit, data, config)
+	return true
+end
+
+InteractionDefinitions.handbook_access.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
+	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), "interaction_action_open"
 end
 
 InteractionDefinitions.inn_door_transition = InteractionDefinitions.inn_door_transition or table.clone(InteractionDefinitions.smartobject)

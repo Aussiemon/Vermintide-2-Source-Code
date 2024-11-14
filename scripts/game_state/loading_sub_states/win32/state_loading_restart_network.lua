@@ -55,9 +55,9 @@ StateLoadingRestartNetwork._init_network = function (self)
 	local loading_context = self.parent.parent.loading_context
 	local increment_lobby_port = IS_WINDOWS and true
 
-	Managers.lobby:setup_network_options(increment_lobby_port)
+	LobbySetup.setup_network_options(increment_lobby_port)
 
-	local network_options = Managers.lobby:network_options()
+	local network_options = LobbySetup.network_options()
 	local platform = PLATFORM
 
 	if not rawget(_G, "LobbyInternal") or not LobbyInternal.network_initialized() then
@@ -256,7 +256,7 @@ StateLoadingRestartNetwork.update = function (self, dt, t)
 		end
 	elseif self._server_created and self._lobby_joined then
 		return StateLoadingRunning
-	elseif Managers.account:all_lobbies_freed() and not self._creating_lobby then
+	elseif IS_CONSOLE and Managers.account:all_sessions_cleaned_up() and not self._creating_lobby then
 		self.parent:setup_lobby_host(callback(self, "cb_server_created"))
 
 		self._creating_lobby = true

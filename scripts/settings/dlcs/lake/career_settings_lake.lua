@@ -19,9 +19,10 @@ CareerSettings.es_questingknight = {
 	preview_wield_slot = "melee",
 	profile_name = "empire_soldier",
 	required_dlc = "lake",
-	sort_order = 1,
+	sort_order = 4,
 	sound_character = "empire_soldier_bretonnian_knight",
 	talent_tree_index = 4,
+	versus_preview_animation = "versus_career_select_04",
 	breed = PlayerBreeds.hero_es_questingknight,
 	item_types = {},
 	activated_ability = ActivatedAbilitySettings.es_4,
@@ -110,6 +111,9 @@ CareerSettings.es_questingknight = {
 		slot_frame = {
 			"frame",
 		},
+		slot_pose = {
+			"weapon_pose",
+		},
 	},
 	loadout_equipment_slots = {
 		"melee",
@@ -117,6 +121,7 @@ CareerSettings.es_questingknight = {
 		"necklace",
 		"ring",
 		"trinket",
+		"weapon_pose",
 	},
 }
 CareerNameAchievementMapping.es_questingknight = "questingknight"

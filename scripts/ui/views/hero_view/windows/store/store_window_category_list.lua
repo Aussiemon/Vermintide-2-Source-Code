@@ -83,10 +83,12 @@ StoreWindowCategoryList._create_ui_elements = function (self, params, offset)
 	self:_setup_list_elements()
 end
 
-StoreWindowCategoryList.on_exit = function (self, params)
+StoreWindowCategoryList.on_exit = function (self, params, force_unload)
 	print("[HeroViewWindow] Exit Substate StoreWindowCategoryList")
 
 	self._ui_animator = nil
+
+	self:_destroy_product_widgets(force_unload)
 end
 
 StoreWindowCategoryList.update = function (self, dt, t)
@@ -282,14 +284,24 @@ StoreWindowCategoryList._populate_list = function (self, layout)
 		550,
 		80,
 	}
-	local definition = UIWidgets.create_store_category_entry_definition(scenegraph_id, size, masked)
 	local backend_items = Managers.backend:get_interface("items")
 	local item_rarity_textures = UISettings.item_rarity_textures
 	local parent = self._parent
 	local current_store_path = parent:get_store_path()
 
 	for i, entry in ipairs(layout) do
-		local widget = UIWidget.init(definition)
+		local entry_type = entry.type
+		local widget
+
+		if entry_type == "collection_item" then
+			local definition = UIWidgets.create_store_collection_entry_definition(scenegraph_id, size, masked)
+
+			widget = UIWidget.init(definition)
+		else
+			local definition = UIWidgets.create_store_category_entry_definition(scenegraph_id, size, masked)
+
+			widget = UIWidget.init(definition)
+		end
 
 		widgets[i] = widget
 
@@ -300,18 +312,22 @@ StoreWindowCategoryList._populate_list = function (self, layout)
 
 		content.title = title
 
-		local category_texture = entry.category_texture
+		if entry_type == "collection_item" then
+			self._parent:populate_product_widget(widget, entry)
+		else
+			local category_texture = entry.category_texture
 
-		content.category_texture = category_texture
+			content.category_texture = category_texture
 
-		if category_texture then
-			local category_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(category_texture)
-			local category_texture_default_size = category_texture_settings.size
-			local category_texture_style = style.category_texture
-			local category_texture_size = category_texture_style.texture_size
+			if category_texture then
+				local category_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(category_texture)
+				local category_texture_default_size = category_texture_settings.size
+				local category_texture_style = style.category_texture
+				local category_texture_size = category_texture_style.texture_size
 
-			category_texture_size[1] = category_texture_default_size[1]
-			category_texture_size[2] = category_texture_default_size[2]
+				category_texture_size[1] = category_texture_default_size[1]
+				category_texture_size[2] = category_texture_default_size[2]
+			end
 		end
 
 		local path = table.clone(current_store_path)
@@ -325,6 +341,22 @@ StoreWindowCategoryList._populate_list = function (self, layout)
 
 	self:_align_entry_widgets()
 	self:_initialize_scrollbar()
+end
+
+StoreWindowCategoryList._destroy_product_widgets = function (self, force_unload)
+	local parent = self._parent
+	local layout = self._layout
+	local widgets = self._list_widgets
+
+	if widgets and layout then
+		for i, entry in ipairs(layout) do
+			if entry.type == "collection_item" then
+				local widget = widgets[i]
+
+				parent:destroy_product_widget(widget, entry, force_unload)
+			end
+		end
+	end
 end
 
 StoreWindowCategoryList._align_entry_widgets = function (self)
@@ -498,6 +530,8 @@ StoreWindowCategoryList._animate_list_entry = function (self, content, style, dt
 end
 
 StoreWindowCategoryList._setup_list_elements = function (self)
+	self:_destroy_product_widgets()
+
 	local parent = self._parent
 	local path = parent:get_store_path()
 	local path_structure = StoreLayoutConfig.structure
@@ -508,19 +542,55 @@ StoreWindowCategoryList._setup_list_elements = function (self)
 
 	local categories = {}
 	local pages = StoreLayoutConfig.pages
+	local current_page = pages[path[#path]]
 
-	for page_name, _ in pairs(path_structure) do
-		local page = pages[page_name]
+	if current_page.type == "collection_item" then
+		local item_filter = current_page.item_filter
+		local items
 
-		if self:_valid_category(page.item_filter) then
+		if item_filter then
+			items = self:_get_items_by_filter(item_filter)
+		else
+			items = self:_get_all_items()
+		end
+
+		for _, item in ipairs(items) do
+			local item_data = item.data
 			local entry = {
-				display_name = page.display_name,
-				page_name = page_name,
-				sort_order = page.sort_order,
-				category_texture = page.category_button_texture,
+				type = "collection_item",
+				display_name = item_data.display_name,
+				page_name = item_data.display_name,
+				page = {
+					category_button_texture = "store_category_icon_pactsworn",
+					exclusive_filter = true,
+					hide_preview_details = true,
+					layout = "item_list",
+					sound_event_enter = "Play_hud_store_category_button",
+					type = "collection_item",
+					display_name = item_data.display_name,
+					item_filter = item_filter .. " and item_key == " .. item_data.key,
+				},
+				product_id = item_data.key,
+				item = item,
+				sort_order = Localize(item_data.display_name),
 			}
 
 			categories[#categories + 1] = entry
+		end
+	else
+		for page_name, _ in pairs(path_structure) do
+			local page = pages[page_name]
+
+			if self:_valid_category(page.item_filter) then
+				local entry = {
+					display_name = page.display_name,
+					page_name = page_name,
+					sort_order = page.sort_order,
+					category_texture = page.category_button_texture,
+				}
+
+				categories[#categories + 1] = entry
+			end
 		end
 	end
 
@@ -547,7 +617,7 @@ StoreWindowCategoryList._on_list_index_pressed = function (self, index)
 
 	new_path[#new_path + 1] = page_name
 
-	parent:go_to_store_path(new_path)
+	parent:go_to_store_path(new_path, nil, entry.page)
 end
 
 StoreWindowCategoryList._on_list_index_selected = function (self, index, scrollbar_animation_percentage)

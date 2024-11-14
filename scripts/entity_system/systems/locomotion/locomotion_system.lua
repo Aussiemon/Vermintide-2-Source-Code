@@ -388,6 +388,12 @@ LocomotionSystem.rpc_teleport_unit_to = function (self, channel_id, game_object_
 	local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 
 	locomotion_extension:teleport_to(position, rotation)
+
+	if self.is_server then
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_teleport_unit_to", peer_id, game_object_id, position, rotation)
+	end
 end
 
 LocomotionSystem.rpc_teleport_unit_with_yaw_rotation = function (self, channel_id, game_object_id, position, yaw)

@@ -15,7 +15,7 @@ BuffAreaExtension.init = function (self, extension_init_context, unit, extension
 	local t = Managers.time:time("game")
 	local template = extension_init_data.sub_buff_template
 
-	self._duration = t + (template.duration or math.huge)
+	self._end_t = t + (template.duration or math.huge)
 	self.sub_buff_id = extension_init_data.sub_buff_id
 	self.template = template
 
@@ -27,10 +27,8 @@ BuffAreaExtension.init = function (self, extension_init_context, unit, extension
 	self.radius_squared = radius * radius
 	self._buff_area_system = extension_init_context.owning_system
 	self._unlimited = self.template.unlimited
-
-	local side_by_unit = Managers.state.side.side_by_unit
-
-	self.side = side_by_unit[self.source_unit] or side_by_unit[self.owner_unit]
+	self.side_id = extension_init_data.side_id
+	self.side = Managers.state.side:get_side(self.side_id)
 	self._buff_allies = template.buff_allies
 	self._buff_enemies = template.buff_enemies
 	self._buff_self = template.buff_self
@@ -99,11 +97,15 @@ BuffAreaExtension._cleanup_inside_units = function (self)
 end
 
 BuffAreaExtension.update = function (self, unit, input, dt, context, t)
+	if self._particle_state and self._particle_state.update_fx then
+		BuffUtils.update_attached_particles(self._world, self._particle_state, t)
+	end
+
 	if not self._is_owner then
 		return
 	end
 
-	if self._duration and t > self._duration then
+	if self._end_t and t > self._end_t then
 		self:_remove_unit()
 		self:_cleanup_inside_units()
 
@@ -221,7 +223,7 @@ end
 BuffAreaExtension.set_duration = function (self, duration)
 	local t = Managers.time:time("game")
 
-	self._duration = t + duration
+	self._end_t = t + duration
 end
 
 BuffAreaExtension._leave_func = function (self, leaving_unit)
@@ -330,17 +332,17 @@ BuffAreaExtension._spawn_particles = function (self)
 
 	local is_first_person = false
 
-	self._particle_datas = BuffUtils.create_attached_particles(self._world, particles, self._unit, is_first_person)
+	self._particle_state = BuffUtils.create_attached_particles(self._world, particles, self._unit, is_first_person, self.source_unit, self._end_t)
 end
 
 BuffAreaExtension._destroy_particles = function (self)
-	local particle_datas = self._particle_data
+	local particle_state = self._particle_state
 
-	if not particle_datas then
+	if not particle_state then
 		return
 	end
 
-	BuffUtils.destroy_attached_particles(self._world, particle_datas)
+	BuffUtils.destroy_attached_particles(self._world, particle_state)
 end
 
 BuffAreaExtension._play_unit_audio = function (self)

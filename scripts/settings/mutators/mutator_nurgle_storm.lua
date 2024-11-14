@@ -157,12 +157,6 @@ return {
 		data.summoning_vortex_t = nil
 	end,
 	server_stop_function = function (context, data)
-		local astar_running = table.size(data.unchecked_positions)
-
-		if astar_running then
-			GwNavAStar.cancel(data.astar)
-		end
-
 		GwNavAStar.destroy(data.astar)
 	end,
 }

@@ -3,6 +3,7 @@
 require("scripts/ui/dlc_upsell/common_popup_settings")
 require("scripts/ui/dlc_upsell/unlock_reminder_popup")
 require("scripts/ui/dlc_upsell/upsell_popup")
+require("scripts/ui/dlc_upsell/handbook_popup")
 
 CommonPopupHandler = class(CommonPopupHandler)
 
@@ -26,7 +27,7 @@ CommonPopupHandler.destroy = function (self)
 		local popup = self._popups[i]
 
 		if popup then
-			popup:destroy()
+			popup:delete()
 
 			self._popups[i] = nil
 		end
@@ -43,16 +44,6 @@ CommonPopupHandler.update = function (self, dt, t)
 	local managers_state = Managers.state
 
 	if managers_state and managers_state.voting:vote_in_progress() and Managers.popup:has_popup() then
-		popup:hide()
-
-		return
-	end
-
-	local current_menu_active = self:_is_menu_active()
-
-	if self._menu_active ~= current_menu_active and popup:is_popup_showing() then
-		self._menu_active = current_menu_active
-
 		popup:hide()
 
 		return
@@ -97,25 +88,25 @@ CommonPopupHandler.queue_popup = function (self, ui_popup)
 	return popup_id
 end
 
-CommonPopupHandler.ui_show_popup = function (self, dlc_name, type)
-	local popup_settings = CommonPopupSettings[dlc_name]
+CommonPopupHandler.ui_show_popup = function (self, popup_name, type)
+	local popup_settings = CommonPopupSettings[popup_name]
 
 	if not popup_settings then
-		printf("No popup settings for DLC %q", dlc_name)
+		printf("No popup settings for DLC %q", popup_name)
 
 		return
 	end
 
 	if popup_settings.popup_type == type then
-		self:new_popup(dlc_name, popup_settings)
+		self:new_popup(popup_name, popup_settings)
 
 		return
 	end
 end
 
-CommonPopupHandler.new_popup = function (self, dlc_name, popup_settings)
+CommonPopupHandler.new_popup = function (self, popup_name, popup_settings)
 	local popup_class = rawget(_G, popup_settings.class_name)
-	local popup = popup_class:new(self._context, dlc_name, popup_settings)
+	local popup = popup_class:new(self._context, popup_name, popup_settings)
 
 	self:queue_popup(popup)
 end

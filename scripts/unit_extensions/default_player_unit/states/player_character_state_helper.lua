@@ -567,6 +567,12 @@ end
 CharacterStateHelper.look = function (input_extension, viewport_name, first_person_extension, status_extension, inventory_extension, override_sens, override_delta)
 	local camera_manager = Managers.state.camera
 	local look_sensitivity = override_sens or camera_manager:has_viewport(viewport_name) and camera_manager:fov(viewport_name) / 0.785 or 1
+	local unit = input_extension.unit
+	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
+	local look_input_sensitivity = movement_settings_table.look_input_sensitivity
+
+	look_sensitivity = look_sensitivity * look_input_sensitivity
+
 	local is_3p = false
 	local look_delta = CharacterStateHelper.get_look_input(input_extension, status_extension, inventory_extension, is_3p)
 
@@ -795,7 +801,7 @@ CharacterStateHelper._check_cooldown = function (weapon_extension, action, t)
 	return is_in_cooldown
 end
 
-CharacterStateHelper.wield_input = function (input_extension, inventory_extension, action_name, verify)
+CharacterStateHelper.wield_input = function (input_extension, inventory_extension, action_name)
 	if action_name ~= "action_wield" then
 		return nil
 	end
@@ -1001,7 +1007,9 @@ CharacterStateHelper._check_chain_action = function (wield_input, action_data, i
 		input = wield_input
 	end
 
-	if input or action_data.auto_chain then
+	local auto_chain = action_data.auto_chain and input_extra_requirement
+
+	if input or auto_chain then
 		local select_chance = action_data.select_chance or 1
 		local is_selected = select_chance >= math.random()
 		local chain_action_available = current_action_extension:is_chain_action_available(action_data, t)
@@ -1033,6 +1041,8 @@ CharacterStateHelper._check_chain_action = function (wield_input, action_data, i
 
 					if buffered and action_data.input == "action_one_release" then
 						force_release_input = "action_one_hold"
+					elseif auto_chain and action_data.input == "action_wield" then
+						-- Nothing
 					end
 
 					return true, new_action, new_sub_action, wield_input, send_buffer, clear_buffer, force_release_input
@@ -1500,28 +1510,43 @@ end
 local EPSILON_MOVEMENT_SPEED_TO_IDLE_ANIM = 0.05
 local SLOW_MOVEMENT_SPEED = 2.1
 
-CharacterStateHelper.get_move_animation = function (locomotion_extension, input_extension, status_extension)
+CharacterStateHelper.get_move_animation = function (locomotion_extension, input_extension, status_extension, last_anim_3p)
 	local move_direction = CharacterStateHelper.get_movement_input(input_extension)
-	local slowed = Vector3.length(Vector3.flat(locomotion_extension:current_velocity())) < SLOW_MOVEMENT_SPEED
+	local move_fwd = "move_fwd"
+	local move_bwd = "move_bwd"
+	local running
 
 	if status_extension.unit then
 		local unit = status_extension.unit
 		local breed = Unit.get_data(unit, "breed")
 
-		if breed and breed.run_threshold then
-			slowed = Vector3.length(Vector3.flat(locomotion_extension:current_velocity())) < breed.run_threshold
+		if breed then
+			local run_threshold = breed.run_threshold
+
+			if run_threshold then
+				local return_to_walk_threshold = breed.walk_threshold or run_threshold * 0.9
+				local threshold = run_threshold
+
+				if last_anim_3p == move_fwd or last_anim_3p == move_bwd then
+					threshold = return_to_walk_threshold
+				end
+
+				running = threshold < Vector3.length(Vector3.flat(locomotion_extension:current_velocity()))
+			end
 		end
 	end
+
+	running = running or Vector3.length(Vector3.flat(locomotion_extension:current_velocity())) > SLOW_MOVEMENT_SPEED
 
 	if Vector3.length(locomotion_extension:current_velocity()) < EPSILON_MOVEMENT_SPEED_TO_IDLE_ANIM then
 		return "idle", "idle"
 	end
 
 	if move_direction.y < 0 then
-		return "move_bwd", slowed and "walk_bwd" or "move_bwd"
+		return move_bwd, running and move_bwd or "walk_bwd"
 	end
 
-	return "move_fwd", slowed and "walk_fwd" or "move_fwd"
+	return move_fwd, running and move_fwd or "walk_fwd"
 end
 
 CharacterStateHelper.is_colliding_down = function (unit)
@@ -1846,22 +1871,18 @@ CharacterStateHelper.is_enemy_character = function (unit)
 end
 
 CharacterStateHelper.is_viable_stab_target = function (unit, target_unit, target_status_extension)
-	local is_assisted_respawning = CharacterStateHelper.is_waiting_for_assisted_respawn(target_status_extension)
-	local is_knocked_down = target_status_extension:is_knocked_down()
-	local is_pounced_down = target_status_extension:is_pounced_down() and target_status_extension:get_pouncer_unit() ~= unit
-	local is_grabbed_by_chaos_spawn = target_status_extension:is_grabbed_by_chaos_spawn()
-	local is_hanging = target_status_extension.pack_master_status == "pack_master_hanging"
-	local is_using_transport = target_status_extension.using_transport
-	local ledge_hanging = target_status_extension.is_ledge_hanging
-	local is_grabbed_by_corruptor = target_status_extension:is_grabbed_by_corruptor()
-	local is_grabbed_by_packmaster = target_status_extension:is_grabbed_by_pack_master()
-	local is_dark_pact_ally = CharacterStateHelper.is_enemy_character(target_unit)
-
-	if not is_knocked_down and not is_assisted_respawning and not is_pounced_down and not is_hanging and not is_using_transport and not ledge_hanging and not is_grabbed_by_chaos_spawn and not is_grabbed_by_corruptor and not is_grabbed_by_packmaster and not is_dark_pact_ally then
-		return true
+	if target_status_extension:disabled_by_other(unit) then
+		return false
 	end
 
-	return false
+	local is_using_transport = target_status_extension:is_using_transport()
+	local is_dark_pact_ally = CharacterStateHelper.is_enemy_character(target_unit)
+
+	if is_using_transport or is_dark_pact_ally then
+		return false
+	end
+
+	return true
 end
 
 CharacterStateHelper.ghost_mode = function (ghost_mode_extension, input_extension)
@@ -1874,9 +1895,7 @@ CharacterStateHelper.ghost_mode = function (ghost_mode_extension, input_extensio
 			local force_leave = false
 
 			ghost_mode_extension:try_leave_ghost_mode(force_leave)
-		end
-
-		if input_extension:get("ghost_mode_enter") then
+		elseif input_extension:get("ghost_mode_enter") then
 			local find_furthest_player = false
 
 			ghost_mode_extension:teleport_player(find_furthest_player)

@@ -153,6 +153,8 @@ PlayerUnitFirstPerson.extensions_ready = function (self)
 end
 
 PlayerUnitFirstPerson.destroy = function (self)
+	AttachmentUtils.unlink(self.world, self.first_person_attachment_unit)
+
 	local unit_spawner = Managers.state.unit_spawner
 
 	unit_spawner:mark_for_deletion(self.first_person_unit)
@@ -625,7 +627,25 @@ PlayerUnitFirstPerson.update_rotation = function (self, t, dt)
 
 		local weapon_sway_settings = self._weapon_sway_settings or DEFAULT_WEAPON_SWAY_SETTINGS
 		local camera_look_sensitivity = weapon_sway_settings.camera_look_sensitivity or 1
-		local look_rotation = self:calculate_look_rotation(rotation, look_delta * camera_look_sensitivity)
+		local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(self.unit)
+		local look_input_limit = movement_settings_table.look_input_limit
+
+		if look_input_limit ~= -1 then
+			local look_input_limit_multiplier = movement_settings_table.look_input_limit_multiplier
+
+			look_input_limit = look_input_limit * look_input_limit_multiplier
+
+			local frame_limit = look_input_limit * dt
+			local length = Vector3.length(look_delta)
+
+			if frame_limit < length then
+				local limit_multiplier = frame_limit / length
+
+				look_delta = look_delta * limit_multiplier
+			end
+		end
+
+		local look_rotation = self:calculate_look_rotation(rotation, look_delta * camera_look_sensitivity, dt)
 
 		if aim_assist_unit and Managers.input:is_device_active("gamepad") then
 			look_rotation = self:calculate_aim_assisted_rotation(look_rotation, aim_assist_data, look_delta, dt)
@@ -1202,12 +1222,7 @@ PlayerUnitFirstPerson.update_rig_movement = function (self, look_delta)
 	local is_melee = not is_ranged
 	local item_data = self.inventory_extension:get_item_data(item_slot_name)
 	local weapon_template_name = item_data and item_data.template
-	local weapon_template
-
-	if weapon_template_name then
-		weapon_template = Weapons[weapon_template_name]
-	end
-
+	local weapon_template = WeaponUtils.get_weapon_template(weapon_template_name)
 	local position = Unit.local_position(self.first_person_unit, 0)
 	local orientation = Unit.local_rotation(self.first_person_unit, 0)
 	local forward = Quaternion.forward(orientation)
@@ -1356,6 +1371,16 @@ local weapon_sway_lerp_variables = {
 		5,
 	},
 	vs_ratling_gunner = {
+		5,
+		5,
+		5,
+	},
+	vs_chaos_troll = {
+		5,
+		5,
+		5,
+	},
+	vs_rat_ogre = {
 		5,
 		5,
 		5,

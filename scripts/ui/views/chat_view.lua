@@ -253,8 +253,8 @@ ChatView.cb_list_end = function (self, key, message_type, username, parameter, u
 	self._list_updated = true
 
 	local function sort_func(a, b)
-		local channel_a = string.split(a, ",")
-		local channel_b = string.split(b, ",")
+		local channel_a = string.split_deprecated(a, ",")
+		local channel_b = string.split_deprecated(b, ",")
 		local a_num_clients = tonumber(channel_a[2])
 		local b_num_clients = tonumber(channel_b[2])
 
@@ -1074,7 +1074,7 @@ ChatView._handle_and_draw_channels_list = function (self, ui_renderer, ui_sceneg
 			if not CHANNEL_MATCHES[index] then
 				break
 			else
-				local strings = string.split(CHANNEL_MATCHES[index], ",")
+				local strings = string.split_deprecated(CHANNEL_MATCHES[index], ",")
 
 				channel_entry_content.channel_name = strings[1]
 

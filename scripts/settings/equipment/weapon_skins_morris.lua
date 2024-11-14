@@ -274,7 +274,7 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
 			rarity = "plentiful",
 			right_hand_unit = "units/weapons/player/wpn_bw_deus_01/wpn_bw_deus_01",
-			template = "bw_deus_01_template",
+			template = "bw_deus_01_template_1",
 		},
 	},
 	{
@@ -288,7 +288,7 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
 			rarity = "exotic",
 			right_hand_unit = "units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02",
-			template = "bw_deus_01_template",
+			template = "bw_deus_01_template_1",
 			right_hand_unit_override = {
 				bw_necromancer = "units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_baelfire",
 			},
@@ -305,7 +305,7 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
 			rarity = "unique",
 			right_hand_unit = "units/weapons/player/wpn_bw_deus_01/wpn_bw_deus_01_runed",
-			template = "bw_deus_01_template",
+			template = "bw_deus_01_template_1",
 		},
 	},
 	{
@@ -319,7 +319,7 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
 			rarity = "unique",
 			right_hand_unit = "units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_runed",
-			template = "bw_deus_01_template",
+			template = "bw_deus_01_template_1",
 			right_hand_unit_override = {
 				bw_necromancer = "units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_runed_baelfire",
 			},
@@ -336,7 +336,7 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
 			rarity = "magic",
 			right_hand_unit = "units/weapons/player/wpn_bw_deus_01/wpn_bw_deus_01_magic",
-			template = "bw_deus_01_template",
+			template = "bw_deus_01_template_1",
 		},
 	},
 	{
@@ -350,7 +350,7 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
 			rarity = "magic",
 			right_hand_unit = "units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_magic",
-			template = "bw_deus_01_template",
+			template = "bw_deus_01_template_1",
 			right_hand_unit_override = {
 				bw_necromancer = "units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_magic_baelfire",
 			},
@@ -367,7 +367,7 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
 			rarity = "exotic",
 			right_hand_unit = "units/weapons/player/wpn_bw_deus_03/wpn_bw_deus_03",
-			template = "bw_deus_01_template",
+			template = "bw_deus_01_template_1",
 		},
 	},
 	{
@@ -381,7 +381,7 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
 			rarity = "unique",
 			right_hand_unit = "units/weapons/player/wpn_bw_deus_03/wpn_bw_deus_03_runed",
-			template = "bw_deus_01_template",
+			template = "bw_deus_01_template_1",
 		},
 	},
 	{

@@ -8,6 +8,7 @@ local LOADOUT_INTERFACE_OVERRIDES = {
 	slot_frame = "items",
 	slot_hat = "items",
 	slot_melee = "deus",
+	slot_pose = "items",
 	slot_ranged = "deus",
 	slot_skin = "items",
 }

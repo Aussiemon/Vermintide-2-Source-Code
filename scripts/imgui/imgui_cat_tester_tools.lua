@@ -12,6 +12,7 @@ ImguiCatTesterTools.curated_pickup_list = ImguiCatTesterTools.curated_pickup_lis
 	"fire_grenade_t1",
 	"first_aid_kit",
 	"frag_grenade_t1",
+	"engineer_grenade_t1",
 	"grimoire",
 	"healing_draught",
 	"lamp_oil",

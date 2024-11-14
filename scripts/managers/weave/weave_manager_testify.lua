@@ -9,7 +9,7 @@ local WeaveManagerTestify = {
 		weave_manager:set_next_weave(weave_name)
 		weave_manager:set_next_objective(1)
 	end,
-	get_weave_end_zone = function (weave_number)
+	get_weave_end_zone = function (weave_manager, weave_number)
 		local weave_template = WeaveSettings.templates_ordered[weave_number]
 
 		return weave_template.objectives[1].end_zone_name

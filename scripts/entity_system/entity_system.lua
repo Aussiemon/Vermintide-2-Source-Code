@@ -79,11 +79,12 @@ require("scripts/entity_system/systems/target_override/target_override_system")
 require("scripts/entity_system/systems/position_lookup/position_lookup_system")
 require("scripts/entity_system/systems/keep_decoration/keep_decoration_system")
 require("scripts/entity_system/systems/whereabouts/whereabouts_system")
-require("scripts/entity_system/systems/weaves/weave_objective_system")
-require("scripts/entity_system/systems/weaves/weave_item_spawner_system")
+require("scripts/entity_system/systems/objective/objective_item_spawner_system")
+require("scripts/entity_system/systems/objective/objective_system")
 require("scripts/entity_system/systems/weaves/weave_loadout_system")
 require("scripts/entity_system/systems/career/career_system")
 require("scripts/entity_system/systems/disrupt_ritual/disrupt_ritual_system")
+require("scripts/entity_system/systems/puzzle/puzzle_system")
 require("scripts/entity_system/systems/unit_flow_override_system/unit_flow_override_system")
 DLCUtils.require_list("systems")
 require("scripts/unit_extensions/human/ai_player_unit/ai_anim_utils")
@@ -248,12 +249,8 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("ai_inventory_system", AIInventorySystem, entity_system_creation_context)
 	self:_add_system("ai_inventory_item_system", AIInventoryItemSystem, entity_system_creation_context)
 	self:_add_system("objective_socket_system", ObjectiveSocketSystem, entity_system_creation_context)
-
-	if not is_versus then
-		self:_add_system("weave_item_spawner_system", WeaveItemSpawnerSystem, entity_system_creation_context)
-		self:_add_system("weave_objective_system", WeaveObjectiveSystem, entity_system_creation_context)
-	end
-
+	self:_add_system("objective_item_spawner_system", ObjectiveItemSpawnerSystem, entity_system_creation_context)
+	self:_add_system("objective_system", ObjectiveSystem, entity_system_creation_context)
 	self:_add_system("limited_item_track_system", LimitedItemTrackSystem, entity_system_creation_context)
 	self:_add_system("aggro_system", AggroSystem, entity_system_creation_context)
 	self:_add_system("ping_system", PingSystem, entity_system_creation_context)
@@ -267,19 +264,13 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("projectile_system", ProjectileSystem, entity_system_creation_context)
 	self:_add_system("mutator_item_system", MutatorItemSystem, entity_system_creation_context)
 	self:_add_system("weave_loadout_system", WeaveLoadoutSystem, entity_system_creation_context)
+	self:_add_system("puzzle_system", PuzzleSystem, entity_system_creation_context)
 
 	if is_versus then
 		self:_add_system("ghost_mode_system", GhostModeSystem, entity_system_creation_context)
-		self:_add_system("versus_item_spawner_system", VersusItemSpawnerSystem, entity_system_creation_context)
-		self:_add_system("versus_objective_system", VersusObjectiveSystem, entity_system_creation_context)
+		self:_add_system("versus_horde_ability_system", VersusHordeAbilitySystem, entity_system_creation_context)
 	else
 		self.entity_manager:add_ignore_extensions({
-			"VersusVolumeObjectiveExtension",
-			"VersusInteractObjectiveExtension",
-			"VersusPayloadObjectiveExtension",
-			"VersusSocketObjectiveExtension",
-			"VersusTargetObjectiveExtension",
-			"VersusMissionObjectiveExtension",
 			"PlayerEquipmentWorldMarkerExtension",
 		})
 	end
@@ -478,16 +469,16 @@ EntitySystem._add_system = function (self, name, class, context, extension_list,
 	end
 end
 
-EntitySystem.finalize_setup = function (self)
-	self.entity_manager:finalize_setup()
-end
-
 EntitySystem.pre_update = function (self, dt)
 	self:system_update("pre_update", dt)
 end
 
 EntitySystem.update = function (self, dt)
 	self:system_update("update", dt)
+end
+
+EntitySystem.unsafe_entity_update = function (self, dt)
+	self:system_update("unsafe_entity_update", dt)
 end
 
 EntitySystem.post_update = function (self, dt)

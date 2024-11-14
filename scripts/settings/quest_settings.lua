@@ -559,26 +559,6 @@ QuestSettings.check_ratling_gunner_killed_while_shooting = function (blackboard,
 	end
 end
 
-QuestSettings.check_ratling_gunner_blocked_shot = function (unit, attacking_unit)
-	local blackboard = BLACKBOARDS[attacking_unit]
-
-	if blackboard then
-		local is_ratling_gunner = blackboard.breed.name == "skaven_ratling_gunner"
-
-		if is_ratling_gunner then
-			blackboard.has_completed_block_challenge_units = blackboard.has_completed_block_challenge_units or {}
-
-			if not blackboard.has_completed_block_challenge_units[unit] then
-				local stat_name = "ratling_gunner_blocked_shot"
-
-				increment_stat(unit, stat_name)
-
-				blackboard.has_completed_block_challenge_units[unit] = true
-			end
-		end
-	end
-end
-
 QuestSettings.check_chaos_spawn_killed_while_grabbing = function (blackboard, killer_unit)
 	local unit = blackboard.unit
 	local ai_extension = ScriptUnit.extension(unit, "ai_system")

@@ -271,7 +271,7 @@ ImguiWeaponDebug._initialize_unit = function (self, unit)
 
 		if extension then
 			local weapon = ItemMasterList[extension.item_name]
-			local template = Weapons[weapon.template] or Weapons[weapon.temporary_template]
+			local template = WeaponUtils.get_weapon_template(weapon.template) or WeaponUtils.get_weapon_template(weapon.temporary_template)
 			local armor_modifier_values = {
 				0,
 				0,
@@ -1044,9 +1044,10 @@ ImguiWeaponDebug._verify_crits = function (self)
 end
 
 ImguiWeaponDebug._dump_weapon_performance = function (self)
-	for weapon_name, template in pairs(Weapons) do
+	for weapon_name in pairs(Weapons) do
 		print(weapon_name)
 
+		local template = WeaponUtils.get_weapon_template(weapon_name)
 		local used_actions = WeaponUtils.get_used_actions(template)
 
 		for action_name, action in pairs(used_actions) do
@@ -1096,7 +1097,8 @@ ImguiWeaponDebug._check_missing_unused_actions = function (self)
 
 	print("CHECKING FOR MISSING OR UNUSED ACTIONS")
 
-	for name, template in pairs(Weapons) do
+	for name in pairs(Weapons) do
+		local template = WeaponUtils.get_weapon_template(weapon_name)
 		local used_actions, missing_actions = WeaponUtils.get_used_actions(template)
 
 		for action_name, action in pairs(missing_actions) do

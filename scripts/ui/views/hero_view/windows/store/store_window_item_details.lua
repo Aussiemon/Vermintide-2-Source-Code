@@ -155,6 +155,8 @@ StoreWindowItemDetails._present_item = function (self, item)
 
 	if item_type == "weapon_skin" then
 		sub_title_text = Localize(item_data.matching_item_key)
+	elseif item_type == "cosmetic_bundle" then
+		sub_title_text = Localize("dark_pact_skin")
 	else
 		sub_title_text = Localize(item_type)
 	end

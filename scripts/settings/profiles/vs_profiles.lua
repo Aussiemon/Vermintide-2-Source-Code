@@ -253,6 +253,7 @@ local VSProfiles = {
 		mover_profile = "filter_player_mover_pactsworn",
 		player_check_for_jumps = true,
 		role = "boss",
+		supports_motion_sickness_modes = true,
 		ui_portrait = "unit_frame_portrait_vs_chaos_troll",
 		ui_portrait_small = "unit_frame_portrait_enemy_chaos_troll",
 		unit_name = "dwarf_ranger",

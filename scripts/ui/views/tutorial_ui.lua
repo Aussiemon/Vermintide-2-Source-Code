@@ -153,27 +153,14 @@ TutorialUI.destroy = function (self)
 	GarbageLeakDetector.register_object(self, "interaction_gui")
 end
 
-TutorialUI.get_player_first_person_extension = function (self)
-	if self._first_person_extension then
-		return self._first_person_extension
-	else
-		local peer_id = self.peer_id
-		local my_player = self.player_manager:player_from_peer_id(peer_id)
-		local player_unit = my_player and my_player.player_unit
+TutorialUI._get_player_first_person_extension = function (self)
+	local peer_id = self.peer_id
+	local my_player = self.player_manager:player_from_peer_id(peer_id)
 
-		if player_unit and ScriptUnit.has_extension(player_unit, "first_person_system") then
-			local first_person_extension = ScriptUnit.extension(player_unit, "first_person_system")
-
-			self._first_person_extension = first_person_extension
-
-			return first_person_extension
-		end
-	end
+	return ScriptUnit.has_extension(my_player.player_unit, "first_person_system")
 end
 
 TutorialUI.update = function (self, dt, t)
-	self._first_person_extension = nil
-
 	if RELOAD_TUTORIAL_UI then
 		self:create_ui_elements()
 	end
@@ -297,7 +284,7 @@ TutorialUI.post_update = function (self, dt, t)
 	end
 
 	if self._visible and not script_data.disable_tutorial_ui then
-		local first_person_extension = self:get_player_first_person_extension()
+		local first_person_extension = self:_get_player_first_person_extension()
 		local render_settings = self.render_settings
 
 		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
@@ -386,7 +373,7 @@ TutorialUI.update_mission_tooltip = function (self, tooltip_tutorial, player_uni
 		end
 
 		local world_position = tooltip_tutorial.world_position:unbox()
-		local first_person_extension = self:get_player_first_person_extension()
+		local first_person_extension = self:_get_player_first_person_extension()
 		local my_position = Vector3.copy(POSITION_LOOKUP[player_unit])
 		local my_rotation = first_person_extension:current_rotation()
 		local my_direction = Quaternion.forward(my_rotation)
@@ -694,7 +681,7 @@ TutorialUI.update_objective_tooltip_widget = function (self, widget_holder, play
 	local widget = widget_holder.widget
 	local position_offset = widget.content.position_offset and Vector3.up() + widget.content.position_offset:unbox() or Vector3.up()
 	local objective_unit_position = Unit.world_position(objective_unit, 0) + position_offset
-	local first_person_extension = self:get_player_first_person_extension()
+	local first_person_extension = self:_get_player_first_person_extension()
 	local player_position = first_person_extension:current_position()
 	local player_rotation = first_person_extension:current_rotation()
 	local player_direction_forward = Quaternion.forward(player_rotation)
@@ -1565,7 +1552,7 @@ TutorialUI.show_health_bar = function (self, unit, visible)
 end
 
 TutorialUI.update_health_bars = function (self, dt, player_unit)
-	local first_person_extension = self:get_player_first_person_extension()
+	local first_person_extension = self:_get_player_first_person_extension()
 	local camera_position = first_person_extension:current_position()
 	local camera_rotation = first_person_extension:current_rotation()
 	local camera_forward = Quaternion.forward(camera_rotation)

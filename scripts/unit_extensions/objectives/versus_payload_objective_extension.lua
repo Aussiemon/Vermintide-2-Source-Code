@@ -1,9 +1,25 @@
 ﻿-- chunkname: @scripts/unit_extensions/objectives/versus_payload_objective_extension.lua
 
-VersusPayloadObjectiveExtension = class(VersusPayloadObjectiveExtension, VersusBaseObjectiveExtension)
+VersusPayloadObjectiveExtension = class(VersusPayloadObjectiveExtension, BaseObjectiveExtension)
 VersusPayloadObjectiveExtension.NAME = "VersusPayloadObjectiveExtension"
 
-VersusPayloadObjectiveExtension._activate = function (self, game_object_id, objective_data)
+VersusPayloadObjectiveExtension.init = function (self, ...)
+	VersusPayloadObjectiveExtension.super.init(self, ...)
+
+	self._total_distance = math.huge
+	self._current_distance = 0
+	self._percentage = 0
+end
+
+VersusPayloadObjectiveExtension.extensions_ready = function (self)
+	local payload_extension = ScriptUnit.has_extension(self._unit, "payload_system")
+
+	if payload_extension then
+		self._payload_extension = payload_extension
+	end
+end
+
+VersusPayloadObjectiveExtension._set_objective_data = function (self, objective_data)
 	local payload_default_settings = GameModeSettings.versus.objectives.payload
 
 	self._num_sections = objective_data.num_sections or payload_default_settings.num_sections
@@ -11,23 +27,16 @@ VersusPayloadObjectiveExtension._activate = function (self, game_object_id, obje
 	self._time_per_section = objective_data.time_per_section or payload_default_settings.time_per_section
 	self._score_for_completion = objective_data.score_for_completion or payload_default_settings.score_for_completion
 	self._time_for_completion = objective_data.time_for_completion or payload_default_settings.time_for_completion
-	self._on_complete_sound_event = objective_data.on_complete_sound_event or payload_default_settings.on_complete_sound_event
-	self._payload_extension = ScriptUnit.has_extension(self._unit, "payload_system")
-	self._spline_movement = self._payload_extension._spline_curve:movement()
-	self._total_distance = self._spline_movement:distance(1, 1, 0, #self._spline_movement._splines, #self._spline_movement:_current_spline().subdivisions, 1)
-	self._current_distance = 0
+	self._on_last_leaf_complete_sound_event = objective_data.on_last_leaf_complete_sound_event or payload_default_settings.on_last_leaf_complete_sound_event
+end
 
-	if not self._is_server then
-		self._percentage = 0
-	end
+VersusPayloadObjectiveExtension._activate = function (self)
+	self._spline_movement = self._payload_extension:movement()
+	self._total_distance = self._spline_movement:distance(1, 1, 0, #self._spline_movement._splines, #self._spline_movement:_current_spline().subdivisions, 1)
 end
 
 VersusPayloadObjectiveExtension._deactivate = function (self)
-	if not DEDICATED_SERVER then
-		local complete_event = self._on_complete_sound_event[self._local_side:name()]
-
-		self:play_local_sound(complete_event)
-	end
+	return
 end
 
 VersusPayloadObjectiveExtension._server_update = function (self, dt, t)
@@ -42,7 +51,7 @@ VersusPayloadObjectiveExtension._server_update = function (self, dt, t)
 
 		local percentage_done = self:get_percentage_done()
 
-		self:set_game_object_field("value", math.ceil(percentage_done * 100))
+		self:server_set_value(percentage_done)
 
 		if percentage_done >= (self._current_section + 1) * (1 / self._num_sections) then
 			self:on_section_completed()
@@ -51,13 +60,7 @@ VersusPayloadObjectiveExtension._server_update = function (self, dt, t)
 end
 
 VersusPayloadObjectiveExtension._client_update = function (self, dt, t)
-	local game_session = Network.game_session()
-
-	if not game_session or not self._game_object_id then
-		return
-	end
-
-	self._percentage = GameSession.game_object_field(game_session, self._game_object_id, "value") / 100
+	self._percentage = self:client_get_value()
 end
 
 VersusPayloadObjectiveExtension.get_percentage_done = function (self)

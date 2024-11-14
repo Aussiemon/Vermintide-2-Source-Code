@@ -16,10 +16,8 @@ GameModeInnVs.init = function (self, settings, world, network_server, ...)
 	self._adventure_profile_rules = AdventureProfileRules:new(self._profile_synchronizer, self._network_server)
 
 	if DEDICATED_SERVER then
-		self._stale_server_time = math.huge
 		self._auto_force_start_time = math.huge
 
-		Managers.state.event:register(self, "game_server_reserve_party_slot", "on_game_server_reserve_party_slot")
 		Managers.state.event:register(self, "game_server_unreserve_party_slot", "on_game_server_unreserve_party_slot")
 	else
 		local use_spawn_point_groups = true
@@ -32,11 +30,14 @@ GameModeInnVs.init = function (self, settings, world, network_server, ...)
 	if self._is_server then
 		self._lobby_host = network_server.lobby_host
 	end
+
+	if self._mechanism:is_hosting_versus_custom_game() then
+		self._mechanism:set_is_hosting_versus_custom_game(false)
+	end
 end
 
 GameModeInnVs.destroy = function (self)
 	if DEDICATED_SERVER then
-		Managers.state.event:unregister("game_server_reserve_party_slot", self)
 		Managers.state.event:unregister("game_server_unreserve_party_slot", self)
 	end
 end
@@ -64,6 +65,7 @@ GameModeInnVs.local_player_game_starts = function (self, player, loading_context
 		if IS_CONSOLE then
 			Managers.ui:handle_transition("initial_character_selection_force", {
 				menu_state_name = "character",
+				on_exit_callback = callback(self, "_cb_start_menu_closed"),
 			})
 		elseif GameSettingsDevelopment.skip_start_screen or Development.parameter("skip_start_screen") then
 			local first_hero_selection_made = SaveData.first_hero_selection_made
@@ -72,12 +74,16 @@ GameModeInnVs.local_player_game_starts = function (self, player, loading_context
 
 			Managers.ui:handle_transition("initial_start_menu_view_force", {
 				menu_state_name = show_hero_selection and "character" or "overview",
+				on_exit_callback = callback(self, "_cb_start_menu_closed"),
 			})
 		else
 			Managers.ui:handle_transition("initial_character_selection_force", {
 				menu_state_name = "character",
+				on_exit_callback = callback(self, "_cb_start_menu_closed"),
 			})
 		end
+	else
+		self:_cb_start_menu_closed()
 	end
 
 	if self._is_initial_spawn then
@@ -89,6 +95,25 @@ GameModeInnVs.local_player_game_starts = function (self, player, loading_context
 			LevelHelper:flow_event(self._world, "level_start_local_player_spawned")
 		end
 	end
+
+	if not DEDICATED_SERVER and Development.parameter("vs_auto_search") then
+		Managers.mechanism:request_vote({
+			dedicated_servers_aws = true,
+			dedicated_servers_win = false,
+			difficulty = "versus_base",
+			join_method = "party",
+			matchmaking_type = "standard",
+			mechanism = "versus",
+			player_hosted = false,
+			private_game = false,
+			quick_game = true,
+			request_type = "versus_quickplay",
+		})
+	end
+end
+
+GameModeInnVs._cb_start_menu_closed = function (self)
+	Managers.state.event:trigger("tutorial_trigger", "keep_menu_left")
 end
 
 GameModeInnVs.evaluate_end_conditions = function (self, round_started)
@@ -133,21 +158,20 @@ GameModeInnVs.FAIL_LEVEL = function (self)
 	FAIL_LEVEL_VAR = true
 end
 
-GameModeInnVs.player_entered_game_session = function (self, peer_id, local_player_id, wanted_party_index)
-	wanted_party_index = 1
+GameModeInnVs.player_entered_game_session = function (self, peer_id, local_player_id, requested_party_index)
+	local assigned_party_id = self._mechanism:handle_party_assignment_for_joining_peer(peer_id, local_player_id)
+	local _, current_party_id = Managers.party:get_party_from_player_id(peer_id, local_player_id)
 
-	local current_party_id, wanted_party_id = self._mechanism:handle_party_assignment_for_joining_peer(peer_id, local_player_id, wanted_party_index)
-
-	wanted_party_id = 1
+	if assigned_party_id ~= current_party_id then
+		Managers.party:request_join_party(peer_id, local_player_id, assigned_party_id)
+	end
 
 	if LAUNCH_MODE ~= "attract_benchmark" then
 		self._adventure_profile_rules:handle_profile_delegation_for_joining_player(peer_id, local_player_id)
 	end
 
-	if wanted_party_index ~= current_party_id then
-		Managers.party:request_join_party(peer_id, local_player_id, wanted_party_index)
-	elseif wanted_party_id ~= current_party_id then
-		Managers.party:request_join_party(peer_id, local_player_id, wanted_party_id)
+	if not DEDICATED_SERVER then
+		self._simple_spawning:setup_data(peer_id, local_player_id)
 	end
 end
 
@@ -170,12 +194,6 @@ GameModeInnVs.player_left_party = function (self, peer_id, local_player_id, part
 	return
 end
 
-GameModeInnVs.on_game_server_reserve_party_slot = function (self, index, peer_id, is_reserver)
-	local t = Managers.time:time("game")
-
-	self._stale_server_time = t + 60 + Math.random_range(-5, 5)
-end
-
 GameModeInnVs.on_game_server_unreserve_party_slot = function (self, slot_index, peer_id)
 	if DEDICATED_SERVER and self._mechanism:get_slot_reservation_handler():is_empty() then
 		self._transition_state = "restart_game_server"
@@ -188,39 +206,12 @@ GameModeInnVs.flow_callback_add_spawn_point = function (self, unit)
 	end
 end
 
-GameModeInnVs.hero_profile_available_for_party = function (self, party_id, profile_index, peer_id, local_player_id, ignore_bots)
-	local profile = SPProfiles[profile_index]
-	local profile_synchronizer = Managers.mechanism:profile_synchronizer()
-	local reserver_peer_id = profile_synchronizer:get_profile_index_reservation(profile_index)
-
-	return not reserver_peer_id or reserver_peer_id == peer_id
-end
-
-GameModeInnVs.profile_available = function (self, profile_synchronizer, profile_name, career_name)
-	local profile_index = FindProfileIndex(profile_name)
-	local party = Managers.party:get_party(1)
-	local occupied_slots = party.occupied_slots
-
-	for i = 1, #occupied_slots do
-		local status = occupied_slots[i]
-		local peer_id = status.peer_id
-		local local_player_id = status.local_player_id
-		local player_profile_id, player_career_id = profile_synchronizer:profile_by_peer(peer_id, local_player_id)
-
-		if player_profile_id == profile_index then
-			return false
-		end
-	end
-
-	return true
-end
-
 GameModeInnVs.get_initial_inventory = function (self, healthkit, potion, grenade, additional_items, profile)
 	local initial_inventory
 
 	if profile.affiliation == "heroes" then
 		initial_inventory = {
-			slot_packmaster_claw = "packmaster_claw",
+			slot_packmaster_claw = "packmaster_claw_combo",
 			slot_healthkit = healthkit,
 			slot_potion = potion,
 			slot_grenade = grenade,
@@ -231,10 +222,6 @@ GameModeInnVs.get_initial_inventory = function (self, healthkit, potion, grenade
 	end
 
 	return initial_inventory
-end
-
-GameModeInnVs.profile_available_for_peer = function (self, peer_id, local_player_id, profile_name, career_name)
-	return true
 end
 
 GameModeInnVs.hot_join_sync = function (self, sender)
@@ -261,7 +248,6 @@ GameModeInnVs.server_update = function (self, t, dt)
 	if DEDICATED_SERVER then
 		self:_handle_dedicated_start_game(t, dt)
 		self:_handle_dedicated_input(t, dt)
-		self:_handle_kick_idle_players(t, dt)
 		self:_handle_auto_force_start(t, dt)
 	else
 		local parties = Managers.party:parties()
@@ -271,6 +257,12 @@ GameModeInnVs.server_update = function (self, t, dt)
 
 			self._simple_spawning:update(t, dt, party)
 		end
+	end
+
+	local reservation_handler = self._mechanism:get_slot_reservation_handler()
+
+	if reservation_handler and reservation_handler.handle_dangling_peers then
+		reservation_handler:handle_dangling_peers()
 	end
 end
 
@@ -293,59 +285,6 @@ GameModeInnVs._handle_dedicated_input = function (self, t, dt)
 
 	if input then
 		Managers.admin:execute_command(input)
-	end
-end
-
-GameModeInnVs._verify_stale_state = function (self)
-	local peers_to_be_kicked = self._stale_kicking_peers
-	local num_active_peers = Managers.state.network.network_server.peer_state_machines
-
-	for peer_id in pairs(num_active_peers) do
-		fassert(peers_to_be_kicked[peer_id], "[GameModeInnVs] A peer %s was added while server was stale. This may lead to a race condition where servers start while going stale.", peer_id)
-	end
-end
-
-GameModeInnVs._handle_kick_idle_players = function (self, t, dt)
-	local network_manager = Managers.state.network
-
-	if self._stale_kicking_peers then
-		self:_verify_stale_state()
-
-		local num_active_peers = network_manager.network_server:num_active_peers()
-
-		if num_active_peers > 0 then
-			return
-		end
-
-		self._stale_kicking_peers = nil
-	end
-
-	if self._game_mode_state ~= "dedicated_server_waiting_for_fully_reserved" or self._mechanism:should_game_server_start_game() then
-		return
-	end
-
-	local force_start_scheduled = t + self._settings.auto_force_start.start_after_seconds > self._auto_force_start_time
-
-	if t < self._stale_server_time or force_start_scheduled then
-		return
-	end
-
-	local mechanism = Managers.mechanism:game_mechanism()
-	local reservation_handler = mechanism:get_slot_reservation_handler()
-
-	self._stale_server_time = math.huge
-	self._stale_kicking_peers = {}
-
-	cprintf("[GameMode] Stale Server - Restarting")
-
-	local reserved_peer_ids = reservation_handler:reservers()
-
-	self._lobby_host:kick_all_except(table.mirror_array(reserved_peer_ids))
-
-	for _, peer_id in pairs(reserved_peer_ids) do
-		self._stale_kicking_peers[peer_id] = true
-
-		network_manager.network_server:kick_peer(peer_id)
 	end
 end
 
@@ -383,20 +322,15 @@ GameModeInnVs.wanted_transition = function (self)
 end
 
 GameModeInnVs.is_reservable = function (self)
-	return not self._stale_kicking_peers
+	return true
 end
 
 GameModeInnVs.is_joinable = function (self)
 	return self:is_reservable() and self:game_mode_state() ~= "dedicated_server_waiting_for_fully_reserved"
 end
 
-GameModeInnVs.update_auto_force_start_conditions = function (self)
-	local slot_reservation_handler = self._mechanism:get_slot_reservation_handler()
-	local balanced_teams = slot_reservation_handler:is_evenly_distributed() or slot_reservation_handler:try_balance_teams()
-
-	if balanced_teams then
-		self:_set_auto_force_start_time()
-	end
+GameModeInnVs.update_auto_force_start_conditions = function (self, peers)
+	return
 end
 
 GameModeInnVs._set_auto_force_start_time = function (self)
@@ -414,6 +348,7 @@ GameModeInnVs._set_auto_force_start_time = function (self)
 	local t = Managers.time:time("game")
 
 	self._auto_force_start_time = t + start_after_seconds
+	self._check_all_players_reserved_time = t + 2
 
 	printf("[GameModeInnVS:_set_auto_force_start_time]: Automatic force start in %s seconds if teams remain unchanged", settings.start_after_seconds)
 end
@@ -421,15 +356,6 @@ end
 GameModeInnVs._handle_auto_force_start = function (self, t, dt)
 	if t < self._auto_force_start_time then
 		return
-	end
-
-	local slot_reservation_handler = self._mechanism:get_slot_reservation_handler()
-
-	if slot_reservation_handler:is_evenly_distributed() or slot_reservation_handler:try_balance_teams() then
-		printf("[GameModeInnVS:_handle_auto_force_start]: Automatically force starting game after %s seconds", self._settings.auto_force_start.start_after_seconds)
-		self._mechanism:force_start_dedicated_server()
-
-		self._stale_server_time = math.huge
 	end
 
 	self._auto_force_start_time = math.huge

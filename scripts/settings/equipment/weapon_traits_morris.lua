@@ -939,6 +939,41 @@ morris_weapon_traits.combinations = {
 			"deus_ranged_crit_explosion",
 		},
 	},
+	deus_trollhammer_torpedo = {
+		{
+			"ranged_restore_stamina_headshot",
+		},
+		{
+			"ranged_reduce_cooldown_on_crit",
+		},
+		{
+			"headhunter",
+		},
+		{
+			"stagger_aoe_on_crit",
+		},
+		{
+			"shield_splinters",
+		},
+		{
+			"refilling_shot",
+		},
+		{
+			"piercing_projectiles",
+		},
+		{
+			"deus_extra_shot",
+		},
+		{
+			"deus_crit_chain_lightning",
+		},
+		{
+			"deus_ranged_crit_explosion",
+		},
+		{
+			"deus_ammo_pickup_reload_speed",
+		},
+	},
 }
 
 BuffUtils.apply_buff_tweak_data(morris_weapon_traits.buff_templates, buff_tweak_data)

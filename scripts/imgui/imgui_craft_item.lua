@@ -54,6 +54,8 @@ end
 ImguiCraftItem.draw = function (self, is_open)
 	local do_close = Imgui.begin_window("Craft Item")
 
+	Imgui.set_window_size(500, 335, "once")
+
 	self._power_level = math.floor(Imgui.slider_float("Power Level", self._power_level, min_power_level, max_power_level))
 	self._current_type = Imgui.combo("Item Type", self._current_type, self._types, max_combo_size)
 

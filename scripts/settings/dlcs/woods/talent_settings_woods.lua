@@ -385,13 +385,19 @@ local talent_trees = {
 local talents = {
 	{
 		buffer = "both",
-		description = "regrowth_desc_3",
+		description = "regrowth_desc_4",
 		icon = "kerillian_thornsister_regrowth",
 		name = "kerillian_thorn_sister_regrowth",
 		num_ranks = 1,
 		description_values = {
 			{
-				value = BuffUtils.get_buff_template("regrowth", "adventure").buffs[1].bonus,
+				value = tostring(BuffUtils.get_buff_template("regrowth", "adventure").buffs[1].bonus / 4),
+			},
+			{
+				value = tostring(BuffUtils.get_buff_template("regrowth", "adventure").buffs[1].bonus),
+			},
+			{
+				value = tostring(BuffUtils.get_buff_template("regrowth", "adventure").buffs[1].bonus * 2),
 			},
 		},
 		buffs = {

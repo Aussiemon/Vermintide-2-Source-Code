@@ -419,7 +419,12 @@ PlayerControllerKeymaps.win32 = InputUtils.keymaps_key_approved("win32") and {
 	},
 	emote_toggle_hud_visibility = {
 		"keyboard",
-		"e",
+		"h",
+		"pressed",
+	},
+	versus_horde_ability = {
+		"keyboard",
+		"f",
 		"pressed",
 	},
 }
@@ -686,12 +691,12 @@ PlayerControllerKeymaps.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 	},
 	ghost_mode_enter = {
 		"gamepad",
-		"x",
+		"y",
 		"pressed",
 	},
 	ghost_mode_exit = {
 		"gamepad",
-		"y",
+		"x",
 		"pressed",
 	},
 	emote_camera_zoom_in = {
@@ -707,6 +712,11 @@ PlayerControllerKeymaps.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 	emote_toggle_hud_visibility = {
 		"gamepad",
 		"x",
+		"pressed",
+	},
+	versus_horde_ability = {
+		"gamepad",
+		"d_up",
 		"pressed",
 	},
 }
@@ -986,12 +996,12 @@ PlayerControllerKeymaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 	},
 	ghost_mode_enter = {
 		"gamepad",
-		"square",
+		"triangle",
 		"pressed",
 	},
 	ghost_mode_exit = {
 		"gamepad",
-		"triangle",
+		"square",
 		"pressed",
 	},
 	emote_camera_zoom_in = {
@@ -1007,6 +1017,11 @@ PlayerControllerKeymaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 	emote_toggle_hud_visibility = {
 		"gamepad",
 		"square",
+		"pressed",
+	},
+	versus_horde_ability = {
+		"gamepad",
+		"up",
 		"pressed",
 	},
 }
@@ -1286,12 +1301,12 @@ PlayerControllerKeymaps.ps_pad = InputUtils.keymaps_key_approved("ps_pad") and {
 	},
 	ghost_mode_enter = {
 		"ps_pad",
-		"square",
+		"triangle",
 		"pressed",
 	},
 	ghost_mode_exit = {
 		"ps_pad",
-		"triangle",
+		"square",
 		"pressed",
 	},
 	emote_camera_zoom_in = {
@@ -1307,6 +1322,11 @@ PlayerControllerKeymaps.ps_pad = InputUtils.keymaps_key_approved("ps_pad") and {
 	emote_toggle_hud_visibility = {
 		"ps_pad",
 		"square",
+		"pressed",
+	},
+	versus_horde_ability = {
+		"ps_pad",
+		"up",
 		"pressed",
 	},
 }
@@ -2328,6 +2348,11 @@ FreeFlightKeymaps.win32 = InputUtils.keymaps_key_approved("win32") and {
 	frustum_freeze_toggle = {
 		"keyboard",
 		"right shift",
+		"pressed",
+	},
+	player_controls_toggle = {
+		"keyboard",
+		"f10",
 		"pressed",
 	},
 	set_drop_position = {
@@ -4082,6 +4107,8 @@ TitleScreenKeyMaps.win32 = InputUtils.keymaps_key_approved("win32") and {
 		"f12",
 		"held",
 	},
+	previous = {},
+	next = {},
 	scroll_axis = {
 		"mouse",
 		"wheel",
@@ -4168,6 +4195,16 @@ TitleScreenKeyMaps.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 		"gamepad",
 		"right_shoulder",
 		"held",
+	},
+	previous = {
+		"gamepad",
+		"left_shoulder",
+		"pressed",
+	},
+	next = {
+		"gamepad",
+		"right_shoulder",
+		"pressed",
 	},
 	scroll_axis = {
 		"gamepad",
@@ -4266,6 +4303,16 @@ TitleScreenKeyMaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		"r1",
 		"held",
 	},
+	previous = {
+		"gamepad",
+		"l1",
+		"pressed",
+	},
+	next = {
+		"gamepad",
+		"r1",
+		"pressed",
+	},
 	scroll_axis = {
 		"gamepad",
 		"right",
@@ -4362,6 +4409,16 @@ TitleScreenKeyMaps.ps_pad = InputUtils.keymaps_key_approved("ps_pad") and {
 		"ps_pad",
 		"r1",
 		"held",
+	},
+	previous = {
+		"ps_pad",
+		"l1",
+		"pressed",
+	},
+	next = {
+		"ps_pad",
+		"r1",
+		"pressed",
 	},
 	scroll_axis = {
 		"ps_pad",

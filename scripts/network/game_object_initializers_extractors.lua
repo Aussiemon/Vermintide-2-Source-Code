@@ -58,18 +58,11 @@ go_type_table = {
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 			local aim_position = first_person_extension:current_position()
 			local rotation = Unit.local_rotation(unit, 0)
-			local level
-
-			if Managers.mechanism:current_mechanism_name() == "versus" then
-				local experience = ExperienceSettings.get_versus_profile_experience()
-
-				level = ExperienceSettings.get_versus_profile_level_from_experience(experience)
-			else
-				local experience = ExperienceSettings.get_experience(profile.display_name)
-
-				level = ExperienceSettings.get_level(experience)
-			end
-
+			local experience = ExperienceSettings.get_experience(profile.display_name)
+			local level = ExperienceSettings.get_level(experience)
+			local is_versus = Managers.mechanism:current_mechanism_name() == "versus"
+			local versus_experience = ExperienceSettings.get_versus_experience()
+			local versus_level = (is_versus or Application.user_setting("toggle_versus_level_in_all_game_modes")) and ExperienceSettings.get_versus_level_from_experience(versus_experience) or 0
 			local max_wounds = ScriptUnit.extension(unit, "status_system"):max_wounds_network_safe()
 			local career = profile.careers[career_index]
 
@@ -101,6 +94,7 @@ go_type_table = {
 				frame_name = NetworkLookup.cosmetics[frame_name],
 				wounds = max_wounds,
 				level = level,
+				versus_level = versus_level,
 				prestige_level = ProgressionUnlocks.get_prestige_level(profile.display_name),
 				position = Mover.position(mover),
 				pitch = Quaternion.pitch(rotation),
@@ -175,6 +169,8 @@ go_type_table = {
 			local size_variation, size_variation_normalized = ai_extension:size_variation()
 			local side = Managers.state.side.side_by_unit[unit]
 			local side_id = side.side_id
+			local ai_group_system = Managers.state.entity:system("ai_group_system")
+			local ai_group_id = ai_group_system:get_group_id(unit)
 			local data_table = {
 				has_teleported = 1,
 				go_type = NetworkLookup.go_types.ai_unit,
@@ -187,6 +183,7 @@ go_type_table = {
 				uniform_scale = size_variation,
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
 				side_id = side_id,
+				ai_group_id = ai_group_id or AIGroupSystem.invalid_group_uid,
 			}
 
 			return data_table
@@ -207,6 +204,8 @@ go_type_table = {
 			local pickup_name = pickup_extension.pickup_name
 			local has_physics = pickup_extension.has_physics
 			local spawn_type = pickup_extension.spawn_type
+			local ai_group_system = Managers.state.entity:system("ai_group_system")
+			local ai_group_id = ai_group_system:get_group_id(unit)
 			local data_table = {
 				damage = 0,
 				has_teleported = 1,
@@ -220,6 +219,7 @@ go_type_table = {
 				uniform_scale = size_variation,
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
 				side_id = side_id,
+				ai_group_id = ai_group_id or AIGroupSystem.invalid_group_uid,
 				rotation = Unit.local_rotation(unit, 0),
 				network_position = network_position,
 				network_rotation = network_rotation,
@@ -240,6 +240,8 @@ go_type_table = {
 			local inventory_configuration_name = ScriptUnit.extension(unit, "ai_inventory_system").inventory_configuration_name
 			local side = Managers.state.side.side_by_unit[unit]
 			local side_id = side.side_id
+			local ai_group_system = Managers.state.entity:system("ai_group_system")
+			local ai_group_id = ai_group_system:get_group_id(unit)
 			local data_table = {
 				has_teleported = 1,
 				go_type = NetworkLookup.go_types.ai_unit_beastmen_bestigor,
@@ -253,6 +255,7 @@ go_type_table = {
 				inventory_configuration = NetworkLookup.ai_inventory[inventory_configuration_name],
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
 				side_id = side_id,
+				ai_group_id = ai_group_id or AIGroupSystem.invalid_group_uid,
 			}
 
 			return data_table
@@ -265,6 +268,8 @@ go_type_table = {
 			local inventory_configuration_name = ScriptUnit.extension(unit, "ai_inventory_system").inventory_configuration_name
 			local side = Managers.state.side.side_by_unit[unit]
 			local side_id = side.side_id
+			local ai_group_system = Managers.state.entity:system("ai_group_system")
+			local ai_group_id = ai_group_system:get_group_id(unit)
 			local data_table = {
 				has_teleported = 1,
 				lean_downwards = false,
@@ -279,6 +284,7 @@ go_type_table = {
 				inventory_configuration = NetworkLookup.ai_inventory[inventory_configuration_name],
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
 				side_id = side_id,
+				ai_group_id = ai_group_id or AIGroupSystem.invalid_group_uid,
 			}
 
 			return data_table
@@ -290,6 +296,8 @@ go_type_table = {
 			local size_variation, size_variation_normalized = ai_extension:size_variation()
 			local side = Managers.state.side.side_by_unit[unit]
 			local side_id = side.side_id
+			local ai_group_system = Managers.state.entity:system("ai_group_system")
+			local ai_group_id = ai_group_system:get_group_id(unit)
 			local data_table = {
 				has_teleported = 1,
 				show_health_bar = false,
@@ -303,6 +311,7 @@ go_type_table = {
 				uniform_scale = size_variation,
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
 				side_id = side_id,
+				ai_group_id = ai_group_id or AIGroupSystem.invalid_group_uid,
 			}
 
 			return data_table
@@ -316,6 +325,8 @@ go_type_table = {
 			local portal_unit = tentacle_spline_extension.portal_unit
 			local side = Managers.state.side.side_by_unit[unit]
 			local side_id = side.side_id
+			local ai_group_system = Managers.state.entity:system("ai_group_system")
+			local ai_group_id = ai_group_system:get_group_id(unit)
 			local data_table = {
 				has_teleported = 1,
 				reach_distance = 0,
@@ -331,6 +342,7 @@ go_type_table = {
 				portal_unit_id = Managers.state.network:unit_game_object_id(portal_unit),
 				tentacle_template_id = NetworkLookup.tentacle_templates[tentacle_spline_extension.tentacle_template_name],
 				side_id = side_id,
+				ai_group_id = ai_group_id or AIGroupSystem.invalid_group_uid,
 			}
 
 			return data_table
@@ -425,6 +437,8 @@ go_type_table = {
 			local inventory_configuration_name = ScriptUnit.extension(unit, "ai_inventory_system").inventory_configuration_name
 			local side = Managers.state.side.side_by_unit[unit]
 			local side_id = side.side_id
+			local ai_group_system = Managers.state.entity:system("ai_group_system")
+			local ai_group_id = ai_group_system:get_group_id(unit) or 0
 			local data_table = {
 				has_teleported = 1,
 				go_type = NetworkLookup.go_types.ai_unit_with_inventory,
@@ -438,6 +452,7 @@ go_type_table = {
 				inventory_configuration = NetworkLookup.ai_inventory[inventory_configuration_name],
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
 				side_id = side_id,
+				ai_group_id = ai_group_id or AIGroupSystem.invalid_group_uid,
 			}
 
 			return data_table
@@ -452,6 +467,8 @@ go_type_table = {
 			local is_blocking = ai_shield_extension.is_blocking
 			local side = Managers.state.side.side_by_unit[unit]
 			local side_id = side.side_id
+			local ai_group_system = Managers.state.entity:system("ai_group_system")
+			local ai_group_id = ai_group_system:get_group_id(unit)
 			local data_table = {
 				has_teleported = 1,
 				go_type = NetworkLookup.go_types.ai_unit_with_inventory_and_shield,
@@ -466,6 +483,7 @@ go_type_table = {
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
 				is_blocking = is_blocking,
 				side_id = side_id,
+				ai_group_id = ai_group_id or AIGroupSystem.invalid_group_uid,
 			}
 
 			return data_table
@@ -481,6 +499,8 @@ go_type_table = {
 			local is_dodging = ai_shield_extension.is_dodging
 			local side = Managers.state.side.side_by_unit[unit]
 			local side_id = side.side_id
+			local ai_group_system = Managers.state.entity:system("ai_group_system")
+			local ai_group_id = ai_group_system:get_group_id(unit)
 			local data_table = {
 				has_teleported = 1,
 				show_health_bar = false,
@@ -497,6 +517,7 @@ go_type_table = {
 				is_blocking = is_blocking,
 				is_dodging = is_dodging,
 				side_id = side_id,
+				ai_group_id = ai_group_id or AIGroupSystem.invalid_group_uid,
 			}
 
 			return data_table
@@ -509,6 +530,8 @@ go_type_table = {
 			local inventory_configuration_name = ScriptUnit.extension(unit, "ai_inventory_system").inventory_configuration_name
 			local side = Managers.state.side.side_by_unit[unit]
 			local side_id = side.side_id
+			local ai_group_system = Managers.state.entity:system("ai_group_system")
+			local ai_group_id = ai_group_system:get_group_id(unit)
 			local data_table = {
 				has_teleported = 1,
 				go_type = NetworkLookup.go_types.ai_unit_chaos_troll,
@@ -522,6 +545,7 @@ go_type_table = {
 				inventory_configuration = NetworkLookup.ai_inventory[inventory_configuration_name],
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
 				side_id = side_id,
+				ai_group_id = ai_group_id or AIGroupSystem.invalid_group_uid,
 			}
 
 			return data_table
@@ -534,6 +558,8 @@ go_type_table = {
 			local inventory_configuration_name = ScriptUnit.extension(unit, "ai_inventory_system").inventory_configuration_name
 			local side = Managers.state.side.side_by_unit[unit]
 			local side_id = side.side_id
+			local ai_group_system = Managers.state.entity:system("ai_group_system")
+			local ai_group_id = ai_group_system:get_group_id(unit)
 			local data_table = {
 				has_teleported = 1,
 				show_health_bar = false,
@@ -548,6 +574,7 @@ go_type_table = {
 				inventory_configuration = NetworkLookup.ai_inventory[inventory_configuration_name],
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
 				side_id = side_id,
+				ai_group_id = ai_group_id or AIGroupSystem.invalid_group_uid,
 			}
 
 			return data_table
@@ -586,6 +613,8 @@ go_type_table = {
 			local inventory_configuration_name = ScriptUnit.extension(unit, "ai_inventory_system").inventory_configuration_name
 			local side = Managers.state.side.side_by_unit[unit]
 			local side_id = side.side_id
+			local ai_group_system = Managers.state.entity:system("ai_group_system")
+			local ai_group_id = ai_group_system:get_group_id(unit)
 			local data_table = {
 				has_teleported = 1,
 				go_type = NetworkLookup.go_types.ai_unit_ratling_gunner,
@@ -600,6 +629,7 @@ go_type_table = {
 				aim_target = Vector3.zero(),
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
 				side_id = side_id,
+				ai_group_id = ai_group_id or AIGroupSystem.invalid_group_uid,
 			}
 
 			return data_table
@@ -612,6 +642,8 @@ go_type_table = {
 			local inventory_configuration_name = ScriptUnit.extension(unit, "ai_inventory_system").inventory_configuration_name
 			local side = Managers.state.side.side_by_unit[unit]
 			local side_id = side.side_id
+			local ai_group_system = Managers.state.entity:system("ai_group_system")
+			local ai_group_id = ai_group_system:get_group_id(unit)
 			local data_table = {
 				has_teleported = 1,
 				go_type = NetworkLookup.go_types.ai_unit_warpfire_thrower,
@@ -626,6 +658,7 @@ go_type_table = {
 				aim_target = Vector3.zero(),
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
 				side_id = side_id,
+				ai_group_id = ai_group_id or AIGroupSystem.invalid_group_uid,
 			}
 
 			return data_table
@@ -638,6 +671,8 @@ go_type_table = {
 			local inventory_configuration_name = ScriptUnit.extension(unit, "ai_inventory_system").inventory_configuration_name
 			local side = Managers.state.side.side_by_unit[unit]
 			local side_id = side.side_id
+			local ai_group_system = Managers.state.entity:system("ai_group_system")
+			local ai_group_id = ai_group_system:get_group_id(unit)
 			local data_table = {
 				attack_arm = 1,
 				has_teleported = 1,
@@ -653,6 +688,7 @@ go_type_table = {
 				aim_target = Vector3.zero(),
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
 				side_id = side_id,
+				ai_group_id = ai_group_id or AIGroupSystem.invalid_group_uid,
 			}
 
 			return data_table
@@ -665,6 +701,8 @@ go_type_table = {
 			local inventory_configuration_name = ScriptUnit.extension(unit, "ai_inventory_system").inventory_configuration_name
 			local side = Managers.state.side.side_by_unit[unit]
 			local side_id = side.side_id
+			local ai_group_system = Managers.state.entity:system("ai_group_system")
+			local ai_group_id = ai_group_system:get_group_id(unit)
 			local data_table = {
 				attack_arm = 1,
 				has_teleported = 1,
@@ -681,6 +719,7 @@ go_type_table = {
 				aim_target = Vector3.zero(),
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
 				side_id = side_id,
+				ai_group_id = ai_group_id or AIGroupSystem.invalid_group_uid,
 			}
 
 			return data_table
@@ -935,75 +974,75 @@ go_type_table = {
 			return data_table
 		end,
 		versus_volume_objective_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
-			local versus_objective_ext = ScriptUnit.extension(unit, "versus_objective_system")
-			local objective_name = versus_objective_ext:objective_name()
+			local objective_ext = ScriptUnit.extension(unit, "objective_system")
+			local objective_name = objective_ext:objective_name()
 			local data_table = {
 				go_type = NetworkLookup.go_types.versus_volume_objective_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0),
 				scale = Unit.local_scale(unit, 0)[1],
-				objective_name = NetworkLookup.versus_objective_names[objective_name],
+				objective_name = NetworkLookup.objective_names[objective_name],
 			}
 
 			return data_table
 		end,
 		versus_capture_point_objective_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
-			local versus_objective_ext = ScriptUnit.extension(unit, "versus_objective_system")
-			local objective_name = versus_objective_ext:objective_name()
+			local objective_ext = ScriptUnit.extension(unit, "objective_system")
+			local objective_name = objective_ext:objective_name()
 			local data_table = {
 				go_type = NetworkLookup.go_types.versus_capture_point_objective_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0),
 				scale = Unit.local_scale(unit, 0)[1],
-				objective_name = NetworkLookup.versus_objective_names[objective_name],
-				timer = versus_objective_ext._timer,
+				objective_name = NetworkLookup.objective_names[objective_name],
+				timer = objective_ext._timer,
 			}
 
 			return data_table
 		end,
 		versus_mission_objective_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
-			local versus_objective_ext = ScriptUnit.extension(unit, "versus_objective_system")
-			local objective_name = versus_objective_ext:objective_name()
+			local objective_ext = ScriptUnit.extension(unit, "objective_system")
+			local objective_name = objective_ext:objective_name()
 			local data_table = {
 				go_type = NetworkLookup.go_types.versus_mission_objective_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0),
 				scale = Unit.local_scale(unit, 0)[1],
-				objective_name = NetworkLookup.versus_objective_names[objective_name],
+				objective_name = NetworkLookup.objective_names[objective_name],
 			}
 
 			return data_table
 		end,
 		weave_capture_point_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
-			local weave_objective_ext = ScriptUnit.extension(unit, "weave_objective_system")
-			local objective_name = weave_objective_ext:objective_name()
+			local objective_ext = ScriptUnit.extension(unit, "objective_system")
+			local objective_name = objective_ext:objective_name()
 			local data_table = {
 				go_type = NetworkLookup.go_types.weave_capture_point_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0),
 				scale = Unit.local_scale(unit, 0)[1],
-				objective_name = NetworkLookup.weave_objective_names[objective_name],
-				timer = weave_objective_ext._timer,
+				objective_name = NetworkLookup.objective_names[objective_name],
+				timer = objective_ext._timer,
 			}
 
 			return data_table
 		end,
 		weave_target_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
-			local weave_objective_ext = ScriptUnit.extension(unit, "weave_objective_system")
+			local objective_ext = ScriptUnit.extension(unit, "objective_system")
 			local health_ext = ScriptUnit.extension(unit, "health_system")
 			local health = health_ext:current_health()
-			local objective_name = weave_objective_ext:objective_name()
-			local attacks_allowed = weave_objective_ext:attacks_allowed()
+			local objective_name = objective_ext:objective_name()
+			local attacks_allowed = objective_ext:attacks_allowed()
 			local data_table = {
 				go_type = NetworkLookup.go_types.weave_target_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0),
-				objective_name = NetworkLookup.weave_objective_names[objective_name],
+				objective_name = NetworkLookup.objective_names[objective_name],
 				health = health,
 				allow_melee_damage = attacks_allowed.melee,
 				allow_ranged_damage = attacks_allowed.ranged,
@@ -1012,29 +1051,29 @@ go_type_table = {
 			return data_table
 		end,
 		weave_interaction_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
-			local weave_objective_ext = ScriptUnit.extension(unit, "weave_objective_system")
-			local objective_name = weave_objective_ext:objective_name()
+			local objective_ext = ScriptUnit.extension(unit, "objective_system")
+			local objective_name = objective_ext:objective_name()
 			local data_table = {
 				go_type = NetworkLookup.go_types.weave_interaction_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0),
-				objective_name = NetworkLookup.weave_objective_names[objective_name],
-				num_times_to_complete = weave_objective_ext._num_times_to_complete,
-				duration = weave_objective_ext._duration,
+				objective_name = NetworkLookup.objective_names[objective_name],
+				num_times_to_complete = objective_ext._num_times_to_complete,
+				duration = objective_ext._duration,
 			}
 
 			return data_table
 		end,
 		weave_doom_wheel_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
-			local weave_objective_ext = ScriptUnit.extension(unit, "weave_objective_system")
-			local objective_name = weave_objective_ext:objective_name()
+			local objective_ext = ScriptUnit.extension(unit, "objective_system")
+			local objective_name = objective_ext:objective_name()
 			local data_table = {
 				go_type = NetworkLookup.go_types.weave_doom_wheel_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0),
-				objective_name = NetworkLookup.weave_objective_names[objective_name],
+				objective_name = NetworkLookup.objective_names[objective_name],
 			}
 
 			return data_table
@@ -1043,15 +1082,15 @@ go_type_table = {
 			return
 		end,
 		weave_kill_enemies_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
-			local weave_objective_ext = ScriptUnit.extension(unit, "weave_objective_system")
-			local objective_name = weave_objective_ext:objective_name()
+			local objective_ext = ScriptUnit.extension(unit, "objective_system")
+			local objective_name = objective_ext:objective_name()
 			local data_table = {
 				go_type = NetworkLookup.go_types.weave_kill_enemies_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0),
-				objective_name = NetworkLookup.weave_objective_names[objective_name],
-				amount = weave_objective_ext._kills_required,
+				objective_name = NetworkLookup.objective_names[objective_name],
+				amount = objective_ext._kills_required,
 			}
 
 			return data_table
@@ -1952,6 +1991,7 @@ go_type_table = {
 				source_unit_id = source_unit_id,
 				buff_template_id = NetworkLookup.buff_templates[buff_template],
 				sub_buff_id = buff_aoe_extension.sub_buff_id,
+				side_id = buff_aoe_extension.side_id,
 			}
 
 			return data_table
@@ -2042,6 +2082,7 @@ go_type_table = {
 
 			fassert(profile, "No such profile with index %s", tostring(profile_id))
 
+			local aim_template = profile.aim_template or "player"
 			local career = profile.careers[career_id]
 			local sound_character = career.sound_character
 
@@ -2113,8 +2154,8 @@ go_type_table = {
 				},
 				aim_system = {
 					is_husk = true,
-					template = "player",
 					go_id = go_id,
+					template = aim_template,
 				},
 				status_system = {
 					wounds = player_wounds,
@@ -3256,7 +3297,8 @@ go_type_table = {
 					power_level = power_level,
 				},
 			}
-			local action = Weapons[item_template_name].actions[action_name][sub_action_name]
+			local item_template = WeaponUtils.get_weapon_template(item_template_name)
+			local action = item_template.actions[action_name][sub_action_name]
 			local projectile_info = action.projectile_info
 			local unit_template_name = projectile_info.projectile_unit_template_name or "player_projectile_unit"
 
@@ -3310,7 +3352,8 @@ go_type_table = {
 					charge_level = charge_level,
 				},
 			}
-			local action = Weapons[item_template_name].actions[action_name][sub_action_name]
+			local item_template = WeaponUtils.get_weapon_template(item_template_name)
+			local action = item_template.actions[action_name][sub_action_name]
 			local projectile_info = action.projectile_info
 			local unit_template_name = projectile_info.projectile_unit_template_name or "player_projectile_unit"
 
@@ -3447,8 +3490,8 @@ go_type_table = {
 			local objective_name = GameSession.game_object_field(game_session, go_id, "objective_name")
 			local scale = GameSession.game_object_field(game_session, go_id, "scale")
 			local extension_init_data = {
-				versus_objective_system = {
-					objective_name = NetworkLookup.versus_objective_names[objective_name],
+				objective_system = {
+					objective_name = NetworkLookup.objective_names[objective_name],
 					scale = Vector3(scale, scale, scale),
 				},
 			}
@@ -3461,8 +3504,8 @@ go_type_table = {
 			local scale = GameSession.game_object_field(game_session, go_id, "scale")
 			local timer = GameSession.game_object_field(game_session, go_id, "timer")
 			local extension_init_data = {
-				versus_objective_system = {
-					objective_name = NetworkLookup.versus_objective_names[objective_name],
+				objective_system = {
+					objective_name = NetworkLookup.objective_names[objective_name],
 					scale = Vector3(scale, scale, scale),
 					timer = timer,
 				},
@@ -3475,8 +3518,8 @@ go_type_table = {
 			local objective_name = GameSession.game_object_field(game_session, go_id, "objective_name")
 			local scale = GameSession.game_object_field(game_session, go_id, "scale")
 			local extension_init_data = {
-				versus_objective_system = {
-					objective_name = NetworkLookup.versus_objective_names[objective_name],
+				objective_system = {
+					objective_name = NetworkLookup.objective_names[objective_name],
 					scale = Vector3(scale, scale, scale),
 				},
 			}
@@ -3489,8 +3532,8 @@ go_type_table = {
 			local timer = GameSession.game_object_field(game_session, go_id, "timer")
 			local scale = GameSession.game_object_field(game_session, go_id, "scale")
 			local extension_init_data = {
-				weave_objective_system = {
-					objective_name = NetworkLookup.weave_objective_names[objective_name],
+				objective_system = {
+					objective_name = NetworkLookup.objective_names[objective_name],
 					timer = timer,
 					scale = Vector3(scale, scale, scale),
 				},
@@ -3507,8 +3550,8 @@ go_type_table = {
 				ranged = GameSession.game_object_field(game_session, go_id, "allow_ranged_damage"),
 			}
 			local extension_init_data = {
-				weave_objective_system = {
-					objective_name = NetworkLookup.weave_objective_names[objective_name],
+				objective_system = {
+					objective_name = NetworkLookup.objective_names[objective_name],
 					attacks_allowed = attacks_allowed,
 				},
 				health_system = {
@@ -3524,8 +3567,8 @@ go_type_table = {
 			local num_times_to_complete = GameSession.game_object_field(game_session, go_id, "num_times_to_complete")
 			local duration = GameSession.game_object_field(game_session, go_id, "duration")
 			local extension_init_data = {
-				weave_objective_system = {
-					objective_name = NetworkLookup.weave_objective_names[objective_name],
+				objective_system = {
+					objective_name = NetworkLookup.objective_names[objective_name],
 					num_times_to_complete = num_times_to_complete,
 					duration = duration,
 				},
@@ -3537,8 +3580,8 @@ go_type_table = {
 		weave_doom_wheel_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
 			local objective_name = GameSession.game_object_field(game_session, go_id, "objective_name")
 			local extension_init_data = {
-				weave_objective_system = {
-					objective_name = NetworkLookup.weave_objective_names[objective_name],
+				objective_system = {
+					objective_name = NetworkLookup.objective_names[objective_name],
 				},
 				objective_socket_system = {
 					use_game_object_id = true,
@@ -3552,8 +3595,8 @@ go_type_table = {
 			local objective_name = GameSession.game_object_field(game_session, go_id, "objective_name")
 			local amount = GameSession.game_object_field(game_session, go_id, "amount")
 			local extension_init_data = {
-				weave_objective_system = {
-					objective_name = NetworkLookup.weave_objective_names[objective_name],
+				objective_system = {
+					objective_name = NetworkLookup.objective_names[objective_name],
 					amount = amount,
 				},
 			}
@@ -4501,6 +4544,7 @@ go_type_table = {
 			local source_unit_id = GameSession.game_object_field(game_session, go_id, "source_unit_id")
 			local buff_template_id = GameSession.game_object_field(game_session, go_id, "buff_template_id")
 			local sub_buff_id = GameSession.game_object_field(game_session, go_id, "sub_buff_id")
+			local side_id = GameSession.game_object_field(game_session, go_id, "side_id")
 			local owner_unit
 
 			if owner_unit_id ~= NetworkConstants.invalid_game_object_id then
@@ -4521,6 +4565,7 @@ go_type_table = {
 					source_unit = source_unit,
 					sub_buff_template = BuffTemplates[NetworkLookup.buff_templates[buff_template_id]].buffs[sub_buff_id],
 					sub_buff_id = sub_buff_id,
+					side_id = side_id,
 				},
 			}
 			local unit_template_name = "buff_aoe_unit"
