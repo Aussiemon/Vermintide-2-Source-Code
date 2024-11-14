@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "nngl_castle_vo_sorcerer_intro",
+		probability = 1,
 		response = "nngl_castle_vo_sorcerer_intro",
 		criterias = {
 			{
@@ -21,6 +22,7 @@ return function ()
 	})
 	define_rule({
 		name = "nngl_castle_vo_sorcerer_taunt",
+		probability = 1,
 		response = "nngl_castle_vo_sorcerer_taunt",
 		criterias = {
 			{
@@ -53,6 +55,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_castle_vo_meet_sorcerer_heard_npc",
+		probability = 1,
 		response = "pbw_castle_vo_meet_sorcerer_heard_npc",
 		criterias = {
 			{
@@ -77,6 +80,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_castle_vo_meet_sorcerer_heard_npc",
+		probability = 1,
 		response = "pdr_castle_vo_meet_sorcerer_heard_npc",
 		criterias = {
 			{
@@ -101,6 +105,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_castle_vo_meet_sorcerer_heard_npc",
+		probability = 1,
 		response = "pes_castle_vo_meet_sorcerer_heard_npc",
 		criterias = {
 			{
@@ -125,6 +130,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_castle_vo_meet_sorcerer_heard_npc",
+		probability = 1,
 		response = "pwe_castle_vo_meet_sorcerer_heard_npc",
 		criterias = {
 			{
@@ -149,6 +155,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_castle_vo_meet_sorcerer_heard_npc",
+		probability = 1,
 		response = "pwh_castle_vo_meet_sorcerer_heard_npc",
 		criterias = {
 			{
@@ -274,10 +281,10 @@ return function ()
 				"pbw_castle_vo_meet_sorcerer_04",
 			},
 			sound_events_duration = {
-				3.4121251106262,
-				4.2257084846497,
-				2.7504167556763,
-				2.5710208415985,
+				3.4119791984558,
+				4.2249794006348,
+				2.7499792575836,
+				2.5709791183472,
 			},
 		},
 		pdr_castle_vo_meet_sorcerer_heard_npc = {
@@ -313,10 +320,10 @@ return function ()
 				"pdr_castle_vo_meet_sorcerer_04",
 			},
 			sound_events_duration = {
-				4.1739792823792,
-				3.3168125152588,
-				3.6464583873749,
-				2.9270207881927,
+				4.1729793548584,
+				3.3159792423248,
+				3.6459791660309,
+				2.9269790649414,
 			},
 		},
 		pes_castle_vo_meet_sorcerer_heard_npc = {
@@ -352,10 +359,10 @@ return function ()
 				"pes_castle_vo_meet_sorcerer_04",
 			},
 			sound_events_duration = {
-				5.7882914543152,
-				3.3156042098999,
-				2.251791715622,
-				2.6129584312439,
+				5.7879791259766,
+				3.3149790763855,
+				2.2509999275208,
+				2.6119792461395,
 			},
 		},
 		pwe_castle_vo_meet_sorcerer_heard_npc = {
@@ -391,10 +398,10 @@ return function ()
 				"pwe_castle_vo_meet_sorcerer_04",
 			},
 			sound_events_duration = {
-				4.2481460571289,
-				3.5073957443237,
-				3.8573334217072,
-				2.7552917003632,
+				4.2479791641235,
+				3.506979227066,
+				3.8569791316986,
+				2.754979133606,
 			},
 		},
 		pwh_castle_vo_meet_sorcerer_heard_npc = {
@@ -430,10 +437,10 @@ return function ()
 				"pwh_castle_vo_meet_sorcerer_04",
 			},
 			sound_events_duration = {
-				6.6816668510437,
-				3.700395822525,
-				3.2299582958221,
-				7.9926042556763,
+				6.6809792518616,
+				3.6999790668488,
+				3.2289791107178,
+				7.9919791221619,
 			},
 		},
 	})

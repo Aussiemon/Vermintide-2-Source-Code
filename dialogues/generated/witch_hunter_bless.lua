@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pwh_wp_activate_ability",
+		probability = 1,
 		response = "pwh_wp_activate_ability",
 		criterias = {
 			{
@@ -29,10 +30,17 @@ return function ()
 				OP.EQ,
 				"wh_priest",
 			},
+			{
+				"faction_memory",
+				"ability_vo_disabled",
+				OP.NEQ,
+				1,
+			},
 		},
 	})
 	define_rule({
 		name = "pwh_wp_activate_fury",
+		probability = 1,
 		response = "pwh_wp_activate_fury",
 		criterias = {
 			{

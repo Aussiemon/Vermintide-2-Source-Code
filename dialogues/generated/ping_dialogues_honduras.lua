@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_gameplay_dwarf_ranger_grabbed_ping",
+		probability = 1,
 		response = "pbw_gameplay_dwarf_ranger_grabbed_ping",
 		criterias = {
 			{
@@ -53,6 +54,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_empire_soldier_grabbed_ping",
+		probability = 1,
 		response = "pbw_gameplay_empire_soldier_grabbed_ping",
 		criterias = {
 			{
@@ -103,6 +105,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_grabbed_ping",
+		probability = 1,
 		response = "pbw_gameplay_grabbed_ping",
 		criterias = {
 			{
@@ -153,6 +156,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_hanging_help_ping",
+		probability = 1,
 		response = "pbw_gameplay_hanging_help_ping",
 		criterias = {
 			{
@@ -203,6 +207,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_healing_draught_ping",
+		probability = 1,
 		response = "pbw_gameplay_healing_draught_ping",
 		criterias = {
 			{
@@ -253,6 +258,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_heard_dwarf_ranger_in_trouble_ping",
+		probability = 1,
 		response = "pbw_gameplay_heard_dwarf_ranger_in_trouble_ping",
 		criterias = {
 			{
@@ -303,6 +309,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_heard_empire_soldier_in_trouble_ping",
+		probability = 1,
 		response = "pbw_gameplay_heard_empire_soldier_in_trouble_ping",
 		criterias = {
 			{
@@ -353,6 +360,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_heard_witch_hunter_in_trouble_ping",
+		probability = 1,
 		response = "pbw_gameplay_heard_witch_hunter_in_trouble_ping",
 		criterias = {
 			{
@@ -403,6 +411,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_heard_wood_elf_in_trouble_ping",
+		probability = 1,
 		response = "pbw_gameplay_heard_wood_elf_in_trouble_ping",
 		criterias = {
 			{
@@ -453,6 +462,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_knocked_down_ping",
+		probability = 1,
 		response = "pbw_gameplay_knocked_down_ping",
 		criterias = {
 			{
@@ -503,6 +513,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_pinging_monster_a",
+		probability = 1,
 		response = "pbw_gameplay_pinging_monster_a",
 		criterias = {
 			{
@@ -594,6 +605,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_player_pounced_ping",
+		probability = 1,
 		response = "pbw_gameplay_player_pounced_ping",
 		criterias = {
 			{
@@ -630,6 +642,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_seeing_a_globadier_ping",
+		probability = 1,
 		response = "pbw_gameplay_seeing_a_globadier_ping",
 		criterias = {
 			{
@@ -692,6 +705,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_seeing_a_gutter_runner_ping",
+		probability = 1,
 		response = "pbw_gameplay_seeing_a_gutter_runner_ping",
 		criterias = {
 			{
@@ -754,6 +768,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_seeing_a_skaven_rat_ogre_ping",
+		probability = 1,
 		response = "pbw_gameplay_seeing_a_skaven_rat_ogre_ping",
 		criterias = {
 			{
@@ -822,6 +837,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_seeing_a_skaven_ratling_gun_ping",
+		probability = 1,
 		response = "pbw_gameplay_seeing_a_skaven_ratling_gun_ping",
 		criterias = {
 			{
@@ -884,6 +900,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_seeing_a_skaven_slaver_ping",
+		probability = 1,
 		response = "pbw_gameplay_seeing_a_skaven_slaver_ping",
 		criterias = {
 			{
@@ -946,6 +963,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_seeing_a_skaven_warpfire_thrower_ping",
+		probability = 1,
 		response = "pbw_gameplay_seeing_a_skaven_warpfire_thrower_ping",
 		criterias = {
 			{
@@ -1008,6 +1026,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_seeing_a_stormvermin_ping",
+		probability = 1,
 		response = "pbw_gameplay_seeing_a_stormvermin_ping",
 		criterias = {
 			{
@@ -1058,6 +1077,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_spots_ammo_ping",
+		probability = 1,
 		response = "pbw_gameplay_spots_ammo_ping",
 		criterias = {
 			{
@@ -1108,6 +1128,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_spots_bomb_ping",
+		probability = 1,
 		response = "pbw_gameplay_spots_bomb_ping",
 		criterias = {
 			{
@@ -1158,6 +1179,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_spots_health_ping",
+		probability = 1,
 		response = "pbw_gameplay_spots_health_ping",
 		criterias = {
 			{
@@ -1208,6 +1230,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_spots_potion_ping",
+		probability = 1,
 		response = "pbw_gameplay_spots_potion_ping",
 		criterias = {
 			{
@@ -1258,6 +1281,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_witch_hunter_grabbed_ping",
+		probability = 1,
 		response = "pbw_gameplay_witch_hunter_grabbed_ping",
 		criterias = {
 			{
@@ -1308,6 +1332,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_wood_elf_grabbed_ping",
+		probability = 1,
 		response = "pbw_gameplay_wood_elf_grabbed_ping",
 		criterias = {
 			{
@@ -1358,6 +1383,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_bright_wizard_grabbed_ping",
+		probability = 1,
 		response = "pdr_gameplay_bright_wizard_grabbed_ping",
 		criterias = {
 			{
@@ -1408,6 +1434,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_empire_soldier_grabbed_ping",
+		probability = 1,
 		response = "pdr_gameplay_empire_soldier_grabbed_ping",
 		criterias = {
 			{
@@ -1458,6 +1485,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_grabbed_ping",
+		probability = 1,
 		response = "pdr_gameplay_grabbed_ping",
 		criterias = {
 			{
@@ -1508,6 +1536,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_hanging_help_ping",
+		probability = 1,
 		response = "pdr_gameplay_hanging_help_ping",
 		criterias = {
 			{
@@ -1558,6 +1587,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_healing_draught_ping",
+		probability = 1,
 		response = "pdr_gameplay_healing_draught_ping",
 		criterias = {
 			{
@@ -1608,6 +1638,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_heard_bright_wizard_in_trouble_ping",
+		probability = 1,
 		response = "pdr_gameplay_heard_bright_wizard_in_trouble_ping",
 		criterias = {
 			{
@@ -1658,6 +1689,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_heard_empire_soldier_in_trouble_ping",
+		probability = 1,
 		response = "pdr_gameplay_heard_empire_soldier_in_trouble_ping",
 		criterias = {
 			{
@@ -1708,6 +1740,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_heard_witch_hunter_in_trouble_ping",
+		probability = 1,
 		response = "pdr_gameplay_heard_witch_hunter_in_trouble_ping",
 		criterias = {
 			{
@@ -1758,6 +1791,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_heard_wood_elf_in_trouble_ping",
+		probability = 1,
 		response = "pdr_gameplay_heard_wood_elf_in_trouble_ping",
 		criterias = {
 			{
@@ -1808,6 +1842,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_knocked_down_ping",
+		probability = 1,
 		response = "pdr_gameplay_knocked_down_ping",
 		criterias = {
 			{
@@ -1858,6 +1893,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_pinging_monster_a",
+		probability = 1,
 		response = "pdr_gameplay_pinging_monster_a",
 		criterias = {
 			{
@@ -1949,6 +1985,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_player_pounced_ping",
+		probability = 1,
 		response = "pdr_gameplay_player_pounced_ping",
 		criterias = {
 			{
@@ -1985,6 +2022,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_seeing_a_globadier_ping",
+		probability = 1,
 		response = "pdr_gameplay_seeing_a_globadier_ping",
 		criterias = {
 			{
@@ -2047,6 +2085,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_seeing_a_gutter_runner_ping",
+		probability = 1,
 		response = "pdr_gameplay_seeing_a_gutter_runner_ping",
 		criterias = {
 			{
@@ -2109,6 +2148,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_seeing_a_skaven_rat_ogre_ping",
+		probability = 1,
 		response = "pdr_gameplay_seeing_a_skaven_rat_ogre_ping",
 		criterias = {
 			{
@@ -2177,6 +2217,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_seeing_a_skaven_ratling_gun_ping",
+		probability = 1,
 		response = "pdr_gameplay_seeing_a_skaven_ratling_gun_ping",
 		criterias = {
 			{
@@ -2239,6 +2280,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_seeing_a_skaven_slaver_ping",
+		probability = 1,
 		response = "pdr_gameplay_seeing_a_skaven_slaver_ping",
 		criterias = {
 			{
@@ -2301,6 +2343,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_seeing_a_skaven_warpfire_thrower_ping",
+		probability = 1,
 		response = "pdr_gameplay_seeing_a_skaven_warpfire_thrower_ping",
 		criterias = {
 			{
@@ -2363,6 +2406,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_seeing_a_stormvermin_ping",
+		probability = 1,
 		response = "pdr_gameplay_seeing_a_stormvermin_ping",
 		criterias = {
 			{
@@ -2413,6 +2457,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_spots_ammo_ping",
+		probability = 1,
 		response = "pdr_gameplay_spots_ammo_ping",
 		criterias = {
 			{
@@ -2469,6 +2514,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_spots_bomb_ping",
+		probability = 1,
 		response = "pdr_gameplay_spots_bomb_ping",
 		criterias = {
 			{
@@ -2519,6 +2565,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_spots_health_ping",
+		probability = 1,
 		response = "pdr_gameplay_spots_health_ping",
 		criterias = {
 			{
@@ -2569,6 +2616,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_spots_potion_ping",
+		probability = 1,
 		response = "pdr_gameplay_spots_potion_ping",
 		criterias = {
 			{
@@ -2619,6 +2667,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_witch_hunter_grabbed_ping",
+		probability = 1,
 		response = "pdr_gameplay_witch_hunter_grabbed_ping",
 		criterias = {
 			{
@@ -2669,6 +2718,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_wood_elf_grabbed_ping",
+		probability = 1,
 		response = "pdr_gameplay_wood_elf_grabbed_ping",
 		criterias = {
 			{
@@ -2719,6 +2769,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_bright_wizard_grabbed_ping",
+		probability = 1,
 		response = "pes_gameplay_bright_wizard_grabbed_ping",
 		criterias = {
 			{
@@ -2769,6 +2820,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_dwarf_ranger_grabbed_ping",
+		probability = 1,
 		response = "pes_gameplay_dwarf_ranger_grabbed_ping",
 		criterias = {
 			{
@@ -2819,6 +2871,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_grabbed_ping",
+		probability = 1,
 		response = "pes_gameplay_grabbed_ping",
 		criterias = {
 			{
@@ -2869,6 +2922,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_hanging_help_ping",
+		probability = 1,
 		response = "pes_gameplay_hanging_help_ping",
 		criterias = {
 			{
@@ -2925,6 +2979,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_healing_draught_ping",
+		probability = 1,
 		response = "pes_gameplay_healing_draught_ping",
 		criterias = {
 			{
@@ -2975,6 +3030,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_heard_bright_wizard_in_trouble_ping",
+		probability = 1,
 		response = "pes_gameplay_heard_bright_wizard_in_trouble_ping",
 		criterias = {
 			{
@@ -3025,6 +3081,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_heard_dwarf_ranger_in_trouble_ping",
+		probability = 1,
 		response = "pes_gameplay_heard_dwarf_ranger_in_trouble_ping",
 		criterias = {
 			{
@@ -3075,6 +3132,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_heard_witch_hunter_in_trouble_ping",
+		probability = 1,
 		response = "pes_gameplay_heard_witch_hunter_in_trouble_ping",
 		criterias = {
 			{
@@ -3125,6 +3183,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_heard_wood_elf_in_trouble_ping",
+		probability = 1,
 		response = "pes_gameplay_heard_wood_elf_in_trouble_ping",
 		criterias = {
 			{
@@ -3175,6 +3234,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_knocked_down_ping",
+		probability = 1,
 		response = "pes_gameplay_knocked_down_ping",
 		criterias = {
 			{
@@ -3231,6 +3291,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_pinging_monster_a",
+		probability = 1,
 		response = "pes_gameplay_pinging_monster_a",
 		criterias = {
 			{
@@ -3322,6 +3383,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_player_pounced_ping",
+		probability = 1,
 		response = "pes_gameplay_player_pounced_ping",
 		criterias = {
 			{
@@ -3358,6 +3420,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_seeing_a_globadier_ping",
+		probability = 1,
 		response = "pes_gameplay_seeing_a_globadier_ping",
 		criterias = {
 			{
@@ -3420,6 +3483,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_seeing_a_gutter_runner_ping",
+		probability = 1,
 		response = "pes_gameplay_seeing_a_gutter_runner_ping",
 		criterias = {
 			{
@@ -3482,6 +3546,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_seeing_a_skaven_rat_ogre_ping",
+		probability = 1,
 		response = "pes_gameplay_seeing_a_skaven_rat_ogre_ping",
 		criterias = {
 			{
@@ -3550,6 +3615,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_seeing_a_skaven_ratling_gun_ping",
+		probability = 1,
 		response = "pes_gameplay_seeing_a_skaven_ratling_gun_ping",
 		criterias = {
 			{
@@ -3612,6 +3678,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_seeing_a_skaven_slaver_ping",
+		probability = 1,
 		response = "pes_gameplay_seeing_a_skaven_slaver_ping",
 		criterias = {
 			{
@@ -3674,6 +3741,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_seeing_a_skaven_warpfire_thrower_ping",
+		probability = 1,
 		response = "pes_gameplay_seeing_a_skaven_warpfire_thrower_ping",
 		criterias = {
 			{
@@ -3736,6 +3804,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_seeing_a_stormvermin_ping",
+		probability = 1,
 		response = "pes_gameplay_seeing_a_stormvermin_ping",
 		criterias = {
 			{
@@ -3786,6 +3855,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_spots_ammo_ping",
+		probability = 1,
 		response = "pes_gameplay_spots_ammo_ping",
 		criterias = {
 			{
@@ -3836,6 +3906,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_spots_bomb_ping",
+		probability = 1,
 		response = "pes_gameplay_spots_bomb_ping",
 		criterias = {
 			{
@@ -3886,6 +3957,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_spots_health_ping",
+		probability = 1,
 		response = "pes_gameplay_spots_health_ping",
 		criterias = {
 			{
@@ -3936,6 +4008,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_spots_potion_ping",
+		probability = 1,
 		response = "pes_gameplay_spots_potion_ping",
 		criterias = {
 			{
@@ -3986,6 +4059,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_witch_hunter_grabbed_ping",
+		probability = 1,
 		response = "pes_gameplay_witch_hunter_grabbed_ping",
 		criterias = {
 			{
@@ -4036,6 +4110,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_wood_elf_grabbed_ping",
+		probability = 1,
 		response = "pes_gameplay_wood_elf_grabbed_ping",
 		criterias = {
 			{
@@ -4086,6 +4161,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_bright_wizard_grabbed_ping",
+		probability = 1,
 		response = "pwe_gameplay_bright_wizard_grabbed_ping",
 		criterias = {
 			{
@@ -4136,6 +4212,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_dwarf_ranger_grabbed_ping",
+		probability = 1,
 		response = "pwe_gameplay_dwarf_ranger_grabbed_ping",
 		criterias = {
 			{
@@ -4186,6 +4263,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_empire_soldier_grabbed_ping",
+		probability = 1,
 		response = "pwe_gameplay_empire_soldier_grabbed_ping",
 		criterias = {
 			{
@@ -4236,6 +4314,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_grabbed_ping",
+		probability = 1,
 		response = "pwe_gameplay_grabbed_ping",
 		criterias = {
 			{
@@ -4286,6 +4365,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_hanging_help_ping",
+		probability = 1,
 		response = "pwe_gameplay_hanging_help_ping",
 		criterias = {
 			{
@@ -4336,6 +4416,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_healing_draught_ping",
+		probability = 1,
 		response = "pwe_gameplay_healing_draught_ping",
 		criterias = {
 			{
@@ -4386,6 +4467,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_heard_bright_wizard_in_trouble_ping",
+		probability = 1,
 		response = "pwe_gameplay_heard_bright_wizard_in_trouble_ping",
 		criterias = {
 			{
@@ -4436,6 +4518,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_heard_dwarf_ranger_in_trouble_ping",
+		probability = 1,
 		response = "pwe_gameplay_heard_dwarf_ranger_in_trouble_ping",
 		criterias = {
 			{
@@ -4486,6 +4569,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_heard_empire_soldier_in_trouble_ping",
+		probability = 1,
 		response = "pwe_gameplay_heard_empire_soldier_in_trouble_ping",
 		criterias = {
 			{
@@ -4536,6 +4620,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_heard_witch_hunter_in_trouble_ping",
+		probability = 1,
 		response = "pwe_gameplay_heard_witch_hunter_in_trouble_ping",
 		criterias = {
 			{
@@ -4586,6 +4671,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_knocked_down_ping",
+		probability = 1,
 		response = "pwe_gameplay_knocked_down_ping",
 		criterias = {
 			{
@@ -4636,6 +4722,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_pinging_monster_a",
+		probability = 1,
 		response = "pwe_gameplay_pinging_monster_a",
 		criterias = {
 			{
@@ -4727,6 +4814,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_player_pounced_ping",
+		probability = 1,
 		response = "pwe_gameplay_player_pounced_ping",
 		criterias = {
 			{
@@ -4763,6 +4851,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_seeing_a_globadier_ping",
+		probability = 1,
 		response = "pwe_gameplay_seeing_a_globadier_ping",
 		criterias = {
 			{
@@ -4825,6 +4914,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_seeing_a_gutter_runner_ping",
+		probability = 1,
 		response = "pwe_gameplay_seeing_a_gutter_runner_ping",
 		criterias = {
 			{
@@ -4887,6 +4977,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_seeing_a_skaven_rat_ogre_ping",
+		probability = 1,
 		response = "pwe_gameplay_seeing_a_skaven_rat_ogre_ping",
 		criterias = {
 			{
@@ -4955,6 +5046,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_seeing_a_skaven_ratling_gun_ping",
+		probability = 1,
 		response = "pwe_gameplay_seeing_a_skaven_ratling_gun_ping",
 		criterias = {
 			{
@@ -5017,6 +5109,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_seeing_a_skaven_slaver_ping",
+		probability = 1,
 		response = "pwe_gameplay_seeing_a_skaven_slaver_ping",
 		criterias = {
 			{
@@ -5079,6 +5172,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_seeing_a_skaven_warpfire_thrower_ping",
+		probability = 1,
 		response = "pwe_gameplay_seeing_a_skaven_warpfire_thrower_ping",
 		criterias = {
 			{
@@ -5141,6 +5235,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_seeing_a_stormvermin_ping",
+		probability = 1,
 		response = "pwe_gameplay_seeing_a_stormvermin_ping",
 		criterias = {
 			{
@@ -5191,6 +5286,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_spots_ammo_ping",
+		probability = 1,
 		response = "pwe_gameplay_spots_ammo_ping",
 		criterias = {
 			{
@@ -5241,6 +5337,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_spots_bomb_ping",
+		probability = 1,
 		response = "pwe_gameplay_spots_bomb_ping",
 		criterias = {
 			{
@@ -5291,6 +5388,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_spots_health_ping",
+		probability = 1,
 		response = "pwe_gameplay_spots_health_ping",
 		criterias = {
 			{
@@ -5341,6 +5439,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_spots_potion_ping",
+		probability = 1,
 		response = "pwe_gameplay_spots_potion_ping",
 		criterias = {
 			{
@@ -5391,6 +5490,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_witch_hunter_grabbed_ping",
+		probability = 1,
 		response = "pwe_gameplay_witch_hunter_grabbed_ping",
 		criterias = {
 			{
@@ -5441,6 +5541,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_bright_wizard_grabbed_ping",
+		probability = 1,
 		response = "pwh_gameplay_bright_wizard_grabbed_ping",
 		criterias = {
 			{
@@ -5491,6 +5592,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_dwarf_ranger_grabbed_ping",
+		probability = 1,
 		response = "pwh_gameplay_dwarf_ranger_grabbed_ping",
 		criterias = {
 			{
@@ -5541,6 +5643,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_empire_soldier_grabbed_ping",
+		probability = 1,
 		response = "pwh_gameplay_empire_soldier_grabbed_ping",
 		criterias = {
 			{
@@ -5591,6 +5694,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_grabbed_ping",
+		probability = 1,
 		response = "pwh_gameplay_grabbed_ping",
 		criterias = {
 			{
@@ -5641,6 +5745,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_hanging_help_ping",
+		probability = 1,
 		response = "pwh_gameplay_hanging_help_ping",
 		criterias = {
 			{
@@ -5691,6 +5796,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_healing_draught_ping",
+		probability = 1,
 		response = "pwh_gameplay_healing_draught_ping",
 		criterias = {
 			{
@@ -5741,6 +5847,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_heard_bright_wizard_in_trouble_ping",
+		probability = 1,
 		response = "pwh_gameplay_heard_bright_wizard_in_trouble_ping",
 		criterias = {
 			{
@@ -5791,6 +5898,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_heard_dwarf_ranger_in_trouble_ping",
+		probability = 1,
 		response = "pwh_gameplay_heard_dwarf_ranger_in_trouble_ping",
 		criterias = {
 			{
@@ -5841,6 +5949,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_heard_empire_soldier_in_trouble_ping",
+		probability = 1,
 		response = "pwh_gameplay_heard_empire_soldier_in_trouble_ping",
 		criterias = {
 			{
@@ -5891,6 +6000,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_heard_wood_elf_in_trouble_ping",
+		probability = 1,
 		response = "pwh_gameplay_heard_wood_elf_in_trouble_ping",
 		criterias = {
 			{
@@ -5941,6 +6051,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_knocked_down_ping",
+		probability = 1,
 		response = "pwh_gameplay_knocked_down_ping",
 		criterias = {
 			{
@@ -5991,6 +6102,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_pinging_monster_a",
+		probability = 1,
 		response = "pwh_gameplay_pinging_monster_a",
 		criterias = {
 			{
@@ -6082,6 +6194,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_player_pounced_ping",
+		probability = 1,
 		response = "pwh_gameplay_player_pounced_ping",
 		criterias = {
 			{
@@ -6118,6 +6231,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_seeing_a_globadier_ping",
+		probability = 1,
 		response = "pwh_gameplay_seeing_a_globadier_ping",
 		criterias = {
 			{
@@ -6180,6 +6294,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_seeing_a_gutter_runner_ping",
+		probability = 1,
 		response = "pwh_gameplay_seeing_a_gutter_runner_ping",
 		criterias = {
 			{
@@ -6242,6 +6357,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_seeing_a_skaven_rat_ogre_ping",
+		probability = 1,
 		response = "pwh_gameplay_seeing_a_skaven_rat_ogre_ping",
 		criterias = {
 			{
@@ -6310,6 +6426,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_seeing_a_skaven_ratling_gun_ping",
+		probability = 1,
 		response = "pwh_gameplay_seeing_a_skaven_ratling_gun_ping",
 		criterias = {
 			{
@@ -6372,6 +6489,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_seeing_a_skaven_slaver_ping",
+		probability = 1,
 		response = "pwh_gameplay_seeing_a_skaven_slaver_ping",
 		criterias = {
 			{
@@ -6434,6 +6552,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_seeing_a_skaven_warpfire_thrower_ping",
+		probability = 1,
 		response = "pwh_gameplay_seeing_a_skaven_warpfire_thrower_ping",
 		criterias = {
 			{
@@ -6496,6 +6615,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_seeing_a_stormvermin_ping",
+		probability = 1,
 		response = "pwh_gameplay_seeing_a_stormvermin_ping",
 		criterias = {
 			{
@@ -6546,6 +6666,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_spots_ammo_ping",
+		probability = 1,
 		response = "pwh_gameplay_spots_ammo_ping",
 		criterias = {
 			{
@@ -6596,6 +6717,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_spots_bomb_ping",
+		probability = 1,
 		response = "pwh_gameplay_spots_bomb_ping",
 		criterias = {
 			{
@@ -6646,6 +6768,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_spots_health_ping",
+		probability = 1,
 		response = "pwh_gameplay_spots_health_ping",
 		criterias = {
 			{
@@ -6696,6 +6819,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_spots_potion_ping",
+		probability = 1,
 		response = "pwh_gameplay_spots_potion_ping",
 		criterias = {
 			{
@@ -6746,6 +6870,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_wood_elf_grabbed_ping",
+		probability = 1,
 		response = "pwh_gameplay_wood_elf_grabbed_ping",
 		criterias = {
 			{
@@ -10821,12 +10946,11 @@ return function ()
 		pwe_gameplay_healing_draught_ping = {
 			category = "seen_items",
 			database = "ping_dialogues_honduras",
-			dialogue_animations_n = 8,
-			face_animations_n = 8,
+			dialogue_animations_n = 7,
+			face_animations_n = 7,
 			randomize_indexes_n = 0,
-			sound_events_n = 8,
+			sound_events_n = 7,
 			dialogue_animations = {
-				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
@@ -10843,7 +10967,6 @@ return function ()
 				"face_happy",
 				"face_happy",
 				"face_happy",
-				"face_happy",
 			},
 			localization_strings = {
 				"pwe_gameplay_healing_draught_01",
@@ -10853,7 +10976,6 @@ return function ()
 				"pwe_gameplay_healing_draught_05",
 				"pwe_gameplay_healing_draught_06",
 				"pwe_gameplay_healing_draught_07",
-				"pwe_gameplay_healing_draught_08",
 			},
 			randomize_indexes = {},
 			sound_events = {
@@ -10864,7 +10986,6 @@ return function ()
 				"pwe_gameplay_healing_draught_05",
 				"pwe_gameplay_healing_draught_06",
 				"pwe_gameplay_healing_draught_07",
-				"pwe_gameplay_healing_draught_08",
 			},
 			sound_events_duration = {
 				1.1028333902359,
@@ -10874,7 +10995,6 @@ return function ()
 				1.9737395644188,
 				2.1306250095367,
 				1.5523124933243,
-				2.7821562290192,
 			},
 		},
 		pwe_gameplay_heard_bright_wizard_in_trouble_ping = {

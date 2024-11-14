@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_level_fort_cannonballs",
+		probability = 1,
 		response = "pbw_level_fort_cannonballs",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_fort_fire_cannon_final",
+		probability = 1,
 		response = "pbw_level_fort_fire_cannon_final",
 		criterias = {
 			{
@@ -91,6 +93,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_fort_fire_cannon_final_hit",
+		probability = 1,
 		response = "pbw_level_fort_fire_cannon_final_hit",
 		criterias = {
 			{
@@ -135,6 +138,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_fort_fire_cannon_first",
+		probability = 1,
 		response = "pbw_level_fort_fire_cannon_first",
 		criterias = {
 			{
@@ -179,6 +183,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_fort_fire_cannon_first_hit",
+		probability = 1,
 		response = "pbw_level_fort_fire_cannon_first_hit",
 		criterias = {
 			{
@@ -223,6 +228,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_fort_fire_cannon_fuse_is_lit",
+		probability = 1,
 		response = "pbw_level_fort_fire_cannon_fuse_is_lit",
 		criterias = {
 			{
@@ -267,6 +273,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_fort_fire_cannon_second",
+		probability = 1,
 		response = "pbw_level_fort_fire_cannon_second",
 		criterias = {
 			{
@@ -311,6 +318,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_fort_fire_cannon_second_hit",
+		probability = 1,
 		response = "pbw_level_fort_fire_cannon_second_hit",
 		criterias = {
 			{

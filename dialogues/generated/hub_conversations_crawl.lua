@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "nik_crawl_keep_level_complete_fail",
+		probability = 1,
 		response = "nik_crawl_keep_level_complete_fail",
 		criterias = {
 			{
@@ -27,6 +28,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_crawl_keep_level_complete_success",
+		probability = 1,
 		response = "nik_crawl_keep_level_complete_success",
 		criterias = {
 			{
@@ -51,6 +53,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_greeting_evening_crawl",
+		probability = 1,
 		response = "nik_greeting_evening_crawl",
 		criterias = {
 			{
@@ -69,6 +72,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_backstory_interaction_crawl",
+		probability = 1,
 		response = "nik_hub_backstory_interaction_crawl",
 		criterias = {
 			{
@@ -87,6 +91,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_quiet_drink_01_a",
+		probability = 1,
 		response = "nik_hub_quiet_drink_01_a",
 		criterias = {
 			{
@@ -105,6 +110,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_quiet_drink_02_a",
+		probability = 1,
 		response = "nik_hub_quiet_drink_02_a",
 		criterias = {
 			{
@@ -123,6 +129,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_quiet_drink_03_a",
+		probability = 1,
 		response = "nik_hub_quiet_drink_03_a",
 		criterias = {
 			{
@@ -141,6 +148,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_quiet_drink_04_a",
+		probability = 1,
 		response = "nik_hub_quiet_drink_04_a",
 		criterias = {
 			{
@@ -159,6 +167,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_quiet_drink_05_a",
+		probability = 1,
 		response = "nik_hub_quiet_drink_05_a",
 		criterias = {
 			{
@@ -177,6 +186,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_quiet_drink_06_a",
+		probability = 1,
 		response = "nik_hub_quiet_drink_06_a",
 		criterias = {
 			{
@@ -195,6 +205,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_quiet_drink_07_a",
+		probability = 1,
 		response = "nik_hub_quiet_drink_07_a",
 		criterias = {
 			{
@@ -213,6 +224,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_quiet_drink_08_a",
+		probability = 1,
 		response = "nik_hub_quiet_drink_08_a",
 		criterias = {
 			{
@@ -231,6 +243,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_quiet_drink_09_a",
+		probability = 1,
 		response = "nik_hub_quiet_drink_09_a",
 		criterias = {
 			{
@@ -249,6 +262,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_quiet_drink_10_a",
+		probability = 1,
 		response = "nik_hub_quiet_drink_10_a",
 		criterias = {
 			{
@@ -267,6 +281,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_01_e",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_01_e",
 		criterias = {
 			{
@@ -298,6 +313,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_02_e",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_02_e",
 		criterias = {
 			{
@@ -329,6 +345,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_03_b",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_03_b",
 		criterias = {
 			{
@@ -360,6 +377,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_03_dummy",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_03_dummy",
 		criterias = {
 			{
@@ -435,6 +453,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_04_e",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_04_e",
 		criterias = {
 			{
@@ -466,6 +485,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_05_d",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_05_d",
 		criterias = {
 			{
@@ -497,6 +517,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_06_c",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_06_c",
 		criterias = {
 			{
@@ -528,6 +549,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_07_c",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_07_c",
 		criterias = {
 			{
@@ -559,6 +581,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_08_e",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_08_e",
 		criterias = {
 			{
@@ -590,6 +613,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_09_e",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_09_e",
 		criterias = {
 			{
@@ -621,6 +645,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_10_b",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_10_b",
 		criterias = {
 			{
@@ -652,6 +677,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_10_dummy",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_10_dummy",
 		criterias = {
 			{
@@ -727,6 +753,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_11_b",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_11_b",
 		criterias = {
 			{
@@ -758,6 +785,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_12_a",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_12_a",
 		criterias = {
 			{
@@ -833,6 +861,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_13_c",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_13_c",
 		criterias = {
 			{
@@ -864,6 +893,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_14_b",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_14_b",
 		criterias = {
 			{
@@ -895,6 +925,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_15_a",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_15_a",
 		criterias = {
 			{
@@ -970,6 +1001,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_17_c",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_17_c",
 		criterias = {
 			{
@@ -1001,6 +1033,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_18_b",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_18_b",
 		criterias = {
 			{
@@ -1032,6 +1065,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_18_d",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_18_d",
 		criterias = {
 			{
@@ -1063,6 +1097,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_19_a",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_19_a",
 		criterias = {
 			{
@@ -1138,6 +1173,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_19_c",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_19_c",
 		criterias = {
 			{
@@ -1169,6 +1205,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_19_two_d",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_19_two_d",
 		criterias = {
 			{
@@ -1200,6 +1237,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_quiet_drink_20_d",
+		probability = 1,
 		response = "pbw_hub_quiet_drink_20_d",
 		criterias = {
 			{
@@ -1231,6 +1269,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_01_e",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_01_e",
 		criterias = {
 			{
@@ -1262,6 +1301,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_02_b",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_02_b",
 		criterias = {
 			{
@@ -1293,6 +1333,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_02_dummy",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_02_dummy",
 		criterias = {
 			{
@@ -1368,6 +1409,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_03_e",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_03_e",
 		criterias = {
 			{
@@ -1399,6 +1441,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_04_c",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_04_c",
 		criterias = {
 			{
@@ -1430,6 +1473,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_05_b",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_05_b",
 		criterias = {
 			{
@@ -1461,6 +1505,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_05_dummy",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_05_dummy",
 		criterias = {
 			{
@@ -1536,6 +1581,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_06_e",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_06_e",
 		criterias = {
 			{
@@ -1567,6 +1613,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_07_e",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_07_e",
 		criterias = {
 			{
@@ -1598,6 +1645,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_08_d",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_08_d",
 		criterias = {
 			{
@@ -1629,6 +1677,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_09_d",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_09_d",
 		criterias = {
 			{
@@ -1660,6 +1709,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_10_c",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_10_c",
 		criterias = {
 			{
@@ -1691,6 +1741,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_11_d",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_11_d",
 		criterias = {
 			{
@@ -1722,6 +1773,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_12_d",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_12_d",
 		criterias = {
 			{
@@ -1753,6 +1805,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_13_d",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_13_d",
 		criterias = {
 			{
@@ -1784,6 +1837,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_14_c",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_14_c",
 		criterias = {
 			{
@@ -1815,6 +1869,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_15_c",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_15_c",
 		criterias = {
 			{
@@ -1846,6 +1901,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_17_b",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_17_b",
 		criterias = {
 			{
@@ -1877,6 +1933,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_17_d",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_17_d",
 		criterias = {
 			{
@@ -1908,6 +1965,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_18_c",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_18_c",
 		criterias = {
 			{
@@ -1939,6 +1997,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_19_e",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_19_e",
 		criterias = {
 			{
@@ -1970,6 +2029,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_19_two_f",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_19_two_f",
 		criterias = {
 			{
@@ -2001,6 +2061,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_20_a",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_20_a",
 		criterias = {
 			{
@@ -2076,6 +2137,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_quiet_drink_20_c",
+		probability = 1,
 		response = "pdr_hub_quiet_drink_20_c",
 		criterias = {
 			{
@@ -2107,6 +2169,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_01_d",
+		probability = 1,
 		response = "pes_hub_quiet_drink_01_d",
 		criterias = {
 			{
@@ -2138,6 +2201,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_02_c",
+		probability = 1,
 		response = "pes_hub_quiet_drink_02_c",
 		criterias = {
 			{
@@ -2169,6 +2233,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_03_d",
+		probability = 1,
 		response = "pes_hub_quiet_drink_03_d",
 		criterias = {
 			{
@@ -2200,6 +2265,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_04_d",
+		probability = 1,
 		response = "pes_hub_quiet_drink_04_d",
 		criterias = {
 			{
@@ -2231,6 +2297,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_05_c",
+		probability = 1,
 		response = "pes_hub_quiet_drink_05_c",
 		criterias = {
 			{
@@ -2262,6 +2329,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_06_d",
+		probability = 1,
 		response = "pes_hub_quiet_drink_06_d",
 		criterias = {
 			{
@@ -2293,6 +2361,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_07_d",
+		probability = 1,
 		response = "pes_hub_quiet_drink_07_d",
 		criterias = {
 			{
@@ -2324,6 +2393,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_08_b",
+		probability = 1,
 		response = "pes_hub_quiet_drink_08_b",
 		criterias = {
 			{
@@ -2355,6 +2425,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_08_dummy",
+		probability = 1,
 		response = "pes_hub_quiet_drink_08_dummy",
 		criterias = {
 			{
@@ -2430,6 +2501,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_09_c",
+		probability = 1,
 		response = "pes_hub_quiet_drink_09_c",
 		criterias = {
 			{
@@ -2461,6 +2533,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_10_d",
+		probability = 1,
 		response = "pes_hub_quiet_drink_10_d",
 		criterias = {
 			{
@@ -2492,6 +2565,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_11_a",
+		probability = 1,
 		response = "pes_hub_quiet_drink_11_a",
 		criterias = {
 			{
@@ -2567,6 +2641,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_12_c",
+		probability = 1,
 		response = "pes_hub_quiet_drink_12_c",
 		criterias = {
 			{
@@ -2598,6 +2673,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_13_a",
+		probability = 1,
 		response = "pes_hub_quiet_drink_13_a",
 		criterias = {
 			{
@@ -2673,6 +2749,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_14_d",
+		probability = 1,
 		response = "pes_hub_quiet_drink_14_d",
 		criterias = {
 			{
@@ -2704,6 +2781,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_15_b",
+		probability = 1,
 		response = "pes_hub_quiet_drink_15_b",
 		criterias = {
 			{
@@ -2735,6 +2813,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_16_b",
+		probability = 1,
 		response = "pes_hub_quiet_drink_16_b",
 		criterias = {
 			{
@@ -2766,6 +2845,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_16_d",
+		probability = 1,
 		response = "pes_hub_quiet_drink_16_d",
 		criterias = {
 			{
@@ -2797,6 +2877,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_17_d",
+		probability = 1,
 		response = "pes_hub_quiet_drink_17_d",
 		criterias = {
 			{
@@ -2828,6 +2909,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_18_d",
+		probability = 1,
 		response = "pes_hub_quiet_drink_18_d",
 		criterias = {
 			{
@@ -2859,6 +2941,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_19_b",
+		probability = 1,
 		response = "pes_hub_quiet_drink_19_b",
 		criterias = {
 			{
@@ -2890,6 +2973,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_19_two_a",
+		probability = 1,
 		response = "pes_hub_quiet_drink_19_two_a",
 		criterias = {
 			{
@@ -2965,6 +3049,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_19_two_c",
+		probability = 1,
 		response = "pes_hub_quiet_drink_19_two_c",
 		criterias = {
 			{
@@ -2996,6 +3081,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_19_two_e",
+		probability = 1,
 		response = "pes_hub_quiet_drink_19_two_e",
 		criterias = {
 			{
@@ -3027,6 +3113,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_quiet_drink_20_e",
+		probability = 1,
 		response = "pes_hub_quiet_drink_20_e",
 		criterias = {
 			{
@@ -3058,6 +3145,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_quiet_drink_01_c",
+		probability = 1,
 		response = "pwe_hub_quiet_drink_01_c",
 		criterias = {
 			{
@@ -3089,6 +3177,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_quiet_drink_02_d",
+		probability = 1,
 		response = "pwe_hub_quiet_drink_02_d",
 		criterias = {
 			{
@@ -3120,6 +3209,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_quiet_drink_03_e",
+		probability = 1,
 		response = "pwe_hub_quiet_drink_03_e",
 		criterias = {
 			{
@@ -3151,6 +3241,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_quiet_drink_04_b",
+		probability = 1,
 		response = "pwe_hub_quiet_drink_04_b",
 		criterias = {
 			{
@@ -3182,6 +3273,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_quiet_drink_04_dummy",
+		probability = 1,
 		response = "pwe_hub_quiet_drink_04_dummy",
 		criterias = {
 			{
@@ -3257,6 +3349,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_quiet_drink_05_e",
+		probability = 1,
 		response = "pwe_hub_quiet_drink_05_e",
 		criterias = {
 			{
@@ -3288,6 +3381,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_quiet_drink_06_b",
+		probability = 1,
 		response = "pwe_hub_quiet_drink_06_b",
 		criterias = {
 			{
@@ -3319,6 +3413,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_quiet_drink_06_dummy",
+		probability = 1,
 		response = "pwe_hub_quiet_drink_06_dummy",
 		criterias = {
 			{
@@ -3394,6 +3489,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_quiet_drink_07_e",
+		probability = 1,
 		response = "pwe_hub_quiet_drink_07_e",
 		criterias = {
 			{
@@ -3425,6 +3521,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_quiet_drink_08_c",
+		probability = 1,
 		response = "pwe_hub_quiet_drink_08_c",
 		criterias = {
 			{
@@ -3456,6 +3553,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_quiet_drink_09_b",
+		probability = 1,
 		response = "pwe_hub_quiet_drink_09_b",
 		criterias = {
 			{
@@ -3487,6 +3585,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_quiet_drink_09_dummy",
+		probability = 1,
 		response = "pwe_hub_quiet_drink_09_dummy",
 		criterias = {
 			{
@@ -3562,6 +3661,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_quiet_drink_10_e",
+		probability = 1,
 		response = "pwe_hub_quiet_drink_10_e",
 		criterias = {
 			{
@@ -3593,6 +3693,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_quiet_drink_11_c",
+		probability = 1,
 		response = "pwe_hub_quiet_drink_11_c",
 		criterias = {
 			{
@@ -3624,6 +3725,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_quiet_drink_12_b",
+		probability = 1,
 		response = "pwe_hub_quiet_drink_12_b",
 		criterias = {
 			{
@@ -3655,6 +3757,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_quiet_drink_13_d",
+		probability = 1,
 		response = "pwe_hub_quiet_drink_13_d",
 		criterias = {
 			{
@@ -3686,6 +3789,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_quiet_drink_14_a",
+		probability = 1,
 		response = "pwe_hub_quiet_drink_14_a",
 		criterias = {
 			{
@@ -3761,6 +3865,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_quiet_drink_15_d",
+		probability = 1,
 		response = "pwe_hub_quiet_drink_15_d",
 		criterias = {
 			{
@@ -3792,6 +3897,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_quiet_drink_17_a",
+		probability = 1,
 		response = "pwe_hub_quiet_drink_17_a",
 		criterias = {
 			{
@@ -3873,6 +3979,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_quiet_drink_19_d",
+		probability = 1,
 		response = "pwe_hub_quiet_drink_19_d",
 		criterias = {
 			{
@@ -3904,6 +4011,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_quiet_drink_19_two_b",
+		probability = 1,
 		response = "pwe_hub_quiet_drink_19_two_b",
 		criterias = {
 			{
@@ -3935,6 +4043,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_quiet_drink_20_d",
+		probability = 1,
 		response = "pwe_hub_quiet_drink_20_d",
 		criterias = {
 			{
@@ -3966,6 +4075,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_01_b",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_01_b",
 		criterias = {
 			{
@@ -3997,6 +4107,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_01_dummy",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_01_dummy",
 		criterias = {
 			{
@@ -4072,6 +4183,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_02_e",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_02_e",
 		criterias = {
 			{
@@ -4103,6 +4215,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_03_c",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_03_c",
 		criterias = {
 			{
@@ -4134,6 +4247,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_04_e",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_04_e",
 		criterias = {
 			{
@@ -4165,6 +4279,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_05_e",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_05_e",
 		criterias = {
 			{
@@ -4196,6 +4311,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_06_e",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_06_e",
 		criterias = {
 			{
@@ -4227,6 +4343,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_07_b",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_07_b",
 		criterias = {
 			{
@@ -4258,6 +4375,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_07_dummy",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_07_dummy",
 		criterias = {
 			{
@@ -4333,6 +4451,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_08_e",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_08_e",
 		criterias = {
 			{
@@ -4364,6 +4483,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_09_e",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_09_e",
 		criterias = {
 			{
@@ -4395,6 +4515,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_10_e",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_10_e",
 		criterias = {
 			{
@@ -4426,6 +4547,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_11_d",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_11_d",
 		criterias = {
 			{
@@ -4457,6 +4579,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_12_d",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_12_d",
 		criterias = {
 			{
@@ -4488,6 +4611,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_13_b",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_13_b",
 		criterias = {
 			{
@@ -4519,6 +4643,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_14_d",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_14_d",
 		criterias = {
 			{
@@ -4550,6 +4675,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_15_d",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_15_d",
 		criterias = {
 			{
@@ -4581,6 +4707,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_16_a",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_16_a",
 		criterias = {
 			{
@@ -4656,6 +4783,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_16_c",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_16_c",
 		criterias = {
 			{
@@ -4687,6 +4815,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_16_d",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_16_d",
 		criterias = {
 			{
@@ -4718,6 +4847,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_18_a",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_18_a",
 		criterias = {
 			{
@@ -4799,6 +4929,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_19_e",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_19_e",
 		criterias = {
 			{
@@ -4830,6 +4961,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_19_two_d",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_19_two_d",
 		criterias = {
 			{
@@ -4861,6 +4993,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_quiet_drink_20_b",
+		probability = 1,
 		response = "pwh_hub_quiet_drink_20_b",
 		criterias = {
 			{

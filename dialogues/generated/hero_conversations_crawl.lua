@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_crawl_conversation_nine_01",
+		probability = 1,
 		response = "pbw_crawl_conversation_nine_01",
 		criterias = {
 			{
@@ -40,6 +41,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_crawl_conversation_nine_02",
+		probability = 1,
 		response = "pbw_crawl_conversation_nine_02",
 		criterias = {
 			{
@@ -77,6 +79,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_crawl_conversation_six_01",
+		probability = 1,
 		response = "pbw_crawl_conversation_six_01",
 		criterias = {
 			{
@@ -114,6 +117,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_crawl_conversation_six_02",
+		probability = 1,
 		response = "pbw_crawl_conversation_six_02",
 		criterias = {
 			{
@@ -151,6 +155,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_crawl_conversation_three_01",
+		probability = 1,
 		response = "pbw_crawl_conversation_three_01",
 		criterias = {
 			{
@@ -237,6 +242,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_crawl_conversation_three_02",
+		probability = 1,
 		response = "pbw_crawl_conversation_three_02",
 		criterias = {
 			{
@@ -274,6 +280,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_crawl_conversation_two_01",
+		probability = 1,
 		response = "pbw_crawl_conversation_two_01",
 		criterias = {
 			{
@@ -311,6 +318,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_crawl_conversation_eight_01",
+		probability = 1,
 		response = "pdr_crawl_conversation_eight_01",
 		criterias = {
 			{
@@ -348,6 +356,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_crawl_conversation_eight_02",
+		probability = 1,
 		response = "pdr_crawl_conversation_eight_02",
 		criterias = {
 			{
@@ -385,6 +394,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_crawl_conversation_five_01",
+		probability = 1,
 		response = "pdr_crawl_conversation_five_01",
 		criterias = {
 			{
@@ -471,6 +481,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_crawl_conversation_five_02",
+		probability = 1,
 		response = "pdr_crawl_conversation_five_02",
 		criterias = {
 			{
@@ -508,6 +519,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_crawl_conversation_six_01",
+		probability = 1,
 		response = "pdr_crawl_conversation_six_01",
 		criterias = {
 			{
@@ -594,6 +606,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_crawl_conversation_six_02",
+		probability = 1,
 		response = "pdr_crawl_conversation_six_02",
 		criterias = {
 			{
@@ -631,6 +644,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_crawl_conversation_ten_01",
+		probability = 1,
 		response = "pdr_crawl_conversation_ten_01",
 		criterias = {
 			{
@@ -717,6 +731,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_crawl_conversation_ten_02",
+		probability = 1,
 		response = "pdr_crawl_conversation_ten_02",
 		criterias = {
 			{
@@ -754,6 +769,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_crawl_conversation_five_01",
+		probability = 1,
 		response = "pes_crawl_conversation_five_01",
 		criterias = {
 			{
@@ -791,6 +807,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_crawl_conversation_five_02",
+		probability = 1,
 		response = "pes_crawl_conversation_five_02",
 		criterias = {
 			{
@@ -828,6 +845,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_crawl_conversation_four_01",
+		probability = 1,
 		response = "pes_crawl_conversation_four_01",
 		criterias = {
 			{
@@ -914,6 +932,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_crawl_conversation_four_02",
+		probability = 1,
 		response = "pes_crawl_conversation_four_02",
 		criterias = {
 			{
@@ -951,6 +970,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_crawl_conversation_one_01",
+		probability = 1,
 		response = "pes_crawl_conversation_one_01",
 		criterias = {
 			{
@@ -988,6 +1008,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_crawl_conversation_one_02",
+		probability = 1,
 		response = "pes_crawl_conversation_one_02",
 		criterias = {
 			{
@@ -1025,6 +1046,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_crawl_conversation_three_01",
+		probability = 1,
 		response = "pes_crawl_conversation_three_01",
 		criterias = {
 			{
@@ -1062,6 +1084,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_crawl_conversation_three_02",
+		probability = 1,
 		response = "pes_crawl_conversation_three_02",
 		criterias = {
 			{
@@ -1099,6 +1122,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_crawl_conversation_four_01",
+		probability = 1,
 		response = "pwe_crawl_conversation_four_01",
 		criterias = {
 			{
@@ -1136,6 +1160,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_crawl_conversation_nine_01",
+		probability = 1,
 		response = "pwe_crawl_conversation_nine_01",
 		criterias = {
 			{
@@ -1222,6 +1247,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_crawl_conversation_nine_02",
+		probability = 1,
 		response = "pwe_crawl_conversation_nine_02",
 		criterias = {
 			{
@@ -1259,6 +1285,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_crawl_conversation_seven_01",
+		probability = 1,
 		response = "pwe_crawl_conversation_seven_01",
 		criterias = {
 			{
@@ -1345,6 +1372,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_crawl_conversation_seven_02",
+		probability = 1,
 		response = "pwe_crawl_conversation_seven_02",
 		criterias = {
 			{
@@ -1382,6 +1410,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_crawl_conversation_seven_03",
+		probability = 1,
 		response = "pwe_crawl_conversation_seven_03",
 		criterias = {
 			{
@@ -1419,6 +1448,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_crawl_conversation_ten_01",
+		probability = 1,
 		response = "pwe_crawl_conversation_ten_01",
 		criterias = {
 			{
@@ -1456,6 +1486,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_crawl_conversation_ten_02",
+		probability = 1,
 		response = "pwe_crawl_conversation_ten_02",
 		criterias = {
 			{
@@ -1493,6 +1524,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_crawl_conversation_eight_01",
+		probability = 1,
 		response = "pwh_crawl_conversation_eight_01",
 		criterias = {
 			{
@@ -1579,6 +1611,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_crawl_conversation_eight_02",
+		probability = 1,
 		response = "pwh_crawl_conversation_eight_02",
 		criterias = {
 			{
@@ -1616,6 +1649,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_crawl_conversation_one_01",
+		probability = 1,
 		response = "pwh_crawl_conversation_one_01",
 		criterias = {
 			{
@@ -1702,6 +1736,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_crawl_conversation_one_02",
+		probability = 1,
 		response = "pwh_crawl_conversation_one_02",
 		criterias = {
 			{
@@ -1739,6 +1774,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_crawl_conversation_one_03",
+		probability = 1,
 		response = "pwh_crawl_conversation_one_03",
 		criterias = {
 			{
@@ -1776,6 +1812,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_crawl_conversation_seven_01",
+		probability = 1,
 		response = "pwh_crawl_conversation_seven_01",
 		criterias = {
 			{
@@ -1813,6 +1850,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_crawl_conversation_seven_02",
+		probability = 1,
 		response = "pwh_crawl_conversation_seven_02",
 		criterias = {
 			{
@@ -1850,6 +1888,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_crawl_conversation_two_01",
+		probability = 1,
 		response = "pwh_crawl_conversation_two_01",
 		criterias = {
 			{
@@ -1936,6 +1975,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_crawl_conversation_two_02",
+		probability = 1,
 		response = "pwh_crawl_conversation_two_02",
 		criterias = {
 			{

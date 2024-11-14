@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_crater_conversation_eight_01",
+		probability = 1,
 		response = "pbw_crater_conversation_eight_01",
 		criterias = {
 			{
@@ -89,6 +90,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_crater_conversation_five_01",
+		probability = 1,
 		response = "pbw_crater_conversation_five_01",
 		criterias = {
 			{
@@ -175,6 +177,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_crater_conversation_five_02",
+		probability = 1,
 		response = "pbw_crater_conversation_five_02",
 		criterias = {
 			{
@@ -212,6 +215,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_crater_conversation_nine_01",
+		probability = 1,
 		response = "pbw_crater_conversation_nine_01",
 		criterias = {
 			{
@@ -304,6 +308,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_crater_conversation_nine_02",
+		probability = 1,
 		response = "pbw_crater_conversation_nine_02",
 		criterias = {
 			{
@@ -341,6 +346,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_crater_conversation_two_01",
+		probability = 1,
 		response = "pbw_crater_conversation_two_01",
 		criterias = {
 			{
@@ -378,6 +384,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_crater_conversation_two_02",
+		probability = 1,
 		response = "pbw_crater_conversation_two_02",
 		criterias = {
 			{
@@ -415,6 +422,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_crater_conversation_four_01",
+		probability = 1,
 		response = "pdr_crater_conversation_four_01",
 		criterias = {
 			{
@@ -452,6 +460,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_crater_conversation_nine_01",
+		probability = 1,
 		response = "pdr_crater_conversation_nine_01",
 		criterias = {
 			{
@@ -489,6 +498,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_crater_conversation_nine_02",
+		probability = 1,
 		response = "pdr_crater_conversation_nine_02",
 		criterias = {
 			{
@@ -526,6 +536,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_crater_conversation_seven_01",
+		probability = 1,
 		response = "pdr_crater_conversation_seven_01",
 		criterias = {
 			{
@@ -563,6 +574,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_crater_conversation_seven_02",
+		probability = 1,
 		response = "pdr_crater_conversation_seven_02",
 		criterias = {
 			{
@@ -600,6 +612,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_crater_conversation_six_01",
+		probability = 1,
 		response = "pdr_crater_conversation_six_01",
 		criterias = {
 			{
@@ -637,6 +650,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_crater_conversation_eight_02",
+		probability = 1,
 		response = "pes_crater_conversation_eight_02",
 		criterias = {
 			{
@@ -674,6 +688,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_crater_conversation_four_01",
+		probability = 1,
 		response = "pes_crater_conversation_four_01",
 		criterias = {
 			{
@@ -766,6 +781,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_crater_conversation_four_02",
+		probability = 1,
 		response = "pes_crater_conversation_four_02",
 		criterias = {
 			{
@@ -803,6 +819,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_crater_conversation_one_01",
+		probability = 1,
 		response = "pes_crater_conversation_one_01",
 		criterias = {
 			{
@@ -889,6 +906,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_crater_conversation_one_02",
+		probability = 1,
 		response = "pes_crater_conversation_one_02",
 		criterias = {
 			{
@@ -926,6 +944,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_crater_conversation_one_03",
+		probability = 1,
 		response = "pes_crater_conversation_one_03",
 		criterias = {
 			{
@@ -963,6 +982,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_crater_conversation_ten_01",
+		probability = 1,
 		response = "pes_crater_conversation_ten_01",
 		criterias = {
 			{
@@ -1000,6 +1020,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_crater_conversation_ten_02",
+		probability = 1,
 		response = "pes_crater_conversation_ten_02",
 		criterias = {
 			{
@@ -1037,6 +1058,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_crater_conversation_five_01",
+		probability = 1,
 		response = "pwe_crater_conversation_five_01",
 		criterias = {
 			{
@@ -1074,6 +1096,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_crater_conversation_five_02",
+		probability = 1,
 		response = "pwe_crater_conversation_five_02",
 		criterias = {
 			{
@@ -1111,6 +1134,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_crater_conversation_four_01",
+		probability = 1,
 		response = "pwe_crater_conversation_four_01",
 		criterias = {
 			{
@@ -1148,6 +1172,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_crater_conversation_one_01",
+		probability = 1,
 		response = "pwe_crater_conversation_one_01",
 		criterias = {
 			{
@@ -1185,6 +1210,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_crater_conversation_one_02",
+		probability = 1,
 		response = "pwe_crater_conversation_one_02",
 		criterias = {
 			{
@@ -1222,6 +1248,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_crater_conversation_seven_01",
+		probability = 1,
 		response = "pwe_crater_conversation_seven_01",
 		criterias = {
 			{
@@ -1308,6 +1335,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_crater_conversation_seven_02",
+		probability = 1,
 		response = "pwe_crater_conversation_seven_02",
 		criterias = {
 			{
@@ -1345,6 +1373,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_crater_conversation_three_01",
+		probability = 1,
 		response = "pwe_crater_conversation_three_01",
 		criterias = {
 			{
@@ -1382,6 +1411,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_crater_conversation_three_02",
+		probability = 1,
 		response = "pwe_crater_conversation_three_02",
 		criterias = {
 			{
@@ -1419,6 +1449,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_crater_conversation_nine_01",
+		probability = 1,
 		response = "pwh_crater_conversation_nine_01",
 		criterias = {
 			{
@@ -1456,6 +1487,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_crater_conversation_six_01",
+		probability = 1,
 		response = "pwh_crater_conversation_six_01",
 		criterias = {
 			{
@@ -1542,6 +1574,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_crater_conversation_six_02",
+		probability = 1,
 		response = "pwh_crater_conversation_six_02",
 		criterias = {
 			{
@@ -1579,6 +1612,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_crater_conversation_ten_01",
+		probability = 1,
 		response = "pwh_crater_conversation_ten_01",
 		criterias = {
 			{
@@ -1665,6 +1699,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_crater_conversation_ten_02",
+		probability = 1,
 		response = "pwh_crater_conversation_ten_02",
 		criterias = {
 			{
@@ -1702,6 +1737,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_crater_conversation_three_01",
+		probability = 1,
 		response = "pwh_crater_conversation_three_01",
 		criterias = {
 			{
@@ -1788,6 +1824,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_crater_conversation_three_02",
+		probability = 1,
 		response = "pwh_crater_conversation_three_02",
 		criterias = {
 			{
@@ -1825,6 +1862,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_crater_conversation_two_01",
+		probability = 1,
 		response = "pwh_crater_conversation_two_01",
 		criterias = {
 			{
@@ -1911,6 +1949,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_crater_conversation_two_02",
+		probability = 1,
 		response = "pwh_crater_conversation_two_02",
 		criterias = {
 			{
@@ -1966,7 +2005,7 @@ return function ()
 				[1] = "pbw_crater_conversation_eight_01",
 			},
 			sound_events_duration = {
-				[1] = 6.6674165725708,
+				[1] = 6.6669793128967,
 			},
 		},
 		pbw_crater_conversation_five_01 = {
@@ -1988,7 +2027,7 @@ return function ()
 				[1] = "pbw_crater_conversation_five_01",
 			},
 			sound_events_duration = {
-				[1] = 2.806104183197,
+				[1] = 2.8059792518616,
 			},
 		},
 		pbw_crater_conversation_five_02 = {
@@ -2010,7 +2049,7 @@ return function ()
 				[1] = "pbw_crater_conversation_five_02",
 			},
 			sound_events_duration = {
-				[1] = 3.3930208683014,
+				[1] = 3.3929791450501,
 			},
 		},
 		pbw_crater_conversation_nine_01 = {
@@ -2032,7 +2071,7 @@ return function ()
 				[1] = "pbw_crater_conversation_nine_01",
 			},
 			sound_events_duration = {
-				[1] = 7.653395652771,
+				[1] = 7.6529793739319,
 			},
 		},
 		pbw_crater_conversation_nine_02 = {
@@ -2054,7 +2093,7 @@ return function ()
 				[1] = "pbw_crater_conversation_nine_02",
 			},
 			sound_events_duration = {
-				[1] = 5.8262500762939,
+				[1] = 5.8259792327881,
 			},
 		},
 		pbw_crater_conversation_two_01 = {
@@ -2076,7 +2115,7 @@ return function ()
 				[1] = "pbw_crater_conversation_two_01",
 			},
 			sound_events_duration = {
-				[1] = 4.0991249084473,
+				[1] = 4.0989999771118,
 			},
 		},
 		pbw_crater_conversation_two_02 = {
@@ -2098,7 +2137,7 @@ return function ()
 				[1] = "pbw_crater_conversation_two_02",
 			},
 			sound_events_duration = {
-				[1] = 5.648895740509,
+				[1] = 5.647979259491,
 			},
 		},
 		pdr_crater_conversation_four_01 = {
@@ -2120,7 +2159,7 @@ return function ()
 				[1] = "pdr_crater_conversation_four_01",
 			},
 			sound_events_duration = {
-				[1] = 9.2842502593994,
+				[1] = 9.2839794158935,
 			},
 		},
 		pdr_crater_conversation_nine_01 = {
@@ -2142,7 +2181,7 @@ return function ()
 				[1] = "pdr_crater_conversation_nine_01",
 			},
 			sound_events_duration = {
-				[1] = 1.642416715622,
+				[1] = 1.6419999599457,
 			},
 		},
 		pdr_crater_conversation_nine_02 = {
@@ -2164,7 +2203,7 @@ return function ()
 				[1] = "pdr_crater_conversation_nine_02",
 			},
 			sound_events_duration = {
-				[1] = 1.1065833568573,
+				[1] = 1.1059792041779,
 			},
 		},
 		pdr_crater_conversation_seven_01 = {
@@ -2186,7 +2225,7 @@ return function ()
 				[1] = "pdr_crater_conversation_seven_01",
 			},
 			sound_events_duration = {
-				[1] = 5.3349165916443,
+				[1] = 5.3339791297913,
 			},
 		},
 		pdr_crater_conversation_seven_02 = {
@@ -2208,7 +2247,7 @@ return function ()
 				[1] = "pdr_crater_conversation_seven_02",
 			},
 			sound_events_duration = {
-				[1] = 5.1369166374206,
+				[1] = 5.1359791755676,
 			},
 		},
 		pdr_crater_conversation_six_01 = {
@@ -2230,7 +2269,7 @@ return function ()
 				[1] = "pdr_crater_conversation_six_01",
 			},
 			sound_events_duration = {
-				[1] = 6.2901043891907,
+				[1] = 6.2899789810181,
 			},
 		},
 		pes_crater_conversation_eight_02 = {
@@ -2252,7 +2291,7 @@ return function ()
 				[1] = "pes_crater_conversation_eight_02",
 			},
 			sound_events_duration = {
-				[1] = 14.932708740234,
+				[1] = 14.891979217529,
 			},
 		},
 		pes_crater_conversation_four_01 = {
@@ -2274,7 +2313,7 @@ return function ()
 				[1] = "pes_crater_conversation_four_01",
 			},
 			sound_events_duration = {
-				[1] = 2.4878542423248,
+				[1] = 2.4869792461395,
 			},
 		},
 		pes_crater_conversation_four_02 = {
@@ -2296,7 +2335,7 @@ return function ()
 				[1] = "pes_crater_conversation_four_02",
 			},
 			sound_events_duration = {
-				[1] = 4.9756875038147,
+				[1] = 4.9749794006348,
 			},
 		},
 		pes_crater_conversation_one_01 = {
@@ -2318,7 +2357,7 @@ return function ()
 				[1] = "pes_crater_conversation_one_01",
 			},
 			sound_events_duration = {
-				[1] = 2.5605416297913,
+				[1] = 2.5599792003632,
 			},
 		},
 		pes_crater_conversation_one_02 = {
@@ -2340,7 +2379,7 @@ return function ()
 				[1] = "pes_crater_conversation_one_02",
 			},
 			sound_events_duration = {
-				[1] = 5.9530625343323,
+				[1] = 5.9529790878296,
 			},
 		},
 		pes_crater_conversation_one_03 = {
@@ -2362,7 +2401,7 @@ return function ()
 				[1] = "pes_crater_conversation_one_03",
 			},
 			sound_events_duration = {
-				[1] = 1.0258333683014,
+				[1] = 1.0249791145325,
 			},
 		},
 		pes_crater_conversation_ten_01 = {
@@ -2384,7 +2423,7 @@ return function ()
 				[1] = "pes_crater_conversation_ten_01",
 			},
 			sound_events_duration = {
-				[1] = 2.0626459121704,
+				[1] = 2.0619790554047,
 			},
 		},
 		pes_crater_conversation_ten_02 = {
@@ -2406,7 +2445,7 @@ return function ()
 				[1] = "pes_crater_conversation_ten_02",
 			},
 			sound_events_duration = {
-				[1] = 3.1555936336517,
+				[1] = 3.1550936698914,
 			},
 		},
 		pwe_crater_conversation_five_01 = {
@@ -2428,7 +2467,7 @@ return function ()
 				[1] = "pwe_crater_conversation_five_01",
 			},
 			sound_events_duration = {
-				[1] = 8.7399997711182,
+				[1] = 8.7399787902832,
 			},
 		},
 		pwe_crater_conversation_five_02 = {
@@ -2450,7 +2489,7 @@ return function ()
 				[1] = "pwe_crater_conversation_five_02",
 			},
 			sound_events_duration = {
-				[1] = 5.8620209693909,
+				[1] = 5.8619790077209,
 			},
 		},
 		pwe_crater_conversation_four_01 = {
@@ -2472,7 +2511,7 @@ return function ()
 				[1] = "pwe_crater_conversation_four_01",
 			},
 			sound_events_duration = {
-				[1] = 6.2974791526794,
+				[1] = 6.2969789505005,
 			},
 		},
 		pwe_crater_conversation_one_01 = {
@@ -2494,7 +2533,7 @@ return function ()
 				[1] = "pwe_crater_conversation_one_01",
 			},
 			sound_events_duration = {
-				[1] = 4.5388751029968,
+				[1] = 4.5379791259766,
 			},
 		},
 		pwe_crater_conversation_one_02 = {
@@ -2516,7 +2555,7 @@ return function ()
 				[1] = "pwe_crater_conversation_one_02",
 			},
 			sound_events_duration = {
-				[1] = 5.3679375648499,
+				[1] = 5.3669791221619,
 			},
 		},
 		pwe_crater_conversation_seven_01 = {
@@ -2538,7 +2577,7 @@ return function ()
 				[1] = "pwe_crater_conversation_seven_01",
 			},
 			sound_events_duration = {
-				[1] = 6.5570831298828,
+				[1] = 6.2649793624878,
 			},
 		},
 		pwe_crater_conversation_seven_02 = {
@@ -2560,7 +2599,7 @@ return function ()
 				[1] = "pwe_crater_conversation_seven_02",
 			},
 			sound_events_duration = {
-				[1] = 12.084145545959,
+				[1] = 11.895978927612,
 			},
 		},
 		pwe_crater_conversation_three_01 = {
@@ -2582,7 +2621,7 @@ return function ()
 				[1] = "pwe_crater_conversation_three_01",
 			},
 			sound_events_duration = {
-				[1] = 3.7014582157135,
+				[1] = 3.7009792327881,
 			},
 		},
 		pwe_crater_conversation_three_02 = {
@@ -2604,7 +2643,7 @@ return function ()
 				[1] = "pwe_crater_conversation_three_02",
 			},
 			sound_events_duration = {
-				[1] = 5.2758331298828,
+				[1] = 5.2749791145325,
 			},
 		},
 		pwh_crater_conversation_nine_01 = {
@@ -2626,7 +2665,7 @@ return function ()
 				[1] = "pwh_crater_conversation_nine_01",
 			},
 			sound_events_duration = {
-				[1] = 6.6173334121704,
+				[1] = 6.6169791221619,
 			},
 		},
 		pwh_crater_conversation_six_01 = {
@@ -2648,7 +2687,7 @@ return function ()
 				[1] = "pwh_crater_conversation_six_01",
 			},
 			sound_events_duration = {
-				[1] = 11.765062332153,
+				[1] = 11.764979362488,
 			},
 		},
 		pwh_crater_conversation_six_02 = {
@@ -2670,7 +2709,7 @@ return function ()
 				[1] = "pwh_crater_conversation_six_02",
 			},
 			sound_events_duration = {
-				[1] = 10.934791564941,
+				[1] = 10.933979034424,
 			},
 		},
 		pwh_crater_conversation_ten_01 = {
@@ -2692,7 +2731,7 @@ return function ()
 				[1] = "pwh_crater_conversation_ten_01",
 			},
 			sound_events_duration = {
-				[1] = 5.8783750534058,
+				[1] = 5.8779792785644,
 			},
 		},
 		pwh_crater_conversation_ten_02 = {
@@ -2714,7 +2753,7 @@ return function ()
 				[1] = "pwh_crater_conversation_ten_02",
 			},
 			sound_events_duration = {
-				[1] = 3.8666875362396,
+				[1] = 3.8659791946411,
 			},
 		},
 		pwh_crater_conversation_three_01 = {
@@ -2736,7 +2775,7 @@ return function ()
 				[1] = "pwh_crater_conversation_three_01",
 			},
 			sound_events_duration = {
-				[1] = 3.7144167423248,
+				[1] = 3.7139792442322,
 			},
 		},
 		pwh_crater_conversation_three_02 = {
@@ -2758,7 +2797,7 @@ return function ()
 				[1] = "pwh_crater_conversation_three_02",
 			},
 			sound_events_duration = {
-				[1] = 2.9652917385101,
+				[1] = 2.9649791717529,
 			},
 		},
 		pwh_crater_conversation_two_01 = {
@@ -2780,7 +2819,7 @@ return function ()
 				[1] = "pwh_crater_conversation_two_01",
 			},
 			sound_events_duration = {
-				[1] = 5.2149791717529,
+				[1] = 5.2139792442322,
 			},
 		},
 		pwh_crater_conversation_two_02 = {
@@ -2802,7 +2841,7 @@ return function ()
 				[1] = "pwh_crater_conversation_two_02",
 			},
 			sound_events_duration = {
-				[1] = 7.9120001792908,
+				[1] = 7.9119791984558,
 			},
 		},
 	})

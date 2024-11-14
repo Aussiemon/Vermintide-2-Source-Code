@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_morris_loading_conversation_alpha_one",
+		probability = 1,
 		response = "pbw_morris_loading_conversation_alpha_one",
 		criterias = {
 			{
@@ -71,6 +72,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_loading_conversation_alpha_three_all_branches_reply_a",
+		probability = 1,
 		response = "pbw_morris_loading_conversation_alpha_three_all_branches_reply_a",
 		criterias = {
 			{
@@ -121,6 +123,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_loading_conversation_alpha_three_all_branches_reply_b",
+		probability = 1,
 		response = "pbw_morris_loading_conversation_alpha_three_all_branches_reply_b",
 		criterias = {
 			{
@@ -171,6 +174,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_loading_conversation_alpha_three_all_branches_reply_c",
+		probability = 1,
 		response = "pbw_morris_loading_conversation_alpha_three_all_branches_reply_c",
 		criterias = {
 			{
@@ -221,6 +225,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_loading_conversation_alpha_three_all_branches_reply_d",
+		probability = 1,
 		response = "pbw_morris_loading_conversation_alpha_three_all_branches_reply_d",
 		criterias = {
 			{
@@ -271,6 +276,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_loading_conversation_alpha_three_branch_five_reply",
+		probability = 1,
 		response = "pbw_morris_loading_conversation_alpha_three_branch_five_reply",
 		criterias = {
 			{
@@ -321,6 +327,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_loading_conversation_alpha_three_branch_three_reply",
+		probability = 1,
 		response = "pbw_morris_loading_conversation_alpha_three_branch_three_reply",
 		criterias = {
 			{
@@ -371,6 +378,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_loading_conversation_alpha_two_branch_two",
+		probability = 1,
 		response = "pbw_morris_loading_conversation_alpha_two_branch_two",
 		criterias = {
 			{
@@ -421,6 +429,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_loading_conversation_beta_one",
+		probability = 1,
 		response = "pbw_morris_loading_conversation_beta_one",
 		criterias = {
 			{
@@ -489,6 +498,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_loading_conversation_beta_three",
+		probability = 1,
 		response = "pbw_morris_loading_conversation_beta_three",
 		criterias = {
 			{
@@ -539,6 +549,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_loading_conversation_beta_two",
+		probability = 1,
 		response = "pbw_morris_loading_conversation_beta_two",
 		criterias = {
 			{
@@ -589,6 +600,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_loading_conversation_delta_one",
+		probability = 1,
 		response = "pbw_morris_loading_conversation_delta_one",
 		criterias = {
 			{
@@ -657,6 +669,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_loading_conversation_delta_three_all_branches_reply_a",
+		probability = 1,
 		response = "pbw_morris_loading_conversation_delta_three_all_branches_reply_a",
 		criterias = {
 			{
@@ -707,6 +720,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_loading_conversation_delta_three_all_branches_reply_b",
+		probability = 1,
 		response = "pbw_morris_loading_conversation_delta_three_all_branches_reply_b",
 		criterias = {
 			{
@@ -757,6 +771,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_loading_conversation_delta_three_all_branches_reply_c",
+		probability = 1,
 		response = "pbw_morris_loading_conversation_delta_three_all_branches_reply_c",
 		criterias = {
 			{
@@ -807,6 +822,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_loading_conversation_delta_three_all_branches_reply_d",
+		probability = 1,
 		response = "pbw_morris_loading_conversation_delta_three_all_branches_reply_d",
 		criterias = {
 			{
@@ -857,6 +873,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_loading_conversation_delta_three_branch_five_reply",
+		probability = 1,
 		response = "pbw_morris_loading_conversation_delta_three_branch_five_reply",
 		criterias = {
 			{
@@ -907,6 +924,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_loading_conversation_delta_three_branch_four_reply",
+		probability = 1,
 		response = "pbw_morris_loading_conversation_delta_three_branch_four_reply",
 		criterias = {
 			{
@@ -957,6 +975,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_loading_conversation_delta_two_branch_two",
+		probability = 1,
 		response = "pbw_morris_loading_conversation_delta_two_branch_two",
 		criterias = {
 			{
@@ -1007,6 +1026,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_loading_conversation_gamma_one",
+		probability = 1,
 		response = "pbw_morris_loading_conversation_gamma_one",
 		criterias = {
 			{
@@ -1075,6 +1095,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_loading_conversation_gamma_three",
+		probability = 1,
 		response = "pbw_morris_loading_conversation_gamma_three",
 		criterias = {
 			{
@@ -1125,6 +1146,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_loading_conversation_gamma_two",
+		probability = 1,
 		response = "pbw_morris_loading_conversation_gamma_two",
 		criterias = {
 			{
@@ -1175,6 +1197,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_loading_conversation_alpha_one",
+		probability = 1,
 		response = "pdr_morris_loading_conversation_alpha_one",
 		criterias = {
 			{
@@ -1243,6 +1266,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_loading_conversation_alpha_three_all_branches_reply_a",
+		probability = 1,
 		response = "pdr_morris_loading_conversation_alpha_three_all_branches_reply_a",
 		criterias = {
 			{
@@ -1293,6 +1317,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_loading_conversation_alpha_three_all_branches_reply_b",
+		probability = 1,
 		response = "pdr_morris_loading_conversation_alpha_three_all_branches_reply_b",
 		criterias = {
 			{
@@ -1343,6 +1368,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_loading_conversation_alpha_three_all_branches_reply_c",
+		probability = 1,
 		response = "pdr_morris_loading_conversation_alpha_three_all_branches_reply_c",
 		criterias = {
 			{
@@ -1393,6 +1419,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_loading_conversation_alpha_three_all_branches_reply_d",
+		probability = 1,
 		response = "pdr_morris_loading_conversation_alpha_three_all_branches_reply_d",
 		criterias = {
 			{
@@ -1443,6 +1470,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_loading_conversation_alpha_three_branch_five_reply",
+		probability = 1,
 		response = "pdr_morris_loading_conversation_alpha_three_branch_five_reply",
 		criterias = {
 			{
@@ -1493,6 +1521,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_loading_conversation_alpha_three_branch_one_reply",
+		probability = 1,
 		response = "pdr_morris_loading_conversation_alpha_three_branch_one_reply",
 		criterias = {
 			{
@@ -1543,6 +1572,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_loading_conversation_alpha_two_branch_three",
+		probability = 1,
 		response = "pdr_morris_loading_conversation_alpha_two_branch_three",
 		criterias = {
 			{
@@ -1593,6 +1623,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_loading_conversation_beta_one",
+		probability = 1,
 		response = "pdr_morris_loading_conversation_beta_one",
 		criterias = {
 			{
@@ -1661,6 +1692,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_loading_conversation_beta_three",
+		probability = 1,
 		response = "pdr_morris_loading_conversation_beta_three",
 		criterias = {
 			{
@@ -1711,6 +1743,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_loading_conversation_beta_two",
+		probability = 1,
 		response = "pdr_morris_loading_conversation_beta_two",
 		criterias = {
 			{
@@ -1761,6 +1794,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_loading_conversation_delta_one",
+		probability = 1,
 		response = "pdr_morris_loading_conversation_delta_one",
 		criterias = {
 			{
@@ -1829,6 +1863,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_loading_conversation_delta_three_all_branches_reply_a",
+		probability = 1,
 		response = "pdr_morris_loading_conversation_delta_three_all_branches_reply_a",
 		criterias = {
 			{
@@ -1879,6 +1914,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_loading_conversation_delta_three_all_branches_reply_b",
+		probability = 1,
 		response = "pdr_morris_loading_conversation_delta_three_all_branches_reply_b",
 		criterias = {
 			{
@@ -1929,6 +1965,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_loading_conversation_delta_three_all_branches_reply_c",
+		probability = 1,
 		response = "pdr_morris_loading_conversation_delta_three_all_branches_reply_c",
 		criterias = {
 			{
@@ -1979,6 +2016,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_loading_conversation_delta_three_all_branches_reply_d",
+		probability = 1,
 		response = "pdr_morris_loading_conversation_delta_three_all_branches_reply_d",
 		criterias = {
 			{
@@ -2029,6 +2067,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_loading_conversation_delta_three_branch_four_reply",
+		probability = 1,
 		response = "pdr_morris_loading_conversation_delta_three_branch_four_reply",
 		criterias = {
 			{
@@ -2079,6 +2118,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_loading_conversation_delta_three_branch_one_reply",
+		probability = 1,
 		response = "pdr_morris_loading_conversation_delta_three_branch_one_reply",
 		criterias = {
 			{
@@ -2129,6 +2169,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_loading_conversation_delta_two_branch_three",
+		probability = 1,
 		response = "pdr_morris_loading_conversation_delta_two_branch_three",
 		criterias = {
 			{
@@ -2179,6 +2220,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_loading_conversation_gamma_one",
+		probability = 1,
 		response = "pdr_morris_loading_conversation_gamma_one",
 		criterias = {
 			{
@@ -2247,6 +2289,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_loading_conversation_gamma_three",
+		probability = 1,
 		response = "pdr_morris_loading_conversation_gamma_three",
 		criterias = {
 			{
@@ -2297,6 +2340,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_loading_conversation_gamma_two",
+		probability = 1,
 		response = "pdr_morris_loading_conversation_gamma_two",
 		criterias = {
 			{
@@ -2347,6 +2391,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_loading_conversation_alpha_one",
+		probability = 1,
 		response = "pes_morris_loading_conversation_alpha_one",
 		criterias = {
 			{
@@ -2415,6 +2460,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_loading_conversation_alpha_three_all_branches_reply_a",
+		probability = 1,
 		response = "pes_morris_loading_conversation_alpha_three_all_branches_reply_a",
 		criterias = {
 			{
@@ -2465,6 +2511,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_loading_conversation_alpha_three_all_branches_reply_b",
+		probability = 1,
 		response = "pes_morris_loading_conversation_alpha_three_all_branches_reply_b",
 		criterias = {
 			{
@@ -2515,6 +2562,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_loading_conversation_alpha_three_all_branches_reply_c",
+		probability = 1,
 		response = "pes_morris_loading_conversation_alpha_three_all_branches_reply_c",
 		criterias = {
 			{
@@ -2565,6 +2613,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_loading_conversation_alpha_three_all_branches_reply_d",
+		probability = 1,
 		response = "pes_morris_loading_conversation_alpha_three_all_branches_reply_d",
 		criterias = {
 			{
@@ -2615,6 +2664,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_loading_conversation_alpha_three_branch_four_reply",
+		probability = 1,
 		response = "pes_morris_loading_conversation_alpha_three_branch_four_reply",
 		criterias = {
 			{
@@ -2665,6 +2715,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_loading_conversation_alpha_three_branch_two_reply",
+		probability = 1,
 		response = "pes_morris_loading_conversation_alpha_three_branch_two_reply",
 		criterias = {
 			{
@@ -2715,6 +2766,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_loading_conversation_alpha_two_branch_five",
+		probability = 1,
 		response = "pes_morris_loading_conversation_alpha_two_branch_five",
 		criterias = {
 			{
@@ -2765,6 +2817,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_loading_conversation_beta_one",
+		probability = 1,
 		response = "pes_morris_loading_conversation_beta_one",
 		criterias = {
 			{
@@ -2833,6 +2886,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_loading_conversation_beta_three",
+		probability = 1,
 		response = "pes_morris_loading_conversation_beta_three",
 		criterias = {
 			{
@@ -2883,6 +2937,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_loading_conversation_beta_two",
+		probability = 1,
 		response = "pes_morris_loading_conversation_beta_two",
 		criterias = {
 			{
@@ -2933,6 +2988,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_loading_conversation_delta_one",
+		probability = 1,
 		response = "pes_morris_loading_conversation_delta_one",
 		criterias = {
 			{
@@ -3001,6 +3057,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_loading_conversation_delta_three_all_branches_reply_a",
+		probability = 1,
 		response = "pes_morris_loading_conversation_delta_three_all_branches_reply_a",
 		criterias = {
 			{
@@ -3051,6 +3108,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_loading_conversation_delta_three_all_branches_reply_b",
+		probability = 1,
 		response = "pes_morris_loading_conversation_delta_three_all_branches_reply_b",
 		criterias = {
 			{
@@ -3101,6 +3159,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_loading_conversation_delta_three_all_branches_reply_c",
+		probability = 1,
 		response = "pes_morris_loading_conversation_delta_three_all_branches_reply_c",
 		criterias = {
 			{
@@ -3151,6 +3210,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_loading_conversation_delta_three_all_branches_reply_d",
+		probability = 1,
 		response = "pes_morris_loading_conversation_delta_three_all_branches_reply_d",
 		criterias = {
 			{
@@ -3201,6 +3261,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_loading_conversation_delta_three_branch_one_reply",
+		probability = 1,
 		response = "pes_morris_loading_conversation_delta_three_branch_one_reply",
 		criterias = {
 			{
@@ -3251,6 +3312,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_loading_conversation_delta_three_branch_two_reply",
+		probability = 1,
 		response = "pes_morris_loading_conversation_delta_three_branch_two_reply",
 		criterias = {
 			{
@@ -3301,6 +3363,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_loading_conversation_delta_two_branch_five",
+		probability = 1,
 		response = "pes_morris_loading_conversation_delta_two_branch_five",
 		criterias = {
 			{
@@ -3351,6 +3414,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_loading_conversation_gamma_one",
+		probability = 1,
 		response = "pes_morris_loading_conversation_gamma_one",
 		criterias = {
 			{
@@ -3419,6 +3483,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_loading_conversation_gamma_three",
+		probability = 1,
 		response = "pes_morris_loading_conversation_gamma_three",
 		criterias = {
 			{
@@ -3469,6 +3534,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_loading_conversation_gamma_two",
+		probability = 1,
 		response = "pes_morris_loading_conversation_gamma_two",
 		criterias = {
 			{
@@ -3519,6 +3585,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_loading_conversation_alpha_one",
+		probability = 1,
 		response = "pwe_morris_loading_conversation_alpha_one",
 		criterias = {
 			{
@@ -3587,6 +3654,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_loading_conversation_alpha_three_all_branches_reply_a",
+		probability = 1,
 		response = "pwe_morris_loading_conversation_alpha_three_all_branches_reply_a",
 		criterias = {
 			{
@@ -3637,6 +3705,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_loading_conversation_alpha_three_all_branches_reply_b",
+		probability = 1,
 		response = "pwe_morris_loading_conversation_alpha_three_all_branches_reply_b",
 		criterias = {
 			{
@@ -3687,6 +3756,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_loading_conversation_alpha_three_all_branches_reply_c",
+		probability = 1,
 		response = "pwe_morris_loading_conversation_alpha_three_all_branches_reply_c",
 		criterias = {
 			{
@@ -3737,6 +3807,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_loading_conversation_alpha_three_all_branches_reply_d",
+		probability = 1,
 		response = "pwe_morris_loading_conversation_alpha_three_all_branches_reply_d",
 		criterias = {
 			{
@@ -3787,6 +3858,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_loading_conversation_alpha_three_branch_one_reply",
+		probability = 1,
 		response = "pwe_morris_loading_conversation_alpha_three_branch_one_reply",
 		criterias = {
 			{
@@ -3837,6 +3909,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_loading_conversation_alpha_three_branch_three_reply",
+		probability = 1,
 		response = "pwe_morris_loading_conversation_alpha_three_branch_three_reply",
 		criterias = {
 			{
@@ -3887,6 +3960,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_loading_conversation_alpha_two_branch_four",
+		probability = 1,
 		response = "pwe_morris_loading_conversation_alpha_two_branch_four",
 		criterias = {
 			{
@@ -3937,6 +4011,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_loading_conversation_beta_one",
+		probability = 1,
 		response = "pwe_morris_loading_conversation_beta_one",
 		criterias = {
 			{
@@ -4005,6 +4080,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_loading_conversation_beta_three",
+		probability = 1,
 		response = "pwe_morris_loading_conversation_beta_three",
 		criterias = {
 			{
@@ -4055,6 +4131,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_loading_conversation_beta_two",
+		probability = 1,
 		response = "pwe_morris_loading_conversation_beta_two",
 		criterias = {
 			{
@@ -4105,6 +4182,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_loading_conversation_delta_one",
+		probability = 1,
 		response = "pwe_morris_loading_conversation_delta_one",
 		criterias = {
 			{
@@ -4173,6 +4251,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_loading_conversation_delta_three_all_branches_reply_a",
+		probability = 1,
 		response = "pwe_morris_loading_conversation_delta_three_all_branches_reply_a",
 		criterias = {
 			{
@@ -4223,6 +4302,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_loading_conversation_delta_three_all_branches_reply_b",
+		probability = 1,
 		response = "pwe_morris_loading_conversation_delta_three_all_branches_reply_b",
 		criterias = {
 			{
@@ -4273,6 +4353,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_loading_conversation_delta_three_all_branches_reply_c",
+		probability = 1,
 		response = "pwe_morris_loading_conversation_delta_three_all_branches_reply_c",
 		criterias = {
 			{
@@ -4323,6 +4404,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_loading_conversation_delta_three_all_branches_reply_d",
+		probability = 1,
 		response = "pwe_morris_loading_conversation_delta_three_all_branches_reply_d",
 		criterias = {
 			{
@@ -4373,6 +4455,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_loading_conversation_delta_three_branch_three_reply",
+		probability = 1,
 		response = "pwe_morris_loading_conversation_delta_three_branch_three_reply",
 		criterias = {
 			{
@@ -4423,6 +4506,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_loading_conversation_delta_two_branch_four",
+		probability = 1,
 		response = "pwe_morris_loading_conversation_delta_two_branch_four",
 		criterias = {
 			{
@@ -4473,6 +4557,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_loading_conversation_gamma_one",
+		probability = 1,
 		response = "pwe_morris_loading_conversation_gamma_one",
 		criterias = {
 			{
@@ -4541,6 +4626,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_loading_conversation_gamma_three",
+		probability = 1,
 		response = "pwe_morris_loading_conversation_gamma_three",
 		criterias = {
 			{
@@ -4591,6 +4677,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_loading_conversation_gamma_two",
+		probability = 1,
 		response = "pwe_morris_loading_conversation_gamma_two",
 		criterias = {
 			{
@@ -4641,6 +4728,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_loading_conversation_alpha_three_all_branches_reply_a",
+		probability = 1,
 		response = "pwh_morris_loading_conversation_alpha_three_all_branches_reply_a",
 		criterias = {
 			{
@@ -4691,6 +4779,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_loading_conversation_alpha_three_all_branches_reply_b",
+		probability = 1,
 		response = "pwh_morris_loading_conversation_alpha_three_all_branches_reply_b",
 		criterias = {
 			{
@@ -4741,6 +4830,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_loading_conversation_alpha_three_all_branches_reply_c",
+		probability = 1,
 		response = "pwh_morris_loading_conversation_alpha_three_all_branches_reply_c",
 		criterias = {
 			{
@@ -4791,6 +4881,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_loading_conversation_alpha_three_all_branches_reply_d",
+		probability = 1,
 		response = "pwh_morris_loading_conversation_alpha_three_all_branches_reply_d",
 		criterias = {
 			{
@@ -4841,6 +4932,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_loading_conversation_alpha_three_branch_four_reply",
+		probability = 1,
 		response = "pwh_morris_loading_conversation_alpha_three_branch_four_reply",
 		criterias = {
 			{
@@ -4891,6 +4983,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_loading_conversation_alpha_three_branch_two_reply",
+		probability = 1,
 		response = "pwh_morris_loading_conversation_alpha_three_branch_two_reply",
 		criterias = {
 			{
@@ -4941,6 +5034,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_loading_conversation_alpha_two_branch_one",
+		probability = 1,
 		response = "pwh_morris_loading_conversation_alpha_two_branch_one",
 		criterias = {
 			{
@@ -4991,6 +5085,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_loading_conversation_beta_one",
+		probability = 1,
 		response = "pwh_morris_loading_conversation_beta_one",
 		criterias = {
 			{
@@ -5059,6 +5154,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_loading_conversation_beta_three",
+		probability = 1,
 		response = "pwh_morris_loading_conversation_beta_three",
 		criterias = {
 			{
@@ -5109,6 +5205,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_loading_conversation_beta_two",
+		probability = 1,
 		response = "pwh_morris_loading_conversation_beta_two",
 		criterias = {
 			{
@@ -5159,6 +5256,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_loading_conversation_delta_one",
+		probability = 1,
 		response = "pwh_morris_loading_conversation_delta_one",
 		criterias = {
 			{
@@ -5227,6 +5325,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_loading_conversation_delta_three_all_branches_reply_a",
+		probability = 1,
 		response = "pwh_morris_loading_conversation_delta_three_all_branches_reply_a",
 		criterias = {
 			{
@@ -5277,6 +5376,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_loading_conversation_delta_three_all_branches_reply_b",
+		probability = 1,
 		response = "pwh_morris_loading_conversation_delta_three_all_branches_reply_b",
 		criterias = {
 			{
@@ -5327,6 +5427,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_loading_conversation_delta_three_all_branches_reply_c",
+		probability = 1,
 		response = "pwh_morris_loading_conversation_delta_three_all_branches_reply_c",
 		criterias = {
 			{
@@ -5377,6 +5478,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_loading_conversation_delta_three_all_branches_reply_d",
+		probability = 1,
 		response = "pwh_morris_loading_conversation_delta_three_all_branches_reply_d",
 		criterias = {
 			{
@@ -5427,6 +5529,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_loading_conversation_delta_three_branch_five_reply",
+		probability = 1,
 		response = "pwh_morris_loading_conversation_delta_three_branch_five_reply",
 		criterias = {
 			{
@@ -5477,6 +5580,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_loading_conversation_delta_three_branch_two_reply",
+		probability = 1,
 		response = "pwh_morris_loading_conversation_delta_three_branch_two_reply",
 		criterias = {
 			{
@@ -5527,6 +5631,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_loading_conversation_delta_two_branch_one",
+		probability = 1,
 		response = "pwh_morris_loading_conversation_delta_two_branch_one",
 		criterias = {
 			{
@@ -5577,6 +5682,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_loading_conversation_gamma_one",
+		probability = 1,
 		response = "pwh_morris_loading_conversation_gamma_one",
 		criterias = {
 			{
@@ -5645,6 +5751,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_loading_conversation_gamma_three",
+		probability = 1,
 		response = "pwh_morris_loading_conversation_gamma_three",
 		criterias = {
 			{
@@ -5695,6 +5802,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_loading_conversation_gamma_two",
+		probability = 1,
 		response = "pwh_morris_loading_conversation_gamma_two",
 		criterias = {
 			{
@@ -6045,7 +6153,7 @@ return function ()
 				[2] = "pbw_morris_loading_conversation_beta_two_02",
 			},
 			sound_events_duration = {
-				[1] = 8.1744065284729,
+				[1] = 7.9233021736145,
 				[2] = 5.9330835342407,
 			},
 		},

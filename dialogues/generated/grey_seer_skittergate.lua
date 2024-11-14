@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "egs_death_scene_01",
+		probability = 1,
 		response = "egs_death_scene_01",
 		criterias = {
 			{
@@ -21,6 +22,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_gameplay_brightwizard_killed",
+		probability = 1,
 		response = "egs_gameplay_brightwizard_killed",
 		criterias = {
 			{
@@ -51,6 +53,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_gameplay_brightwizard_knock_down",
+		probability = 1,
 		response = "egs_gameplay_brightwizard_knock_down",
 		criterias = {
 			{
@@ -81,6 +84,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_gameplay_dwarfranger_killed",
+		probability = 1,
 		response = "egs_gameplay_dwarfranger_killed",
 		criterias = {
 			{
@@ -111,6 +115,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_gameplay_dwarfranger_knock_down",
+		probability = 1,
 		response = "egs_gameplay_dwarfranger_knock_down",
 		criterias = {
 			{
@@ -141,6 +146,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_gameplay_empiresoldier_killed",
+		probability = 1,
 		response = "egs_gameplay_empiresoldier_killed",
 		criterias = {
 			{
@@ -171,6 +177,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_gameplay_empiresoldier_knock_down",
+		probability = 1,
 		response = "egs_gameplay_empiresoldier_knock_down",
 		criterias = {
 			{
@@ -201,6 +208,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_gameplay_shielded",
+		probability = 1,
 		response = "egs_gameplay_shielded",
 		criterias = {
 			{
@@ -239,6 +247,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_gameplay_witchhunter_killed",
+		probability = 1,
 		response = "egs_gameplay_witchhunter_killed",
 		criterias = {
 			{
@@ -269,6 +278,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_gameplay_witchhunter_knock_down",
+		probability = 1,
 		response = "egs_gameplay_witchhunter_knock_down",
 		criterias = {
 			{
@@ -299,6 +309,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_gameplay_woodelf_killed",
+		probability = 1,
 		response = "egs_gameplay_woodelf_killed",
 		criterias = {
 			{
@@ -329,6 +340,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_gameplay_woodelf_knock_down",
+		probability = 1,
 		response = "egs_gameplay_woodelf_knock_down",
 		criterias = {
 			{
@@ -359,6 +371,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_level_skitter_gate_teleport_death",
+		probability = 1,
 		response = "egs_level_skitter_gate_teleport_death",
 		criterias = {
 			{
@@ -377,6 +390,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_level_skittergate_cast_lightning",
+		probability = 1,
 		response = "egs_level_skittergate_cast_lightning",
 		criterias = {
 			{
@@ -395,6 +409,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_level_skittergate_cast_vermintide",
+		probability = 1,
 		response = "egs_level_skittergate_cast_vermintide",
 		criterias = {
 			{
@@ -413,6 +428,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_level_skittergate_rasknitt_appears",
+		probability = 1,
 		response = "egs_level_skittergate_rasknitt_appears",
 		criterias = {
 			{
@@ -445,6 +461,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_level_skittergate_rasknitt_calls_mount",
+		probability = 1,
 		response = "egs_level_skittergate_rasknitt_calls_mount",
 		criterias = {
 			{
@@ -463,6 +480,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_level_skittergate_rasknitt_calls_mount_battle",
+		probability = 1,
 		response = "egs_level_skittergate_rasknitt_calls_mount_battle",
 		criterias = {
 			{
@@ -481,6 +499,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_level_skittergate_rasknitt_calls_mount_intro",
+		probability = 1,
 		response = "egs_level_skittergate_rasknitt_calls_mount_intro",
 		criterias = {
 			{
@@ -513,6 +532,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_level_skittergate_rasknitt_dismounted",
+		probability = 1,
 		response = "egs_level_skittergate_rasknitt_dismounted",
 		criterias = {
 			{
@@ -531,6 +551,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_level_skittergate_rasknitt_mounting_stormfiend",
+		probability = 1,
 		response = "egs_level_skittergate_rasknitt_mounting_stormfiend",
 		criterias = {
 			{
@@ -549,6 +570,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_level_skittergate_rasknitt_on_stormfiend",
+		probability = 1,
 		response = "egs_level_skittergate_rasknitt_on_stormfiend",
 		criterias = {
 			{
@@ -567,6 +589,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_level_skittergate_stormfiend_dead",
+		probability = 1,
 		response = "egs_level_skittergate_stormfiend_dead",
 		criterias = {
 			{
@@ -585,6 +608,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_level_skittergate_summon_skaven",
+		probability = 1,
 		response = "egs_level_skittergate_summon_skaven",
 		criterias = {
 			{
@@ -603,6 +627,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_level_skittergate_teleport_away",
+		probability = 1,
 		response = "egs_level_skittergate_teleport_away",
 		criterias = {
 			{

@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pes_level_nurgle_bury_objective",
+		probability = 1,
 		response = "pes_level_nurgle_bury_objective",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_nurgle_coming_down",
+		probability = 1,
 		response = "pes_level_nurgle_coming_down",
 		criterias = {
 			{
@@ -91,6 +93,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_nurgle_digsite",
+		probability = 1,
 		response = "pes_level_nurgle_digsite",
 		criterias = {
 			{
@@ -141,6 +144,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_nurgle_drop_down",
+		probability = 1,
 		response = "pes_level_nurgle_drop_down",
 		criterias = {
 			{
@@ -191,6 +195,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_nurgle_nurglification",
+		probability = 1,
 		response = "pes_level_nurgle_nurglification",
 		criterias = {
 			{
@@ -241,6 +246,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_nurgle_nurglification_increase",
+		probability = 1,
 		response = "pes_level_nurgle_nurglification_increase",
 		criterias = {
 			{
@@ -291,6 +297,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_nurgle_outcast_lair",
+		probability = 1,
 		response = "pes_level_nurgle_outcast_lair",
 		criterias = {
 			{
@@ -341,6 +348,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_nurgle_river",
+		probability = 1,
 		response = "pes_level_nurgle_river",
 		criterias = {
 			{
@@ -391,6 +399,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_nurgle_skaven_collapse",
+		probability = 1,
 		response = "pes_level_nurgle_skaven_collapse",
 		criterias = {
 			{
@@ -441,6 +450,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_nurgle_spotting_objective",
+		probability = 1,
 		response = "pes_level_nurgle_spotting_objective",
 		criterias = {
 			{
@@ -485,6 +495,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_nurgle_swift_river",
+		probability = 1,
 		response = "pes_level_nurgle_swift_river",
 		criterias = {
 			{
@@ -529,6 +540,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_nurgle_intro_a",
+		probability = 1,
 		response = "pes_nurgle_intro_a",
 		criterias = {
 			{
@@ -573,6 +585,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_nurgle_intro_b",
+		probability = 1,
 		response = "pes_nurgle_intro_b",
 		criterias = {
 			{

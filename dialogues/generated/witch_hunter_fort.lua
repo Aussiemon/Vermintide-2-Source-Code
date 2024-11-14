@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pwh_fort_intro_a",
+		probability = 1,
 		response = "pwh_fort_intro_a",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_fort_intro_b",
+		probability = 1,
 		response = "pwh_fort_intro_b",
 		criterias = {
 			{
@@ -85,6 +87,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_fort_intro_c",
+		probability = 1,
 		response = "pwh_fort_intro_c",
 		criterias = {
 			{
@@ -123,6 +126,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_cannonballs",
+		probability = 1,
 		response = "pwh_level_fort_cannonballs",
 		criterias = {
 			{
@@ -167,6 +171,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_cannons_silenced",
+		probability = 1,
 		response = "pwh_level_fort_cannons_silenced",
 		criterias = {
 			{
@@ -211,6 +216,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_cross_here",
+		probability = 1,
 		response = "pwh_level_fort_cross_here",
 		criterias = {
 			{
@@ -255,6 +261,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_fire_cannon_final_fire",
+		probability = 1,
 		response = "pwh_level_fort_fire_cannon_final_fire",
 		criterias = {
 			{
@@ -299,6 +306,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_fire_cannon_final_hit",
+		probability = 1,
 		response = "pwh_level_fort_fire_cannon_final_hit",
 		criterias = {
 			{
@@ -343,6 +351,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_fire_cannon_first",
+		probability = 1,
 		response = "pwh_level_fort_fire_cannon_first",
 		criterias = {
 			{
@@ -387,6 +396,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_fire_cannon_first_hit",
+		probability = 1,
 		response = "pwh_level_fort_fire_cannon_first_hit",
 		criterias = {
 			{
@@ -431,6 +441,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_fire_cannon_fuse_is_lit",
+		probability = 1,
 		response = "pwh_level_fort_fire_cannon_fuse_is_lit",
 		criterias = {
 			{
@@ -475,6 +486,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_fire_cannon_second",
+		probability = 1,
 		response = "pwh_level_fort_fire_cannon_second",
 		criterias = {
 			{
@@ -519,6 +531,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_fire_cannon_second_hit",
+		probability = 1,
 		response = "pwh_level_fort_fire_cannon_second_hit",
 		criterias = {
 			{
@@ -563,6 +576,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_gate_fallen",
+		probability = 1,
 		response = "pwh_level_fort_gate_fallen",
 		criterias = {
 			{
@@ -607,6 +621,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_getting_closer",
+		probability = 1,
 		response = "pwh_level_fort_getting_closer",
 		criterias = {
 			{
@@ -651,6 +666,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_plague_claw_shelling",
+		probability = 1,
 		response = "pwh_level_fort_plague_claw_shelling",
 		criterias = {
 			{
@@ -695,6 +711,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_plague_claw_shelling_move",
+		probability = 1,
 		response = "pwh_level_fort_plague_claw_shelling_move",
 		criterias = {
 			{
@@ -739,6 +756,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_river",
+		probability = 1,
 		response = "pwh_level_fort_river",
 		criterias = {
 			{
@@ -783,6 +801,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_skaven_everywhere",
+		probability = 1,
 		response = "pwh_level_fort_skaven_everywhere",
 		criterias = {
 			{
@@ -827,6 +846,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_skaven_run",
+		probability = 1,
 		response = "pwh_level_fort_skaven_run",
 		criterias = {
 			{
@@ -871,6 +891,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_under_attack",
+		probability = 1,
 		response = "pwh_level_fort_under_attack",
 		criterias = {
 			{
@@ -915,6 +936,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_use_cannons",
+		probability = 1,
 		response = "pwh_level_fort_use_cannons",
 		criterias = {
 			{

@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pdr_magnus_tower_intro",
+		probability = 1,
 		response = "pdr_magnus_tower_intro",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_magnus_tower_intro_b",
+		probability = 1,
 		response = "pdr_magnus_tower_intro_b",
 		criterias = {
 			{
@@ -85,6 +87,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_magnus_tower_intro_c",
+		probability = 1,
 		response = "pdr_magnus_tower_intro_c",
 		criterias = {
 			{
@@ -123,6 +126,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_objective_magnus_tower_arriving_late",
+		probability = 1,
 		response = "pdr_objective_magnus_tower_arriving_late",
 		criterias = {
 			{
@@ -167,6 +171,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_objective_magnus_tower_call_elevator",
+		probability = 1,
 		response = "pdr_objective_magnus_tower_call_elevator",
 		criterias = {
 			{
@@ -211,6 +216,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_objective_magnus_tower_crescendo_starting",
+		probability = 1,
 		response = "pdr_objective_magnus_tower_crescendo_starting",
 		criterias = {
 			{
@@ -255,6 +261,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_objective_magnus_tower_elevator_opens_door",
+		probability = 1,
 		response = "pdr_objective_magnus_tower_elevator_opens_door",
 		criterias = {
 			{
@@ -299,6 +306,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_objective_magnus_tower_entering_guardhouse",
+		probability = 1,
 		response = "pdr_objective_magnus_tower_entering_guardhouse",
 		criterias = {
 			{
@@ -343,6 +351,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_objective_magnus_tower_finding_explosives",
+		probability = 1,
 		response = "pdr_objective_magnus_tower_finding_explosives",
 		criterias = {
 			{
@@ -387,6 +396,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_objective_magnus_tower_hint_blow_horn",
+		probability = 1,
 		response = "pdr_objective_magnus_tower_hint_blow_horn",
 		criterias = {
 			{
@@ -431,6 +441,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_objective_magnus_tower_over_rooftops",
+		probability = 1,
 		response = "pdr_objective_magnus_tower_over_rooftops",
 		criterias = {
 			{
@@ -475,6 +486,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_objective_magnus_tower_reaching_top_of_magnus_tower",
+		probability = 1,
 		response = "pdr_objective_magnus_tower_reaching_top_of_magnus_tower",
 		criterias = {
 			{
@@ -519,6 +531,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_objective_magnus_tower_seeing_gate",
+		probability = 1,
 		response = "pdr_objective_magnus_tower_seeing_gate",
 		criterias = {
 			{
@@ -563,6 +576,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_objective_magnus_tower_seeing_guardhouse",
+		probability = 1,
 		response = "pdr_objective_magnus_tower_seeing_guardhouse",
 		criterias = {
 			{
@@ -607,6 +621,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_objective_magnus_tower_seeing_tavern",
+		probability = 1,
 		response = "pdr_objective_magnus_tower_seeing_tavern",
 		criterias = {
 			{
@@ -651,6 +666,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_objective_magnus_tower_seeing_tower",
+		probability = 1,
 		response = "pdr_objective_magnus_tower_seeing_tower",
 		criterias = {
 			{
@@ -695,6 +711,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_objective_magnus_tower_to_rooftops",
+		probability = 1,
 		response = "pdr_objective_magnus_tower_to_rooftops",
 		criterias = {
 			{
@@ -739,6 +756,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_objective_magnus_tower_up_stairs",
+		probability = 1,
 		response = "pdr_objective_magnus_tower_up_stairs",
 		criterias = {
 			{
@@ -783,6 +801,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_objective_magnus_tower_view_tower",
+		probability = 1,
 		response = "pdr_objective_magnus_tower_view_tower",
 		criterias = {
 			{
@@ -827,6 +846,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_objective_magnus_tower_vista",
+		probability = 1,
 		response = "pdr_objective_magnus_tower_vista",
 		criterias = {
 			{
@@ -871,6 +891,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_objective_magnus_tower_walking_streets",
+		probability = 1,
 		response = "pdr_objective_magnus_tower_walking_streets",
 		criterias = {
 			{

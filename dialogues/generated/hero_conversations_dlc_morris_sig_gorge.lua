@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_morris_gorge_cliff_town",
+		probability = 1,
 		response = "pbw_morris_gorge_cliff_town",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_gorge_effigy",
+		probability = 1,
 		response = "pbw_morris_gorge_effigy",
 		criterias = {
 			{
@@ -91,6 +93,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_gorge_river_course",
+		probability = 1,
 		response = "pbw_morris_gorge_river_course",
 		criterias = {
 			{
@@ -135,6 +138,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_gorge_settlement",
+		probability = 1,
 		response = "pbw_morris_gorge_settlement",
 		criterias = {
 			{
@@ -179,6 +183,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_gorge_skull",
+		probability = 1,
 		response = "pbw_morris_gorge_skull",
 		criterias = {
 			{
@@ -223,6 +228,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_gorge_sky",
+		probability = 1,
 		response = "pbw_morris_gorge_sky",
 		criterias = {
 			{
@@ -267,6 +273,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_gorge_cliff_town",
+		probability = 1,
 		response = "pdr_morris_gorge_cliff_town",
 		criterias = {
 			{
@@ -311,6 +318,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_gorge_effigy",
+		probability = 1,
 		response = "pdr_morris_gorge_effigy",
 		criterias = {
 			{
@@ -355,6 +363,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_gorge_river_course",
+		probability = 1,
 		response = "pdr_morris_gorge_river_course",
 		criterias = {
 			{
@@ -399,6 +408,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_gorge_settlement",
+		probability = 1,
 		response = "pdr_morris_gorge_settlement",
 		criterias = {
 			{
@@ -443,6 +453,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_gorge_skull",
+		probability = 1,
 		response = "pdr_morris_gorge_skull",
 		criterias = {
 			{
@@ -487,6 +498,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_gorge_sky",
+		probability = 1,
 		response = "pdr_morris_gorge_sky",
 		criterias = {
 			{
@@ -531,6 +543,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_gorge_cliff_town",
+		probability = 1,
 		response = "pes_morris_gorge_cliff_town",
 		criterias = {
 			{
@@ -575,6 +588,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_gorge_effigy",
+		probability = 1,
 		response = "pes_morris_gorge_effigy",
 		criterias = {
 			{
@@ -619,6 +633,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_gorge_river_course",
+		probability = 1,
 		response = "pes_morris_gorge_river_course",
 		criterias = {
 			{
@@ -663,6 +678,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_gorge_settlement",
+		probability = 1,
 		response = "pes_morris_gorge_settlement",
 		criterias = {
 			{
@@ -707,6 +723,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_gorge_skull",
+		probability = 1,
 		response = "pes_morris_gorge_skull",
 		criterias = {
 			{
@@ -751,6 +768,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_gorge_sky",
+		probability = 1,
 		response = "pes_morris_gorge_sky",
 		criterias = {
 			{
@@ -795,6 +813,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_gorge_cliff_town",
+		probability = 1,
 		response = "pwe_morris_gorge_cliff_town",
 		criterias = {
 			{
@@ -839,6 +858,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_gorge_effigy",
+		probability = 1,
 		response = "pwe_morris_gorge_effigy",
 		criterias = {
 			{
@@ -883,6 +903,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_gorge_river_course",
+		probability = 1,
 		response = "pwe_morris_gorge_river_course",
 		criterias = {
 			{
@@ -927,6 +948,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_gorge_settlement",
+		probability = 1,
 		response = "pwe_morris_gorge_settlement",
 		criterias = {
 			{
@@ -971,6 +993,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_gorge_skull",
+		probability = 1,
 		response = "pwe_morris_gorge_skull",
 		criterias = {
 			{
@@ -1015,6 +1038,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_gorge_sky",
+		probability = 1,
 		response = "pwe_morris_gorge_sky",
 		criterias = {
 			{
@@ -1059,6 +1083,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_gorge_cliff_town",
+		probability = 1,
 		response = "pwh_morris_gorge_cliff_town",
 		criterias = {
 			{
@@ -1103,6 +1128,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_gorge_effigy",
+		probability = 1,
 		response = "pwh_morris_gorge_effigy",
 		criterias = {
 			{
@@ -1147,6 +1173,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_gorge_river_course",
+		probability = 1,
 		response = "pwh_morris_gorge_river_course",
 		criterias = {
 			{
@@ -1191,6 +1218,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_gorge_settlement",
+		probability = 1,
 		response = "pwh_morris_gorge_settlement",
 		criterias = {
 			{
@@ -1235,6 +1263,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_gorge_skull",
+		probability = 1,
 		response = "pwh_morris_gorge_skull",
 		criterias = {
 			{
@@ -1279,6 +1308,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_gorge_sky",
+		probability = 1,
 		response = "pwh_morris_gorge_sky",
 		criterias = {
 			{

@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pwh_bell_intro_a",
+		probability = 1,
 		response = "pwh_bell_intro_a",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_bell_intro_b",
+		probability = 1,
 		response = "pwh_bell_intro_b",
 		criterias = {
 			{
@@ -85,6 +87,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_bell_intro_c",
+		probability = 1,
 		response = "pwh_bell_intro_c",
 		criterias = {
 			{
@@ -123,6 +126,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_bell_chime_01",
+		probability = 1,
 		response = "pwh_level_bell_chime_01",
 		criterias = {
 			{
@@ -167,6 +171,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_bell_destroyed_01",
+		probability = 1,
 		response = "pwh_level_bell_destroyed_01",
 		criterias = {
 			{
@@ -211,6 +216,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_bell_distance_01",
+		probability = 1,
 		response = "pwh_level_bell_distance_01",
 		criterias = {
 			{
@@ -255,6 +261,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_bell_effect_01",
+		probability = 1,
 		response = "pwh_level_bell_effect_01",
 		criterias = {
 			{
@@ -299,6 +306,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_bell_exit_01",
+		probability = 1,
 		response = "pwh_level_bell_exit_01",
 		criterias = {
 			{
@@ -343,6 +351,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_bell_falling_01",
+		probability = 1,
 		response = "pwh_level_bell_falling_01",
 		criterias = {
 			{
@@ -387,6 +396,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_bell_horde",
+		probability = 1,
 		response = "pwh_level_bell_horde",
 		criterias = {
 			{
@@ -431,6 +441,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_bell_long_stairs_01",
+		probability = 1,
 		response = "pwh_level_bell_long_stairs_01",
 		criterias = {
 			{
@@ -481,6 +492,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_bell_poor_quarters_01",
+		probability = 1,
 		response = "pwh_level_bell_poor_quarters_01",
 		criterias = {
 			{
@@ -531,6 +543,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_bell_rain_01",
+		probability = 1,
 		response = "pwh_level_bell_rain_01",
 		criterias = {
 			{
@@ -581,6 +594,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_bell_reaching_bell_01",
+		probability = 1,
 		response = "pwh_level_bell_reaching_bell_01",
 		criterias = {
 			{
@@ -625,6 +639,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_bell_rich_quarters_01",
+		probability = 1,
 		response = "pwh_level_bell_rich_quarters_01",
 		criterias = {
 			{
@@ -675,6 +690,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_bell_rooftops_01",
+		probability = 1,
 		response = "pwh_level_bell_rooftops_01",
 		criterias = {
 			{
@@ -725,6 +741,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_bell_spotting_01",
+		probability = 1,
 		response = "pwh_level_bell_spotting_01",
 		criterias = {
 			{
@@ -769,6 +786,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_bell_vista_01",
+		probability = 1,
 		response = "pwh_level_bell_vista_01",
 		criterias = {
 			{

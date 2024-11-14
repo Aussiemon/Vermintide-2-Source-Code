@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_morris_introspection",
+		probability = 1,
 		response = "pbw_morris_introspection",
 		criterias = {
 			{
@@ -71,6 +72,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_introspection",
+		probability = 1,
 		response = "pdr_morris_introspection",
 		criterias = {
 			{
@@ -139,6 +141,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_introspection",
+		probability = 1,
 		response = "pes_morris_introspection",
 		criterias = {
 			{
@@ -207,6 +210,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_introspection",
+		probability = 1,
 		response = "pwe_morris_introspection",
 		criterias = {
 			{
@@ -275,6 +279,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_introspection",
+		probability = 1,
 		response = "pwh_morris_introspection",
 		criterias = {
 			{

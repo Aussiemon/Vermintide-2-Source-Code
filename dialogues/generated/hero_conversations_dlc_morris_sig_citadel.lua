@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_morris_citadel_fall",
+		probability = 1,
 		response = "pbw_morris_citadel_fall",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_citadel_gateway",
+		probability = 1,
 		response = "pbw_morris_citadel_gateway",
 		criterias = {
 			{
@@ -91,6 +93,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_citadel_offering",
+		probability = 1,
 		response = "pbw_morris_citadel_offering",
 		criterias = {
 			{
@@ -135,6 +138,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_citadel_second_vista",
+		probability = 1,
 		response = "pbw_morris_citadel_second_vista",
 		criterias = {
 			{
@@ -179,6 +183,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_citadel_third_vista",
+		probability = 1,
 		response = "pbw_morris_citadel_third_vista",
 		criterias = {
 			{
@@ -223,6 +228,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_citadel_throne",
+		probability = 1,
 		response = "pbw_morris_citadel_throne",
 		criterias = {
 			{
@@ -267,6 +273,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_citadel_vista",
+		probability = 1,
 		response = "pbw_morris_citadel_vista",
 		criterias = {
 			{
@@ -311,6 +318,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_citadel_fall",
+		probability = 1,
 		response = "pdr_morris_citadel_fall",
 		criterias = {
 			{
@@ -355,6 +363,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_citadel_gateway",
+		probability = 1,
 		response = "pdr_morris_citadel_gateway",
 		criterias = {
 			{
@@ -399,6 +408,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_citadel_offering",
+		probability = 1,
 		response = "pdr_morris_citadel_offering",
 		criterias = {
 			{
@@ -443,6 +453,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_citadel_second_vista",
+		probability = 1,
 		response = "pdr_morris_citadel_second_vista",
 		criterias = {
 			{
@@ -487,6 +498,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_citadel_third_vista",
+		probability = 1,
 		response = "pdr_morris_citadel_third_vista",
 		criterias = {
 			{
@@ -531,6 +543,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_citadel_throne",
+		probability = 1,
 		response = "pdr_morris_citadel_throne",
 		criterias = {
 			{
@@ -575,6 +588,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_citadel_vista",
+		probability = 1,
 		response = "pdr_morris_citadel_vista",
 		criterias = {
 			{
@@ -619,6 +633,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_citadel_fall",
+		probability = 1,
 		response = "pes_morris_citadel_fall",
 		criterias = {
 			{
@@ -663,6 +678,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_citadel_gateway",
+		probability = 1,
 		response = "pes_morris_citadel_gateway",
 		criterias = {
 			{
@@ -707,6 +723,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_citadel_offering",
+		probability = 1,
 		response = "pes_morris_citadel_offering",
 		criterias = {
 			{
@@ -751,6 +768,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_citadel_second_vista",
+		probability = 1,
 		response = "pes_morris_citadel_second_vista",
 		criterias = {
 			{
@@ -795,6 +813,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_citadel_third_vista",
+		probability = 1,
 		response = "pes_morris_citadel_third_vista",
 		criterias = {
 			{
@@ -839,6 +858,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_citadel_throne",
+		probability = 1,
 		response = "pes_morris_citadel_throne",
 		criterias = {
 			{
@@ -883,6 +903,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_citadel_vista",
+		probability = 1,
 		response = "pes_morris_citadel_vista",
 		criterias = {
 			{
@@ -927,6 +948,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_citadel_fall",
+		probability = 1,
 		response = "pwe_morris_citadel_fall",
 		criterias = {
 			{
@@ -971,6 +993,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_citadel_gateway",
+		probability = 1,
 		response = "pwe_morris_citadel_gateway",
 		criterias = {
 			{
@@ -1015,6 +1038,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_citadel_offering",
+		probability = 1,
 		response = "pwe_morris_citadel_offering",
 		criterias = {
 			{
@@ -1059,6 +1083,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_citadel_second_vista",
+		probability = 1,
 		response = "pwe_morris_citadel_second_vista",
 		criterias = {
 			{
@@ -1103,6 +1128,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_citadel_third_vista",
+		probability = 1,
 		response = "pwe_morris_citadel_third_vista",
 		criterias = {
 			{
@@ -1147,6 +1173,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_citadel_throne",
+		probability = 1,
 		response = "pwe_morris_citadel_throne",
 		criterias = {
 			{
@@ -1191,6 +1218,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_citadel_vista",
+		probability = 1,
 		response = "pwe_morris_citadel_vista",
 		criterias = {
 			{
@@ -1235,6 +1263,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_citadel_fall",
+		probability = 1,
 		response = "pwh_morris_citadel_fall",
 		criterias = {
 			{
@@ -1279,6 +1308,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_citadel_gateway",
+		probability = 1,
 		response = "pwh_morris_citadel_gateway",
 		criterias = {
 			{
@@ -1323,6 +1353,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_citadel_offering",
+		probability = 1,
 		response = "pwh_morris_citadel_offering",
 		criterias = {
 			{
@@ -1367,6 +1398,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_citadel_second_vista",
+		probability = 1,
 		response = "pwh_morris_citadel_second_vista",
 		criterias = {
 			{
@@ -1411,6 +1443,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_citadel_third_vista",
+		probability = 1,
 		response = "pwh_morris_citadel_third_vista",
 		criterias = {
 			{
@@ -1455,6 +1488,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_citadel_throne",
+		probability = 1,
 		response = "pwh_morris_citadel_throne",
 		criterias = {
 			{
@@ -1499,6 +1533,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_citadel_vista",
+		probability = 1,
 		response = "pwh_morris_citadel_vista",
 		criterias = {
 			{

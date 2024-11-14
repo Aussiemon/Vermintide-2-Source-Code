@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "ngkd_portals_daemon_challenge",
+		probability = 1,
 		response = "ngkd_portals_daemon_challenge",
 		criterias = {
 			{
@@ -21,6 +22,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_portals_crypt_event_demon_voice",
+		probability = 1,
 		response = "pbw_portals_crypt_event_demon_voice",
 		criterias = {
 			{
@@ -65,6 +67,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_portals_crypt_event_demon_voice",
+		probability = 1,
 		response = "pdr_portals_crypt_event_demon_voice",
 		criterias = {
 			{
@@ -109,6 +112,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_portals_crypt_event_demon_voice",
+		probability = 1,
 		response = "pes_portals_crypt_event_demon_voice",
 		criterias = {
 			{
@@ -153,6 +157,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_portals_crypt_event_demon_voice",
+		probability = 1,
 		response = "pwe_portals_crypt_event_demon_voice",
 		criterias = {
 			{
@@ -197,6 +202,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_portals_crypt_event_demon_voice",
+		probability = 1,
 		response = "pwh_portals_crypt_event_demon_voice",
 		criterias = {
 			{
@@ -302,10 +308,10 @@ return function ()
 				"pbw_portals_crypt_event_demon_voice_04",
 			},
 			sound_events_duration = {
-				3.190687417984,
-				2.7134375572205,
-				3.2666459083557,
-				3.9763958454132,
+				3.1900000572205,
+				2.7130000591278,
+				3.26597905159,
+				3.9759790897369,
 			},
 		},
 		pdr_portals_crypt_event_demon_voice = {
@@ -341,10 +347,10 @@ return function ()
 				"pdr_portals_crypt_event_demon_voice_04",
 			},
 			sound_events_duration = {
-				4.9402289390564,
-				1.4783124923706,
-				3.3614583015442,
-				1.7735625505447,
+				4.9399790763855,
+				1.477979183197,
+				3.3609790802002,
+				1.7729791402817,
 			},
 		},
 		pes_portals_crypt_event_demon_voice = {
@@ -380,10 +386,10 @@ return function ()
 				"pes_portals_crypt_event_demon_voice_04",
 			},
 			sound_events_duration = {
-				1.2156875133514,
-				0.89085417985916,
-				3.5248959064484,
-				1.0278958082199,
+				1.2149791717529,
+				0.88997918367386,
+				3.5239791870117,
+				1.0269999504089,
 			},
 		},
 		pwe_portals_crypt_event_demon_voice = {
@@ -415,9 +421,9 @@ return function ()
 				"pwe_portals_crypt_event_demon_voice_03",
 			},
 			sound_events_duration = {
-				0.63887500762939,
-				1.6103541851044,
-				2.9927188158035,
+				0.63797914981842,
+				1.6100000143051,
+				2.9926354885101,
 			},
 		},
 		pwh_portals_crypt_event_demon_voice = {
@@ -453,10 +459,10 @@ return function ()
 				"pwh_portals_crypt_event_demon_voice_04",
 			},
 			sound_events_duration = {
-				7.2278752326965,
-				4.6356873512268,
-				4.5563125610352,
-				6.5775208473206,
+				7.2270002365112,
+				4.6349792480469,
+				4.5560002326965,
+				6.5769791603088,
 			},
 		},
 	})

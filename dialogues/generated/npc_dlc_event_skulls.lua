@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "nik_greeting_skulls_event_first",
+		probability = 1,
 		response = "nik_greeting_skulls_event_first",
 		criterias = {
 			{
@@ -21,6 +22,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_greeting_skulls_event_second",
+		probability = 1,
 		response = "nik_greeting_skulls_event_second",
 		criterias = {
 			{
@@ -39,6 +41,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_backstory_interaction_skulls",
+		probability = 1,
 		response = "nik_hub_backstory_interaction_skulls",
 		criterias = {
 			{
@@ -57,6 +60,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_skulls_event_start_banter_d_bastion",
+		probability = 1,
 		response = "nik_skulls_event_start_banter_d_bastion",
 		criterias = {
 			{
@@ -81,6 +85,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_skulls_event_start_banter_d_bell",
+		probability = 1,
 		response = "nik_skulls_event_start_banter_d_bell",
 		criterias = {
 			{
@@ -105,6 +110,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_skulls_event_start_banter_d_bogenhafen_city",
+		probability = 1,
 		response = "nik_skulls_event_start_banter_d_bogenhafen_city",
 		criterias = {
 			{
@@ -129,6 +135,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_skulls_event_start_banter_d_bogenhafen_slum",
+		probability = 1,
 		response = "nik_skulls_event_start_banter_d_bogenhafen_slum",
 		criterias = {
 			{
@@ -153,6 +160,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_skulls_event_start_banter_d_castle",
+		probability = 1,
 		response = "nik_skulls_event_start_banter_d_castle",
 		criterias = {
 			{
@@ -177,6 +185,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_skulls_event_start_banter_d_catacombs",
+		probability = 1,
 		response = "nik_skulls_event_start_banter_d_catacombs",
 		criterias = {
 			{
@@ -201,6 +210,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_skulls_event_start_banter_d_crater",
+		probability = 1,
 		response = "nik_skulls_event_start_banter_d_crater",
 		criterias = {
 			{
@@ -225,6 +235,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_skulls_event_start_banter_d_elven_ruins",
+		probability = 1,
 		response = "nik_skulls_event_start_banter_d_elven_ruins",
 		criterias = {
 			{
@@ -249,6 +260,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_skulls_event_start_banter_d_farmlands",
+		probability = 1,
 		response = "nik_skulls_event_start_banter_d_farmlands",
 		criterias = {
 			{
@@ -273,6 +285,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_skulls_event_start_banter_d_fort",
+		probability = 1,
 		response = "nik_skulls_event_start_banter_d_fort",
 		criterias = {
 			{
@@ -297,6 +310,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_skulls_event_start_banter_d_ground_zero",
+		probability = 1,
 		response = "nik_skulls_event_start_banter_d_ground_zero",
 		criterias = {
 			{
@@ -321,6 +335,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_skulls_event_start_banter_d_military",
+		probability = 1,
 		response = "nik_skulls_event_start_banter_d_military",
 		criterias = {
 			{
@@ -345,6 +360,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_skulls_event_start_banter_d_mine",
+		probability = 1,
 		response = "nik_skulls_event_start_banter_d_mine",
 		criterias = {
 			{
@@ -369,6 +385,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_skulls_event_start_banter_d_nurgle",
+		probability = 1,
 		response = "nik_skulls_event_start_banter_d_nurgle",
 		criterias = {
 			{
@@ -393,6 +410,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_skulls_event_start_banter_d_portals",
+		probability = 1,
 		response = "nik_skulls_event_start_banter_d_portals",
 		criterias = {
 			{
@@ -417,6 +435,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_skulls_event_start_banter_d_skaven_stronghold",
+		probability = 1,
 		response = "nik_skulls_event_start_banter_d_skaven_stronghold",
 		criterias = {
 			{
@@ -441,6 +460,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_skulls_event_start_banter_d_skittergate",
+		probability = 1,
 		response = "nik_skulls_event_start_banter_d_skittergate",
 		criterias = {
 			{
@@ -465,6 +485,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_skulls_event_start_banter_d_ussingen",
+		probability = 1,
 		response = "nik_skulls_event_start_banter_d_ussingen",
 		criterias = {
 			{
@@ -489,6 +510,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_skulls_event_start_banter_d_warcamp",
+		probability = 1,
 		response = "nik_skulls_event_start_banter_d_warcamp",
 		criterias = {
 			{
@@ -513,6 +535,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_skulls_event_start_banter_d_wizards_trail",
+		probability = 1,
 		response = "nik_skulls_event_start_banter_d_wizards_trail",
 		criterias = {
 			{

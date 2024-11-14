@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_castle_conversation_four_01",
+		probability = 1,
 		response = "pbw_castle_conversation_four_01",
 		criterias = {
 			{
@@ -89,6 +90,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_castle_conversation_four_02",
+		probability = 1,
 		response = "pbw_castle_conversation_four_02",
 		criterias = {
 			{
@@ -126,6 +128,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_castle_conversation_nine_01",
+		probability = 1,
 		response = "pbw_castle_conversation_nine_01",
 		criterias = {
 			{
@@ -212,6 +215,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_castle_conversation_nine_02",
+		probability = 1,
 		response = "pbw_castle_conversation_nine_02",
 		criterias = {
 			{
@@ -249,6 +253,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_castle_conversation_one_01",
+		probability = 1,
 		response = "pbw_castle_conversation_one_01",
 		criterias = {
 			{
@@ -286,6 +291,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_castle_conversation_six_01",
+		probability = 1,
 		response = "pbw_castle_conversation_six_01",
 		criterias = {
 			{
@@ -323,6 +329,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_castle_conversation_six_02",
+		probability = 1,
 		response = "pbw_castle_conversation_six_02",
 		criterias = {
 			{
@@ -360,6 +367,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_castle_conversation_twelve_01",
+		probability = 1,
 		response = "pbw_castle_conversation_twelve_01",
 		criterias = {
 			{
@@ -397,6 +405,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_castle_conversation_eleven_01",
+		probability = 1,
 		response = "pdr_castle_conversation_eleven_01",
 		criterias = {
 			{
@@ -489,6 +498,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_castle_conversation_nine_01",
+		probability = 1,
 		response = "pdr_castle_conversation_nine_01",
 		criterias = {
 			{
@@ -526,6 +536,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_castle_conversation_seven_01",
+		probability = 1,
 		response = "pdr_castle_conversation_seven_01",
 		criterias = {
 			{
@@ -612,6 +623,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_castle_conversation_seven_02",
+		probability = 1,
 		response = "pdr_castle_conversation_seven_02",
 		criterias = {
 			{
@@ -649,6 +661,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_castle_conversation_eight_01",
+		probability = 1,
 		response = "pes_castle_conversation_eight_01",
 		criterias = {
 			{
@@ -735,6 +748,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_castle_conversation_eight_02",
+		probability = 1,
 		response = "pes_castle_conversation_eight_02",
 		criterias = {
 			{
@@ -772,6 +786,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_castle_conversation_one_01",
+		probability = 1,
 		response = "pes_castle_conversation_one_01",
 		criterias = {
 			{
@@ -858,6 +873,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_castle_conversation_six_01",
+		probability = 1,
 		response = "pes_castle_conversation_six_01",
 		criterias = {
 			{
@@ -944,6 +960,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_castle_conversation_six_02",
+		probability = 1,
 		response = "pes_castle_conversation_six_02",
 		criterias = {
 			{
@@ -981,6 +998,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_castle_conversation_ten_01",
+		probability = 1,
 		response = "pes_castle_conversation_ten_01",
 		criterias = {
 			{
@@ -1073,6 +1091,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_castle_conversation_three_01",
+		probability = 1,
 		response = "pes_castle_conversation_three_01",
 		criterias = {
 			{
@@ -1159,6 +1178,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_castle_conversation_three_02",
+		probability = 1,
 		response = "pes_castle_conversation_three_02",
 		criterias = {
 			{
@@ -1196,6 +1216,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_castle_conversation_twelve_01",
+		probability = 1,
 		response = "pes_castle_conversation_twelve_01",
 		criterias = {
 			{
@@ -1288,6 +1309,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_castle_conversation_twelve_02",
+		probability = 1,
 		response = "pes_castle_conversation_twelve_02",
 		criterias = {
 			{
@@ -1325,6 +1347,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_castle_conversation_two_01",
+		probability = 1,
 		response = "pes_castle_conversation_two_01",
 		criterias = {
 			{
@@ -1411,6 +1434,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_castle_conversation_two_02",
+		probability = 1,
 		response = "pes_castle_conversation_two_02",
 		criterias = {
 			{
@@ -1448,6 +1472,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_castle_conversation_eleven_01",
+		probability = 1,
 		response = "pwe_castle_conversation_eleven_01",
 		criterias = {
 			{
@@ -1485,6 +1510,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_castle_conversation_eleven_02",
+		probability = 1,
 		response = "pwe_castle_conversation_eleven_02",
 		criterias = {
 			{
@@ -1522,6 +1548,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_castle_conversation_five_01",
+		probability = 1,
 		response = "pwe_castle_conversation_five_01",
 		criterias = {
 			{
@@ -1608,6 +1635,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_castle_conversation_five_02",
+		probability = 1,
 		response = "pwe_castle_conversation_five_02",
 		criterias = {
 			{
@@ -1645,6 +1673,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_castle_conversation_ten_01",
+		probability = 1,
 		response = "pwe_castle_conversation_ten_01",
 		criterias = {
 			{
@@ -1682,6 +1711,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_castle_conversation_three_01",
+		probability = 1,
 		response = "pwe_castle_conversation_three_01",
 		criterias = {
 			{
@@ -1719,6 +1749,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_castle_conversation_three_02",
+		probability = 1,
 		response = "pwe_castle_conversation_three_02",
 		criterias = {
 			{
@@ -1756,6 +1787,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_castle_conversation_two_01",
+		probability = 1,
 		response = "pwe_castle_conversation_two_01",
 		criterias = {
 			{
@@ -1793,6 +1825,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_castle_conversation_two_02",
+		probability = 1,
 		response = "pwe_castle_conversation_two_02",
 		criterias = {
 			{
@@ -1830,6 +1863,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_castle_conversation_eight_01",
+		probability = 1,
 		response = "pwh_castle_conversation_eight_01",
 		criterias = {
 			{
@@ -1867,6 +1901,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_castle_conversation_eight_02",
+		probability = 1,
 		response = "pwh_castle_conversation_eight_02",
 		criterias = {
 			{
@@ -1904,6 +1939,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_castle_conversation_eleven_01",
+		probability = 1,
 		response = "pwh_castle_conversation_eleven_01",
 		criterias = {
 			{
@@ -1941,6 +1977,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_castle_conversation_five_01",
+		probability = 1,
 		response = "pwh_castle_conversation_five_01",
 		criterias = {
 			{
@@ -1978,6 +2015,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_castle_conversation_five_02",
+		probability = 1,
 		response = "pwh_castle_conversation_five_02",
 		criterias = {
 			{
@@ -2015,6 +2053,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_castle_conversation_four_01",
+		probability = 1,
 		response = "pwh_castle_conversation_four_01",
 		criterias = {
 			{
@@ -2052,6 +2091,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_castle_conversation_four_02",
+		probability = 1,
 		response = "pwh_castle_conversation_four_02",
 		criterias = {
 			{
@@ -2089,6 +2129,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_castle_conversation_seven_01",
+		probability = 1,
 		response = "pwh_castle_conversation_seven_01",
 		criterias = {
 			{
@@ -2126,6 +2167,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_castle_conversation_ten_01",
+		probability = 1,
 		response = "pwh_castle_conversation_ten_01",
 		criterias = {
 			{
@@ -2163,6 +2205,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_castle_conversation_ten_02",
+		probability = 1,
 		response = "pwh_castle_conversation_ten_02",
 		criterias = {
 			{
@@ -2200,6 +2243,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_castle_conversation_twelve_01",
+		probability = 1,
 		response = "pwh_castle_conversation_twelve_01",
 		criterias = {
 			{
@@ -2255,7 +2299,7 @@ return function ()
 				[1] = "pbw_castle_conversation_four_01",
 			},
 			sound_events_duration = {
-				[1] = 9.0182085037231,
+				[1] = 9.0179796218872,
 			},
 		},
 		pbw_castle_conversation_four_02 = {
@@ -2277,7 +2321,7 @@ return function ()
 				[1] = "pbw_castle_conversation_four_02",
 			},
 			sound_events_duration = {
-				[1] = 2.1587290763855,
+				[1] = 2.1579792499542,
 			},
 		},
 		pbw_castle_conversation_nine_01 = {
@@ -2299,7 +2343,7 @@ return function ()
 				[1] = "pbw_castle_conversation_nine_01",
 			},
 			sound_events_duration = {
-				[1] = 4.2841668128967,
+				[1] = 4.2839789390564,
 			},
 		},
 		pbw_castle_conversation_nine_02 = {
@@ -2321,7 +2365,7 @@ return function ()
 				[1] = "pbw_castle_conversation_nine_02",
 			},
 			sound_events_duration = {
-				[1] = 3.0107707977295,
+				[1] = 3.0099792480469,
 			},
 		},
 		pbw_castle_conversation_one_01 = {
@@ -2343,7 +2387,7 @@ return function ()
 				[1] = "pbw_castle_conversation_one_01",
 			},
 			sound_events_duration = {
-				[1] = 2.4232499599457,
+				[1] = 2.4229791164398,
 			},
 		},
 		pbw_castle_conversation_six_01 = {
@@ -2365,7 +2409,7 @@ return function ()
 				[1] = "pbw_castle_conversation_six_01",
 			},
 			sound_events_duration = {
-				[1] = 6.7494583129883,
+				[1] = 6.7489790916443,
 			},
 		},
 		pbw_castle_conversation_six_02 = {
@@ -2387,7 +2431,7 @@ return function ()
 				[1] = "pbw_castle_conversation_six_02",
 			},
 			sound_events_duration = {
-				[1] = 3.9466874599457,
+				[1] = 3.9459791183472,
 			},
 		},
 		pbw_castle_conversation_twelve_01 = {
@@ -2409,7 +2453,7 @@ return function ()
 				[1] = "pbw_castle_conversation_twelve_01",
 			},
 			sound_events_duration = {
-				[1] = 3.1307916641235,
+				[1] = 3.129979133606,
 			},
 		},
 		pdr_castle_conversation_eleven_01 = {
@@ -2431,7 +2475,7 @@ return function ()
 				[1] = "pdr_castle_conversation_eleven_01",
 			},
 			sound_events_duration = {
-				[1] = 4.2667293548584,
+				[1] = 4.2659792900085,
 			},
 		},
 		pdr_castle_conversation_nine_01 = {
@@ -2453,7 +2497,7 @@ return function ()
 				[1] = "pdr_castle_conversation_nine_01",
 			},
 			sound_events_duration = {
-				[1] = 6.011125087738,
+				[1] = 6.0109791755676,
 			},
 		},
 		pdr_castle_conversation_seven_01 = {
@@ -2475,7 +2519,7 @@ return function ()
 				[1] = "pdr_castle_conversation_seven_01",
 			},
 			sound_events_duration = {
-				[1] = 4.176854133606,
+				[1] = 4.1759791374206,
 			},
 		},
 		pdr_castle_conversation_seven_02 = {
@@ -2497,7 +2541,7 @@ return function ()
 				[1] = "pdr_castle_conversation_seven_02",
 			},
 			sound_events_duration = {
-				[1] = 5.9878749847412,
+				[1] = 5.9869790077209,
 			},
 		},
 		pes_castle_conversation_eight_01 = {
@@ -2519,7 +2563,7 @@ return function ()
 				[1] = "pes_castle_conversation_eight_01",
 			},
 			sound_events_duration = {
-				[1] = 7.520124912262,
+				[1] = 7.5199790000916,
 			},
 		},
 		pes_castle_conversation_eight_02 = {
@@ -2541,7 +2585,7 @@ return function ()
 				[1] = "pes_castle_conversation_eight_02",
 			},
 			sound_events_duration = {
-				[1] = 5.7464165687561,
+				[1] = 5.745979309082,
 			},
 		},
 		pes_castle_conversation_one_01 = {
@@ -2563,7 +2607,7 @@ return function ()
 				[1] = "pes_castle_conversation_one_01",
 			},
 			sound_events_duration = {
-				[1] = 2.3467707633972,
+				[1] = 2.345999956131,
 			},
 		},
 		pes_castle_conversation_six_01 = {
@@ -2585,7 +2629,7 @@ return function ()
 				[1] = "pes_castle_conversation_six_01",
 			},
 			sound_events_duration = {
-				[1] = 4.5153751373291,
+				[1] = 4.5149793624878,
 			},
 		},
 		pes_castle_conversation_six_02 = {
@@ -2607,7 +2651,7 @@ return function ()
 				[1] = "pes_castle_conversation_six_02",
 			},
 			sound_events_duration = {
-				[1] = 0.91431248188019,
+				[1] = 0.9139791727066,
 			},
 		},
 		pes_castle_conversation_ten_01 = {
@@ -2629,7 +2673,7 @@ return function ()
 				[1] = "pes_castle_conversation_ten_01",
 			},
 			sound_events_duration = {
-				[1] = 2.2825520634651,
+				[1] = 2.2821249961853,
 			},
 		},
 		pes_castle_conversation_three_01 = {
@@ -2651,7 +2695,7 @@ return function ()
 				[1] = "pes_castle_conversation_three_01",
 			},
 			sound_events_duration = {
-				[1] = 1.7854791879654,
+				[1] = 1.784979224205,
 			},
 		},
 		pes_castle_conversation_three_02 = {
@@ -2673,7 +2717,7 @@ return function ()
 				[1] = "pes_castle_conversation_three_02",
 			},
 			sound_events_duration = {
-				[1] = 6.1702291965485,
+				[1] = 6.1701667308807,
 			},
 		},
 		pes_castle_conversation_twelve_01 = {
@@ -2695,7 +2739,7 @@ return function ()
 				[1] = "pes_castle_conversation_twelve_01",
 			},
 			sound_events_duration = {
-				[1] = 7.0163750648499,
+				[1] = 7.0159792900085,
 			},
 		},
 		pes_castle_conversation_twelve_02 = {
@@ -2717,7 +2761,7 @@ return function ()
 				[1] = "pes_castle_conversation_twelve_02",
 			},
 			sound_events_duration = {
-				[1] = 2.2791042327881,
+				[1] = 2.2789790630341,
 			},
 		},
 		pes_castle_conversation_two_01 = {
@@ -2739,7 +2783,7 @@ return function ()
 				[1] = "pes_castle_conversation_two_01",
 			},
 			sound_events_duration = {
-				[1] = 3.7310833930969,
+				[1] = 3.7309792041779,
 			},
 		},
 		pes_castle_conversation_two_02 = {
@@ -2761,7 +2805,7 @@ return function ()
 				[1] = "pes_castle_conversation_two_02",
 			},
 			sound_events_duration = {
-				[1] = 4.4886040687561,
+				[1] = 4.4879789352417,
 			},
 		},
 		pwe_castle_conversation_eleven_01 = {
@@ -2783,7 +2827,7 @@ return function ()
 				[1] = "pwe_castle_conversation_eleven_01",
 			},
 			sound_events_duration = {
-				[1] = 3.2543125152588,
+				[1] = 3.2539792060852,
 			},
 		},
 		pwe_castle_conversation_eleven_02 = {
@@ -2805,7 +2849,7 @@ return function ()
 				[1] = "pwe_castle_conversation_eleven_02",
 			},
 			sound_events_duration = {
-				[1] = 2.0758957862854,
+				[1] = 2.0749790668488,
 			},
 		},
 		pwe_castle_conversation_five_01 = {
@@ -2827,7 +2871,7 @@ return function ()
 				[1] = "pwe_castle_conversation_five_01",
 			},
 			sound_events_duration = {
-				[1] = 7.0054998397827,
+				[1] = 7.004979133606,
 			},
 		},
 		pwe_castle_conversation_five_02 = {
@@ -2849,7 +2893,7 @@ return function ()
 				[1] = "pwe_castle_conversation_five_02",
 			},
 			sound_events_duration = {
-				[1] = 8.2855834960938,
+				[1] = 8.2849788665772,
 			},
 		},
 		pwe_castle_conversation_ten_01 = {
@@ -2871,7 +2915,7 @@ return function ()
 				[1] = "pwe_castle_conversation_ten_01",
 			},
 			sound_events_duration = {
-				[1] = 3.0736665725708,
+				[1] = 3.0729792118073,
 			},
 		},
 		pwe_castle_conversation_three_01 = {
@@ -2893,7 +2937,7 @@ return function ()
 				[1] = "pwe_castle_conversation_three_01",
 			},
 			sound_events_duration = {
-				[1] = 0.81195831298828,
+				[1] = 0.81097918748856,
 			},
 		},
 		pwe_castle_conversation_three_02 = {
@@ -2915,7 +2959,7 @@ return function ()
 				[1] = "pwe_castle_conversation_three_02",
 			},
 			sound_events_duration = {
-				[1] = 2.8888957500458,
+				[1] = 2.8880000114441,
 			},
 		},
 		pwe_castle_conversation_two_01 = {
@@ -2937,7 +2981,7 @@ return function ()
 				[1] = "pwe_castle_conversation_two_01",
 			},
 			sound_events_duration = {
-				[1] = 3.3880624771118,
+				[1] = 3.3879792690277,
 			},
 		},
 		pwe_castle_conversation_two_02 = {
@@ -2959,7 +3003,7 @@ return function ()
 				[1] = "pwe_castle_conversation_two_02",
 			},
 			sound_events_duration = {
-				[1] = 4.4278960227966,
+				[1] = 4.4269790649414,
 			},
 		},
 		pwh_castle_conversation_eight_01 = {
@@ -2981,7 +3025,7 @@ return function ()
 				[1] = "pwh_castle_conversation_eight_01",
 			},
 			sound_events_duration = {
-				[1] = 3.7152500152588,
+				[1] = 3.7149791717529,
 			},
 		},
 		pwh_castle_conversation_eight_02 = {
@@ -3003,7 +3047,7 @@ return function ()
 				[1] = "pwh_castle_conversation_eight_02",
 			},
 			sound_events_duration = {
-				[1] = 2.1067707538605,
+				[1] = 2.1059792041779,
 			},
 		},
 		pwh_castle_conversation_eleven_01 = {
@@ -3025,7 +3069,7 @@ return function ()
 				[1] = "pwh_castle_conversation_eleven_01",
 			},
 			sound_events_duration = {
-				[1] = 1.9296875,
+				[1] = 1.9289791584015,
 			},
 		},
 		pwh_castle_conversation_five_01 = {
@@ -3047,7 +3091,7 @@ return function ()
 				[1] = "pwh_castle_conversation_five_01",
 			},
 			sound_events_duration = {
-				[1] = 4.9850206375122,
+				[1] = 4.9849791526794,
 			},
 		},
 		pwh_castle_conversation_five_02 = {
@@ -3069,7 +3113,7 @@ return function ()
 				[1] = "pwh_castle_conversation_five_02",
 			},
 			sound_events_duration = {
-				[1] = 4.4943957328796,
+				[1] = 4.4939789772034,
 			},
 		},
 		pwh_castle_conversation_four_01 = {
@@ -3091,7 +3135,7 @@ return function ()
 				[1] = "pwh_castle_conversation_four_01",
 			},
 			sound_events_duration = {
-				[1] = 8.2908954620361,
+				[1] = 8.2899789810181,
 			},
 		},
 		pwh_castle_conversation_four_02 = {
@@ -3113,7 +3157,7 @@ return function ()
 				[1] = "pwh_castle_conversation_four_02",
 			},
 			sound_events_duration = {
-				[1] = 1.5106041431427,
+				[1] = 1.5099791288376,
 			},
 		},
 		pwh_castle_conversation_seven_01 = {
@@ -3135,7 +3179,7 @@ return function ()
 				[1] = "pwh_castle_conversation_seven_01",
 			},
 			sound_events_duration = {
-				[1] = 9.3860626220703,
+				[1] = 9.3859786987305,
 			},
 		},
 		pwh_castle_conversation_ten_01 = {
@@ -3157,7 +3201,7 @@ return function ()
 				[1] = "pwh_castle_conversation_ten_01",
 			},
 			sound_events_duration = {
-				[1] = 3.5076665878296,
+				[1] = 3.506979227066,
 			},
 		},
 		pwh_castle_conversation_ten_02 = {
@@ -3179,7 +3223,7 @@ return function ()
 				[1] = "pwh_castle_conversation_ten_02",
 			},
 			sound_events_duration = {
-				[1] = 2.1597917079926,
+				[1] = 2.158979177475,
 			},
 		},
 		pwh_castle_conversation_twelve_01 = {
@@ -3201,7 +3245,7 @@ return function ()
 				[1] = "pwh_castle_conversation_twelve_01",
 			},
 			sound_events_duration = {
-				[1] = 2.8931040763855,
+				[1] = 2.8929791450501,
 			},
 		},
 	})

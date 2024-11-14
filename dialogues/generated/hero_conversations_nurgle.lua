@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_level_nurgle_story_eleven_01",
+		probability = 1,
 		response = "pbw_level_nurgle_story_eleven_01",
 		criterias = {
 			{
@@ -89,6 +90,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_nurgle_story_five_01",
+		probability = 1,
 		response = "pbw_level_nurgle_story_five_01",
 		criterias = {
 			{
@@ -175,6 +177,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_nurgle_story_five_02",
+		probability = 1,
 		response = "pbw_level_nurgle_story_five_02",
 		criterias = {
 			{
@@ -212,6 +215,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_nurgle_story_four_01",
+		probability = 1,
 		response = "pbw_level_nurgle_story_four_01",
 		criterias = {
 			{
@@ -298,6 +302,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_nurgle_story_seven_01",
+		probability = 1,
 		response = "pbw_level_nurgle_story_seven_01",
 		criterias = {
 			{
@@ -335,6 +340,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_nurgle_story_six_01",
+		probability = 1,
 		response = "pbw_level_nurgle_story_six_01",
 		criterias = {
 			{
@@ -372,6 +378,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_nurgle_story_six_02",
+		probability = 1,
 		response = "pbw_level_nurgle_story_six_02",
 		criterias = {
 			{
@@ -409,6 +416,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_nurgle_story_ten_01",
+		probability = 1,
 		response = "pbw_level_nurgle_story_ten_01",
 		criterias = {
 			{
@@ -446,6 +454,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_nurgle_story_three_01",
+		probability = 1,
 		response = "pbw_level_nurgle_story_three_01",
 		criterias = {
 			{
@@ -532,6 +541,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_nurgle_story_twelve_01",
+		probability = 1,
 		response = "pbw_level_nurgle_story_twelve_01",
 		criterias = {
 			{
@@ -618,6 +628,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_nurgle_story_twelve_02",
+		probability = 1,
 		response = "pbw_level_nurgle_story_twelve_02",
 		criterias = {
 			{
@@ -655,6 +666,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_nurgle_story_eight_01",
+		probability = 1,
 		response = "pdr_level_nurgle_story_eight_01",
 		criterias = {
 			{
@@ -692,6 +704,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_nurgle_story_eight_02",
+		probability = 1,
 		response = "pdr_level_nurgle_story_eight_02",
 		criterias = {
 			{
@@ -729,6 +742,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_nurgle_story_five_01",
+		probability = 1,
 		response = "pdr_level_nurgle_story_five_01",
 		criterias = {
 			{
@@ -766,6 +780,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_nurgle_story_four_01",
+		probability = 1,
 		response = "pdr_level_nurgle_story_four_01",
 		criterias = {
 			{
@@ -803,6 +818,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_nurgle_story_nine_01",
+		probability = 1,
 		response = "pdr_level_nurgle_story_nine_01",
 		criterias = {
 			{
@@ -840,6 +856,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_nurgle_story_nine_02",
+		probability = 1,
 		response = "pdr_level_nurgle_story_nine_02",
 		criterias = {
 			{
@@ -877,6 +894,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_nurgle_story_six_01",
+		probability = 1,
 		response = "pdr_level_nurgle_story_six_01",
 		criterias = {
 			{
@@ -957,6 +975,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_nurgle_story_six_02",
+		probability = 1,
 		response = "pdr_level_nurgle_story_six_02",
 		criterias = {
 			{
@@ -994,6 +1013,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_nurgle_story_six_03",
+		probability = 1,
 		response = "pdr_level_nurgle_story_six_03",
 		criterias = {
 			{
@@ -1031,6 +1051,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_nurgle_story_ten_01",
+		probability = 1,
 		response = "pdr_level_nurgle_story_ten_01",
 		criterias = {
 			{
@@ -1068,6 +1089,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_nurgle_story_twelve_01",
+		probability = 1,
 		response = "pdr_level_nurgle_story_twelve_01",
 		criterias = {
 			{
@@ -1105,6 +1127,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_nurgle_story_two_01",
+		probability = 1,
 		response = "pdr_level_nurgle_story_two_01",
 		criterias = {
 			{
@@ -1191,6 +1214,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_nurgle_story_two_02",
+		probability = 1,
 		response = "pdr_level_nurgle_story_two_02",
 		criterias = {
 			{
@@ -1228,6 +1252,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_nurgle_story_eight_01",
+		probability = 1,
 		response = "pes_level_nurgle_story_eight_01",
 		criterias = {
 			{
@@ -1265,6 +1290,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_nurgle_story_four_01",
+		probability = 1,
 		response = "pes_level_nurgle_story_four_01",
 		criterias = {
 			{
@@ -1302,6 +1328,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_nurgle_story_four_02",
+		probability = 1,
 		response = "pes_level_nurgle_story_four_02",
 		criterias = {
 			{
@@ -1339,6 +1366,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_nurgle_story_one_01",
+		probability = 1,
 		response = "pes_level_nurgle_story_one_01",
 		criterias = {
 			{
@@ -1425,6 +1453,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_nurgle_story_one_02",
+		probability = 1,
 		response = "pes_level_nurgle_story_one_02",
 		criterias = {
 			{
@@ -1462,6 +1491,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_nurgle_story_ten_01",
+		probability = 1,
 		response = "pes_level_nurgle_story_ten_01",
 		criterias = {
 			{
@@ -1548,6 +1578,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_nurgle_story_ten_02",
+		probability = 1,
 		response = "pes_level_nurgle_story_ten_02",
 		criterias = {
 			{
@@ -1585,6 +1616,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_nurgle_story_twelve_01",
+		probability = 1,
 		response = "pes_level_nurgle_story_twelve_01",
 		criterias = {
 			{
@@ -1622,6 +1654,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_nurgle_story_two_01",
+		probability = 1,
 		response = "pes_level_nurgle_story_two_01",
 		criterias = {
 			{
@@ -1659,6 +1692,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_nurgle_story_eight_01",
+		probability = 1,
 		response = "pwe_level_nurgle_story_eight_01",
 		criterias = {
 			{
@@ -1745,6 +1779,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_nurgle_story_eleven_01",
+		probability = 1,
 		response = "pwe_level_nurgle_story_eleven_01",
 		criterias = {
 			{
@@ -1782,6 +1817,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_nurgle_story_eleven_02",
+		probability = 1,
 		response = "pwe_level_nurgle_story_eleven_02",
 		criterias = {
 			{
@@ -1819,6 +1855,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_nurgle_story_five_01",
+		probability = 1,
 		response = "pwe_level_nurgle_story_five_01",
 		criterias = {
 			{
@@ -1856,6 +1893,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_nurgle_story_nine_01",
+		probability = 1,
 		response = "pwe_level_nurgle_story_nine_01",
 		criterias = {
 			{
@@ -1942,6 +1980,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_nurgle_story_one_01",
+		probability = 1,
 		response = "pwe_level_nurgle_story_one_01",
 		criterias = {
 			{
@@ -1979,6 +2018,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_nurgle_story_seven_01",
+		probability = 1,
 		response = "pwe_level_nurgle_story_seven_01",
 		criterias = {
 			{
@@ -2016,6 +2056,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_nurgle_story_three_01",
+		probability = 1,
 		response = "pwe_level_nurgle_story_three_01",
 		criterias = {
 			{
@@ -2053,6 +2094,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_nurgle_story_eleven_01",
+		probability = 1,
 		response = "pwh_level_nurgle_story_eleven_01",
 		criterias = {
 			{
@@ -2090,6 +2132,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_nurgle_story_nine_01",
+		probability = 1,
 		response = "pwh_level_nurgle_story_nine_01",
 		criterias = {
 			{
@@ -2127,6 +2170,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_nurgle_story_one_01",
+		probability = 1,
 		response = "pwh_level_nurgle_story_one_01",
 		criterias = {
 			{
@@ -2164,6 +2208,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_nurgle_story_seven_01",
+		probability = 1,
 		response = "pwh_level_nurgle_story_seven_01",
 		criterias = {
 			{
@@ -2250,6 +2295,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_nurgle_story_seven_02",
+		probability = 1,
 		response = "pwh_level_nurgle_story_seven_02",
 		criterias = {
 			{
@@ -2287,6 +2333,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_nurgle_story_seven_03",
+		probability = 1,
 		response = "pwh_level_nurgle_story_seven_03",
 		criterias = {
 			{
@@ -2324,6 +2371,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_nurgle_story_three_01",
+		probability = 1,
 		response = "pwh_level_nurgle_story_three_01",
 		criterias = {
 			{
@@ -2361,6 +2409,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_nurgle_story_three_02",
+		probability = 1,
 		response = "pwh_level_nurgle_story_three_02",
 		criterias = {
 			{
@@ -2398,6 +2447,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_nurgle_story_two_01",
+		probability = 1,
 		response = "pwh_level_nurgle_story_two_01",
 		criterias = {
 			{
@@ -2629,7 +2679,7 @@ return function ()
 				[1] = "pbw_level_nurgle_story_three_01",
 			},
 			sound_events_duration = {
-				[1] = 6.3249793052673,
+				[1] = 6.6958332061768,
 			},
 		},
 		pbw_level_nurgle_story_twelve_01 = {
@@ -2761,7 +2811,7 @@ return function ()
 				[1] = "pdr_level_nurgle_story_four_01",
 			},
 			sound_events_duration = {
-				[1] = 6.6209998130798,
+				[1] = 5.5233750343323,
 			},
 		},
 		pdr_level_nurgle_story_nine_01 = {

@@ -18,7 +18,6 @@ assert(DialogueLookup[DialogueLookup_n + 15] == nil)
 assert(DialogueLookup[DialogueLookup_n + 16] == nil)
 assert(DialogueLookup[DialogueLookup_n + 17] == nil)
 assert(DialogueLookup[DialogueLookup_n + 18] == nil)
-assert(DialogueLookup[DialogueLookup_n + 19] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pes_level_fort_cannonballs"
 DialogueLookup[DialogueLookup_n + 2] = "pes_level_fort_carriage"
@@ -34,9 +33,8 @@ DialogueLookup[DialogueLookup_n + 11] = "pes_level_fort_getting_closer"
 DialogueLookup[DialogueLookup_n + 12] = "pes_level_fort_plague_claw_shelling"
 DialogueLookup[DialogueLookup_n + 13] = "pes_level_fort_plague_claw_shelling_move"
 DialogueLookup[DialogueLookup_n + 14] = "pes_level_fort_river"
-DialogueLookup[DialogueLookup_n + 15] = "pes_level_fort_road"
-DialogueLookup[DialogueLookup_n + 16] = "pes_level_fort_skaven_everywhere"
-DialogueLookup[DialogueLookup_n + 17] = "pes_level_fort_skaven_run"
-DialogueLookup[DialogueLookup_n + 18] = "pes_level_fort_under_attack"
-DialogueLookup[DialogueLookup_n + 19] = "pes_level_fort_use_cannons"
-DialogueLookup_n = DialogueLookup_n + 19
+DialogueLookup[DialogueLookup_n + 15] = "pes_level_fort_skaven_everywhere"
+DialogueLookup[DialogueLookup_n + 16] = "pes_level_fort_skaven_run"
+DialogueLookup[DialogueLookup_n + 17] = "pes_level_fort_under_attack"
+DialogueLookup[DialogueLookup_n + 18] = "pes_level_fort_use_cannons"
+DialogueLookup_n = DialogueLookup_n + 18

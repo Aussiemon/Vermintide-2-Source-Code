@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_level_mine_bell_ringing",
+		probability = 1,
 		response = "pbw_level_mine_bell_ringing",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_mine_big_troll_cave",
+		probability = 1,
 		response = "pbw_level_mine_big_troll_cave",
 		criterias = {
 			{
@@ -91,6 +93,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_mine_darkness",
+		probability = 1,
 		response = "pbw_level_mine_darkness",
 		criterias = {
 			{
@@ -135,6 +138,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_mine_find_explosives",
+		probability = 1,
 		response = "pbw_level_mine_find_explosives",
 		criterias = {
 			{
@@ -179,6 +183,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_mine_follow_tracks",
+		probability = 1,
 		response = "pbw_level_mine_follow_tracks",
 		criterias = {
 			{
@@ -223,6 +228,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_mine_found_cart_troll_cave",
+		probability = 1,
 		response = "pbw_level_mine_found_cart_troll_cave",
 		criterias = {
 			{
@@ -267,6 +273,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_mine_gloat",
+		probability = 1,
 		response = "pbw_level_mine_gloat",
 		criterias = {
 			{
@@ -311,6 +318,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_mine_impressive_cave",
+		probability = 1,
 		response = "pbw_level_mine_impressive_cave",
 		criterias = {
 			{
@@ -355,6 +363,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_mine_ladder",
+		probability = 1,
 		response = "pbw_level_mine_ladder",
 		criterias = {
 			{
@@ -399,6 +408,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_mine_lost_cart",
+		probability = 1,
 		response = "pbw_level_mine_lost_cart",
 		criterias = {
 			{
@@ -443,6 +453,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_mine_mine_cart",
+		probability = 1,
 		response = "pbw_level_mine_mine_cart",
 		criterias = {
 			{
@@ -487,6 +498,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_mine_mine_cart_drops_away",
+		probability = 1,
 		response = "pbw_level_mine_mine_cart_drops_away",
 		criterias = {
 			{
@@ -531,6 +543,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_mine_mine_cart_push_upwards",
+		probability = 1,
 		response = "pbw_level_mine_mine_cart_push_upwards",
 		criterias = {
 			{
@@ -575,6 +588,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_mine_mine_cart_remind",
+		probability = 1,
 		response = "pbw_level_mine_mine_cart_remind",
 		criterias = {
 			{
@@ -619,6 +633,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_mine_mine_cart_roll_down_back",
+		probability = 1,
 		response = "pbw_level_mine_mine_cart_roll_down_back",
 		criterias = {
 			{
@@ -663,6 +678,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_mine_mine_cart_roll_down_forward",
+		probability = 1,
 		response = "pbw_level_mine_mine_cart_roll_down_forward",
 		criterias = {
 			{
@@ -707,6 +723,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_mine_portal",
+		probability = 1,
 		response = "pbw_level_mine_portal",
 		criterias = {
 			{
@@ -751,6 +768,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_mine_troll_doors",
+		probability = 1,
 		response = "pbw_level_mine_troll_doors",
 		criterias = {
 			{
@@ -795,6 +813,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_mine_warren",
+		probability = 1,
 		response = "pbw_level_mine_warren",
 		criterias = {
 			{
@@ -839,6 +858,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_mine_intro_a",
+		probability = 1,
 		response = "pbw_mine_intro_a",
 		criterias = {
 			{
@@ -883,6 +903,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_mine_intro_b",
+		probability = 1,
 		response = "pbw_mine_intro_b",
 		criterias = {
 			{
@@ -921,6 +942,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_mine_intro_c",
+		probability = 1,
 		response = "pbw_mine_intro_c",
 		criterias = {
 			{

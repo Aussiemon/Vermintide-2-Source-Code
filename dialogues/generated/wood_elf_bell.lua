@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pwe_bell_intro_a",
+		probability = 1,
 		response = "pwe_bell_intro_a",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bell_intro_b",
+		probability = 1,
 		response = "pwe_bell_intro_b",
 		criterias = {
 			{
@@ -85,6 +87,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bell_intro_c",
+		probability = 1,
 		response = "pwe_bell_intro_c",
 		criterias = {
 			{
@@ -123,6 +126,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bell_destroyed_01",
+		probability = 1,
 		response = "pwe_level_bell_destroyed_01",
 		criterias = {
 			{
@@ -167,6 +171,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bell_distance_01",
+		probability = 1,
 		response = "pwe_level_bell_distance_01",
 		criterias = {
 			{
@@ -211,6 +216,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bell_effect_01",
+		probability = 1,
 		response = "pwe_level_bell_effect_01",
 		criterias = {
 			{
@@ -255,6 +261,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bell_falling_01",
+		probability = 1,
 		response = "pwe_level_bell_falling_01",
 		criterias = {
 			{
@@ -299,6 +306,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bell_reaching_bell_01",
+		probability = 1,
 		response = "pwe_level_bell_reaching_bell_01",
 		criterias = {
 			{
@@ -343,6 +351,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bell_spotting_01",
+		probability = 1,
 		response = "pwe_level_bell_spotting_01",
 		criterias = {
 			{

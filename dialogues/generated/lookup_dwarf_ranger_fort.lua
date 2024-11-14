@@ -22,7 +22,6 @@ assert(DialogueLookup[DialogueLookup_n + 19] == nil)
 assert(DialogueLookup[DialogueLookup_n + 20] == nil)
 assert(DialogueLookup[DialogueLookup_n + 21] == nil)
 assert(DialogueLookup[DialogueLookup_n + 22] == nil)
-assert(DialogueLookup[DialogueLookup_n + 23] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pdr_fort_intro_a"
 DialogueLookup[DialogueLookup_n + 2] = "pdr_fort_intro_b"
@@ -43,8 +42,7 @@ DialogueLookup[DialogueLookup_n + 16] = "pdr_level_fort_getting_closer"
 DialogueLookup[DialogueLookup_n + 17] = "pdr_level_fort_plague_claw_shelling"
 DialogueLookup[DialogueLookup_n + 18] = "pdr_level_fort_plague_claw_shelling_move"
 DialogueLookup[DialogueLookup_n + 19] = "pdr_level_fort_river"
-DialogueLookup[DialogueLookup_n + 20] = "pdr_level_fort_road"
-DialogueLookup[DialogueLookup_n + 21] = "pdr_level_fort_skaven_everywhere"
-DialogueLookup[DialogueLookup_n + 22] = "pdr_level_fort_under_attack"
-DialogueLookup[DialogueLookup_n + 23] = "pdr_level_fort_use_cannons"
-DialogueLookup_n = DialogueLookup_n + 23
+DialogueLookup[DialogueLookup_n + 20] = "pdr_level_fort_skaven_everywhere"
+DialogueLookup[DialogueLookup_n + 21] = "pdr_level_fort_under_attack"
+DialogueLookup[DialogueLookup_n + 22] = "pdr_level_fort_use_cannons"
+DialogueLookup_n = DialogueLookup_n + 22

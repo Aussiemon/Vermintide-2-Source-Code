@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pes_gameplay_path_clear",
+		probability = 1,
 		response = "pes_gameplay_path_clear",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_generic_assemble",
+		probability = 1,
 		response = "pes_generic_assemble",
 		criterias = {
 			{
@@ -91,6 +93,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_generic_cold_inside",
+		probability = 1,
 		response = "pes_generic_cold_inside",
 		criterias = {
 			{
@@ -135,6 +138,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_generic_cold_outside",
+		probability = 1,
 		response = "pes_generic_cold_outside",
 		criterias = {
 			{
@@ -179,6 +183,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_generic_dark",
+		probability = 1,
 		response = "pes_generic_dark",
 		criterias = {
 			{
@@ -223,6 +228,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_generic_door_locked",
+		probability = 1,
 		response = "pes_generic_door_locked",
 		criterias = {
 			{
@@ -267,6 +273,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_generic_falling",
+		probability = 1,
 		response = "pes_generic_falling",
 		criterias = {
 			{
@@ -291,6 +298,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_generic_found_key_known_purpose_a",
+		probability = 1,
 		response = "pes_generic_found_key_known_purpose_a",
 		criterias = {
 			{
@@ -335,6 +343,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_generic_found_key_unknown_purpose_a",
+		probability = 1,
 		response = "pes_generic_found_key_unknown_purpose_a",
 		criterias = {
 			{
@@ -379,6 +388,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_generic_getting_dark_outside",
+		probability = 1,
 		response = "pes_generic_getting_dark_outside",
 		criterias = {
 			{
@@ -423,6 +433,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_generic_objective_complete",
+		probability = 1,
 		response = "pes_generic_objective_complete",
 		criterias = {
 			{
@@ -467,6 +478,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_generic_path_blocked",
+		probability = 1,
 		response = "pes_generic_path_blocked",
 		criterias = {
 			{
@@ -511,6 +523,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_generic_rain",
+		probability = 1,
 		response = "pes_generic_rain",
 		criterias = {
 			{
@@ -555,6 +568,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_generic_reaction_action",
+		probability = 1,
 		response = "pes_generic_reaction_action",
 		criterias = {
 			{
@@ -599,6 +613,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_generic_reaction_sound",
+		probability = 1,
 		response = "pes_generic_reaction_sound",
 		criterias = {
 			{
@@ -643,6 +658,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_generic_search_complete",
+		probability = 1,
 		response = "pes_generic_search_complete",
 		criterias = {
 			{
@@ -687,6 +703,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_generic_search_progressing",
+		probability = 1,
 		response = "pes_generic_search_progressing",
 		criterias = {
 			{
@@ -731,6 +748,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_generic_search_start",
+		probability = 1,
 		response = "pes_generic_search_start",
 		criterias = {
 			{
@@ -775,6 +793,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_generic_success",
+		probability = 1,
 		response = "pes_generic_success",
 		criterias = {
 			{
@@ -819,6 +838,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_generic_unexpected_event_01",
+		probability = 1,
 		response = "pes_generic_unexpected_event_01",
 		criterias = {
 			{
@@ -934,10 +954,10 @@ return function ()
 				"pes_generic_assemble_04",
 			},
 			sound_events_duration = {
-				1.5639582872391,
-				1.2544167041779,
-				1.9611041545868,
-				1.3834999799728,
+				1.5629999637604,
+				1.2539792060852,
+				1.9609792232513,
+				1.3830000162125,
 			},
 		},
 		pes_generic_cold_inside = {
@@ -973,10 +993,10 @@ return function ()
 				"pes_generic_cold_inside_04",
 			},
 			sound_events_duration = {
-				1.6395416259766,
-				2.1188542842865,
-				2.8802917003632,
-				3.0888125896454,
+				1.6389791965485,
+				2.1179790496826,
+				2.879979133606,
+				3.0879790782928,
 			},
 		},
 		pes_generic_cold_outside = {
@@ -1012,10 +1032,10 @@ return function ()
 				"pes_generic_cold_outside_04",
 			},
 			sound_events_duration = {
-				2.2096667289734,
-				2.0912082195282,
-				1.7389999628067,
-				1.7257708311081,
+				2.2089791297913,
+				2.0909790992737,
+				1.7389792203903,
+				1.7249791622162,
 			},
 		},
 		pes_generic_dark = {
@@ -1051,10 +1071,10 @@ return function ()
 				"pes_generic_dark_04",
 			},
 			sound_events_duration = {
-				1.4607917070389,
-				1.9593541622162,
-				1.3973125219345,
-				5.5374794006348,
+				1.4599791765213,
+				1.9589791297913,
+				1.3969792127609,
+				5.5369791984558,
 			},
 		},
 		pes_generic_door_locked = {
@@ -1090,10 +1110,10 @@ return function ()
 				"pes_generic_door_locked_04",
 			},
 			sound_events_duration = {
-				1.0136458873749,
-				0.95733332633972,
-				1.6366041898727,
-				2.2381458282471,
+				1.0129791498184,
+				0.95700001716614,
+				1.6360000371933,
+				2.2379791736603,
 			},
 		},
 		pes_generic_falling = {
@@ -1129,10 +1149,10 @@ return function ()
 				"pes_generic_falling_04",
 			},
 			sound_events_duration = {
-				0.89125001430511,
-				1.0933125019074,
-				1.1788541078568,
-				0.95772916078568,
+				0.89099997282028,
+				1.0930000543594,
+				1.1779999732971,
+				0.95700001716614,
 			},
 		},
 		pes_generic_found_key_known_purpose_a = {
@@ -1236,10 +1256,10 @@ return function ()
 				"pes_generic_getting_dark_outside_04",
 			},
 			sound_events_duration = {
-				1.4744583368301,
-				2.2925832271576,
-				1.6779375076294,
-				2.9183542728424,
+				1.4739999771118,
+				2.2919790744781,
+				1.6769791841507,
+				2.9179792404175,
 			},
 		},
 		pes_generic_objective_complete = {
@@ -1275,10 +1295,10 @@ return function ()
 				"pes_generic_objective_complete_04",
 			},
 			sound_events_duration = {
-				1.4616667032242,
-				1.2503124475479,
-				1.2250416278839,
-				1.2772916555405,
+				1.4609792232513,
+				1.2499791383743,
+				1.2249791622162,
+				1.2769792079925,
 			},
 		},
 		pes_generic_path_blocked = {
@@ -1314,10 +1334,10 @@ return function ()
 				"pes_generic_path_blocked_04",
 			},
 			sound_events_duration = {
-				1.085416674614,
-				1.1100208759308,
-				1.8353749513626,
-				1.0193333625793,
+				1.0849791765213,
+				1.1100000143051,
+				1.8349791765213,
+				1.0189791917801,
 			},
 		},
 		pes_generic_rain = {
@@ -1353,10 +1373,10 @@ return function ()
 				"pes_generic_rain_04",
 			},
 			sound_events_duration = {
-				1.5426249504089,
-				2.6928124427795,
-				2.1108124256134,
-				1.9324375391007,
+				1.5419791936874,
+				2.6919791698456,
+				2.1099791526794,
+				1.9319791793823,
 			},
 		},
 		pes_generic_reaction_action = {
@@ -1392,10 +1412,10 @@ return function ()
 				"pes_generic_reaction_action_04",
 			},
 			sound_events_duration = {
-				0.59364581108093,
-				0.70497918128967,
-				0.77420830726624,
-				0.60591667890549,
+				0.59299999475479,
+				0.70397919416428,
+				0.77397918701172,
+				0.60500001907349,
 			},
 		},
 		pes_generic_reaction_sound = {
@@ -1431,10 +1451,10 @@ return function ()
 				"pes_generic_reaction_sound_04",
 			},
 			sound_events_duration = {
-				0.7637083530426,
-				0.62362498044968,
-				1.09475004673,
-				1.2932916879654,
+				0.76297914981842,
+				0.62297916412354,
+				1.0939791202545,
+				1.2929999828339,
 			},
 		},
 		pes_generic_search_complete = {
@@ -1470,10 +1490,10 @@ return function ()
 				"pes_generic_search_complete_04",
 			},
 			sound_events_duration = {
-				1.5056458711624,
-				2.0361874103546,
-				1.2945417165756,
-				1.2627083063126,
+				1.5049999952316,
+				2.0360000133514,
+				1.2939791679382,
+				1.2619999647141,
 			},
 		},
 		pes_generic_search_progressing = {
@@ -1525,14 +1545,14 @@ return function ()
 				"pes_generic_search_progressing_08",
 			},
 			sound_events_duration = {
-				0.63083332777023,
-				0.8643958568573,
-				0.6034791469574,
-				1.2626041173935,
-				0.95958334207535,
-				2.1237709522247,
-				2.0628333091736,
-				1.2429583072662,
+				0.6299791932106,
+				0.86397916078568,
+				0.60297918319702,
+				1.2619792222977,
+				0.9589791893959,
+				2.1229791641235,
+				2.0619790554047,
+				1.2419791221619,
 			},
 		},
 		pes_generic_search_start = {
@@ -1568,10 +1588,10 @@ return function ()
 				"pes_generic_search_start_04",
 			},
 			sound_events_duration = {
-				1.6215833425522,
-				1.7004375457764,
-				1.1757082939148,
-				1.6234375238419,
+				1.6209791898727,
+				1.699979186058,
+				1.1749999523163,
+				1.6229791641235,
 			},
 		},
 		pes_generic_success = {
@@ -1607,10 +1627,10 @@ return function ()
 				"pes_generic_success_04",
 			},
 			sound_events_duration = {
-				1.5039374828339,
-				1.138375043869,
-				2.324937582016,
-				1.1792291402817,
+				1.5030000209808,
+				1.1379791498184,
+				2.323979139328,
+				1.1790000200272,
 			},
 		},
 		pes_generic_unexpected_event_01 = {
@@ -1646,10 +1666,10 @@ return function ()
 				"pes_generic_unexpected_event_04",
 			},
 			sound_events_duration = {
-				0.93589586019516,
-				1.2492083311081,
-				1.4685833454132,
-				1.2793333530426,
+				0.93497914075851,
+				1.2489792108536,
+				1.4679791927338,
+				1.279000043869,
 			},
 		},
 	})

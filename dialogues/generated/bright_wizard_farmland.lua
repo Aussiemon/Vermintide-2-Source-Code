@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_farmlands_intro_a",
+		probability = 1,
 		response = "pbw_farmlands_intro_a",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_farmlands_intro_b",
+		probability = 1,
 		response = "pbw_farmlands_intro_b",
 		criterias = {
 			{
@@ -85,6 +87,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_farmlands_intro_c",
+		probability = 1,
 		response = "pbw_farmlands_intro_c",
 		criterias = {
 			{
@@ -123,6 +126,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_farmland_stick_to_the_road_01",
+		probability = 1,
 		response = "pbw_level_farmland_stick_to_the_road_01",
 		criterias = {
 			{
@@ -167,6 +171,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_farmlands_cart_01",
+		probability = 1,
 		response = "pbw_level_farmlands_cart_01",
 		criterias = {
 			{
@@ -211,6 +216,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_farmlands_deserted_01",
+		probability = 1,
 		response = "pbw_level_farmlands_deserted_01",
 		criterias = {
 			{
@@ -255,6 +261,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_farmlands_end_level_01",
+		probability = 1,
 		response = "pbw_level_farmlands_end_level_01",
 		criterias = {
 			{
@@ -299,6 +306,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_farmlands_fence_01",
+		probability = 1,
 		response = "pbw_level_farmlands_fence_01",
 		criterias = {
 			{
@@ -343,6 +351,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_farmlands_investigate_farm_01",
+		probability = 1,
 		response = "pbw_level_farmlands_investigate_farm_01",
 		criterias = {
 			{
@@ -387,6 +396,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_farmlands_kill_the_brute_01",
+		probability = 1,
 		response = "pbw_level_farmlands_kill_the_brute_01",
 		criterias = {
 			{
@@ -431,6 +441,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_farmlands_last_farm_01",
+		probability = 1,
 		response = "pbw_level_farmlands_last_farm_01",
 		criterias = {
 			{
@@ -475,6 +486,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_farmlands_locked_gate_01",
+		probability = 1,
 		response = "pbw_level_farmlands_locked_gate_01",
 		criterias = {
 			{
@@ -519,6 +531,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_farmlands_monster_in_barn_01",
+		probability = 1,
 		response = "pbw_level_farmlands_monster_in_barn_01",
 		criterias = {
 			{
@@ -563,6 +576,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_farmlands_move_on_01",
+		probability = 1,
 		response = "pbw_level_farmlands_move_on_01",
 		criterias = {
 			{
@@ -607,6 +621,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_farmlands_next_farm_01",
+		probability = 1,
 		response = "pbw_level_farmlands_next_farm_01",
 		criterias = {
 			{
@@ -651,6 +666,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_farmlands_no_prisoners_01",
+		probability = 1,
 		response = "pbw_level_farmlands_no_prisoners_01",
 		criterias = {
 			{
@@ -695,6 +711,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_farmlands_prisoners_01",
+		probability = 1,
 		response = "pbw_level_farmlands_prisoners_01",
 		criterias = {
 			{
@@ -739,6 +756,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_farmlands_smoke_plume_01",
+		probability = 1,
 		response = "pbw_level_farmlands_smoke_plume_01",
 		criterias = {
 			{
@@ -783,6 +801,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_farmlands_through_the_barn_01",
+		probability = 1,
 		response = "pbw_level_farmlands_through_the_barn_01",
 		criterias = {
 			{
@@ -827,6 +846,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_farmlands_unlocking_the_cage_01",
+		probability = 1,
 		response = "pbw_level_farmlands_unlocking_the_cage_01",
 		criterias = {
 			{

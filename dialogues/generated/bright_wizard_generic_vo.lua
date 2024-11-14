@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_gameplay_path_clear",
+		probability = 1,
 		response = "pbw_gameplay_path_clear",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_generic_assemble",
+		probability = 1,
 		response = "pbw_generic_assemble",
 		criterias = {
 			{
@@ -91,6 +93,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_generic_cold_inside",
+		probability = 1,
 		response = "pbw_generic_cold_inside",
 		criterias = {
 			{
@@ -135,6 +138,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_generic_cold_outside",
+		probability = 1,
 		response = "pbw_generic_cold_outside",
 		criterias = {
 			{
@@ -179,6 +183,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_generic_dark",
+		probability = 1,
 		response = "pbw_generic_dark",
 		criterias = {
 			{
@@ -223,6 +228,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_generic_door_locked",
+		probability = 1,
 		response = "pbw_generic_door_locked",
 		criterias = {
 			{
@@ -267,6 +273,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_generic_falling",
+		probability = 1,
 		response = "pbw_generic_falling",
 		criterias = {
 			{
@@ -291,6 +298,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_generic_found_key_known_purpose_a",
+		probability = 1,
 		response = "pbw_generic_found_key_known_purpose_a",
 		criterias = {
 			{
@@ -335,6 +343,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_generic_found_key_unknown_purpose_a",
+		probability = 1,
 		response = "pbw_generic_found_key_unknown_purpose_a",
 		criterias = {
 			{
@@ -379,6 +388,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_generic_getting_dark_outside",
+		probability = 1,
 		response = "pbw_generic_getting_dark_outside",
 		criterias = {
 			{
@@ -423,6 +433,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_generic_objective_complete",
+		probability = 1,
 		response = "pbw_generic_objective_complete",
 		criterias = {
 			{
@@ -467,6 +478,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_generic_path_blocked",
+		probability = 1,
 		response = "pbw_generic_path_blocked",
 		criterias = {
 			{
@@ -511,6 +523,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_generic_rain",
+		probability = 1,
 		response = "pbw_generic_rain",
 		criterias = {
 			{
@@ -555,6 +568,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_generic_reaction_action",
+		probability = 1,
 		response = "pbw_generic_reaction_action",
 		criterias = {
 			{
@@ -599,6 +613,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_generic_reaction_sound",
+		probability = 1,
 		response = "pbw_generic_reaction_sound",
 		criterias = {
 			{
@@ -643,6 +658,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_generic_search_complete",
+		probability = 1,
 		response = "pbw_generic_search_complete",
 		criterias = {
 			{
@@ -687,6 +703,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_generic_search_progressing",
+		probability = 1,
 		response = "pbw_generic_search_progressing",
 		criterias = {
 			{
@@ -731,6 +748,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_generic_search_start",
+		probability = 1,
 		response = "pbw_generic_search_start",
 		criterias = {
 			{
@@ -775,6 +793,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_generic_success",
+		probability = 1,
 		response = "pbw_generic_success",
 		criterias = {
 			{
@@ -819,6 +838,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_generic_unexpected_event_01",
+		probability = 1,
 		response = "pbw_generic_unexpected_event_01",
 		criterias = {
 			{
@@ -934,10 +954,10 @@ return function ()
 				"pbw_generic_assemble_04",
 			},
 			sound_events_duration = {
-				0.79231250286102,
-				1.6037499904633,
-				1.4211041927338,
-				0.55722916126251,
+				0.79199999570847,
+				1.6030000448227,
+				1.420979142189,
+				0.55697917938232,
 			},
 		},
 		pbw_generic_cold_inside = {
@@ -973,10 +993,10 @@ return function ()
 				"pbw_generic_cold_inside_04",
 			},
 			sound_events_duration = {
-				1.881875038147,
-				2.9943957328796,
-				2.2599375247955,
-				4.7120833396912,
+				1.880979180336,
+				2.993979215622,
+				2.2589790821075,
+				4.7119793891907,
 			},
 		},
 		pbw_generic_cold_outside = {
@@ -1012,10 +1032,10 @@ return function ()
 				"pbw_generic_cold_outside_04",
 			},
 			sound_events_duration = {
-				1.1928541660309,
-				2.3439166545868,
-				4.0962710380554,
-				1.3823750019074,
+				1.1919791698456,
+				2.3429791927338,
+				4.0959792137146,
+				1.3819791078568,
 			},
 		},
 		pbw_generic_dark = {
@@ -1051,10 +1071,10 @@ return function ()
 				"pbw_generic_dark_04",
 			},
 			sound_events_duration = {
-				1.158083319664,
-				2.2347500324249,
-				1.4452291727066,
-				2.8126249313355,
+				1.1579999923706,
+				2.2339792251587,
+				1.4449791908264,
+				2.8119790554047,
 			},
 		},
 		pbw_generic_door_locked = {
@@ -1090,10 +1110,10 @@ return function ()
 				"pbw_generic_door_locked_04",
 			},
 			sound_events_duration = {
-				0.6777708530426,
-				2.3858957290649,
-				2.3088126182556,
-				1.1142499446869,
+				0.6769791841507,
+				2.3849792480469,
+				2.3079791069031,
+				1.1139792203903,
 			},
 		},
 		pbw_generic_falling = {
@@ -1129,10 +1149,10 @@ return function ()
 				"pbw_generic_falling_04",
 			},
 			sound_events_duration = {
-				1.4785000085831,
-				1.1784166097641,
-				1.0940208435059,
-				1.9392708539963,
+				1.4780000448227,
+				1.1779999732971,
+				1.0939999818802,
+				1.9390000104904,
 			},
 		},
 		pbw_generic_found_key_known_purpose_a = {
@@ -1236,10 +1256,10 @@ return function ()
 				"pbw_generic_getting_dark_outside_04",
 			},
 			sound_events_duration = {
-				1.6737707853317,
-				1.1182916164398,
-				1.3271666765213,
-				1.6492708921433,
+				1.6729999780655,
+				1.1180000305176,
+				1.3269791603088,
+				1.6489791870117,
 			},
 		},
 		pbw_generic_objective_complete = {
@@ -1275,10 +1295,10 @@ return function ()
 				"pbw_generic_objective_complete_04",
 			},
 			sound_events_duration = {
-				1.2612291574478,
-				1.0660417079925,
-				1.393770813942,
-				3.2644166946411,
+				1.2609791755676,
+				1.0659999847412,
+				1.39297914505,
+				3.2639791965485,
 			},
 		},
 		pbw_generic_path_blocked = {
@@ -1314,10 +1334,10 @@ return function ()
 				"pbw_generic_path_blocked_04",
 			},
 			sound_events_duration = {
-				1.229708313942,
-				1.3492292165756,
-				1.2307499647141,
-				2.3981459140778,
+				1.2289791107178,
+				1.3489791154861,
+				1.2300000190735,
+				2.397979259491,
 			},
 		},
 		pbw_generic_rain = {
@@ -1353,10 +1373,10 @@ return function ()
 				"pbw_generic_rain_04",
 			},
 			sound_events_duration = {
-				1.8126666545868,
-				2.217916727066,
-				1.601979136467,
-				3.0897917747498,
+				1.8120000362396,
+				2.216979265213,
+				1.6009792089462,
+				3.0889792442322,
 			},
 		},
 		pbw_generic_reaction_action = {
@@ -1392,10 +1412,10 @@ return function ()
 				"pbw_generic_reaction_action_04",
 			},
 			sound_events_duration = {
-				0.39360415935516,
-				0.64220833778381,
-				0.80283331871033,
-				0.47285416722298,
+				0.39297917485237,
+				0.64197915792465,
+				0.80199998617172,
+				0.47197917103767,
 			},
 		},
 		pbw_generic_reaction_sound = {
@@ -1431,10 +1451,10 @@ return function ()
 				"pbw_generic_reaction_sound_04",
 			},
 			sound_events_duration = {
-				0.50995832681656,
-				0.64985418319702,
-				0.51862502098083,
-				0.58756250143051,
+				0.50897914171219,
+				0.64897918701172,
+				0.51797914505005,
+				0.58700001239777,
 			},
 		},
 		pbw_generic_search_complete = {
@@ -1470,10 +1490,10 @@ return function ()
 				"pbw_generic_search_complete_04",
 			},
 			sound_events_duration = {
-				0.66083335876465,
-				1.1482291221619,
-				1.580854177475,
-				2.7464792728424,
+				0.66000002622604,
+				1.1480000019074,
+				1.5799791812897,
+				2.7459790706634,
 			},
 		},
 		pbw_generic_search_progressing = {
@@ -1525,14 +1545,14 @@ return function ()
 				"pbw_generic_search_progressing_08",
 			},
 			sound_events_duration = {
-				1.6381249427795,
-				1.0668958425522,
-				1.1249166727066,
-				0.87708336114883,
-				1.1626249551773,
-				1.7479374408722,
-				1.1414999961853,
-				1.3762708902359,
+				1.6379791498184,
+				1.0659999847412,
+				1.12399995327,
+				0.87699997425079,
+				1.1619999408722,
+				1.7469999790192,
+				1.1409791707993,
+				1.3759791851044,
 			},
 		},
 		pbw_generic_search_start = {
@@ -1568,10 +1588,10 @@ return function ()
 				"pbw_generic_search_start_04",
 			},
 			sound_events_duration = {
-				0.77889585494995,
-				1.1656874418259,
-				1.0041249990463,
-				1.4949375391007,
+				0.77799999713898,
+				1.164999961853,
+				1.0039792060852,
+				1.493979215622,
 			},
 		},
 		pbw_generic_success = {
@@ -1607,10 +1627,10 @@ return function ()
 				"pbw_generic_success_04",
 			},
 			sound_events_duration = {
-				2.5165729522705,
-				1.1767292022705,
-				1.9494999647141,
-				1.8055208921433,
+				2.516458272934,
+				1.1759791374207,
+				1.948979139328,
+				1.8049999475479,
 			},
 		},
 		pbw_generic_unexpected_event_01 = {
@@ -1646,10 +1666,10 @@ return function ()
 				"pbw_generic_unexpected_event_04",
 			},
 			sound_events_duration = {
-				1.8376666307449,
-				1.9248125553131,
-				0.72131252288818,
-				1.2327708005905,
+				1.8369791507721,
+				1.9239791631699,
+				0.72097915410995,
+				1.2319999933243,
 			},
 		},
 	})

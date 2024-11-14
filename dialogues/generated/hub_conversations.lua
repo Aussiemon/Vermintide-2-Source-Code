@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "nfl_debrief_bell_01",
+		probability = 1,
 		response = "nfl_debrief_bell_01",
 		criterias = {
 			{
@@ -27,6 +28,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_debrief_catacombs_01",
+		probability = 1,
 		response = "nfl_debrief_catacombs_01",
 		criterias = {
 			{
@@ -51,6 +53,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_debrief_cemetery",
+		probability = 1,
 		response = "nfl_debrief_cemetery",
 		criterias = {
 			{
@@ -75,6 +78,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_debrief_elven_ruins_01",
+		probability = 1,
 		response = "nfl_debrief_elven_ruins_01",
 		criterias = {
 			{
@@ -99,6 +103,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_debrief_farmland_01",
+		probability = 1,
 		response = "nfl_debrief_farmland_01",
 		criterias = {
 			{
@@ -123,6 +128,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_debrief_forest_ambush",
+		probability = 1,
 		response = "nfl_debrief_forest_ambush",
 		criterias = {
 			{
@@ -147,6 +153,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_debrief_fort_01",
+		probability = 1,
 		response = "nfl_debrief_fort_01",
 		criterias = {
 			{
@@ -171,6 +178,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_debrief_ground_zero_01",
+		probability = 1,
 		response = "nfl_debrief_ground_zero_01",
 		criterias = {
 			{
@@ -195,6 +203,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_debrief_helmgart_military_01",
+		probability = 1,
 		response = "nfl_debrief_helmgart_military_01",
 		criterias = {
 			{
@@ -219,6 +228,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_debrief_magnus_tower",
+		probability = 1,
 		response = "nfl_debrief_magnus_tower",
 		criterias = {
 			{
@@ -243,6 +253,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_debrief_mines_01",
+		probability = 1,
 		response = "nfl_debrief_mines_01",
 		criterias = {
 			{
@@ -267,6 +278,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_debrief_nurgle_01",
+		probability = 1,
 		response = "nfl_debrief_nurgle_01",
 		criterias = {
 			{
@@ -291,6 +303,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_debrief_plaza",
+		probability = 1,
 		response = "nfl_debrief_plaza",
 		criterias = {
 			{
@@ -315,6 +328,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_debrief_skaven_stronghold_01",
+		probability = 1,
 		response = "nfl_debrief_skaven_stronghold_01",
 		criterias = {
 			{
@@ -339,6 +353,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_debrief_skittergate_01",
+		probability = 1,
 		response = "nfl_debrief_skittergate_01",
 		criterias = {
 			{
@@ -363,6 +378,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_debrief_ussingen_01",
+		probability = 1,
 		response = "nfl_debrief_ussingen_01",
 		criterias = {
 			{
@@ -387,6 +403,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_debrief_war_camp_01",
+		probability = 1,
 		response = "nfl_debrief_war_camp_01",
 		criterias = {
 			{
@@ -411,6 +428,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_olesya_tutorial_dlc_no_skittergate",
+		probability = 1,
 		response = "nfl_olesya_tutorial_dlc_no_skittergate",
 		criterias = {
 			{
@@ -429,6 +447,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_olesya_tutorial_dlc_skittergate_complete",
+		probability = 1,
 		response = "nfl_olesya_tutorial_dlc_skittergate_complete",
 		criterias = {
 			{
@@ -447,6 +466,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_olesya_weaves_explain",
+		probability = 1,
 		response = "nfl_olesya_weaves_explain",
 		criterias = {
 			{
@@ -465,6 +485,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_altar",
+		probability = 1,
 		response = "nik_altar",
 		criterias = {
 			{
@@ -483,6 +504,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_callout_unready_bardin",
+		probability = 1,
 		response = "nik_callout_unready_bardin",
 		criterias = {
 			{
@@ -501,6 +523,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_callout_unready_kerillian",
+		probability = 1,
 		response = "nik_callout_unready_kerillian",
 		criterias = {
 			{
@@ -519,6 +542,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_callout_unready_kruber",
+		probability = 1,
 		response = "nik_callout_unready_kruber",
 		criterias = {
 			{
@@ -537,6 +561,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_callout_unready_kruber_mercenary",
+		probability = 1,
 		response = "nik_callout_unready_kruber_mercenary",
 		criterias = {
 			{
@@ -561,6 +586,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_callout_unready_saltzpyre",
+		probability = 1,
 		response = "nik_callout_unready_saltzpyre",
 		criterias = {
 			{
@@ -579,6 +605,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_callout_unready_sienna",
+		probability = 1,
 		response = "nik_callout_unready_sienna",
 		criterias = {
 			{
@@ -597,6 +624,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_fleur_conversation_eighteen_01",
+		probability = 1,
 		response = "nik_fleur_conversation_eighteen_01",
 		criterias = {
 			{
@@ -641,6 +669,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_fleur_conversation_nineteen_01",
+		probability = 1,
 		response = "nik_fleur_conversation_nineteen_01",
 		criterias = {
 			{
@@ -685,6 +714,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_fleur_conversation_seventeen_01",
+		probability = 1,
 		response = "nik_fleur_conversation_seventeen_01",
 		criterias = {
 			{
@@ -723,6 +753,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_fleur_conversation_twenty_01",
+		probability = 1,
 		response = "nik_fleur_conversation_twenty_01",
 		criterias = {
 			{
@@ -767,6 +798,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_forge",
+		probability = 1,
 		response = "nik_forge",
 		criterias = {
 			{
@@ -785,6 +817,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_greeting",
+		probability = 1,
 		response = "nik_greeting",
 		criterias = {
 			{
@@ -803,6 +836,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_greeting_evening",
+		probability = 1,
 		response = "nik_greeting_evening",
 		criterias = {
 			{
@@ -821,6 +855,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_greeting_first_time",
+		probability = 1,
 		response = "nik_greeting_first_time",
 		criterias = {
 			{
@@ -839,6 +874,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_greeting_halloween",
+		probability = 1,
 		response = "nik_greeting_halloween",
 		criterias = {
 			{
@@ -857,6 +893,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_greeting_night",
+		probability = 1,
 		response = "nik_greeting_night",
 		criterias = {
 			{
@@ -875,6 +912,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_greeting_rainy",
+		probability = 1,
 		response = "nik_greeting_rainy",
 		criterias = {
 			{
@@ -893,6 +931,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_greeting_sunny",
+		probability = 1,
 		response = "nik_greeting_sunny",
 		criterias = {
 			{
@@ -911,6 +950,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_backstory_interaction",
+		probability = 1,
 		response = "nik_hub_backstory_interaction",
 		criterias = {
 			{
@@ -929,6 +969,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_bless_conversation_five_01",
+		probability = 1,
 		response = "nik_hub_bless_conversation_five_01",
 		criterias = {
 			{
@@ -967,6 +1008,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_bless_conversation_four_01",
+		probability = 1,
 		response = "nik_hub_bless_conversation_four_01",
 		criterias = {
 			{
@@ -1005,6 +1047,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_bless_conversation_one_01",
+		probability = 1,
 		response = "nik_hub_bless_conversation_one_01",
 		criterias = {
 			{
@@ -1043,6 +1086,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_bless_conversation_three_01",
+		probability = 1,
 		response = "nik_hub_bless_conversation_three_01",
 		criterias = {
 			{
@@ -1081,6 +1125,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_bless_conversation_two_01",
+		probability = 1,
 		response = "nik_hub_bless_conversation_two_01",
 		criterias = {
 			{
@@ -1119,6 +1164,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_cog_conversation_five_01",
+		probability = 1,
 		response = "nik_hub_cog_conversation_five_01",
 		criterias = {
 			{
@@ -1157,6 +1203,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_cog_conversation_four_01",
+		probability = 1,
 		response = "nik_hub_cog_conversation_four_01",
 		criterias = {
 			{
@@ -1195,6 +1242,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_cog_conversation_one_01",
+		probability = 1,
 		response = "nik_hub_cog_conversation_one_01",
 		criterias = {
 			{
@@ -1233,6 +1281,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_cog_conversation_three_01",
+		probability = 1,
 		response = "nik_hub_cog_conversation_three_01",
 		criterias = {
 			{
@@ -1271,6 +1320,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_cog_conversation_two_01",
+		probability = 1,
 		response = "nik_hub_cog_conversation_two_01",
 		criterias = {
 			{
@@ -1309,6 +1359,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_grail_conversation_five_01",
+		probability = 1,
 		response = "nik_hub_grail_conversation_five_01",
 		criterias = {
 			{
@@ -1347,6 +1398,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_grail_conversation_four_01",
+		probability = 1,
 		response = "nik_hub_grail_conversation_four_01",
 		criterias = {
 			{
@@ -1385,6 +1437,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_grail_conversation_one_01",
+		probability = 1,
 		response = "nik_hub_grail_conversation_one_01",
 		criterias = {
 			{
@@ -1423,6 +1476,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_grail_conversation_three_01",
+		probability = 1,
 		response = "nik_hub_grail_conversation_three_01",
 		criterias = {
 			{
@@ -1461,6 +1515,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_grail_conversation_two_01",
+		probability = 1,
 		response = "nik_hub_grail_conversation_two_01",
 		criterias = {
 			{
@@ -1499,6 +1554,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_eight_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_eight_01",
 		criterias = {
 			{
@@ -1543,6 +1599,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_eighteen_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_eighteen_01",
 		criterias = {
 			{
@@ -1587,6 +1644,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_eleven_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_eleven_01",
 		criterias = {
 			{
@@ -1631,6 +1689,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_fifteen_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_fifteen_01",
 		criterias = {
 			{
@@ -1675,6 +1734,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_five_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_five_01",
 		criterias = {
 			{
@@ -1719,6 +1779,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_four_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_four_01",
 		criterias = {
 			{
@@ -1763,6 +1824,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_fourteen_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_fourteen_01",
 		criterias = {
 			{
@@ -1807,6 +1869,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_nine_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_nine_01",
 		criterias = {
 			{
@@ -1851,6 +1914,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_nineteen_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_nineteen_01",
 		criterias = {
 			{
@@ -1895,6 +1959,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_one_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_one_01",
 		criterias = {
 			{
@@ -1939,6 +2004,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_seven_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_seven_01",
 		criterias = {
 			{
@@ -1983,6 +2049,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_seventeen_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_seventeen_01",
 		criterias = {
 			{
@@ -2027,6 +2094,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_six_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_six_01",
 		criterias = {
 			{
@@ -2071,6 +2139,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_sixteen_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_sixteen_01",
 		criterias = {
 			{
@@ -2115,6 +2184,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_ten_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_ten_01",
 		criterias = {
 			{
@@ -2159,6 +2229,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_thirteen_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_thirteen_01",
 		criterias = {
 			{
@@ -2203,6 +2274,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_three_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_three_01",
 		criterias = {
 			{
@@ -2247,6 +2319,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_twelve_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_twelve_01",
 		criterias = {
 			{
@@ -2291,6 +2364,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_twenty_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_twenty_01",
 		criterias = {
 			{
@@ -2335,6 +2409,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_twentyfive_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_twentyfive_01",
 		criterias = {
 			{
@@ -2379,6 +2454,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_twentyfour_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_twentyfour_01",
 		criterias = {
 			{
@@ -2423,6 +2499,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_twentyone_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_twentyone_01",
 		criterias = {
 			{
@@ -2467,6 +2544,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_twentythree_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_twentythree_01",
 		criterias = {
 			{
@@ -2511,6 +2589,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_twentytwo_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_twentytwo_01",
 		criterias = {
 			{
@@ -2555,6 +2634,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_lohner_conversation_two_01",
+		probability = 1,
 		response = "nik_hub_lohner_conversation_two_01",
 		criterias = {
 			{
@@ -2599,6 +2679,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_long_waiting_01",
+		probability = 1,
 		response = "nik_hub_long_waiting_01",
 		criterias = {
 			{
@@ -2617,6 +2698,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_okri_grudge",
+		probability = 1,
 		response = "nik_hub_okri_grudge",
 		criterias = {
 			{
@@ -2649,6 +2731,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_shovel_conversation_five_01",
+		probability = 1,
 		response = "nik_hub_shovel_conversation_five_01",
 		criterias = {
 			{
@@ -2687,6 +2770,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_shovel_conversation_four_01",
+		probability = 1,
 		response = "nik_hub_shovel_conversation_four_01",
 		criterias = {
 			{
@@ -2725,6 +2809,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_shovel_conversation_one_01",
+		probability = 1,
 		response = "nik_hub_shovel_conversation_one_01",
 		criterias = {
 			{
@@ -2763,6 +2848,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_shovel_conversation_three_01",
+		probability = 1,
 		response = "nik_hub_shovel_conversation_three_01",
 		criterias = {
 			{
@@ -2801,6 +2887,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_shovel_conversation_two_01",
+		probability = 1,
 		response = "nik_hub_shovel_conversation_two_01",
 		criterias = {
 			{
@@ -2839,6 +2926,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_store_first_time",
+		probability = 1,
 		response = "nik_hub_store_first_time",
 		criterias = {
 			{
@@ -2871,6 +2959,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_store_new_items",
+		probability = 1,
 		response = "nik_hub_store_new_items",
 		criterias = {
 			{
@@ -2903,6 +2992,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_the_plan",
+		probability = 1,
 		response = "nik_hub_the_plan",
 		criterias = {
 			{
@@ -2927,6 +3017,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_thorn_conversation_five_01",
+		probability = 1,
 		response = "nik_hub_thorn_conversation_five_01",
 		criterias = {
 			{
@@ -2965,6 +3056,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_thorn_conversation_four_01",
+		probability = 1,
 		response = "nik_hub_thorn_conversation_four_01",
 		criterias = {
 			{
@@ -3003,6 +3095,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_thorn_conversation_one_01",
+		probability = 1,
 		response = "nik_hub_thorn_conversation_one_01",
 		criterias = {
 			{
@@ -3041,6 +3134,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_thorn_conversation_three_01",
+		probability = 1,
 		response = "nik_hub_thorn_conversation_three_01",
 		criterias = {
 			{
@@ -3079,6 +3173,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_thorn_conversation_two_01",
+		probability = 1,
 		response = "nik_hub_thorn_conversation_two_01",
 		criterias = {
 			{
@@ -3117,6 +3212,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_welcome",
+		probability = 1,
 		response = "nik_hub_welcome",
 		criterias = {
 			{
@@ -3135,6 +3231,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_intro_forge",
+		probability = 1,
 		response = "nik_intro_forge",
 		criterias = {
 			{
@@ -3153,6 +3250,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_intro_forge_reminder",
+		probability = 1,
 		response = "nik_intro_forge_reminder",
 		criterias = {
 			{
@@ -3171,6 +3269,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_inventory_reminder",
+		probability = 1,
 		response = "nik_inventory_reminder",
 		criterias = {
 			{
@@ -3189,6 +3288,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_keep_idle_banter_four_01",
+		probability = 1,
 		response = "nik_keep_idle_banter_four_01",
 		criterias = {
 			{
@@ -3215,6 +3315,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_keep_idle_banter_four_02",
+		probability = 1,
 		response = "nik_keep_idle_banter_four_02",
 		criterias = {
 			{
@@ -3253,6 +3354,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_keep_idle_banter_one_01",
+		probability = 1,
 		response = "nik_keep_idle_banter_one_01",
 		criterias = {
 			{
@@ -3291,6 +3393,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_keep_idle_banter_three",
+		probability = 1,
 		response = "nik_keep_idle_banter_three",
 		criterias = {
 			{
@@ -3329,6 +3432,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_keep_idle_banter_two_01",
+		probability = 1,
 		response = "nik_keep_idle_banter_two_01",
 		criterias = {
 			{
@@ -3367,6 +3471,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_keep_idle_pool_01",
+		probability = 1,
 		response = "nik_keep_idle_pool_01",
 		criterias = {
 			{
@@ -3399,6 +3504,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_keep_idle_pool_02",
+		probability = 1,
 		response = "nik_keep_idle_pool_02",
 		criterias = {
 			{
@@ -3431,6 +3537,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_keep_idle_pool_post_halloween",
+		probability = 1,
 		response = "nik_keep_idle_pool_post_halloween",
 		criterias = {
 			{
@@ -3463,6 +3570,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_keep_idle_pool_post_wizards_tower",
+		probability = 1,
 		response = "nik_keep_idle_pool_post_wizards_tower",
 		criterias = {
 			{
@@ -3507,6 +3615,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_keep_idle_shop",
+		probability = 1,
 		response = "nik_keep_idle_shop",
 		criterias = {
 			{
@@ -3545,6 +3654,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_keep_shop_purchase",
+		probability = 1,
 		response = "nik_keep_shop_purchase",
 		criterias = {
 			{
@@ -3589,6 +3699,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_keep_shop_purchase_cancelled",
+		probability = 1,
 		response = "nik_keep_shop_purchase_cancelled",
 		criterias = {
 			{
@@ -3640,6 +3751,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_map_intro",
+		probability = 1,
 		response = "nik_map_intro",
 		criterias = {
 			{
@@ -3658,6 +3770,7 @@ return function ()
 	})
 	define_rule({
 		name = "npp_keep_idle_banter_four",
+		probability = 1,
 		response = "npp_keep_idle_banter_four",
 		criterias = {
 			{
@@ -3696,6 +3809,7 @@ return function ()
 	})
 	define_rule({
 		name = "npp_keep_idle_banter_one_01",
+		probability = 1,
 		response = "npp_keep_idle_banter_one_01",
 		criterias = {
 			{
@@ -3722,6 +3836,7 @@ return function ()
 	})
 	define_rule({
 		name = "npp_keep_idle_banter_three_01",
+		probability = 1,
 		response = "npp_keep_idle_banter_three_01",
 		criterias = {
 			{
@@ -3748,6 +3863,7 @@ return function ()
 	})
 	define_rule({
 		name = "npp_keep_idle_banter_two_01",
+		probability = 1,
 		response = "npp_keep_idle_banter_two_01",
 		criterias = {
 			{
@@ -3774,6 +3890,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_backstory_five_01",
+		probability = 1,
 		response = "pbw_bw_backstory_five_01",
 		criterias = {
 			{
@@ -3805,6 +3922,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_backstory_five_02",
+		probability = 1,
 		response = "pbw_bw_backstory_five_02",
 		criterias = {
 			{
@@ -3836,6 +3954,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_backstory_four_01",
+		probability = 1,
 		response = "pbw_bw_backstory_four_01",
 		criterias = {
 			{
@@ -3904,6 +4023,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_backstory_four_02",
+		probability = 1,
 		response = "pbw_bw_backstory_four_02",
 		criterias = {
 			{
@@ -3935,6 +4055,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_backstory_one_01",
+		probability = 1,
 		response = "pbw_bw_backstory_one_01",
 		criterias = {
 			{
@@ -3966,6 +4087,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_backstory_one_02",
+		probability = 1,
 		response = "pbw_bw_backstory_one_02",
 		criterias = {
 			{
@@ -3997,6 +4119,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_backstory_one_03",
+		probability = 1,
 		response = "pbw_bw_backstory_one_03",
 		criterias = {
 			{
@@ -4028,6 +4151,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_backstory_seven_03",
+		probability = 1,
 		response = "pbw_bw_backstory_seven_03",
 		criterias = {
 			{
@@ -4059,6 +4183,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_backstory_seven_04",
+		probability = 1,
 		response = "pbw_bw_backstory_seven_04",
 		criterias = {
 			{
@@ -4090,6 +4215,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_backstory_six_01",
+		probability = 1,
 		response = "pbw_bw_backstory_six_01",
 		criterias = {
 			{
@@ -4158,6 +4284,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_backstory_six_03",
+		probability = 1,
 		response = "pbw_bw_backstory_six_03",
 		criterias = {
 			{
@@ -4189,6 +4316,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_backstory_six_05",
+		probability = 1,
 		response = "pbw_bw_backstory_six_05",
 		criterias = {
 			{
@@ -4220,6 +4348,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_backstory_three_01",
+		probability = 1,
 		response = "pbw_bw_backstory_three_01",
 		criterias = {
 			{
@@ -4288,6 +4417,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_backstory_three_02",
+		probability = 1,
 		response = "pbw_bw_backstory_three_02",
 		criterias = {
 			{
@@ -4319,6 +4449,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_backstory_three_03",
+		probability = 1,
 		response = "pbw_bw_backstory_three_03",
 		criterias = {
 			{
@@ -4350,6 +4481,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_backstory_two_01",
+		probability = 1,
 		response = "pbw_bw_backstory_two_01",
 		criterias = {
 			{
@@ -4381,6 +4513,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_backstory_two_02",
+		probability = 1,
 		response = "pbw_bw_backstory_two_02",
 		criterias = {
 			{
@@ -4412,6 +4545,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_future_eight_03",
+		probability = 1,
 		response = "pbw_bw_future_eight_03",
 		criterias = {
 			{
@@ -4443,6 +4577,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_future_eight_04",
+		probability = 1,
 		response = "pbw_bw_future_eight_04",
 		criterias = {
 			{
@@ -4474,6 +4609,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_future_five_01",
+		probability = 1,
 		response = "pbw_bw_future_five_01",
 		criterias = {
 			{
@@ -4548,6 +4684,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_future_five_02",
+		probability = 1,
 		response = "pbw_bw_future_five_02",
 		criterias = {
 			{
@@ -4579,6 +4716,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_future_five_03",
+		probability = 1,
 		response = "pbw_bw_future_five_03",
 		criterias = {
 			{
@@ -4610,6 +4748,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_future_five_04",
+		probability = 1,
 		response = "pbw_bw_future_five_04",
 		criterias = {
 			{
@@ -4641,6 +4780,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_future_four_01",
+		probability = 1,
 		response = "pbw_bw_future_four_01",
 		criterias = {
 			{
@@ -4672,6 +4812,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_future_four_02",
+		probability = 1,
 		response = "pbw_bw_future_four_02",
 		criterias = {
 			{
@@ -4703,6 +4844,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_future_one_01",
+		probability = 1,
 		response = "pbw_bw_future_one_01",
 		criterias = {
 			{
@@ -4771,6 +4913,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_future_one_02",
+		probability = 1,
 		response = "pbw_bw_future_one_02",
 		criterias = {
 			{
@@ -4802,6 +4945,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_future_one_03",
+		probability = 1,
 		response = "pbw_bw_future_one_03",
 		criterias = {
 			{
@@ -4833,6 +4977,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_future_three_01",
+		probability = 1,
 		response = "pbw_bw_future_three_01",
 		criterias = {
 			{
@@ -4901,6 +5046,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_future_three_02",
+		probability = 1,
 		response = "pbw_bw_future_three_02",
 		criterias = {
 			{
@@ -4932,6 +5078,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_future_three_03",
+		probability = 1,
 		response = "pbw_bw_future_three_03",
 		criterias = {
 			{
@@ -4963,6 +5110,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_future_three_04",
+		probability = 1,
 		response = "pbw_bw_future_three_04",
 		criterias = {
 			{
@@ -4994,6 +5142,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_future_two_01",
+		probability = 1,
 		response = "pbw_bw_future_two_01",
 		criterias = {
 			{
@@ -5025,6 +5174,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bw_future_two_02",
+		probability = 1,
 		response = "pbw_bw_future_two_02",
 		criterias = {
 			{
@@ -5056,6 +5206,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_dr_backstory_three_01",
+		probability = 1,
 		response = "pbw_dr_backstory_three_01",
 		criterias = {
 			{
@@ -5124,6 +5275,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_dr_backstory_three_02",
+		probability = 1,
 		response = "pbw_dr_backstory_three_02",
 		criterias = {
 			{
@@ -5155,6 +5307,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_dr_backstory_three_03",
+		probability = 1,
 		response = "pbw_dr_backstory_three_03",
 		criterias = {
 			{
@@ -5186,6 +5339,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_dr_backstory_three_04",
+		probability = 1,
 		response = "pbw_dr_backstory_three_04",
 		criterias = {
 			{
@@ -5217,6 +5371,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_dr_future_four_01",
+		probability = 1,
 		response = "pbw_dr_future_four_01",
 		criterias = {
 			{
@@ -5248,6 +5403,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_dr_future_three_01",
+		probability = 1,
 		response = "pbw_dr_future_three_01",
 		criterias = {
 			{
@@ -5279,6 +5435,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_dr_future_three_02",
+		probability = 1,
 		response = "pbw_dr_future_three_02",
 		criterias = {
 			{
@@ -5310,6 +5467,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_es_backstory_two_01",
+		probability = 1,
 		response = "pbw_es_backstory_two_01",
 		criterias = {
 			{
@@ -5378,6 +5536,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_es_backstory_two_02",
+		probability = 1,
 		response = "pbw_es_backstory_two_02",
 		criterias = {
 			{
@@ -5409,6 +5568,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_es_backstory_two_03",
+		probability = 1,
 		response = "pbw_es_backstory_two_03",
 		criterias = {
 			{
@@ -5440,6 +5600,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_es_future_one_01",
+		probability = 1,
 		response = "pbw_es_future_one_01",
 		criterias = {
 			{
@@ -5508,6 +5669,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_es_future_one_02",
+		probability = 1,
 		response = "pbw_es_future_one_02",
 		criterias = {
 			{
@@ -5539,6 +5701,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_es_future_one_04",
+		probability = 1,
 		response = "pbw_es_future_one_04",
 		criterias = {
 			{
@@ -5570,6 +5733,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_fleur_conversation_twenty_01",
+		probability = 1,
 		response = "pbw_fleur_conversation_twenty_01",
 		criterias = {
 			{
@@ -5594,6 +5758,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_lohner_conversation_eleven_01",
+		probability = 1,
 		response = "pbw_hub_lohner_conversation_eleven_01",
 		criterias = {
 			{
@@ -5618,6 +5783,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_lohner_conversation_fifteen_01",
+		probability = 1,
 		response = "pbw_hub_lohner_conversation_fifteen_01",
 		criterias = {
 			{
@@ -5642,6 +5808,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_lohner_conversation_fourteen_01",
+		probability = 1,
 		response = "pbw_hub_lohner_conversation_fourteen_01",
 		criterias = {
 			{
@@ -5666,6 +5833,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_lohner_conversation_thirteen_01",
+		probability = 1,
 		response = "pbw_hub_lohner_conversation_thirteen_01",
 		criterias = {
 			{
@@ -5690,6 +5858,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_lohner_conversation_twelve_01",
+		probability = 1,
 		response = "pbw_hub_lohner_conversation_twelve_01",
 		criterias = {
 			{
@@ -5714,6 +5883,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_nm_hub_shovel_conversation_five_01",
+		probability = 1,
 		response = "pbw_nm_hub_shovel_conversation_five_01",
 		criterias = {
 			{
@@ -5738,6 +5908,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_nm_hub_shovel_conversation_four_01",
+		probability = 1,
 		response = "pbw_nm_hub_shovel_conversation_four_01",
 		criterias = {
 			{
@@ -5762,6 +5933,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_nm_hub_shovel_conversation_one_01",
+		probability = 1,
 		response = "pbw_nm_hub_shovel_conversation_one_01",
 		criterias = {
 			{
@@ -5786,6 +5958,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_nm_hub_shovel_conversation_three_01",
+		probability = 1,
 		response = "pbw_nm_hub_shovel_conversation_three_01",
 		criterias = {
 			{
@@ -5810,6 +5983,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_nm_hub_shovel_conversation_two_01",
+		probability = 1,
 		response = "pbw_nm_hub_shovel_conversation_two_01",
 		criterias = {
 			{
@@ -5834,6 +6008,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_we_backstory_four_01",
+		probability = 1,
 		response = "pbw_we_backstory_four_01",
 		criterias = {
 			{
@@ -5865,6 +6040,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_we_backstory_four_02",
+		probability = 1,
 		response = "pbw_we_backstory_four_02",
 		criterias = {
 			{
@@ -5896,6 +6072,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_we_backstory_one_01",
+		probability = 1,
 		response = "pbw_we_backstory_one_01",
 		criterias = {
 			{
@@ -5964,6 +6141,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_we_backstory_one_02",
+		probability = 1,
 		response = "pbw_we_backstory_one_02",
 		criterias = {
 			{
@@ -5995,6 +6173,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_we_backstory_one_03",
+		probability = 1,
 		response = "pbw_we_backstory_one_03",
 		criterias = {
 			{
@@ -6026,6 +6205,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_we_future_five_01",
+		probability = 1,
 		response = "pbw_we_future_five_01",
 		criterias = {
 			{
@@ -6094,6 +6274,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_we_future_five_02",
+		probability = 1,
 		response = "pbw_we_future_five_02",
 		criterias = {
 			{
@@ -6125,6 +6306,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_we_future_five_03",
+		probability = 1,
 		response = "pbw_we_future_five_03",
 		criterias = {
 			{
@@ -6156,6 +6338,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wh_future_three_01",
+		probability = 1,
 		response = "pbw_wh_future_three_01",
 		criterias = {
 			{
@@ -6230,6 +6413,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wh_future_three_02",
+		probability = 1,
 		response = "pbw_wh_future_three_02",
 		criterias = {
 			{
@@ -6261,6 +6445,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wh_future_three_03",
+		probability = 1,
 		response = "pbw_wh_future_three_03",
 		criterias = {
 			{
@@ -6292,6 +6477,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_additional_backstory_conversation_one_01",
+		probability = 1,
 		response = "pdr_additional_backstory_conversation_one_01",
 		criterias = {
 			{
@@ -6354,6 +6540,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_additional_backstory_conversation_one_02",
+		probability = 1,
 		response = "pdr_additional_backstory_conversation_one_02",
 		criterias = {
 			{
@@ -6385,6 +6572,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_additional_backstory_conversation_one_03",
+		probability = 1,
 		response = "pdr_additional_backstory_conversation_one_03",
 		criterias = {
 			{
@@ -6416,6 +6604,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_bw_backstory_five_01",
+		probability = 1,
 		response = "pdr_bw_backstory_five_01",
 		criterias = {
 			{
@@ -6484,6 +6673,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_bw_backstory_five_02",
+		probability = 1,
 		response = "pdr_bw_backstory_five_02",
 		criterias = {
 			{
@@ -6515,6 +6705,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_bw_backstory_one_01",
+		probability = 1,
 		response = "pdr_bw_backstory_one_01",
 		criterias = {
 			{
@@ -6583,6 +6774,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_bw_backstory_one_02",
+		probability = 1,
 		response = "pdr_bw_backstory_one_02",
 		criterias = {
 			{
@@ -6614,6 +6806,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_bw_backstory_one_03",
+		probability = 1,
 		response = "pdr_bw_backstory_one_03",
 		criterias = {
 			{
@@ -6645,6 +6838,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_bw_future_three_01",
+		probability = 1,
 		response = "pdr_bw_future_three_01",
 		criterias = {
 			{
@@ -6676,6 +6870,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_bw_future_three_02",
+		probability = 1,
 		response = "pdr_bw_future_three_02",
 		criterias = {
 			{
@@ -6707,6 +6902,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_bw_future_three_03",
+		probability = 1,
 		response = "pdr_bw_future_three_03",
 		criterias = {
 			{
@@ -6738,6 +6934,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_bw_future_three_04",
+		probability = 1,
 		response = "pdr_bw_future_three_04",
 		criterias = {
 			{
@@ -6769,6 +6966,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_de_hub_cog_conversation_five_01",
+		probability = 1,
 		response = "pdr_de_hub_cog_conversation_five_01",
 		criterias = {
 			{
@@ -6793,6 +6991,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_de_hub_cog_conversation_four_01",
+		probability = 1,
 		response = "pdr_de_hub_cog_conversation_four_01",
 		criterias = {
 			{
@@ -6817,6 +7016,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_de_hub_cog_conversation_one_01",
+		probability = 1,
 		response = "pdr_de_hub_cog_conversation_one_01",
 		criterias = {
 			{
@@ -6841,6 +7041,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_de_hub_cog_conversation_three_01",
+		probability = 1,
 		response = "pdr_de_hub_cog_conversation_three_01",
 		criterias = {
 			{
@@ -6865,6 +7066,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_de_hub_cog_conversation_two_01",
+		probability = 1,
 		response = "pdr_de_hub_cog_conversation_two_01",
 		criterias = {
 			{
@@ -6889,6 +7091,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_backstory_five_02",
+		probability = 1,
 		response = "pdr_dr_backstory_five_02",
 		criterias = {
 			{
@@ -6920,6 +7123,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_backstory_five_03",
+		probability = 1,
 		response = "pdr_dr_backstory_five_03",
 		criterias = {
 			{
@@ -6951,6 +7155,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_backstory_four_01",
+		probability = 1,
 		response = "pdr_dr_backstory_four_01",
 		criterias = {
 			{
@@ -6982,6 +7187,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_backstory_four_02",
+		probability = 1,
 		response = "pdr_dr_backstory_four_02",
 		criterias = {
 			{
@@ -7013,6 +7219,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_backstory_four_03",
+		probability = 1,
 		response = "pdr_dr_backstory_four_03",
 		criterias = {
 			{
@@ -7044,6 +7251,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_backstory_one_01",
+		probability = 1,
 		response = "pdr_dr_backstory_one_01",
 		criterias = {
 			{
@@ -7075,6 +7283,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_backstory_one_02",
+		probability = 1,
 		response = "pdr_dr_backstory_one_02",
 		criterias = {
 			{
@@ -7106,6 +7315,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_backstory_six_01",
+		probability = 1,
 		response = "pdr_dr_backstory_six_01",
 		criterias = {
 			{
@@ -7137,6 +7347,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_backstory_six_02",
+		probability = 1,
 		response = "pdr_dr_backstory_six_02",
 		criterias = {
 			{
@@ -7168,6 +7379,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_backstory_six_03",
+		probability = 1,
 		response = "pdr_dr_backstory_six_03",
 		criterias = {
 			{
@@ -7199,6 +7411,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_backstory_three_02",
+		probability = 1,
 		response = "pdr_dr_backstory_three_02",
 		criterias = {
 			{
@@ -7230,6 +7443,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_backstory_three_03",
+		probability = 1,
 		response = "pdr_dr_backstory_three_03",
 		criterias = {
 			{
@@ -7261,6 +7475,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_backstory_three_04",
+		probability = 1,
 		response = "pdr_dr_backstory_three_04",
 		criterias = {
 			{
@@ -7292,6 +7507,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_backstory_three_05",
+		probability = 1,
 		response = "pdr_dr_backstory_three_05",
 		criterias = {
 			{
@@ -7323,6 +7539,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_backstory_two_01",
+		probability = 1,
 		response = "pdr_dr_backstory_two_01",
 		criterias = {
 			{
@@ -7354,6 +7571,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_backstory_two_02",
+		probability = 1,
 		response = "pdr_dr_backstory_two_02",
 		criterias = {
 			{
@@ -7385,6 +7603,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_future_five_01",
+		probability = 1,
 		response = "pdr_dr_future_five_01",
 		criterias = {
 			{
@@ -7416,6 +7635,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_future_five_02",
+		probability = 1,
 		response = "pdr_dr_future_five_02",
 		criterias = {
 			{
@@ -7447,6 +7667,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_future_five_03",
+		probability = 1,
 		response = "pdr_dr_future_five_03",
 		criterias = {
 			{
@@ -7478,6 +7699,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_future_five_04",
+		probability = 1,
 		response = "pdr_dr_future_five_04",
 		criterias = {
 			{
@@ -7509,6 +7731,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_future_five_05",
+		probability = 1,
 		response = "pdr_dr_future_five_05",
 		criterias = {
 			{
@@ -7540,6 +7763,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_future_four_01",
+		probability = 1,
 		response = "pdr_dr_future_four_01",
 		criterias = {
 			{
@@ -7614,6 +7838,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_future_four_02",
+		probability = 1,
 		response = "pdr_dr_future_four_02",
 		criterias = {
 			{
@@ -7645,6 +7870,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_future_four_03",
+		probability = 1,
 		response = "pdr_dr_future_four_03",
 		criterias = {
 			{
@@ -7676,6 +7902,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_future_one_01",
+		probability = 1,
 		response = "pdr_dr_future_one_01",
 		criterias = {
 			{
@@ -7744,6 +7971,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_future_one_02",
+		probability = 1,
 		response = "pdr_dr_future_one_02",
 		criterias = {
 			{
@@ -7775,6 +8003,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_future_one_03",
+		probability = 1,
 		response = "pdr_dr_future_one_03",
 		criterias = {
 			{
@@ -7806,6 +8035,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_future_three_01",
+		probability = 1,
 		response = "pdr_dr_future_three_01",
 		criterias = {
 			{
@@ -7874,6 +8104,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_future_three_02",
+		probability = 1,
 		response = "pdr_dr_future_three_02",
 		criterias = {
 			{
@@ -7905,6 +8136,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_future_three_03",
+		probability = 1,
 		response = "pdr_dr_future_three_03",
 		criterias = {
 			{
@@ -7936,6 +8168,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_future_two_01",
+		probability = 1,
 		response = "pdr_dr_future_two_01",
 		criterias = {
 			{
@@ -7967,6 +8200,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_future_two_02",
+		probability = 1,
 		response = "pdr_dr_future_two_02",
 		criterias = {
 			{
@@ -7998,6 +8232,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_dr_future_two_03",
+		probability = 1,
 		response = "pdr_dr_future_two_03",
 		criterias = {
 			{
@@ -8029,6 +8264,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_es_future_three_01",
+		probability = 1,
 		response = "pdr_es_future_three_01",
 		criterias = {
 			{
@@ -8060,6 +8296,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_es_future_three_02",
+		probability = 1,
 		response = "pdr_es_future_three_02",
 		criterias = {
 			{
@@ -8091,6 +8328,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_es_future_three_03",
+		probability = 1,
 		response = "pdr_es_future_three_03",
 		criterias = {
 			{
@@ -8122,6 +8360,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_lohner_conversation_eight_01",
+		probability = 1,
 		response = "pdr_hub_lohner_conversation_eight_01",
 		criterias = {
 			{
@@ -8146,6 +8385,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_lohner_conversation_nine_01",
+		probability = 1,
 		response = "pdr_hub_lohner_conversation_nine_01",
 		criterias = {
 			{
@@ -8170,6 +8410,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_lohner_conversation_seven_01",
+		probability = 1,
 		response = "pdr_hub_lohner_conversation_seven_01",
 		criterias = {
 			{
@@ -8194,6 +8435,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_lohner_conversation_six_01",
+		probability = 1,
 		response = "pdr_hub_lohner_conversation_six_01",
 		criterias = {
 			{
@@ -8218,6 +8460,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_lohner_conversation_ten_01",
+		probability = 1,
 		response = "pdr_hub_lohner_conversation_ten_01",
 		criterias = {
 			{
@@ -8242,6 +8485,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_songbook_one",
+		probability = 1,
 		response = "pdr_hub_songbook_one",
 		criterias = {
 			{
@@ -8304,6 +8548,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_we_backstory_five_01",
+		probability = 1,
 		response = "pdr_we_backstory_five_01",
 		criterias = {
 			{
@@ -8378,6 +8623,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_we_backstory_five_02",
+		probability = 1,
 		response = "pdr_we_backstory_five_02",
 		criterias = {
 			{
@@ -8409,6 +8655,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_we_backstory_five_03",
+		probability = 1,
 		response = "pdr_we_backstory_five_03",
 		criterias = {
 			{
@@ -8440,6 +8687,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_we_backstory_three_01",
+		probability = 1,
 		response = "pdr_we_backstory_three_01",
 		criterias = {
 			{
@@ -8471,6 +8719,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_we_backstory_three_02",
+		probability = 1,
 		response = "pdr_we_backstory_three_02",
 		criterias = {
 			{
@@ -8502,6 +8751,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_we_backstory_three_03",
+		probability = 1,
 		response = "pdr_we_backstory_three_03",
 		criterias = {
 			{
@@ -8533,6 +8783,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_we_backstory_three_04",
+		probability = 1,
 		response = "pdr_we_backstory_three_04",
 		criterias = {
 			{
@@ -8564,6 +8815,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_we_future_three_01",
+		probability = 1,
 		response = "pdr_we_future_three_01",
 		criterias = {
 			{
@@ -8632,6 +8884,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_we_future_three_02",
+		probability = 1,
 		response = "pdr_we_future_three_02",
 		criterias = {
 			{
@@ -8663,6 +8916,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_we_future_three_03",
+		probability = 1,
 		response = "pdr_we_future_three_03",
 		criterias = {
 			{
@@ -8694,6 +8948,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_wh_backstory_one_01",
+		probability = 1,
 		response = "pdr_wh_backstory_one_01",
 		criterias = {
 			{
@@ -8762,6 +9017,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_wh_backstory_one_02",
+		probability = 1,
 		response = "pdr_wh_backstory_one_02",
 		criterias = {
 			{
@@ -8793,6 +9049,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_wh_backstory_one_03",
+		probability = 1,
 		response = "pdr_wh_backstory_one_03",
 		criterias = {
 			{
@@ -8824,6 +9081,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_wh_future_four_01",
+		probability = 1,
 		response = "pdr_wh_future_four_01",
 		criterias = {
 			{
@@ -8892,6 +9150,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_wh_future_four_02",
+		probability = 1,
 		response = "pdr_wh_future_four_02",
 		criterias = {
 			{
@@ -8923,6 +9182,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_wh_future_four_03",
+		probability = 1,
 		response = "pdr_wh_future_four_03",
 		criterias = {
 			{
@@ -8954,6 +9214,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_additional_backstory_conversation_one_01",
+		probability = 1,
 		response = "pes_additional_backstory_conversation_one_01",
 		criterias = {
 			{
@@ -8985,6 +9246,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_additional_backstory_conversation_one_02",
+		probability = 1,
 		response = "pes_additional_backstory_conversation_one_02",
 		criterias = {
 			{
@@ -9016,6 +9278,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_bw_backstory_seven_03",
+		probability = 1,
 		response = "pes_bw_backstory_seven_03",
 		criterias = {
 			{
@@ -9084,6 +9347,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_bw_backstory_seven_04",
+		probability = 1,
 		response = "pes_bw_backstory_seven_04",
 		criterias = {
 			{
@@ -9115,6 +9379,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_bw_backstory_seven_05",
+		probability = 1,
 		response = "pes_bw_backstory_seven_05",
 		criterias = {
 			{
@@ -9146,6 +9411,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_bw_backstory_two_01",
+		probability = 1,
 		response = "pes_bw_backstory_two_01",
 		criterias = {
 			{
@@ -9214,6 +9480,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_bw_backstory_two_02",
+		probability = 1,
 		response = "pes_bw_backstory_two_02",
 		criterias = {
 			{
@@ -9245,6 +9512,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_bw_backstory_two_033",
+		probability = 1,
 		response = "pes_bw_backstory_two_033",
 		criterias = {
 			{
@@ -9276,6 +9544,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_bw_future_five_01",
+		probability = 1,
 		response = "pes_bw_future_five_01",
 		criterias = {
 			{
@@ -9307,6 +9576,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_bw_future_one_02",
+		probability = 1,
 		response = "pes_bw_future_one_02",
 		criterias = {
 			{
@@ -9338,6 +9608,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_bw_future_one_03",
+		probability = 1,
 		response = "pes_bw_future_one_03",
 		criterias = {
 			{
@@ -9369,6 +9640,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dr_backstory_five_01",
+		probability = 1,
 		response = "pes_dr_backstory_five_01",
 		criterias = {
 			{
@@ -9431,6 +9703,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dr_backstory_five_02",
+		probability = 1,
 		response = "pes_dr_backstory_five_02",
 		criterias = {
 			{
@@ -9462,6 +9735,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dr_backstory_six_01",
+		probability = 1,
 		response = "pes_dr_backstory_six_01",
 		criterias = {
 			{
@@ -9530,6 +9804,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dr_backstory_six_02",
+		probability = 1,
 		response = "pes_dr_backstory_six_02",
 		criterias = {
 			{
@@ -9561,6 +9836,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dr_backstory_six_03",
+		probability = 1,
 		response = "pes_dr_backstory_six_03",
 		criterias = {
 			{
@@ -9592,6 +9868,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dr_backstory_two_01",
+		probability = 1,
 		response = "pes_dr_backstory_two_01",
 		criterias = {
 			{
@@ -9660,6 +9937,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dr_backstory_two_02",
+		probability = 1,
 		response = "pes_dr_backstory_two_02",
 		criterias = {
 			{
@@ -9691,6 +9969,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dr_future_four_02",
+		probability = 1,
 		response = "pes_dr_future_four_02",
 		criterias = {
 			{
@@ -9722,6 +10001,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dr_future_one_01",
+		probability = 1,
 		response = "pes_dr_future_one_01",
 		criterias = {
 			{
@@ -9753,6 +10033,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dr_future_one_02",
+		probability = 1,
 		response = "pes_dr_future_one_02",
 		criterias = {
 			{
@@ -9784,6 +10065,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_backstory_huntsman_five_02",
+		probability = 1,
 		response = "pes_es_backstory_huntsman_five_02",
 		criterias = {
 			{
@@ -9815,6 +10097,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_backstory_huntsman_five_04",
+		probability = 1,
 		response = "pes_es_backstory_huntsman_five_04",
 		criterias = {
 			{
@@ -9846,6 +10129,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_backstory_one_01",
+		probability = 1,
 		response = "pes_es_backstory_one_01",
 		criterias = {
 			{
@@ -9877,6 +10161,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_backstory_one_02",
+		probability = 1,
 		response = "pes_es_backstory_one_02",
 		criterias = {
 			{
@@ -9908,6 +10193,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_backstory_three_01",
+		probability = 1,
 		response = "pes_es_backstory_three_01",
 		criterias = {
 			{
@@ -9976,6 +10262,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_backstory_three_02",
+		probability = 1,
 		response = "pes_es_backstory_three_02",
 		criterias = {
 			{
@@ -10007,6 +10294,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_backstory_three_03",
+		probability = 1,
 		response = "pes_es_backstory_three_03",
 		criterias = {
 			{
@@ -10038,6 +10326,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_backstory_two_01",
+		probability = 1,
 		response = "pes_es_backstory_two_01",
 		criterias = {
 			{
@@ -10069,6 +10358,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_backstory_two_02",
+		probability = 1,
 		response = "pes_es_backstory_two_02",
 		criterias = {
 			{
@@ -10100,6 +10390,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_backstory_two_03",
+		probability = 1,
 		response = "pes_es_backstory_two_03",
 		criterias = {
 			{
@@ -10131,6 +10422,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_future_five_01",
+		probability = 1,
 		response = "pes_es_future_five_01",
 		criterias = {
 			{
@@ -10199,6 +10491,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_future_five_02",
+		probability = 1,
 		response = "pes_es_future_five_02",
 		criterias = {
 			{
@@ -10230,6 +10523,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_future_five_03",
+		probability = 1,
 		response = "pes_es_future_five_03",
 		criterias = {
 			{
@@ -10261,6 +10555,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_future_four_01",
+		probability = 1,
 		response = "pes_es_future_four_01",
 		criterias = {
 			{
@@ -10292,6 +10587,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_future_four_02",
+		probability = 1,
 		response = "pes_es_future_four_02",
 		criterias = {
 			{
@@ -10323,6 +10619,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_future_one_01",
+		probability = 1,
 		response = "pes_es_future_one_01",
 		criterias = {
 			{
@@ -10354,6 +10651,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_future_one_02",
+		probability = 1,
 		response = "pes_es_future_one_02",
 		criterias = {
 			{
@@ -10385,6 +10683,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_future_three_01",
+		probability = 1,
 		response = "pes_es_future_three_01",
 		criterias = {
 			{
@@ -10453,6 +10752,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_future_three_02",
+		probability = 1,
 		response = "pes_es_future_three_02",
 		criterias = {
 			{
@@ -10484,6 +10784,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_future_three_03",
+		probability = 1,
 		response = "pes_es_future_three_03",
 		criterias = {
 			{
@@ -10515,6 +10816,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_future_two_01",
+		probability = 1,
 		response = "pes_es_future_two_01",
 		criterias = {
 			{
@@ -10546,6 +10848,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_future_two_02",
+		probability = 1,
 		response = "pes_es_future_two_02",
 		criterias = {
 			{
@@ -10577,6 +10880,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_es_future_two_03",
+		probability = 1,
 		response = "pes_es_future_two_03",
 		criterias = {
 			{
@@ -10608,6 +10912,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_fleur_conversation_eighteen_01",
+		probability = 1,
 		response = "pes_fleur_conversation_eighteen_01",
 		criterias = {
 			{
@@ -10632,6 +10937,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_fleur_conversation_eighteen_02",
+		probability = 1,
 		response = "pes_fleur_conversation_eighteen_02",
 		criterias = {
 			{
@@ -10656,6 +10962,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_fleur_conversation_nineteen_01",
+		probability = 1,
 		response = "pes_fleur_conversation_nineteen_01",
 		criterias = {
 			{
@@ -10680,6 +10987,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_fleur_conversation_nineteen_02",
+		probability = 1,
 		response = "pes_fleur_conversation_nineteen_02",
 		criterias = {
 			{
@@ -10704,6 +11012,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_fleur_conversation_seventeen_01",
+		probability = 1,
 		response = "pes_fleur_conversation_seventeen_01",
 		criterias = {
 			{
@@ -10728,6 +11037,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_fleur_conversation_twenty_01",
+		probability = 1,
 		response = "pes_fleur_conversation_twenty_01",
 		criterias = {
 			{
@@ -10752,6 +11062,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_fleur_conversation_twenty_02",
+		probability = 1,
 		response = "pes_fleur_conversation_twenty_02",
 		criterias = {
 			{
@@ -10776,6 +11087,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gk_hub_grail_conversation_five_01",
+		probability = 1,
 		response = "pes_gk_hub_grail_conversation_five_01",
 		criterias = {
 			{
@@ -10800,6 +11112,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gk_hub_grail_conversation_four_01",
+		probability = 1,
 		response = "pes_gk_hub_grail_conversation_four_01",
 		criterias = {
 			{
@@ -10824,6 +11137,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gk_hub_grail_conversation_one_01",
+		probability = 1,
 		response = "pes_gk_hub_grail_conversation_one_01",
 		criterias = {
 			{
@@ -10848,6 +11162,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gk_hub_grail_conversation_three_01",
+		probability = 1,
 		response = "pes_gk_hub_grail_conversation_three_01",
 		criterias = {
 			{
@@ -10872,6 +11187,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gk_hub_grail_conversation_two_01",
+		probability = 1,
 		response = "pes_gk_hub_grail_conversation_two_01",
 		criterias = {
 			{
@@ -10896,6 +11212,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_lohner_conversation_twentyfive_01",
+		probability = 1,
 		response = "pes_hub_lohner_conversation_twentyfive_01",
 		criterias = {
 			{
@@ -10920,6 +11237,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_lohner_conversation_twentyfour_01",
+		probability = 1,
 		response = "pes_hub_lohner_conversation_twentyfour_01",
 		criterias = {
 			{
@@ -10944,6 +11262,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_lohner_conversation_twentyone_01",
+		probability = 1,
 		response = "pes_hub_lohner_conversation_twentyone_01",
 		criterias = {
 			{
@@ -10968,6 +11287,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_lohner_conversation_twentythree_01",
+		probability = 1,
 		response = "pes_hub_lohner_conversation_twentythree_01",
 		criterias = {
 			{
@@ -10992,6 +11312,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_lohner_conversation_twentytwo_01",
+		probability = 1,
 		response = "pes_hub_lohner_conversation_twentytwo_01",
 		criterias = {
 			{
@@ -11016,6 +11337,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_we_backstory_five_01",
+		probability = 1,
 		response = "pes_we_backstory_five_01",
 		criterias = {
 			{
@@ -11047,6 +11369,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_we_backstory_five_02",
+		probability = 1,
 		response = "pes_we_backstory_five_02",
 		criterias = {
 			{
@@ -11078,6 +11401,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_we_backstory_three_01",
+		probability = 1,
 		response = "pes_we_backstory_three_01",
 		criterias = {
 			{
@@ -11152,6 +11476,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_we_backstory_three_02",
+		probability = 1,
 		response = "pes_we_backstory_three_02",
 		criterias = {
 			{
@@ -11183,6 +11508,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_we_backstory_three_03",
+		probability = 1,
 		response = "pes_we_backstory_three_03",
 		criterias = {
 			{
@@ -11214,6 +11540,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_we_backstory_three_04",
+		probability = 1,
 		response = "pes_we_backstory_three_04",
 		criterias = {
 			{
@@ -11245,6 +11572,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_we_backstory_three_05",
+		probability = 1,
 		response = "pes_we_backstory_three_05",
 		criterias = {
 			{
@@ -11276,6 +11604,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_we_future_four_01",
+		probability = 1,
 		response = "pes_we_future_four_01",
 		criterias = {
 			{
@@ -11344,6 +11673,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_we_future_four_02",
+		probability = 1,
 		response = "pes_we_future_four_02",
 		criterias = {
 			{
@@ -11375,6 +11705,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_we_future_four_03",
+		probability = 1,
 		response = "pes_we_future_four_03",
 		criterias = {
 			{
@@ -11406,6 +11737,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_we_future_four_04",
+		probability = 1,
 		response = "pes_we_future_four_04",
 		criterias = {
 			{
@@ -11437,6 +11769,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_we_future_two_01",
+		probability = 1,
 		response = "pes_we_future_two_01",
 		criterias = {
 			{
@@ -11505,6 +11838,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_we_future_two_02",
+		probability = 1,
 		response = "pes_we_future_two_02",
 		criterias = {
 			{
@@ -11536,6 +11870,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_we_future_two_03",
+		probability = 1,
 		response = "pes_we_future_two_03",
 		criterias = {
 			{
@@ -11567,6 +11902,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wh_backstory_four_02",
+		probability = 1,
 		response = "pes_wh_backstory_four_02",
 		criterias = {
 			{
@@ -11635,6 +11971,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wh_backstory_four_03",
+		probability = 1,
 		response = "pes_wh_backstory_four_03",
 		criterias = {
 			{
@@ -11666,6 +12003,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wh_backstory_four_04",
+		probability = 1,
 		response = "pes_wh_backstory_four_04",
 		criterias = {
 			{
@@ -11697,6 +12035,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wh_backstory_four_05",
+		probability = 1,
 		response = "pes_wh_backstory_four_05",
 		criterias = {
 			{
@@ -11728,6 +12067,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wh_future_one_01",
+		probability = 1,
 		response = "pes_wh_future_one_01",
 		criterias = {
 			{
@@ -11796,6 +12136,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wh_future_one_02",
+		probability = 1,
 		response = "pes_wh_future_one_02",
 		criterias = {
 			{
@@ -11827,6 +12168,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wh_future_one_03",
+		probability = 1,
 		response = "pes_wh_future_one_03",
 		criterias = {
 			{
@@ -11858,6 +12200,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wh_future_two_01",
+		probability = 1,
 		response = "pes_wh_future_two_01",
 		criterias = {
 			{
@@ -11926,6 +12269,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wh_future_two_02",
+		probability = 1,
 		response = "pes_wh_future_two_02",
 		criterias = {
 			{
@@ -11957,6 +12301,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wh_future_two_03",
+		probability = 1,
 		response = "pes_wh_future_two_03",
 		criterias = {
 			{
@@ -11988,6 +12333,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wh_future_two_04",
+		probability = 1,
 		response = "pes_wh_future_two_04",
 		criterias = {
 			{
@@ -12019,6 +12365,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bw_backstory_four_02",
+		probability = 1,
 		response = "pwe_bw_backstory_four_02",
 		criterias = {
 			{
@@ -12050,6 +12397,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bw_backstory_four_03",
+		probability = 1,
 		response = "pwe_bw_backstory_four_03",
 		criterias = {
 			{
@@ -12081,6 +12429,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bw_backstory_six_02",
+		probability = 1,
 		response = "pwe_bw_backstory_six_02",
 		criterias = {
 			{
@@ -12112,6 +12461,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bw_backstory_six_04",
+		probability = 1,
 		response = "pwe_bw_backstory_six_04",
 		criterias = {
 			{
@@ -12143,6 +12493,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bw_backstory_six_06",
+		probability = 1,
 		response = "pwe_bw_backstory_six_06",
 		criterias = {
 			{
@@ -12174,6 +12525,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bw_future_five_01",
+		probability = 1,
 		response = "pwe_bw_future_five_01",
 		criterias = {
 			{
@@ -12205,6 +12557,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bw_future_five_02",
+		probability = 1,
 		response = "pwe_bw_future_five_02",
 		criterias = {
 			{
@@ -12236,6 +12589,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bw_future_five_03",
+		probability = 1,
 		response = "pwe_bw_future_five_03",
 		criterias = {
 			{
@@ -12267,6 +12621,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bw_future_four_01",
+		probability = 1,
 		response = "pwe_bw_future_four_01",
 		criterias = {
 			{
@@ -12335,6 +12690,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bw_future_four_02",
+		probability = 1,
 		response = "pwe_bw_future_four_02",
 		criterias = {
 			{
@@ -12366,6 +12722,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bw_future_four_03",
+		probability = 1,
 		response = "pwe_bw_future_four_03",
 		criterias = {
 			{
@@ -12397,6 +12754,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_dr_backstory_four_01",
+		probability = 1,
 		response = "pwe_dr_backstory_four_01",
 		criterias = {
 			{
@@ -12465,6 +12823,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_dr_backstory_four_02",
+		probability = 1,
 		response = "pwe_dr_backstory_four_02",
 		criterias = {
 			{
@@ -12496,6 +12855,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_dr_backstory_four_03",
+		probability = 1,
 		response = "pwe_dr_backstory_four_03",
 		criterias = {
 			{
@@ -12527,6 +12887,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_dr_backstory_one_03",
+		probability = 1,
 		response = "pwe_dr_backstory_one_03",
 		criterias = {
 			{
@@ -12558,6 +12919,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_dr_future_five_01",
+		probability = 1,
 		response = "pwe_dr_future_five_01",
 		criterias = {
 			{
@@ -12626,6 +12988,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_dr_future_five_02",
+		probability = 1,
 		response = "pwe_dr_future_five_02",
 		criterias = {
 			{
@@ -12657,6 +13020,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_dr_future_five_03",
+		probability = 1,
 		response = "pwe_dr_future_five_03",
 		criterias = {
 			{
@@ -12688,6 +13052,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_dr_future_five_04",
+		probability = 1,
 		response = "pwe_dr_future_five_04",
 		criterias = {
 			{
@@ -12719,6 +13084,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_dr_future_five_05",
+		probability = 1,
 		response = "pwe_dr_future_five_05",
 		criterias = {
 			{
@@ -12750,6 +13116,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_dr_future_five_06",
+		probability = 1,
 		response = "pwe_dr_future_five_06",
 		criterias = {
 			{
@@ -12781,6 +13148,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_es_backstory_huntsman_five_01",
+		probability = 1,
 		response = "pwe_es_backstory_huntsman_five_01",
 		criterias = {
 			{
@@ -12843,6 +13211,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_es_backstory_huntsman_five_03",
+		probability = 1,
 		response = "pwe_es_backstory_huntsman_five_03",
 		criterias = {
 			{
@@ -12874,6 +13243,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_es_backstory_huntsman_five_05",
+		probability = 1,
 		response = "pwe_es_backstory_huntsman_five_05",
 		criterias = {
 			{
@@ -12905,6 +13275,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_es_backstory_one_01",
+		probability = 1,
 		response = "pwe_es_backstory_one_01",
 		criterias = {
 			{
@@ -12973,6 +13344,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_es_backstory_one_02",
+		probability = 1,
 		response = "pwe_es_backstory_one_02",
 		criterias = {
 			{
@@ -13004,6 +13376,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_es_backstory_one_03",
+		probability = 1,
 		response = "pwe_es_backstory_one_03",
 		criterias = {
 			{
@@ -13035,6 +13408,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_es_future_four_01",
+		probability = 1,
 		response = "pwe_es_future_four_01",
 		criterias = {
 			{
@@ -13103,6 +13477,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_es_future_four_02",
+		probability = 1,
 		response = "pwe_es_future_four_02",
 		criterias = {
 			{
@@ -13134,6 +13509,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_es_future_four_03",
+		probability = 1,
 		response = "pwe_es_future_four_03",
 		criterias = {
 			{
@@ -13165,6 +13541,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_es_future_four_04",
+		probability = 1,
 		response = "pwe_es_future_four_04",
 		criterias = {
 			{
@@ -13196,6 +13573,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_fleur_conversation_eighteen_01",
+		probability = 1,
 		response = "pwe_fleur_conversation_eighteen_01",
 		criterias = {
 			{
@@ -13220,6 +13598,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_fleur_conversation_eighteen_02",
+		probability = 1,
 		response = "pwe_fleur_conversation_eighteen_02",
 		criterias = {
 			{
@@ -13244,6 +13623,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_lohner_conversation_eigthteen_01",
+		probability = 1,
 		response = "pwe_hub_lohner_conversation_eigthteen_01",
 		criterias = {
 			{
@@ -13268,6 +13648,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_lohner_conversation_nineteen_01",
+		probability = 1,
 		response = "pwe_hub_lohner_conversation_nineteen_01",
 		criterias = {
 			{
@@ -13292,6 +13673,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_lohner_conversation_seventeen_01",
+		probability = 1,
 		response = "pwe_hub_lohner_conversation_seventeen_01",
 		criterias = {
 			{
@@ -13316,6 +13698,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_lohner_conversation_sixteen_01",
+		probability = 1,
 		response = "pwe_hub_lohner_conversation_sixteen_01",
 		criterias = {
 			{
@@ -13340,6 +13723,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_lohner_conversation_twenty_01",
+		probability = 1,
 		response = "pwe_hub_lohner_conversation_twenty_01",
 		criterias = {
 			{
@@ -13364,6 +13748,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_st_hub_thorn_conversation_five_01",
+		probability = 1,
 		response = "pwe_st_hub_thorn_conversation_five_01",
 		criterias = {
 			{
@@ -13388,6 +13773,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_st_hub_thorn_conversation_four_01",
+		probability = 1,
 		response = "pwe_st_hub_thorn_conversation_four_01",
 		criterias = {
 			{
@@ -13412,6 +13798,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_st_hub_thorn_conversation_one_01",
+		probability = 1,
 		response = "pwe_st_hub_thorn_conversation_one_01",
 		criterias = {
 			{
@@ -13436,6 +13823,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_st_hub_thorn_conversation_three_01",
+		probability = 1,
 		response = "pwe_st_hub_thorn_conversation_three_01",
 		criterias = {
 			{
@@ -13460,6 +13848,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_st_hub_thorn_conversation_two_01",
+		probability = 1,
 		response = "pwe_st_hub_thorn_conversation_two_01",
 		criterias = {
 			{
@@ -13484,6 +13873,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_backstory_five_01",
+		probability = 1,
 		response = "pwe_we_backstory_five_01",
 		criterias = {
 			{
@@ -13515,6 +13905,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_backstory_five_02",
+		probability = 1,
 		response = "pwe_we_backstory_five_02",
 		criterias = {
 			{
@@ -13546,6 +13937,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_backstory_five_03",
+		probability = 1,
 		response = "pwe_we_backstory_five_03",
 		criterias = {
 			{
@@ -13577,6 +13969,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_backstory_one_01",
+		probability = 1,
 		response = "pwe_we_backstory_one_01",
 		criterias = {
 			{
@@ -13608,6 +14001,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_backstory_one_02",
+		probability = 1,
 		response = "pwe_we_backstory_one_02",
 		criterias = {
 			{
@@ -13639,6 +14033,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_backstory_one_03",
+		probability = 1,
 		response = "pwe_we_backstory_one_03",
 		criterias = {
 			{
@@ -13670,6 +14065,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_backstory_two_02",
+		probability = 1,
 		response = "pwe_we_backstory_two_02",
 		criterias = {
 			{
@@ -13701,6 +14097,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_backstory_two_03",
+		probability = 1,
 		response = "pwe_we_backstory_two_03",
 		criterias = {
 			{
@@ -13732,6 +14129,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_backstory_two_04",
+		probability = 1,
 		response = "pwe_we_backstory_two_04",
 		criterias = {
 			{
@@ -13763,6 +14161,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_backstory_two_05",
+		probability = 1,
 		response = "pwe_we_backstory_two_05",
 		criterias = {
 			{
@@ -13794,6 +14193,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_backstory_two_06",
+		probability = 1,
 		response = "pwe_we_backstory_two_06",
 		criterias = {
 			{
@@ -13825,6 +14225,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_future_five_01",
+		probability = 1,
 		response = "pwe_we_future_five_01",
 		criterias = {
 			{
@@ -13856,6 +14257,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_future_five_02",
+		probability = 1,
 		response = "pwe_we_future_five_02",
 		criterias = {
 			{
@@ -13887,6 +14289,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_future_five_05",
+		probability = 1,
 		response = "pwe_we_future_five_05",
 		criterias = {
 			{
@@ -13918,6 +14321,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_future_four_01",
+		probability = 1,
 		response = "pwe_we_future_four_01",
 		criterias = {
 			{
@@ -13949,6 +14353,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_future_four_03",
+		probability = 1,
 		response = "pwe_we_future_four_03",
 		criterias = {
 			{
@@ -13980,6 +14385,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_future_four_04",
+		probability = 1,
 		response = "pwe_we_future_four_04",
 		criterias = {
 			{
@@ -14011,6 +14417,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_future_one_01",
+		probability = 1,
 		response = "pwe_we_future_one_01",
 		criterias = {
 			{
@@ -14042,6 +14449,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_future_one_02",
+		probability = 1,
 		response = "pwe_we_future_one_02",
 		criterias = {
 			{
@@ -14073,6 +14481,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_future_three_01",
+		probability = 1,
 		response = "pwe_we_future_three_01",
 		criterias = {
 			{
@@ -14104,6 +14513,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_future_three_02",
+		probability = 1,
 		response = "pwe_we_future_three_02",
 		criterias = {
 			{
@@ -14135,6 +14545,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_future_two_01",
+		probability = 1,
 		response = "pwe_we_future_two_01",
 		criterias = {
 			{
@@ -14166,6 +14577,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_future_two_02",
+		probability = 1,
 		response = "pwe_we_future_two_02",
 		criterias = {
 			{
@@ -14197,6 +14609,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_we_future_two_03",
+		probability = 1,
 		response = "pwe_we_future_two_03",
 		criterias = {
 			{
@@ -14228,6 +14641,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_wh_backstory_two_01",
+		probability = 1,
 		response = "pwe_wh_backstory_two_01",
 		criterias = {
 			{
@@ -14259,6 +14673,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_wh_backstory_two_02",
+		probability = 1,
 		response = "pwe_wh_backstory_two_02",
 		criterias = {
 			{
@@ -14290,6 +14705,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_wh_backstory_two_03",
+		probability = 1,
 		response = "pwe_wh_backstory_two_03",
 		criterias = {
 			{
@@ -14321,6 +14737,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_wh_backstory_two_04",
+		probability = 1,
 		response = "pwe_wh_backstory_two_04",
 		criterias = {
 			{
@@ -14352,6 +14769,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_wh_future_three_01",
+		probability = 1,
 		response = "pwe_wh_future_three_01",
 		criterias = {
 			{
@@ -14383,6 +14801,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_wh_future_three_02",
+		probability = 1,
 		response = "pwe_wh_future_three_02",
 		criterias = {
 			{
@@ -14414,6 +14833,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_bw_backstory_three_01",
+		probability = 1,
 		response = "pwh_bw_backstory_three_01",
 		criterias = {
 			{
@@ -14445,6 +14865,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_bw_backstory_three_02",
+		probability = 1,
 		response = "pwh_bw_backstory_three_02",
 		criterias = {
 			{
@@ -14476,6 +14897,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_bw_backstory_three_03",
+		probability = 1,
 		response = "pwh_bw_backstory_three_03",
 		criterias = {
 			{
@@ -14507,6 +14929,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_bw_future_eight_03",
+		probability = 1,
 		response = "pwh_bw_future_eight_03",
 		criterias = {
 			{
@@ -14575,6 +14998,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_bw_future_eight_04",
+		probability = 1,
 		response = "pwh_bw_future_eight_04",
 		criterias = {
 			{
@@ -14606,6 +15030,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_bw_future_two_01",
+		probability = 1,
 		response = "pwh_bw_future_two_01",
 		criterias = {
 			{
@@ -14674,6 +15099,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_bw_future_two_02",
+		probability = 1,
 		response = "pwh_bw_future_two_02",
 		criterias = {
 			{
@@ -14705,6 +15131,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_bw_future_two_033",
+		probability = 1,
 		response = "pwh_bw_future_two_033",
 		criterias = {
 			{
@@ -14736,6 +15163,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_dr_backstory_one_01",
+		probability = 1,
 		response = "pwh_dr_backstory_one_01",
 		criterias = {
 			{
@@ -14804,6 +15232,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_dr_backstory_one_02",
+		probability = 1,
 		response = "pwh_dr_backstory_one_02",
 		criterias = {
 			{
@@ -14835,6 +15264,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_dr_future_two_01",
+		probability = 1,
 		response = "pwh_dr_future_two_01",
 		criterias = {
 			{
@@ -14903,6 +15333,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_dr_future_two_02",
+		probability = 1,
 		response = "pwh_dr_future_two_02",
 		criterias = {
 			{
@@ -14934,6 +15365,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_dr_future_two_03",
+		probability = 1,
 		response = "pwh_dr_future_two_03",
 		criterias = {
 			{
@@ -14965,6 +15397,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_es_backstory_three_01",
+		probability = 1,
 		response = "pwh_es_backstory_three_01",
 		criterias = {
 			{
@@ -14996,6 +15429,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_es_backstory_three_02",
+		probability = 1,
 		response = "pwh_es_backstory_three_02",
 		criterias = {
 			{
@@ -15027,6 +15461,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_es_backstory_three_03",
+		probability = 1,
 		response = "pwh_es_backstory_three_03",
 		criterias = {
 			{
@@ -15058,6 +15493,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_es_future_five_01",
+		probability = 1,
 		response = "pwh_es_future_five_01",
 		criterias = {
 			{
@@ -15089,6 +15525,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_es_future_five_02",
+		probability = 1,
 		response = "pwh_es_future_five_02",
 		criterias = {
 			{
@@ -15120,6 +15557,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_es_future_two_01",
+		probability = 1,
 		response = "pwh_es_future_two_01",
 		criterias = {
 			{
@@ -15188,6 +15626,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_es_future_two_02",
+		probability = 1,
 		response = "pwh_es_future_two_02",
 		criterias = {
 			{
@@ -15219,6 +15658,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_es_future_two_03",
+		probability = 1,
 		response = "pwh_es_future_two_03",
 		criterias = {
 			{
@@ -15250,6 +15690,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_fleur_conversation_nineteen_01",
+		probability = 1,
 		response = "pwh_fleur_conversation_nineteen_01",
 		criterias = {
 			{
@@ -15274,6 +15715,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_lohner_conversation_five_01",
+		probability = 1,
 		response = "pwh_hub_lohner_conversation_five_01",
 		criterias = {
 			{
@@ -15298,6 +15740,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_lohner_conversation_four_01",
+		probability = 1,
 		response = "pwh_hub_lohner_conversation_four_01",
 		criterias = {
 			{
@@ -15322,6 +15765,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_lohner_conversation_one_01",
+		probability = 1,
 		response = "pwh_hub_lohner_conversation_one_01",
 		criterias = {
 			{
@@ -15346,6 +15790,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_lohner_conversation_three_01",
+		probability = 1,
 		response = "pwh_hub_lohner_conversation_three_01",
 		criterias = {
 			{
@@ -15370,6 +15815,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_lohner_conversation_two_01",
+		probability = 1,
 		response = "pwh_hub_lohner_conversation_two_01",
 		criterias = {
 			{
@@ -15394,6 +15840,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_we_backstory_four_01",
+		probability = 1,
 		response = "pwh_we_backstory_four_01",
 		criterias = {
 			{
@@ -15462,6 +15909,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_we_backstory_four_02",
+		probability = 1,
 		response = "pwh_we_backstory_four_02",
 		criterias = {
 			{
@@ -15493,6 +15941,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_we_backstory_four_03",
+		probability = 1,
 		response = "pwh_we_backstory_four_03",
 		criterias = {
 			{
@@ -15524,6 +15973,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_we_backstory_two_01",
+		probability = 1,
 		response = "pwh_we_backstory_two_01",
 		criterias = {
 			{
@@ -15592,6 +16042,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_we_backstory_two_02",
+		probability = 1,
 		response = "pwh_we_backstory_two_02",
 		criterias = {
 			{
@@ -15623,6 +16074,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_we_backstory_two_03",
+		probability = 1,
 		response = "pwh_we_backstory_two_03",
 		criterias = {
 			{
@@ -15654,6 +16106,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_we_backstory_two_04",
+		probability = 1,
 		response = "pwh_we_backstory_two_04",
 		criterias = {
 			{
@@ -15685,6 +16138,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_we_backstory_two_05",
+		probability = 1,
 		response = "pwh_we_backstory_two_05",
 		criterias = {
 			{
@@ -15716,6 +16170,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_we_future_one_01",
+		probability = 1,
 		response = "pwh_we_future_one_01",
 		criterias = {
 			{
@@ -15784,6 +16239,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_we_future_one_02",
+		probability = 1,
 		response = "pwh_we_future_one_02",
 		criterias = {
 			{
@@ -15815,6 +16271,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wh_backstory_four_02",
+		probability = 1,
 		response = "pwh_wh_backstory_four_02",
 		criterias = {
 			{
@@ -15846,6 +16303,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wh_backstory_four_03",
+		probability = 1,
 		response = "pwh_wh_backstory_four_03",
 		criterias = {
 			{
@@ -15877,6 +16335,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wh_backstory_four_04",
+		probability = 1,
 		response = "pwh_wh_backstory_four_04",
 		criterias = {
 			{
@@ -15908,6 +16367,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wh_backstory_one_01",
+		probability = 1,
 		response = "pwh_wh_backstory_one_01",
 		criterias = {
 			{
@@ -15939,6 +16399,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wh_backstory_one_02",
+		probability = 1,
 		response = "pwh_wh_backstory_one_02",
 		criterias = {
 			{
@@ -15970,6 +16431,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wh_backstory_two_01",
+		probability = 1,
 		response = "pwh_wh_backstory_two_01",
 		criterias = {
 			{
@@ -16038,6 +16500,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wh_backstory_two_02",
+		probability = 1,
 		response = "pwh_wh_backstory_two_02",
 		criterias = {
 			{
@@ -16069,6 +16532,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wh_backstory_two_03",
+		probability = 1,
 		response = "pwh_wh_backstory_two_03",
 		criterias = {
 			{
@@ -16100,6 +16564,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wh_backstory_two_04",
+		probability = 1,
 		response = "pwh_wh_backstory_two_04",
 		criterias = {
 			{
@@ -16131,6 +16596,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wh_backstory_two_05",
+		probability = 1,
 		response = "pwh_wh_backstory_two_05",
 		criterias = {
 			{
@@ -16162,6 +16628,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wh_future_four_01",
+		probability = 1,
 		response = "pwh_wh_future_four_01",
 		criterias = {
 			{
@@ -16193,6 +16660,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wh_future_four_02",
+		probability = 1,
 		response = "pwh_wh_future_four_02",
 		criterias = {
 			{
@@ -16224,6 +16692,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wh_future_one_01",
+		probability = 1,
 		response = "pwh_wh_future_one_01",
 		criterias = {
 			{
@@ -16255,6 +16724,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wh_future_one_02",
+		probability = 1,
 		response = "pwh_wh_future_one_02",
 		criterias = {
 			{
@@ -16286,6 +16756,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wh_future_one_03",
+		probability = 1,
 		response = "pwh_wh_future_one_03",
 		criterias = {
 			{
@@ -16317,6 +16788,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wh_future_two_01",
+		probability = 1,
 		response = "pwh_wh_future_two_01",
 		criterias = {
 			{
@@ -16348,6 +16820,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wh_future_two_02",
+		probability = 1,
 		response = "pwh_wh_future_two_02",
 		criterias = {
 			{
@@ -16379,6 +16852,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wh_future_two_03",
+		probability = 1,
 		response = "pwh_wh_future_two_03",
 		criterias = {
 			{
@@ -16410,6 +16884,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wh_future_two_04",
+		probability = 1,
 		response = "pwh_wh_future_two_04",
 		criterias = {
 			{
@@ -16441,6 +16916,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wp_hub_bless_conversation_five_01",
+		probability = 1,
 		response = "pwh_wp_hub_bless_conversation_five_01",
 		criterias = {
 			{
@@ -16465,6 +16941,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wp_hub_bless_conversation_four_01",
+		probability = 1,
 		response = "pwh_wp_hub_bless_conversation_four_01",
 		criterias = {
 			{
@@ -16489,6 +16966,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wp_hub_bless_conversation_one_01",
+		probability = 1,
 		response = "pwh_wp_hub_bless_conversation_one_01",
 		criterias = {
 			{
@@ -16513,6 +16991,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wp_hub_bless_conversation_three_01",
+		probability = 1,
 		response = "pwh_wp_hub_bless_conversation_three_01",
 		criterias = {
 			{
@@ -16537,6 +17016,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wp_hub_bless_conversation_two_01",
+		probability = 1,
 		response = "pwh_wp_hub_bless_conversation_two_01",
 		criterias = {
 			{

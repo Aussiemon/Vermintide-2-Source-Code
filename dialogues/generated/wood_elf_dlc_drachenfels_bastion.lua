@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pwe_bastion_intro_line_a",
+		probability = 1,
 		response = "pwe_bastion_intro_line_a",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bastion_intro_line_b",
+		probability = 1,
 		response = "pwe_bastion_intro_line_b",
 		criterias = {
 			{
@@ -91,6 +93,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bastion_intro_line_c",
+		probability = 1,
 		response = "pwe_bastion_intro_line_c",
 		criterias = {
 			{
@@ -135,6 +138,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bastion_vo_caves",
+		probability = 1,
 		response = "pwe_bastion_vo_caves",
 		criterias = {
 			{
@@ -179,6 +183,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bastion_vo_courtyard_done",
+		probability = 1,
 		response = "pwe_bastion_vo_courtyard_done",
 		criterias = {
 			{
@@ -223,6 +228,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bastion_vo_courtyard_first_villager",
+		probability = 1,
 		response = "pwe_bastion_vo_courtyard_first_villager",
 		criterias = {
 			{
@@ -267,6 +273,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bastion_vo_entering_courtyard",
+		probability = 1,
 		response = "pwe_bastion_vo_entering_courtyard",
 		criterias = {
 			{
@@ -311,6 +318,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bastion_vo_entering_darkness",
+		probability = 1,
 		response = "pwe_bastion_vo_entering_darkness",
 		criterias = {
 			{
@@ -355,6 +363,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bastion_vo_entering_finale",
+		probability = 1,
 		response = "pwe_bastion_vo_entering_finale",
 		criterias = {
 			{
@@ -399,6 +408,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bastion_vo_entrance",
+		probability = 1,
 		response = "pwe_bastion_vo_entrance",
 		criterias = {
 			{
@@ -443,6 +453,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bastion_vo_exiting_pwe_bastion",
+		probability = 1,
 		response = "pwe_bastion_vo_exiting_pwe_bastion",
 		criterias = {
 			{
@@ -487,6 +498,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bastion_vo_finale_done",
+		probability = 1,
 		response = "pwe_bastion_vo_finale_done",
 		criterias = {
 			{
@@ -531,6 +543,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bastion_vo_finale_missile",
+		probability = 1,
 		response = "pwe_bastion_vo_finale_missile",
 		criterias = {
 			{
@@ -575,6 +588,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bastion_vo_finale_tiring",
+		probability = 1,
 		response = "pwe_bastion_vo_finale_tiring",
 		criterias = {
 			{
@@ -619,6 +633,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bastion_vo_head_to_surface",
+		probability = 1,
 		response = "pwe_bastion_vo_head_to_surface",
 		criterias = {
 			{
@@ -663,6 +678,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bastion_vo_inside_cellblock",
+		probability = 1,
 		response = "pwe_bastion_vo_inside_cellblock",
 		criterias = {
 			{
@@ -707,6 +723,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bastion_vo_no_prisoners",
+		probability = 1,
 		response = "pwe_bastion_vo_no_prisoners",
 		criterias = {
 			{
@@ -751,6 +768,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bastion_vo_possessed",
+		probability = 1,
 		response = "pwe_bastion_vo_possessed",
 		criterias = {
 			{
@@ -795,6 +813,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_bastion_vo_search_cells",
+		probability = 1,
 		response = "pwe_bastion_vo_search_cells",
 		criterias = {
 			{
@@ -863,8 +882,8 @@ return function ()
 				[2] = "pwe_bastion_intro_line_a_02",
 			},
 			sound_events_duration = {
-				[1] = 2.7857291698456,
-				[2] = 4.3376460075378,
+				[1] = 2.7849791049957,
+				[2] = 4.3369793891907,
 			},
 		},
 		pwe_bastion_intro_line_b = {
@@ -892,8 +911,8 @@ return function ()
 				[2] = "pwe_bastion_intro_line_b_02",
 			},
 			sound_events_duration = {
-				[1] = 4.5664377212524,
-				[2] = 4.0633125305176,
+				[1] = 4.5659790039063,
+				[2] = 4.062979221344,
 			},
 		},
 		pwe_bastion_intro_line_c = {
@@ -921,8 +940,8 @@ return function ()
 				[2] = "pwe_bastion_intro_line_c_02",
 			},
 			sound_events_duration = {
-				[1] = 6.4008750915527,
-				[2] = 6.5519375801086,
+				[1] = 6.3999791145325,
+				[2] = 6.5509791374206,
 			},
 		},
 		pwe_bastion_vo_caves = {
@@ -958,10 +977,10 @@ return function ()
 				"pwe_bastion_vo_caves_04",
 			},
 			sound_events_duration = {
-				3.3747084140778,
-				4.1688542366028,
-				3.2887916564941,
-				2.8616666793823,
+				3.3739790916443,
+				4.1679792404175,
+				3.2879791259766,
+				2.8609790802002,
 			},
 		},
 		pwe_bastion_vo_courtyard_done = {
@@ -997,10 +1016,10 @@ return function ()
 				"pwe_bastion_vo_courtyard_done_04",
 			},
 			sound_events_duration = {
-				3.0422916412353,
-				2.592437505722,
-				4.2702708244324,
-				4.2032084465027,
+				3.0419790744781,
+				2.591979265213,
+				4.2699790000916,
+				4.2029790878296,
 			},
 		},
 		pwe_bastion_vo_courtyard_first_villager = {
@@ -1036,10 +1055,10 @@ return function ()
 				"pwe_bastion_vo_courtyard_first_villager_04",
 			},
 			sound_events_duration = {
-				2.0684583187103,
-				1.9203333854675,
-				1.1004166603088,
-				2.4399167299271,
+				2.0679790973663,
+				1.9199792146683,
+				1.0999791622162,
+				2.4395208358765,
 			},
 		},
 		pwe_bastion_vo_entering_courtyard = {
@@ -1075,10 +1094,10 @@ return function ()
 				"pwe_bastion_vo_entering_courtyard_04",
 			},
 			sound_events_duration = {
-				1.2792500257492,
-				1.6793124675751,
-				1.4803124666214,
-				1.5162916183472,
+				1.2789791822434,
+				1.6789791584015,
+				1.4799791574478,
+				1.5159791707993,
 			},
 		},
 		pwe_bastion_vo_entering_darkness = {
@@ -1114,10 +1133,10 @@ return function ()
 				"pwe_bastion_vo_entering_darkness_04",
 			},
 			sound_events_duration = {
-				2.3847498893738,
-				2.9722292423248,
-				3.6561665534973,
-				6.4052500724792,
+				2.3839790821075,
+				2.9719791412353,
+				3.6559791564941,
+				6.4049792289734,
 			},
 		},
 		pwe_bastion_vo_entering_finale = {
@@ -1153,10 +1172,10 @@ return function ()
 				"pwe_bastion_vo_entering_finale_04",
 			},
 			sound_events_duration = {
-				5.5496039390564,
-				9.2025623321533,
-				5.4083957672119,
-				4.9159164428711,
+				5.5489792823792,
+				9.201979637146,
+				5.4079790115356,
+				4.9149789810181,
 			},
 		},
 		pwe_bastion_vo_entrance = {
@@ -1192,10 +1211,10 @@ return function ()
 				"pwe_bastion_vo_entrance_04",
 			},
 			sound_events_duration = {
-				4.2421875,
-				5.4190001487732,
-				3.8926458358765,
-				5.531270980835,
+				4.2419791221619,
+				5.4189791679382,
+				3.8919792175293,
+				5.5309791564941,
 			},
 		},
 		pwe_bastion_vo_exiting_pwe_bastion = {
@@ -1231,10 +1250,10 @@ return function ()
 				"pwe_bastion_vo_exiting_pwe_bastion_04",
 			},
 			sound_events_duration = {
-				2.9272916316986,
-				4.2960209846497,
-				6.7815208435059,
-				4.6099581718445,
+				2.9269790649414,
+				4.2959790229797,
+				6.7809791564941,
+				4.6089792251587,
 			},
 		},
 		pwe_bastion_vo_finale_done = {
@@ -1270,10 +1289,10 @@ return function ()
 				"pwe_bastion_vo_finale_done_04",
 			},
 			sound_events_duration = {
-				0.97187501192093,
-				0.98818749189377,
-				1.5176249742508,
-				3.1106250286102,
+				0.97100001573563,
+				0.98799997568131,
+				1.5169999599457,
+				3.1099998950958,
 			},
 		},
 		pwe_bastion_vo_finale_missile = {
@@ -1309,10 +1328,10 @@ return function ()
 				"pwe_bastion_vo_finale_missile_04",
 			},
 			sound_events_duration = {
-				2.4427917003632,
-				1.9630208015442,
+				2.4419791698456,
+				1.9629791975021,
 				1.6030000448227,
-				1.7298958301544,
+				1.7289791107178,
 			},
 		},
 		pwe_bastion_vo_finale_tiring = {
@@ -1348,9 +1367,9 @@ return function ()
 				"pwe_bastion_vo_finale_tiring_04",
 			},
 			sound_events_duration = {
-				1.2285833358765,
-				2.2610833644867,
-				2.064395904541,
+				1.227979183197,
+				2.260999917984,
+				2.0639998912811,
 				2.75,
 			},
 		},
@@ -1387,10 +1406,10 @@ return function ()
 				"pwe_bastion_vo_head_to_surface_04",
 			},
 			sound_events_duration = {
-				2.8752291202545,
-				2.2138125896454,
-				3.0019583702087,
-				3.2715208530426,
+				2.8749792575836,
+				2.2129790782928,
+				3.0009791851044,
+				3.2709791660309,
 			},
 		},
 		pwe_bastion_vo_inside_cellblock = {
@@ -1426,10 +1445,10 @@ return function ()
 				"pwe_bastion_vo_inside_cellblock_04",
 			},
 			sound_events_duration = {
-				2.1795625686645,
-				2.2341248989105,
-				2.9103541374206,
-				3.0153748989105,
+				2.1789999008179,
+				2.2339999675751,
+				2.9099791049957,
+				3.0150001049042,
 			},
 		},
 		pwe_bastion_vo_no_prisoners = {
@@ -1465,10 +1484,10 @@ return function ()
 				"pwe_bastion_vo_no_prisoners_04",
 			},
 			sound_events_duration = {
-				2.2687082290649,
-				3.3536458015442,
-				3.0023436546326,
-				2.1004374027252,
+				2.2679791450501,
+				3.352979183197,
+				3.0021457672119,
+				2.0999791622162,
 			},
 		},
 		pwe_bastion_vo_possessed = {
@@ -1504,10 +1523,10 @@ return function ()
 				"pwe_bastion_vo_possessed_04",
 			},
 			sound_events_duration = {
-				1.7426458597183,
-				1.5307916402817,
-				1.5794792175293,
-				1.6473541259766,
+				1.7419791221619,
+				1.5299999713898,
+				1.5789999961853,
+				1.6469999551773,
 			},
 		},
 		pwe_bastion_vo_search_cells = {
@@ -1543,10 +1562,10 @@ return function ()
 				"pwe_bastion_vo_search_cells_04",
 			},
 			sound_events_duration = {
-				4.1973333358765,
-				2.7880001068115,
-				3.2337708473206,
-				1.8201667070389,
+				4.1970000267029,
+				2.7879791259766,
+				3.2329790592194,
+				1.8200000524521,
 			},
 		},
 	})

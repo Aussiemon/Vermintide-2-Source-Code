@@ -1,0 +1,40 @@
+﻿-- chunkname: @dialogues/generated/lookup_vs_mission_giver_heroes.lua
+
+assert(DialogueLookup[DialogueLookup_n + 1] == nil)
+assert(DialogueLookup[DialogueLookup_n + 2] == nil)
+assert(DialogueLookup[DialogueLookup_n + 3] == nil)
+assert(DialogueLookup[DialogueLookup_n + 4] == nil)
+assert(DialogueLookup[DialogueLookup_n + 5] == nil)
+assert(DialogueLookup[DialogueLookup_n + 6] == nil)
+assert(DialogueLookup[DialogueLookup_n + 7] == nil)
+assert(DialogueLookup[DialogueLookup_n + 8] == nil)
+assert(DialogueLookup[DialogueLookup_n + 9] == nil)
+assert(DialogueLookup[DialogueLookup_n + 10] == nil)
+assert(DialogueLookup[DialogueLookup_n + 11] == nil)
+assert(DialogueLookup[DialogueLookup_n + 12] == nil)
+assert(DialogueLookup[DialogueLookup_n + 13] == nil)
+assert(DialogueLookup[DialogueLookup_n + 14] == nil)
+assert(DialogueLookup[DialogueLookup_n + 15] == nil)
+assert(DialogueLookup[DialogueLookup_n + 16] == nil)
+assert(DialogueLookup[DialogueLookup_n + 17] == nil)
+assert(DialogueLookup[DialogueLookup_n + 18] == nil)
+
+DialogueLookup[DialogueLookup_n + 1] = "nde_vs_about_to_early_loss_a"
+DialogueLookup[DialogueLookup_n + 2] = "nde_vs_about_to_early_win_a"
+DialogueLookup[DialogueLookup_n + 3] = "nde_vs_early_loss_a"
+DialogueLookup[DialogueLookup_n + 4] = "nde_vs_early_win_a"
+DialogueLookup[DialogueLookup_n + 5] = "nde_vs_gather_up_a"
+DialogueLookup[DialogueLookup_n + 6] = "nde_vs_heroes_last_man_standing_a"
+DialogueLookup[DialogueLookup_n + 7] = "nde_vs_heroes_team_wipe_a"
+DialogueLookup[DialogueLookup_n + 8] = "nde_vs_match_draw_a"
+DialogueLookup[DialogueLookup_n + 9] = "nde_vs_new_objective_intro_a"
+DialogueLookup[DialogueLookup_n + 10] = "nde_vs_objective_completed_agnostic_a"
+DialogueLookup[DialogueLookup_n + 11] = "nde_vs_objective_completed_final_safe_room_b"
+DialogueLookup[DialogueLookup_n + 12] = "nde_vs_objective_completed_final_waystone_b"
+DialogueLookup[DialogueLookup_n + 13] = "nde_vs_reached_safe_room_a"
+DialogueLookup[DialogueLookup_n + 14] = "nde_vs_reached_waystone_a"
+DialogueLookup[DialogueLookup_n + 15] = "nde_vs_safe_room_near_a"
+DialogueLookup[DialogueLookup_n + 16] = "nde_vs_safe_room_round_started_a"
+DialogueLookup[DialogueLookup_n + 17] = "nde_vs_safe_room_start_a"
+DialogueLookup[DialogueLookup_n + 18] = "nde_vs_waystone_near_a"
+DialogueLookup_n = DialogueLookup_n + 18

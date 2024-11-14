@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pwe_hm_level_bogenhafen_slum_blackfire",
+		probability = 1,
 		response = "pwe_hm_level_bogenhafen_slum_blackfire",
 		criterias = {
 			{
@@ -53,6 +54,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hm_level_bogenhafen_slum_burn_food",
+		probability = 1,
 		response = "pwe_hm_level_bogenhafen_slum_burn_food",
 		criterias = {
 			{
@@ -103,6 +105,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hm_level_bogenhafen_slum_fortify",
+		probability = 1,
 		response = "pwe_hm_level_bogenhafen_slum_fortify",
 		criterias = {
 			{
@@ -153,6 +156,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hm_level_bogenhafen_slum_foul_air",
+		probability = 1,
 		response = "pwe_hm_level_bogenhafen_slum_foul_air",
 		criterias = {
 			{
@@ -203,6 +207,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hm_level_bogenhafen_slum_river",
+		probability = 1,
 		response = "pwe_hm_level_bogenhafen_slum_river",
 		criterias = {
 			{
@@ -253,6 +258,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hm_level_bogenhafen_slum_search",
+		probability = 1,
 		response = "pwe_hm_level_bogenhafen_slum_search",
 		criterias = {
 			{
@@ -303,6 +309,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hm_level_bogenhafen_slum_too_quiet",
+		probability = 1,
 		response = "pwe_hm_level_bogenhafen_slum_too_quiet",
 		criterias = {
 			{
@@ -353,6 +360,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_ambush",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_ambush",
 		criterias = {
 			{
@@ -397,6 +405,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_blackfire",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_blackfire",
 		criterias = {
 			{
@@ -441,6 +450,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_burn_food",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_burn_food",
 		criterias = {
 			{
@@ -485,6 +495,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_cannon",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_cannon",
 		criterias = {
 			{
@@ -529,6 +540,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_end",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_end",
 		criterias = {
 			{
@@ -573,6 +585,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_escape",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_escape",
 		criterias = {
 			{
@@ -617,6 +630,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_find_hideout",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_find_hideout",
 		criterias = {
 			{
@@ -661,6 +675,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_fortify",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_fortify",
 		criterias = {
 			{
@@ -705,6 +720,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_fortify_prep",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_fortify_prep",
 		criterias = {
 			{
@@ -749,6 +765,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_foul_air",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_foul_air",
 		criterias = {
 			{
@@ -793,6 +810,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_gang",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_gang",
 		criterias = {
 			{
@@ -837,6 +855,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_intro_a",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_intro_a",
 		criterias = {
 			{
@@ -881,6 +900,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_intro_b",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_intro_b",
 		criterias = {
 			{
@@ -919,6 +939,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_intro_c",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_intro_c",
 		criterias = {
 			{
@@ -957,6 +978,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_noble_food",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_noble_food",
 		criterias = {
 			{
@@ -1001,6 +1023,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_noisy_exit",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_noisy_exit",
 		criterias = {
 			{
@@ -1045,6 +1068,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_river",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_river",
 		criterias = {
 			{
@@ -1089,6 +1113,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_search",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_search",
 		criterias = {
 			{
@@ -1133,6 +1158,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_slum",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_slum",
 		criterias = {
 			{
@@ -1177,6 +1203,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_squalor",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_squalor",
 		criterias = {
 			{
@@ -1221,6 +1248,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_stolen_goods",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_stolen_goods",
 		criterias = {
 			{
@@ -1265,6 +1293,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_tainted_food",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_tainted_food",
 		criterias = {
 			{
@@ -1309,6 +1338,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_the_58",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_the_58",
 		criterias = {
 			{
@@ -1353,6 +1383,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_the_wall",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_the_wall",
 		criterias = {
 			{
@@ -1397,6 +1428,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_bogenhafen_slum_too_quiet",
+		probability = 1,
 		response = "pwe_level_bogenhafen_slum_too_quiet",
 		criterias = {
 			{
@@ -1441,6 +1473,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_sh_level_bogenhafen_slum_escape",
+		probability = 1,
 		response = "pwe_sh_level_bogenhafen_slum_escape",
 		criterias = {
 			{
@@ -1491,6 +1524,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_sh_level_bogenhafen_slum_gang",
+		probability = 1,
 		response = "pwe_sh_level_bogenhafen_slum_gang",
 		criterias = {
 			{
@@ -1541,6 +1575,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_sh_level_bogenhafen_slum_slum",
+		probability = 1,
 		response = "pwe_sh_level_bogenhafen_slum_slum",
 		criterias = {
 			{
@@ -1591,6 +1626,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_sh_level_bogenhafen_slum_stolen_goods",
+		probability = 1,
 		response = "pwe_sh_level_bogenhafen_slum_stolen_goods",
 		criterias = {
 			{
@@ -1641,6 +1677,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_sh_level_bogenhafen_slum_tainted_food",
+		probability = 1,
 		response = "pwe_sh_level_bogenhafen_slum_tainted_food",
 		criterias = {
 			{
@@ -1691,6 +1728,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_sh_level_bogenhafen_slum_the_58",
+		probability = 1,
 		response = "pwe_sh_level_bogenhafen_slum_the_58",
 		criterias = {
 			{

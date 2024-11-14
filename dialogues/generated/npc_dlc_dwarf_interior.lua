@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "nde_dwarf_internal_barrel_drop",
+		probability = 1,
 		response = "nde_dwarf_internal_barrel_drop",
 		criterias = {
 			{
@@ -27,6 +28,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_internal_brewery_attention",
+		probability = 1,
 		response = "nde_dwarf_internal_brewery_attention",
 		criterias = {
 			{
@@ -65,6 +67,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_internal_brewery_b",
+		probability = 1,
 		response = "nde_dwarf_internal_brewery_b",
 		criterias = {
 			{
@@ -97,6 +100,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_internal_brewery_event_start",
+		probability = 1,
 		response = "nde_dwarf_internal_brewery_event_start",
 		criterias = {
 			{
@@ -135,6 +139,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_internal_brewery_guidance",
+		probability = 1,
 		response = "nde_dwarf_internal_brewery_guidance",
 		criterias = {
 			{
@@ -185,6 +190,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_internal_brewery_speaking_tube_complete",
+		probability = 1,
 		response = "nde_dwarf_internal_brewery_speaking_tube_complete",
 		criterias = {
 			{
@@ -223,6 +229,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_internal_brewery_speaking_tube_interact_one_b",
+		probability = 1,
 		response = "nde_dwarf_internal_brewery_speaking_tube_interact_one_b",
 		criterias = {
 			{
@@ -261,6 +268,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_internal_brewery_speaking_tube_interact_two_b",
+		probability = 1,
 		response = "nde_dwarf_internal_brewery_speaking_tube_interact_two_b",
 		criterias = {
 			{
@@ -299,6 +307,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_internal_brewery_speaking_tube_progress_one",
+		probability = 1,
 		response = "nde_dwarf_internal_brewery_speaking_tube_progress_one",
 		criterias = {
 			{
@@ -349,6 +358,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_internal_brewery_speaking_tube_progress_two",
+		probability = 1,
 		response = "nde_dwarf_internal_brewery_speaking_tube_progress_two",
 		criterias = {
 			{
@@ -399,6 +409,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_internal_end_event_attention",
+		probability = 1,
 		response = "nde_dwarf_internal_end_event_attention",
 		criterias = {
 			{
@@ -437,6 +448,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_internal_end_event_interact_b",
+		probability = 1,
 		response = "nde_dwarf_internal_end_event_interact_b",
 		criterias = {
 			{
@@ -475,6 +487,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_internal_end_event_speaking_tube_PLAN_A_a",
+		probability = 1,
 		response = "nde_dwarf_internal_end_event_speaking_tube_PLAN_A_a",
 		criterias = {
 			{
@@ -513,6 +526,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_internal_brewery_c",
+		probability = 1,
 		response = "nik_dwarf_internal_brewery_c",
 		criterias = {
 			{
@@ -551,6 +565,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_internal_brewery_speaking_tube_complete",
+		probability = 1,
 		response = "nik_dwarf_internal_brewery_speaking_tube_complete",
 		criterias = {
 			{
@@ -589,6 +604,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_internal_brewery_speaking_tube_interact_two_c",
+		probability = 1,
 		response = "nik_dwarf_internal_brewery_speaking_tube_interact_two_c",
 		criterias = {
 			{
@@ -627,6 +643,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_internal_brewery_speaking_tube_progress_one_reminder",
+		probability = 1,
 		response = "nik_dwarf_internal_brewery_speaking_tube_progress_one_reminder",
 		criterias = {
 			{
@@ -665,6 +682,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_internal_brewery_speaking_tube_progress_two_reminder",
+		probability = 1,
 		response = "nik_dwarf_internal_brewery_speaking_tube_progress_two_reminder",
 		criterias = {
 			{
@@ -703,6 +721,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_internal_come_home",
+		probability = 1,
 		response = "nik_dwarf_internal_come_home",
 		criterias = {
 			{
@@ -741,6 +760,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_internal_dead_dwarfs",
+		probability = 1,
 		response = "nik_dwarf_internal_dead_dwarfs",
 		criterias = {
 			{
@@ -779,6 +799,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_internal_dwarf_sign",
+		probability = 1,
 		response = "nik_dwarf_internal_dwarf_sign",
 		criterias = {
 			{
@@ -817,6 +838,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_internal_end_conversation_b",
+		probability = 1,
 		response = "nik_dwarf_internal_end_conversation_b",
 		criterias = {
 			{
@@ -855,6 +877,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_internal_end_event_reminder",
+		probability = 1,
 		response = "nik_dwarf_internal_end_event_reminder",
 		criterias = {
 			{
@@ -893,6 +916,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_internal_engineer_reveal_no_bardin",
+		probability = 1,
 		response = "nik_dwarf_internal_engineer_reveal_no_bardin",
 		criterias = {
 			{
@@ -931,6 +955,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_internal_hasnt_improved",
+		probability = 1,
 		response = "nik_dwarf_internal_hasnt_improved",
 		criterias = {
 			{
@@ -969,6 +994,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_internal_mid_conversation_bardin_b",
+		probability = 1,
 		response = "nik_dwarf_internal_mid_conversation_bardin_b",
 		criterias = {
 			{
@@ -1007,6 +1033,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_internal_mid_conversation_no_bardin_b",
+		probability = 1,
 		response = "nik_dwarf_internal_mid_conversation_no_bardin_b",
 		criterias = {
 			{
@@ -1045,6 +1072,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_internal_skaven_works",
+		probability = 1,
 		response = "nik_dwarf_internal_skaven_works",
 		criterias = {
 			{
@@ -1083,6 +1111,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_internal_start_banter_a",
+		probability = 1,
 		response = "nik_dwarf_internal_start_banter_a",
 		criterias = {
 			{
@@ -1115,6 +1144,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_internal_start_banter_b",
+		probability = 1,
 		response = "nik_dwarf_internal_start_banter_b",
 		criterias = {
 			{
@@ -1139,6 +1169,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_internal_start_banter_c",
+		probability = 1,
 		response = "nik_dwarf_internal_start_banter_c",
 		criterias = {
 			{
@@ -1163,6 +1194,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_internal_still_a_maze",
+		probability = 1,
 		response = "nik_dwarf_internal_still_a_maze",
 		criterias = {
 			{
@@ -1201,6 +1233,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_internal_valaya",
+		probability = 1,
 		response = "nik_dwarf_internal_valaya",
 		criterias = {
 			{

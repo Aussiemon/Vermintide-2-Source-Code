@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "nde_dwarf_beacons_beacon_gas_a",
+		probability = 1,
 		response = "nde_dwarf_beacons_beacon_gas_a",
 		criterias = {
 			{
@@ -27,6 +28,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_beacon_gas_c",
+		probability = 1,
 		response = "nde_dwarf_beacons_beacon_gas_c",
 		criterias = {
 			{
@@ -65,6 +67,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_beacon_gas_d",
+		probability = 1,
 		response = "nde_dwarf_beacons_beacon_gas_d",
 		criterias = {
 			{
@@ -101,6 +104,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_beyond_caves",
+		probability = 1,
 		response = "nde_dwarf_beacons_beyond_caves",
 		criterias = {
 			{
@@ -125,6 +129,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_break_sighted",
+		probability = 1,
 		response = "nde_dwarf_beacons_break_sighted",
 		criterias = {
 			{
@@ -149,6 +154,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_bridge_down",
+		probability = 1,
 		response = "nde_dwarf_beacons_bridge_down",
 		criterias = {
 			{
@@ -173,6 +179,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_bridge_start",
+		probability = 1,
 		response = "nde_dwarf_beacons_bridge_start",
 		criterias = {
 			{
@@ -197,6 +204,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_light_beacon",
+		probability = 1,
 		response = "nde_dwarf_beacons_light_beacon",
 		criterias = {
 			{
@@ -221,6 +229,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_long_walk_a",
+		probability = 1,
 		response = "nde_dwarf_beacons_long_walk_a",
 		criterias = {
 			{
@@ -245,6 +254,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_on_the_plate",
+		probability = 1,
 		response = "nde_dwarf_beacons_on_the_plate",
 		criterias = {
 			{
@@ -269,6 +279,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_on_the_plate_reminder",
+		probability = 1,
 		response = "nde_dwarf_beacons_on_the_plate_reminder",
 		criterias = {
 			{
@@ -307,6 +318,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_outpost_empty_b",
+		probability = 1,
 		response = "nde_dwarf_beacons_outpost_empty_b",
 		criterias = {
 			{
@@ -331,6 +343,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_over_the_mountain_01_b",
+		probability = 1,
 		response = "nde_dwarf_beacons_over_the_mountain_01_b",
 		criterias = {
 			{
@@ -355,6 +368,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_over_the_mountain_02_b",
+		probability = 1,
 		response = "nde_dwarf_beacons_over_the_mountain_02_b",
 		criterias = {
 			{
@@ -379,6 +393,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_over_the_mountain_03_b",
+		probability = 1,
 		response = "nde_dwarf_beacons_over_the_mountain_03_b",
 		criterias = {
 			{
@@ -403,6 +418,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_over_the_mountain_04_b",
+		probability = 1,
 		response = "nde_dwarf_beacons_over_the_mountain_04_b",
 		criterias = {
 			{
@@ -427,6 +443,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_over_the_mountain_d",
+		probability = 1,
 		response = "nde_dwarf_beacons_over_the_mountain_d",
 		criterias = {
 			{
@@ -451,6 +468,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_repair_pipe",
+		probability = 1,
 		response = "nde_dwarf_beacons_repair_pipe",
 		criterias = {
 			{
@@ -489,6 +507,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_skaven_retreat_bardin_only_d",
+		probability = 1,
 		response = "nde_dwarf_beacons_skaven_retreat_bardin_only_d",
 		criterias = {
 			{
@@ -513,6 +532,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_skaven_retreat_c",
+		probability = 1,
 		response = "nde_dwarf_beacons_skaven_retreat_c",
 		criterias = {
 			{
@@ -537,6 +557,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_start_banter_a",
+		probability = 1,
 		response = "nde_dwarf_beacons_start_banter_a",
 		criterias = {
 			{
@@ -569,6 +590,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_start_banter_b",
+		probability = 1,
 		response = "nde_dwarf_beacons_start_banter_b",
 		criterias = {
 			{
@@ -593,6 +615,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_start_banter_c",
+		probability = 1,
 		response = "nde_dwarf_beacons_start_banter_c",
 		criterias = {
 			{
@@ -617,6 +640,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_supply_flowing",
+		probability = 1,
 		response = "nde_dwarf_beacons_supply_flowing",
 		criterias = {
 			{
@@ -641,6 +665,7 @@ return function ()
 	})
 	define_rule({
 		name = "nde_dwarf_beacons_victory_c",
+		probability = 1,
 		response = "nde_dwarf_beacons_victory_c",
 		criterias = {
 			{
@@ -665,6 +690,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_beacons_beacon_gas_a",
+		probability = 1,
 		response = "nik_dwarf_beacons_beacon_gas_a",
 		criterias = {
 			{
@@ -689,6 +715,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_beacons_beyond_caves",
+		probability = 1,
 		response = "nik_dwarf_beacons_beyond_caves",
 		criterias = {
 			{
@@ -713,6 +740,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_beacons_break_sighted",
+		probability = 1,
 		response = "nik_dwarf_beacons_break_sighted",
 		criterias = {
 			{
@@ -737,6 +765,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_beacons_bridge_down",
+		probability = 1,
 		response = "nik_dwarf_beacons_bridge_down",
 		criterias = {
 			{
@@ -761,6 +790,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_beacons_come_home",
+		probability = 1,
 		response = "nik_dwarf_beacons_come_home",
 		criterias = {
 			{
@@ -785,6 +815,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_beacons_light_beacon",
+		probability = 1,
 		response = "nik_dwarf_beacons_light_beacon",
 		criterias = {
 			{
@@ -809,6 +840,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_beacons_on_the_plate",
+		probability = 1,
 		response = "nik_dwarf_beacons_on_the_plate",
 		criterias = {
 			{
@@ -833,6 +865,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_beacons_on_the_plate_reminder",
+		probability = 1,
 		response = "nik_dwarf_beacons_on_the_plate_reminder",
 		criterias = {
 			{
@@ -871,6 +904,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_beacons_outpost_empty_b",
+		probability = 1,
 		response = "nik_dwarf_beacons_outpost_empty_b",
 		criterias = {
 			{
@@ -895,6 +929,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_beacons_over_the_mountain_d",
+		probability = 1,
 		response = "nik_dwarf_beacons_over_the_mountain_d",
 		criterias = {
 			{
@@ -919,6 +954,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_beacons_skaven_retreat_b",
+		probability = 1,
 		response = "nik_dwarf_beacons_skaven_retreat_b",
 		criterias = {
 			{
@@ -943,6 +979,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_beacons_start_banter_a",
+		probability = 1,
 		response = "nik_dwarf_beacons_start_banter_a",
 		criterias = {
 			{
@@ -975,6 +1012,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_beacons_start_banter_b",
+		probability = 1,
 		response = "nik_dwarf_beacons_start_banter_b",
 		criterias = {
 			{
@@ -999,6 +1037,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_beacons_start_banter_c",
+		probability = 1,
 		response = "nik_dwarf_beacons_start_banter_c",
 		criterias = {
 			{
@@ -1023,6 +1062,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_dwarf_beacons_supply_flowing",
+		probability = 1,
 		response = "nik_dwarf_beacons_supply_flowing",
 		criterias = {
 			{

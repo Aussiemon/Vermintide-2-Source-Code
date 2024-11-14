@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_bell_intro_a",
+		probability = 1,
 		response = "pbw_bell_intro_a",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bell_intro_b",
+		probability = 1,
 		response = "pbw_bell_intro_b",
 		criterias = {
 			{
@@ -85,6 +87,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_bell_intro_c",
+		probability = 1,
 		response = "pbw_bell_intro_c",
 		criterias = {
 			{

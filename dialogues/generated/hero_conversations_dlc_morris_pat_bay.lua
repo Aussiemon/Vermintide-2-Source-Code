@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_morris_bay_cursed_shore",
+		probability = 1,
 		response = "pbw_morris_bay_cursed_shore",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_bay_ice_cave",
+		probability = 1,
 		response = "pbw_morris_bay_ice_cave",
 		criterias = {
 			{
@@ -91,6 +93,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_bay_lookout",
+		probability = 1,
 		response = "pbw_morris_bay_lookout",
 		criterias = {
 			{
@@ -135,6 +138,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_bay_stranded_ships",
+		probability = 1,
 		response = "pbw_morris_bay_stranded_ships",
 		criterias = {
 			{
@@ -179,6 +183,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_bay_cursed_shore",
+		probability = 1,
 		response = "pdr_morris_bay_cursed_shore",
 		criterias = {
 			{
@@ -223,6 +228,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_bay_ice_cave",
+		probability = 1,
 		response = "pdr_morris_bay_ice_cave",
 		criterias = {
 			{
@@ -267,6 +273,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_bay_lookout",
+		probability = 1,
 		response = "pdr_morris_bay_lookout",
 		criterias = {
 			{
@@ -311,6 +318,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_bay_stranded_ships",
+		probability = 1,
 		response = "pdr_morris_bay_stranded_ships",
 		criterias = {
 			{
@@ -355,6 +363,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_bay_cursed_shore",
+		probability = 1,
 		response = "pes_morris_bay_cursed_shore",
 		criterias = {
 			{
@@ -399,6 +408,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_bay_ice_cave",
+		probability = 1,
 		response = "pes_morris_bay_ice_cave",
 		criterias = {
 			{
@@ -443,6 +453,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_bay_lookout",
+		probability = 1,
 		response = "pes_morris_bay_lookout",
 		criterias = {
 			{
@@ -487,6 +498,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_bay_stranded_ships",
+		probability = 1,
 		response = "pes_morris_bay_stranded_ships",
 		criterias = {
 			{
@@ -531,6 +543,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_bay_cursed_shore",
+		probability = 1,
 		response = "pwe_morris_bay_cursed_shore",
 		criterias = {
 			{
@@ -575,6 +588,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_bay_ice_cave",
+		probability = 1,
 		response = "pwe_morris_bay_ice_cave",
 		criterias = {
 			{
@@ -619,6 +633,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_bay_lookout",
+		probability = 1,
 		response = "pwe_morris_bay_lookout",
 		criterias = {
 			{
@@ -663,6 +678,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_bay_stranded_ships",
+		probability = 1,
 		response = "pwe_morris_bay_stranded_ships",
 		criterias = {
 			{
@@ -707,6 +723,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_bay_cursed_shore",
+		probability = 1,
 		response = "pwh_morris_bay_cursed_shore",
 		criterias = {
 			{
@@ -751,6 +768,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_bay_ice_cave",
+		probability = 1,
 		response = "pwh_morris_bay_ice_cave",
 		criterias = {
 			{
@@ -795,6 +813,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_bay_lookout",
+		probability = 1,
 		response = "pwh_morris_bay_lookout",
 		criterias = {
 			{
@@ -839,6 +858,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_bay_stranded_ships",
+		probability = 1,
 		response = "pwh_morris_bay_stranded_ships",
 		criterias = {
 			{

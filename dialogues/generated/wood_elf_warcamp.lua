@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pwe_chaos_war_camp_challenge_reply_a",
+		probability = 1,
 		response = "pwe_chaos_war_camp_challenge_reply_a",
 		criterias = {
 			{
@@ -41,6 +42,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_chaos_war_camp_intro_a",
+		probability = 1,
 		response = "pwe_chaos_war_camp_intro_a",
 		criterias = {
 			{
@@ -85,6 +87,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_chaos_war_camp_intro_c",
+		probability = 1,
 		response = "pwe_chaos_war_camp_intro_c",
 		criterias = {
 			{
@@ -123,6 +126,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_chaos_war_camp_taunt_payback_reply",
+		probability = 1,
 		response = "pwe_chaos_war_camp_taunt_payback_reply",
 		criterias = {
 			{
@@ -161,6 +165,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_chaos_champion_charge_reply",
+		probability = 1,
 		response = "pwe_gameplay_chaos_champion_charge_reply",
 		criterias = {
 			{
@@ -199,6 +204,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_chaos_champion_summon_reply",
+		probability = 1,
 		response = "pwe_gameplay_chaos_champion_summon_reply",
 		criterias = {
 			{
@@ -237,6 +243,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_chaos_champion_throwing_axe",
+		probability = 1,
 		response = "pwe_gameplay_chaos_champion_throwing_axe",
 		criterias = {
 			{
@@ -275,6 +282,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_chaos_war_camp_arena_01",
+		probability = 1,
 		response = "pwe_level_chaos_war_camp_arena_01",
 		criterias = {
 			{
@@ -319,6 +327,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_chaos_war_camp_battering_ram_01",
+		probability = 1,
 		response = "pwe_level_chaos_war_camp_battering_ram_01",
 		criterias = {
 			{
@@ -363,6 +372,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_chaos_war_camp_battering_ram_use_01",
+		probability = 1,
 		response = "pwe_level_chaos_war_camp_battering_ram_use_01",
 		criterias = {
 			{
@@ -407,6 +417,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_chaos_war_camp_cabin",
+		probability = 1,
 		response = "pwe_level_chaos_war_camp_cabin",
 		criterias = {
 			{
@@ -457,6 +468,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_chaos_war_camp_camp_view_01",
+		probability = 1,
 		response = "pwe_level_chaos_war_camp_camp_view_01",
 		criterias = {
 			{
@@ -507,6 +519,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_chaos_war_camp_dead_champion",
+		probability = 1,
 		response = "pwe_level_chaos_war_camp_dead_champion",
 		criterias = {
 			{
@@ -551,6 +564,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_chaos_war_camp_dead_champion_01",
+		probability = 1,
 		response = "pwe_level_chaos_war_camp_dead_champion_01",
 		criterias = {
 			{
@@ -595,6 +609,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_chaos_war_camp_depart_01",
+		probability = 1,
 		response = "pwe_level_chaos_war_camp_depart_01",
 		criterias = {
 			{

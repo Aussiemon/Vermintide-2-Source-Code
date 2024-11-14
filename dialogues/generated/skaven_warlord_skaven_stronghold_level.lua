@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "ewl_gameplay_banter",
+		probability = 1,
 		response = "ewl_gameplay_banter",
 		criterias = {
 			{
@@ -41,6 +42,7 @@ return function ()
 	})
 	define_rule({
 		name = "ewl_gameplay_summoning_skaven",
+		probability = 1,
 		response = "ewl_gameplay_summoning_skaven",
 		criterias = {
 			{
@@ -79,6 +81,7 @@ return function ()
 	})
 	define_rule({
 		name = "ewl_opening_line",
+		probability = 1,
 		response = "ewl_opening_line",
 		criterias = {
 			{

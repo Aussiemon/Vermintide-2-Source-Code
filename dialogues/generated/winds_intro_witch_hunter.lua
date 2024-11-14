@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pwh_wind_beast_intro_banter_a",
+		probability = 1,
 		response = "pwh_wind_beast_intro_banter_a",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wind_beast_intro_banter_b",
+		probability = 1,
 		response = "pwh_wind_beast_intro_banter_b",
 		criterias = {
 			{
@@ -91,6 +93,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wind_death_intro_banter_a",
+		probability = 1,
 		response = "pwh_wind_death_intro_banter_a",
 		criterias = {
 			{
@@ -135,6 +138,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wind_death_intro_banter_b",
+		probability = 1,
 		response = "pwh_wind_death_intro_banter_b",
 		criterias = {
 			{
@@ -179,6 +183,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wind_fire_intro_banter_a",
+		probability = 1,
 		response = "pwh_wind_fire_intro_banter_a",
 		criterias = {
 			{
@@ -229,6 +234,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wind_fire_intro_banter_b",
+		probability = 1,
 		response = "pwh_wind_fire_intro_banter_b",
 		criterias = {
 			{
@@ -273,6 +279,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wind_heavens_intro_banter_a",
+		probability = 1,
 		response = "pwh_wind_heavens_intro_banter_a",
 		criterias = {
 			{
@@ -317,6 +324,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wind_heavens_intro_banter_b",
+		probability = 1,
 		response = "pwh_wind_heavens_intro_banter_b",
 		criterias = {
 			{
@@ -361,6 +369,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wind_life_intro_banter_a",
+		probability = 1,
 		response = "pwh_wind_life_intro_banter_a",
 		criterias = {
 			{
@@ -411,6 +420,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wind_life_intro_banter_b",
+		probability = 1,
 		response = "pwh_wind_life_intro_banter_b",
 		criterias = {
 			{
@@ -455,6 +465,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wind_light_intro_banter_a",
+		probability = 1,
 		response = "pwh_wind_light_intro_banter_a",
 		criterias = {
 			{
@@ -499,6 +510,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wind_light_intro_banter_b",
+		probability = 1,
 		response = "pwh_wind_light_intro_banter_b",
 		criterias = {
 			{
@@ -543,6 +555,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wind_metal_intro_banter_a",
+		probability = 1,
 		response = "pwh_wind_metal_intro_banter_a",
 		criterias = {
 			{
@@ -593,6 +606,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wind_metal_intro_banter_b",
+		probability = 1,
 		response = "pwh_wind_metal_intro_banter_b",
 		criterias = {
 			{
@@ -637,6 +651,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wind_shadow_intro_banter_a",
+		probability = 1,
 		response = "pwh_wind_shadow_intro_banter_a",
 		criterias = {
 			{
@@ -681,6 +696,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wind_shadow_intro_banter_b",
+		probability = 1,
 		response = "pwh_wind_shadow_intro_banter_b",
 		criterias = {
 			{

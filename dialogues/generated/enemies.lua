@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "ecb_gameplay_running_towards_players",
+		probability = 1,
 		response = "ecb_gameplay_running_towards_players",
 		criterias = {
 			{
@@ -21,6 +22,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecm_gameplay_comment_player_healing",
+		probability = 1,
 		response = "ecm_gameplay_comment_player_healing",
 		criterias = {
 			{
@@ -45,6 +47,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecm_gameplay_dogpile_shouts",
+		probability = 1,
 		response = "ecm_gameplay_dogpile_shouts",
 		criterias = {
 			{
@@ -89,6 +92,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecm_gameplay_flanking_players",
+		probability = 1,
 		response = "ecm_gameplay_flanking_players",
 		criterias = {
 			{
@@ -121,6 +125,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecm_gameplay_running_towards_players",
+		probability = 1,
 		response = "ecm_gameplay_running_towards_players",
 		criterias = {
 			{
@@ -159,6 +164,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_gameplay_attacking_bright_wizard_backstab",
+		probability = 1,
 		response = "ecr_gameplay_attacking_bright_wizard_backstab",
 		criterias = {
 			{
@@ -197,6 +203,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_gameplay_attacking_dwarf_ranger_backstab",
+		probability = 1,
 		response = "ecr_gameplay_attacking_dwarf_ranger_backstab",
 		criterias = {
 			{
@@ -235,6 +242,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_gameplay_attacking_empire_soldier_backstab",
+		probability = 1,
 		response = "ecr_gameplay_attacking_empire_soldier_backstab",
 		criterias = {
 			{
@@ -273,6 +281,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_gameplay_attacking_witch_hunter_backstab",
+		probability = 1,
 		response = "ecr_gameplay_attacking_witch_hunter_backstab",
 		criterias = {
 			{
@@ -311,6 +320,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_gameplay_attacking_wood_elf_backstab",
+		probability = 1,
 		response = "ecr_gameplay_attacking_wood_elf_backstab",
 		criterias = {
 			{
@@ -349,6 +359,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_gameplay_bright_wizard_knocked_down",
+		probability = 1,
 		response = "ecr_gameplay_bright_wizard_knocked_down",
 		criterias = {
 			{
@@ -387,6 +398,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_gameplay_dwarf_ranger_knocked_down",
+		probability = 1,
 		response = "ecr_gameplay_dwarf_ranger_knocked_down",
 		criterias = {
 			{
@@ -425,6 +437,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_gameplay_empire_soldier_knocked_down",
+		probability = 1,
 		response = "ecr_gameplay_empire_soldier_knocked_down",
 		criterias = {
 			{
@@ -463,6 +476,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_gameplay_fall",
+		probability = 1,
 		response = "ecr_gameplay_fall",
 		criterias = {
 			{
@@ -481,6 +495,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_gameplay_fleeing",
+		probability = 1,
 		response = "ecr_gameplay_fleeing",
 		criterias = {
 			{
@@ -513,6 +528,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_gameplay_killing_a_player",
+		probability = 1,
 		response = "ecr_gameplay_killing_a_player",
 		criterias = {
 			{
@@ -545,6 +561,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_gameplay_land",
+		probability = 1,
 		response = "ecr_gameplay_land",
 		criterias = {
 			{
@@ -563,6 +580,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_gameplay_player_knocked_down",
+		probability = 1,
 		response = "ecr_gameplay_player_knocked_down",
 		criterias = {
 			{
@@ -595,6 +613,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_gameplay_running_in_horde",
+		probability = 1,
 		response = "ecr_gameplay_running_in_horde",
 		criterias = {
 			{
@@ -639,6 +658,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_gameplay_running_towards_players",
+		probability = 1,
 		response = "ecr_gameplay_running_towards_players",
 		criterias = {
 			{
@@ -670,6 +690,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_gameplay_running_towards_players_alone",
+		probability = 1,
 		response = "ecr_gameplay_running_towards_players_alone",
 		criterias = {
 			{
@@ -708,6 +729,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_gameplay_seeing_bomb_thrown",
+		probability = 1,
 		response = "ecr_gameplay_seeing_bomb_thrown",
 		criterias = {
 			{
@@ -746,6 +768,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_gameplay_seeing_weapon_special_activated",
+		probability = 1,
 		response = "ecr_gameplay_seeing_weapon_special_activated",
 		criterias = {
 			{
@@ -778,6 +801,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_gameplay_startled",
+		probability = 1,
 		response = "ecr_gameplay_startled",
 		criterias = {
 			{
@@ -810,6 +834,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_gameplay_striking_a_player",
+		probability = 1,
 		response = "ecr_gameplay_striking_a_player",
 		criterias = {
 			{
@@ -842,6 +867,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_gameplay_witch_hunter_knocked_down",
+		probability = 1,
 		response = "ecr_gameplay_witch_hunter_knocked_down",
 		criterias = {
 			{
@@ -880,6 +906,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_gameplay_wood_elf_knocked_down",
+		probability = 1,
 		response = "ecr_gameplay_wood_elf_knocked_down",
 		criterias = {
 			{
@@ -918,6 +945,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_shield_gameplay_running_in_horde",
+		probability = 1,
 		response = "ecr_shield_gameplay_running_in_horde",
 		criterias = {
 			{
@@ -962,6 +990,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_shield_gameplay_running_towards_players",
+		probability = 1,
 		response = "ecr_shield_gameplay_running_towards_players",
 		criterias = {
 			{
@@ -1000,6 +1029,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_shield_gameplay_running_towards_players_alone",
+		probability = 1,
 		response = "ecr_shield_gameplay_running_towards_players_alone",
 		criterias = {
 			{
@@ -1038,6 +1068,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_shield_gameplay_startled",
+		probability = 1,
 		response = "ecr_shield_gameplay_startled",
 		criterias = {
 			{
@@ -1063,6 +1094,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecr_shield_gameplay_striking_a_player",
+		probability = 1,
 		response = "ecr_shield_gameplay_striking_a_player",
 		criterias = {
 			{
@@ -1095,6 +1127,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecw_gameplay_alert",
+		probability = 1,
 		response = "ecw_gameplay_alert",
 		criterias = {
 			{
@@ -1127,6 +1160,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecw_gameplay_downing_a_player",
+		probability = 1,
 		response = "ecw_gameplay_downing_a_player",
 		criterias = {
 			{
@@ -1159,6 +1193,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecw_gameplay_no_damage",
+		probability = 1,
 		response = "ecw_gameplay_no_damage",
 		criterias = {
 			{
@@ -1191,6 +1226,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecw_gameplay_targeting_bright_wizard",
+		probability = 1,
 		response = "ecw_gameplay_targeting_bright_wizard",
 		criterias = {
 			{
@@ -1229,6 +1265,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecw_gameplay_targeting_dwarf_ranger",
+		probability = 1,
 		response = "ecw_gameplay_targeting_dwarf_ranger",
 		criterias = {
 			{
@@ -1267,6 +1304,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecw_gameplay_targeting_empire_soldier",
+		probability = 1,
 		response = "ecw_gameplay_targeting_empire_soldier",
 		criterias = {
 			{
@@ -1305,6 +1343,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecw_gameplay_targeting_witch_hunter",
+		probability = 1,
 		response = "ecw_gameplay_targeting_witch_hunter",
 		criterias = {
 			{
@@ -1343,6 +1382,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecw_gameplay_targeting_wood_elf",
+		probability = 1,
 		response = "ecw_gameplay_targeting_wood_elf",
 		criterias = {
 			{
@@ -1381,6 +1421,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecws_gameplay_alert",
+		probability = 1,
 		response = "ecws_gameplay_alert",
 		criterias = {
 			{
@@ -1413,6 +1454,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecws_gameplay_no_damage",
+		probability = 1,
 		response = "ecws_gameplay_no_damage",
 		criterias = {
 			{
@@ -1445,6 +1487,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecws_gameplay_targeting_bright_wizard",
+		probability = 1,
 		response = "ecws_gameplay_targeting_bright_wizard",
 		criterias = {
 			{
@@ -1483,6 +1526,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecws_gameplay_targeting_dwarf_ranger",
+		probability = 1,
 		response = "ecws_gameplay_targeting_dwarf_ranger",
 		criterias = {
 			{
@@ -1521,6 +1565,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecws_gameplay_targeting_empire_soldier",
+		probability = 1,
 		response = "ecws_gameplay_targeting_empire_soldier",
 		criterias = {
 			{
@@ -1559,6 +1604,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecws_gameplay_targeting_witch_hunter",
+		probability = 1,
 		response = "ecws_gameplay_targeting_witch_hunter",
 		criterias = {
 			{
@@ -1597,6 +1643,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecws_gameplay_targeting_wood_elf",
+		probability = 1,
 		response = "ecws_gameplay_targeting_wood_elf",
 		criterias = {
 			{
@@ -1635,6 +1682,7 @@ return function ()
 	})
 	define_rule({
 		name = "epm_gameplay_running",
+		probability = 1,
 		response = "epm_gameplay_running",
 		criterias = {
 			{
@@ -1653,6 +1701,7 @@ return function ()
 	})
 	define_rule({
 		name = "epm_gameplay_startled",
+		probability = 1,
 		response = "epm_gameplay_startled",
 		criterias = {
 			{
@@ -1671,6 +1720,7 @@ return function ()
 	})
 	define_rule({
 		name = "epwg_gameplay_begin_suicide_run",
+		probability = 1,
 		response = "epwg_gameplay_begin_suicide_run",
 		criterias = {
 			{
@@ -1708,6 +1758,7 @@ return function ()
 	})
 	define_rule({
 		name = "epwg_gameplay_hitting_a_player",
+		probability = 1,
 		response = "epwg_gameplay_hitting_a_player",
 		criterias = {
 			{
@@ -1746,6 +1797,7 @@ return function ()
 	})
 	define_rule({
 		name = "epwg_gameplay_hitting_multiple_players",
+		probability = 1,
 		response = "epwg_gameplay_hitting_multiple_players",
 		criterias = {
 			{
@@ -1784,6 +1836,7 @@ return function ()
 	})
 	define_rule({
 		name = "epwg_gameplay_hitting_only_skaven",
+		probability = 1,
 		response = "epwg_gameplay_hitting_only_skaven",
 		criterias = {
 			{
@@ -1822,6 +1875,7 @@ return function ()
 	})
 	define_rule({
 		name = "epwg_gameplay_throwing_globe",
+		probability = 1,
 		response = "epwg_gameplay_throwing_globe",
 		criterias = {
 			{
@@ -1854,6 +1908,7 @@ return function ()
 	})
 	define_rule({
 		name = "esr_gameplay_attacking_bright_wizard_backstab",
+		probability = 1,
 		response = "esr_gameplay_attacking_bright_wizard_backstab",
 		criterias = {
 			{
@@ -1892,6 +1947,7 @@ return function ()
 	})
 	define_rule({
 		name = "esr_gameplay_attacking_dwarf_ranger_backstab",
+		probability = 1,
 		response = "esr_gameplay_attacking_dwarf_ranger_backstab",
 		criterias = {
 			{
@@ -1930,6 +1986,7 @@ return function ()
 	})
 	define_rule({
 		name = "esr_gameplay_attacking_empire_soldier_backstab",
+		probability = 1,
 		response = "esr_gameplay_attacking_empire_soldier_backstab",
 		criterias = {
 			{
@@ -1968,6 +2025,7 @@ return function ()
 	})
 	define_rule({
 		name = "esr_gameplay_attacking_witch_hunter_backstab",
+		probability = 1,
 		response = "esr_gameplay_attacking_witch_hunter_backstab",
 		criterias = {
 			{
@@ -2006,6 +2064,7 @@ return function ()
 	})
 	define_rule({
 		name = "esr_gameplay_attacking_wood_elf_backstab",
+		probability = 1,
 		response = "esr_gameplay_attacking_wood_elf_backstab",
 		criterias = {
 			{
@@ -2044,6 +2103,7 @@ return function ()
 	})
 	define_rule({
 		name = "esr_gameplay_bright_wizard_knocked_down",
+		probability = 1,
 		response = "esr_gameplay_bright_wizard_knocked_down",
 		criterias = {
 			{
@@ -2082,6 +2142,7 @@ return function ()
 	})
 	define_rule({
 		name = "esr_gameplay_dwarf_ranger_knocked_down",
+		probability = 1,
 		response = "esr_gameplay_dwarf_ranger_knocked_down",
 		criterias = {
 			{
@@ -2120,6 +2181,7 @@ return function ()
 	})
 	define_rule({
 		name = "esr_gameplay_empire_soldier_knocked_down",
+		probability = 1,
 		response = "esr_gameplay_empire_soldier_knocked_down",
 		criterias = {
 			{
@@ -2158,6 +2220,7 @@ return function ()
 	})
 	define_rule({
 		name = "esr_gameplay_fall",
+		probability = 1,
 		response = "esr_gameplay_fall",
 		criterias = {
 			{
@@ -2176,6 +2239,7 @@ return function ()
 	})
 	define_rule({
 		name = "esr_gameplay_land",
+		probability = 1,
 		response = "esr_gameplay_land",
 		criterias = {
 			{
@@ -2194,6 +2258,7 @@ return function ()
 	})
 	define_rule({
 		name = "esr_gameplay_player_knocked_down",
+		probability = 1,
 		response = "esr_gameplay_player_knocked_down",
 		criterias = {
 			{
@@ -2226,6 +2291,7 @@ return function ()
 	})
 	define_rule({
 		name = "esr_gameplay_shouting",
+		probability = 1,
 		response = "esr_gameplay_shouting",
 		criterias = {
 			{
@@ -2258,6 +2324,7 @@ return function ()
 	})
 	define_rule({
 		name = "esr_gameplay_witch_hunter_knocked_down",
+		probability = 1,
 		response = "esr_gameplay_witch_hunter_knocked_down",
 		criterias = {
 			{
@@ -2296,6 +2363,7 @@ return function ()
 	})
 	define_rule({
 		name = "esr_gameplay_wood_elf_knocked_down",
+		probability = 1,
 		response = "esr_gameplay_wood_elf_knocked_down",
 		criterias = {
 			{
@@ -2334,6 +2402,7 @@ return function ()
 	})
 	define_rule({
 		name = "esv_gameplay_bright_wizard_knocked_down",
+		probability = 1,
 		response = "esv_gameplay_bright_wizard_knocked_down",
 		criterias = {
 			{
@@ -2372,6 +2441,7 @@ return function ()
 	})
 	define_rule({
 		name = "esv_gameplay_cheering_on_player_kill",
+		probability = 1,
 		response = "esv_gameplay_cheering_on_player_kill",
 		criterias = {
 			{
@@ -2404,6 +2474,7 @@ return function ()
 	})
 	define_rule({
 		name = "esv_gameplay_dwarf_ranger_knocked_down",
+		probability = 1,
 		response = "esv_gameplay_dwarf_ranger_knocked_down",
 		criterias = {
 			{
@@ -2442,6 +2513,7 @@ return function ()
 	})
 	define_rule({
 		name = "esv_gameplay_empire_soldier_knocked_down",
+		probability = 1,
 		response = "esv_gameplay_empire_soldier_knocked_down",
 		criterias = {
 			{
@@ -2480,6 +2552,7 @@ return function ()
 	})
 	define_rule({
 		name = "esv_gameplay_fleeing",
+		probability = 1,
 		response = "esv_gameplay_fleeing",
 		criterias = {
 			{
@@ -2512,6 +2585,7 @@ return function ()
 	})
 	define_rule({
 		name = "esv_gameplay_killing_a_player",
+		probability = 1,
 		response = "esv_gameplay_killing_a_player",
 		criterias = {
 			{
@@ -2550,6 +2624,7 @@ return function ()
 	})
 	define_rule({
 		name = "esv_gameplay_player_knocked_down",
+		probability = 1,
 		response = "esv_gameplay_player_knocked_down",
 		criterias = {
 			{
@@ -2582,6 +2657,7 @@ return function ()
 	})
 	define_rule({
 		name = "esv_gameplay_rally_fleeing_clanrats",
+		probability = 1,
 		response = "esv_gameplay_rally_fleeing_clanrats",
 		criterias = {
 			{
@@ -2614,6 +2690,7 @@ return function ()
 	})
 	define_rule({
 		name = "esv_gameplay_running_towards_players",
+		probability = 1,
 		response = "esv_gameplay_running_towards_players",
 		criterias = {
 			{
@@ -2658,6 +2735,7 @@ return function ()
 	})
 	define_rule({
 		name = "esv_gameplay_running_towards_players_alone",
+		probability = 1,
 		response = "esv_gameplay_running_towards_players_alone",
 		criterias = {
 			{
@@ -2702,6 +2780,7 @@ return function ()
 	})
 	define_rule({
 		name = "esv_gameplay_set_on_fire",
+		probability = 1,
 		response = "esv_gameplay_set_on_fire",
 		criterias = {
 			{
@@ -2734,6 +2813,7 @@ return function ()
 	})
 	define_rule({
 		name = "esv_gameplay_startled",
+		probability = 1,
 		response = "esv_gameplay_startled",
 		criterias = {
 			{
@@ -2759,6 +2839,7 @@ return function ()
 	})
 	define_rule({
 		name = "esv_gameplay_striking_a_player",
+		probability = 1,
 		response = "esv_gameplay_striking_a_player",
 		criterias = {
 			{
@@ -2791,6 +2872,7 @@ return function ()
 	})
 	define_rule({
 		name = "esv_gameplay_witch_hunter_knocked_down",
+		probability = 1,
 		response = "esv_gameplay_witch_hunter_knocked_down",
 		criterias = {
 			{
@@ -2829,6 +2911,7 @@ return function ()
 	})
 	define_rule({
 		name = "esv_gameplay_wood_elf_knocked_down",
+		probability = 1,
 		response = "esv_gameplay_wood_elf_knocked_down",
 		criterias = {
 			{
@@ -3347,7 +3430,7 @@ return function ()
 				[1] = "ecr_gameplay_fall",
 			},
 			sound_events_duration = {
-				[1] = 3.5791234374046,
+				[1] = 3.1496770977974,
 			},
 		},
 		ecr_gameplay_fleeing = {
@@ -3721,14 +3804,14 @@ return function ()
 				"ecr_gameplay_running_towards_players_alone_08",
 			},
 			sound_events_duration = {
-				1.7922794222832,
-				2.0397656559944,
-				2.6266366839409,
-				2.0784459710121,
-				1.7603061795235,
-				1.7603061795235,
-				1.7603061795235,
-				1.7703519463539,
+				1.6190377473831,
+				1.8738412857056,
+				2.0356508493424,
+				1.4628485441208,
+				1.3138682842255,
+				1.2950078248978,
+				1.2950078248978,
+				1.3484325408936,
 			},
 		},
 		ecr_gameplay_seeing_bomb_thrown = {
@@ -6310,7 +6393,7 @@ return function ()
 				[1] = "esr_gameplay_fall",
 			},
 			sound_events_duration = {
-				[1] = 3.5635517239571,
+				[1] = 3.1496770977974,
 			},
 		},
 		esr_gameplay_land = {

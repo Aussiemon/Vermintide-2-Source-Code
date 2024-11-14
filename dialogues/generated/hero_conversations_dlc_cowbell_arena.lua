@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "nfl_shadow_curse_arena_a",
+		probability = 1,
 		response = "nfl_shadow_curse_arena_a",
 		criterias = {
 			{
@@ -27,6 +28,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_shadow_curse_arena_event_start",
+		probability = 1,
 		response = "nfl_shadow_curse_arena_event_start",
 		criterias = {
 			{
@@ -45,6 +47,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_shadow_curse_complete",
+		probability = 1,
 		response = "nfl_shadow_curse_complete",
 		criterias = {
 			{
@@ -63,6 +66,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_shadow_curse_vortex_crystal",
+		probability = 1,
 		response = "nfl_shadow_curse_vortex_crystal",
 		criterias = {
 			{
@@ -101,6 +105,7 @@ return function ()
 	})
 	define_rule({
 		name = "nwd_shadow_curse_arena_event_defeat",
+		probability = 1,
 		response = "nwd_shadow_curse_arena_event_defeat",
 		criterias = {
 			{
@@ -119,6 +124,7 @@ return function ()
 	})
 	define_rule({
 		name = "nwd_shadow_curse_arena_event_taunt",
+		probability = 1,
 		response = "nwd_shadow_curse_arena_event_taunt",
 		criterias = {
 			{
@@ -137,6 +143,7 @@ return function ()
 	})
 	define_rule({
 		name = "nwd_shadow_curse_arena_mid_conversation_eight_a",
+		probability = 1,
 		response = "nwd_shadow_curse_arena_mid_conversation_eight_a",
 		criterias = {
 			{
@@ -173,6 +180,7 @@ return function ()
 	})
 	define_rule({
 		name = "nwd_shadow_curse_arena_mid_conversation_five_a",
+		probability = 1,
 		response = "nwd_shadow_curse_arena_mid_conversation_five_a",
 		criterias = {
 			{
@@ -209,6 +217,7 @@ return function ()
 	})
 	define_rule({
 		name = "nwd_shadow_curse_arena_mid_conversation_five_c",
+		probability = 1,
 		response = "nwd_shadow_curse_arena_mid_conversation_five_c",
 		criterias = {
 			{
@@ -227,6 +236,7 @@ return function ()
 	})
 	define_rule({
 		name = "nwd_shadow_curse_arena_mid_conversation_four_a",
+		probability = 1,
 		response = "nwd_shadow_curse_arena_mid_conversation_four_a",
 		criterias = {
 			{
@@ -263,6 +273,7 @@ return function ()
 	})
 	define_rule({
 		name = "nwd_shadow_curse_arena_mid_conversation_four_c",
+		probability = 1,
 		response = "nwd_shadow_curse_arena_mid_conversation_four_c",
 		criterias = {
 			{
@@ -281,6 +292,7 @@ return function ()
 	})
 	define_rule({
 		name = "nwd_shadow_curse_arena_mid_conversation_nine_a",
+		probability = 1,
 		response = "nwd_shadow_curse_arena_mid_conversation_nine_a",
 		criterias = {
 			{
@@ -317,6 +329,7 @@ return function ()
 	})
 	define_rule({
 		name = "nwd_shadow_curse_arena_mid_conversation_one_a",
+		probability = 1,
 		response = "nwd_shadow_curse_arena_mid_conversation_one_a",
 		criterias = {
 			{
@@ -353,6 +366,7 @@ return function ()
 	})
 	define_rule({
 		name = "nwd_shadow_curse_arena_mid_conversation_one_c",
+		probability = 1,
 		response = "nwd_shadow_curse_arena_mid_conversation_one_c",
 		criterias = {
 			{
@@ -371,6 +385,7 @@ return function ()
 	})
 	define_rule({
 		name = "nwd_shadow_curse_arena_mid_conversation_seven_a",
+		probability = 1,
 		response = "nwd_shadow_curse_arena_mid_conversation_seven_a",
 		criterias = {
 			{
@@ -407,6 +422,7 @@ return function ()
 	})
 	define_rule({
 		name = "nwd_shadow_curse_arena_mid_conversation_six_a",
+		probability = 1,
 		response = "nwd_shadow_curse_arena_mid_conversation_six_a",
 		criterias = {
 			{
@@ -443,6 +459,7 @@ return function ()
 	})
 	define_rule({
 		name = "nwd_shadow_curse_arena_mid_conversation_six_c",
+		probability = 1,
 		response = "nwd_shadow_curse_arena_mid_conversation_six_c",
 		criterias = {
 			{
@@ -461,6 +478,7 @@ return function ()
 	})
 	define_rule({
 		name = "nwd_shadow_curse_arena_mid_conversation_ten_dummy",
+		probability = 1,
 		response = "nwd_shadow_curse_arena_mid_conversation_ten_dummy",
 		criterias = {
 			{
@@ -497,6 +515,7 @@ return function ()
 	})
 	define_rule({
 		name = "nwd_shadow_curse_arena_mid_conversation_three_a",
+		probability = 1,
 		response = "nwd_shadow_curse_arena_mid_conversation_three_a",
 		criterias = {
 			{
@@ -533,6 +552,7 @@ return function ()
 	})
 	define_rule({
 		name = "nwd_shadow_curse_arena_mid_conversation_three_c",
+		probability = 1,
 		response = "nwd_shadow_curse_arena_mid_conversation_three_c",
 		criterias = {
 			{
@@ -551,6 +571,7 @@ return function ()
 	})
 	define_rule({
 		name = "nwd_shadow_curse_arena_mid_conversation_two_a",
+		probability = 1,
 		response = "nwd_shadow_curse_arena_mid_conversation_two_a",
 		criterias = {
 			{
@@ -587,6 +608,7 @@ return function ()
 	})
 	define_rule({
 		name = "nwd_shadow_curse_arena_mid_conversation_two_c",
+		probability = 1,
 		response = "nwd_shadow_curse_arena_mid_conversation_two_c",
 		criterias = {
 			{
@@ -605,6 +627,7 @@ return function ()
 	})
 	define_rule({
 		name = "nwd_shadow_curse_laughter",
+		probability = 1,
 		response = "nwd_shadow_curse_laughter",
 		criterias = {
 			{
@@ -623,6 +646,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_shadow_curse_arena_b",
+		probability = 1,
 		response = "pbw_shadow_curse_arena_b",
 		criterias = {
 			{
@@ -648,6 +672,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_shadow_curse_arena_mid_conversation_seven_c",
+		probability = 1,
 		response = "pbw_shadow_curse_arena_mid_conversation_seven_c",
 		criterias = {
 			{
@@ -679,6 +704,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_shadow_curse_arena_mid_conversation_ten_a",
+		probability = 1,
 		response = "pbw_shadow_curse_arena_mid_conversation_ten_a",
 		criterias = {
 			{
@@ -704,6 +730,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_shadow_curse_arena_mid_conversation_ten_d",
+		probability = 1,
 		response = "pbw_shadow_curse_arena_mid_conversation_ten_d",
 		criterias = {
 			{
@@ -735,6 +762,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_shadow_curse_arena_mid_conversation_three_b",
+		probability = 1,
 		response = "pbw_shadow_curse_arena_mid_conversation_three_b",
 		criterias = {
 			{
@@ -760,6 +788,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_shadow_curse_arena_mid_conversation_three_d",
+		probability = 1,
 		response = "pbw_shadow_curse_arena_mid_conversation_three_d",
 		criterias = {
 			{
@@ -785,6 +814,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_shadow_curse_arena_b",
+		probability = 1,
 		response = "pdr_shadow_curse_arena_b",
 		criterias = {
 			{
@@ -810,6 +840,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_shadow_curse_arena_mid_conversation_eight_b",
+		probability = 1,
 		response = "pdr_shadow_curse_arena_mid_conversation_eight_b",
 		criterias = {
 			{
@@ -835,6 +866,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_shadow_curse_arena_mid_conversation_eight_d",
+		probability = 1,
 		response = "pdr_shadow_curse_arena_mid_conversation_eight_d",
 		criterias = {
 			{
@@ -866,6 +898,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_shadow_curse_arena_mid_conversation_four_b",
+		probability = 1,
 		response = "pdr_shadow_curse_arena_mid_conversation_four_b",
 		criterias = {
 			{
@@ -891,6 +924,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_shadow_curse_arena_mid_conversation_four_d",
+		probability = 1,
 		response = "pdr_shadow_curse_arena_mid_conversation_four_d",
 		criterias = {
 			{
@@ -916,6 +950,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_shadow_curse_arena_b",
+		probability = 1,
 		response = "pes_shadow_curse_arena_b",
 		criterias = {
 			{
@@ -941,6 +976,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_shadow_curse_arena_mid_conversation_nine_b",
+		probability = 1,
 		response = "pes_shadow_curse_arena_mid_conversation_nine_b",
 		criterias = {
 			{
@@ -966,6 +1002,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_shadow_curse_arena_mid_conversation_nine_d",
+		probability = 1,
 		response = "pes_shadow_curse_arena_mid_conversation_nine_d",
 		criterias = {
 			{
@@ -997,6 +1034,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_shadow_curse_arena_mid_conversation_seven_b",
+		probability = 1,
 		response = "pes_shadow_curse_arena_mid_conversation_seven_b",
 		criterias = {
 			{
@@ -1022,6 +1060,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_shadow_curse_arena_mid_conversation_six_b",
+		probability = 1,
 		response = "pes_shadow_curse_arena_mid_conversation_six_b",
 		criterias = {
 			{
@@ -1047,6 +1086,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_shadow_curse_arena_mid_conversation_six_d",
+		probability = 1,
 		response = "pes_shadow_curse_arena_mid_conversation_six_d",
 		criterias = {
 			{
@@ -1072,6 +1112,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_shadow_curse_arena_b",
+		probability = 1,
 		response = "pwe_shadow_curse_arena_b",
 		criterias = {
 			{
@@ -1097,6 +1138,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_shadow_curse_arena_mid_conversation_nine_c",
+		probability = 1,
 		response = "pwe_shadow_curse_arena_mid_conversation_nine_c",
 		criterias = {
 			{
@@ -1128,6 +1170,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_shadow_curse_arena_mid_conversation_ten_b",
+		probability = 1,
 		response = "pwe_shadow_curse_arena_mid_conversation_ten_b",
 		criterias = {
 			{
@@ -1159,6 +1202,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_st_shadow_curse_arena_mid_conversation_five_b",
+		probability = 1,
 		response = "pwe_st_shadow_curse_arena_mid_conversation_five_b",
 		criterias = {
 			{
@@ -1190,6 +1234,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_st_shadow_curse_arena_mid_conversation_five_d",
+		probability = 1,
 		response = "pwe_st_shadow_curse_arena_mid_conversation_five_d",
 		criterias = {
 			{
@@ -1215,6 +1260,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_shadow_curse_arena_b",
+		probability = 1,
 		response = "pwh_shadow_curse_arena_b",
 		criterias = {
 			{
@@ -1240,6 +1286,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_shadow_curse_arena_mid_conversation_eight_c",
+		probability = 1,
 		response = "pwh_shadow_curse_arena_mid_conversation_eight_c",
 		criterias = {
 			{
@@ -1271,6 +1318,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_shadow_curse_arena_mid_conversation_eight_e",
+		probability = 1,
 		response = "pwh_shadow_curse_arena_mid_conversation_eight_e",
 		criterias = {
 			{
@@ -1302,6 +1350,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_shadow_curse_arena_mid_conversation_seven_d",
+		probability = 1,
 		response = "pwh_shadow_curse_arena_mid_conversation_seven_d",
 		criterias = {
 			{
@@ -1333,6 +1382,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_shadow_curse_arena_mid_conversation_ten_c",
+		probability = 1,
 		response = "pwh_shadow_curse_arena_mid_conversation_ten_c",
 		criterias = {
 			{
@@ -1364,6 +1414,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wp_shadow_curse_arena_mid_conversation_one_b",
+		probability = 1,
 		response = "pwh_wp_shadow_curse_arena_mid_conversation_one_b",
 		criterias = {
 			{
@@ -1395,6 +1446,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wp_shadow_curse_arena_mid_conversation_one_d",
+		probability = 1,
 		response = "pwh_wp_shadow_curse_arena_mid_conversation_one_d",
 		criterias = {
 			{
@@ -1420,6 +1472,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wp_shadow_curse_arena_mid_conversation_two_b",
+		probability = 1,
 		response = "pwh_wp_shadow_curse_arena_mid_conversation_two_b",
 		criterias = {
 			{
@@ -1451,6 +1504,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wp_shadow_curse_arena_mid_conversation_two_d",
+		probability = 1,
 		response = "pwh_wp_shadow_curse_arena_mid_conversation_two_d",
 		criterias = {
 			{
@@ -1476,6 +1530,7 @@ return function ()
 	})
 	define_rule({
 		name = "sc1_shadow_curse_arrival_a_arena",
+		probability = 1,
 		response = "sc1_shadow_curse_arrival_a_arena",
 		criterias = {
 			{
@@ -1494,6 +1549,7 @@ return function ()
 	})
 	define_rule({
 		name = "sc2_shadow_curse_arrival_a_arena",
+		probability = 1,
 		response = "sc2_shadow_curse_arrival_a_arena",
 		criterias = {
 			{
@@ -1512,6 +1568,7 @@ return function ()
 	})
 	define_rule({
 		name = "sc3_shadow_curse_arrival_a_arena",
+		probability = 1,
 		response = "sc3_shadow_curse_arrival_a_arena",
 		criterias = {
 			{

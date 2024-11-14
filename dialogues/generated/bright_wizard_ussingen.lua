@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_level_ussingen_at_last_end",
+		probability = 1,
 		response = "pbw_level_ussingen_at_last_end",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_ussingen_caravan",
+		probability = 1,
 		response = "pbw_level_ussingen_caravan",
 		criterias = {
 			{
@@ -91,6 +93,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_ussingen_cart_full",
+		probability = 1,
 		response = "pbw_level_ussingen_cart_full",
 		criterias = {
 			{
@@ -135,6 +138,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_ussingen_cellar",
+		probability = 1,
 		response = "pbw_level_ussingen_cellar",
 		criterias = {
 			{
@@ -179,6 +183,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_ussingen_devastation",
+		probability = 1,
 		response = "pbw_level_ussingen_devastation",
 		criterias = {
 			{
@@ -223,6 +228,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_ussingen_doomed_town",
+		probability = 1,
 		response = "pbw_level_ussingen_doomed_town",
 		criterias = {
 			{
@@ -273,6 +279,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_ussingen_escape",
+		probability = 1,
 		response = "pbw_level_ussingen_escape",
 		criterias = {
 			{
@@ -317,6 +324,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_ussingen_find_way_around",
+		probability = 1,
 		response = "pbw_level_ussingen_find_way_around",
 		criterias = {
 			{
@@ -361,6 +369,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_ussingen_gate_closed",
+		probability = 1,
 		response = "pbw_level_ussingen_gate_closed",
 		criterias = {
 			{
@@ -405,6 +414,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_ussingen_gatehouse",
+		probability = 1,
 		response = "pbw_level_ussingen_gatehouse",
 		criterias = {
 			{
@@ -449,6 +459,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_ussingen_hurry",
+		probability = 1,
 		response = "pbw_level_ussingen_hurry",
 		criterias = {
 			{
@@ -493,6 +504,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_ussingen_less_damaged",
+		probability = 1,
 		response = "pbw_level_ussingen_less_damaged",
 		criterias = {
 			{
@@ -537,6 +549,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_ussingen_manor_found",
+		probability = 1,
 		response = "pbw_level_ussingen_manor_found",
 		criterias = {
 			{
@@ -581,6 +594,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_ussingen_search_for_manor",
+		probability = 1,
 		response = "pbw_level_ussingen_search_for_manor",
 		criterias = {
 			{
@@ -625,6 +639,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_ussingen_spotting_manor",
+		probability = 1,
 		response = "pbw_level_ussingen_spotting_manor",
 		criterias = {
 			{
@@ -669,6 +684,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_ussingen_spotting_town",
+		probability = 1,
 		response = "pbw_level_ussingen_spotting_town",
 		criterias = {
 			{
@@ -713,6 +729,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_ussingen_stockpile_burned",
+		probability = 1,
 		response = "pbw_level_ussingen_stockpile_burned",
 		criterias = {
 			{
@@ -757,6 +774,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_ussingen_thick_smoke",
+		probability = 1,
 		response = "pbw_level_ussingen_thick_smoke",
 		criterias = {
 			{
@@ -801,6 +819,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_ussingen_way_through",
+		probability = 1,
 		response = "pbw_level_ussingen_way_through",
 		criterias = {
 			{
@@ -845,6 +864,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_ussingen_wine_cellar",
+		probability = 1,
 		response = "pbw_level_ussingen_wine_cellar",
 		criterias = {
 			{
@@ -895,6 +915,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_ussingen_wrong_way",
+		probability = 1,
 		response = "pbw_level_ussingen_wrong_way",
 		criterias = {
 			{
@@ -939,6 +960,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_ussingen_intro_a",
+		probability = 1,
 		response = "pbw_ussingen_intro_a",
 		criterias = {
 			{
@@ -983,6 +1005,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_ussingen_intro_b",
+		probability = 1,
 		response = "pbw_ussingen_intro_b",
 		criterias = {
 			{
@@ -1021,6 +1044,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_ussingen_intro_c",
+		probability = 1,
 		response = "pbw_ussingen_intro_c",
 		criterias = {
 			{

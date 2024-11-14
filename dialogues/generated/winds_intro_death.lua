@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_amethyst_weave_conversation_three_01",
+		probability = 1,
 		response = "pbw_amethyst_weave_conversation_three_01",
 		criterias = {
 			{
@@ -83,6 +84,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_amethyst_weave_conversation_three_02",
+		probability = 1,
 		response = "pbw_amethyst_weave_conversation_three_02",
 		criterias = {
 			{
@@ -120,6 +122,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_amethyst_weave_conversation_two_01",
+		probability = 1,
 		response = "pbw_amethyst_weave_conversation_two_01",
 		criterias = {
 			{
@@ -157,6 +160,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wind_death_intro_banter_a",
+		probability = 1,
 		response = "pbw_wind_death_intro_banter_a",
 		criterias = {
 			{
@@ -207,6 +211,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wind_death_intro_banter_b",
+		probability = 1,
 		response = "pbw_wind_death_intro_banter_b",
 		criterias = {
 			{
@@ -251,6 +256,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_wind_death_intro_banter_a",
+		probability = 1,
 		response = "pdr_wind_death_intro_banter_a",
 		criterias = {
 			{
@@ -301,6 +307,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_wind_death_intro_banter_b",
+		probability = 1,
 		response = "pdr_wind_death_intro_banter_b",
 		criterias = {
 			{
@@ -345,6 +352,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wind_death_intro_banter_a",
+		probability = 1,
 		response = "pes_wind_death_intro_banter_a",
 		criterias = {
 			{
@@ -395,6 +403,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wind_death_intro_banter_b",
+		probability = 1,
 		response = "pes_wind_death_intro_banter_b",
 		criterias = {
 			{
@@ -439,6 +448,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_amethyst_weave_conversation_one_01",
+		probability = 1,
 		response = "pwe_amethyst_weave_conversation_one_01",
 		criterias = {
 			{
@@ -513,6 +523,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_amethyst_weave_conversation_three_01",
+		probability = 1,
 		response = "pwe_amethyst_weave_conversation_three_01",
 		criterias = {
 			{
@@ -550,6 +561,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_amethyst_weave_conversation_two_01",
+		probability = 1,
 		response = "pwe_amethyst_weave_conversation_two_01",
 		criterias = {
 			{
@@ -587,6 +599,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_wind_death_intro_banter_a",
+		probability = 1,
 		response = "pwe_wind_death_intro_banter_a",
 		criterias = {
 			{
@@ -637,6 +650,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_wind_death_intro_banter_b",
+		probability = 1,
 		response = "pwe_wind_death_intro_banter_b",
 		criterias = {
 			{
@@ -681,6 +695,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_amethyst_weave_conversation_one_01",
+		probability = 1,
 		response = "pwh_amethyst_weave_conversation_one_01",
 		criterias = {
 			{
@@ -718,6 +733,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_amethyst_weave_conversation_three_01",
+		probability = 1,
 		response = "pwh_amethyst_weave_conversation_three_01",
 		criterias = {
 			{
@@ -755,6 +771,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_amethyst_weave_conversation_two_01",
+		probability = 1,
 		response = "pwh_amethyst_weave_conversation_two_01",
 		criterias = {
 			{
@@ -835,6 +852,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wind_death_intro_banter_a",
+		probability = 1,
 		response = "pwh_wind_death_intro_banter_a",
 		criterias = {
 			{
@@ -885,6 +903,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wind_death_intro_banter_b",
+		probability = 1,
 		response = "pwh_wind_death_intro_banter_b",
 		criterias = {
 			{

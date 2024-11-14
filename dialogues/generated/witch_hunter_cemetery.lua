@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pwh_cemetary_intro",
+		probability = 1,
 		response = "pwh_cemetary_intro",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_cemetary_intro_b",
+		probability = 1,
 		response = "pwh_cemetary_intro_b",
 		criterias = {
 			{
@@ -85,6 +87,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_cemetary_intro_c",
+		probability = 1,
 		response = "pwh_cemetary_intro_c",
 		criterias = {
 			{
@@ -123,6 +126,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_objective_cemetery_bringing_down_first_attachment",
+		probability = 1,
 		response = "pwh_objective_cemetery_bringing_down_first_attachment",
 		criterias = {
 			{
@@ -167,6 +171,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_objective_cemetery_bringing_down_fourth_attachment",
+		probability = 1,
 		response = "pwh_objective_cemetery_bringing_down_fourth_attachment",
 		criterias = {
 			{
@@ -211,6 +216,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_objective_cemetery_bringing_down_second_attachment",
+		probability = 1,
 		response = "pwh_objective_cemetery_bringing_down_second_attachment",
 		criterias = {
 			{
@@ -255,6 +261,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_objective_cemetery_bringing_down_third_attachment",
+		probability = 1,
 		response = "pwh_objective_cemetery_bringing_down_third_attachment",
 		criterias = {
 			{
@@ -299,6 +306,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_objective_cemetery_destroyed_plague_cauldron",
+		probability = 1,
 		response = "pwh_objective_cemetery_destroyed_plague_cauldron",
 		criterias = {
 			{
@@ -343,6 +351,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_objective_cemetery_done",
+		probability = 1,
 		response = "pwh_objective_cemetery_done",
 		criterias = {
 			{
@@ -387,6 +396,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_objective_cemetery_spotting_crypt_maze",
+		probability = 1,
 		response = "pwh_objective_cemetery_spotting_crypt_maze",
 		criterias = {
 			{
@@ -431,6 +441,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_objective_cemetery_spotting_graveyard",
+		probability = 1,
 		response = "pwh_objective_cemetery_spotting_graveyard",
 		criterias = {
 			{
@@ -475,6 +486,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_objective_cemetery_spotting_hedge_maze",
+		probability = 1,
 		response = "pwh_objective_cemetery_spotting_hedge_maze",
 		criterias = {
 			{
@@ -519,6 +531,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_objective_cemetery_spotting_mausoleum",
+		probability = 1,
 		response = "pwh_objective_cemetery_spotting_mausoleum",
 		criterias = {
 			{
@@ -563,6 +576,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_objective_cemetery_spotting_plague_brew_stains",
+		probability = 1,
 		response = "pwh_objective_cemetery_spotting_plague_brew_stains",
 		criterias = {
 			{
@@ -607,6 +621,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_objective_cemetery_spotting_plague_cauldron",
+		probability = 1,
 		response = "pwh_objective_cemetery_spotting_plague_cauldron",
 		criterias = {
 			{
@@ -651,6 +666,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_objective_cemetery_spotting_plague_pyre",
+		probability = 1,
 		response = "pwh_objective_cemetery_spotting_plague_pyre",
 		criterias = {
 			{
@@ -695,6 +711,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_objective_cemetery_spotting_skaven_tunnels",
+		probability = 1,
 		response = "pwh_objective_cemetery_spotting_skaven_tunnels",
 		criterias = {
 			{
@@ -739,6 +756,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_objective_cemetery_spotting_the_attachements",
+		probability = 1,
 		response = "pwh_objective_cemetery_spotting_the_attachements",
 		criterias = {
 			{
@@ -783,6 +801,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_objective_cemetery_spotting_victim",
+		probability = 1,
 		response = "pwh_objective_cemetery_spotting_victim",
 		criterias = {
 			{
@@ -827,6 +846,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_objective_cemetery_through_crypt_a",
+		probability = 1,
 		response = "pwh_objective_cemetery_through_crypt_a",
 		criterias = {
 			{
@@ -871,6 +891,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_objective_cemetery_through_crypt_b",
+		probability = 1,
 		response = "pwh_objective_cemetery_through_crypt_b",
 		criterias = {
 			{
@@ -915,6 +936,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_objective_cemetery_through_crypt_c",
+		probability = 1,
 		response = "pwh_objective_cemetery_through_crypt_c",
 		criterias = {
 			{

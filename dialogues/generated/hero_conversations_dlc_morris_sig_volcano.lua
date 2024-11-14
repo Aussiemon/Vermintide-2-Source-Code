@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_morris_volcano_face",
+		probability = 1,
 		response = "pbw_morris_volcano_face",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_volcano_fortress",
+		probability = 1,
 		response = "pbw_morris_volcano_fortress",
 		criterias = {
 			{
@@ -91,6 +93,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_volcano_glacier",
+		probability = 1,
 		response = "pbw_morris_volcano_glacier",
 		criterias = {
 			{
@@ -135,6 +138,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_volcano_ice_fire",
+		probability = 1,
 		response = "pbw_morris_volcano_ice_fire",
 		criterias = {
 			{
@@ -179,6 +183,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_volcano_lava",
+		probability = 1,
 		response = "pbw_morris_volcano_lava",
 		criterias = {
 			{
@@ -223,6 +228,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_volcano_outpost",
+		probability = 1,
 		response = "pbw_morris_volcano_outpost",
 		criterias = {
 			{
@@ -267,6 +273,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_volcano_settlement",
+		probability = 1,
 		response = "pbw_morris_volcano_settlement",
 		criterias = {
 			{
@@ -311,6 +318,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_volcano_face",
+		probability = 1,
 		response = "pdr_morris_volcano_face",
 		criterias = {
 			{
@@ -355,6 +363,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_volcano_fortress",
+		probability = 1,
 		response = "pdr_morris_volcano_fortress",
 		criterias = {
 			{
@@ -399,6 +408,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_volcano_glacier",
+		probability = 1,
 		response = "pdr_morris_volcano_glacier",
 		criterias = {
 			{
@@ -443,6 +453,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_volcano_ice_fire",
+		probability = 1,
 		response = "pdr_morris_volcano_ice_fire",
 		criterias = {
 			{
@@ -487,6 +498,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_volcano_lava",
+		probability = 1,
 		response = "pdr_morris_volcano_lava",
 		criterias = {
 			{
@@ -531,6 +543,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_volcano_outpost",
+		probability = 1,
 		response = "pdr_morris_volcano_outpost",
 		criterias = {
 			{
@@ -575,6 +588,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_volcano_settlement",
+		probability = 1,
 		response = "pdr_morris_volcano_settlement",
 		criterias = {
 			{
@@ -619,6 +633,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_volcano_face",
+		probability = 1,
 		response = "pes_morris_volcano_face",
 		criterias = {
 			{
@@ -663,6 +678,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_volcano_fortress",
+		probability = 1,
 		response = "pes_morris_volcano_fortress",
 		criterias = {
 			{
@@ -707,6 +723,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_volcano_glacier",
+		probability = 1,
 		response = "pes_morris_volcano_glacier",
 		criterias = {
 			{
@@ -751,6 +768,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_volcano_ice_fire",
+		probability = 1,
 		response = "pes_morris_volcano_ice_fire",
 		criterias = {
 			{
@@ -795,6 +813,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_volcano_lava",
+		probability = 1,
 		response = "pes_morris_volcano_lava",
 		criterias = {
 			{
@@ -839,6 +858,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_volcano_outpost",
+		probability = 1,
 		response = "pes_morris_volcano_outpost",
 		criterias = {
 			{
@@ -883,6 +903,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_volcano_settlement",
+		probability = 1,
 		response = "pes_morris_volcano_settlement",
 		criterias = {
 			{
@@ -927,6 +948,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_volcano_face",
+		probability = 1,
 		response = "pwe_morris_volcano_face",
 		criterias = {
 			{
@@ -971,6 +993,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_volcano_fortress",
+		probability = 1,
 		response = "pwe_morris_volcano_fortress",
 		criterias = {
 			{
@@ -1015,6 +1038,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_volcano_glacier",
+		probability = 1,
 		response = "pwe_morris_volcano_glacier",
 		criterias = {
 			{
@@ -1059,6 +1083,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_volcano_ice_fire",
+		probability = 1,
 		response = "pwe_morris_volcano_ice_fire",
 		criterias = {
 			{
@@ -1103,6 +1128,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_volcano_lava",
+		probability = 1,
 		response = "pwe_morris_volcano_lava",
 		criterias = {
 			{
@@ -1147,6 +1173,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_volcano_outpost",
+		probability = 1,
 		response = "pwe_morris_volcano_outpost",
 		criterias = {
 			{
@@ -1191,6 +1218,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_volcano_settlement",
+		probability = 1,
 		response = "pwe_morris_volcano_settlement",
 		criterias = {
 			{
@@ -1235,6 +1263,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_volcano_face",
+		probability = 1,
 		response = "pwh_morris_volcano_face",
 		criterias = {
 			{
@@ -1279,6 +1308,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_volcano_fortress",
+		probability = 1,
 		response = "pwh_morris_volcano_fortress",
 		criterias = {
 			{
@@ -1323,6 +1353,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_volcano_glacier",
+		probability = 1,
 		response = "pwh_morris_volcano_glacier",
 		criterias = {
 			{
@@ -1367,6 +1398,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_volcano_ice_fire",
+		probability = 1,
 		response = "pwh_morris_volcano_ice_fire",
 		criterias = {
 			{
@@ -1411,6 +1443,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_volcano_lava",
+		probability = 1,
 		response = "pwh_morris_volcano_lava",
 		criterias = {
 			{
@@ -1455,6 +1488,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_volcano_outpost",
+		probability = 1,
 		response = "pwh_morris_volcano_outpost",
 		criterias = {
 			{
@@ -1499,6 +1533,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_volcano_settlement",
+		probability = 1,
 		response = "pwh_morris_volcano_settlement",
 		criterias = {
 			{

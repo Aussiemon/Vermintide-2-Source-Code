@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "nik_wizard_trail_conversation_five_a_01",
+		probability = 1,
 		response = "nik_wizard_trail_conversation_five_a_01",
 		criterias = {
 			{
@@ -53,6 +54,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_wizard_trail_conversation_four_a_01",
+		probability = 1,
 		response = "nik_wizard_trail_conversation_four_a_01",
 		criterias = {
 			{
@@ -103,6 +105,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_wizard_trail_conversation_one_a_01",
+		probability = 1,
 		response = "nik_wizard_trail_conversation_one_a_01",
 		criterias = {
 			{
@@ -153,6 +156,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_wizard_trail_conversation_three_a_01",
+		probability = 1,
 		response = "nik_wizard_trail_conversation_three_a_01",
 		criterias = {
 			{
@@ -203,6 +207,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_wizard_trail_conversation_two_a_01",
+		probability = 1,
 		response = "nik_wizard_trail_conversation_two_a_01",
 		criterias = {
 			{
@@ -253,6 +258,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_conversation_five_b_01",
+		probability = 1,
 		response = "pbw_wizard_trail_conversation_five_b_01",
 		criterias = {
 			{
@@ -271,6 +277,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_conversation_one_b_01",
+		probability = 1,
 		response = "pbw_wizard_trail_conversation_one_b_01",
 		criterias = {
 			{
@@ -289,6 +296,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_conversation_seven_a_01",
+		probability = 1,
 		response = "pbw_wizard_trail_conversation_seven_a_01",
 		criterias = {
 			{
@@ -375,6 +383,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_conversation_six_b_01",
+		probability = 1,
 		response = "pbw_wizard_trail_conversation_six_b_01",
 		criterias = {
 			{
@@ -412,6 +421,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_conversation_six_d_01",
+		probability = 1,
 		response = "pbw_wizard_trail_conversation_six_d_01",
 		criterias = {
 			{
@@ -449,6 +459,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_trail_npc_conversations_dummy_trigger",
+		probability = 1,
 		response = "pdr_trail_npc_conversations_dummy_trigger",
 		criterias = {
 			{
@@ -541,6 +552,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_wizard_trail_conversation_eight_a_01",
+		probability = 1,
 		response = "pdr_wizard_trail_conversation_eight_a_01",
 		criterias = {
 			{
@@ -627,6 +639,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_wizard_trail_conversation_four_c_01",
+		probability = 1,
 		response = "pdr_wizard_trail_conversation_four_c_01",
 		criterias = {
 			{
@@ -651,6 +664,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_wizard_trail_conversation_four_e_01",
+		probability = 1,
 		response = "pdr_wizard_trail_conversation_four_e_01",
 		criterias = {
 			{
@@ -675,6 +689,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_wizard_trail_conversation_nine_c_01",
+		probability = 1,
 		response = "pdr_wizard_trail_conversation_nine_c_01",
 		criterias = {
 			{
@@ -712,6 +727,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_wizard_trail_conversation_one_c_01",
+		probability = 1,
 		response = "pdr_wizard_trail_conversation_one_c_01",
 		criterias = {
 			{
@@ -736,6 +752,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_wizard_trail_conversation_ten_b_01",
+		probability = 1,
 		response = "pdr_wizard_trail_conversation_ten_b_01",
 		criterias = {
 			{
@@ -773,6 +790,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wizard_trail_conversation_eight_b_01",
+		probability = 1,
 		response = "pes_wizard_trail_conversation_eight_b_01",
 		criterias = {
 			{
@@ -810,6 +828,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wizard_trail_conversation_eight_d_01",
+		probability = 1,
 		response = "pes_wizard_trail_conversation_eight_d_01",
 		criterias = {
 			{
@@ -847,6 +866,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wizard_trail_conversation_four_d_01",
+		probability = 1,
 		response = "pes_wizard_trail_conversation_four_d_01",
 		criterias = {
 			{
@@ -871,6 +891,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wizard_trail_conversation_one_d_01",
+		probability = 1,
 		response = "pes_wizard_trail_conversation_one_d_01",
 		criterias = {
 			{
@@ -895,6 +916,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wizard_trail_conversation_six_c_01",
+		probability = 1,
 		response = "pes_wizard_trail_conversation_six_c_01",
 		criterias = {
 			{
@@ -932,6 +954,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wizard_trail_conversation_six_e_01",
+		probability = 1,
 		response = "pes_wizard_trail_conversation_six_e_01",
 		criterias = {
 			{
@@ -969,6 +992,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wizard_trail_conversation_ten_a_01",
+		probability = 1,
 		response = "pes_wizard_trail_conversation_ten_a_01",
 		criterias = {
 			{
@@ -1055,6 +1079,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wizard_trail_conversation_ten_c_01",
+		probability = 1,
 		response = "pes_wizard_trail_conversation_ten_c_01",
 		criterias = {
 			{
@@ -1092,6 +1117,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wizard_trail_conversation_three_c_01",
+		probability = 1,
 		response = "pes_wizard_trail_conversation_three_c_01",
 		criterias = {
 			{
@@ -1116,6 +1142,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_wizard_trail_conversation_two_c_01",
+		probability = 1,
 		response = "pes_wizard_trail_conversation_two_c_01",
 		criterias = {
 			{
@@ -1140,6 +1167,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_trail_npc_conversations_dummy_trigger",
+		probability = 1,
 		response = "pwe_trail_npc_conversations_dummy_trigger",
 		criterias = {
 			{
@@ -1232,6 +1260,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_wizard_trail_conversation_five_c_01",
+		probability = 1,
 		response = "pwe_wizard_trail_conversation_five_c_01",
 		criterias = {
 			{
@@ -1256,6 +1285,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_wizard_trail_conversation_four_b_01",
+		probability = 1,
 		response = "pwe_wizard_trail_conversation_four_b_01",
 		criterias = {
 			{
@@ -1274,6 +1304,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_wizard_trail_conversation_nine_a_01",
+		probability = 1,
 		response = "pwe_wizard_trail_conversation_nine_a_01",
 		criterias = {
 			{
@@ -1360,6 +1391,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_wizard_trail_conversation_seven_c_01",
+		probability = 1,
 		response = "pwe_wizard_trail_conversation_seven_c_01",
 		criterias = {
 			{
@@ -1397,6 +1429,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_wizard_trail_conversation_ten_d_01",
+		probability = 1,
 		response = "pwe_wizard_trail_conversation_ten_d_01",
 		criterias = {
 			{
@@ -1434,6 +1467,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_wizard_trail_conversation_two_b_01",
+		probability = 1,
 		response = "pwe_wizard_trail_conversation_two_b_01",
 		criterias = {
 			{
@@ -1452,6 +1486,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wizard_trail_conversation_eight_c_01",
+		probability = 1,
 		response = "pwh_wizard_trail_conversation_eight_c_01",
 		criterias = {
 			{
@@ -1489,6 +1524,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wizard_trail_conversation_nine_b_01",
+		probability = 1,
 		response = "pwh_wizard_trail_conversation_nine_b_01",
 		criterias = {
 			{
@@ -1526,6 +1562,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wizard_trail_conversation_nine_d_01",
+		probability = 1,
 		response = "pwh_wizard_trail_conversation_nine_d_01",
 		criterias = {
 			{
@@ -1563,6 +1600,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wizard_trail_conversation_seven_b_01",
+		probability = 1,
 		response = "pwh_wizard_trail_conversation_seven_b_01",
 		criterias = {
 			{
@@ -1600,6 +1638,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wizard_trail_conversation_seven_d_01",
+		probability = 1,
 		response = "pwh_wizard_trail_conversation_seven_d_01",
 		criterias = {
 			{
@@ -1637,6 +1676,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wizard_trail_conversation_six_a_01",
+		probability = 1,
 		response = "pwh_wizard_trail_conversation_six_a_01",
 		criterias = {
 			{
@@ -1723,6 +1763,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wizard_trail_conversation_three_b_01",
+		probability = 1,
 		response = "pwh_wizard_trail_conversation_three_b_01",
 		criterias = {
 			{
@@ -1741,6 +1782,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_wizard_trail_conversation_three_d_01",
+		probability = 1,
 		response = "pwh_wizard_trail_conversation_three_d_01",
 		criterias = {
 			{

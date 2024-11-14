@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_level_fort_story_four_01",
+		probability = 1,
 		response = "pbw_level_fort_story_four_01",
 		criterias = {
 			{
@@ -77,6 +78,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_fort_story_four_02",
+		probability = 1,
 		response = "pbw_level_fort_story_four_02",
 		criterias = {
 			{
@@ -114,6 +116,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_fort_story_nine_01",
+		probability = 1,
 		response = "pbw_level_fort_story_nine_01",
 		criterias = {
 			{
@@ -151,6 +154,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_fort_story_on_the_way_one_01",
+		probability = 1,
 		response = "pbw_level_fort_story_on_the_way_one_01",
 		criterias = {
 			{
@@ -225,6 +229,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_fort_story_on_the_way_one_02",
+		probability = 1,
 		response = "pbw_level_fort_story_on_the_way_one_02",
 		criterias = {
 			{
@@ -262,6 +267,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_fort_story_river_one_01",
+		probability = 1,
 		response = "pbw_level_fort_story_river_one_01",
 		criterias = {
 			{
@@ -336,6 +342,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_fort_story_river_one_02",
+		probability = 1,
 		response = "pbw_level_fort_story_river_one_02",
 		criterias = {
 			{
@@ -373,6 +380,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_fort_story_river_one_03",
+		probability = 1,
 		response = "pbw_level_fort_story_river_one_03",
 		criterias = {
 			{
@@ -410,6 +418,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_story_on_the_way_five_01",
+		probability = 1,
 		response = "pdr_level_fort_story_on_the_way_five_01",
 		criterias = {
 			{
@@ -447,6 +456,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_story_on_the_way_five_02",
+		probability = 1,
 		response = "pdr_level_fort_story_on_the_way_five_02",
 		criterias = {
 			{
@@ -484,6 +494,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_story_on_the_way_one_01",
+		probability = 1,
 		response = "pdr_level_fort_story_on_the_way_one_01",
 		criterias = {
 			{
@@ -521,6 +532,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_story_on_the_way_one_02",
+		probability = 1,
 		response = "pdr_level_fort_story_on_the_way_one_02",
 		criterias = {
 			{
@@ -558,6 +570,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_story_on_the_way_two_01",
+		probability = 1,
 		response = "pdr_level_fort_story_on_the_way_two_01",
 		criterias = {
 			{
@@ -595,6 +608,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_story_on_the_way_two_02",
+		probability = 1,
 		response = "pdr_level_fort_story_on_the_way_two_02",
 		criterias = {
 			{
@@ -632,6 +646,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_story_river_one_01",
+		probability = 1,
 		response = "pdr_level_fort_story_river_one_01",
 		criterias = {
 			{
@@ -669,6 +684,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_story_river_one_02",
+		probability = 1,
 		response = "pdr_level_fort_story_river_one_02",
 		criterias = {
 			{
@@ -706,6 +722,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_story_six_01",
+		probability = 1,
 		response = "pdr_level_fort_story_six_01",
 		criterias = {
 			{
@@ -780,6 +797,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_story_six_02",
+		probability = 1,
 		response = "pdr_level_fort_story_six_02",
 		criterias = {
 			{
@@ -817,6 +835,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_fort_story_eight_01",
+		probability = 1,
 		response = "pes_level_fort_story_eight_01",
 		criterias = {
 			{
@@ -891,6 +910,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_fort_story_eight_02",
+		probability = 1,
 		response = "pes_level_fort_story_eight_02",
 		criterias = {
 			{
@@ -928,6 +948,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_fort_story_four_01",
+		probability = 1,
 		response = "pes_level_fort_story_four_01",
 		criterias = {
 			{
@@ -965,6 +986,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_fort_story_four_02",
+		probability = 1,
 		response = "pes_level_fort_story_four_02",
 		criterias = {
 			{
@@ -1002,6 +1024,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_fort_story_on_the_way_three_01",
+		probability = 1,
 		response = "pes_level_fort_story_on_the_way_three_01",
 		criterias = {
 			{
@@ -1082,6 +1105,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_fort_story_seven_01",
+		probability = 1,
 		response = "pes_level_fort_story_seven_01",
 		criterias = {
 			{
@@ -1156,6 +1180,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_fort_story_seven_02",
+		probability = 1,
 		response = "pes_level_fort_story_seven_02",
 		criterias = {
 			{
@@ -1193,6 +1218,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_fort_story_seven_03",
+		probability = 1,
 		response = "pes_level_fort_story_seven_03",
 		criterias = {
 			{
@@ -1230,6 +1256,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_fort_story_eight_01",
+		probability = 1,
 		response = "pwe_level_fort_story_eight_01",
 		criterias = {
 			{
@@ -1267,6 +1294,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_fort_story_eight_02",
+		probability = 1,
 		response = "pwe_level_fort_story_eight_02",
 		criterias = {
 			{
@@ -1304,6 +1332,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_fort_story_nine_01",
+		probability = 1,
 		response = "pwe_level_fort_story_nine_01",
 		criterias = {
 			{
@@ -1378,6 +1407,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_fort_story_nine_02",
+		probability = 1,
 		response = "pwe_level_fort_story_nine_02",
 		criterias = {
 			{
@@ -1415,6 +1445,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_fort_story_on_the_way_five_01",
+		probability = 1,
 		response = "pwe_level_fort_story_on_the_way_five_01",
 		criterias = {
 			{
@@ -1489,6 +1520,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_fort_story_on_the_way_five_02",
+		probability = 1,
 		response = "pwe_level_fort_story_on_the_way_five_02",
 		criterias = {
 			{
@@ -1526,6 +1558,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_fort_story_on_the_way_three_01",
+		probability = 1,
 		response = "pwe_level_fort_story_on_the_way_three_01",
 		criterias = {
 			{
@@ -1563,6 +1596,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_fort_story_on_the_way_three_02",
+		probability = 1,
 		response = "pwe_level_fort_story_on_the_way_three_02",
 		criterias = {
 			{
@@ -1600,6 +1634,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_fort_story_on_the_way_two_01",
+		probability = 1,
 		response = "pwe_level_fort_story_on_the_way_two_01",
 		criterias = {
 			{
@@ -1674,6 +1709,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_fort_story_on_the_way_two_02",
+		probability = 1,
 		response = "pwe_level_fort_story_on_the_way_two_02",
 		criterias = {
 			{
@@ -1711,6 +1747,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_story_on_the_way_three_02",
+		probability = 1,
 		response = "pwh_level_fort_story_on_the_way_three_02",
 		criterias = {
 			{
@@ -1748,6 +1785,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_story_seven_02",
+		probability = 1,
 		response = "pwh_level_fort_story_seven_02",
 		criterias = {
 			{
@@ -1785,6 +1823,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_story_seven_03",
+		probability = 1,
 		response = "pwh_level_fort_story_seven_03",
 		criterias = {
 			{
@@ -1822,6 +1861,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_story_six_01",
+		probability = 1,
 		response = "pwh_level_fort_story_six_01",
 		criterias = {
 			{
@@ -1859,6 +1899,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_fort_story_six_02",
+		probability = 1,
 		response = "pwh_level_fort_story_six_02",
 		criterias = {
 			{

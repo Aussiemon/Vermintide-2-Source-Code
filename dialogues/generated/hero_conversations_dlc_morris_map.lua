@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "nfl_morris_before_shrine_tutorial_01",
+		probability = 1,
 		response = "nfl_morris_before_shrine_tutorial_01",
 		criterias = {
 			{
@@ -27,6 +28,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_morris_map_shrine_tutorial_one",
+		probability = 1,
 		response = "nfl_morris_map_shrine_tutorial_one",
 		criterias = {
 			{
@@ -51,6 +53,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_morris_map_shrine_tutorial_three",
+		probability = 1,
 		response = "nfl_morris_map_shrine_tutorial_three",
 		criterias = {
 			{
@@ -75,6 +78,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_morris_map_shrine_tutorial_two",
+		probability = 1,
 		response = "nfl_morris_map_shrine_tutorial_two",
 		criterias = {
 			{
@@ -99,6 +103,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_morris_map_tutorial_five",
+		probability = 1,
 		response = "nfl_morris_map_tutorial_five",
 		criterias = {
 			{
@@ -123,6 +128,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_morris_map_tutorial_one",
+		probability = 1,
 		response = "nfl_morris_map_tutorial_one",
 		criterias = {
 			{
@@ -153,6 +159,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_morris_map_tutorial_three",
+		probability = 1,
 		response = "nfl_morris_map_tutorial_three",
 		criterias = {
 			{
@@ -177,6 +184,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_morris_map_tutorial_two",
+		probability = 1,
 		response = "nfl_morris_map_tutorial_two",
 		criterias = {
 			{
@@ -201,6 +209,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_purchasing_blessing",
+		probability = 1,
 		response = "pbw_gameplay_purchasing_blessing",
 		criterias = {
 			{
@@ -239,6 +248,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_shrine_hurry",
+		probability = 1,
 		response = "pbw_gameplay_shrine_hurry",
 		criterias = {
 			{
@@ -263,6 +273,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_purchasing_blessing",
+		probability = 1,
 		response = "pdr_gameplay_purchasing_blessing",
 		criterias = {
 			{
@@ -301,6 +312,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gameplay_shrine_hurry",
+		probability = 1,
 		response = "pdr_gameplay_shrine_hurry",
 		criterias = {
 			{
@@ -325,6 +337,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_purchasing_blessing",
+		probability = 1,
 		response = "pes_gameplay_purchasing_blessing",
 		criterias = {
 			{
@@ -363,6 +376,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gameplay_shrine_hurry",
+		probability = 1,
 		response = "pes_gameplay_shrine_hurry",
 		criterias = {
 			{
@@ -387,6 +401,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_purchasing_blessing",
+		probability = 1,
 		response = "pwe_gameplay_purchasing_blessing",
 		criterias = {
 			{
@@ -425,6 +440,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_shrine_hurry",
+		probability = 1,
 		response = "pwe_gameplay_shrine_hurry",
 		criterias = {
 			{
@@ -449,6 +465,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_purchasing_blessing",
+		probability = 1,
 		response = "pwh_gameplay_purchasing_blessing",
 		criterias = {
 			{
@@ -487,6 +504,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_shrine_hurry",
+		probability = 1,
 		response = "pwh_gameplay_shrine_hurry",
 		criterias = {
 			{

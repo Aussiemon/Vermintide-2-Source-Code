@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pwe_village_01_opening_cinematic_a",
+		probability = 1,
 		response = "pwe_village_01_opening_cinematic_a",
 		criterias = {
 			{
@@ -34,6 +35,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_01_opening_cinematic_c",
+		probability = 1,
 		response = "pwe_village_01_opening_cinematic_c",
 		criterias = {
 			{
@@ -64,6 +66,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_01_opening_cinematic_d",
+		probability = 1,
 		response = "pwe_village_01_opening_cinematic_d",
 		criterias = {
 			{
@@ -95,6 +98,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_02_beach_a",
+		probability = 1,
 		response = "pwe_village_02_beach_a",
 		criterias = {
 			{
@@ -132,6 +136,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_02_beach_b",
+		probability = 1,
 		response = "pwe_village_02_beach_b",
 		criterias = {
 			{
@@ -163,6 +168,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_03_gather_a",
+		probability = 1,
 		response = "pwe_village_03_gather_a",
 		criterias = {
 			{
@@ -238,6 +244,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_03_gather_b",
+		probability = 1,
 		response = "pwe_village_03_gather_b",
 		criterias = {
 			{
@@ -269,6 +276,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_03_gather_c",
+		probability = 1,
 		response = "pwe_village_03_gather_c",
 		criterias = {
 			{
@@ -313,6 +321,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_03_gather_d",
+		probability = 1,
 		response = "pwe_village_03_gather_d",
 		criterias = {
 			{
@@ -344,6 +353,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_04_skaven_a",
+		probability = 1,
 		response = "pwe_village_04_skaven_a",
 		criterias = {
 			{
@@ -388,6 +398,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_05_hut_a",
+		probability = 1,
 		response = "pwe_village_05_hut_a",
 		criterias = {
 			{
@@ -438,6 +449,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_06_lighthouse_a",
+		probability = 1,
 		response = "pwe_village_06_lighthouse_a",
 		criterias = {
 			{
@@ -482,6 +494,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_06_lighthouse_b",
+		probability = 1,
 		response = "pwe_village_06_lighthouse_b",
 		criterias = {
 			{
@@ -506,6 +519,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_07_skaven_shipwreck_a",
+		probability = 1,
 		response = "pwe_village_07_skaven_shipwreck_a",
 		criterias = {
 			{
@@ -556,6 +570,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_09_chaos_ships_a",
+		probability = 1,
 		response = "pwe_village_09_chaos_ships_a",
 		criterias = {
 			{
@@ -606,6 +621,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_10_bridge_a",
+		probability = 1,
 		response = "pwe_village_10_bridge_a",
 		criterias = {
 			{
@@ -656,6 +672,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_11_harbour_shipwrecks_a",
+		probability = 1,
 		response = "pwe_village_11_harbour_shipwrecks_a",
 		criterias = {
 			{
@@ -706,6 +723,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_12_harbour_whale_carcass_a",
+		probability = 1,
 		response = "pwe_village_12_harbour_whale_carcass_a",
 		criterias = {
 			{
@@ -756,6 +774,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_12_harbour_whale_carcass_b",
+		probability = 1,
 		response = "pwe_village_12_harbour_whale_carcass_b",
 		criterias = {
 			{
@@ -780,6 +799,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_14_guidance_lighthouse_a",
+		probability = 1,
 		response = "pwe_village_14_guidance_lighthouse_a",
 		criterias = {
 			{
@@ -824,6 +844,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_14_guidance_lighthouse_b",
+		probability = 1,
 		response = "pwe_village_14_guidance_lighthouse_b",
 		criterias = {
 			{
@@ -848,6 +869,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_15_tainted_light_a",
+		probability = 1,
 		response = "pwe_village_15_tainted_light_a",
 		criterias = {
 			{
@@ -898,6 +920,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_16_intact_ship_a",
+		probability = 1,
 		response = "pwe_village_16_intact_ship_a",
 		criterias = {
 			{
@@ -948,6 +971,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_16_intact_ship_b",
+		probability = 1,
 		response = "pwe_village_16_intact_ship_b",
 		criterias = {
 			{
@@ -972,6 +996,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_18_elevator_sighted_a",
+		probability = 1,
 		response = "pwe_village_18_elevator_sighted_a",
 		criterias = {
 			{
@@ -1016,6 +1041,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_19_elevator_gears_a",
+		probability = 1,
 		response = "pwe_village_19_elevator_gears_a",
 		criterias = {
 			{
@@ -1060,6 +1086,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_20_elevator_oil_a",
+		probability = 1,
 		response = "pwe_village_20_elevator_oil_a",
 		criterias = {
 			{
@@ -1104,6 +1131,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_20a_elevator_arrived_a",
+		probability = 1,
 		response = "pwe_village_20a_elevator_arrived_a",
 		criterias = {
 			{
@@ -1148,6 +1176,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_23_nurgle_gateway_a",
+		probability = 1,
 		response = "pwe_village_23_nurgle_gateway_a",
 		criterias = {
 			{
@@ -1192,6 +1221,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_24_oil_tutorial_a",
+		probability = 1,
 		response = "pwe_village_24_oil_tutorial_a",
 		criterias = {
 			{
@@ -1216,6 +1246,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_25_oil_tutorial_complete_a",
+		probability = 1,
 		response = "pwe_village_25_oil_tutorial_complete_a",
 		criterias = {
 			{
@@ -1260,6 +1291,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_26_twisted_tree_a",
+		probability = 1,
 		response = "pwe_village_26_twisted_tree_a",
 		criterias = {
 			{
@@ -1310,6 +1342,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_26_twisted_tree_b",
+		probability = 1,
 		response = "pwe_village_26_twisted_tree_b",
 		criterias = {
 			{
@@ -1334,6 +1367,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_28_lighthouse_hero_moment_a",
+		probability = 1,
 		response = "pwe_village_28_lighthouse_hero_moment_a",
 		criterias = {
 			{
@@ -1378,6 +1412,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_29_corruption_source_a",
+		probability = 1,
 		response = "pwe_village_29_corruption_source_a",
 		criterias = {
 			{
@@ -1422,6 +1457,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_29_corruption_source_b",
+		probability = 1,
 		response = "pwe_village_29_corruption_source_b",
 		criterias = {
 			{
@@ -1446,6 +1482,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_29_corruption_source_c",
+		probability = 1,
 		response = "pwe_village_29_corruption_source_c",
 		criterias = {
 			{
@@ -1470,6 +1507,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_30_burning_town_a",
+		probability = 1,
 		response = "pwe_village_30_burning_town_a",
 		criterias = {
 			{
@@ -1520,6 +1558,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_30_burning_town_b",
+		probability = 1,
 		response = "pwe_village_30_burning_town_b",
 		criterias = {
 			{
@@ -1544,6 +1583,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_31_fill_cart_a",
+		probability = 1,
 		response = "pwe_village_31_fill_cart_a",
 		criterias = {
 			{
@@ -1594,6 +1634,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_32_that_did_it_a",
+		probability = 1,
 		response = "pwe_village_32_that_did_it_a",
 		criterias = {
 			{
@@ -1644,6 +1685,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_32a_wagon_full_a",
+		probability = 1,
 		response = "pwe_village_32a_wagon_full_a",
 		criterias = {
 			{
@@ -1688,6 +1730,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_33_fuse_a",
+		probability = 1,
 		response = "pwe_village_33_fuse_a",
 		criterias = {
 			{
@@ -1732,6 +1775,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_34_lighthouse_collapse_a",
+		probability = 1,
 		response = "pwe_village_34_lighthouse_collapse_a",
 		criterias = {
 			{
@@ -1776,6 +1820,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_34_lighthouse_collapse_b",
+		probability = 1,
 		response = "pwe_village_34_lighthouse_collapse_b",
 		criterias = {
 			{
@@ -1800,6 +1845,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_34_lighthouse_collapse_c",
+		probability = 1,
 		response = "pwe_village_34_lighthouse_collapse_c",
 		criterias = {
 			{
@@ -1824,6 +1870,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_35_missing_comrade_a",
+		probability = 1,
 		response = "pwe_village_35_missing_comrade_a",
 		criterias = {
 			{
@@ -1887,6 +1934,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_35_missing_comrade_b",
+		probability = 1,
 		response = "pwe_village_35_missing_comrade_b",
 		criterias = {
 			{
@@ -1905,6 +1953,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_35_missing_comrade_c",
+		probability = 1,
 		response = "pwe_village_35_missing_comrade_c",
 		criterias = {
 			{
@@ -1929,6 +1978,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_bonus_buboes_a",
+		probability = 1,
 		response = "pwe_village_bonus_buboes_a",
 		criterias = {
 			{
@@ -1965,6 +2015,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_bonus_buboes_b",
+		probability = 1,
 		response = "pwe_village_bonus_buboes_b",
 		criterias = {
 			{
@@ -2003,6 +2054,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_bonus_explosive_cart_tutorial_a",
+		probability = 1,
 		response = "pwe_village_bonus_explosive_cart_tutorial_a",
 		criterias = {
 			{
@@ -2047,6 +2099,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_bonus_explosive_cart_tutorial_b",
+		probability = 1,
 		response = "pwe_village_bonus_explosive_cart_tutorial_b",
 		criterias = {
 			{
@@ -2071,6 +2124,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_bonus_fish_barrel_a",
+		probability = 1,
 		response = "pwe_village_bonus_fish_barrel_a",
 		criterias = {
 			{
@@ -2107,6 +2161,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_bonus_fish_barrel_b",
+		probability = 1,
 		response = "pwe_village_bonus_fish_barrel_b",
 		criterias = {
 			{
@@ -2151,6 +2206,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_bonus_harbour_evil_glow_a",
+		probability = 1,
 		response = "pwe_village_bonus_harbour_evil_glow_a",
 		criterias = {
 			{
@@ -2201,6 +2257,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_bonus_harbour_sewers_a",
+		probability = 1,
 		response = "pwe_village_bonus_harbour_sewers_a",
 		criterias = {
 			{
@@ -2251,6 +2308,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_bonus_oil_dispenser_a",
+		probability = 1,
 		response = "pwe_village_bonus_oil_dispenser_a",
 		criterias = {
 			{
@@ -2301,6 +2359,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_bonus_shallyan_idols_b",
+		probability = 1,
 		response = "pwe_village_bonus_shallyan_idols_b",
 		criterias = {
 			{
@@ -2337,6 +2396,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_bonus_tavern_a",
+		probability = 1,
 		response = "pwe_village_bonus_tavern_a",
 		criterias = {
 			{
@@ -2387,6 +2447,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_bonus_whale_guts_a",
+		probability = 1,
 		response = "pwe_village_bonus_whale_guts_a",
 		criterias = {
 			{
@@ -2437,6 +2498,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_village_bonus_whale_guts_b",
+		probability = 1,
 		response = "pwe_village_bonus_whale_guts_b",
 		criterias = {
 			{
@@ -2612,7 +2674,7 @@ return function ()
 			},
 		},
 		pwe_village_03_gather_a = {
-			category = "level_talk_must_play",
+			category = "level_talk",
 			database = "wood_elf_dlc_whaling_village",
 			dialogue_animations_n = 2,
 			face_animations_n = 2,
@@ -2641,7 +2703,7 @@ return function ()
 			},
 		},
 		pwe_village_03_gather_b = {
-			category = "level_talk_must_play",
+			category = "level_talk",
 			database = "wood_elf_dlc_whaling_village",
 			dialogue_animations_n = 2,
 			face_animations_n = 2,
@@ -2670,7 +2732,7 @@ return function ()
 			},
 		},
 		pwe_village_03_gather_c = {
-			category = "level_talk_must_play",
+			category = "level_talk",
 			database = "wood_elf_dlc_whaling_village",
 			dialogue_animations_n = 2,
 			face_animations_n = 2,
@@ -2717,7 +2779,7 @@ return function ()
 			},
 		},
 		pwe_village_03_gather_d = {
-			category = "level_talk_must_play",
+			category = "level_talk",
 			database = "wood_elf_dlc_whaling_village",
 			dialogue_animations_n = 2,
 			face_animations_n = 2,
@@ -4048,9 +4110,9 @@ return function ()
 				"pwe_generic_path_blocked_03",
 			},
 			sound_events_duration = {
-				0.86060416698456,
-				1.9164583683014,
-				1.2026666402817,
+				0.86000001430511,
+				1.9159791469574,
+				1.2020000219345,
 			},
 		},
 		pwe_village_bonus_explosive_cart_tutorial_b = {

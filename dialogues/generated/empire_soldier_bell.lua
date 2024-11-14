@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pes_bell_intro_a",
+		probability = 1,
 		response = "pes_bell_intro_a",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_bell_intro_b",
+		probability = 1,
 		response = "pes_bell_intro_b",
 		criterias = {
 			{
@@ -85,6 +87,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_bell_intro_c",
+		probability = 1,
 		response = "pes_bell_intro_c",
 		criterias = {
 			{
@@ -123,6 +126,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_bell_chime_01",
+		probability = 1,
 		response = "pes_level_bell_chime_01",
 		criterias = {
 			{
@@ -167,6 +171,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_bell_effect_01",
+		probability = 1,
 		response = "pes_level_bell_effect_01",
 		criterias = {
 			{
@@ -217,6 +222,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_bell_falling_01",
+		probability = 1,
 		response = "pes_level_bell_falling_01",
 		criterias = {
 			{
@@ -267,6 +273,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_bell_horde_01",
+		probability = 1,
 		response = "pes_level_bell_horde_01",
 		criterias = {
 			{

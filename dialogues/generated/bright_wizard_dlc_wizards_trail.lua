@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_wizard_trail_bridge_down",
+		probability = 1,
 		response = "pbw_wizard_trail_bridge_down",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_caravan_b",
+		probability = 1,
 		response = "pbw_wizard_trail_caravan_b",
 		criterias = {
 			{
@@ -71,6 +73,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_cargo",
+		probability = 1,
 		response = "pbw_wizard_trail_cargo",
 		criterias = {
 			{
@@ -115,6 +118,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_crate_down",
+		probability = 1,
 		response = "pbw_wizard_trail_crate_down",
 		criterias = {
 			{
@@ -159,6 +163,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_crate_drop_b",
+		probability = 1,
 		response = "pbw_wizard_trail_crate_drop_b",
 		criterias = {
 			{
@@ -183,6 +188,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_free_sleigh",
+		probability = 1,
 		response = "pbw_wizard_trail_free_sleigh",
 		criterias = {
 			{
@@ -227,6 +233,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_illusion_fades_a",
+		probability = 1,
 		response = "pbw_wizard_trail_illusion_fades_a",
 		criterias = {
 			{
@@ -271,6 +278,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_illusion_fades_b",
+		probability = 1,
 		response = "pbw_wizard_trail_illusion_fades_b",
 		criterias = {
 			{
@@ -301,6 +309,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_illusion_fades_c",
+		probability = 1,
 		response = "pbw_wizard_trail_illusion_fades_c",
 		criterias = {
 			{
@@ -331,6 +340,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_intro_b",
+		probability = 1,
 		response = "pbw_wizard_trail_intro_b",
 		criterias = {
 			{
@@ -369,6 +379,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_intro_c",
+		probability = 1,
 		response = "pbw_wizard_trail_intro_c",
 		criterias = {
 			{
@@ -413,6 +424,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_intruders_b",
+		probability = 1,
 		response = "pbw_wizard_trail_intruders_b",
 		criterias = {
 			{
@@ -437,6 +449,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_lower_bridge_b",
+		probability = 1,
 		response = "pbw_wizard_trail_lower_bridge_b",
 		criterias = {
 			{
@@ -461,6 +474,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_olesya_revealed_b",
+		probability = 1,
 		response = "pbw_wizard_trail_olesya_revealed_b",
 		criterias = {
 			{
@@ -497,6 +511,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_olesya_revealed_b_distance",
+		probability = 1,
 		response = "pbw_wizard_trail_olesya_revealed_b_distance",
 		criterias = {
 			{
@@ -521,6 +536,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_open_crate",
+		probability = 1,
 		response = "pbw_wizard_trail_open_crate",
 		criterias = {
 			{
@@ -565,6 +581,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_shove",
+		probability = 1,
 		response = "pbw_wizard_trail_shove",
 		criterias = {
 			{
@@ -609,6 +626,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_sleigh_found",
+		probability = 1,
 		response = "pbw_wizard_trail_sleigh_found",
 		criterias = {
 			{
@@ -665,6 +683,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_sleigh_gone",
+		probability = 1,
 		response = "pbw_wizard_trail_sleigh_gone",
 		criterias = {
 			{
@@ -709,6 +728,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_stuck_a",
+		probability = 1,
 		response = "pbw_wizard_trail_stuck_a",
 		criterias = {
 			{
@@ -753,6 +773,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_stuck_b",
+		probability = 1,
 		response = "pbw_wizard_trail_stuck_b",
 		criterias = {
 			{
@@ -783,6 +804,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_vista",
+		probability = 1,
 		response = "pbw_wizard_trail_vista",
 		criterias = {
 			{
@@ -827,6 +849,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_wizard_trail_vista_two",
+		probability = 1,
 		response = "pbw_wizard_trail_vista_two",
 		criterias = {
 			{

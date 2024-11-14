@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_level_chaos_war_camp_story_four_01",
+		probability = 1,
 		response = "pbw_level_chaos_war_camp_story_four_01",
 		criterias = {
 			{
@@ -83,6 +84,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_chaos_war_camp_story_four_02",
+		probability = 1,
 		response = "pbw_level_chaos_war_camp_story_four_02",
 		criterias = {
 			{
@@ -120,6 +122,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_chaos_war_camp_story_nine_02",
+		probability = 1,
 		response = "pbw_level_chaos_war_camp_story_nine_02",
 		criterias = {
 			{
@@ -157,6 +160,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_chaos_war_camp_story_nine_03",
+		probability = 1,
 		response = "pbw_level_chaos_war_camp_story_nine_03",
 		criterias = {
 			{
@@ -194,6 +198,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_chaos_war_camp_story_seven_01",
+		probability = 1,
 		response = "pbw_level_chaos_war_camp_story_seven_01",
 		criterias = {
 			{
@@ -231,6 +236,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_chaos_war_camp_story_seven_02",
+		probability = 1,
 		response = "pbw_level_chaos_war_camp_story_seven_02",
 		criterias = {
 			{
@@ -268,6 +274,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_chaos_war_camp_story_eleven_01",
+		probability = 1,
 		response = "pdr_level_chaos_war_camp_story_eleven_01",
 		criterias = {
 			{
@@ -305,6 +312,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_chaos_war_camp_story_eleven_02",
+		probability = 1,
 		response = "pdr_level_chaos_war_camp_story_eleven_02",
 		criterias = {
 			{
@@ -342,6 +350,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_chaos_war_camp_story_five_01",
+		probability = 1,
 		response = "pdr_level_chaos_war_camp_story_five_01",
 		criterias = {
 			{
@@ -416,6 +425,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_chaos_war_camp_story_five_02",
+		probability = 1,
 		response = "pdr_level_chaos_war_camp_story_five_02",
 		criterias = {
 			{
@@ -453,6 +463,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_chaos_war_camp_story_five_03",
+		probability = 1,
 		response = "pdr_level_chaos_war_camp_story_five_03",
 		criterias = {
 			{
@@ -490,6 +501,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_chaos_war_camp_story_nine_01",
+		probability = 1,
 		response = "pdr_level_chaos_war_camp_story_nine_01",
 		criterias = {
 			{
@@ -570,6 +582,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_chaos_war_camp_story_nine_02",
+		probability = 1,
 		response = "pdr_level_chaos_war_camp_story_nine_02",
 		criterias = {
 			{
@@ -607,6 +620,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_chaos_war_camp_story_twelve_01",
+		probability = 1,
 		response = "pdr_level_chaos_war_camp_story_twelve_01",
 		criterias = {
 			{
@@ -687,6 +701,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_chaos_war_camp_story_twelve_02",
+		probability = 1,
 		response = "pdr_level_chaos_war_camp_story_twelve_02",
 		criterias = {
 			{
@@ -724,6 +739,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_chaos_war_camp_story_two_01",
+		probability = 1,
 		response = "pdr_level_chaos_war_camp_story_two_01",
 		criterias = {
 			{
@@ -804,6 +820,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_chaos_war_camp_story_two_02",
+		probability = 1,
 		response = "pdr_level_chaos_war_camp_story_two_02",
 		criterias = {
 			{
@@ -841,6 +858,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_chaos_war_camp_story_two_03",
+		probability = 1,
 		response = "pdr_level_chaos_war_camp_story_two_03",
 		criterias = {
 			{
@@ -878,6 +896,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_chaos_war_camp_story_eight_01",
+		probability = 1,
 		response = "pes_level_chaos_war_camp_story_eight_01",
 		criterias = {
 			{
@@ -915,6 +934,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_chaos_war_camp_story_eight_02",
+		probability = 1,
 		response = "pes_level_chaos_war_camp_story_eight_02",
 		criterias = {
 			{
@@ -952,6 +972,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_chaos_war_camp_story_eight_03",
+		probability = 1,
 		response = "pes_level_chaos_war_camp_story_eight_03",
 		criterias = {
 			{
@@ -989,6 +1010,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_chaos_war_camp_story_five_01",
+		probability = 1,
 		response = "pes_level_chaos_war_camp_story_five_01",
 		criterias = {
 			{
@@ -1026,6 +1048,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_chaos_war_camp_story_five_02",
+		probability = 1,
 		response = "pes_level_chaos_war_camp_story_five_02",
 		criterias = {
 			{
@@ -1063,6 +1086,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_chaos_war_camp_story_seven_01",
+		probability = 1,
 		response = "pes_level_chaos_war_camp_story_seven_01",
 		criterias = {
 			{
@@ -1137,6 +1161,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_chaos_war_camp_story_seven_02",
+		probability = 1,
 		response = "pes_level_chaos_war_camp_story_seven_02",
 		criterias = {
 			{
@@ -1174,6 +1199,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_chaos_war_camp_story_ten_01",
+		probability = 1,
 		response = "pes_level_chaos_war_camp_story_ten_01",
 		criterias = {
 			{
@@ -1254,6 +1280,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_chaos_war_camp_story_ten_02",
+		probability = 1,
 		response = "pes_level_chaos_war_camp_story_ten_02",
 		criterias = {
 			{
@@ -1291,6 +1318,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_chaos_war_camp_story_ten_03",
+		probability = 1,
 		response = "pes_level_chaos_war_camp_story_ten_03",
 		criterias = {
 			{
@@ -1328,6 +1356,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_chaos_war_camp_story_three_01",
+		probability = 1,
 		response = "pes_level_chaos_war_camp_story_three_01",
 		criterias = {
 			{
@@ -1365,6 +1394,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_chaos_war_camp_story_three_02",
+		probability = 1,
 		response = "pes_level_chaos_war_camp_story_three_02",
 		criterias = {
 			{
@@ -1402,6 +1432,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_chaos_war_camp_story_twelve_01",
+		probability = 1,
 		response = "pes_level_chaos_war_camp_story_twelve_01",
 		criterias = {
 			{
@@ -1439,6 +1470,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_chaos_war_camp_story_twelve_02",
+		probability = 1,
 		response = "pes_level_chaos_war_camp_story_twelve_02",
 		criterias = {
 			{
@@ -1476,6 +1508,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_chaos_war_camp_story_eight_01",
+		probability = 1,
 		response = "pwe_level_chaos_war_camp_story_eight_01",
 		criterias = {
 			{
@@ -1550,6 +1583,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_chaos_war_camp_story_eight_02",
+		probability = 1,
 		response = "pwe_level_chaos_war_camp_story_eight_02",
 		criterias = {
 			{
@@ -1587,6 +1621,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_chaos_war_camp_story_eight_03",
+		probability = 1,
 		response = "pwe_level_chaos_war_camp_story_eight_03",
 		criterias = {
 			{
@@ -1624,6 +1659,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_chaos_war_camp_story_four_01",
+		probability = 1,
 		response = "pwe_level_chaos_war_camp_story_four_01",
 		criterias = {
 			{
@@ -1661,6 +1697,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_chaos_war_camp_story_four_02",
+		probability = 1,
 		response = "pwe_level_chaos_war_camp_story_four_02",
 		criterias = {
 			{
@@ -1698,6 +1735,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_chaos_war_camp_story_ten_01",
+		probability = 1,
 		response = "pwe_level_chaos_war_camp_story_ten_01",
 		criterias = {
 			{
@@ -1735,6 +1773,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_chaos_war_camp_story_ten_02",
+		probability = 1,
 		response = "pwe_level_chaos_war_camp_story_ten_02",
 		criterias = {
 			{
@@ -1772,6 +1811,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_chaos_war_camp_story_two_01",
+		probability = 1,
 		response = "pwe_level_chaos_war_camp_story_two_01",
 		criterias = {
 			{
@@ -1809,6 +1849,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_chaos_war_camp_story_two_02",
+		probability = 1,
 		response = "pwe_level_chaos_war_camp_story_two_02",
 		criterias = {
 			{
@@ -1846,6 +1887,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_chaos_war_camp_story_eleven_01",
+		probability = 1,
 		response = "pwh_level_chaos_war_camp_story_eleven_01",
 		criterias = {
 			{
@@ -1926,6 +1968,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_chaos_war_camp_story_eleven_02",
+		probability = 1,
 		response = "pwh_level_chaos_war_camp_story_eleven_02",
 		criterias = {
 			{
@@ -1963,6 +2006,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_chaos_war_camp_story_three_01",
+		probability = 1,
 		response = "pwh_level_chaos_war_camp_story_three_01",
 		criterias = {
 			{
@@ -2043,6 +2087,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_chaos_war_camp_story_three_02",
+		probability = 1,
 		response = "pwh_level_chaos_war_camp_story_three_02",
 		criterias = {
 			{
@@ -2080,6 +2125,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_level_chaos_war_camp_story_three_03",
+		probability = 1,
 		response = "pwh_level_chaos_war_camp_story_three_03",
 		criterias = {
 			{

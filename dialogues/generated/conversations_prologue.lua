@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "ecc_prologue_dialogue_answer_bang",
+		probability = 1,
 		response = "ecc_prologue_dialogue_answer_bang",
 		criterias = {
 			{
@@ -27,6 +28,7 @@ return function ()
 	})
 	define_rule({
 		name = "ecc_prologue_dialogue_answer_lack_of_patience",
+		probability = 1,
 		response = "ecc_prologue_dialogue_answer_lack_of_patience",
 		criterias = {
 			{
@@ -51,6 +53,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_level_prologue_skittergate_distance_01",
+		probability = 1,
 		response = "egs_level_prologue_skittergate_distance_01",
 		criterias = {
 			{
@@ -75,6 +78,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_level_prologue_skittergate_distance_02",
+		probability = 1,
 		response = "egs_level_prologue_skittergate_distance_02",
 		criterias = {
 			{
@@ -99,6 +103,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_level_prologue_skittergate_distance_03",
+		probability = 1,
 		response = "egs_level_prologue_skittergate_distance_03",
 		criterias = {
 			{
@@ -123,6 +128,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_prologue_dialogue_bang",
+		probability = 1,
 		response = "egs_prologue_dialogue_bang",
 		criterias = {
 			{
@@ -147,6 +153,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_prologue_dialogue_excuse",
+		probability = 1,
 		response = "egs_prologue_dialogue_excuse",
 		criterias = {
 			{
@@ -171,6 +178,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_prologue_intro_from_far",
+		probability = 1,
 		response = "egs_prologue_intro_from_far",
 		criterias = {
 			{
@@ -195,6 +203,7 @@ return function ()
 	})
 	define_rule({
 		name = "egs_prologue_ranting_at_skavens",
+		probability = 1,
 		response = "egs_prologue_ranting_at_skavens",
 		criterias = {
 			{
@@ -219,6 +228,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_prologue_intro_a",
+		probability = 1,
 		response = "nfl_prologue_intro_a",
 		criterias = {
 			{
@@ -237,6 +247,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_prologue_intro_c",
+		probability = 1,
 		response = "nfl_prologue_intro_c",
 		criterias = {
 			{
@@ -269,6 +280,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_prologue_intro_e",
+		probability = 1,
 		response = "nfl_prologue_intro_e",
 		criterias = {
 			{
@@ -287,6 +299,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_prologue_portal_e",
+		probability = 1,
 		response = "nfl_prologue_portal_e",
 		criterias = {
 			{
@@ -311,6 +324,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_prologue_elevator_ride_sienna",
+		probability = 1,
 		response = "pbw_level_prologue_elevator_ride_sienna",
 		criterias = {
 			{
@@ -335,6 +349,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_prologue_elevator_ride_sienna_02",
+		probability = 1,
 		response = "pbw_level_prologue_elevator_ride_sienna_02",
 		criterias = {
 			{
@@ -359,6 +374,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_prologue_reached_surface_sienna",
+		probability = 1,
 		response = "pbw_level_prologue_reached_surface_sienna",
 		criterias = {
 			{
@@ -383,6 +399,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_prologue_seeing_crater_sienna",
+		probability = 1,
 		response = "pbw_level_prologue_seeing_crater_sienna",
 		criterias = {
 			{
@@ -407,6 +424,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_prologue_sienna_up_01",
+		probability = 1,
 		response = "pbw_level_prologue_sienna_up_01",
 		criterias = {
 			{
@@ -431,6 +449,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_level_prologue_skittergate_afar_01",
+		probability = 1,
 		response = "pbw_level_prologue_skittergate_afar_01",
 		criterias = {
 			{
@@ -455,6 +474,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_prologue_bardin_fallling_01",
+		probability = 1,
 		response = "pdr_level_prologue_bardin_fallling_01",
 		criterias = {
 			{
@@ -485,6 +505,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_prologue_bardin_passing_one_00",
+		probability = 1,
 		response = "pdr_level_prologue_bardin_passing_one_00",
 		criterias = {
 			{
@@ -523,6 +544,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_prologue_bardin_passing_one_bardin_01",
+		probability = 1,
 		response = "pdr_level_prologue_bardin_passing_one_bardin_01",
 		criterias = {
 			{
@@ -561,6 +583,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_prologue_bardin_passing_two_01",
+		probability = 1,
 		response = "pdr_level_prologue_bardin_passing_two_01",
 		criterias = {
 			{
@@ -599,6 +622,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_prologue_bardin_passing_two_02",
+		probability = 1,
 		response = "pdr_level_prologue_bardin_passing_two_02",
 		criterias = {
 			{
@@ -617,6 +641,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_prologue_elevator_ride_01",
+		probability = 1,
 		response = "pdr_level_prologue_elevator_ride_01",
 		criterias = {
 			{
@@ -641,6 +666,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_prologue_elevator_ride_bardin",
+		probability = 1,
 		response = "pdr_level_prologue_elevator_ride_bardin",
 		criterias = {
 			{
@@ -665,6 +691,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_prologue_freeing_bardin_01",
+		probability = 1,
 		response = "pdr_level_prologue_freeing_bardin_01",
 		criterias = {
 			{
@@ -695,6 +722,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_prologue_reached_surface_02",
+		probability = 1,
 		response = "pdr_level_prologue_reached_surface_02",
 		criterias = {
 			{
@@ -719,6 +747,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_prologue_reached_surface_bardin",
+		probability = 1,
 		response = "pdr_level_prologue_reached_surface_bardin",
 		criterias = {
 			{
@@ -743,6 +772,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_prologue_seeing_crater_01",
+		probability = 1,
 		response = "pdr_level_prologue_seeing_crater_01",
 		criterias = {
 			{
@@ -767,6 +797,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_prologue_wizard_down_b",
+		probability = 1,
 		response = "pdr_level_prologue_wizard_down_b",
 		criterias = {
 			{
@@ -791,6 +822,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_prologue_bardin_dazed_01",
+		probability = 1,
 		response = "pdr_prologue_bardin_dazed_01",
 		criterias = {
 			{
@@ -821,6 +853,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_prologue_bardin_healed_01",
+		probability = 1,
 		response = "pdr_prologue_bardin_healed_01",
 		criterias = {
 			{
@@ -851,6 +884,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_prologue_bardin_revived_01",
+		probability = 1,
 		response = "pdr_prologue_bardin_revived_01",
 		criterias = {
 			{
@@ -881,6 +915,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_prologue_gate_opens_01",
+		probability = 1,
 		response = "pdr_prologue_gate_opens_01",
 		criterias = {
 			{
@@ -905,6 +940,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_prologue_heal_bardin_01",
+		probability = 1,
 		response = "pdr_prologue_heal_bardin_01",
 		criterias = {
 			{
@@ -935,6 +971,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_prologue_heal_bardin_take_time_02",
+		probability = 1,
 		response = "pdr_prologue_heal_bardin_take_time_02",
 		criterias = {
 			{
@@ -959,6 +996,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_prologue_kerillian_fight_01",
+		probability = 1,
 		response = "pdr_prologue_kerillian_fight_01",
 		criterias = {
 			{
@@ -983,6 +1021,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_prologue_meeting_kerillian_01",
+		probability = 1,
 		response = "pdr_prologue_meeting_kerillian_01",
 		criterias = {
 			{
@@ -1007,6 +1046,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_prologue_portal_bardin",
+		probability = 1,
 		response = "pdr_prologue_portal_bardin",
 		criterias = {
 			{
@@ -1031,6 +1071,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_ability",
+		probability = 1,
 		response = "pes_level_prologue_ability",
 		criterias = {
 			{
@@ -1061,6 +1102,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_bardin_fallling_01",
+		probability = 1,
 		response = "pes_level_prologue_bardin_fallling_01",
 		criterias = {
 			{
@@ -1085,6 +1127,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_bardin_passing_one_01",
+		probability = 1,
 		response = "pes_level_prologue_bardin_passing_one_01",
 		criterias = {
 			{
@@ -1123,6 +1166,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_bardin_passing_one_02",
+		probability = 1,
 		response = "pes_level_prologue_bardin_passing_one_02",
 		criterias = {
 			{
@@ -1155,6 +1199,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_bardin_passing_two_03",
+		probability = 1,
 		response = "pes_level_prologue_bardin_passing_two_03",
 		criterias = {
 			{
@@ -1173,6 +1218,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_bardin_passing_two_kruber_01",
+		probability = 1,
 		response = "pes_level_prologue_bardin_passing_two_kruber_01",
 		criterias = {
 			{
@@ -1191,6 +1237,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_block",
+		probability = 1,
 		response = "pes_level_prologue_block",
 		criterias = {
 			{
@@ -1221,6 +1268,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_cage_fall",
+		probability = 1,
 		response = "pes_level_prologue_cage_fall",
 		criterias = {
 			{
@@ -1251,6 +1299,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_cage_land",
+		probability = 1,
 		response = "pes_level_prologue_cage_land",
 		criterias = {
 			{
@@ -1281,6 +1330,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_cage_see_weapon",
+		probability = 1,
 		response = "pes_level_prologue_cage_see_weapon",
 		criterias = {
 			{
@@ -1311,6 +1361,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_dodge",
+		probability = 1,
 		response = "pes_level_prologue_dodge",
 		criterias = {
 			{
@@ -1341,6 +1392,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_elevator_ride",
+		probability = 1,
 		response = "pes_level_prologue_elevator_ride",
 		criterias = {
 			{
@@ -1371,6 +1423,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_elevator_ride_02",
+		probability = 1,
 		response = "pes_level_prologue_elevator_ride_02",
 		criterias = {
 			{
@@ -1395,6 +1448,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_elevator_ride_03",
+		probability = 1,
 		response = "pes_level_prologue_elevator_ride_03",
 		criterias = {
 			{
@@ -1419,6 +1473,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_fighting_pit",
+		probability = 1,
 		response = "pes_level_prologue_fighting_pit",
 		criterias = {
 			{
@@ -1449,6 +1504,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_fighting_pit_fight",
+		probability = 1,
 		response = "pes_level_prologue_fighting_pit_fight",
 		criterias = {
 			{
@@ -1479,6 +1535,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_first_payback",
+		probability = 1,
 		response = "pes_level_prologue_first_payback",
 		criterias = {
 			{
@@ -1509,6 +1566,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_freeing_bardin_01",
+		probability = 1,
 		response = "pes_level_prologue_freeing_bardin_01",
 		criterias = {
 			{
@@ -1539,6 +1597,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_got_bow",
+		probability = 1,
 		response = "pes_level_prologue_got_bow",
 		criterias = {
 			{
@@ -1569,6 +1628,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_grab_weapon",
+		probability = 1,
 		response = "pes_level_prologue_grab_weapon",
 		criterias = {
 			{
@@ -1599,6 +1659,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_reached_surface",
+		probability = 1,
 		response = "pes_level_prologue_reached_surface",
 		criterias = {
 			{
@@ -1629,6 +1690,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_seeing_crater_kruber",
+		probability = 1,
 		response = "pes_level_prologue_seeing_crater_kruber",
 		criterias = {
 			{
@@ -1659,6 +1721,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_sienna_up",
+		probability = 1,
 		response = "pes_level_prologue_sienna_up",
 		criterias = {
 			{
@@ -1689,6 +1752,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_skittergate_afar",
+		probability = 1,
 		response = "pes_level_prologue_skittergate_afar",
 		criterias = {
 			{
@@ -1719,6 +1783,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_strong",
+		probability = 1,
 		response = "pes_level_prologue_strong",
 		criterias = {
 			{
@@ -1749,6 +1814,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_supply",
+		probability = 1,
 		response = "pes_level_prologue_supply",
 		criterias = {
 			{
@@ -1779,6 +1845,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_travel",
+		probability = 1,
 		response = "pes_level_prologue_travel",
 		criterias = {
 			{
@@ -1809,6 +1876,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_waking_up",
+		probability = 1,
 		response = "pes_level_prologue_waking_up",
 		criterias = {
 			{
@@ -1839,6 +1907,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_wizard_down_a",
+		probability = 1,
 		response = "pes_level_prologue_wizard_down_a",
 		criterias = {
 			{
@@ -1869,6 +1938,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_level_prologue_wizard_sound",
+		probability = 1,
 		response = "pes_level_prologue_wizard_sound",
 		criterias = {
 			{
@@ -1899,6 +1969,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_prologue_bardin_dazed_01",
+		probability = 1,
 		response = "pes_prologue_bardin_dazed_01",
 		criterias = {
 			{
@@ -1923,6 +1994,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_prologue_bardin_healed_01",
+		probability = 1,
 		response = "pes_prologue_bardin_healed_01",
 		criterias = {
 			{
@@ -1947,6 +2019,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_prologue_bardin_revived_01",
+		probability = 1,
 		response = "pes_prologue_bardin_revived_01",
 		criterias = {
 			{
@@ -1971,6 +2044,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_prologue_gate_opens_01",
+		probability = 1,
 		response = "pes_prologue_gate_opens_01",
 		criterias = {
 			{
@@ -2001,6 +2075,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_prologue_heal_bardin_kruber_01",
+		probability = 1,
 		response = "pes_prologue_heal_bardin_kruber_01",
 		criterias = {
 			{
@@ -2025,6 +2100,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_prologue_intro_b",
+		probability = 1,
 		response = "pes_prologue_intro_b",
 		criterias = {
 			{
@@ -2043,6 +2119,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_prologue_intro_d",
+		probability = 1,
 		response = "pes_prologue_intro_d",
 		criterias = {
 			{
@@ -2061,6 +2138,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_prologue_intro_f",
+		probability = 1,
 		response = "pes_prologue_intro_f",
 		criterias = {
 			{
@@ -2079,6 +2157,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_prologue_kerillian_fight_01",
+		probability = 1,
 		response = "pes_prologue_kerillian_fight_01",
 		criterias = {
 			{
@@ -2109,6 +2188,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_prologue_meeting_kerillian_01",
+		probability = 1,
 		response = "pes_prologue_meeting_kerillian_01",
 		criterias = {
 			{
@@ -2153,6 +2233,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_prologue_meeting_kerillian_02",
+		probability = 1,
 		response = "pes_prologue_meeting_kerillian_02",
 		criterias = {
 			{
@@ -2191,6 +2272,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_prologue_portal_kruber",
+		probability = 1,
 		response = "pes_prologue_portal_kruber",
 		criterias = {
 			{
@@ -2215,6 +2297,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_prologue_elevator_ride_kerillian",
+		probability = 1,
 		response = "pwe_level_prologue_elevator_ride_kerillian",
 		criterias = {
 			{
@@ -2239,6 +2322,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_prologue_elevator_ride_kerillian_02",
+		probability = 1,
 		response = "pwe_level_prologue_elevator_ride_kerillian_02",
 		criterias = {
 			{
@@ -2263,6 +2347,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_prologue_reached_surface_kerillian",
+		probability = 1,
 		response = "pwe_level_prologue_reached_surface_kerillian",
 		criterias = {
 			{
@@ -2287,6 +2372,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_prologue_seeing_crater_kerillian",
+		probability = 1,
 		response = "pwe_level_prologue_seeing_crater_kerillian",
 		criterias = {
 			{
@@ -2311,6 +2397,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_prologue_sienna_up_01",
+		probability = 1,
 		response = "pwe_level_prologue_sienna_up_01",
 		criterias = {
 			{
@@ -2335,6 +2422,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_prologue_skittergate_afar_01",
+		probability = 1,
 		response = "pwe_level_prologue_skittergate_afar_01",
 		criterias = {
 			{
@@ -2359,6 +2447,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_level_prologue_wizard_sound",
+		probability = 1,
 		response = "pwe_level_prologue_wizard_sound",
 		criterias = {
 			{
@@ -2383,6 +2472,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_prologue_kerillian_fight_01",
+		probability = 1,
 		response = "pwe_prologue_kerillian_fight_01",
 		criterias = {
 			{
@@ -2413,6 +2503,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_prologue_meeting_kerillian_02",
+		probability = 1,
 		response = "pwe_prologue_meeting_kerillian_02",
 		criterias = {
 			{
@@ -2437,6 +2528,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_prologue_meeting_kerillian_kerillian_01",
+		probability = 1,
 		response = "pwe_prologue_meeting_kerillian_kerillian_01",
 		criterias = {
 			{
@@ -2475,6 +2567,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_prologue_portal_kerillian",
+		probability = 1,
 		response = "pwe_prologue_portal_kerillian",
 		criterias = {
 			{
@@ -2499,6 +2592,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_prologue_portal",
+		probability = 1,
 		response = "pwh_prologue_portal",
 		criterias = {
 			{
@@ -2529,6 +2623,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_prologue_portal_salty",
+		probability = 1,
 		response = "pwh_prologue_portal_salty",
 		criterias = {
 			{
@@ -2553,6 +2648,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_prologue_portal_salty_02",
+		probability = 1,
 		response = "pwh_prologue_portal_salty_02",
 		criterias = {
 			{

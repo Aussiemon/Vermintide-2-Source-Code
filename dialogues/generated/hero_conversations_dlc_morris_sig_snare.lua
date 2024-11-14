@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_morris_snare_a_one",
+		probability = 1,
 		response = "pbw_morris_snare_a_one",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_snare_a_three",
+		probability = 1,
 		response = "pbw_morris_snare_a_three",
 		criterias = {
 			{
@@ -91,6 +93,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_snare_a_two",
+		probability = 1,
 		response = "pbw_morris_snare_a_two",
 		criterias = {
 			{
@@ -135,6 +138,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_snare_b_one",
+		probability = 1,
 		response = "pbw_morris_snare_b_one",
 		criterias = {
 			{
@@ -179,6 +183,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_snare_b_three",
+		probability = 1,
 		response = "pbw_morris_snare_b_three",
 		criterias = {
 			{
@@ -223,6 +228,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_snare_b_two",
+		probability = 1,
 		response = "pbw_morris_snare_b_two",
 		criterias = {
 			{
@@ -267,6 +273,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_snare_c_one",
+		probability = 1,
 		response = "pbw_morris_snare_c_one",
 		criterias = {
 			{
@@ -311,6 +318,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_snare_c_three",
+		probability = 1,
 		response = "pbw_morris_snare_c_three",
 		criterias = {
 			{
@@ -355,6 +363,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_snare_c_two",
+		probability = 1,
 		response = "pbw_morris_snare_c_two",
 		criterias = {
 			{
@@ -399,6 +408,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_snare_d_one",
+		probability = 1,
 		response = "pbw_morris_snare_d_one",
 		criterias = {
 			{
@@ -443,6 +453,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_snare_d_three",
+		probability = 1,
 		response = "pbw_morris_snare_d_three",
 		criterias = {
 			{
@@ -487,6 +498,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_snare_d_two",
+		probability = 1,
 		response = "pbw_morris_snare_d_two",
 		criterias = {
 			{
@@ -531,6 +543,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_snare_e_one",
+		probability = 1,
 		response = "pbw_morris_snare_e_one",
 		criterias = {
 			{
@@ -575,6 +588,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_snare_e_three",
+		probability = 1,
 		response = "pbw_morris_snare_e_three",
 		criterias = {
 			{
@@ -619,6 +633,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_snare_e_two",
+		probability = 1,
 		response = "pbw_morris_snare_e_two",
 		criterias = {
 			{
@@ -663,6 +678,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_snare_a_one",
+		probability = 1,
 		response = "pdr_morris_snare_a_one",
 		criterias = {
 			{
@@ -707,6 +723,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_snare_a_three",
+		probability = 1,
 		response = "pdr_morris_snare_a_three",
 		criterias = {
 			{
@@ -751,6 +768,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_snare_a_two",
+		probability = 1,
 		response = "pdr_morris_snare_a_two",
 		criterias = {
 			{
@@ -795,6 +813,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_snare_b_one",
+		probability = 1,
 		response = "pdr_morris_snare_b_one",
 		criterias = {
 			{
@@ -839,6 +858,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_snare_b_three",
+		probability = 1,
 		response = "pdr_morris_snare_b_three",
 		criterias = {
 			{
@@ -883,6 +903,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_snare_b_two",
+		probability = 1,
 		response = "pdr_morris_snare_b_two",
 		criterias = {
 			{
@@ -927,6 +948,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_snare_c_one",
+		probability = 1,
 		response = "pdr_morris_snare_c_one",
 		criterias = {
 			{
@@ -971,6 +993,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_snare_c_three",
+		probability = 1,
 		response = "pdr_morris_snare_c_three",
 		criterias = {
 			{
@@ -1015,6 +1038,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_snare_c_two",
+		probability = 1,
 		response = "pdr_morris_snare_c_two",
 		criterias = {
 			{
@@ -1059,6 +1083,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_snare_d_one",
+		probability = 1,
 		response = "pdr_morris_snare_d_one",
 		criterias = {
 			{
@@ -1103,6 +1128,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_snare_d_three",
+		probability = 1,
 		response = "pdr_morris_snare_d_three",
 		criterias = {
 			{
@@ -1147,6 +1173,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_snare_d_two",
+		probability = 1,
 		response = "pdr_morris_snare_d_two",
 		criterias = {
 			{
@@ -1191,6 +1218,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_snare_e_one",
+		probability = 1,
 		response = "pdr_morris_snare_e_one",
 		criterias = {
 			{
@@ -1235,6 +1263,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_snare_e_three",
+		probability = 1,
 		response = "pdr_morris_snare_e_three",
 		criterias = {
 			{
@@ -1279,6 +1308,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_snare_e_two",
+		probability = 1,
 		response = "pdr_morris_snare_e_two",
 		criterias = {
 			{
@@ -1323,6 +1353,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_snare_a_one",
+		probability = 1,
 		response = "pes_morris_snare_a_one",
 		criterias = {
 			{
@@ -1367,6 +1398,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_snare_a_three",
+		probability = 1,
 		response = "pes_morris_snare_a_three",
 		criterias = {
 			{
@@ -1411,6 +1443,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_snare_a_two",
+		probability = 1,
 		response = "pes_morris_snare_a_two",
 		criterias = {
 			{
@@ -1455,6 +1488,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_snare_b_one",
+		probability = 1,
 		response = "pes_morris_snare_b_one",
 		criterias = {
 			{
@@ -1499,6 +1533,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_snare_b_three",
+		probability = 1,
 		response = "pes_morris_snare_b_three",
 		criterias = {
 			{
@@ -1543,6 +1578,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_snare_b_two",
+		probability = 1,
 		response = "pes_morris_snare_b_two",
 		criterias = {
 			{
@@ -1587,6 +1623,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_snare_c_one",
+		probability = 1,
 		response = "pes_morris_snare_c_one",
 		criterias = {
 			{
@@ -1631,6 +1668,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_snare_c_three",
+		probability = 1,
 		response = "pes_morris_snare_c_three",
 		criterias = {
 			{
@@ -1675,6 +1713,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_snare_c_two",
+		probability = 1,
 		response = "pes_morris_snare_c_two",
 		criterias = {
 			{
@@ -1719,6 +1758,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_snare_d_one",
+		probability = 1,
 		response = "pes_morris_snare_d_one",
 		criterias = {
 			{
@@ -1763,6 +1803,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_snare_d_three",
+		probability = 1,
 		response = "pes_morris_snare_d_three",
 		criterias = {
 			{
@@ -1807,6 +1848,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_snare_d_two",
+		probability = 1,
 		response = "pes_morris_snare_d_two",
 		criterias = {
 			{
@@ -1851,6 +1893,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_snare_e_one",
+		probability = 1,
 		response = "pes_morris_snare_e_one",
 		criterias = {
 			{
@@ -1895,6 +1938,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_snare_e_three",
+		probability = 1,
 		response = "pes_morris_snare_e_three",
 		criterias = {
 			{
@@ -1939,6 +1983,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_snare_e_two",
+		probability = 1,
 		response = "pes_morris_snare_e_two",
 		criterias = {
 			{
@@ -1983,6 +2028,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_snare_a_one",
+		probability = 1,
 		response = "pwe_morris_snare_a_one",
 		criterias = {
 			{
@@ -2027,6 +2073,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_snare_a_three",
+		probability = 1,
 		response = "pwe_morris_snare_a_three",
 		criterias = {
 			{
@@ -2071,6 +2118,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_snare_a_two",
+		probability = 1,
 		response = "pwe_morris_snare_a_two",
 		criterias = {
 			{
@@ -2115,6 +2163,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_snare_b_one",
+		probability = 1,
 		response = "pwe_morris_snare_b_one",
 		criterias = {
 			{
@@ -2159,6 +2208,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_snare_b_three",
+		probability = 1,
 		response = "pwe_morris_snare_b_three",
 		criterias = {
 			{
@@ -2203,6 +2253,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_snare_b_two",
+		probability = 1,
 		response = "pwe_morris_snare_b_two",
 		criterias = {
 			{
@@ -2247,6 +2298,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_snare_c_one",
+		probability = 1,
 		response = "pwe_morris_snare_c_one",
 		criterias = {
 			{
@@ -2291,6 +2343,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_snare_c_three",
+		probability = 1,
 		response = "pwe_morris_snare_c_three",
 		criterias = {
 			{
@@ -2335,6 +2388,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_snare_c_two",
+		probability = 1,
 		response = "pwe_morris_snare_c_two",
 		criterias = {
 			{
@@ -2379,6 +2433,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_snare_d_one",
+		probability = 1,
 		response = "pwe_morris_snare_d_one",
 		criterias = {
 			{
@@ -2423,6 +2478,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_snare_d_three",
+		probability = 1,
 		response = "pwe_morris_snare_d_three",
 		criterias = {
 			{
@@ -2467,6 +2523,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_snare_d_two",
+		probability = 1,
 		response = "pwe_morris_snare_d_two",
 		criterias = {
 			{
@@ -2511,6 +2568,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_snare_e_one",
+		probability = 1,
 		response = "pwe_morris_snare_e_one",
 		criterias = {
 			{
@@ -2555,6 +2613,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_snare_e_three",
+		probability = 1,
 		response = "pwe_morris_snare_e_three",
 		criterias = {
 			{
@@ -2599,6 +2658,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_snare_e_two",
+		probability = 1,
 		response = "pwe_morris_snare_e_two",
 		criterias = {
 			{
@@ -2643,6 +2703,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_snare_a_one",
+		probability = 1,
 		response = "pwh_morris_snare_a_one",
 		criterias = {
 			{
@@ -2687,6 +2748,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_snare_a_three",
+		probability = 1,
 		response = "pwh_morris_snare_a_three",
 		criterias = {
 			{
@@ -2731,6 +2793,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_snare_a_two",
+		probability = 1,
 		response = "pwh_morris_snare_a_two",
 		criterias = {
 			{
@@ -2775,6 +2838,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_snare_b_one",
+		probability = 1,
 		response = "pwh_morris_snare_b_one",
 		criterias = {
 			{
@@ -2819,6 +2883,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_snare_b_three",
+		probability = 1,
 		response = "pwh_morris_snare_b_three",
 		criterias = {
 			{
@@ -2863,6 +2928,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_snare_b_two",
+		probability = 1,
 		response = "pwh_morris_snare_b_two",
 		criterias = {
 			{
@@ -2907,6 +2973,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_snare_c_one",
+		probability = 1,
 		response = "pwh_morris_snare_c_one",
 		criterias = {
 			{
@@ -2951,6 +3018,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_snare_c_three",
+		probability = 1,
 		response = "pwh_morris_snare_c_three",
 		criterias = {
 			{
@@ -2995,6 +3063,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_snare_c_two",
+		probability = 1,
 		response = "pwh_morris_snare_c_two",
 		criterias = {
 			{
@@ -3039,6 +3108,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_snare_d_one",
+		probability = 1,
 		response = "pwh_morris_snare_d_one",
 		criterias = {
 			{
@@ -3083,6 +3153,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_snare_d_three",
+		probability = 1,
 		response = "pwh_morris_snare_d_three",
 		criterias = {
 			{
@@ -3127,6 +3198,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_snare_d_two",
+		probability = 1,
 		response = "pwh_morris_snare_d_two",
 		criterias = {
 			{
@@ -3171,6 +3243,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_snare_e_one",
+		probability = 1,
 		response = "pwh_morris_snare_e_one",
 		criterias = {
 			{
@@ -3215,6 +3288,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_snare_e_three",
+		probability = 1,
 		response = "pwh_morris_snare_e_three",
 		criterias = {
 			{
@@ -3259,6 +3333,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_snare_e_two",
+		probability = 1,
 		response = "pwh_morris_snare_e_two",
 		criterias = {
 			{

@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "ndw_morris_daemon_whispers_hub_bardin",
+		probability = 1,
 		response = "ndw_morris_daemon_whispers_hub_bardin",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "ndw_morris_daemon_whispers_hub_kerillian",
+		probability = 1,
 		response = "ndw_morris_daemon_whispers_hub_kerillian",
 		criterias = {
 			{
@@ -91,6 +93,7 @@ return function ()
 	})
 	define_rule({
 		name = "ndw_morris_daemon_whispers_hub_kruber",
+		probability = 1,
 		response = "ndw_morris_daemon_whispers_hub_kruber",
 		criterias = {
 			{
@@ -135,6 +138,7 @@ return function ()
 	})
 	define_rule({
 		name = "ndw_morris_daemon_whispers_hub_sienna",
+		probability = 1,
 		response = "ndw_morris_daemon_whispers_hub_sienna",
 		criterias = {
 			{
@@ -179,6 +183,7 @@ return function ()
 	})
 	define_rule({
 		name = "ndw_morris_daemon_whispers_hub_victor",
+		probability = 1,
 		response = "ndw_morris_daemon_whispers_hub_victor",
 		criterias = {
 			{
@@ -223,6 +228,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_hub_grudgemark_a",
+		probability = 1,
 		response = "nik_hub_grudgemark_a",
 		criterias = {
 			{
@@ -260,7 +266,77 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "nik_hub_wastes_keep_onboarding_a",
+		probability = 1,
+		response = "nik_hub_wastes_keep_onboarding_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"first_time_morris_hub",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"inn_keeper",
+			},
+		},
+	})
+	define_rule({
+		name = "nik_hub_wastes_keep_onboarding_b",
+		probability = 1,
+		response = "nik_hub_wastes_keep_onboarding_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak_self",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"nik_hub_wastes_keep_onboarding_a",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"inn_keeper",
+			},
+		},
+	})
+	define_rule({
+		name = "nik_hub_wastes_keep_onboarding_c",
+		probability = 1,
+		response = "nik_hub_wastes_keep_onboarding_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak_self",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"nik_hub_wastes_keep_onboarding_b",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"inn_keeper",
+			},
+		},
+	})
+	define_rule({
 		name = "nik_morris_hub_okri_grudge",
+		probability = 1,
 		response = "nik_morris_hub_okri_grudge",
 		criterias = {
 			{
@@ -293,6 +369,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_morris_idle_01",
+		probability = 1,
 		response = "nik_morris_idle_01",
 		criterias = {
 			{
@@ -325,6 +402,7 @@ return function ()
 	})
 	define_rule({
 		name = "nik_morris_idle_02",
+		probability = 1,
 		response = "nik_morris_idle_02",
 		criterias = {
 			{
@@ -357,6 +435,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_grudgemark_a",
+		probability = 1,
 		response = "pbw_hub_grudgemark_a",
 		criterias = {
 			{
@@ -419,6 +498,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_grudgemark_b",
+		probability = 1,
 		response = "pbw_hub_grudgemark_b",
 		criterias = {
 			{
@@ -450,6 +530,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_grudgemark_c",
+		probability = 1,
 		response = "pbw_hub_grudgemark_c",
 		criterias = {
 			{
@@ -481,6 +562,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_whispers_redux_response",
+		probability = 1,
 		response = "pbw_hub_whispers_redux_response",
 		criterias = {
 			{
@@ -524,6 +606,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_hub_whispers_redux_response_rejoinder",
+		probability = 1,
 		response = "pbw_hub_whispers_redux_response_rejoinder",
 		criterias = {
 			{
@@ -555,6 +638,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_hub_conversation_one_a",
+		probability = 1,
 		response = "pbw_morris_hub_conversation_one_a",
 		criterias = {
 			{
@@ -611,6 +695,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_hub_conversation_one_b",
+		probability = 1,
 		response = "pbw_morris_hub_conversation_one_b",
 		criterias = {
 			{
@@ -654,6 +739,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_hub_conversation_one_c",
+		probability = 1,
 		response = "pbw_morris_hub_conversation_one_c",
 		criterias = {
 			{
@@ -697,6 +783,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_grudgemark_a",
+		probability = 1,
 		response = "pdr_hub_grudgemark_a",
 		criterias = {
 			{
@@ -759,6 +846,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_grudgemark_b",
+		probability = 1,
 		response = "pdr_hub_grudgemark_b",
 		criterias = {
 			{
@@ -790,6 +878,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_grudgemark_c",
+		probability = 1,
 		response = "pdr_hub_grudgemark_c",
 		criterias = {
 			{
@@ -821,6 +910,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_whispers_redux_response",
+		probability = 1,
 		response = "pdr_hub_whispers_redux_response",
 		criterias = {
 			{
@@ -864,6 +954,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_whispers_redux_response_rejoinder",
+		probability = 1,
 		response = "pdr_hub_whispers_redux_response_rejoinder",
 		criterias = {
 			{
@@ -895,6 +986,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_hub_conversation_one_a",
+		probability = 1,
 		response = "pdr_morris_hub_conversation_one_a",
 		criterias = {
 			{
@@ -951,6 +1043,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_hub_conversation_one_b",
+		probability = 1,
 		response = "pdr_morris_hub_conversation_one_b",
 		criterias = {
 			{
@@ -994,6 +1087,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_hub_conversation_one_c",
+		probability = 1,
 		response = "pdr_morris_hub_conversation_one_c",
 		criterias = {
 			{
@@ -1037,6 +1131,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_grudgemark_a",
+		probability = 1,
 		response = "pes_hub_grudgemark_a",
 		criterias = {
 			{
@@ -1099,6 +1194,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_grudgemark_b",
+		probability = 1,
 		response = "pes_hub_grudgemark_b",
 		criterias = {
 			{
@@ -1130,6 +1226,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_grudgemark_c",
+		probability = 1,
 		response = "pes_hub_grudgemark_c",
 		criterias = {
 			{
@@ -1161,6 +1258,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_whispers_redux_response",
+		probability = 1,
 		response = "pes_hub_whispers_redux_response",
 		criterias = {
 			{
@@ -1204,6 +1302,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_hub_whispers_redux_response_rejoinder",
+		probability = 1,
 		response = "pes_hub_whispers_redux_response_rejoinder",
 		criterias = {
 			{
@@ -1235,6 +1334,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_hub_conversation_one_a",
+		probability = 1,
 		response = "pes_morris_hub_conversation_one_a",
 		criterias = {
 			{
@@ -1291,6 +1391,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_hub_conversation_one_b",
+		probability = 1,
 		response = "pes_morris_hub_conversation_one_b",
 		criterias = {
 			{
@@ -1334,6 +1435,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_hub_conversation_one_c",
+		probability = 1,
 		response = "pes_morris_hub_conversation_one_c",
 		criterias = {
 			{
@@ -1377,6 +1479,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_grudgemark_a",
+		probability = 1,
 		response = "pwe_hub_grudgemark_a",
 		criterias = {
 			{
@@ -1439,6 +1542,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_grudgemark_b",
+		probability = 1,
 		response = "pwe_hub_grudgemark_b",
 		criterias = {
 			{
@@ -1470,6 +1574,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_grudgemark_c",
+		probability = 1,
 		response = "pwe_hub_grudgemark_c",
 		criterias = {
 			{
@@ -1501,6 +1606,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_whispers_redux_response",
+		probability = 1,
 		response = "pwe_hub_whispers_redux_response",
 		criterias = {
 			{
@@ -1544,6 +1650,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_hub_whispers_redux_response_rejoinder",
+		probability = 1,
 		response = "pwe_hub_whispers_redux_response_rejoinder",
 		criterias = {
 			{
@@ -1575,6 +1682,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_hub_conversation_one_a",
+		probability = 1,
 		response = "pwe_morris_hub_conversation_one_a",
 		criterias = {
 			{
@@ -1631,6 +1739,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_hub_conversation_one_b",
+		probability = 1,
 		response = "pwe_morris_hub_conversation_one_b",
 		criterias = {
 			{
@@ -1674,6 +1783,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_hub_conversation_one_c",
+		probability = 1,
 		response = "pwe_morris_hub_conversation_one_c",
 		criterias = {
 			{
@@ -1717,6 +1827,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_grudgemark_a",
+		probability = 1,
 		response = "pwh_hub_grudgemark_a",
 		criterias = {
 			{
@@ -1779,6 +1890,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_grudgemark_b",
+		probability = 1,
 		response = "pwh_hub_grudgemark_b",
 		criterias = {
 			{
@@ -1810,6 +1922,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_grudgemark_c",
+		probability = 1,
 		response = "pwh_hub_grudgemark_c",
 		criterias = {
 			{
@@ -1841,6 +1954,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_whispers_redux_response",
+		probability = 1,
 		response = "pwh_hub_whispers_redux_response",
 		criterias = {
 			{
@@ -1884,6 +1998,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_hub_whispers_redux_response_rejoinder",
+		probability = 1,
 		response = "pwh_hub_whispers_redux_response_rejoinder",
 		criterias = {
 			{
@@ -1915,6 +2030,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_hub_conversation_one_a",
+		probability = 1,
 		response = "pwh_morris_hub_conversation_one_a",
 		criterias = {
 			{
@@ -1971,6 +2087,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_hub_conversation_one_b",
+		probability = 1,
 		response = "pwh_morris_hub_conversation_one_b",
 		criterias = {
 			{
@@ -2014,6 +2131,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_hub_conversation_one_c",
+		probability = 1,
 		response = "pwh_morris_hub_conversation_one_c",
 		criterias = {
 			{
@@ -2057,6 +2175,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_saltzpyre_monologue",
+		probability = 1,
 		response = "pwh_morris_saltzpyre_monologue",
 		criterias = {
 			{
@@ -2679,6 +2798,72 @@ return function ()
 			sound_events_duration = {
 				[1] = 3.8035416603088,
 				[2] = 3.5216457843781,
+			},
+		},
+		nik_hub_wastes_keep_onboarding_a = {
+			category = "story_talk_keep",
+			database = "hub_conversations_morris",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "nik_hub_wastes_keep_onboarding_a_01",
+			},
+			sound_events = {
+				[1] = "nik_hub_wastes_keep_onboarding_a_01",
+			},
+			sound_events_duration = {
+				[1] = 6.4445834159851,
+			},
+		},
+		nik_hub_wastes_keep_onboarding_b = {
+			category = "story_talk_keep",
+			database = "hub_conversations_morris",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "nik_hub_wastes_keep_onboarding_b_01",
+			},
+			sound_events = {
+				[1] = "nik_hub_wastes_keep_onboarding_b_01",
+			},
+			sound_events_duration = {
+				[1] = 7.5896039009094,
+			},
+		},
+		nik_hub_wastes_keep_onboarding_c = {
+			category = "story_talk_keep",
+			database = "hub_conversations_morris",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "nik_hub_wastes_keep_onboarding_c_01",
+			},
+			sound_events = {
+				[1] = "nik_hub_wastes_keep_onboarding_c_01",
+			},
+			sound_events_duration = {
+				[1] = 3.7523126602173,
 			},
 		},
 		nik_morris_hub_okri_grudge = {

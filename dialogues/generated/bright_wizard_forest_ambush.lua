@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_forest_ambush_intro",
+		probability = 1,
 		response = "pbw_forest_ambush_intro",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_forest_ambush_intro_b",
+		probability = 1,
 		response = "pbw_forest_ambush_intro_b",
 		criterias = {
 			{
@@ -85,6 +87,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_forest_ambush_intro_c",
+		probability = 1,
 		response = "pbw_forest_ambush_intro_c",
 		criterias = {
 			{
@@ -123,6 +126,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_objective_forest_ambush_back_to_ferry",
+		probability = 1,
 		response = "pbw_objective_forest_ambush_back_to_ferry",
 		criterias = {
 			{
@@ -167,6 +171,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_objective_forest_ambush_boat_arrives",
+		probability = 1,
 		response = "pbw_objective_forest_ambush_boat_arrives",
 		criterias = {
 			{
@@ -211,6 +216,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_objective_forest_ambush_crescendo_starting",
+		probability = 1,
 		response = "pbw_objective_forest_ambush_crescendo_starting",
 		criterias = {
 			{
@@ -255,6 +261,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_objective_forest_ambush_doomwheel_objective_done",
+		probability = 1,
 		response = "pbw_objective_forest_ambush_doomwheel_objective_done",
 		criterias = {
 			{
@@ -299,6 +306,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_objective_forest_ambush_finding_explosives",
+		probability = 1,
 		response = "pbw_objective_forest_ambush_finding_explosives",
 		criterias = {
 			{
@@ -343,6 +351,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_objective_forest_ambush_reaching_skaven_camp",
+		probability = 1,
 		response = "pbw_objective_forest_ambush_reaching_skaven_camp",
 		criterias = {
 			{
@@ -387,6 +396,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_objective_forest_ambush_ring_bell",
+		probability = 1,
 		response = "pbw_objective_forest_ambush_ring_bell",
 		criterias = {
 			{
@@ -431,6 +441,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_objective_forest_ambush_spotting_bridge",
+		probability = 1,
 		response = "pbw_objective_forest_ambush_spotting_bridge",
 		criterias = {
 			{
@@ -475,6 +486,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_objective_forest_ambush_spotting_broken_wagon",
+		probability = 1,
 		response = "pbw_objective_forest_ambush_spotting_broken_wagon",
 		criterias = {
 			{
@@ -519,6 +531,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_objective_forest_ambush_spotting_coaching_inn",
+		probability = 1,
 		response = "pbw_objective_forest_ambush_spotting_coaching_inn",
 		criterias = {
 			{
@@ -563,6 +576,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_objective_forest_ambush_spotting_first_doomwheel",
+		probability = 1,
 		response = "pbw_objective_forest_ambush_spotting_first_doomwheel",
 		criterias = {
 			{
@@ -607,6 +621,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_objective_forest_ambush_spotting_lodge_ruins",
+		probability = 1,
 		response = "pbw_objective_forest_ambush_spotting_lodge_ruins",
 		criterias = {
 			{
@@ -651,6 +666,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_objective_forest_ambush_spotting_ruins",
+		probability = 1,
 		response = "pbw_objective_forest_ambush_spotting_ruins",
 		criterias = {
 			{
@@ -695,6 +711,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_objective_forest_ambush_spotting_trunk",
+		probability = 1,
 		response = "pbw_objective_forest_ambush_spotting_trunk",
 		criterias = {
 			{
@@ -739,6 +756,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_objective_forest_ambush_spotting_watch_tower",
+		probability = 1,
 		response = "pbw_objective_forest_ambush_spotting_watch_tower",
 		criterias = {
 			{

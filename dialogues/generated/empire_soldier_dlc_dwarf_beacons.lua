@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pes_dummy_memory_trigger_beacons",
+		probability = 1,
 		response = "pes_dummy_memory_trigger_beacons",
 		criterias = {
 			{
@@ -41,6 +42,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dwarf_beacons_beacon_gas_b",
+		probability = 1,
 		response = "pes_dwarf_beacons_beacon_gas_b",
 		criterias = {
 			{
@@ -91,6 +93,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dwarf_beacons_beacon_gas_e",
+		probability = 1,
 		response = "pes_dwarf_beacons_beacon_gas_e",
 		criterias = {
 			{
@@ -146,6 +149,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dwarf_beacons_beacon_lit",
+		probability = 1,
 		response = "pes_dwarf_beacons_beacon_lit",
 		criterias = {
 			{
@@ -190,6 +194,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dwarf_beacons_bridge_down",
+		probability = 1,
 		response = "pes_dwarf_beacons_bridge_down",
 		criterias = {
 			{
@@ -234,6 +239,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dwarf_beacons_head_for_heights_a",
+		probability = 1,
 		response = "pes_dwarf_beacons_head_for_heights_a",
 		criterias = {
 			{
@@ -284,6 +290,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dwarf_beacons_head_for_heights_b",
+		probability = 1,
 		response = "pes_dwarf_beacons_head_for_heights_b",
 		criterias = {
 			{
@@ -334,6 +341,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dwarf_beacons_long_walk_b",
+		probability = 1,
 		response = "pes_dwarf_beacons_long_walk_b",
 		criterias = {
 			{
@@ -384,6 +392,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dwarf_beacons_not_far",
+		probability = 1,
 		response = "pes_dwarf_beacons_not_far",
 		criterias = {
 			{
@@ -434,6 +443,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dwarf_beacons_outpost_empty_a",
+		probability = 1,
 		response = "pes_dwarf_beacons_outpost_empty_a",
 		criterias = {
 			{
@@ -484,6 +494,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dwarf_beacons_over_the_mountain_c",
+		probability = 1,
 		response = "pes_dwarf_beacons_over_the_mountain_c",
 		criterias = {
 			{
@@ -528,6 +539,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dwarf_beacons_skaven_retreat_a",
+		probability = 1,
 		response = "pes_dwarf_beacons_skaven_retreat_a",
 		criterias = {
 			{
@@ -578,6 +590,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dwarf_beacons_start_banter_a",
+		probability = 1,
 		response = "pes_dwarf_beacons_start_banter_a",
 		criterias = {
 			{
@@ -616,6 +629,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dwarf_beacons_start_banter_b",
+		probability = 1,
 		response = "pes_dwarf_beacons_start_banter_b",
 		criterias = {
 			{
@@ -646,6 +660,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dwarf_beacons_start_banter_c",
+		probability = 1,
 		response = "pes_dwarf_beacons_start_banter_c",
 		criterias = {
 			{
@@ -676,6 +691,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_dwarf_beacons_victory_b",
+		probability = 1,
 		response = "pes_dwarf_beacons_victory_b",
 		criterias = {
 			{

@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_nm_activate_ability",
+		probability = 1,
 		response = "pbw_nm_activate_ability",
 		criterias = {
 			{
@@ -35,10 +36,17 @@ return function ()
 				OP.EQ,
 				"bw_necromancer",
 			},
+			{
+				"faction_memory",
+				"ability_vo_disabled",
+				OP.NEQ,
+				1,
+			},
 		},
 	})
 	define_rule({
 		name = "pbw_nm_command_attack",
+		probability = 1,
 		response = "pbw_nm_command_attack",
 		criterias = {
 			{
@@ -84,6 +92,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_nm_command_defend",
+		probability = 1,
 		response = "pbw_nm_command_defend",
 		criterias = {
 			{

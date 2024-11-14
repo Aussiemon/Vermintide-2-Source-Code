@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "nfl_shadow_curse_loading_screen",
+		probability = 1,
 		response = "nfl_shadow_curse_loading_screen",
 		criterias = {
 			{

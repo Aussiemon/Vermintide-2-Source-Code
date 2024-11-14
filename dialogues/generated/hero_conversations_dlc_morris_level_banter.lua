@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pbw_de_morris_level_conversations_fortyseven_01",
+		probability = 1,
 		response = "pbw_de_morris_level_conversations_fortyseven_01",
 		criterias = {
 			{
@@ -83,6 +84,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gk_morris_level_conversations_fortyeight_01",
+		probability = 1,
 		response = "pbw_gk_morris_level_conversations_fortyeight_01",
 		criterias = {
 			{
@@ -114,6 +116,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gk_morris_level_conversations_thirtynine_01",
+		probability = 1,
 		response = "pbw_gk_morris_level_conversations_thirtynine_01",
 		criterias = {
 			{
@@ -194,6 +197,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_eight_01",
+		probability = 1,
 		response = "pbw_morris_level_conversations_eight_01",
 		criterias = {
 			{
@@ -268,6 +272,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_eight_02",
+		probability = 1,
 		response = "pbw_morris_level_conversations_eight_02",
 		criterias = {
 			{
@@ -305,6 +310,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_four_01",
+		probability = 1,
 		response = "pbw_morris_level_conversations_four_01",
 		criterias = {
 			{
@@ -379,6 +385,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_four_02",
+		probability = 1,
 		response = "pbw_morris_level_conversations_four_02",
 		criterias = {
 			{
@@ -416,6 +423,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_nine_01",
+		probability = 1,
 		response = "pbw_morris_level_conversations_nine_01",
 		criterias = {
 			{
@@ -490,6 +498,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_nine_02",
+		probability = 1,
 		response = "pbw_morris_level_conversations_nine_02",
 		criterias = {
 			{
@@ -527,6 +536,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_nineteen_01",
+		probability = 1,
 		response = "pbw_morris_level_conversations_nineteen_01",
 		criterias = {
 			{
@@ -601,6 +611,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_nineteen_02",
+		probability = 1,
 		response = "pbw_morris_level_conversations_nineteen_02",
 		criterias = {
 			{
@@ -638,6 +649,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_nineteen_03",
+		probability = 1,
 		response = "pbw_morris_level_conversations_nineteen_03",
 		criterias = {
 			{
@@ -675,6 +687,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_one_01",
+		probability = 1,
 		response = "pbw_morris_level_conversations_one_01",
 		criterias = {
 			{
@@ -749,6 +762,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_one_02",
+		probability = 1,
 		response = "pbw_morris_level_conversations_one_02",
 		criterias = {
 			{
@@ -786,6 +800,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_seventeen_01",
+		probability = 1,
 		response = "pbw_morris_level_conversations_seventeen_01",
 		criterias = {
 			{
@@ -823,6 +838,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_six_01",
+		probability = 1,
 		response = "pbw_morris_level_conversations_six_01",
 		criterias = {
 			{
@@ -897,6 +913,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_six_02",
+		probability = 1,
 		response = "pbw_morris_level_conversations_six_02",
 		criterias = {
 			{
@@ -934,6 +951,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_sixteen_01",
+		probability = 1,
 		response = "pbw_morris_level_conversations_sixteen_01",
 		criterias = {
 			{
@@ -1008,6 +1026,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_sixteen_02",
+		probability = 1,
 		response = "pbw_morris_level_conversations_sixteen_02",
 		criterias = {
 			{
@@ -1045,6 +1064,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_thirtytwo_01",
+		probability = 1,
 		response = "pbw_morris_level_conversations_thirtytwo_01",
 		criterias = {
 			{
@@ -1082,6 +1102,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_twenty_01",
+		probability = 1,
 		response = "pbw_morris_level_conversations_twenty_01",
 		criterias = {
 			{
@@ -1119,6 +1140,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_twenty_02",
+		probability = 1,
 		response = "pbw_morris_level_conversations_twenty_02",
 		criterias = {
 			{
@@ -1156,6 +1178,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_twentytwo_01",
+		probability = 1,
 		response = "pbw_morris_level_conversations_twentytwo_01",
 		criterias = {
 			{
@@ -1193,6 +1216,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_de_gk_morris_level_conversations_fortyone_01",
+		probability = 1,
 		response = "pdr_de_gk_morris_level_conversations_fortyone_01",
 		criterias = {
 			{
@@ -1273,6 +1297,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_de_gk_morris_level_conversations_fortyone_02",
+		probability = 1,
 		response = "pdr_de_gk_morris_level_conversations_fortyone_02",
 		criterias = {
 			{
@@ -1304,6 +1329,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_de_morris_level_conversations_fifty_01",
+		probability = 1,
 		response = "pdr_de_morris_level_conversations_fifty_01",
 		criterias = {
 			{
@@ -1384,6 +1410,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_de_morris_level_conversations_fifty_02",
+		probability = 1,
 		response = "pdr_de_morris_level_conversations_fifty_02",
 		criterias = {
 			{
@@ -1415,6 +1442,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_de_morris_level_conversations_fiftyone_01",
+		probability = 1,
 		response = "pdr_de_morris_level_conversations_fiftyone_01",
 		criterias = {
 			{
@@ -1446,6 +1474,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_de_morris_level_conversations_fortyfive_01",
+		probability = 1,
 		response = "pdr_de_morris_level_conversations_fortyfive_01",
 		criterias = {
 			{
@@ -1526,6 +1555,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_de_morris_level_conversations_fortyfive_02",
+		probability = 1,
 		response = "pdr_de_morris_level_conversations_fortyfive_02",
 		criterias = {
 			{
@@ -1557,6 +1587,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_de_morris_level_conversations_fortyfour_01",
+		probability = 1,
 		response = "pdr_de_morris_level_conversations_fortyfour_01",
 		criterias = {
 			{
@@ -1588,6 +1619,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_de_morris_level_conversations_fortyseven_01",
+		probability = 1,
 		response = "pdr_de_morris_level_conversations_fortyseven_01",
 		criterias = {
 			{
@@ -1619,6 +1651,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_de_morris_level_conversations_fortyseven_02",
+		probability = 1,
 		response = "pdr_de_morris_level_conversations_fortyseven_02",
 		criterias = {
 			{
@@ -1650,6 +1683,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_de_morris_level_conversations_fortysix_01",
+		probability = 1,
 		response = "pdr_de_morris_level_conversations_fortysix_01",
 		criterias = {
 			{
@@ -1730,6 +1764,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_de_morris_level_conversations_fortysix_02",
+		probability = 1,
 		response = "pdr_de_morris_level_conversations_fortysix_02",
 		criterias = {
 			{
@@ -1761,6 +1796,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_de_morris_level_conversations_fortysix_03",
+		probability = 1,
 		response = "pdr_de_morris_level_conversations_fortysix_03",
 		criterias = {
 			{
@@ -1792,6 +1828,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_de_morris_level_conversations_fortythree_01",
+		probability = 1,
 		response = "pdr_de_morris_level_conversations_fortythree_01",
 		criterias = {
 			{
@@ -1823,6 +1860,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_de_morris_level_conversations_fortytwo_01",
+		probability = 1,
 		response = "pdr_de_morris_level_conversations_fortytwo_01",
 		criterias = {
 			{
@@ -1903,6 +1941,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_de_morris_level_conversations_fortytwo_02",
+		probability = 1,
 		response = "pdr_de_morris_level_conversations_fortytwo_02",
 		criterias = {
 			{
@@ -1934,6 +1973,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gk_morris_level_conversations_fortyeight_01",
+		probability = 1,
 		response = "pdr_gk_morris_level_conversations_fortyeight_01",
 		criterias = {
 			{
@@ -2014,6 +2054,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gk_morris_level_conversations_fortynine_01",
+		probability = 1,
 		response = "pdr_gk_morris_level_conversations_fortynine_01",
 		criterias = {
 			{
@@ -2045,6 +2086,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gk_morris_level_conversations_thirtynine_01",
+		probability = 1,
 		response = "pdr_gk_morris_level_conversations_thirtynine_01",
 		criterias = {
 			{
@@ -2076,6 +2118,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gk_morris_level_conversations_thirtyseven_01",
+		probability = 1,
 		response = "pdr_gk_morris_level_conversations_thirtyseven_01",
 		criterias = {
 			{
@@ -2107,6 +2150,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_gk_morris_level_conversations_thirtysix_01",
+		probability = 1,
 		response = "pdr_gk_morris_level_conversations_thirtysix_01",
 		criterias = {
 			{
@@ -2187,6 +2231,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_level_conversations_fifteen_01",
+		probability = 1,
 		response = "pdr_morris_level_conversations_fifteen_01",
 		criterias = {
 			{
@@ -2224,6 +2269,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_level_conversations_fifteen_02",
+		probability = 1,
 		response = "pdr_morris_level_conversations_fifteen_02",
 		criterias = {
 			{
@@ -2261,6 +2307,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_level_conversations_five_01",
+		probability = 1,
 		response = "pdr_morris_level_conversations_five_01",
 		criterias = {
 			{
@@ -2298,6 +2345,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_level_conversations_five_02",
+		probability = 1,
 		response = "pdr_morris_level_conversations_five_02",
 		criterias = {
 			{
@@ -2335,6 +2383,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_level_conversations_four_01",
+		probability = 1,
 		response = "pdr_morris_level_conversations_four_01",
 		criterias = {
 			{
@@ -2372,6 +2421,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_level_conversations_four_02",
+		probability = 1,
 		response = "pdr_morris_level_conversations_four_02",
 		criterias = {
 			{
@@ -2409,6 +2459,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_level_conversations_seven_01",
+		probability = 1,
 		response = "pdr_morris_level_conversations_seven_01",
 		criterias = {
 			{
@@ -2446,6 +2497,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_level_conversations_seven_02",
+		probability = 1,
 		response = "pdr_morris_level_conversations_seven_02",
 		criterias = {
 			{
@@ -2483,6 +2535,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_level_conversations_seventeen_01",
+		probability = 1,
 		response = "pdr_morris_level_conversations_seventeen_01",
 		criterias = {
 			{
@@ -2557,6 +2610,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_level_conversations_seventeen_02",
+		probability = 1,
 		response = "pdr_morris_level_conversations_seventeen_02",
 		criterias = {
 			{
@@ -2594,6 +2648,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_level_conversations_thirtyfive_01",
+		probability = 1,
 		response = "pdr_morris_level_conversations_thirtyfive_01",
 		criterias = {
 			{
@@ -2631,6 +2686,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_level_conversations_thirtyfive_02",
+		probability = 1,
 		response = "pdr_morris_level_conversations_thirtyfive_02",
 		criterias = {
 			{
@@ -2668,6 +2724,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_level_conversations_three_01",
+		probability = 1,
 		response = "pdr_morris_level_conversations_three_01",
 		criterias = {
 			{
@@ -2742,6 +2799,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_morris_level_conversations_three_02",
+		probability = 1,
 		response = "pdr_morris_level_conversations_three_02",
 		criterias = {
 			{
@@ -2779,6 +2837,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_de_morris_level_conversations_fifty_01",
+		probability = 1,
 		response = "pes_de_morris_level_conversations_fifty_01",
 		criterias = {
 			{
@@ -2810,6 +2869,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_de_morris_level_conversations_fifty_02",
+		probability = 1,
 		response = "pes_de_morris_level_conversations_fifty_02",
 		criterias = {
 			{
@@ -2841,6 +2901,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_de_morris_level_conversations_fiftyone_01",
+		probability = 1,
 		response = "pes_de_morris_level_conversations_fiftyone_01",
 		criterias = {
 			{
@@ -2915,6 +2976,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_de_morris_level_conversations_fiftyone_02",
+		probability = 1,
 		response = "pes_de_morris_level_conversations_fiftyone_02",
 		criterias = {
 			{
@@ -2946,6 +3008,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_de_morris_level_conversations_fortyfour_01",
+		probability = 1,
 		response = "pes_de_morris_level_conversations_fortyfour_01",
 		criterias = {
 			{
@@ -3020,6 +3083,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_de_morris_level_conversations_fortyfour_02",
+		probability = 1,
 		response = "pes_de_morris_level_conversations_fortyfour_02",
 		criterias = {
 			{
@@ -3051,6 +3115,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_de_morris_level_conversations_fortysix_01",
+		probability = 1,
 		response = "pes_de_morris_level_conversations_fortysix_01",
 		criterias = {
 			{
@@ -3082,6 +3147,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_de_morris_level_conversations_fortysix_02",
+		probability = 1,
 		response = "pes_de_morris_level_conversations_fortysix_02",
 		criterias = {
 			{
@@ -3113,6 +3179,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_de_morris_level_conversations_fortythree_01",
+		probability = 1,
 		response = "pes_de_morris_level_conversations_fortythree_01",
 		criterias = {
 			{
@@ -3187,6 +3254,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_de_morris_level_conversations_fortythree_02",
+		probability = 1,
 		response = "pes_de_morris_level_conversations_fortythree_02",
 		criterias = {
 			{
@@ -3218,6 +3286,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_de_morris_level_conversations_fortytwo_01",
+		probability = 1,
 		response = "pes_de_morris_level_conversations_fortytwo_01",
 		criterias = {
 			{
@@ -3249,6 +3318,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gk_de_morris_level_conversations_fortyone_01",
+		probability = 1,
 		response = "pes_gk_de_morris_level_conversations_fortyone_01",
 		criterias = {
 			{
@@ -3280,6 +3350,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gk_de_morris_level_conversations_fortyone_02",
+		probability = 1,
 		response = "pes_gk_de_morris_level_conversations_fortyone_02",
 		criterias = {
 			{
@@ -3311,6 +3382,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gk_morris_level_conversations_forty_01",
+		probability = 1,
 		response = "pes_gk_morris_level_conversations_forty_01",
 		criterias = {
 			{
@@ -3342,6 +3414,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gk_morris_level_conversations_forty_02",
+		probability = 1,
 		response = "pes_gk_morris_level_conversations_forty_02",
 		criterias = {
 			{
@@ -3373,6 +3446,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gk_morris_level_conversations_fortyeight_01",
+		probability = 1,
 		response = "pes_gk_morris_level_conversations_fortyeight_01",
 		criterias = {
 			{
@@ -3404,6 +3478,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gk_morris_level_conversations_fortynine_01",
+		probability = 1,
 		response = "pes_gk_morris_level_conversations_fortynine_01",
 		criterias = {
 			{
@@ -3484,6 +3559,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gk_morris_level_conversations_fortynine_02",
+		probability = 1,
 		response = "pes_gk_morris_level_conversations_fortynine_02",
 		criterias = {
 			{
@@ -3515,6 +3591,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gk_morris_level_conversations_thirtyeight_01",
+		probability = 1,
 		response = "pes_gk_morris_level_conversations_thirtyeight_01",
 		criterias = {
 			{
@@ -3595,6 +3672,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gk_morris_level_conversations_thirtyeight_02",
+		probability = 1,
 		response = "pes_gk_morris_level_conversations_thirtyeight_02",
 		criterias = {
 			{
@@ -3626,6 +3704,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gk_morris_level_conversations_thirtynine_01",
+		probability = 1,
 		response = "pes_gk_morris_level_conversations_thirtynine_01",
 		criterias = {
 			{
@@ -3657,6 +3736,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gk_morris_level_conversations_thirtynine_02",
+		probability = 1,
 		response = "pes_gk_morris_level_conversations_thirtynine_02",
 		criterias = {
 			{
@@ -3688,6 +3768,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gk_morris_level_conversations_thirtyseven_01",
+		probability = 1,
 		response = "pes_gk_morris_level_conversations_thirtyseven_01",
 		criterias = {
 			{
@@ -3774,6 +3855,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gk_morris_level_conversations_thirtyseven_02",
+		probability = 1,
 		response = "pes_gk_morris_level_conversations_thirtyseven_02",
 		criterias = {
 			{
@@ -3805,6 +3887,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_gk_morris_level_conversations_thirtysix_01",
+		probability = 1,
 		response = "pes_gk_morris_level_conversations_thirtysix_01",
 		criterias = {
 			{
@@ -3836,6 +3919,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_eighteen_01",
+		probability = 1,
 		response = "pes_morris_level_conversations_eighteen_01",
 		criterias = {
 			{
@@ -3910,6 +3994,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_eighteen_02",
+		probability = 1,
 		response = "pes_morris_level_conversations_eighteen_02",
 		criterias = {
 			{
@@ -3947,6 +4032,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_fifteen_01",
+		probability = 1,
 		response = "pes_morris_level_conversations_fifteen_01",
 		criterias = {
 			{
@@ -3984,6 +4070,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_five_01",
+		probability = 1,
 		response = "pes_morris_level_conversations_five_01",
 		criterias = {
 			{
@@ -4058,6 +4145,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_five_02",
+		probability = 1,
 		response = "pes_morris_level_conversations_five_02",
 		criterias = {
 			{
@@ -4095,6 +4183,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_fourteen_01",
+		probability = 1,
 		response = "pes_morris_level_conversations_fourteen_01",
 		criterias = {
 			{
@@ -4169,6 +4258,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_fourteen_02",
+		probability = 1,
 		response = "pes_morris_level_conversations_fourteen_02",
 		criterias = {
 			{
@@ -4206,6 +4296,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_seven_01",
+		probability = 1,
 		response = "pes_morris_level_conversations_seven_01",
 		criterias = {
 			{
@@ -4280,6 +4371,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_thirtyfive_01",
+		probability = 1,
 		response = "pes_morris_level_conversations_thirtyfive_01",
 		criterias = {
 			{
@@ -4360,6 +4452,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_thirtyfive_02",
+		probability = 1,
 		response = "pes_morris_level_conversations_thirtyfive_02",
 		criterias = {
 			{
@@ -4397,6 +4490,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_thirtyfive_03",
+		probability = 1,
 		response = "pes_morris_level_conversations_thirtyfive_03",
 		criterias = {
 			{
@@ -4434,6 +4528,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_thirtyfour_01",
+		probability = 1,
 		response = "pes_morris_level_conversations_thirtyfour_01",
 		criterias = {
 			{
@@ -4471,6 +4566,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_thirtyfour_02",
+		probability = 1,
 		response = "pes_morris_level_conversations_thirtyfour_02",
 		criterias = {
 			{
@@ -4508,6 +4604,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_thirtytwo_01",
+		probability = 1,
 		response = "pes_morris_level_conversations_thirtytwo_01",
 		criterias = {
 			{
@@ -4588,6 +4685,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_thirtytwo_02",
+		probability = 1,
 		response = "pes_morris_level_conversations_thirtytwo_02",
 		criterias = {
 			{
@@ -4625,6 +4723,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_thirtytwo_03",
+		probability = 1,
 		response = "pes_morris_level_conversations_thirtytwo_03",
 		criterias = {
 			{
@@ -4662,6 +4761,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_twentyone_01",
+		probability = 1,
 		response = "pes_morris_level_conversations_twentyone_01",
 		criterias = {
 			{
@@ -4736,6 +4836,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_twentyone_02",
+		probability = 1,
 		response = "pes_morris_level_conversations_twentyone_02",
 		criterias = {
 			{
@@ -4773,6 +4874,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_two_01",
+		probability = 1,
 		response = "pes_morris_level_conversations_two_01",
 		criterias = {
 			{
@@ -4847,6 +4949,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_two_02",
+		probability = 1,
 		response = "pes_morris_level_conversations_two_02",
 		criterias = {
 			{
@@ -4884,6 +4987,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gk_morris_level_conversations_forty_01",
+		probability = 1,
 		response = "pwe_gk_morris_level_conversations_forty_01",
 		criterias = {
 			{
@@ -4958,6 +5062,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gk_morris_level_conversations_forty_02",
+		probability = 1,
 		response = "pwe_gk_morris_level_conversations_forty_02",
 		criterias = {
 			{
@@ -4989,6 +5094,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gk_morris_level_conversations_fortyeight_01",
+		probability = 1,
 		response = "pwe_gk_morris_level_conversations_fortyeight_01",
 		criterias = {
 			{
@@ -5020,6 +5126,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gk_morris_level_conversations_thirtyseven_01",
+		probability = 1,
 		response = "pwe_gk_morris_level_conversations_thirtyseven_01",
 		criterias = {
 			{
@@ -5051,6 +5158,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gk_morris_level_conversations_thirtysix_01",
+		probability = 1,
 		response = "pwe_gk_morris_level_conversations_thirtysix_01",
 		criterias = {
 			{
@@ -5082,6 +5190,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_level_conversations_eight_01",
+		probability = 1,
 		response = "pwe_morris_level_conversations_eight_01",
 		criterias = {
 			{
@@ -5119,6 +5228,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_level_conversations_eight_02",
+		probability = 1,
 		response = "pwe_morris_level_conversations_eight_02",
 		criterias = {
 			{
@@ -5156,6 +5266,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_level_conversations_fifteen_01",
+		probability = 1,
 		response = "pwe_morris_level_conversations_fifteen_01",
 		criterias = {
 			{
@@ -5236,6 +5347,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_level_conversations_nineteen_01",
+		probability = 1,
 		response = "pwe_morris_level_conversations_nineteen_01",
 		criterias = {
 			{
@@ -5273,6 +5385,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_level_conversations_nineteen_02",
+		probability = 1,
 		response = "pwe_morris_level_conversations_nineteen_02",
 		criterias = {
 			{
@@ -5310,6 +5423,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_level_conversations_six_01",
+		probability = 1,
 		response = "pwe_morris_level_conversations_six_01",
 		criterias = {
 			{
@@ -5347,6 +5461,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_level_conversations_six_02",
+		probability = 1,
 		response = "pwe_morris_level_conversations_six_02",
 		criterias = {
 			{
@@ -5384,6 +5499,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_level_conversations_three_01",
+		probability = 1,
 		response = "pwe_morris_level_conversations_three_01",
 		criterias = {
 			{
@@ -5421,6 +5537,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_level_conversations_three_02",
+		probability = 1,
 		response = "pwe_morris_level_conversations_three_02",
 		criterias = {
 			{
@@ -5458,6 +5575,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_level_conversations_twenty_01",
+		probability = 1,
 		response = "pwe_morris_level_conversations_twenty_01",
 		criterias = {
 			{
@@ -5532,6 +5650,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_level_conversations_twenty_02",
+		probability = 1,
 		response = "pwe_morris_level_conversations_twenty_02",
 		criterias = {
 			{
@@ -5569,6 +5688,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_level_conversations_twenty_03",
+		probability = 1,
 		response = "pwe_morris_level_conversations_twenty_03",
 		criterias = {
 			{
@@ -5606,6 +5726,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_level_conversations_twentyone_01",
+		probability = 1,
 		response = "pwe_morris_level_conversations_twentyone_01",
 		criterias = {
 			{
@@ -5643,6 +5764,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_level_conversations_twentyone_02",
+		probability = 1,
 		response = "pwe_morris_level_conversations_twentyone_02",
 		criterias = {
 			{
@@ -5680,6 +5802,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_level_conversations_twentythree_01",
+		probability = 1,
 		response = "pwe_morris_level_conversations_twentythree_01",
 		criterias = {
 			{
@@ -5717,6 +5840,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_morris_level_conversations_twentythree_02",
+		probability = 1,
 		response = "pwe_morris_level_conversations_twentythree_02",
 		criterias = {
 			{
@@ -5754,6 +5878,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_de_morris_level_conversations_fortyfive_01",
+		probability = 1,
 		response = "pwh_de_morris_level_conversations_fortyfive_01",
 		criterias = {
 			{
@@ -5785,6 +5910,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_de_morris_level_conversations_fortyseven_01",
+		probability = 1,
 		response = "pwh_de_morris_level_conversations_fortyseven_01",
 		criterias = {
 			{
@@ -5816,6 +5942,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gk_morris_level_conversations_fortyeight_01",
+		probability = 1,
 		response = "pwh_gk_morris_level_conversations_fortyeight_01",
 		criterias = {
 			{
@@ -5847,6 +5974,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gk_morris_level_conversations_thirtyeight_01",
+		probability = 1,
 		response = "pwh_gk_morris_level_conversations_thirtyeight_01",
 		criterias = {
 			{
@@ -5878,6 +6006,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_level_conversations_eighteen_01",
+		probability = 1,
 		response = "pwh_morris_level_conversations_eighteen_01",
 		criterias = {
 			{
@@ -5915,6 +6044,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_level_conversations_eighteen_02",
+		probability = 1,
 		response = "pwh_morris_level_conversations_eighteen_02",
 		criterias = {
 			{
@@ -5952,6 +6082,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_level_conversations_fourteen_01",
+		probability = 1,
 		response = "pwh_morris_level_conversations_fourteen_01",
 		criterias = {
 			{
@@ -5989,6 +6120,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_level_conversations_fourteen_02",
+		probability = 1,
 		response = "pwh_morris_level_conversations_fourteen_02",
 		criterias = {
 			{
@@ -6026,6 +6158,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_level_conversations_nine_01",
+		probability = 1,
 		response = "pwh_morris_level_conversations_nine_01",
 		criterias = {
 			{
@@ -6063,6 +6196,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_level_conversations_nine_02",
+		probability = 1,
 		response = "pwh_morris_level_conversations_nine_02",
 		criterias = {
 			{
@@ -6100,6 +6234,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_level_conversations_one_01",
+		probability = 1,
 		response = "pwh_morris_level_conversations_one_01",
 		criterias = {
 			{
@@ -6137,6 +6272,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_level_conversations_one_02",
+		probability = 1,
 		response = "pwh_morris_level_conversations_one_02",
 		criterias = {
 			{
@@ -6174,6 +6310,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_level_conversations_seven_01",
+		probability = 1,
 		response = "pwh_morris_level_conversations_seven_01",
 		criterias = {
 			{
@@ -6211,6 +6348,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_level_conversations_sixteen_01",
+		probability = 1,
 		response = "pwh_morris_level_conversations_sixteen_01",
 		criterias = {
 			{
@@ -6248,6 +6386,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_level_conversations_thirtyfour_01",
+		probability = 1,
 		response = "pwh_morris_level_conversations_thirtyfour_01",
 		criterias = {
 			{
@@ -6328,6 +6467,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_level_conversations_thirtyfour_02",
+		probability = 1,
 		response = "pwh_morris_level_conversations_thirtyfour_02",
 		criterias = {
 			{
@@ -6365,6 +6505,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_level_conversations_thirtytwo_01",
+		probability = 1,
 		response = "pwh_morris_level_conversations_thirtytwo_01",
 		criterias = {
 			{
@@ -6402,6 +6543,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_level_conversations_twentythree_01",
+		probability = 1,
 		response = "pwh_morris_level_conversations_twentythree_01",
 		criterias = {
 			{
@@ -6476,6 +6618,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_level_conversations_twentythree_02",
+		probability = 1,
 		response = "pwh_morris_level_conversations_twentythree_02",
 		criterias = {
 			{
@@ -6513,6 +6656,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_level_conversations_twentytwo_01",
+		probability = 1,
 		response = "pwh_morris_level_conversations_twentytwo_01",
 		criterias = {
 			{
@@ -6587,6 +6731,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_level_conversations_twentytwo_02",
+		probability = 1,
 		response = "pwh_morris_level_conversations_twentytwo_02",
 		criterias = {
 			{
@@ -6624,6 +6769,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_morris_level_conversations_two_01",
+		probability = 1,
 		response = "pwh_morris_level_conversations_two_01",
 		criterias = {
 			{

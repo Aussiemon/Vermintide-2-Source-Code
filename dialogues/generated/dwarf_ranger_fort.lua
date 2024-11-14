@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "pdr_fort_intro_a",
+		probability = 1,
 		response = "pdr_fort_intro_a",
 		criterias = {
 			{
@@ -47,6 +48,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_fort_intro_b",
+		probability = 1,
 		response = "pdr_fort_intro_b",
 		criterias = {
 			{
@@ -85,6 +87,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_fort_intro_c",
+		probability = 1,
 		response = "pdr_fort_intro_c",
 		criterias = {
 			{
@@ -123,6 +126,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_cannonballs",
+		probability = 1,
 		response = "pdr_level_fort_cannonballs",
 		criterias = {
 			{
@@ -167,6 +171,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_cannons_silenced",
+		probability = 1,
 		response = "pdr_level_fort_cannons_silenced",
 		criterias = {
 			{
@@ -211,6 +216,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_carriage",
+		probability = 1,
 		response = "pdr_level_fort_carriage",
 		criterias = {
 			{
@@ -255,6 +261,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_cross_here",
+		probability = 1,
 		response = "pdr_level_fort_cross_here",
 		criterias = {
 			{
@@ -299,6 +306,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_fire_cannon_final_fire",
+		probability = 1,
 		response = "pdr_level_fort_fire_cannon_final_fire",
 		criterias = {
 			{
@@ -343,6 +351,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_fire_cannon_final_hit",
+		probability = 1,
 		response = "pdr_level_fort_fire_cannon_final_hit",
 		criterias = {
 			{
@@ -387,6 +396,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_fire_cannon_first",
+		probability = 1,
 		response = "pdr_level_fort_fire_cannon_first",
 		criterias = {
 			{
@@ -431,6 +441,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_fire_cannon_first_hit",
+		probability = 1,
 		response = "pdr_level_fort_fire_cannon_first_hit",
 		criterias = {
 			{
@@ -475,6 +486,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_fire_cannon_fuse_is_lit",
+		probability = 1,
 		response = "pdr_level_fort_fire_cannon_fuse_is_lit",
 		criterias = {
 			{
@@ -519,6 +531,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_fire_cannon_second",
+		probability = 1,
 		response = "pdr_level_fort_fire_cannon_second",
 		criterias = {
 			{
@@ -563,6 +576,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_fire_cannon_second_hit",
+		probability = 1,
 		response = "pdr_level_fort_fire_cannon_second_hit",
 		criterias = {
 			{
@@ -607,6 +621,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_gate_fallen",
+		probability = 1,
 		response = "pdr_level_fort_gate_fallen",
 		criterias = {
 			{
@@ -651,6 +666,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_getting_closer",
+		probability = 1,
 		response = "pdr_level_fort_getting_closer",
 		criterias = {
 			{
@@ -695,6 +711,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_plague_claw_shelling",
+		probability = 1,
 		response = "pdr_level_fort_plague_claw_shelling",
 		criterias = {
 			{
@@ -739,6 +756,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_plague_claw_shelling_move",
+		probability = 1,
 		response = "pdr_level_fort_plague_claw_shelling_move",
 		criterias = {
 			{
@@ -783,6 +801,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_river",
+		probability = 1,
 		response = "pdr_level_fort_river",
 		criterias = {
 			{
@@ -826,12 +845,8 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pdr_level_fort_road",
-		response = "pdr_level_fort_road",
-		criterias = {},
-	})
-	define_rule({
 		name = "pdr_level_fort_skaven_everywhere",
+		probability = 1,
 		response = "pdr_level_fort_skaven_everywhere",
 		criterias = {
 			{
@@ -876,6 +891,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_under_attack",
+		probability = 1,
 		response = "pdr_level_fort_under_attack",
 		criterias = {
 			{
@@ -920,6 +936,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_level_fort_use_cannons",
+		probability = 1,
 		response = "pdr_level_fort_use_cannons",
 		criterias = {
 			{
@@ -1523,18 +1540,6 @@ return function ()
 				[1] = 8.2281665802002,
 				[2] = 2.829916715622,
 			},
-		},
-		pdr_level_fort_road = {
-			category = "default",
-			database = "dwarf_ranger_fort",
-			dialogue_animations_n = 0,
-			face_animations_n = 0,
-			sound_events_n = 0,
-			dialogue_animations = {},
-			face_animations = {},
-			localization_strings = {},
-			sound_events = {},
-			sound_events_duration = {},
 		},
 		pdr_level_fort_skaven_everywhere = {
 			category = "level_talk",

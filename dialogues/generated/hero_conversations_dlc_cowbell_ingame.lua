@@ -3,6 +3,7 @@
 return function ()
 	define_rule({
 		name = "nfl_shadow_curse_curse_arrival_b",
+		probability = 1,
 		response = "nfl_shadow_curse_curse_arrival_b",
 		criterias = {
 			{
@@ -21,6 +22,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_shadow_curse_eclipse_a",
+		probability = 1,
 		response = "nfl_shadow_curse_eclipse_a",
 		criterias = {
 			{
@@ -39,6 +41,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_shadow_curse_grab_crystal",
+		probability = 1,
 		response = "nfl_shadow_curse_grab_crystal",
 		criterias = {
 			{
@@ -63,6 +66,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_shadow_curse_start_level_a",
+		probability = 1,
 		response = "nfl_shadow_curse_start_level_a",
 		criterias = {
 			{
@@ -87,6 +91,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_shadow_curse_start_level_b",
+		probability = 1,
 		response = "nfl_shadow_curse_start_level_b",
 		criterias = {
 			{
@@ -105,6 +110,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_shadow_curse_start_level_c",
+		probability = 1,
 		response = "nfl_shadow_curse_start_level_c",
 		criterias = {
 			{
@@ -123,6 +129,7 @@ return function ()
 	})
 	define_rule({
 		name = "nfl_shadow_curse_worship_site",
+		probability = 1,
 		response = "nfl_shadow_curse_worship_site",
 		criterias = {
 			{
@@ -141,6 +148,7 @@ return function ()
 	})
 	define_rule({
 		name = "nwd_shadow_curse_start_level_d",
+		probability = 1,
 		response = "nwd_shadow_curse_start_level_d",
 		criterias = {
 			{
@@ -159,6 +167,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_shadow_curse_curse_arrival_b",
+		probability = 1,
 		response = "pbw_shadow_curse_curse_arrival_b",
 		criterias = {
 			{
@@ -183,6 +192,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_shadow_curse_eclipse_a",
+		probability = 1,
 		response = "pbw_shadow_curse_eclipse_a",
 		criterias = {
 			{
@@ -208,6 +218,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_shadow_curse_eclipse_b",
+		probability = 1,
 		response = "pbw_shadow_curse_eclipse_b",
 		criterias = {
 			{
@@ -233,6 +244,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_shadow_curse_eclipse_c",
+		probability = 1,
 		response = "pbw_shadow_curse_eclipse_c",
 		criterias = {
 			{
@@ -264,6 +276,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_shadow_curse_worship_site",
+		probability = 1,
 		response = "pbw_shadow_curse_worship_site",
 		criterias = {
 			{
@@ -296,6 +309,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_shadow_curse_worship_site_ping",
+		probability = 1,
 		response = "pbw_shadow_curse_worship_site_ping",
 		criterias = {
 			{
@@ -340,6 +354,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_shadow_curse_curse_arrival_b",
+		probability = 1,
 		response = "pdr_shadow_curse_curse_arrival_b",
 		criterias = {
 			{
@@ -364,6 +379,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_shadow_curse_eclipse_a",
+		probability = 1,
 		response = "pdr_shadow_curse_eclipse_a",
 		criterias = {
 			{
@@ -389,6 +405,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_shadow_curse_eclipse_b",
+		probability = 1,
 		response = "pdr_shadow_curse_eclipse_b",
 		criterias = {
 			{
@@ -414,6 +431,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_shadow_curse_eclipse_c",
+		probability = 1,
 		response = "pdr_shadow_curse_eclipse_c",
 		criterias = {
 			{
@@ -445,6 +463,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_shadow_curse_eclipse_dummy_trigger",
+		probability = 1,
 		response = "pdr_shadow_curse_eclipse_dummy_trigger",
 		criterias = {
 			{
@@ -531,6 +550,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_shadow_curse_worship_site",
+		probability = 1,
 		response = "pdr_shadow_curse_worship_site",
 		criterias = {
 			{
@@ -563,6 +583,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_shadow_curse_worship_site_ping",
+		probability = 1,
 		response = "pdr_shadow_curse_worship_site_ping",
 		criterias = {
 			{
@@ -607,6 +628,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_shadow_curse_curse_arrival_b",
+		probability = 1,
 		response = "pes_shadow_curse_curse_arrival_b",
 		criterias = {
 			{
@@ -631,6 +653,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_shadow_curse_eclipse_a",
+		probability = 1,
 		response = "pes_shadow_curse_eclipse_a",
 		criterias = {
 			{
@@ -656,6 +679,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_shadow_curse_eclipse_b",
+		probability = 1,
 		response = "pes_shadow_curse_eclipse_b",
 		criterias = {
 			{
@@ -681,6 +705,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_shadow_curse_eclipse_c",
+		probability = 1,
 		response = "pes_shadow_curse_eclipse_c",
 		criterias = {
 			{
@@ -712,6 +737,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_shadow_curse_worship_site",
+		probability = 1,
 		response = "pes_shadow_curse_worship_site",
 		criterias = {
 			{
@@ -744,6 +770,7 @@ return function ()
 	})
 	define_rule({
 		name = "pes_shadow_curse_worship_site_ping",
+		probability = 1,
 		response = "pes_shadow_curse_worship_site_ping",
 		criterias = {
 			{
@@ -788,6 +815,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_shadow_curse_curse_arrival_b",
+		probability = 1,
 		response = "pwe_shadow_curse_curse_arrival_b",
 		criterias = {
 			{
@@ -812,6 +840,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_shadow_curse_eclipse_a",
+		probability = 1,
 		response = "pwe_shadow_curse_eclipse_a",
 		criterias = {
 			{
@@ -837,6 +866,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_shadow_curse_eclipse_b",
+		probability = 1,
 		response = "pwe_shadow_curse_eclipse_b",
 		criterias = {
 			{
@@ -862,6 +892,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_shadow_curse_eclipse_c",
+		probability = 1,
 		response = "pwe_shadow_curse_eclipse_c",
 		criterias = {
 			{
@@ -893,6 +924,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_shadow_curse_eclipse_dummy_trigger",
+		probability = 1,
 		response = "pwe_shadow_curse_eclipse_dummy_trigger",
 		criterias = {
 			{
@@ -979,6 +1011,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_shadow_curse_worship_site",
+		probability = 1,
 		response = "pwe_shadow_curse_worship_site",
 		criterias = {
 			{
@@ -1011,6 +1044,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_shadow_curse_worship_site_ping",
+		probability = 1,
 		response = "pwe_shadow_curse_worship_site_ping",
 		criterias = {
 			{
@@ -1055,6 +1089,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_shadow_curse_curse_arrival_b",
+		probability = 1,
 		response = "pwh_shadow_curse_curse_arrival_b",
 		criterias = {
 			{
@@ -1079,6 +1114,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_shadow_curse_eclipse_a",
+		probability = 1,
 		response = "pwh_shadow_curse_eclipse_a",
 		criterias = {
 			{
@@ -1104,6 +1140,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_shadow_curse_eclipse_b",
+		probability = 1,
 		response = "pwh_shadow_curse_eclipse_b",
 		criterias = {
 			{
@@ -1129,6 +1166,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_shadow_curse_eclipse_c",
+		probability = 1,
 		response = "pwh_shadow_curse_eclipse_c",
 		criterias = {
 			{
@@ -1160,6 +1198,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_shadow_curse_worship_site",
+		probability = 1,
 		response = "pwh_shadow_curse_worship_site",
 		criterias = {
 			{
@@ -1192,6 +1231,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_shadow_curse_worship_site_ping",
+		probability = 1,
 		response = "pwh_shadow_curse_worship_site_ping",
 		criterias = {
 			{
@@ -1236,6 +1276,7 @@ return function ()
 	})
 	define_rule({
 		name = "sc1_shadow_curse_arrival_a",
+		probability = 1,
 		response = "sc1_shadow_curse_arrival_a",
 		criterias = {
 			{
@@ -1254,6 +1295,7 @@ return function ()
 	})
 	define_rule({
 		name = "sc2_shadow_curse_arrival_a",
+		probability = 1,
 		response = "sc2_shadow_curse_arrival_a",
 		criterias = {
 			{
@@ -1272,6 +1314,7 @@ return function ()
 	})
 	define_rule({
 		name = "sc3_shadow_curse_arrival_a",
+		probability = 1,
 		response = "sc3_shadow_curse_arrival_a",
 		criterias = {
 			{
