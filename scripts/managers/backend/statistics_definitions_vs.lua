@@ -558,3 +558,59 @@ for breed_name, breed in pairs(PlayerBreeds) do
 		name = breed_name,
 	}
 end
+
+player.vs_award_mvp = {
+	database_name = "vs_award_mvp",
+	source = "player_data",
+	value = 0,
+}
+player.vs_award_hero_killer = {
+	database_name = "vs_award_hero_killer",
+	source = "player_data",
+	value = 0,
+}
+player.vs_award_slayer = {
+	database_name = "vs_award_slayer",
+	source = "player_data",
+	value = 0,
+}
+player.vs_award_smiter = {
+	database_name = "vs_award_smiter",
+	source = "player_data",
+	value = 0,
+}
+player.vs_award_damage_dealer = {
+	database_name = "vs_award_damage_dealer",
+	source = "player_data",
+	value = 0,
+}
+player.vs_award_saviour = {
+	database_name = "vs_award_saviour",
+	source = "player_data",
+	value = 0,
+}
+player.vs_award_hero_napper = {
+	database_name = "vs_award_hero_napper",
+	source = "player_data",
+	value = 0,
+}
+player.vs_award_assassin = {
+	database_name = "vs_award_assassin",
+	source = "player_data",
+	value = 0,
+}
+player.vs_award_horde_killer = {
+	database_name = "vs_award_horde_killer",
+	source = "player_data",
+	value = 0,
+}
+player.vs_award_monster = {
+	database_name = "vs_award_monster",
+	source = "player_data",
+	value = 0,
+}
+player.vs_award_monster_killer = {
+	database_name = "vs_award_monster_killer",
+	source = "player_data",
+	value = 0,
+}

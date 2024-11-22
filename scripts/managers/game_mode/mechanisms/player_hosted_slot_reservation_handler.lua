@@ -21,7 +21,6 @@ PlayerHostedSlotReservationHandler.init = function (self, mechanism_manager, par
 	printf("[PlayerHostedSlotReservationHandler] Created")
 
 	self._synced = false
-	self.supports_syncing = true
 
 	local network_handler = mechanism_manager:network_handler()
 
@@ -339,6 +338,8 @@ PlayerHostedSlotReservationHandler._update_reservations = function (self)
 		local lobby = network_manager:lobby()
 
 		self:_update_lobby_data(lobby, reserved_slots)
+
+		self._lobby_data_sync_requested = true
 	else
 		self._dirty_reserved_slots = reserved_slots
 	end
@@ -752,6 +753,16 @@ PlayerHostedSlotReservationHandler.move_player = function (self, peer_id, party_
 	end
 
 	return true
+end
+
+PlayerHostedSlotReservationHandler.poll_sync_lobby_data_required = function (self)
+	if self._lobby_data_sync_requested then
+		self._lobby_data_sync_requested = false
+
+		return true
+	end
+
+	return false
 end
 
 PlayerHostedSlotReservationHandler.remote_client_disconnected = function (self, peer_id)

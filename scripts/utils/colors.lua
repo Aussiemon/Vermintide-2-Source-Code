@@ -1300,6 +1300,12 @@ Colors.color_definitions = {
 		65,
 		164,
 	},
+	grenade_engineer = {
+		255,
+		240,
+		32,
+		0,
+	},
 	grenade_frag_01 = {
 		255,
 		240,

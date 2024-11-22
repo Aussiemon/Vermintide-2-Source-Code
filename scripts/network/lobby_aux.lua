@@ -202,3 +202,71 @@ LobbyAux.verify_lobby_data = function (lobby)
 
 	return true
 end
+
+local LOBBY_SLOT_PARTY_SEPARATOR = ";"
+local LOBBY_SLOT_PEER_SEPARATOR = ","
+local LOBBY_SLOT_PEER_DATA_SEPARATOR = "="
+local PEER_DATA_PEER_ID_INDEX = 1
+local PEER_DATA_PROFILE_ID_INDEX = 2
+
+LobbyAux.serialize_lobby_reservation_data = function (peer_data_by_party)
+	local parties = {}
+
+	for party_id = 1, #peer_data_by_party do
+		local peer_datas = peer_data_by_party[party_id]
+
+		for i = 1, #peer_datas do
+			local peer_data = peer_datas[i]
+			local peer_id = peer_data.peer_id
+			local profile_index = peer_data.profile_index or -1
+
+			peer_datas[i] = string.format("%s%s%d", peer_id, LOBBY_SLOT_PEER_DATA_SEPARATOR, profile_index)
+		end
+
+		parties[party_id] = table.concat(peer_datas, LOBBY_SLOT_PEER_SEPARATOR)
+	end
+
+	local packed_reservation_data = table.concat(parties, LOBBY_SLOT_PARTY_SEPARATOR)
+
+	if packed_reservation_data == "" then
+		packed_reservation_data = rawget(_G, "LobbyInternal") and LobbyInternal.default_lobby_data and LobbyInternal.default_lobby_data.reserved_profiles or ""
+	end
+
+	return packed_reservation_data
+end
+
+LobbyAux.deserialize_lobby_reservation_data = function (lobby_data, include_unreserved_peers)
+	local reservation_data = {}
+	local reserved_profiles = lobby_data.reserved_profiles
+
+	reserved_profiles = reserved_profiles ~= "" and reserved_profiles or rawget(_G, "LobbyInternal") and LobbyInternal.default_lobby_data and LobbyInternal.default_lobby_data.reserved_profiles or ""
+
+	local by_party = string.split(reserved_profiles, LOBBY_SLOT_PARTY_SEPARATOR)
+
+	for party_id = 1, #by_party do
+		local peer_datas = {}
+
+		reservation_data[party_id] = peer_datas
+
+		local by_peer = string.split(by_party[party_id], LOBBY_SLOT_PEER_SEPARATOR)
+
+		for peer_i = 1, #by_peer do
+			local peer_data = string.split(by_peer[peer_i], LOBBY_SLOT_PEER_DATA_SEPARATOR)
+			local peer_id = peer_data[PEER_DATA_PEER_ID_INDEX]
+			local profile_index = tonumber(peer_data[PEER_DATA_PROFILE_ID_INDEX])
+
+			if profile_index == -1 then
+				profile_index = nil
+			end
+
+			if profile_index or include_unreserved_peers then
+				peer_datas[peer_i] = {
+					peer_id = peer_id,
+					profile_index = profile_index,
+				}
+			end
+		end
+	end
+
+	return reservation_data
+end

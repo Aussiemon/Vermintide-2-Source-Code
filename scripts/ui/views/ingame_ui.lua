@@ -572,11 +572,10 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 
 	if is_in_inn then
 		local is_not_in_menu = self.has_left_menu and self.hud_visible
-		local has_holly_dlc = Managers.unlock:is_dlc_unlocked("holly")
 
 		self.text_popup_ui:update(dt)
 
-		if has_holly_dlc and is_not_in_menu and not self.text_popup_ui.is_visible and not PlayerData.viewed_dialogues.dlc_holly then
+		if is_not_in_menu and not self.text_popup_ui.is_visible and not PlayerData.viewed_dialogues.dlc_holly and Managers.unlock:is_dlc_unlocked("holly") then
 			local on_close_callback = callback(self, "_holly_dlc_intro_closed")
 
 			self.text_popup_ui:show("area_selection_holly_name", "holly_lohner_spiel_short", on_close_callback)
@@ -806,6 +805,10 @@ end
 
 IngameUI._render_debug_ui = function (self, dt, t)
 	if not script_data.disable_debug_draw then
+		local disable_colorize_unlocalized_strings = script_data.disable_colorize_unlocalized_strings
+
+		script_data.disable_colorize_unlocalized_strings = true
+
 		if self.menu_active and GameSettingsDevelopment.show_version_info and not script_data.hide_version_info then
 			self:_render_version_info()
 		end
@@ -813,6 +816,8 @@ IngameUI._render_debug_ui = function (self, dt, t)
 		if GameSettingsDevelopment.show_fps and not script_data.hide_fps then
 			self:_render_fps(dt)
 		end
+
+		script_data.disable_colorize_unlocalized_strings = disable_colorize_unlocalized_strings
 	end
 end
 
@@ -896,7 +901,7 @@ IngameUI._post_handle_transition = function (self)
 
 	if old_view and old_view.post_update_on_exit then
 		printf("[IngameUI] menu view post_update_on_exit %s", old_view)
-		old_view:post_update_on_exit(transition_params)
+		old_view:post_update_on_exit(transition_params, self.new_transition_old_view == self.current_view)
 	end
 
 	local new_view = self.views[self.current_view]

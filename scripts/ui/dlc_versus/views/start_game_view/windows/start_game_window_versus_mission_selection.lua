@@ -41,6 +41,7 @@ StartGameWindowVersusMissionSelection.on_enter = function (self, params, offset)
 
 	self:_gather_level_information()
 	self:_create_ui_elements(params, offset)
+	self:_handle_input_desc()
 
 	self._return_layout_name = self._parent:get_selected_layout_name() or "versus_custom_game"
 
@@ -72,6 +73,15 @@ StartGameWindowVersusMissionSelection._gather_level_information = function (self
 			area_display_name = "area_selection_carousel_name",
 			levels_by_act = {
 				sorted_levels,
+			},
+		},
+		{
+			area_display_name = "random_level",
+			levels_by_act = {
+				{
+					DummyAnyLevel,
+					act_name = "act_versus",
+				},
 			},
 		},
 	}
@@ -157,18 +167,21 @@ StartGameWindowVersusMissionSelection._create_ui_elements = function (self, para
 				local index = k - 1
 				local level_settings = levels[math.min(k, #levels)]
 				local is_disabled, disabled_reason = false
-				local dlc_name = level_settings.dlc_name
 
-				if dlc_name and not Managers.unlock:is_dlc_unlocked(dlc_name) then
-					is_disabled = true
-					disabled_reason = "dlc"
-				end
+				if level_settings.level_id ~= "any" then
+					local dlc_name = level_settings.dlc_name
 
-				local map_pool = script_data.versus_map_pool or Managers.mechanism:mechanism_setting_for_title("map_pool")
+					if dlc_name and not Managers.unlock:is_dlc_unlocked(dlc_name) then
+						is_disabled = true
+						disabled_reason = "dlc"
+					end
 
-				if map_pool and not table.find(map_pool, level_settings.level_id) then
-					is_disabled = true
-					disabled_reason = "map_pool"
+					local map_pool = script_data.versus_map_pool or Managers.mechanism:mechanism_setting_for_title("map_pool")
+
+					if map_pool and not table.find(map_pool, level_settings.level_id) then
+						is_disabled = true
+						disabled_reason = "map_pool"
+					end
 				end
 
 				temp_offset[1] = temp_offset[1] + grid_settings.level_spacing[1] * (index % grid_settings.columns)
@@ -344,19 +357,40 @@ end
 
 StartGameWindowVersusMissionSelection._handle_input = function (self, dt, t)
 	local input_service = self._parent:window_input_service()
-	local gamepad_active = Managers.input:is_device_active("gamepad")
 
-	if gamepad_active then
-		if input_service:get("move_right_hold_continuous") then
-			self:_update_selection(0, 1)
-		elseif input_service:get("move_left_hold_continuous") then
-			self:_update_selection(0, -1)
-		end
+	if input_service:get("move_right_hold_continuous") then
+		self:_update_selection(0, 1)
+	elseif input_service:get("move_left_hold_continuous") then
+		self:_update_selection(0, -1)
+	end
 
-		if input_service:get("move_up_hold_continuous") then
-			self:_update_selection(-1, 0)
-		elseif input_service:get("move_down_hold_continuous") then
-			self:_update_selection(1, 0)
+	if input_service:get("move_up_hold_continuous") then
+		self:_update_selection(-1, 0)
+	elseif input_service:get("move_down_hold_continuous") then
+		self:_update_selection(1, 0)
+	end
+
+	if input_service:get("confirm_press", true) then
+		local current_grid_entries = self._current_grid_entries
+		local current_selection = self._selected_grid_index
+		local row = current_selection[1]
+		local column = current_selection[2]
+		local current_widget = current_grid_entries[row][column]
+		local content = current_widget.content
+
+		if not content.is_disabled then
+			local level_id = current_widget.content.level_settings.level_id
+
+			self._parent:set_selected_level_id(level_id)
+			self._parent:set_layout_by_name(self._return_layout_name)
+
+			local matchmaking_manager = Managers.matchmaking
+
+			if matchmaking_manager:is_in_versus_custom_game_lobby() then
+				matchmaking_manager:set_selected_level(level_id)
+			end
+
+			return
 		end
 	end
 
@@ -383,12 +417,6 @@ StartGameWindowVersusMissionSelection._handle_input = function (self, dt, t)
 				break
 			end
 		end
-	end
-
-	local consume = true
-
-	if input_service:get("back_menu") or input_service:get("back") or input_service:get("refresh", consume) or input_service:get("right_stick_press", consume) then
-		self._parent:set_layout_by_name(self._return_layout_name)
 	end
 end
 
@@ -419,6 +447,7 @@ StartGameWindowVersusMissionSelection._update_selection = function (self, row_ch
 		current_selection[2] = new_column
 	end
 
+	self:_handle_input_desc()
 	self:_populate_description()
 end
 
@@ -439,10 +468,10 @@ StartGameWindowVersusMissionSelection._handle_input_desc = function (self)
 	local level_settings = current_widget.content.level_settings
 	local level_id = level_settings.level_id
 
-	if self._level_preferences[1][level_id] or self._level_preferences[2][level_id] then
-		self._parent:set_input_description("preference_not_available")
-	else
-		self._parent:set_input_description("preference_available")
+	do return end
+
+	if not self._level_preferences[1][level_id] and self._level_preferences[2][level_id] then
+		-- Nothing
 	end
 end
 
@@ -475,7 +504,10 @@ StartGameWindowVersusMissionSelection._populate_description = function (self)
 		local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_id)
 
 		frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
-		is_locked = not LevelUnlockUtils.level_unlocked(statistics_db, stats_id, level_id)
+
+		local is_disabled = current_level_entry.content.is_disabled
+
+		is_locked = is_disabled or level_id ~= "any" and not LevelUnlockUtils.level_unlocked(statistics_db, stats_id, level_id)
 
 		if is_locked then
 			local dlc_name = level_settings.dlc_name
@@ -488,7 +520,7 @@ StartGameWindowVersusMissionSelection._populate_description = function (self)
 		content.icon = level_image
 		content.boss_level = boss_level
 		level_text = Localize(display_name)
-		level_description_text = Localize(level_description_text)
+		level_description_text = level_description_text and Localize(level_description_text)
 		draw_info = true
 	end
 
@@ -500,6 +532,7 @@ StartGameWindowVersusMissionSelection._populate_description = function (self)
 	widgets_by_name.level_title_divider.content.visible = draw_info
 	widgets_by_name.level_title.content.text = level_text
 	widgets_by_name.description_text.content.text = level_description_text
+	widgets_by_name.description_text.content.visible = not not level_description_text
 	widgets_by_name.locked_text.content.text = lock_text
 end
 

@@ -20,6 +20,9 @@ LocalizationManager.init = function (self, language_id)
 	rawset(_G, "Localize", function (text_id)
 		return self:lookup(text_id)
 	end)
+
+	string.upper = Utf8.upper
+	string.lower = Utf8.lower
 end
 
 LocalizationManager.destroy = function (self)

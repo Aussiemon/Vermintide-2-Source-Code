@@ -10,7 +10,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			UILayer.hud,
+			UILayer.crosshair,
 		},
 		size = {
 			1920,

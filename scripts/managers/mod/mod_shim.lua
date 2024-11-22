@@ -357,7 +357,7 @@ ModShim._mod_wedges = function (self, mod_name, timestamp)
 		local wedge_date = self:_parse_timestamp(wedge.date)
 
 		if wedge_date < timestamp then
-			printf("[ModShim] <%s> Wedge ignored due to being outdated. Wedge created '%s' (%s), mod updated '%s' (%s)", mod_name, wedge.date, wedge_date, last_updated, last_updated_date)
+			printf("[ModShim] <%s> Wedge ignored due to being outdated. Wedge created '%s' (%s), mod updated '%s'", mod_name, wedge.date, wedge_date, timestamp)
 
 			return
 		end

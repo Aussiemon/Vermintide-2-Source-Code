@@ -29,7 +29,7 @@ end
 DamageDataIndex.STRIDE = #data_fields
 data_fields = nil
 
-local RECENT_ATTACKER_DAMAGE_WINDOW = 2
+local RECENT_ATTACKER_DAMAGE_WINDOW = 5
 
 GenericHealthExtension = class(GenericHealthExtension)
 
@@ -323,7 +323,7 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 		local owner_player = Managers.player:owner(unit)
 		local owner_player_unique_id = owner_player and owner_player:unique_id()
 
-		if attacker_player_unique_id ~= owner_player_unique_id then
+		if attacker_player_unique_id ~= owner_player_unique_id and attacker_breed and attacker_breed.is_player then
 			local damage_t = Managers.time:time("game")
 
 			self:_register_attacker(attacker_player_unique_id, attacker_breed, damage_t)

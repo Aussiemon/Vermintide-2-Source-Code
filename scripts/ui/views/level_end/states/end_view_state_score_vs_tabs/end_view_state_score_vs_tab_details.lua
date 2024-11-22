@@ -236,43 +236,46 @@ EndViewStateScoreVSTabDetails._populate_stats = function (self, definitions)
 					local unique_id = data.peer_id .. ":" .. data.local_player_id
 					local party_id = party_composition[unique_id]
 					local player_team_name = GameModeSettings.versus.party_names_lookup_by_id[party_id]
-					local player_team = party_id == my_party_id and "local_team" or "opponent_team"
 
-					if player_team == team then
-						local scores = data.scores
+					if player_team_name and player_team_name ~= "undecided" then
+						local player_team = party_id == my_party_id and "local_team" or "opponent_team"
 
-						table.clear(fields)
-						table.clear(highscores)
+						if player_team == team then
+							local scores = data.scores
 
-						for i = 1, #setup do
-							local stat_name = setup[i]
+							table.clear(fields)
+							table.clear(highscores)
 
-							fields[#fields + 1] = scores[stat_name] or Localize("menu_settings_none")
-							total_fields[i] = (total_fields[i] or 0) + (scores[stat_name] or 0)
-							highscores[#highscores + 1] = player_highscores[stat_name]
-						end
+							for i = 1, #setup do
+								local stat_name = setup[i]
 
-						offset[2] = -40 * (row_index - 1)
+								fields[#fields + 1] = scores[stat_name] or Localize("menu_settings_none")
+								total_fields[i] = (total_fields[i] or 0) + (scores[stat_name] or 0)
+								highscores[#highscores + 1] = player_highscores[stat_name]
+							end
 
-						local skip_highscore = false
-						local widget_definition = create_stats_func(scenegraph_id, fields, 20, offset, data.peer_id == my_peer_id, skip_highscore, highscores)
-						local widget = UIWidget.init(widget_definition)
+							offset[2] = -40 * (row_index - 1)
 
-						self._widgets[#self._widgets + 1] = widget
-						self._widgets_by_name[unique_id .. "_" .. team .. "_" .. side] = widget
-
-						if side == "heroes" then
-							offset[1] = -200
-
-							local widget_definition = create_title_func(scenegraph_id, data.name, nil, offset, data.peer_id == my_peer_id, player_team_name)
+							local skip_highscore = false
+							local widget_definition = create_stats_func(scenegraph_id, fields, 20, offset, data.peer_id == my_peer_id, skip_highscore, highscores)
 							local widget = UIWidget.init(widget_definition)
 
 							self._widgets[#self._widgets + 1] = widget
-							self._widgets_by_name["title_" .. unique_id .. "_" .. team .. "_" .. side] = widget
-							offset[1] = 0
-						end
+							self._widgets_by_name[unique_id .. "_" .. team .. "_" .. side] = widget
 
-						row_index = row_index + 1
+							if side == "heroes" then
+								offset[1] = -200
+
+								local widget_definition = create_title_func(scenegraph_id, data.name, nil, offset, data.peer_id == my_peer_id, player_team_name)
+								local widget = UIWidget.init(widget_definition)
+
+								self._widgets[#self._widgets + 1] = widget
+								self._widgets_by_name["title_" .. unique_id .. "_" .. team .. "_" .. side] = widget
+								offset[1] = 0
+							end
+
+							row_index = row_index + 1
+						end
 					end
 				end
 

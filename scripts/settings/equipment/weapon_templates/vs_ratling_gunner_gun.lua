@@ -67,11 +67,11 @@ weapon_template.actions = {
 			enter_function = function (owner_unit, input_extension, remaining_time, weapon_extension)
 				input_extension:clear_input_buffer()
 				input_extension:reset_release_input()
-				Managers.state.entity:system("weapon_system"):change_synced_weapon_state(owner_unit, "winding")
+				weapon_extension:change_synced_state("winding")
 			end,
 			finish_function = function (owner_unit, reason, weapon_extension)
 				if reason ~= "new_interupting_action" then
-					Managers.state.entity:system("weapon_system"):change_synced_weapon_state(owner_unit, nil)
+					weapon_extension:change_synced_state(nil)
 				end
 			end,
 			total_time = spinup_time * SPINUP_ANIMATION_SCALE,
@@ -120,10 +120,10 @@ weapon_template.actions = {
 			enter_function = function (owner_unit, input_extension, remaining_time, weapon_extension)
 				input_extension:reset_release_input()
 				input_extension:clear_input_buffer()
-				Managers.state.entity:system("weapon_system"):change_synced_weapon_state(owner_unit, "firing")
+				weapon_extension:change_synced_state("firing")
 			end,
 			finish_function = function (owner_unit, reason, weapon_extension)
-				Managers.state.entity:system("weapon_system"):change_synced_weapon_state(owner_unit, nil)
+				weapon_extension:change_synced_state(nil)
 			end,
 			initial_rounds_per_second = initial_rps,
 			max_rps = max_rps,
@@ -161,14 +161,14 @@ weapon_template.actions = {
 			condition_func = reload_condition_func,
 			chain_condition_func = reload_condition_func,
 			enter_function = function (owner_unit, input_extension, remaining_time, weapon_unit_extension)
-				Managers.state.entity:system("weapon_system"):change_synced_weapon_state(owner_unit, "reloading")
+				weapon_unit_extension:change_synced_state("reloading")
 
 				local wwise_world = Managers.world:wwise_world(weapon_unit_extension.world)
 
 				WwiseWorld.trigger_event(wwise_world, "Play_player_ratling_gunner_weapon_reload")
 			end,
 			finish_function = function (owner_unit, reason, weapon_unit_extension)
-				Managers.state.entity:system("weapon_system"):change_synced_weapon_state(owner_unit, nil)
+				weapon_unit_extension:change_synced_state(nil)
 
 				local wwise_world = Managers.world:wwise_world(weapon_unit_extension.world)
 

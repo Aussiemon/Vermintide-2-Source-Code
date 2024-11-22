@@ -2790,6 +2790,13 @@ DamageUtils.camera_shake_by_distance = function (shake_name, start_time, player_
 		return
 	end
 
+	local game_mode_manager = Managers.state.game_mode
+	local game_end_reason = game_mode_manager and game_mode_manager:get_end_reason()
+
+	if game_end_reason then
+		return
+	end
+
 	local scale = 1
 
 	if source_unit then
@@ -3160,7 +3167,7 @@ DamageUtils._projectile_hit_character = function (current_action, owner_unit, ow
 
 			local owner_breed = Unit.get_data(owner_unit, "breed")
 
-			if shield_blocked and owner_breed.track_projectile_blocked_vo then
+			if shield_blocked and owner_breed and owner_breed.track_projectile_blocked_vo then
 				local t = Managers.time:time("game")
 				local tracked_blocked_projectiles = Unit.get_data(owner_unit, "blocked_projectile_hits") or {}
 				local num_blocked = #tracked_blocked_projectiles + 1

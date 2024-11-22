@@ -10,6 +10,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local tab_size = definitions.tab_size
 local DO_RELOAD = false
+local PADDING = 30
 
 EndViewStateScoreVS = class(EndViewStateScoreVS)
 EndViewStateScoreVS.NAME = "EndViewStateScoreVS"
@@ -90,13 +91,14 @@ EndViewStateScoreVS.create_ui_elements = function (self, params)
 	for i = 1, #tab_layouts do
 		local settings = tab_layouts[i]
 		local scenegraph_id = "tab"
-		local size = scenegraph_definition[scenegraph_id].size
 		local display_name = settings.display_name or "n/a"
-		local widget_definition = definitions.create_tab(scenegraph_id, size, display_name)
+		local widget_definition = definitions.create_tab(scenegraph_id, display_name)
 		local widget = UIWidget.init(widget_definition)
+		local text_width = UIUtils.get_text_width(self._ui_renderer, widget.style.text, display_name)
 
-		widget.offset[1] = offset
-		offset = offset + size[1]
+		widget.offset[1] = offset + (i > 1 and text_width * 0.5 or 0)
+		offset = offset + text_width * 0.5 + PADDING
+		widget.style.hotspot.area_size[1] = text_width * 0.5
 
 		local layout_name = settings.name
 
@@ -139,27 +141,30 @@ EndViewStateScoreVS.create_ui_elements = function (self, params)
 end
 
 EndViewStateScoreVS._align_tabs = function (self)
-	local num_tabs = #self._title_button_widgets
-	local offset = (num_tabs - 1) * tab_size[1] * 0.5
+	local offset = 0
+
+	for _, widget in pairs(self._title_button_widgets) do
+		offset = offset + widget.style.hotspot.area_size[1] + PADDING
+	end
 
 	for _, widget in pairs(self._title_button_widgets) do
 		widget.offset[1] = widget.offset[1] - offset
 	end
 
-	local padding = 60
 	local first_tab_widget = self._title_button_widgets[1]
 	local text = first_tab_widget.content.text
 	local text_style = first_tab_widget.style.text
 	local text_width = UIUtils.get_text_width(self._ui_renderer, text_style, text)
 
-	self._widgets_by_name.prev_tab.offset[1] = -offset - text_width * 0.5 - padding
+	self._widgets_by_name.prev_tab.offset[1] = -offset - text_width * 0.5 - PADDING * 2
 
 	local last_tab_widget = self._title_button_widgets[#self._title_button_widgets]
 	local text = last_tab_widget.content.text
 	local text_style = last_tab_widget.style.text
 	local text_width = UIUtils.get_text_width(self._ui_renderer, text_style, text)
 
-	self._widgets_by_name.next_tab.offset[1] = offset + text_width * 0.5 + padding
+	offset = last_tab_widget.offset
+	self._widgets_by_name.next_tab.offset[1] = offset[1] + text_width * 0.5 + PADDING * 2
 end
 
 EndViewStateScoreVS._setup_level_widget = function (self)

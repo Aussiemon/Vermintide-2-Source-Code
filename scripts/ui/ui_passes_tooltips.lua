@@ -5431,6 +5431,8 @@ UITooltipPasses = {
 				elseif ui_content.claimed then
 					return 0
 				end
+			elseif ui_content.difficulty_key then
+				chest_level = ExperienceSettings.get_highest_hero_level()
 			else
 				chest_level = loot_interface:get_highest_chest_level(reward_name)
 			end

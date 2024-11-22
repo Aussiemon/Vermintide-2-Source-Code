@@ -49,10 +49,10 @@ weapon_template.actions = {
 					sub_action = "thorn_wall_target_flip",
 				},
 			},
-			enter_function = function (attacker_unit, input_extension)
+			enter_function = function (attacker_unit, input_extension, _, weapon_extension)
 				input_extension:clear_input_buffer()
 				input_extension:reset_release_input()
-				Managers.state.entity:system("weapon_system"):change_synced_weapon_state(attacker_unit, "targeting", true)
+				weapon_extension:change_synced_state("targeting", true)
 			end,
 		},
 		thorn_wall_target_flip = {
@@ -164,10 +164,10 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action"
 			end,
 			allowed_chain_actions = {},
-			enter_function = function (attacker_unit, input_extension)
+			enter_function = function (attacker_unit, input_extension, _, weapon_extension)
 				input_extension:clear_input_buffer()
 				input_extension:reset_release_input()
-				Managers.state.entity:system("weapon_system"):change_synced_weapon_state(attacker_unit, nil, true)
+				weapon_extension:change_synced_state(nil, true)
 			end,
 		},
 	},
@@ -202,10 +202,10 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action"
 			end,
 			allowed_chain_actions = {},
-			enter_function = function (attacker_unit, input_extension)
+			enter_function = function (attacker_unit, input_extension, _, weapon_extension)
 				input_extension:clear_input_buffer()
 				input_extension:reset_release_input()
-				Managers.state.entity:system("weapon_system"):change_synced_weapon_state(attacker_unit, nil, true)
+				weapon_extension:change_synced_state(nil, true)
 			end,
 		},
 	},

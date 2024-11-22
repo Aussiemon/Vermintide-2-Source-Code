@@ -88,6 +88,10 @@ HandbookPopup._handle_input = function (self, dt)
 
 	local widgets_by_name = self._widgets_by_name
 	local input_service = self:_get_input_service()
+	local is_gamepad_active = Managers.input:is_device_active("gamepad")
+
+	self:_set_gamepad_input_buttons_visibility(is_gamepad_active)
+
 	local page_button_next = widgets_by_name.page_button_next
 	local page_button_previous = widgets_by_name.page_button_previous
 
@@ -179,7 +183,7 @@ HandbookPopup._update_page_info = function (self)
 end
 
 HandbookPopup.should_show = function (self)
-	return self._ui_context.is_in_inn and not Managers.popup:has_popup() and not self._is_visible
+	return self._ui_context.is_in_inn and not Managers.popup:has_popup() and not self._is_visible and not Managers.unlock:is_waiting_for_gift_popup_ui()
 end
 
 HandbookPopup.update = function (self, dt)
@@ -251,4 +255,21 @@ HandbookPopup._update_mouse_scroll_input = function (self)
 			self:_set_scrollbar_value(scroll_bar_value)
 		end
 	end
+end
+
+HandbookPopup._set_gamepad_input_buttons_visibility = function (self, visible)
+	local widgets_by_name = self._widgets_by_name
+	local has_pages = self._total_pages > 1
+
+	visible = visible and has_pages
+
+	local input_1_widget = widgets_by_name.input_icon_next
+	local input_2_widget = widgets_by_name.input_icon_previous
+	local input_arrow_1_widget = widgets_by_name.input_arrow_next
+	local input_arrow_2_widget = widgets_by_name.input_arrow_previous
+
+	input_1_widget.content.visible = visible
+	input_2_widget.content.visible = visible
+	input_arrow_1_widget.content.visible = visible
+	input_arrow_2_widget.content.visible = visible
 end

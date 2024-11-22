@@ -25,6 +25,15 @@ MatchmakingStateWaitJoinPlayerHosted.on_enter = function (self, state_context)
 
 	self._next_transition_state = match_started and "start_lobby" or nil
 	self._match_host = lobby_client:lobby_host()
+	self._friend_joining = state_context.friend_join
+
+	if self._friend_joining and not match_started then
+		Managers.ui:handle_transition("start_game_view_force", {
+			menu_state_name = "play",
+			menu_sub_state_name = "versus_player_hosted_lobby",
+			use_fade = true,
+		})
+	end
 end
 
 MatchmakingStateWaitJoinPlayerHosted.on_exit = function (self)

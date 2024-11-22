@@ -101,7 +101,11 @@ KillConfirmationUI.event_add_player_kill_confirmation = function (self, side, vi
 	self:add_badge(self._local_unique_id .. "_" .. badge_id, badge)
 end
 
-KillConfirmationUI.event_add_player_knock_confirmation = function (self, victim_player)
+KillConfirmationUI.event_add_player_knock_confirmation = function (self, attacker_player, victim_player)
+	if not Managers.state.side:is_enemy_by_player(attacker_player, victim_player) then
+		return
+	end
+
 	local badge_id = NetworkLookup.badges.knock_down_hero
 	local badge = self:_get_badge(badge_id)
 

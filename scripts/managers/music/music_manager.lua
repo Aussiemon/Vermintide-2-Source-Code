@@ -927,7 +927,7 @@ MusicManager._update_versus_game_state = function (self, music_player, dt, t)
 	local game_mode_key = game_mode_manager:game_mode_key()
 	local game_mode_state = game_mode:game_mode_state()
 
-	if game_mode_key == "inn_vs" or game_mode:is_in_pre_match_state() then
+	if game_mode_key == "inn_vs" or game_mode.is_in_pre_match_state and game_mode:is_in_pre_match_state() then
 		music_player:set_group_state("versus_state", "menu")
 
 		return

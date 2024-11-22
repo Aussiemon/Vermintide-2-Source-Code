@@ -1291,7 +1291,7 @@ local function create_dark_pact_hud_ability_icon_widget()
 					pass_type = "text",
 					style_id = "input",
 					text_id = "input",
-					content_change_function = function (content, style)
+					content_change_function = function (content, style, _, dt)
 						if not content.settings then
 							return
 						end
@@ -1312,6 +1312,25 @@ local function create_dark_pact_hud_ability_icon_widget()
 								content.input = input_text
 								style.offset[1] = 40
 							end
+						end
+
+						local subtitle_gui = Managers.ui:get_hud_component("SubtitleGui")
+
+						if subtitle_gui then
+							local has_subtitles = subtitle_gui:is_displaying_subtitle()
+
+							content.has_subtitles = has_subtitles
+
+							local fade_progress = content.fade_progress or 0
+
+							if has_subtitles then
+								fade_progress = math.max(fade_progress - dt * 5, 0)
+							else
+								fade_progress = math.min(fade_progress + dt * 5, 1)
+							end
+
+							style.text_color[1] = 55 + 200 * fade_progress
+							content.fade_progress = fade_progress
 						end
 					end,
 				},

@@ -175,13 +175,17 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 	local attacker_side = victim_damage_data.attacker_side
 	local attacker_unique_id = victim_damage_data.attacker_unique_id
 	local attacker_player = player_manager:player_from_unique_id(attacker_unique_id)
+	local side_manager = Managers.state.side
+	local victim_side = side_manager.side_by_unit[victim_unit]
 	local local_player = Managers.player:local_player()
 	local recent_attack = victim_player and victim_health_extension:was_attacked_by(local_player and local_player:unique_id())
 
-	if recent_attack and victim_player ~= local_player then
+	if recent_attack and victim_player ~= local_player and side_manager:is_enemy_by_side(attacker_side, victim_side) then
 		local local_stats_id = local_player:stats_id()
+		local attacker_breed_name = recent_attack.attacker_breed.name
 
-		statistics_db:increment_stat(local_stats_id, "eliminations_as_breed", recent_attack.attacker_breed.name)
+		statistics_db:increment_stat(local_stats_id, "eliminations_as_breed", attacker_breed_name)
+		Managers.state.event:trigger("add_player_kill_confirmation", attacker_side:name(), victim_player)
 	end
 
 	if attacker_player and attacker_player ~= victim_player then
@@ -193,14 +197,9 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 			Managers.state.achievement:trigger_event("register_kill", stats_id, victim_unit, damage_data, breed_killed)
 
 			local killed_race_name = breed_killed.race
-			local victim_side = Managers.state.side.side_by_unit[victim_unit]
 
 			if Breeds[breed_killed_name] or PlayerBreeds[breed_killed_name] and Managers.state.side:is_enemy_by_side(attacker_side, victim_side) then
 				statistics_db:increment_stat(stats_id, "kills_per_breed", breed_killed_name)
-
-				if victim_player and attacker_player == local_player then
-					Managers.state.event:trigger("add_player_kill_confirmation", attacker_side:name(), victim_player)
-				end
 			end
 
 			if killed_race_name then
@@ -330,6 +329,7 @@ StatisticsUtil.register_knockdown = function (victim_unit, damage_data, statisti
 
 			statistics_db:increment_stat(local_stats_id, "eliminations_as_breed", attacker_breed_name)
 			statistics_db:increment_stat(local_stats_id, "vs_knockdowns_per_breed", breed_killed_name)
+			Managers.state.event:trigger("add_player_knock_confirmation", local_player, victim_player)
 		end
 	end
 
@@ -351,10 +351,6 @@ StatisticsUtil.register_knockdown = function (victim_unit, damage_data, statisti
 
 			if victim_player and attacker_player then
 				Managers.state.achievement:trigger_event("register_knockdown", stats_id, victim_unit, attacker_player, breed_killed)
-
-				if attacker_player == local_player then
-					Managers.state.event:trigger("add_player_knock_confirmation", victim_player)
-				end
 			end
 		end
 	end
@@ -539,6 +535,10 @@ StatisticsUtil.register_damage = function (victim_unit, damage_data, statistics_
 	end
 
 	attacker_breed = actual_attacker_breed
+
+	if attacker_player and not statistics_db:is_registered(attacker_player:stats_id()) then
+		return
+	end
 
 	local victim_player = player_manager:owner(victim_unit)
 	local damage_amount = damage_data[DamageDataIndex.DAMAGE_AMOUNT]

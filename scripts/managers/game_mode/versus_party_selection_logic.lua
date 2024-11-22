@@ -588,15 +588,15 @@ VersusPartySelectionLogic._make_available_profile_lookup = function (self, affil
 	return profile_lookup
 end
 
-VersusPartySelectionLogic.get_character_or_random = function (self, peer_id_or_pick_index, profile_index, career_index, party_data, is_bot)
-	if profile_index and career_index and not self:_is_hero_locked(peer_id_or_pick_index, profile_index, party_data) then
+VersusPartySelectionLogic.get_character_or_random = function (self, profile_index, career_index, party_data, is_bot)
+	if profile_index and career_index and not self:_is_hero_locked(profile_index, party_data) then
 		return profile_index, career_index
 	end
 
-	return self:get_random_available_character(peer_id_or_pick_index, party_data, is_bot)
+	return self:get_random_available_character(party_data, is_bot)
 end
 
-VersusPartySelectionLogic.get_random_available_character = function (self, peer_id_or_pick_index, party_data, is_bot)
+VersusPartySelectionLogic.get_random_available_character = function (self, party_data, is_bot)
 	local random_profile_indices = self._random_profile_indices or table.select_map(SPProfiles, function (_, profile)
 		if profile.affiliation == "heroes" then
 			return profile.index
@@ -624,7 +624,7 @@ VersusPartySelectionLogic.get_random_available_character = function (self, peer_
 			local p_idx, c_idx = random_profile_indices[p_i], random_career_indices[c_i]
 			local career_name = SPProfiles[p_i].careers[c_i].name
 
-			if PlayerUtils.get_career_override(career_name) and not self:_is_hero_locked(peer_id_or_pick_index, p_idx, party_data) then
+			if PlayerUtils.get_career_override(career_name) and not self:_is_hero_locked(p_idx, party_data) then
 				profile_index, career_index = p_idx, c_idx
 
 				break
@@ -636,10 +636,17 @@ VersusPartySelectionLogic.get_random_available_character = function (self, peer_
 		end
 	end
 
+	if not profile_index or not career_index then
+		profile_index, career_index = 1, 1
+
+		table.dump(party_data, "party_data", 3)
+		Crashify.print_exception("VersusPartySelectionLogic", "Could not find an available profile.")
+	end
+
 	return profile_index, career_index
 end
 
-VersusPartySelectionLogic._is_hero_locked = function (self, peer_id_or_pick_index, profile_index, party_data)
+VersusPartySelectionLogic._is_hero_locked = function (self, profile_index, party_data)
 	if self._settings.duplicate_hero_careers_allowed then
 		return false
 	end
@@ -648,22 +655,13 @@ VersusPartySelectionLogic._is_hero_locked = function (self, peer_id_or_pick_inde
 		return false
 	end
 
-	local party_id = party_data.party_id
-	local occupying_peer = self._profile_synchronizer:get_profile_index_reservation(party_id, profile_index)
+	local picker_list = party_data.picker_list
 
-	if occupying_peer and occupying_peer ~= peer_id_or_pick_index then
-		return true
-	end
+	for slot_id = 1, #picker_list do
+		local picker_data = picker_list[slot_id]
 
-	local mechanism = Managers.mechanism:game_mechanism()
-
-	for slot_id = 1, #party_data.picker_list do
-		if slot_id ~= peer_id_or_pick_index then
-			local other_profile_index = mechanism:get_saved_bot(party_id, slot_id)
-
-			if other_profile_index == profile_index then
-				return true
-			end
+		if picker_data.state == "player_has_picked_character" and picker_data.status.profile_index == profile_index and picker_data.picker_index ~= party_data.current_picker_index then
+			return true
 		end
 	end
 
@@ -1047,9 +1045,7 @@ VersusPartySelectionLogic._try_pick_hero = function (self, party_data, picker_in
 		current_profile_idx, current_career_idx = Managers.mechanism:get_persistent_profile_index_reservation(peer_id)
 	end
 
-	local peer_id_or_pick_index = is_bot and slot_id or peer_id
-
-	if self:_is_hero_locked(peer_id_or_pick_index, current_profile_idx, party_data) then
+	if self:_is_hero_locked(current_profile_idx, party_data) then
 		current_profile_idx, current_career_idx = nil
 	end
 
@@ -1078,13 +1074,13 @@ VersusPartySelectionLogic._try_pick_hero = function (self, party_data, picker_in
 		force_sync = true
 
 		if not profile_index or not career_index or profile_index == 0 or career_index == 0 then
-			profile_index, career_index = self:get_character_or_random(is_bot and slot_id or peer_id, profile_index, career_index, party_data, is_bot)
+			profile_index, career_index = self:get_character_or_random(profile_index, career_index, party_data, is_bot)
 
 			printf("[VersusPartySelectionLogic] No profile provided for %s %s. Fallbacking to %s %s.", is_bot and "BOT in slot" or "Peer", is_bot and picker_index or peer_id, profile_index, career_index)
-		elseif self:_is_hero_locked(peer_id_or_pick_index, profile_index, party_data) then
+		elseif self:_is_hero_locked(profile_index, party_data) then
 			local failed_profile_index, failed_career_index = profile_index, career_index
 
-			profile_index, career_index = self:get_character_or_random(is_bot and slot_id or peer_id, profile_index, career_index, party_data, is_bot)
+			profile_index, career_index = self:get_character_or_random(profile_index, career_index, party_data, is_bot)
 
 			printf("[VersusPartySelectionLogic] %s %s tried to pick locked hero %s %s. Fallbacking to %s %s.", is_bot and "BOT in slot" or "Peer", is_bot and picker_index or peer_id, failed_profile_index, failed_career_index, profile_index, career_index)
 		end

@@ -108,7 +108,7 @@ return function ()
 				"user_context",
 				"intensity",
 				OP.GT,
-				30,
+				60,
 			},
 			{
 				"faction_memory",
@@ -712,7 +712,7 @@ return function ()
 				"query_context",
 				"number_of_kills",
 				OP.EQ,
-				7,
+				9,
 			},
 			{
 				"query_context",
@@ -1011,7 +1011,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_dead_body",
-		probability = 1,
+		probability = 0.1,
 		response = "pwh_gameplay_dead_body",
 		criterias = {
 			{
@@ -1361,7 +1361,7 @@ return function ()
 				"query_context",
 				"number_of_kills",
 				OP.EQ,
-				7,
+				9,
 			},
 			{
 				"query_context",
@@ -1623,7 +1623,7 @@ return function ()
 				"query_context",
 				"number_of_kills",
 				OP.EQ,
-				7,
+				9,
 			},
 			{
 				"query_context",
@@ -2552,10 +2552,10 @@ return function ()
 				"chaos_spawn",
 			},
 			{
-				"user_context",
-				"enemies_close",
-				OP.EQ,
-				0,
+				"query_context",
+				"distance",
+				OP.GT,
+				10,
 			},
 			{
 				"query_context",
@@ -2568,6 +2568,12 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"witch_hunter",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0,
 			},
 			{
 				"faction_memory",
@@ -2610,10 +2616,10 @@ return function ()
 				"chaos_spawn",
 			},
 			{
-				"user_context",
-				"enemies_close",
+				"query_context",
+				"distance",
 				OP.GT,
-				0,
+				10,
 			},
 			{
 				"query_context",
@@ -2626,6 +2632,12 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"witch_hunter",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.GT,
+				0,
 			},
 			{
 				"faction_memory",
@@ -3306,10 +3318,10 @@ return function ()
 				"beastmen_minotaur",
 			},
 			{
-				"user_context",
-				"enemies_close",
-				OP.EQ,
-				0,
+				"query_context",
+				"distance",
+				OP.GT,
+				10,
 			},
 			{
 				"query_context",
@@ -3322,6 +3334,12 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"witch_hunter",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0,
 			},
 			{
 				"faction_memory",
@@ -3538,10 +3556,10 @@ return function ()
 				"skaven_rat_ogre",
 			},
 			{
-				"user_context",
-				"enemies_close",
-				OP.EQ,
-				0,
+				"query_context",
+				"distance",
+				OP.GT,
+				10,
 			},
 			{
 				"query_context",
@@ -3554,6 +3572,12 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"witch_hunter",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0,
 			},
 			{
 				"faction_memory",
@@ -3596,10 +3620,10 @@ return function ()
 				"skaven_rat_ogre",
 			},
 			{
-				"user_context",
-				"enemies_close",
+				"query_context",
+				"distance",
 				OP.GT,
-				0,
+				10,
 			},
 			{
 				"query_context",
@@ -3612,6 +3636,12 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"witch_hunter",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.GT,
+				0,
 			},
 			{
 				"faction_memory",
@@ -3874,10 +3904,10 @@ return function ()
 				"skaven_stormfiend",
 			},
 			{
-				"user_context",
-				"enemies_close",
-				OP.EQ,
-				0,
+				"query_context",
+				"distance",
+				OP.GT,
+				10,
 			},
 			{
 				"query_context",
@@ -3890,6 +3920,12 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"witch_hunter",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0,
 			},
 			{
 				"faction_memory",
@@ -3932,10 +3968,10 @@ return function ()
 				"skaven_stormfiend",
 			},
 			{
-				"user_context",
-				"enemies_close",
+				"query_context",
+				"distance",
 				OP.GT,
-				0,
+				10,
 			},
 			{
 				"query_context",
@@ -3948,6 +3984,12 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"witch_hunter",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.GT,
+				0,
 			},
 			{
 				"faction_memory",
@@ -3997,10 +4039,10 @@ return function ()
 				"vs_chaos_troll",
 			},
 			{
-				"user_context",
-				"enemies_close",
-				OP.EQ,
-				0,
+				"query_context",
+				"distance",
+				OP.GT,
+				10,
 			},
 			{
 				"query_context",
@@ -4013,6 +4055,12 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"witch_hunter",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0,
 			},
 			{
 				"faction_memory",
@@ -4062,10 +4110,10 @@ return function ()
 				"vs_chaos_troll",
 			},
 			{
-				"user_context",
-				"enemies_close",
+				"query_context",
+				"distance",
 				OP.GT,
-				0,
+				10,
 			},
 			{
 				"query_context",
@@ -4078,6 +4126,12 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"witch_hunter",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.GT,
+				0,
 			},
 			{
 				"faction_memory",
@@ -7415,7 +7469,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_special_enemy_kill_melee",
-		probability = 1,
+		probability = 0.5,
 		response = "pwh_gameplay_special_enemy_kill_melee",
 		criterias = {
 			{
@@ -7460,7 +7514,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwh_gameplay_special_enemy_kill_ranged",
-		probability = 1,
+		probability = 0.7,
 		response = "pwh_gameplay_special_enemy_kill_ranged",
 		criterias = {
 			{
@@ -8515,7 +8569,7 @@ return function ()
 				"query_context",
 				"number_of_kills",
 				OP.EQ,
-				7,
+				9,
 			},
 			{
 				"query_context",

@@ -12,6 +12,13 @@ EnemyCharacterStateDead.on_enter = function (self, unit, input, dt, context, t, 
 	self.switched_to_observer_camera = false
 
 	local breed = Unit.get_data(unit, "breed")
+	local is_gutter_runner = breed and breed.name and breed.name == "vs_gutter_runner"
+
+	if not is_gutter_runner and unit then
+		local animation = params and params.animation or "death"
+
+		CharacterStateHelper.play_animation_event(unit, animation)
+	end
 
 	self._locomotion_extension:set_wanted_velocity(Vector3.zero())
 

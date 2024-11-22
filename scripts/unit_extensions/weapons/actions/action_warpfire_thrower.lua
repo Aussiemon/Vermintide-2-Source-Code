@@ -50,12 +50,6 @@ ActionWarpfireThrower.client_owner_post_update = function (self, dt, t, world, c
 	local is_max_overcharge = max_overcharge <= current_overcharge_value
 
 	if self.state == "shooting" and not is_max_overcharge then
-		if not Managers.player:owner(owner_unit).bot_player and not self._rumble_effect_id then
-			self._rumble_effect_id = Managers.state.controller_features:add_effect("persistent_rumble", {
-				rumble_effect = "reload_start",
-			})
-		end
-
 		self._current_flame_time = dt + self._current_flame_time or 0
 
 		if t > (self.next_fire_tick or 0) then
@@ -81,12 +75,6 @@ ActionWarpfireThrower._stop_fx = function (self)
 
 	if hud_extension then
 		hud_extension.show_critical_indication = false
-	end
-
-	if self._rumble_effect_id then
-		Managers.state.controller_features:stop_effect(self._rumble_effect_id)
-
-		self._rumble_effect_id = nil
 	end
 end
 

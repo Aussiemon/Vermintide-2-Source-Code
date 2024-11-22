@@ -21,6 +21,7 @@ UISettings = UISettings or {
 	start_drag_threshold = 0.15,
 	tooltip_fade_in_speed = 4,
 	tooltip_wait_duration = 0.1,
+	transparent_placeholder_texture = "gui/1080p/single_textures/generic/transparent_placeholder_texture",
 	use_subtitles = true,
 	wait_for_mip_streaming_character = true,
 	wait_for_mip_streaming_items = false,
@@ -747,7 +748,7 @@ UISettings.slot_icons = {
 	melee_ranged = "tabs_icon_melee_ranged",
 	necklace = "tabs_icon_necklace",
 	portrait_frame = "tabs_icon_portrait_frame",
-	pose = "tabs_icon_prestige",
+	pose = "tabs_icon_inventory",
 	ranged = "tabs_icon_ranged",
 	ring = "tabs_icon_charm",
 	skins = "tabs_icon_character_skins",
@@ -898,6 +899,7 @@ UISettings.inventory_consumable_slot_colors = {
 	potion_speed_boost_01 = Colors.get_color_table_with_alpha("potion_speed_boost_01", 255),
 	potion_cooldown_reduction_01 = Colors.get_color_table_with_alpha("potion_cooldown_reduction_01", 255),
 	wpn_grimoire_01 = Colors.get_color_table_with_alpha("wpn_grimoire_01", 255),
+	grenade_engineer = Colors.get_color_table_with_alpha("grenade_engineer", 255),
 	grenade_frag_01 = Colors.get_color_table_with_alpha("grenade_frag_01", 255),
 	grenade_frag_02 = Colors.get_color_table_with_alpha("grenade_frag_02", 255),
 	grenade_smoke_01 = Colors.get_color_table_with_alpha("grenade_smoke_01", 255),
@@ -1262,67 +1264,67 @@ UISettings.dlc_order_data = {
 		dlc = "grass_2",
 	},
 	{
-		display_name = "display_name_mercenary_hat_1001",
+		display_name = "hat",
 		dlc = "mm_1001",
 	},
 	{
-		display_name = "display_name_huntsman_hat_1001",
+		display_name = "hat",
 		dlc = "mh_1001",
 	},
 	{
-		display_name = "display_name_knight_hat_1001",
+		display_name = "hat",
 		dlc = "mk_1001",
 	},
 	{
-		display_name = "display_name_ranger_hat_1001",
+		display_name = "hat",
 		dlc = "br_1001",
 	},
 	{
-		display_name = "display_name_ironbreaker_hat_1001",
+		display_name = "hat",
 		dlc = "bi_1001",
 	},
 	{
-		display_name = "display_name_slayer_hat_1001",
+		display_name = "hat",
 		dlc = "bs_1001",
 	},
 	{
-		display_name = "display_name_waywatcher_hat_1001",
+		display_name = "hat",
 		dlc = "kw_1001",
 	},
 	{
-		display_name = "display_name_maidenguard_hat_1001",
+		display_name = "hat",
 		dlc = "kh_1001",
 	},
 	{
-		display_name = "display_name_shade_hat_1001",
+		display_name = "hat",
 		dlc = "ks_1001",
 	},
 	{
-		display_name = "display_name_witchhunter_hat_1001",
+		display_name = "hat",
 		dlc = "vw_1001",
 	},
 	{
-		display_name = "display_name_bountyhunter_hat_1001",
+		display_name = "hat",
 		dlc = "vb_1001",
 	},
 	{
-		display_name = "display_name_zealot_hat_1001",
+		display_name = "hat",
 		dlc = "vz_1001",
 	},
 	{
-		display_name = "display_name_zealot_hat_1003",
+		display_name = "hat",
 		dlc = "vz_1003",
 	},
 	{
-		display_name = "display_name_adept_hat_1001",
+		display_name = "hat",
 		dlc = "sb_1001",
 	},
 	{
-		display_name = "display_name_scholar_hat_1001",
+		display_name = "hat",
 		dlc = "sp_1001",
 	},
 	{
-		display_name = "display_name_unchained_hat_1001",
+		display_name = "hat",
 		dlc = "su_1001",
 	},
 	{

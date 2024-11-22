@@ -6,7 +6,7 @@ settings.unlock_settings = {
 	premium_career_bundle = {
 		class = "UnlockDlcBundle",
 		id = "38849",
-		requires_restart = true,
+		requires_restart = false,
 		bundle_contains = {
 			"lake",
 			"cog",
@@ -18,7 +18,7 @@ settings.unlock_settings = {
 	premium_career_bundle_upgrade = {
 		class = "UnlockDlcBundle",
 		id = "38850",
-		requires_restart = true,
+		requires_restart = false,
 		bundle_contains = {
 			"lake",
 			"lake_upgrade",

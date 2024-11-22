@@ -505,7 +505,11 @@ HeroWindowCosmeticsLoadoutPoseInventoryConsole._handle_gamepad_input = function 
 				local slot_type = item_data.slot_type
 
 				if slot_type == "weapon_pose" then
-					if not is_equipped then
+					local apply_illusion_button_widget = self._widgets_by_name.apply_illusion_button
+
+					if apply_illusion_button_widget.content.visible then
+						self:_apply_illusion()
+					elseif not is_equipped then
 						parent:_set_loadout_item(selected_item)
 						self:_play_sound("play_gui_equipment_equip_hero")
 					end
@@ -544,6 +548,7 @@ HeroWindowCosmeticsLoadoutPoseInventoryConsole._handle_gamepad_input = function 
 				self._parent:clear_character_animation()
 
 				self._current_anim_event = nil
+				self._current_hovered_item = nil
 			end
 		end
 
@@ -641,6 +646,7 @@ HeroWindowCosmeticsLoadoutPoseInventoryConsole._handle_input = function (self, d
 				self._parent:set_character_pose_animation(anim_event)
 
 				self._current_anim_event = anim_event
+				self._current_hovered_item = hovered_item
 			end
 		end
 	end
@@ -1159,7 +1165,7 @@ HeroWindowCosmeticsLoadoutPoseInventoryConsole._handle_gamepad_activity = functi
 			local item_grid = self._item_grid
 			local first_item = item_grid:get_item_in_slot(1, 1)
 
-			item_grid:set_item_selected(first_item)
+			item_grid:set_item_selected(self._current_hovered_item or first_item)
 			self:_set_gamepad_input_buttons_visibility(true)
 		end
 	elseif self.gamepad_active_last_frame or force_update then

@@ -93,7 +93,7 @@ ContextAwarePingExtension.ping_attempt = function (self, unit, unit_to_ping, t, 
 		return false
 	end
 
-	social_wheel_event_id = social_wheel_event_id or NetworkLookup.social_wheel_events["n/a"]
+	social_wheel_event_id = ping_type ~= PingTypes.LOCAL_ONLY and social_wheel_event_id or NetworkLookup.social_wheel_events["n/a"]
 
 	local network_manager = Managers.state.network
 	local pinger_unit_id = network_manager:unit_game_object_id(unit)

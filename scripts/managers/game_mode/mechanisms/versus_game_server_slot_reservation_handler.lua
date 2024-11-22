@@ -982,3 +982,7 @@ VersusGameServerSlotReservationHandler.handle_slot_reservation_for_connecting_pe
 		return SlotReservationConnectStatus.SUCCEEDED
 	end
 end
+
+VersusGameServerSlotReservationHandler.poll_sync_lobby_data_required = function (self)
+	return false
+end

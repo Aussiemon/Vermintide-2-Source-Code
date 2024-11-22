@@ -823,6 +823,10 @@ ProjectileSystem.rpc_generic_impact_projectile_impact = function (self, channel_
 		hit_unit = unit_storage:unit(hit_go_unit_id)
 	end
 
+	if not Unit.alive(hit_unit) then
+		return
+	end
+
 	if not self.bufferd_impacts then
 		self.bufferd_impacts = {}
 	end

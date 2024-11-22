@@ -66,10 +66,10 @@ weapon_template.actions = {
 			enter_function = function (owner_unit, input_extension, remaining_time, weapon_extension)
 				input_extension:clear_input_buffer()
 				input_extension:reset_release_input()
-				Managers.state.entity:system("weapon_system"):change_synced_weapon_state(owner_unit, "priming")
+				weapon_extension:change_synced_state("priming")
 			end,
 			finish_function = function (owner_unit, reason, weapon_extension)
-				Managers.state.entity:system("weapon_system"):change_synced_weapon_state(owner_unit, nil)
+				weapon_extension:change_synced_state(nil)
 			end,
 			condition_func = function (action_user, input_extension)
 				local can_start_shooting = shoot_condition_func(action_user, input_extension)
@@ -147,14 +147,14 @@ weapon_template.actions = {
 			enter_function = function (owner_unit, input_extension, remaining_time, weapon_extension)
 				input_extension:clear_input_buffer()
 				input_extension:reset_release_input()
-				Managers.state.entity:system("weapon_system"):change_synced_weapon_state(owner_unit, "shooting")
+				weapon_extension:change_synced_state("shooting")
 			end,
 			finish_function = function (owner_unit, reason, weapon_extension)
 				if reason ~= "new_interupting_action" then
 					if reason == "dead" then
-						Managers.state.entity:system("weapon_system"):change_synced_weapon_state(owner_unit, nil)
+						weapon_extension:change_synced_state(nil)
 					else
-						Managers.state.entity:system("weapon_system"):change_synced_weapon_state(owner_unit, "cooling_down")
+						weapon_extension:change_synced_state("cooling_down")
 					end
 				end
 			end,
@@ -195,11 +195,11 @@ weapon_template.actions = {
 			enter_function = function (owner_unit, input_extension, remaining_time, weapon_extension)
 				input_extension:reset_release_input()
 				input_extension:clear_input_buffer()
-				Managers.state.entity:system("weapon_system"):change_synced_weapon_state(owner_unit, "cooling_down")
+				weapon_extension:change_synced_state("cooling_down")
 			end,
 			finish_function = function (owner_unit, reason, weapon_extension)
 				if reason ~= "new_interupting_action" then
-					Managers.state.entity:system("weapon_system"):change_synced_weapon_state(owner_unit, nil)
+					weapon_extension:change_synced_state(nil)
 				end
 			end,
 			allowed_chain_actions = {},
@@ -250,7 +250,8 @@ local function update_warpfire_vfx(owner_unit, weapon_unit, state_data, world)
 	effect_variable_id = World.find_particles_variable(world, flamethrower_effect_name, "firelife_1")
 
 	local lifetime = length / 4
-	local particle_life_time_vector = state_data.particle_life_time:unbox()
+	local particle_life_time = state_data.particle_life_time
+	local particle_life_time_vector = particle_life_time and particle_life_time:unbox() or Vector3(1, 0, 0)
 
 	particle_life_time_vector.x = lifetime
 
@@ -267,8 +268,6 @@ weapon_template.synced_states = {
 			else
 				Managers.state.vce:trigger_vce_unit(owner_unit, world, "husk_vce_warpfire_shoot_start_sequence", weapon_unit, node_id)
 			end
-
-			state_data.particle_life_time = Vector3Box(1, 0, 0)
 		end,
 		leave = function (self, owner_unit, weapon_unit, state_data, is_local_player, world, next_state, is_destroy)
 			if next_state ~= "shooting" and owner_unit and is_local_player then
@@ -300,11 +299,18 @@ weapon_template.synced_states = {
 				end
 			end
 
+			if is_local_player and not Managers.player:owner(owner_unit).bot_player and not state_data.rumble_effect_id then
+				state_data.rumble_effect_id = Managers.state.controller_features:add_effect("persistent_rumble", {
+					rumble_effect = "reload_start",
+				})
+			end
+
 			state_data.flamethrower_effect_name = flamethrower_effect_name
 			state_data.flamethrower_effect = flamethrower_effect
 			state_data.muzzle_node = muzzle_node
 			state_data.weapon_unit = weapon_unit
 			state_data.current_action = current_action
+			state_data.particle_life_time = Vector3Box(1, 0, 0)
 
 			if is_local_player then
 				state_data.first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
@@ -314,6 +320,12 @@ weapon_template.synced_states = {
 			update_warpfire_vfx(owner_unit, weapon_unit, state_data, world)
 		end,
 		leave = function (self, owner_unit, weapon_unit, state_data, is_local_player, world, next_state, is_destroy)
+			if is_local_player and state_data.rumble_effect_id then
+				Managers.state.controller_features:stop_effect(state_data.rumble_effect_id)
+
+				state_data.rumble_effect_id = nil
+			end
+
 			if not is_destroy and state_data.flamethrower_effect then
 				World.stop_spawning_particles(world, state_data.flamethrower_effect)
 			end
@@ -340,6 +352,12 @@ weapon_template.synced_states = {
 	},
 	cooling_down = {
 		enter = function (self, owner_unit, weapon_unit, state_data, is_local_player, world)
+			if is_local_player and state_data.rumble_effect_id then
+				Managers.state.controller_features:stop_effect(state_data.rumble_effect_id)
+
+				state_data.rumble_effect_id = nil
+			end
+
 			local fire_action = weapon_template.actions.action_one.fire
 			local node_id = 0
 
@@ -364,12 +382,12 @@ weapon_template.synced_states = {
 				state_data.overcharge_extension = overcharge_extension
 			end
 		end,
-		update = function (self, owner_unit, weapon_unit, state_data, is_local_player, world, dt)
+		update = function (self, owner_unit, weapon_unit, state_data, is_local_player, world, dt, weapon_extension)
 			local overcharge_extension = state_data.overcharge_extension
 			local current_overcharge = overcharge_extension:get_overcharge_value()
 
 			if current_overcharge <= 0 and state_data.prev_overcharge ~= 0 and is_local_player then
-				Managers.state.entity:system("weapon_system"):change_synced_weapon_state(owner_unit, nil)
+				weapon_extension:change_synced_state(nil)
 			else
 				state_data.prev_overcharge = current_overcharge
 			end

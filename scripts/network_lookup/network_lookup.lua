@@ -48,7 +48,6 @@ local dialogue_lookup_tables = {
 	"dialogues/generated/lookup_dwarf_ranger_honduras",
 	"dialogues/generated/lookup_empire_soldier_honduras",
 	"dialogues/generated/lookup_enemies",
-	"dialogues/generated/lookup_player_conversations_honduras",
 	"dialogues/generated/lookup_special_occasions_honduras",
 	"dialogues/generated/lookup_witch_hunter_honduras",
 	"dialogues/generated/lookup_wood_elf_honduras",
@@ -394,8 +393,6 @@ NetworkLookup.husks = {
 	"units/beings/enemies/chaos_sorcerer_tentacle/chr_chaos_sorcerer_tentacle",
 	"units/beings/enemies/chaos_vortex_sorcerer/chr_chaos_vortex_sorcerer",
 	"units/beings/enemies/chaos_spawn/chr_chaos_spawn",
-	"units/beings/npcs/pleb/chr_npc_pleb_male",
-	"units/beings/npcs/regimental_soldier/chr_npc_regimental_soldier_male",
 	"units/weapons/enemy/wpn_chaos_plague_vortex/wpn_chaos_plague_vortex",
 	"units/beings/critters/chr_critter_pig/chr_critter_pig",
 	"units/beings/critters/chr_critter_common_rat/chr_critter_common_rat",
@@ -2073,6 +2070,7 @@ NetworkLookup.game_ping_reply = {
 	"user_blocked",
 	"is_searching_for_dedicated_server",
 	"server_full",
+	"custom_lobby_ok",
 }
 NetworkLookup.sync_names = {
 	"ferry_lady",

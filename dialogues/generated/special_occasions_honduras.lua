@@ -2609,7 +2609,7 @@ return function ()
 				"time_since_early_healing_draught",
 				OP.TIMEDIFF,
 				OP.GT,
-				3000,
+				900,
 			},
 		},
 		on_done = {
@@ -2763,7 +2763,7 @@ return function ()
 				"time_since_early_healing_draught",
 				OP.TIMEDIFF,
 				OP.GT,
-				3000,
+				900,
 			},
 		},
 		on_done = {

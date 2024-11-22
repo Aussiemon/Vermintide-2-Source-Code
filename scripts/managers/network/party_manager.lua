@@ -128,9 +128,15 @@ PartyManager.clear_parties = function (self, sync_to_clients)
 	end
 end
 
-PartyManager.gather_party_members = function (self)
+PartyManager.gather_party_members = function (self, party_id)
 	local members = {}
-	local party = self:get_local_player_party()
+	local party
+
+	if party_id then
+		party = self:get_party(party_id)
+	else
+		party = self:get_local_player_party()
+	end
 
 	if not party then
 		return members

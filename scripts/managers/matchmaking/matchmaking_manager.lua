@@ -1236,13 +1236,19 @@ end
 
 MatchmakingManager.set_selected_level = function (self, mission_id)
 	assert(self.is_server)
-	fassert(self:is_in_versus_custom_game_lobby(), "'get_matchmaking_hierarchy_status()' called in wrong matchmaking state. The concept of the matchmaking hierarchy only exists in MatchmakingStatePlayerHostedGame and MatchmakingStateWaitJoinPlayerHosted when RPCs has to be forwarded, for example when using the chat.")
 
 	local lobby_data = self.lobby:get_stored_lobby_data()
 
 	lobby_data.selected_mission_id = mission_id
 
 	self.lobby:set_lobby_data(lobby_data)
+
+	local state_context = self.state_context
+	local search_config = state_context.search_config
+
+	if search_config then
+		search_config.mission_id = mission_id
+	end
 end
 
 MatchmakingManager.get_selected_level = function (self)
@@ -1430,10 +1436,12 @@ MatchmakingManager.rpc_matchmaking_request_join_lobby = function (self, channel_
 	local game_mode_manager = Managers.state.game_mode
 	local difficulty_manager = Managers.state.difficulty
 	local mechanism_manager = Managers.mechanism
+	local mechanism = mechanism_manager:game_mechanism()
 	local game_mode_key = game_mode_manager and game_mode_manager:game_mode_key()
 	local difficulty_key = difficulty_manager and difficulty_manager:get_difficulty()
 	local is_venture_over = mechanism_manager:is_venture_over()
-	local is_searching_for_dedicated_server, is_searching_for_players
+	local _, is_hosting_versus_custom_game = mechanism_manager:mechanism_try_call("is_hosting_versus_custom_game")
+	local is_friend, is_searching_for_dedicated_server, is_searching_for_players
 
 	if not DEDICATED_SERVER then
 		local search_type = SEARCH_TYPE[self._state.NAME]
@@ -1471,6 +1479,8 @@ MatchmakingManager.rpc_matchmaking_request_join_lobby = function (self, channel_
 		reply = "game_mode_ended"
 	elseif not DEDICATED_SERVER and not is_friend and not is_searching_for_players then
 		reply = "not_searching_for_players"
+	elseif is_hosting_versus_custom_game and friend_join and is_friend then
+		reply = "custom_lobby_ok"
 	elseif is_searching_for_dedicated_server then
 		reply = "is_searching_for_dedicated_server"
 	elseif Managers.deed:has_deed() then
@@ -1603,13 +1613,13 @@ MatchmakingManager.lobby_match = function (self, lobby_data, act_key, mission_id
 	end
 
 	if IS_WINDOWS then
-		local reservation_data = ProfileSynchronizer.deserialize_lobby_reservation_data(lobby_data)
+		local reservation_data = LobbyAux.deserialize_lobby_reservation_data(lobby_data)
 
 		for party_id = 1, #reservation_data do
 			local peer_datas = reservation_data[party_id]
 
 			for i = 1, #peer_datas do
-				local peer_id = ProfileSynchronizer.unpack_lobby_reservation_peer_data(peer_datas[i])
+				local peer_id = peer_datas[i].peer_id
 				local relationship = Friends.relationship(peer_id)
 				local user_blocked = relationship == 5 or relationship == 6
 
@@ -2122,16 +2132,27 @@ MatchmakingManager.request_join_lobby = function (self, lobby, state_context_par
 	if lobby_mechanism == "versus" and (is_matchmaking == "true" or is_matchmaking == "searching") then
 		local matchmaking_type_id = lobby.matchmaking_type
 		local matchmaking_type = NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)]
-		local match_started = lobby.match_started == "true"
 		local status_message
+		local game_mode = Managers.state.game_mode
+		local game_mode_key = game_mode and game_mode:game_mode_key()
 
-		if matchmaking_type == "custom" and friend_join and not match_started then
+		if game_mode_key ~= "inn_vs" then
+			status_message = "vs_player_hosted_lobby_wrong_mechanism_error"
+
+			self:send_system_chat_message(status_message)
+
+			return
+		end
+
+		if is_matchmaking == "searching" then
 			status_message = "matchmaking_status_join_game_failed_is_searching_for_dedicated_server"
 
 			self:send_system_chat_message(status_message)
 
 			return
-		elseif matchmaking_type == "custom" then
+		end
+
+		if matchmaking_type == "custom" then
 			new_state = MatchmakingStateReserveSlotsPlayerHosted
 		else
 			new_state = MatchmakingStateReserveLobby

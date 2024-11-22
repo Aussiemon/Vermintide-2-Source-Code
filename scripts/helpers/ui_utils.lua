@@ -502,14 +502,24 @@ UIUtils.get_portrait_image_by_profile_index = function (profile_index, career_in
 end
 
 UIUtils.create_widgets = function (widget_definitions, widgets, widgets_by_name)
-	widgets = widgets or {}
-	widgets_by_name = widgets_by_name or {}
+	if widgets == nil then
+		widgets = {}
+	end
+
+	if widgets_by_name == nil then
+		widgets_by_name = {}
+	end
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
 
-		widgets[#widgets + 1] = widget
-		widgets_by_name[name] = widget
+		if widgets then
+			widgets[#widgets + 1] = widget
+		end
+
+		if widgets_by_name then
+			widgets_by_name[name] = widget
+		end
 	end
 
 	return widgets, widgets_by_name

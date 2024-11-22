@@ -6,6 +6,7 @@ UILayer = {
 	controller_description = 740,
 	credits_gradient = 449,
 	credits_menu = 450,
+	crosshair = 501,
 	cutscene = 700,
 	debug_screen = 800,
 	default = 500,

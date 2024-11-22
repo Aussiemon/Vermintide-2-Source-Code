@@ -5,6 +5,8 @@ require("scripts/ui/views/hero_view/loot_item_unit_previewer")
 local definitions = local_require("scripts/ui/views/hero_view/states/definitions/hero_view_state_loot_definitions")
 local INPUT_ACTION_NEXT = "trigger_cycle_next"
 local INPUT_ACTION_PREVIOUS = "trigger_cycle_previous"
+local INPUT_ACTION_NEXT_ALT = "cycle_next"
+local INPUT_ACTION_PREVIOUS_ALT = "cycle_previous"
 local widget_definitions = definitions.widgets
 local gamepad_tooltip_widget_definitions = definitions.gamepad_tooltip_widgets
 local input_desc_widget_definitions = definitions.input_description_widgets
@@ -1222,14 +1224,14 @@ HeroViewStateLoot._handle_gamepad_input = function (self, dt, t)
 		local total_pages = self._total_pages
 
 		if page_index and total_pages then
-			if page_index < total_pages and input_service:get(INPUT_ACTION_NEXT) then
+			if page_index < total_pages and (input_service:get(INPUT_ACTION_NEXT) or input_service:get(INPUT_ACTION_NEXT_ALT)) then
 				item_grid:set_item_page(page_index + 1)
 				self:_play_sound("play_gui_equipment_inventory_next_click")
 
 				local first_item = item_grid:get_item_in_slot(1, 1)
 
 				item_grid:set_item_selected(first_item)
-			elseif page_index > 1 and input_service:get(INPUT_ACTION_PREVIOUS) then
+			elseif page_index > 1 and (input_service:get(INPUT_ACTION_PREVIOUS) or input_service:get(INPUT_ACTION_PREVIOUS_ALT)) then
 				item_grid:set_item_page(page_index - 1)
 				self:_play_sound("play_gui_equipment_inventory_next_click")
 
@@ -1239,11 +1241,11 @@ HeroViewStateLoot._handle_gamepad_input = function (self, dt, t)
 			end
 		end
 	elseif self._reward_option_animation_complete then
-		if input_service:get(INPUT_ACTION_NEXT) then
+		if input_service:get(INPUT_ACTION_NEXT) or input_service:get(INPUT_ACTION_NEXT_ALT) then
 			local page_change = 1
 
 			self:_change_chest_page(page_change)
-		elseif input_service:get(INPUT_ACTION_PREVIOUS) then
+		elseif input_service:get(INPUT_ACTION_PREVIOUS) or input_service:get(INPUT_ACTION_PREVIOUS_ALT) then
 			local page_change = -1
 
 			self:_change_chest_page(page_change)

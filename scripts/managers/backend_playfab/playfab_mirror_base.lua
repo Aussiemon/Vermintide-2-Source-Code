@@ -61,6 +61,7 @@ PlayFabMirrorBase.init = function (self, signin_result)
 	self._unlocked_cosmetics = {}
 	self._unlocked_weapon_poses = {}
 	self._equipped_weapon_pose_skins = {}
+	self._filtered_data = self:_init_filtered_data()
 	self._best_power_levels = nil
 	self.sum_best_power_levels = nil
 	self._belakor_data_loaded = false
@@ -121,6 +122,38 @@ PlayFabMirrorBase.init = function (self, signin_result)
 	self:_verify_account_data()
 end
 
+PlayFabMirrorBase._init_filtered_data = function (self)
+	local filtered_data = {}
+
+	for dlc_name in pairs(Managers.unlock:get_dlcs()) do
+		filtered_data[dlc_name] = {}
+	end
+
+	return filtered_data
+end
+
+PlayFabMirrorBase._register_dlc_filtered_data = function (self, dlc_name, item, backend_id)
+	self._filtered_data[dlc_name][item] = backend_id or true
+end
+
+PlayFabMirrorBase._grant_filtered_data = function (self, dlc_name)
+	local filtered_data = self._filtered_data[dlc_name]
+
+	for item, backend_id in pairs(filtered_data) do
+		if backend_id == true then
+			backend_id = nil
+		end
+
+		filtered_data[item] = nil
+
+		local skip_autosave = not table.is_empty(filtered_data)
+
+		self:add_item(backend_id, item, skip_autosave)
+	end
+
+	table.clear(self._filtered_data[dlc_name])
+end
+
 PlayFabMirrorBase._parse_claimed_achievements = function (self)
 	local split_achievements_string = {}
 	local claimed_achievements = {}
@@ -177,6 +210,10 @@ PlayFabMirrorBase._parse_unlocked_weapon_skins = function (self)
 					unlocked_weapon_skins[skin_name] = true
 				elseif unlock_manager:is_dlc_unlocked(required_dlc) then
 					unlocked_weapon_skins[skin_name] = true
+				else
+					self:_register_dlc_filtered_data(required_dlc, {
+						ItemId = skin_name,
+					}, existing_weapon_skins[skin_name])
 				end
 			end
 		else
@@ -217,6 +254,10 @@ PlayFabMirrorBase._parse_unlocked_weapon_poses = function (self)
 				elseif unlock_manager:is_dlc_unlocked(required_dlc) then
 					unlocked_weapon_poses[pose_parent] = unlocked_weapon_poses[pose_parent] or {}
 					unlocked_weapon_poses[pose_parent][pose_item_name] = true
+				else
+					self:_register_dlc_filtered_data(required_dlc, {
+						ItemId = pose_item_name,
+					}, existing_weapon_poses[pose_parent] and existing_weapon_poses[pose_parent][pose_item_name])
 				end
 			end
 		else
@@ -270,6 +311,10 @@ PlayFabMirrorBase._parse_unlocked_cosmetics = function (self, unlocked_cosmetics
 						unlocked_cosmetics[cosmetic_name] = true
 					elseif unlock_manager:is_dlc_unlocked(required_dlc) then
 						unlocked_cosmetics[cosmetic_name] = true
+					else
+						self:_register_dlc_filtered_data(required_dlc, {
+							ItemId = cosmetic_name,
+						}, existing_cosmetics[cosmetic_name])
 					end
 				end
 			end
@@ -414,6 +459,22 @@ PlayFabMirrorBase.dlc_ownership_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
 
 	local function_result = result.FunctionResult
+
+	self._owner_dlcs_cb_data = table.shallow_copy(function_result)
+
+	if script_data["eac-untrusted"] then
+		self:_handle_owned_dlcs_data()
+		self:_request_best_power_levels()
+	else
+		self:_execute_dlc_specific_logic()
+	end
+end
+
+PlayFabMirrorBase._handle_owned_dlcs_data = function (self)
+	local function_result = self._owner_dlcs_cb_data
+
+	self._owner_dlcs_cb_data = nil
+
 	local owned_dlcs = function_result.owned_dlcs
 	local platform_dlcs = function_result.platform_dlcs
 	local excluded_dlcs = function_result.excluded_dlcs
@@ -425,7 +486,7 @@ PlayFabMirrorBase.dlc_ownership_request_cb = function (self, result)
 
 	local unlock_manager = Managers.unlock
 
-	unlock_manager:set_excluded_dlcs(excluded_dlcs, owned_dlcs)
+	unlock_manager:set_excluded_dlcs(excluded_dlcs)
 	self:update_owned_dlcs(false)
 
 	if HAS_STEAM then
@@ -467,11 +528,7 @@ PlayFabMirrorBase.dlc_ownership_request_cb = function (self, result)
 		self._claimed_console_dlc_rewards = self:_parse_claimed_console_dlc_rewards()
 	end
 
-	if script_data["eac-untrusted"] then
-		self:_request_best_power_levels()
-	else
-		self:_execute_dlc_specific_logic()
-	end
+	self:update_filtered_dlc_data()
 end
 
 PlayFabMirrorBase._execute_dlc_specific_logic = function (self)
@@ -495,9 +552,7 @@ PlayFabMirrorBase._sync_unseen_rewards = function (self, new_rewards)
 		return
 	end
 
-	local unseen_rewards = self:get_user_data("unseen_rewards")
-
-	unseen_rewards = unseen_rewards and cjson.decode(unseen_rewards) or {}
+	local unseen_rewards = {}
 
 	for i = 1, #new_rewards do
 		local item = new_rewards[i]
@@ -573,11 +628,22 @@ PlayFabMirrorBase._sync_unseen_rewards = function (self, new_rewards)
 		end
 	end
 
+	self:_apply_unseen_rewards(unseen_rewards)
+end
+
+PlayFabMirrorBase._apply_unseen_rewards = function (self, rewards)
+	local unseen_rewards = self:get_user_data("unseen_rewards")
+
+	unseen_rewards = unseen_rewards and cjson.decode(unseen_rewards) or {}
+
+	table.append(unseen_rewards, rewards)
 	self:set_user_data("unseen_rewards", cjson.encode(unseen_rewards))
 end
 
 PlayFabMirrorBase.execute_dlc_logic_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+
+	self:_handle_owned_dlcs_data()
 
 	local function_result = result.FunctionResult
 
@@ -868,9 +934,17 @@ PlayFabMirrorBase.handle_fix_data_ids_request_cb = function (self, result)
 
 	if new_user_read_only_data then
 		for key, value in pairs(new_user_read_only_data) do
-			local value_json = cjson.encode(value)
+			if type(value) == "table" then
+				local value_json = cjson.encode(value)
 
-			self:set_read_only_data(key, value_json, true)
+				self:set_read_only_data(key, value_json, true)
+			elseif value == "true" then
+				self:set_read_only_data(key, true, true)
+			elseif value == "false" then
+				self:set_read_only_data(key, false, true)
+			else
+				self:set_read_only_data(key, tonumber(value) or value, true)
+			end
 		end
 	end
 
@@ -878,9 +952,17 @@ PlayFabMirrorBase.handle_fix_data_ids_request_cb = function (self, result)
 
 	if new_user_data then
 		for key, value in pairs(new_user_data) do
-			local value_json = cjson.encode(value)
+			if type(value) == "table" then
+				local value_json = cjson.encode(value)
 
-			self:set_user_data(key, value_json, true)
+				self:set_user_data(key, value_json, true)
+			elseif value == "true" then
+				self:set_user_data(key, true, true)
+			elseif value == "false" then
+				self:set_user_data(key, false, true)
+			else
+				self:set_user_data(key, tonumber(value) or value, true)
+			end
 		end
 	end
 
@@ -1363,6 +1445,8 @@ PlayFabMirrorBase.inventory_request_cb = function (self, result)
 
 				if required_dlc and not unlock_manager:is_dlc_unlocked(required_dlc) then
 					filter = true
+
+					self:_register_dlc_filtered_data(required_dlc, item, backend_id)
 				end
 
 				if not filter then
@@ -1392,6 +1476,16 @@ PlayFabMirrorBase.inventory_request_cb = function (self, result)
 		self:_request_steam_user_inventory()
 	else
 		self:request_characters()
+	end
+end
+
+PlayFabMirrorBase.update_filtered_dlc_data = function (self)
+	local unlock_manager = Managers.unlock
+
+	for dlc_name in pairs(self._filtered_data) do
+		if unlock_manager:is_dlc_unlocked(dlc_name) then
+			self:_grant_filtered_data(dlc_name)
+		end
 	end
 end
 
@@ -3539,7 +3633,7 @@ PlayFabMirrorBase.get_characters_data = function (self)
 end
 
 PlayFabMirrorBase.update_owned_dlcs = function (self, set_status_changed)
-	if not HAS_STEAM then
+	if IS_CONSOLE then
 		return
 	end
 

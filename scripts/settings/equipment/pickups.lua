@@ -850,6 +850,15 @@ LootRatPickups = {
 		lorebook_page = 4,
 		speed_boost_potion = 1,
 	},
+	versus = {
+		cooldown_reduction_potion = 1,
+		damage_boost_potion = 1,
+		fire_grenade_t2 = 1,
+		first_aid_kit = 3,
+		frag_grenade_t2 = 1,
+		healing_draught = 2,
+		speed_boost_potion = 1,
+	},
 }
 BardinScavengerCustomPotions = {}
 

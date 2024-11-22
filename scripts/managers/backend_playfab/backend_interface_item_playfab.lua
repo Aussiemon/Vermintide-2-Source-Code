@@ -221,7 +221,7 @@ end
 
 BackendInterfaceItemPlayfab._setup_default_overrides = function (self)
 	local mechanism_name = Managers.mechanism:current_mechanism_name()
-	local loadout_selection = PlayerData.loadout_selection and PlayerData.loadout_selection[mechanism_name]
+	local loadout_selection = PlayerData.loadout_selection and PlayerData.loadout_selection[mechanism_name] or {}
 
 	table.clear(self._default_loadout_overrides)
 
@@ -510,16 +510,29 @@ BackendInterfaceItemPlayfab.get_loadout_by_career_name = function (self, career_
 
 	local game_mode_key = Managers.state.game_mode and Managers.state.game_mode:game_mode_key()
 	local bot_loadout_allowed = InventorySettings.bot_loadout_allowed_game_modes[game_mode_key]
-	local loadouts = bot_loadout_allowed and is_bot and self:get_bot_loadout() or self:get_loadout()
+	local default_loadouts_allowed = InventorySettings.default_loadout_allowed_game_modes[game_mode_key]
+	local bot_loadouts = bot_loadout_allowed and self:get_bot_loadout()
+	local bot_loadout = bot_loadout_allowed and bot_loadouts[career_name]
+	local default_loadouts = default_loadouts_allowed and self:get_default_loadouts(career_name)
+	local default_loadout = default_loadouts_allowed and default_loadouts and default_loadouts[1]
+	local base_loadouts = self:get_loadout()
+	local base_loadout = base_loadouts[career_name]
+	local loadout = bot_loadout_allowed and is_bot and bot_loadout or is_bot and default_loadouts_allowed and default_loadout or base_loadout
 
-	return loadouts[career_name]
+	return loadout
 end
 
 BackendInterfaceItemPlayfab.get_loadout_item_id = function (self, career_name, slot_name, is_bot)
 	local game_mode_key = Managers.state.game_mode and Managers.state.game_mode:game_mode_key()
 	local bot_loadout_allowed = InventorySettings.bot_loadout_allowed_game_modes[game_mode_key]
-	local loadouts = bot_loadout_allowed and is_bot and self:get_bot_loadout() or self:get_loadout()
-	local loadout = loadouts[career_name]
+	local default_loadouts_allowed = InventorySettings.default_loadout_allowed_game_modes[game_mode_key]
+	local bot_loadouts = bot_loadout_allowed and self:get_bot_loadout()
+	local bot_loadout = bot_loadout_allowed and bot_loadouts[career_name]
+	local default_loadouts = default_loadouts_allowed and self:get_default_loadouts(career_name)
+	local default_loadout = default_loadouts_allowed and default_loadouts and default_loadouts[1]
+	local base_loadouts = self:get_loadout()
+	local base_loadout = base_loadouts[career_name]
+	local loadout = bot_loadout_allowed and is_bot and bot_loadout or is_bot and default_loadouts_allowed and default_loadout or base_loadout
 	local item_id = loadout and loadout[slot_name]
 
 	if CosmeticUtils.is_cosmetic_slot(slot_name) and item_id then
@@ -604,8 +617,14 @@ end
 BackendInterfaceItemPlayfab.get_cosmetic_loadout = function (self, career_name, is_bot)
 	local game_mode_key = Managers.state.game_mode and Managers.state.game_mode:game_mode_key()
 	local bot_loadout_allowed = InventorySettings.bot_loadout_allowed_game_modes[game_mode_key]
-	local loadouts = bot_loadout_allowed and is_bot and self:get_bot_loadout() or self:get_loadout()
-	local career_loadout = loadouts[career_name]
+	local default_loadouts_allowed = InventorySettings.default_loadout_allowed_game_modes[game_mode_key]
+	local bot_loadouts = bot_loadout_allowed and self:get_bot_loadout()
+	local bot_loadout = bot_loadout_allowed and bot_loadouts[career_name]
+	local default_loadouts = default_loadouts_allowed and self:get_default_loadouts(career_name)
+	local default_loadout = default_loadouts_allowed and default_loadouts and default_loadouts[1]
+	local base_loadouts = self:get_loadout()
+	local base_loadout = base_loadouts[career_name]
+	local career_loadout = bot_loadout_allowed and is_bot and bot_loadout or is_bot and default_loadouts_allowed and default_loadout or base_loadout
 
 	return career_loadout.slot_hat, career_loadout.slot_skin, career_loadout.slot_frame
 end

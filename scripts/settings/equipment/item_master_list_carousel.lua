@@ -2421,7 +2421,7 @@ ItemMasterList.frame_ratling_gunner_02 = {
 	can_wield = CanWieldAllItemTemplates,
 }
 ItemMasterList.frame_troll_01 = {
-	description = "frame_versus_portrait_troll_01_description",
+	description = "frame_versus_portrait_bile_01_description",
 	display_name = "frame_versus_portrait_troll_01_name",
 	hud_icon = "unit_frame_02",
 	information_text = "information_text_frame",
@@ -2433,7 +2433,7 @@ ItemMasterList.frame_troll_01 = {
 	can_wield = CanWieldAllItemTemplates,
 }
 ItemMasterList.frame_troll_02 = {
-	description = "frame_versus_portrait_troll_02_description",
+	description = "frame_versus_portrait_bile_02_description",
 	display_name = "frame_versus_portrait_troll_02_name",
 	hud_icon = "unit_frame_02",
 	information_text = "information_text_frame",

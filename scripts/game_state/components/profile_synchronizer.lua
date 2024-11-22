@@ -406,7 +406,7 @@ ProfileSynchronizer.clear_peer_data = function (self, peer_id)
 	printf("Peer %s left session", peer_id)
 	self:_unassign_profiles_of_peer(peer_id)
 	self:_clear_profile_index_reservation(peer_id)
-	self:sync_lobby_data()
+	self:_request_lobby_data_sync()
 end
 
 ProfileSynchronizer.get_profile_index_reservation = function (self, party_id, profile_index)
@@ -437,7 +437,7 @@ ProfileSynchronizer.try_reserve_profile_for_peer = function (self, party_id, pee
 		self._state:set_profile_index_reservation(party_id, profile_index, career_index, peer_id)
 
 		if reserver_peer == nil then
-			self:sync_lobby_data()
+			self:_request_lobby_data_sync()
 		end
 
 		return true
@@ -452,7 +452,7 @@ end
 
 ProfileSynchronizer.clear_profile_index_reservation = function (self, peer_id)
 	self:_clear_profile_index_reservation(peer_id)
-	self:sync_lobby_data()
+	self:_request_lobby_data_sync()
 end
 
 ProfileSynchronizer.reset_profile_index_reservation = function (self, party_id, profile_index)
@@ -743,52 +743,24 @@ ProfileSynchronizer.others_actually_ingame = function (self)
 	return true
 end
 
-ProfileSynchronizer.get_lobby_data_reservations = function (self, members)
-	local reservations = {}
-	local num_parties = Managers.party:get_num_game_participating_parties()
+ProfileSynchronizer._request_lobby_data_sync = function (self)
+	self._lobby_data_sync_requested = true
+end
 
-	for party_id = 1, num_parties do
-		local party_datas = {}
+ProfileSynchronizer.poll_sync_lobby_data_required = function (self)
+	if self._lobby_data_sync_requested then
+		self._lobby_data_sync_requested = false
 
-		for profile_index = 1, NUM_HERO_PROFILES do
-			local reserver_peer = self._state:get_profile_index_reservation(party_id, profile_index)
-
-			if reserver_peer then
-				party_datas = party_datas or {}
-				party_datas[#party_datas + 1] = ProfileSynchronizer.pack_lobby_reservation_peer_data(reserver_peer, profile_index)
-			end
-		end
-
-		reservations[party_id] = party_datas
+		return true
 	end
 
-	return reservations
+	return false
 end
-
-ProfileSynchronizer.sync_lobby_data = function (self)
-	fassert(self._state:is_server(), "Should only be called on server.")
-
-	local lobby = self._lobby
-	local lobby_data = lobby:get_stored_lobby_data()
-	local members = lobby:members()
-	local lobby_data_reservations = self:get_lobby_data_reservations(members)
-	local serialized = ProfileSynchronizer.serialize_lobby_reservation_data(lobby_data_reservations)
-
-	lobby_data.reserved_profiles = serialized
-
-	self._lobby:set_lobby_data(lobby_data)
-end
-
-local lobby_slot_party_separator = ";"
-local lobby_slot_peer_separator = ","
-local lobby_slot_peer_data_separator = "="
-local peer_data_peer_id_index = 1
-local peer_data_profile_id_index = 2
 
 ProfileSynchronizer.net_pack_lobby_profile_slots = function (lobby_data)
 	local peer_ids_by_party = {}
 	local profile_indices_by_party = {}
-	local peer_data_by_party = ProfileSynchronizer.deserialize_lobby_reservation_data(lobby_data)
+	local peer_data_by_party = LobbyAux.deserialize_lobby_reservation_data(lobby_data)
 
 	for party_id, party_peers in ipairs(peer_data_by_party) do
 		local party_peer_ids = {}
@@ -810,7 +782,7 @@ ProfileSynchronizer.net_pack_lobby_profile_slots = function (lobby_data)
 end
 
 ProfileSynchronizer.owner_in_lobby = function (profile_index, lobby_data, optional_party_id)
-	local lobby_reservation_data = ProfileSynchronizer.deserialize_lobby_reservation_data(lobby_data)
+	local lobby_reservation_data = LobbyAux.deserialize_lobby_reservation_data(lobby_data)
 	local party_id = optional_party_id or 1
 	local party_peers = lobby_reservation_data[party_id]
 
@@ -829,7 +801,7 @@ ProfileSynchronizer.owner_in_lobby = function (profile_index, lobby_data, option
 end
 
 ProfileSynchronizer.is_free_in_lobby = function (profile_index, lobby_data, optional_party_id)
-	local lobby_reservation_data = ProfileSynchronizer.deserialize_lobby_reservation_data(lobby_data)
+	local lobby_reservation_data = LobbyAux.deserialize_lobby_reservation_data(lobby_data)
 	local party_id = optional_party_id or 1
 	local party_peers = lobby_reservation_data[party_id]
 
@@ -844,59 +816,6 @@ ProfileSynchronizer.is_free_in_lobby = function (profile_index, lobby_data, opti
 	end
 
 	return true
-end
-
-ProfileSynchronizer.serialize_lobby_reservation_data = function (peer_data_by_party)
-	local parties = {}
-
-	for party_id = 1, #peer_data_by_party do
-		local peer_datas = peer_data_by_party[party_id]
-
-		for i = 1, #peer_datas do
-			local peer_data = peer_datas[i]
-			local peer_id = peer_data.peer_id
-			local profile_index = peer_data.profile_index
-
-			peer_datas[i] = string.format("%s%s%d", peer_id, lobby_slot_peer_data_separator, profile_index)
-		end
-
-		parties[party_id] = table.concat(peer_datas, lobby_slot_peer_separator)
-	end
-
-	local packed_reservation_data = table.concat(parties, lobby_slot_party_separator)
-
-	if packed_reservation_data == "" then
-		packed_reservation_data = rawget(_G, "LobbyInternal") and LobbyInternal.default_lobby_data and LobbyInternal.default_lobby_data.reserved_profiles or ""
-	end
-
-	return packed_reservation_data
-end
-
-ProfileSynchronizer.deserialize_lobby_reservation_data = function (lobby_data)
-	local reservation_data = {}
-	local reserved_profiles = lobby_data.reserved_profiles
-
-	reserved_profiles = reserved_profiles ~= "" and reserved_profiles or rawget(_G, "LobbyInternal") and LobbyInternal.default_lobby_data and LobbyInternal.default_lobby_data.reserved_profiles or ""
-
-	local by_party = string.split(reserved_profiles, lobby_slot_party_separator)
-
-	for party_id = 1, #by_party do
-		local peer_datas = {}
-
-		reservation_data[party_id] = peer_datas
-
-		local by_peer = string.split(by_party[party_id], lobby_slot_peer_separator)
-
-		for peer_i = 1, #by_peer do
-			local peer_data = string.split(by_peer[peer_i], lobby_slot_peer_data_separator)
-			local peer_id = peer_data[peer_data_peer_id_index]
-			local profile_index = tonumber(peer_data[peer_data_profile_id_index])
-
-			peer_datas[peer_i] = ProfileSynchronizer.pack_lobby_reservation_peer_data(peer_id, profile_index)
-		end
-	end
-
-	return reservation_data
 end
 
 ProfileSynchronizer.join_reservation_data_arrays = function (peer_ids_by_party, profile_indices_by_party)
@@ -916,20 +835,12 @@ ProfileSynchronizer.join_reservation_data_arrays = function (peer_ids_by_party, 
 			local peer_id = peer_ids[i]
 			local profile_index = profile_indices[i]
 
-			peer_datas[i] = ProfileSynchronizer.pack_lobby_reservation_peer_data(peer_id, profile_index)
+			peer_datas[i] = {
+				peer_id = peer_id,
+				profile_index = profile_index,
+			}
 		end
 	end
 
 	return reservation_data
-end
-
-ProfileSynchronizer.pack_lobby_reservation_peer_data = function (peer_id, profile_index)
-	return {
-		peer_id = peer_id,
-		profile_index = profile_index,
-	}
-end
-
-ProfileSynchronizer.unpack_lobby_reservation_peer_data = function (peer_data)
-	return peer_data.peer_id, peer_data.profile_index
 end

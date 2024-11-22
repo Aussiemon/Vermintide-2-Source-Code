@@ -5,7 +5,7 @@ NetworkMatchHandler = class(NetworkMatchHandler)
 local DEFAULT_DATA = {
 	is_dedicated_server = false,
 	is_match_owner = false,
-	is_synced = true,
+	is_synced = false,
 	leader_peer_id = "",
 	player_name = "",
 	versus_level = 1,
@@ -41,6 +41,8 @@ NetworkMatchHandler.init = function (self, network_handler, is_server, peer_id, 
 			leader_peer_id = server_peer_id,
 		})
 		self._pending_initial_sync = true
+
+		self:_request_sync()
 	end
 end
 
@@ -109,7 +111,6 @@ NetworkMatchHandler.poll_propagation_peer = function (self)
 
 		if propagation_peer then
 			self:sync_data_up()
-			self:send_rpc_down("rpc_network_match_changed", propagation_peer)
 			self:_request_sync()
 		elseif old_join_peer == self._propagate_peer_id then
 			self._propagate_peer_id = nil
@@ -168,6 +169,8 @@ NetworkMatchHandler._network_match_changed = function (self, new_match_owner_pee
 			is_match_owner = true,
 			leader_peer_id = new_match_owner_peer_id,
 		})
+
+		self:_request_sync()
 	else
 		self._data_by_peer[self._my_peer_id].is_match_owner = true
 	end
@@ -185,6 +188,10 @@ NetworkMatchHandler.rpc_network_match_request_sync = function (self, channel_id)
 	printf("[NetworkMatchHandler] Peer %s requested sync", requester_peer_id)
 
 	local requester_data = self._data_by_peer[requester_peer_id]
+
+	if not requester_data then
+		return
+	end
 
 	if requester_data.is_match_owner then
 		self:sync_data_up()

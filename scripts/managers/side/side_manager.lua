@@ -235,6 +235,17 @@ SideManager.is_enemy_by_side = function (self, side1, side2)
 	return true
 end
 
+SideManager.is_enemy_by_party = function (self, party1, party2)
+	return self:is_enemy_by_side(self.side_by_party[party1], self.side_by_party[party2])
+end
+
+SideManager.is_enemy_by_player = function (self, player1, player2)
+	local party1 = Managers.party:get_party_from_unique_id(player1:unique_id())
+	local party2 = Managers.party:get_party_from_unique_id(player2:unique_id())
+
+	return self:is_enemy_by_party(party1, party2)
+end
+
 SideManager.is_ally = function (self, unit1, unit2)
 	local side = self.side_by_unit[unit1]
 	local is_ally = side and side.allied_units_lookup[unit2]

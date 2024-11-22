@@ -496,11 +496,11 @@ StartGameStateSettingsOverview.close_on_exit = function (self)
 end
 
 StartGameStateSettingsOverview.set_hide_panel_title_butttons = function (self, bool)
-	self._hide_panel_title_buttons = bool
+	self._panel_title_buttons_hidden = bool
 end
 
-StartGameStateSettingsOverview.hide_panel_title_buttons = function (self)
-	return self._hide_panel_title_buttons
+StartGameStateSettingsOverview.panel_title_buttons_hidden = function (self)
+	return self._panel_title_buttons_hidden
 end
 
 StartGameStateSettingsOverview.get_current_window_layout_settings = function (self)

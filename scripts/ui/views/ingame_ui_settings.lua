@@ -799,7 +799,7 @@ local view_settings = {
 			inject_transition_params_func = function (params)
 				if Managers.matchmaking:is_in_versus_custom_game_lobby() then
 					params.menu_sub_state_name = "versus_player_hosted_lobby"
-					params.hide_panel_title_buttons = true
+					params.panel_title_buttons_hidden = true
 				end
 			end,
 		},

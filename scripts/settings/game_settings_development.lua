@@ -25,7 +25,7 @@ GameSettingsDevelopment.store_nags = true
 GameSettingsDevelopment.use_global_chat = table.find(argv, "-use-global-chat") and true or false
 GameSettingsDevelopment.use_new_tab_menu = true
 
-local network_timeout = Development.parameter("network_timeout_really_long") and 10000 or 60
+local network_timeout = Development.parameter("network_timeout_really_long") and 10000 or 15
 
 GameSettingsDevelopment.network_timeout = Development.parameter("network_timeout") or network_timeout
 GameSettingsDevelopment.network_silence_warning_delay = 3

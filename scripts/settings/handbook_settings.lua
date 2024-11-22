@@ -158,6 +158,9 @@ HandbookSettings.popups = {
 		triggers = {
 			"start_game_menu_opened",
 		},
+		conditions = {
+			"is_adventure_mechanism",
+		},
 	},
 	equipment = {
 		pages = {

@@ -120,6 +120,11 @@ EnemyCharacterStateLeaping.update = function (self, unit, input, dt, context, t)
 			first_person_extension:change_state("walking")
 
 			return
+		elseif CharacterStateHelper.is_colliding_sides(unit) then
+			csm:change_state("walking", self._temp_params)
+			first_person_extension:change_state("walking")
+
+			return
 		end
 
 		if not self._csm.state_next and locomotion_extension:current_velocity().z <= 0 then
@@ -167,7 +172,7 @@ EnemyCharacterStateLeaping._move_in_air = function (self, unit, dt, t)
 	local total_distance = Vector3.length(total_vector)
 	local distance_travelled = dot / total_distance
 	local move_direction = Vector3.normalize(self._leap_data.direction:unbox())
-	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
+	local movement_settings_table = self._leap_data.movement_settings or PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local starting_speed = self._leap_data.speed
 	local speed = starting_speed
 	local move_speed_multiplier = self._status_extension:current_move_speed_multiplier()
@@ -175,12 +180,13 @@ EnemyCharacterStateLeaping._move_in_air = function (self, unit, dt, t)
 	speed = speed * move_speed_multiplier^2
 	speed = speed * movement_settings_table.player_speed_scale
 
-	local zero_distance = total_distance * 0
-	local start_accel_distance = total_distance * 0.1
-	local end_accel_distance = total_distance * 0.2
-	local glide_distance = total_distance * 0.7
-	local slow_distance = total_distance * 0.95
-	local full_distance = total_distance * 1
+	local lerp_data = self._leap_data.lerp_data
+	local zero_distance = total_distance * lerp_data.zero_distance or 0
+	local start_accel_distance = total_distance * lerp_data.start_accel_distance or 0.1
+	local end_accel_distance = total_distance * lerp_data.end_accel_distance or 0.2
+	local glide_distance = total_distance * lerp_data.glide_distance or 0.7
+	local slow_distance = total_distance * lerp_data.slow_distance or 0.95
+	local full_distance = total_distance * lerp_data.full_distance or 1
 
 	if distance_travelled <= start_accel_distance then
 		local interval_distance_percentage = scale_percentage(zero_distance, start_accel_distance, distance_travelled)
@@ -191,11 +197,11 @@ EnemyCharacterStateLeaping._move_in_air = function (self, unit, dt, t)
 
 		speed = speed * speed_multiplier
 
-		local gravity_multiplier = 0.25
+		local gravity_multiplier = 0.5
 
 		movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration * gravity_multiplier
 
-		local move_cap = math.clamp(movement_settings_table.leap.move_speed, 0, PlayerUnitMovementSettings.leap.move_speed)
+		local move_cap = math.clamp(movement_settings_table.move_speed, 0, movement_settings_table.max_move_speed)
 		local prev_move_velocity = locomotion_extension:current_velocity()
 		local new_move_velocity = (Vector3.normalize(prev_move_velocity) + move_direction) * speed
 		local new_move_speed = Vector3.length(new_move_velocity)
@@ -218,12 +224,12 @@ EnemyCharacterStateLeaping._move_in_air = function (self, unit, dt, t)
 
 		movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration * gravity_multiplier
 
-		local move_cap = math.clamp(movement_settings_table.leap.move_speed, 0, PlayerUnitMovementSettings.leap.move_speed)
+		local move_cap = math.clamp(movement_settings_table.move_speed, 0, movement_settings_table.max_move_speed)
 		local prev_move_velocity = locomotion_extension:current_velocity()
 		local new_move_velocity = (Vector3.normalize(prev_move_velocity) + move_direction) * speed
 		local new_move_speed = Vector3.length(new_move_velocity)
 
-		new_move_speed = math.clamp(new_move_speed, 0, move_cap * movement_settings_table.player_speed_scale)
+		new_move_speed = math.clamp(new_move_speed, 0, move_cap * (movement_settings_table.player_speed_scale or 1))
 
 		local new_move_direction = Vector3.normalize(new_move_velocity)
 
@@ -241,12 +247,12 @@ EnemyCharacterStateLeaping._move_in_air = function (self, unit, dt, t)
 
 		movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration * gravity_multiplier
 
-		local move_cap = math.clamp(movement_settings_table.leap.move_speed, 0, PlayerUnitMovementSettings.leap.move_speed)
+		local move_cap = math.clamp(movement_settings_table.move_speed, 0, movement_settings_table.max_move_speed)
 		local prev_move_velocity = locomotion_extension:current_velocity()
 		local new_move_velocity = (Vector3.normalize(prev_move_velocity) + move_direction) * speed
 		local new_move_speed = Vector3.length(new_move_velocity)
 
-		new_move_speed = math.clamp(new_move_speed, 0, move_cap * movement_settings_table.player_speed_scale)
+		new_move_speed = math.clamp(new_move_speed, 0, move_cap * (movement_settings_table.player_speed_scale or 1))
 
 		local new_move_direction = Vector3.normalize(new_move_velocity)
 
@@ -264,12 +270,12 @@ EnemyCharacterStateLeaping._move_in_air = function (self, unit, dt, t)
 
 		movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration * interval_distance_percentage
 
-		local move_cap = math.clamp(movement_settings_table.leap.move_speed, 0, PlayerUnitMovementSettings.leap.move_speed)
+		local move_cap = math.clamp(movement_settings_table.move_speed, 0, movement_settings_table.max_move_speed)
 		local prev_move_velocity = locomotion_extension:current_velocity()
 		local new_move_velocity = (Vector3.normalize(prev_move_velocity) + move_direction) * speed
 		local new_move_speed = Vector3.length(new_move_velocity)
 
-		new_move_speed = math.clamp(new_move_speed, 0, move_cap * movement_settings_table.player_speed_scale)
+		new_move_speed = math.clamp(new_move_speed, 0, move_cap * movement_settings_table.player_speed_scale or 1)
 
 		local new_move_direction = Vector3.normalize(new_move_velocity)
 
@@ -289,7 +295,7 @@ EnemyCharacterStateLeaping._move_in_air = function (self, unit, dt, t)
 
 		movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration * gravity_multiplier
 
-		local move_cap = math.clamp(movement_settings_table.leap.slam_speed, 0, PlayerUnitMovementSettings.leap.slam_speed)
+		local move_cap = math.clamp(movement_settings_table.slam_speed, 0, movement_settings_table.max_slam_speed)
 		local prev_move_velocity = locomotion_extension:current_velocity()
 		local forward = Vector3.normalize(Vector3.flat(move_direction)) * forward_vector_multiplier
 		local towards_end = Vector3.normalize(end_position - current_position) * towards_end_vector_multiplier
@@ -313,10 +319,11 @@ EnemyCharacterStateLeaping._update_movement = function (self, unit, dt, t)
 	self:_move_in_air(unit, dt, t)
 
 	local colliding_down = CharacterStateHelper.is_colliding_down(unit)
+	local colliding_sides = CharacterStateHelper.is_colliding_sides(unit)
 
-	self._leap_done = colliding_down
+	self._leap_done = colliding_down or colliding_sides
 
-	return colliding_down
+	return self._leap_done
 end
 
 EnemyCharacterStateLeaping._finish = function (self, unit, t)

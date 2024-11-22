@@ -508,6 +508,80 @@ NetworkServer.update_disconnect_kicked_peers_by_time = function (self, dt)
 	end
 end
 
+NetworkServer._update_lobby_data = function (self, dt, t)
+	if self.profile_synchronizer:poll_sync_lobby_data_required() then
+		self._lobby_data_sync_requested = true
+	end
+
+	local has_srh, slot_handler = Managers.mechanism:mechanism_try_call("get_slot_reservation_handler")
+
+	if has_srh and slot_handler:poll_sync_lobby_data_required() then
+		self._lobby_data_sync_requested = true
+	end
+
+	if not self._lobby_data_sync_requested then
+		return
+	end
+
+	self._lobby_data_sync_requested = false
+
+	local lobby = self.lobby_host
+	local lobby_data = lobby:get_stored_lobby_data()
+
+	if not lobby_data then
+		return
+	end
+
+	local members
+
+	if has_srh then
+		members = slot_handler:peers()
+	else
+		members = lobby:members():get_members()
+	end
+
+	local reserved_profiles = {}
+	local num_parties = Managers.party:get_num_game_participating_parties()
+
+	for i = 1, num_parties do
+		reserved_profiles[i] = {}
+	end
+
+	for i = 1, #members do
+		do
+			local peer_id = members[i]
+			local party_id
+
+			if has_srh then
+				party_id = slot_handler:party_id_by_peer(peer_id)
+
+				if not party_id then
+					goto label_1_0
+				end
+			else
+				party_id = 1
+			end
+
+			local profile_index = self.profile_synchronizer:get_persistent_profile_index_reservation(peer_id) or -1
+
+			table.insert(reserved_profiles[party_id], {
+				peer_id = peer_id,
+				profile_index = profile_index,
+			})
+		end
+
+		::label_1_0::
+	end
+
+	local serialized_reserved_profiles = LobbyAux.serialize_lobby_reservation_data(reserved_profiles)
+
+	if serialized_reserved_profiles ~= lobby_data.reserved_profiles then
+		lobby_data.reserved_profiles = serialized_reserved_profiles
+
+		lobby:set_lobby_data(lobby_data)
+	end
+end
+
 NetworkServer.disconnect_all_peers = function (self, reason)
 	local reason_id = NetworkLookup.connection_fails[reason]
 	local peer_state_machines = self.peer_state_machines
@@ -931,6 +1005,7 @@ NetworkServer.update = function (self, dt, t)
 
 	self:_update_reserve_slots(dt)
 	self:update_disconnect_kicked_peers_by_time(dt)
+	self:_update_lobby_data(dt, t)
 
 	if self._eac_server ~= nil then
 		EACServer.update(self._eac_server)

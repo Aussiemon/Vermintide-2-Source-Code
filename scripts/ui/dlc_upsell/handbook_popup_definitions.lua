@@ -388,7 +388,7 @@ local widget_definitions = {
 
 						local hotspot = ui_content.hotspot
 
-						if axis_input ~= 0 and hotspot.is_hover then
+						if axis_input ~= 0 and (hotspot.is_hover or ui_content.is_gamepad_active) then
 							ui_content.axis_input = axis_input
 							ui_content.scroll_add = axis_input * ui_content.scroll_amount
 						end

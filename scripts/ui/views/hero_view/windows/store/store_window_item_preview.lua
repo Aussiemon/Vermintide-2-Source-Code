@@ -1037,7 +1037,18 @@ StoreWindowItemPreview._create_dlc_bundle_layout = function (self, settings, pro
 	local item_row = #layout + 1
 	local num_items = #bundle_contains
 
-	if num_items == 2 then
+	if num_items == 1 then
+		layout[item_row] = {
+			type = "spacing",
+			settings = {
+				size = {
+					260,
+					0,
+				},
+			},
+		}
+		item_row = item_row + 1
+	elseif num_items == 2 then
 		layout[item_row] = {
 			type = "spacing",
 			settings = {
@@ -2213,7 +2224,15 @@ end
 StoreWindowItemPreview._get_can_wield_display_text = function (self, can_wield)
 	local hero_text = ""
 	local career_text = ""
-	local can_wield_all = table.compare(can_wield, CanWieldAllItemTemplates)
+	local can_wield_all = true
+
+	for _, key in pairs(CanWieldAllItemTemplates) do
+		if not table.contains(can_wield, key) then
+			can_wield_all = false
+
+			break
+		end
+	end
 
 	if can_wield_all then
 		hero_text = Localize("store_can_be_wielded_by_all")

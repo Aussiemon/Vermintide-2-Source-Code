@@ -92,7 +92,9 @@ ImguiLocalization.draw = function (self)
 				end)
 				self:action_push(NOP)
 				self:action_push(function ()
-					self._cached_localizations[i] = Localize(text)
+					local loc = Localize(text)
+
+					self._cached_localizations[i] = loc
 				end)
 			end
 		end
@@ -101,7 +103,9 @@ ImguiLocalization.draw = function (self)
 			Managers.localizer:_set_locale(current_locale)
 		end)
 		self:action_push(function ()
-			self._cached_localizations[j] = Localize(text)
+			local loc = Localize(text)
+
+			self._cached_localizations[j] = loc
 		end)
 	end
 
@@ -118,6 +122,34 @@ ImguiLocalization.draw = function (self)
 		else
 			Imgui.text(loc_text)
 		end
+	end
+
+	Imgui.separator()
+
+	if UnlocalizedStrings and not table.is_empty(UnlocalizedStrings) then
+		Imgui.text("Unlocalized strings encountered so far:")
+		Imgui.same_line()
+
+		local copy_to_clipboard = Imgui.button("Copy to clipboard")
+
+		Imgui.begin_child_window("UnlocalizedStrings", 0, 0, true)
+
+		local sorted_strings = table.keys(UnlocalizedStrings)
+
+		table.sort(sorted_strings)
+
+		if copy_to_clipboard then
+			Clipboard.put(table.concat(sorted_strings, "\n"))
+		end
+
+		for _, unloc_key in ipairs(sorted_strings) do
+			if Imgui.tree_node(unloc_key) then
+				Imgui.text(UnlocalizedStrings[unloc_key] or "?")
+				Imgui.tree_pop()
+			end
+		end
+
+		Imgui.end_child_window()
 	end
 
 	Imgui.end_window()

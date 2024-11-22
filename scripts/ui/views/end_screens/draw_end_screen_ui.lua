@@ -22,7 +22,7 @@ DrawEndScreenUI.init = function (self, ingame_ui_context, input_service, screen_
 		self._act_presentation_ui = ActPresentationUI:new(ingame_ui_context)
 	end
 
-	self:_play_sound("play_gui_splash_victory")
+	self:_play_sound("play_gui_splash_draw")
 end
 
 DrawEndScreenUI._destroy = function (self)

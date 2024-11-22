@@ -56,6 +56,20 @@ local scenegraph_definition = {
 			0,
 		},
 	},
+	console_cursor = {
+		horizontal_alignment = "center",
+		parent = "root",
+		vertical_alignment = "center",
+		position = {
+			0,
+			0,
+			-10,
+		},
+		size = {
+			1920,
+			1080,
+		},
+	},
 	settings_container = {
 		horizontal_alignment = "center",
 		parent = "menu_root",
@@ -105,21 +119,35 @@ local scenegraph_definition = {
 		},
 		position = {
 			60,
-			50,
+			25,
 			1,
 		},
 	},
-	leave_game_button = {
+	locked_reason = {
 		horizontal_alignment = "left",
 		parent = "button_controls",
 		vertical_alignment = "top",
 		size = {
 			490,
+			140,
+		},
+		position = {
+			0,
+			20,
+			1,
+		},
+	},
+	leave_game_button = {
+		horizontal_alignment = "center",
+		parent = "team_1_panel",
+		vertical_alignment = "bottom",
+		size = {
+			390,
 			70,
 		},
 		position = {
 			0,
-			-50,
+			-625,
 			1,
 		},
 	},
@@ -228,6 +256,11 @@ local function create_team_widget(scenegraph_id, team_definition, team_color)
 			team_name = Localize(team_definition.display_name),
 			team_icon_bg = team_definition.background_texture,
 			team_icon = team_definition.team_icon,
+			styles_with_team_color = {
+				"team_name",
+				"team_icon",
+				"team_icon_bg",
+			},
 		},
 		style = {
 			team_name = {
@@ -257,8 +290,8 @@ local function create_team_widget(scenegraph_id, team_definition, team_color)
 					0,
 				},
 				offset = {
-					94,
-					-4,
+					91,
+					-1,
 					0,
 				},
 			},
@@ -337,6 +370,27 @@ settings_container_widget = {
 	},
 }
 
+local locked_reason_style = {
+	font_size = 24,
+	font_type = "hell_shark_header",
+	horizontal_alignment = "center",
+	localize = true,
+	upper_case = true,
+	use_shadow = true,
+	vertical_alignment = "center",
+	word_wrap = true,
+	text_color = {
+		255,
+		255,
+		62,
+		62,
+	},
+	offset = {
+		0,
+		0,
+		2,
+	},
+}
 local disable_with_gamepad = true
 local widget_definitions = {
 	mission_setting = UIWidgets.create_start_game_console_setting_button("game_option_1", Localize("start_game_window_mission"), nil, nil, nil, scenegraph_definition.game_option_1.size),
@@ -346,7 +400,8 @@ local widget_definitions = {
 	leave_game_button = UIWidgets.create_default_button("leave_game_button", scenegraph_definition.leave_game_button.size, nil, nil, Localize("exit"), MENU_BUTTON_FONT_SIZE, nil, nil, nil, disable_with_gamepad),
 }
 local host_widget_definitions = {
-	force_start_button = UIWidgets.create_icon_and_name_button("force_start_button", "options_button_icon_quickplay", Localize("vs_ui_force_start_button")),
+	force_start_button = UIWidgets.create_icon_and_name_button("force_start_button", "options_button_icon_quickplay", Localize("input_description_play")),
+	locked_reason = UIWidgets.create_simple_text("tutorial_no_text", "locked_reason", nil, nil, locked_reason_style),
 }
 
 local function is_empty(content)
@@ -648,7 +703,9 @@ local function create_player_panel_widget(team_index, player_index)
 			voice_button_texture = "tab_menu_icon_01",
 			voice_tooltip_text_mute = "input_description_mute_voice",
 			voice_tooltip_text_unmute = "input_description_unmute_voice",
-			button_hotspot = {},
+			button_hotspot = {
+				allow_multi_hover = true,
+			},
 			frame = frame_settings.texture,
 			shadow_frame = shadow_frame_settings.texture,
 			hover_frame = hover_frame_settings.texture,
@@ -659,6 +716,9 @@ local function create_player_panel_widget(team_index, player_index)
 			kick_button_hotspot = {},
 			voice_button_hotspot = {},
 			profile_button_hotspot = {},
+			styles_with_team_color = {
+				"player_name",
+			},
 			insignia_main = {
 				texture_id = "insignias_main_small",
 				uvs = {
@@ -1297,6 +1357,7 @@ local animation_definitions = {
 
 				ui_scenegraph.team_1.position[1] = scenegraph_def.team_1.position[1] - s
 				ui_scenegraph.team_2.position[1] = scenegraph_def.team_2.position[1] + s
+				ui_scenegraph.leave_game_button.position[1] = scenegraph_def.leave_game_button.position[1] + s
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_def, widgets, params)
 				return
@@ -1304,58 +1365,13 @@ local animation_definitions = {
 		},
 	},
 }
-local generic_input_actions = {
-	default = {
-		{
-			description_text = "input_description_back",
-			input_action = "back",
-			priority = 3,
-		},
-	},
-	switch_team = {
-		actions = {
-			{
-				description_text = "Request Team Change",
-				ignore_localization = true,
-				input_action = "switch_team",
-				priority = 2,
-			},
-		},
-	},
-	force_start = {
-		actions = {
-			{
-				description_text = "Force Start Game",
-				ignore_localization = true,
-				input_action = "force_start",
-				priority = 1,
-			},
-		},
-	},
-	force_start_switch_team = {
-		actions = {
-			{
-				description_text = "Force Start Game",
-				ignore_localization = true,
-				input_action = "force_start",
-				priority = 1,
-			},
-			{
-				description_text = "Switch Team",
-				ignore_localization = true,
-				input_action = "switch_team",
-				priority = 2,
-			},
-		},
-	},
-}
 
 return {
 	create_player_panel_widget = create_player_panel_widget,
 	loading_spinner_definition = UIWidgets.create_loading_spinner("menu_root"),
+	console_cursor_definition = UIWidgets.create_console_cursor("console_cursor"),
 	animation_definitions = animation_definitions,
 	scenegraph_definition = scenegraph_definition,
 	widget_definitions = widget_definitions,
 	host_widget_definitions = host_widget_definitions,
-	generic_input_actions = generic_input_actions,
 }

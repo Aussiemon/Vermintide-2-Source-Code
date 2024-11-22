@@ -285,3 +285,7 @@ SubtitleGui.stop_subtitle = function (self, speaker_name)
 	self.subtitles_to_display[speaker_name] = nil
 	self._force_text_remake = true
 end
+
+SubtitleGui.is_displaying_subtitle = function (self)
+	return self.subtitles_to_display and self._subtitle_text ~= ""
+end

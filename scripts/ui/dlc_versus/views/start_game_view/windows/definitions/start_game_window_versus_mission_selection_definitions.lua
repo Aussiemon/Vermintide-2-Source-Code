@@ -582,7 +582,7 @@ end
 
 local function create_level_entry(level_settings, offset, selected_index, my_index, is_disabled, disabled_reason, preferred_levels)
 	local fallback_image = "icons_placeholder"
-	local texture_name = LevelHelper:get_small_level_image(level_settings.level_id)
+	local texture_name = level_settings.small_level_image or LevelHelper:get_small_level_image(level_settings.level_id)
 	local texture_settings = UIAtlasHelper.has_texture_by_name(texture_name) and UIAtlasHelper.get_atlas_settings_by_texture_name(texture_name) or UIAtlasHelper.get_atlas_settings_by_texture_name(fallback_image)
 	local frame_settings = UIFrameSettings.frame_outer_glow_01
 	local edge_height = frame_settings.texture_sizes.horizontal[2]

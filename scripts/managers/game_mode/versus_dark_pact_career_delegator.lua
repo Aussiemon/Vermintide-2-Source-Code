@@ -32,6 +32,38 @@ VersusDarkPactCareerDelegator.init = function (self)
 	Managers.state.event:register(self, "player_profile_assigned", "on_player_profile_assigned")
 
 	self._mechanism = Managers.mechanism:game_mechanism()
+
+	self:_override_available_profiles(GameModeSettings.versus)
+end
+
+VersusDarkPactCareerDelegator._override_available_profiles = function (self, settings)
+	local career_overrides = Managers.mechanism:mechanism_setting_for_title("override_career_availability")
+
+	if not self._bosses then
+		self._bosses = table.shallow_copy(settings.dark_pact_boss_profiles)
+
+		for i = #self._bosses, 1, -1 do
+			local career = self._bosses[i]
+			local override = career_overrides[career]
+
+			if override == false then
+				table.swap_delete(self._bosses, i)
+			end
+		end
+	end
+
+	if not self._all_careers then
+		self._all_careers = table.shallow_copy(settings.dark_pact_profile_order)
+
+		for i = #self._all_careers, 1, -1 do
+			local career = self._all_careers[i]
+			local override = career_overrides[career]
+
+			if override == false then
+				table.swap_delete(self._all_careers, i)
+			end
+		end
+	end
 end
 
 VersusDarkPactCareerDelegator.destroy = function (self)
@@ -85,8 +117,7 @@ VersusDarkPactCareerDelegator.request_careers = function (self, peer_id)
 
 	local settings = Managers.state.game_mode:game_mode():settings()
 	local num_career_options = settings.dark_pact_picking_rules.special_pick_options
-	local all_careers = settings.dark_pact_profile_order
-	local career_options = self:_roll_career_options(num_career_options, all_careers, peer_id)
+	local career_options = self:_roll_career_options(num_career_options, self._all_careers, peer_id)
 
 	if self._playable_boss_can_be_picked then
 		if DEDICATED_SERVER then
@@ -99,16 +130,17 @@ VersusDarkPactCareerDelegator.request_careers = function (self, peer_id)
 
 		self._peer_picking_boss = peer_id
 
-		local bosses = GameModeSettings.versus.dark_pact_boss_profiles
-		local random_boss_profile = table.random(bosses)
+		local random_boss_profile = table.random(self._bosses)
 
-		career_options[#career_options + 1] = random_boss_profile
+		if random_boss_profile then
+			career_options[#career_options + 1] = random_boss_profile
 
-		table.insert(self._picks_per_player[peer_id], random_boss_profile)
+			table.insert(self._picks_per_player[peer_id], random_boss_profile)
 
-		self._picks_per_career[random_boss_profile] = (self._picks_per_career[random_boss_profile] or 0) + 1
+			self._picks_per_career[random_boss_profile] = (self._picks_per_career[random_boss_profile] or 0) + 1
 
-		self:set_playable_boss_can_be_picked(false)
+			self:set_playable_boss_can_be_picked(false)
+		end
 	end
 
 	self._rolled_careers_time_stamp[peer_id] = Managers.time:time("game")
@@ -169,9 +201,7 @@ VersusDarkPactCareerDelegator._career_picked = function (self, peer_id, career)
 	self._picks_per_player[peer_id] = delegated_careers
 
 	if self._peer_picking_boss and peer_id == self._peer_picking_boss then
-		local bosses = GameModeSettings.versus.dark_pact_boss_profiles
-
-		if table.contains(bosses, career) then
+		if table.contains(self._bosses, career) then
 			self._peer_picking_boss = nil
 		else
 			self._peer_picking_boss = nil

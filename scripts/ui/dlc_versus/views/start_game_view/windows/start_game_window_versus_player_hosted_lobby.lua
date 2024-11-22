@@ -6,6 +6,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local NUM_TEAMS = 2
 local TEAMS_SIZE = 4
 local TRANSPARENT_TEXTURE = "gui/1080p/single_textures/generic/transparent_placeholder_texture"
+local HAS_AVATARS = true
 
 StartGameWindowVersusPlayerHostedLobby = class(StartGameWindowVersusPlayerHostedLobby)
 StartGameWindowVersusPlayerHostedLobby.NAME = "StartGameWindowPlayerHostedLobby"
@@ -37,6 +38,8 @@ StartGameWindowVersusPlayerHostedLobby.on_enter = function (self, params, offset
 	self:_create_ui_elements()
 	self:_play_animation("on_enter")
 	self._parent:set_hide_panel_title_butttons(true)
+	self._parent:set_input_description("versus_player_hosted_lobby")
+	Managers.input:enable_gamepad_cursor()
 end
 
 StartGameWindowVersusPlayerHostedLobby._play_animation = function (self, name)
@@ -68,6 +71,7 @@ StartGameWindowVersusPlayerHostedLobby._create_ui_elements = function (self)
 	self._host_widgets = host_widgets
 	self._widgets_by_name = widgets_by_name
 	self._loading_spinner_widget = UIWidget.init(definitions.loading_spinner_definition)
+	self._console_cursor = UIWidget.init(definitions.console_cursor_definition)
 
 	self:_create_player_slots()
 
@@ -79,6 +83,7 @@ StartGameWindowVersusPlayerHostedLobby.on_exit = function (self, params)
 
 	self._parent:play_sound("Play_vs_hud_play_menu_leave_lobby")
 	self:_remove_all_players()
+	Managers.input:disable_gamepad_cursor()
 end
 
 StartGameWindowVersusPlayerHostedLobby.enter_options_view = function (self)
@@ -168,6 +173,7 @@ StartGameWindowVersusPlayerHostedLobby.update = function (self, dt, t)
 		self:_update_options_view(dt, t)
 		self:_update_mission_option()
 		self:_update_animations(dt, t)
+		self:_update_can_play()
 		self:_handle_input(t)
 		self:_update_avatars()
 		self:_update_custom_lobby_slots()
@@ -206,25 +212,33 @@ StartGameWindowVersusPlayerHostedLobby._update_avatars = function (self)
 	end
 end
 
-StartGameWindowVersusPlayerHostedLobby._update_animations = function (self, dt, t)
-	self._ui_animator:update(dt)
-
+StartGameWindowVersusPlayerHostedLobby._update_can_play = function (self)
+	local can_play, reason = true, "tutorial_no_text"
 	local is_player_hosting = self._matchmaking_manager:is_player_hosting()
 
 	if is_player_hosting then
-		local force_start_button = self._widgets_by_name.force_start_button
 		local game_mechanism = Managers.mechanism:game_mechanism()
 		local slot_reservation_handler = game_mechanism:get_slot_reservation_handler()
-		local all_teams_have_memebers = slot_reservation_handler:all_teams_have_members()
-		local allow_versus_force_start_single_player = Development.parameter("allow_versus_force_start_single_player")
-		local should_disable_force_start = true
+		local all_teams_have_members = slot_reservation_handler:all_teams_have_members()
 
-		if all_teams_have_memebers or allow_versus_force_start_single_player then
-			should_disable_force_start = false
+		if not all_teams_have_members then
+			can_play = Development.parameter("allow_versus_force_start_single_player")
+			reason = "interaction_action_missing_players"
 		end
 
-		force_start_button.content.button_hotspot.disable_button = should_disable_force_start
+		local widgets_by_name = self._widgets_by_name
 
+		widgets_by_name.force_start_button.content.button_hotspot.disable_button = not can_play
+		widgets_by_name.locked_reason.content.text = reason
+	end
+end
+
+StartGameWindowVersusPlayerHostedLobby._update_animations = function (self, dt, t)
+	self._ui_animator:update(dt)
+
+	local force_start_button = self._widgets_by_name.force_start_button
+
+	if not force_start_button.content.button_hotspot.disable_button then
 		UIWidgetUtils.animate_play_button(force_start_button, dt)
 	end
 
@@ -252,6 +266,12 @@ StartGameWindowVersusPlayerHostedLobby._draw = function (self, dt)
 		if is_player_hosting then
 			UIRenderer.draw_all_widgets(ui_renderer, self._host_widgets)
 		end
+	end
+
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+
+	if gamepad_active then
+		UIRenderer.draw_widget(ui_renderer, self._console_cursor)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
@@ -311,6 +331,7 @@ StartGameWindowVersusPlayerHostedLobby._handle_input = function (self, t)
 				local wanted_party_id = content.team_index
 
 				slot_reservation_handler:request_party_change(wanted_party_id)
+				self._parent:play_sound("versus_hud_player_lobby_switch_slot")
 			end
 		else
 			if UIUtils.is_button_pressed(panel_widget, "profile_button_hotspot") then
@@ -392,14 +413,6 @@ StartGameWindowVersusPlayerHostedLobby._find_first_available_slot = function (se
 	fassert(false, "No available slots!")
 end
 
-local function get_name_or_anonymous(name)
-	if name and name ~= "" then
-		return UIRenderer.crop_text(name, 18)
-	else
-		return Localize("painting_bw01_artist")
-	end
-end
-
 StartGameWindowVersusPlayerHostedLobby._remove_all_players = function (self)
 	for _, slot_data in pairs(self._player_slots_by_peer_id) do
 		self:_remove_player(slot_data)
@@ -425,6 +438,10 @@ StartGameWindowVersusPlayerHostedLobby._remove_player = function (self, slot_dat
 		widget.content.player_avatar = nil
 	end
 
+	if HAS_AVATARS then
+		Friends.delete_avatar(peer_id)
+	end
+
 	self._player_slots_by_peer_id[peer_id] = nil
 end
 
@@ -432,6 +449,7 @@ StartGameWindowVersusPlayerHostedLobby._update_custom_lobby_slots = function (se
 	local has_changes = false
 	local match_handler = self._match_handler
 	local slot_reservation_handler = Managers.mechanism:get_slot_reservation_handler()
+	local no_join_sound = false
 
 	for peer_id, slot_data in pairs(self._player_slots_by_peer_id) do
 		if match_handler:query_peer_data(peer_id, "is_synced") then
@@ -440,11 +458,13 @@ StartGameWindowVersusPlayerHostedLobby._update_custom_lobby_slots = function (se
 			if party_id ~= slot_data.party_id or slot_id ~= slot_data.slot_id then
 				self:_remove_all_players()
 
+				no_join_sound = true
 				has_changes = true
 
 				break
 			end
 		else
+			self._parent:play_sound("versus_hud_player_lobby_friend_leaves_lobby")
 			self:_remove_player(slot_data)
 
 			has_changes = true
@@ -457,6 +477,12 @@ StartGameWindowVersusPlayerHostedLobby._update_custom_lobby_slots = function (se
 
 	local match_host = match_handler:get_match_owner()
 	local is_match_host = match_handler:query_peer_data(self._peer_id, "is_match_owner")
+	local our_party_id = slot_reservation_handler:get_peer_reserved_indices(self._peer_id)
+	local team_1_color, team_2_color = "local_player_team_lighter", "opponent_team_lighter"
+
+	if our_party_id ~= 1 then
+		team_1_color, team_2_color = team_2_color, team_1_color
+	end
 
 	self._is_match_host = is_match_host
 
@@ -472,21 +498,23 @@ StartGameWindowVersusPlayerHostedLobby._update_custom_lobby_slots = function (se
 
 		if slot_data then
 			-- Nothing
+		elseif not match_handler:query_peer_data(peer_id, "is_synced") then
+			-- Nothing
 		else
-			if not match_handler:query_peer_data(peer_id, "is_synced") then
-				return
-			end
-
 			local party_id, slot_id = slot_reservation_handler:get_peer_reserved_indices(peer_id)
 
 			if not party_id then
 				-- Nothing
 			else
+				if not no_join_sound then
+					self._parent:play_sound("versus_hud_player_lobby_friend_joins_lobby")
+				end
+
 				slot_data = self:_find_first_available_slot(party_id, slot_id)
 				self._player_slots_by_peer_id[peer_id] = slot_data
 				slot_data.peer_id = peer_id
 				slot_data.party_id = party_id
-				slot_data.slot_id = slot_data.player_index
+				slot_data.slot_id = slot_data.panel_widget.content.player_index
 
 				local widget = slot_data.panel_widget
 				local is_peer_match_host = peer_id == match_host
@@ -494,8 +522,23 @@ StartGameWindowVersusPlayerHostedLobby._update_custom_lobby_slots = function (se
 				widget.content.show_host = is_peer_match_host
 				widget.content.empty = false
 				widget.content.peer_id = peer_id
-				widget.content.player_name = get_name_or_anonymous(match_handler:query_peer_data(peer_id, "player_name"))
-				slot_data.has_avatar = true
+
+				local player_name = match_handler:query_peer_data(peer_id, "player_name")
+
+				if not player_name or player_name == "" then
+					player_name = PlayerUtils.player_name(peer_id, nil)
+				end
+
+				widget.content.player_name = UIRenderer.crop_text(player_name, 18)
+				slot_data.has_avatar = not HAS_AVATARS
+
+				self:_apply_team_color(widget, party_id == 1 and team_1_color or team_2_color)
+
+				if peer_id == self._peer_id then
+					self:_apply_team_color(self._widgets_by_name.team_1, team_1_color)
+					self:_apply_team_color(self._widgets_by_name.team_2, team_2_color)
+				end
+
 				widget.content.show_profile_button = true
 				widget.content.show_chat_button = peer_id ~= self._peer_id
 				widget.content.chat_button_hotspot.is_selected = Managers.chat:ignoring_peer_id(peer_id)
@@ -544,6 +587,20 @@ StartGameWindowVersusPlayerHostedLobby._update_custom_lobby_slots = function (se
 	end
 end
 
+StartGameWindowVersusPlayerHostedLobby._apply_team_color = function (self, widget, team_color_name)
+	local team_color = Colors.color_definitions[team_color_name]
+	local styles = widget.style
+
+	for _, style_name in pairs(widget.content.styles_with_team_color) do
+		local style = styles[style_name]
+		local dst_color = style.color or style.text_color
+
+		if dst_color then
+			Colors.copy_no_alpha_to(dst_color, team_color)
+		end
+	end
+end
+
 StartGameWindowVersusPlayerHostedLobby._update_options_view = function (self, dt, t)
 	if self._is_options_view_active then
 		self._options_view:update(dt, t)
@@ -562,11 +619,7 @@ StartGameWindowVersusPlayerHostedLobby._update_mission_option = function (self)
 		selected_level_id = lobby and lobby:lobby_data("selected_mission_id")
 	end
 
-	if not selected_level_id then
-		return
-	end
-
-	local level_settings = LevelSettings[selected_level_id]
+	local level_settings = selected_level_id and selected_level_id ~= "any" and LevelSettings[selected_level_id] or DummyAnyLevel
 	local display_name = level_settings.display_name
 	local icon_texture = level_settings.level_image
 	local completed_difficulty_index = 0

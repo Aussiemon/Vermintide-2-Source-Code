@@ -193,10 +193,6 @@ items.wpn_skaven_sword_47_right = {
 	unit_name = "units/weapons/enemy/wpn_skaven_set/wpn_skaven_sword_47",
 	attachment_node_linking = AttachmentNodeLinking.ai_1h_weapon.right,
 }
-items.wpn_human_soldier_sword_47_right = {
-	unit_name = "units/weapons/enemy/wpn_skaven_set/wpn_skaven_sword_47",
-	attachment_node_linking = AttachmentNodeLinking.ai_human_soldier_1h_weapon.right,
-}
 items.wpn_skaven_mace_31_left = {
 	unit_name = "units/weapons/enemy/wpn_skaven_set/wpn_skaven_mace_31",
 	attachment_node_linking = AttachmentNodeLinking.ai_1h_weapon.left,
@@ -825,13 +821,6 @@ items.woc_bulwark_helmet_01 = {
 	unit_extension_template = "ai_helmet_unit",
 	unit_name = "units/beings/enemies/addons/chaos_warrior/woc_helmet_bulwark_01",
 	attachment_node_linking = AttachmentNodeLinking.ai_helmet,
-}
-items.wpn_smith_hammer = {
-	unit_name = "units/test_unit/hack_hammer",
-	attachment_node_linking = AttachmentNodeLinking.ai_1h_weapon.right,
-	drop_reasons = {
-		death = false,
-	},
 }
 items.wpn_npc_skeleton_sword_01_right = {
 	drop_on_hit = true,
@@ -1629,12 +1618,6 @@ item_categories.chaos_bulwark_shield = {
 item_categories.chaos_bulwark_helmet = {
 	items.woc_bulwark_helmet_01,
 }
-item_categories.human_pleb = {
-	items.wpn_smith_hammer,
-}
-item_categories.human_soldier = {
-	items.wpn_human_soldier_sword_47_right,
-}
 item_categories.berzerker_helmet = {}
 item_categories.berzerker_right = {
 	items.wpn_moc_axe_01_right,
@@ -2166,20 +2149,6 @@ InventoryConfigurations.undead_npc_skeleton_armored = {
 		item_categories.undead_npc_skeleton_vambrace_r,
 		item_categories.undead_npc_skeleton_greaves_l,
 		item_categories.undead_npc_skeleton_greaves_r,
-	},
-}
-InventoryConfigurations.human_pleb = {
-	anim_state_event = "to_combat",
-	enemy_hit_sound = "sword",
-	items = {
-		item_categories.human_pleb,
-	},
-}
-InventoryConfigurations.human_soldier = {
-	anim_state_event = "to_combat",
-	enemy_hit_sound = "sword",
-	items = {
-		item_categories.human_soldier,
 	},
 }
 InventoryConfigurations.pack_master = {

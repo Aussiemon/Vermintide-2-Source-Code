@@ -39,6 +39,7 @@ IgnoreChatPings = {
 	[PingTypes.MOVEMENT_GENERIC] = true,
 	[PingTypes.PING_ONLY] = true,
 	[PingTypes.ENEMY_POSITION] = true,
+	[PingTypes.LOCAL_ONLY] = true,
 	mechanism_overrides = {
 		versus = {
 			[PingTypes.ENEMY_GENERIC] = true,

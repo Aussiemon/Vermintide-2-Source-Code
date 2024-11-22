@@ -204,7 +204,6 @@ ObjectiveLists.bell_pvp_set_2 = {
 			play_arrive_vo = true,
 			play_complete_vo = true,
 			objective_type = ObjectiveTypes.objective_target,
-			objective_tag = ObjectiveTags.objective_tag_chains,
 			vo_context_on_complete = {
 				current_objective = "waystone",
 			},

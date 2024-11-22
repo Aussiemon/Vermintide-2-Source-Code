@@ -100,6 +100,32 @@ BackendInterfaceStatisticsPlayFab.save = function (self)
 	self._stats_to_save = stats_to_save
 end
 
+BackendInterfaceStatisticsPlayFab.save_explicit = function (self, stats_id, statistics_db)
+	print("---------------------- BackendInterfaceStatisticsPlayFab:save ----------------------")
+
+	if not statistics_db then
+		print("[BackendInterfaceStatisticsPlayFab] No statistics_db provided, skipping saving statistics...")
+
+		return false
+	end
+
+	if not stats_id then
+		print("[BackendInterfaceStatisticsPlayFab] No stats_id provided, skipping saving statistics...")
+
+		return false
+	end
+
+	local player_stats = statistics_db:get_all_stats(stats_id)
+	local stats_to_save = filter_stats(flatten_stats(player_stats))
+
+	self._stats_to_save = stats_to_save
+
+	local backend_stats = {}
+
+	statistics_db:generate_backend_stats(stats_id, backend_stats)
+	Managers.backend:set_stats(backend_stats)
+end
+
 BackendInterfaceStatisticsPlayFab.save_state_completed_achievements = function (self, state_completed_achievements)
 	self._state_completed_achievements = state_completed_achievements
 end

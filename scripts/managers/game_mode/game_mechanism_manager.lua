@@ -972,7 +972,7 @@ GameMechanismManager.rpc_carousel_set_local_match = function (self, channel_id, 
 		return
 	end
 
-	self._game_mechanism:set_local_match(local_match)
+	self:mechanism_try_call("set_local_match", local_match)
 end
 
 GameMechanismManager.rpc_carousel_set_private_lobby = function (self, channel_id, private_lobby)
@@ -982,7 +982,7 @@ GameMechanismManager.rpc_carousel_set_private_lobby = function (self, channel_id
 		return
 	end
 
-	self._game_mechanism:set_private_lobby(private_lobby)
+	self:mechanism_try_call("set_private_lobby", private_lobby)
 end
 
 GameMechanismManager.rpc_dedicated_or_player_hosted_search = function (self, channel_id, use_dedicated_servers, use_dedicated_aws_servers, use_player_hosted)
@@ -992,7 +992,7 @@ GameMechanismManager.rpc_dedicated_or_player_hosted_search = function (self, cha
 		return
 	end
 
-	self._game_mechanism:set_dedicated_or_player_hosted_search(use_dedicated_servers, use_dedicated_aws_servers, use_player_hosted)
+	self:mechanism_try_call("set_dedicated_or_player_hosted_search", use_dedicated_servers, use_dedicated_aws_servers, use_player_hosted)
 end
 
 GameMechanismManager.rpc_reserved_slots_count = function (self, channel_id, num_reserved_slots, num_slots_total)

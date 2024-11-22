@@ -608,7 +608,7 @@ StartGameWindowLobbyBrowserConsole.is_lobby_joinable = function (self, lobby_dat
 	end
 
 	if Managers.matchmaking:is_matchmaking_paused() then
-		return false, "matchmaking_paused"
+		return false, "painting_none_name"
 	end
 
 	local statistics_db = self._statistics_db

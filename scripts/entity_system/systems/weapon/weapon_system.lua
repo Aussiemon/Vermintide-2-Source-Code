@@ -587,30 +587,19 @@ WeaponSystem.rpc_change_synced_weapon_state = function (self, channel_id, owner_
 		state_name = nil
 	end
 
-	self:change_synced_weapon_state(owner_unit, state_name, skip_sync)
+	local weapon_unit = self:_first_wielded_weapon_unit(owner_unit)
+	local weapon_extension = ScriptUnit.has_extension(weapon_unit, "weapon_system")
+
+	if not weapon_extension then
+		return
+	end
+
+	weapon_extension:change_synced_state(state_name, skip_sync)
 
 	if self.is_server then
 		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
 		self.network_transmit:send_rpc_clients_except("rpc_change_synced_weapon_state", peer_id, owner_unit_id, state_id)
-	end
-end
-
-WeaponSystem.change_synced_weapon_state = function (self, owner_unit, state_name, skip_sync)
-	local weapon_unit = self:_first_wielded_weapon_unit(owner_unit)
-	local weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
-
-	weapon_extension:change_synced_state(state_name)
-
-	if not skip_sync then
-		local owner_unit_id = Managers.state.unit_storage:go_id(owner_unit)
-		local state_id = NetworkLookup.weapon_synced_states[state_name or "n/a"]
-
-		if self.is_server then
-			self.network_transmit:send_rpc_clients("rpc_change_synced_weapon_state", owner_unit_id, state_id)
-		else
-			self.network_transmit:send_rpc_server("rpc_change_synced_weapon_state", owner_unit_id, state_id)
-		end
 	end
 end
 

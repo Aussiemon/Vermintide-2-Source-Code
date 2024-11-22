@@ -1083,52 +1083,6 @@ local unit_templates = {
 			},
 		},
 	},
-	ai_unit_human_pleb = {
-		base_template = "ai_unit_base",
-		go_type = "ai_unit",
-		self_owned_extensions = {
-			"AILineOfSightExtension",
-			"AIEnemySlotExtension",
-			"SoundSectorExtension",
-		},
-		husk_extensions = {
-			"SoundSectorExtension",
-		},
-		remove_when_killed = {
-			self_owned_extensions = {
-				"AILineOfSightExtension",
-				"AIEnemySlotExtension",
-				"SoundSectorExtension",
-			},
-			husk_extensions = {
-				"SoundSectorExtension",
-			},
-		},
-	},
-	ai_unit_human_soldier = {
-		base_template = "ai_unit_base",
-		go_type = "ai_unit_with_inventory",
-		self_owned_extensions = {
-			"AILineOfSightExtension",
-			"AIInventoryExtension",
-			"AIEnemySlotExtension",
-			"SoundSectorExtension",
-		},
-		husk_extensions = {
-			"AIInventoryExtension",
-			"SoundSectorExtension",
-		},
-		remove_when_killed = {
-			self_owned_extensions = {
-				"AILineOfSightExtension",
-				"AIEnemySlotExtension",
-				"SoundSectorExtension",
-			},
-			husk_extensions = {
-				"SoundSectorExtension",
-			},
-		},
-	},
 	ai_unit_berzerker = {
 		base_template = "ai_unit_base",
 		go_type = "ai_unit_with_inventory",

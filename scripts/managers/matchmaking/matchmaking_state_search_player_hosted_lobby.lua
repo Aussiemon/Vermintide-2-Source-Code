@@ -207,13 +207,13 @@ MatchmakingStateSearchPlayerHostedLobby._lobby_match = function (self, lobby_dat
 	end
 
 	if IS_WINDOWS then
-		local reservation_data = ProfileSynchronizer.deserialize_lobby_reservation_data(lobby_data)
+		local reservation_data = LobbyAux.deserialize_lobby_reservation_data(lobby_data)
 
 		for party_id = 1, #reservation_data do
 			local peer_datas = reservation_data[party_id]
 
 			for i = 1, #peer_datas do
-				local peer_id = ProfileSynchronizer.unpack_lobby_reservation_peer_data(peer_datas[i])
+				local peer_id = peer_datas[i].peer_id
 				local relationship = Friends.relationship(peer_id)
 				local user_blocked = relationship == 5 or relationship == 6
 

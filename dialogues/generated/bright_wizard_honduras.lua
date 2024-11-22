@@ -145,7 +145,7 @@ return function ()
 				"user_context",
 				"intensity",
 				OP.GT,
-				30,
+				60,
 			},
 			{
 				"faction_memory",
@@ -582,7 +582,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_dead_body",
-		probability = 1,
+		probability = 0.1,
 		response = "pbw_gameplay_dead_body",
 		criterias = {
 			{
@@ -932,7 +932,7 @@ return function ()
 				"query_context",
 				"number_of_kills",
 				OP.EQ,
-				7,
+				9,
 			},
 			{
 				"query_context",
@@ -1194,7 +1194,7 @@ return function ()
 				"query_context",
 				"number_of_kills",
 				OP.EQ,
-				7,
+				9,
 			},
 			{
 				"query_context",
@@ -2065,10 +2065,10 @@ return function ()
 				"chaos_spawn",
 			},
 			{
-				"user_context",
-				"enemies_close",
+				"query_context",
+				"distance",
 				OP.GT,
-				0,
+				10,
 			},
 			{
 				"query_context",
@@ -2081,6 +2081,12 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"bright_wizard",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.GT,
+				0,
 			},
 			{
 				"faction_memory",
@@ -2471,10 +2477,10 @@ return function ()
 				"beastmen_minotaur",
 			},
 			{
-				"user_context",
-				"enemies_close",
-				OP.EQ,
-				0,
+				"query_context",
+				"distance",
+				OP.GT,
+				10,
 			},
 			{
 				"query_context",
@@ -2487,6 +2493,12 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"bright_wizard",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0,
 			},
 			{
 				"faction_memory",
@@ -2529,10 +2541,10 @@ return function ()
 				"skaven_rat_ogre",
 			},
 			{
-				"user_context",
-				"enemies_close",
+				"query_context",
+				"distance",
 				OP.GT,
-				0,
+				10,
 			},
 			{
 				"query_context",
@@ -2545,6 +2557,12 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"bright_wizard",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.GT,
+				0,
 			},
 			{
 				"faction_memory",
@@ -2807,10 +2825,10 @@ return function ()
 				"skaven_stormfiend",
 			},
 			{
-				"user_context",
-				"enemies_close",
+				"query_context",
+				"distance",
 				OP.GT,
-				0,
+				10,
 			},
 			{
 				"query_context",
@@ -2823,6 +2841,12 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"bright_wizard",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.GT,
+				0,
 			},
 			{
 				"faction_memory",
@@ -2872,10 +2896,10 @@ return function ()
 				"vs_chaos_troll",
 			},
 			{
-				"user_context",
-				"enemies_close",
+				"query_context",
+				"distance",
 				OP.GT,
-				0,
+				10,
 			},
 			{
 				"query_context",
@@ -2888,6 +2912,12 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"bright_wizard",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.GT,
+				0,
 			},
 			{
 				"faction_memory",
@@ -6079,7 +6109,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_special_enemy_kill_melee",
-		probability = 1,
+		probability = 0.5,
 		response = "pbw_gameplay_special_enemy_kill_melee",
 		criterias = {
 			{
@@ -6124,7 +6154,7 @@ return function ()
 	})
 	define_rule({
 		name = "pbw_gameplay_special_enemy_kill_ranged",
-		probability = 1,
+		probability = 0.7,
 		response = "pbw_gameplay_special_enemy_kill_ranged",
 		criterias = {
 			{
@@ -7179,7 +7209,7 @@ return function ()
 				"query_context",
 				"number_of_kills",
 				OP.EQ,
-				7,
+				9,
 			},
 			{
 				"query_context",
@@ -7441,7 +7471,7 @@ return function ()
 				"query_context",
 				"number_of_kills",
 				OP.EQ,
-				7,
+				9,
 			},
 			{
 				"query_context",
@@ -14945,13 +14975,11 @@ return function ()
 		pbw_gameplay_spots_health = {
 			category = "seen_items",
 			database = "bright_wizard_honduras",
-			dialogue_animations_n = 13,
-			face_animations_n = 13,
+			dialogue_animations_n = 11,
+			face_animations_n = 11,
 			randomize_indexes_n = 0,
-			sound_events_n = 13,
+			sound_events_n = 11,
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
@@ -14976,8 +15004,6 @@ return function ()
 				"face_happy",
 				"face_happy",
 				"face_happy",
-				"face_happy",
-				"face_happy",
 			},
 			localization_strings = {
 				"pbw_gameplay_spots_health_02",
@@ -14987,12 +15013,10 @@ return function ()
 				"pbw_gameplay_spots_health_08",
 				"pbw_gameplay_spots_health_09",
 				"pbw_gameplay_spots_health_10",
-				"pbw_gameplay_spots_health_11",
 				"pbw_gameplay_spots_health_12",
 				"pbw_gameplay_spots_health_13",
 				"pbw_gameplay_spots_health_14",
 				"pbw_gameplay_spots_health_15",
-				"pbw_gameplay_spots_health_16",
 			},
 			randomize_indexes = {},
 			sound_events = {
@@ -15003,12 +15027,10 @@ return function ()
 				"pbw_gameplay_spots_health_08",
 				"pbw_gameplay_spots_health_09",
 				"pbw_gameplay_spots_health_10",
-				"pbw_gameplay_spots_health_11",
 				"pbw_gameplay_spots_health_12",
 				"pbw_gameplay_spots_health_13",
 				"pbw_gameplay_spots_health_14",
 				"pbw_gameplay_spots_health_15",
-				"pbw_gameplay_spots_health_16",
 			},
 			sound_events_duration = {
 				1.3064166307449,
@@ -15018,12 +15040,10 @@ return function ()
 				2.8236875534058,
 				2.3509376049042,
 				1.5527917146683,
-				1.104333281517,
 				1.5285832881927,
 				1.5772082805634,
 				1.4914166927338,
 				1.7586041688919,
-				2.2575209140778,
 			},
 		},
 		pbw_gameplay_spots_potion = {

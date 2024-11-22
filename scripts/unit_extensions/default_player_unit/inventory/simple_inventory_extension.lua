@@ -383,18 +383,20 @@ SimpleInventoryExtension.add_equipment_by_category = function (self, category)
 			local slot_name = slot.name
 			local item = BackendUtils.get_loadout_item(career_name, slot_name, self.is_bot)
 			local item_data
+			local item_name = self.initial_inventory[slot_name]
+			local backend_id
 
 			if item then
 				item_data = table.clone(item.data)
-				item_data.backend_id = item.backend_id
+				backend_id = item.backend_id
+				item_data.backend_id = backend_id
 			else
-				local item_name = self.initial_inventory[slot_name]
-
 				item_data = rawget(ItemMasterList, item_name)
 
 				if not item_data then
 					if slot.stored_in_backend then
-						local backend_id = BackendUtils.get_loadout_item_id(career_name, slot_name, self.is_bot)
+						backend_id = BackendUtils.get_loadout_item_id(career_name, slot_name, self.is_bot)
+
 						local backend_id_string = backend_id and tostring(backend_id) or "No backend ID"
 						local backend_items = Managers.backend:get_interface("items")
 						local item_string = "No item"

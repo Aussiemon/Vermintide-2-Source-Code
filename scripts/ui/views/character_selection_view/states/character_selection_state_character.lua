@@ -1488,6 +1488,12 @@ CharacterSelectionStateCharacter._handle_input = function (self, dt, t)
 					return
 				end
 
+				local game_session = Network.game_session()
+
+				if not game_session then
+					return
+				end
+
 				self:_change_profile(self._selected_profile_index, self._selected_career_index)
 				self.parent:set_input_blocked(true)
 			else

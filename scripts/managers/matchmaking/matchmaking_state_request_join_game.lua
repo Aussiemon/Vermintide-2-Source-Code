@@ -278,7 +278,9 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 
 			local friend_join = false
 
-			if IS_PS4 then
+			if IS_WINDOWS or IS_LINUX then
+				friend_join = not not self.state_context.friend_join
+			elseif IS_PS4 then
 				friend_join = not not self.state_context.friend_join
 			end
 
@@ -312,6 +314,8 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 				mm_printf("Successfully joined game after %.2f seconds: lobby_id=%s host_id:%s", join_time, lobby_id, host_name)
 
 				return self:_join_game_success(t)
+			elseif game_reply == "custom_lobby_ok" then
+				return self:_try_friend_join_custom_lobby()
 			else
 				mm_printf_force("Failed to join game due to host responding '%s'. lobby_id=%s, host_id:%s", game_reply, lobby_id, host_name)
 
@@ -337,6 +341,26 @@ MatchmakingStateRequestJoinGame._gather_dlc_ids = function (self)
 	end
 
 	return unlocked_dlcs
+end
+
+MatchmakingStateRequestJoinGame._try_friend_join_custom_lobby = function (self)
+	local new_state = MatchmakingStateIdle
+	local ok, is_allowed_to_join = Managers.mechanism:mechanism_try_call("can_join_custom_lobby")
+	local status_message
+
+	if ok and is_allowed_to_join then
+		new_state = MatchmakingStateReserveSlotsPlayerHosted
+	else
+		status_message = "vs_player_hosted_lobby_wrong_mechanism_error"
+	end
+
+	if status_message then
+		Managers.matchmaking:send_system_chat_message(status_message)
+	end
+
+	self.state_context.join_lobby_data = self._join_lobby_data
+
+	return new_state, self.state_context
 end
 
 MatchmakingStateRequestJoinGame._join_game_success = function (self, t)

@@ -480,7 +480,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"spawn_at_raw",
-			breed_name = "chaos_marauder",
+			breed_name = "chaos_raider",
 			spawner_id = "forest_chaos_prisoners_guards_spawn_04a",
 		},
 		{

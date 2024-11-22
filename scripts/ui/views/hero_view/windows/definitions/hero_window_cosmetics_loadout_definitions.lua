@@ -571,7 +571,7 @@ end
 
 local widgets = {
 	loadout_background = UIWidgets.create_background("loadout_background", scenegraph_definition.loadout_background.size, "crafting_bg_top"),
-	loadout_grid = UIWidgets.create_loadout_grid("loadout_grid", scenegraph_definition.loadout_grid.size, 3, loadout_grid_spacing, true),
+	loadout_grid = UIWidgets.create_loadout_grid("loadout_grid", scenegraph_definition.loadout_grid.size, 4, loadout_grid_spacing, true),
 	loadout_divider = create_window_divider("loadout_divider", scenegraph_definition.loadout_divider.size),
 }
 local animation_definitions = {

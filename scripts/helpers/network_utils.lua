@@ -82,9 +82,10 @@ local peer_left_ignored_states = table.set({
 
 NetworkUtils.announce_chat_peer_left = function (peer_id, lobby)
 	local matchmaking_manager = Managers.matchmaking
-	local matchmaking_state = matchmaking_manager:state()
+	local matchmaking_state = matchmaking_manager and matchmaking_manager:state()
+	local matchmaking_state_name = matchmaking_state and matchmaking_state.NAME
 
-	if peer_left_ignored_states[matchmaking_state] then
+	if peer_left_ignored_states[matchmaking_state_name] then
 		return
 	end
 

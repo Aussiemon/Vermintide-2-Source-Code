@@ -68,8 +68,6 @@ dofile("scripts/settings/breeds/breed_chaos_exalted_sorcerer")
 dofile("scripts/settings/breeds/breed_chaos_zombie")
 dofile("scripts/settings/breeds/breed_chaos_skeleton")
 dofile("scripts/settings/breeds/breed_pet_skeleton")
-dofile("scripts/settings/breeds/breed_human_pleb")
-dofile("scripts/settings/breeds/breed_human_soldier")
 dofile("scripts/settings/breeds/breed_critters")
 dofile("scripts/settings/breeds/breed_training_dummy")
 DLCUtils.dofile_list("breeds")
@@ -80,7 +78,6 @@ BEASTMEN = {}
 UNDEAD = {}
 CRITTER = {}
 ELITES = {}
-HUMAN = {}
 
 local DEFAULT_NAVTAG_LAYERS = {
 	barrel_explosion = 10,
@@ -337,8 +334,6 @@ for name, breed in pairs(Breeds) do
 		UNDEAD[breed.name] = true
 	elseif breed.race == "critter" then
 		CRITTER[breed.name] = true
-	elseif breed.race == "human" then
-		HUMAN[breed.name] = true
 	elseif breed.race == "dummy" then
 		-- Nothing
 	elseif breed.race then

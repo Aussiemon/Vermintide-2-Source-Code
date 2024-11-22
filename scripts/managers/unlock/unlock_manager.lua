@@ -470,7 +470,9 @@ UnlockManager.get_installed_dlcs = function (self)
 	local installed_unlocks = {}
 
 	for unlock_name, unlock in pairs(unlocks) do
-		if unlock:installed() then
+		local installed = unlock:installed()
+
+		if installed then
 			installed_unlocks[#installed_unlocks + 1] = unlock_name
 		end
 	end
@@ -719,7 +721,7 @@ UnlockManager._update_backend_unlocks = function (self, t)
 				end
 			end
 
-			if HAS_STEAM then
+			if HAS_STEAM or Development.parameter("use_lan_backend") then
 				local dlcs_interface = Managers.backend:get_interface("dlcs")
 				local owned_dlcs = dlcs_interface:get_owned_dlcs()
 				local platform_dlcs = dlcs_interface:get_platform_dlcs()
@@ -868,12 +870,14 @@ UnlockManager._handle_unseen_rewards = function (self)
 		end
 
 		if item then
-			local source = reward.rewarded_from or "lb_unknown"
-			local item_list = items_by_source[source]
+			local rewarded_from = reward.rewarded_from
+			local _, dlc_data = table.find_by_key(UISettings.dlc_order_data, "dlc", rewarded_from)
+			local dlc_display_name = dlc_data and dlc_data.display_name or "lb_unknown"
+			local item_list = items_by_source[dlc_display_name]
 
 			if not item_list then
 				item_list = {}
-				items_by_source[source] = item_list
+				items_by_source[dlc_display_name] = item_list
 			end
 
 			item_list[#item_list + 1] = item
@@ -884,13 +888,13 @@ UnlockManager._handle_unseen_rewards = function (self)
 	end
 
 	for i, dlc_data in ipairs(UISettings.dlc_order_data) do
-		local dlc_name = dlc_data.dlc
-		local item_list = items_by_source[dlc_name]
+		local dlc_display_name = dlc_data.display_name
+		local item_list = items_by_source[dlc_display_name]
 
 		if item_list then
-			self:_add_reward(item_list, dlc_data.display_name)
+			self:_add_reward(item_list, dlc_display_name)
 
-			items_by_source[dlc_name] = nil
+			items_by_source[dlc_display_name] = nil
 		end
 	end
 
@@ -927,4 +931,8 @@ UnlockManager._has_new_dlc = function (self)
 	Managers.save:auto_save(SaveFileName, SaveData)
 
 	return false
+end
+
+UnlockManager.is_waiting_for_gift_popup_ui = function (self)
+	return self._state == "wait_for_rewards"
 end

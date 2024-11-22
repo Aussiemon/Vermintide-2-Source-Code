@@ -247,6 +247,20 @@ local scenegraph_definition = {
 			50,
 		},
 	},
+	details_players = {
+		horizontal_alignment = "center",
+		parent = "details_level_name",
+		vertical_alignment = "bottom",
+		position = {
+			0,
+			-60,
+			-1,
+		},
+		size = {
+			520,
+			170,
+		},
+	},
 	weave_details_base = {
 		horizontal_alignment = "left",
 		parent = "lobby_browser_frame",
@@ -1891,11 +1905,11 @@ local function create_filter_frame(scenegraph_id)
 			filter_hotspot_3 = {},
 			filter_hotspot_4 = {},
 			filter_hotspot_5 = {},
-			game_type_id = string.upper(Localize("lb_game_type")),
-			mission_id = string.upper(Localize("lb_mission")),
-			difficulty_id = string.upper(Localize("lb_difficulty")),
-			show_lobbies_id = string.upper(Localize("lb_show_lobbies")),
-			distance_id = string.upper(Localize("lb_search_distance")),
+			game_type_id = Utf8.upper(Localize("lb_game_type")),
+			mission_id = Utf8.upper(Localize("lb_mission")),
+			difficulty_id = Utf8.upper(Localize("lb_difficulty")),
+			show_lobbies_id = Utf8.upper(Localize("lb_show_lobbies")),
+			distance_id = Utf8.upper(Localize("lb_search_distance")),
 		},
 		style = {
 			info_bar = {
@@ -3519,6 +3533,12 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 			level_image = "any_small_image"
 			selected_level_name = Localize("random_level")
 		end
+
+		if is_versus_custom_game then
+			difficulty = Localize("lb_game_type_versus_custom_game")
+		else
+			difficulty = Localize("carousel_keep_info")
+		end
 	elseif selected_mission_id then
 		local level_settings = LevelSettings[selected_mission_id]
 
@@ -4667,6 +4687,103 @@ local function create_objective(scenegraph_id, size)
 	}
 end
 
+local function create_versus_summary(scenegraph_id)
+	local widget = {
+		scenegraph_id = scenegraph_id,
+		element = {
+			passes = {
+				{
+					pass_type = "text",
+					style_id = "team_1_name",
+					text_id = "team_1_name",
+				},
+				{
+					pass_type = "text",
+					style_id = "team_2_name",
+					text_id = "team_2_name",
+				},
+			},
+		},
+		content = {
+			team_1_name = "vs_team_name_1",
+			team_2_name = "vs_team_name_2",
+		},
+		style = {
+			team_1_name = {
+				font_size = 22,
+				font_type = "hell_shark",
+				horizontal_alignment = "left",
+				localize = true,
+				upper_case = true,
+				vertical_alignment = "top",
+				text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				offset = {
+					50,
+					0,
+					2,
+				},
+			},
+			team_2_name = {
+				font_size = 22,
+				font_type = "hell_shark",
+				horizontal_alignment = "right",
+				localize = true,
+				upper_case = true,
+				vertical_alignment = "top",
+				text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				offset = {
+					-50,
+					0,
+					2,
+				},
+			},
+		},
+	}
+	local passes = widget.element.passes
+	local content = widget.content
+	local style = widget.style
+
+	for party_id = 1, 2 do
+		local x_dir, horizontal_alignment = 1, "left"
+
+		if party_id == 2 then
+			x_dir, horizontal_alignment = -1, "right"
+		end
+
+		for player_id = 1, 4 do
+			local id = string.format("player_%d_%d", party_id, player_id)
+
+			passes[#passes + 1] = {
+				pass_type = "text",
+				text_id = id,
+				style_id = id,
+			}
+			content[id] = "---"
+			style[id] = {
+				dynamic_font_size = true,
+				font_size = 22,
+				font_type = "arial",
+				localize = false,
+				upper_case = false,
+				vertical_alignment = "top",
+				horizontal_alignment = horizontal_alignment,
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				offset = {
+					50 * x_dir,
+					0 - 27 * player_id,
+					2,
+				},
+				area_size = {
+					205,
+					25,
+				},
+			}
+		end
+	end
+
+	return widget
+end
+
 local lobby_browser_description_style = {
 	dynamic_font_size = true,
 	font_size = 50,
@@ -4898,6 +5015,14 @@ local weave_details_widget_definition = {
 	locked_reason = UIWidgets.create_simple_text("tutorial_no_text", "weave_details_locked_reason", nil, nil, locked_reason_style),
 	details_information = create_details_information("weave_details_level_info", "weave_game_type", "weave_status"),
 }
+local versus_details_widget_definition = {
+	level_image_frame = UIWidgets.create_simple_texture("map_frame_00", "details_level_frame"),
+	level_image = UIWidgets.create_simple_texture("level_image_any", "details_level_image"),
+	level_name = UIWidgets.create_simple_text(" ", "details_level_name", nil, nil, level_name_style),
+	locked_reason = UIWidgets.create_simple_text("tutorial_no_text", "details_locked_reason", nil, nil, locked_reason_style),
+	details_information = create_details_information("details_level_info", "details_game_type", "details_status"),
+	players = create_versus_summary("details_players"),
+}
 
 return {
 	animation_definitions = animation_definitions,
@@ -4906,6 +5031,7 @@ return {
 	adventure_details_widget_definition = adventure_details_widget_definition,
 	weave_details_widget_definition = weave_details_widget_definition,
 	deus_details_widget_definition = deus_details_widget_definition,
+	versus_details_widget_definition = versus_details_widget_definition,
 	create_lobby_entry_func = create_lobby_entry_func,
 	create_empty_lobby_entry_func = create_empty_lobby_entry_func,
 	create_unavailable_lobby_entry_func = create_unavailable_lobby_entry_func,
@@ -4916,5 +5042,4 @@ return {
 	create_distance_filter_entry_func = create_distance_filter_entry_func,
 	create_level_filter_scroller_func = create_level_filter_scroller_func,
 	element_settings = element_settings,
-	widget_definition = widget_definition,
 }

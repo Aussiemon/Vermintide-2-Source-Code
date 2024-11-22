@@ -188,7 +188,7 @@ end
 
 BackendInterfaceTalentsPlayfab._setup_default_overrides = function (self)
 	local mechanism_name = Managers.mechanism:current_mechanism_name()
-	local loadout_selection = PlayerData.loadout_selection and PlayerData.loadout_selection[mechanism_name]
+	local loadout_selection = PlayerData.loadout_selection and PlayerData.loadout_selection[mechanism_name] or {}
 
 	table.clear(self._default_talents_overrides)
 
@@ -279,7 +279,12 @@ BackendInterfaceTalentsPlayfab.get_talent_ids = function (self, career_name, opt
 	local talent_ids = {}
 	local game_mode_key = Managers.state.game_mode and Managers.state.game_mode:game_mode_key()
 	local bot_loadout_allowed = InventorySettings.bot_loadout_allowed_game_modes[game_mode_key]
-	local talents = bot_loadout_allowed and is_bot and self:get_bot_talents(career_name) or optional_talents or self:get_talents(career_name)
+	local default_loadouts_allowed = InventorySettings.default_loadout_allowed_game_modes[game_mode_key]
+	local bot_talents = bot_loadout_allowed and self:get_bot_talents(career_name)
+	local default_talent_sets = default_loadouts_allowed and self:get_default_talents(career_name)
+	local default_talents = default_loadouts_allowed and default_talent_sets and default_talent_sets[1]
+	local base_talents = self:get_talents(career_name)
+	local talents = bot_loadout_allowed and is_bot and bot_talents or is_bot and default_loadouts_allowed and default_talents or optional_talents or base_talents
 
 	if talents then
 		for i = 1, #talents do

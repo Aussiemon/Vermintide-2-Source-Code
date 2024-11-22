@@ -387,11 +387,12 @@ BackendInterfacePeddlerPlayFab._refresh_steam_item_prices_cb = function (self, e
 					if contains then
 						cloned_master_item.bundle_contains = contains
 						cloned_master_item.discount = discount
-						bundles[#bundles + 1] = cloned_master_item
 					else
 						Crashify.print_exception("[BackendInterfacePeddlerPlayFab] _refresh_steam_item_prices_cb, bundle_contains table is empty. steam_itemdef_id: %s", tostring(steam_itemdefid))
-						print(table.dump(cloned_master_item), "MISSING BUNDLE CONTAINS", 2)
+						print(table.dump(cloned_master_item, "MISSING BUNDLE CONTAINS", 2))
 					end
+
+					bundles[#bundles + 1] = cloned_master_item
 				end
 
 				peddler_stock[steam_stock_index] = {

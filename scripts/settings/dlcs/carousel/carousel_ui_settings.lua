@@ -225,7 +225,7 @@ settings.start_game_layout_console_generic_inputs = {
 			{
 				description_text = "input_description_navigate",
 				ignore_keybinding = true,
-				input_action = "d_vertical",
+				input_action = "left_stick",
 				priority = 1,
 			},
 			{
@@ -239,9 +239,14 @@ settings.start_game_layout_console_generic_inputs = {
 				priority = 3,
 			},
 			{
+				description_text = "input_description_cancel",
+				input_action = "cancel_matchmaking",
+				priority = 4,
+			},
+			{
 				description_text = "input_description_close",
 				input_action = "back",
-				priority = 4,
+				priority = 5,
 			},
 		},
 	},
@@ -343,6 +348,7 @@ settings.start_game_window_layout_console = {
 			panel_sorting = 20,
 			sound_event_enter = "Play_vs_hud_play_menu_category",
 			windows = {
+				versus_additional_custom_settings = 4,
 				versus_background = 2,
 				versus_custom_game = 3,
 				versus_panel = 1,

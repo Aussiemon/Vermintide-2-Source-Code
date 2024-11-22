@@ -714,7 +714,7 @@ return function ()
 				"nwd_shadow_curse_arena_mid_conversation_ten_dummy_done",
 			},
 			{
-				"query_context",
+				"user_context",
 				"player_profile",
 				OP.EQ,
 				"bright_wizard",

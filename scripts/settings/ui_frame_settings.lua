@@ -1233,4 +1233,46 @@ UIFrameSettings = {
 			},
 		},
 	},
+	pactsworn_frame_01 = {
+		texture = "pactsworn_frame_iron",
+		texture_size = {
+			148,
+			148,
+		},
+		texture_sizes = {
+			corner = {
+				0,
+				0,
+			},
+			vertical = {
+				0,
+				0,
+			},
+			horizontal = {
+				0,
+				0,
+			},
+		},
+	},
+	pactsworn_frame_02 = {
+		texture = "pactsworn_frame_gold",
+		texture_size = {
+			148,
+			148,
+		},
+		texture_sizes = {
+			corner = {
+				0,
+				0,
+			},
+			vertical = {
+				0,
+				0,
+			},
+			horizontal = {
+				0,
+				0,
+			},
+		},
+	},
 }

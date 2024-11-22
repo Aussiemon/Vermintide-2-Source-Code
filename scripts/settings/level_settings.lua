@@ -22,6 +22,12 @@ require("scripts/settings/dlc_settings")
 DLCUtils.dofile("level_settings")
 
 LevelSettingsDefaultStartLevel = Development.parameter("gdc") and "magnus" or "inn_level"
+DummyAnyLevel = {
+	display_name = "map_screen_quickplay_button",
+	level_id = "any",
+	level_image = "level_image_any",
+	small_level_image = "any_small_image",
+}
 LevelSettings.editor_level = {
 	ambient_sound_event = "silent_default_world_sound",
 	conflict_settings = "level_editor",

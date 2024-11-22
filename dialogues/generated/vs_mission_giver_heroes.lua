@@ -544,7 +544,7 @@ return function ()
 			},
 		},
 		nde_vs_early_loss_a = {
-			category = "npc_talk",
+			category = "cut_scene_interrupt_three",
 			database = "vs_mission_giver_heroes",
 			dialogue_animations_n = 3,
 			face_animations_n = 3,
@@ -579,7 +579,7 @@ return function ()
 			},
 		},
 		nde_vs_early_win_a = {
-			category = "npc_talk",
+			category = "cut_scene_interrupt_three",
 			database = "vs_mission_giver_heroes",
 			dialogue_animations_n = 6,
 			face_animations_n = 6,
@@ -715,7 +715,7 @@ return function ()
 			},
 		},
 		nde_vs_heroes_team_wipe_a = {
-			category = "npc_talk",
+			category = "cut_scene_interrupt_three",
 			database = "vs_mission_giver_heroes",
 			dialogue_animations_n = 5,
 			face_animations_n = 5,
@@ -760,7 +760,7 @@ return function ()
 			},
 		},
 		nde_vs_match_draw_a = {
-			category = "npc_talk",
+			category = "cut_scene_interrupt_three",
 			database = "vs_mission_giver_heroes",
 			dialogue_animations_n = 3,
 			face_animations_n = 3,
@@ -1006,7 +1006,7 @@ return function ()
 			},
 		},
 		nde_vs_reached_safe_room_a = {
-			category = "npc_talk",
+			category = "cut_scene_interrupt_three",
 			database = "vs_mission_giver_heroes",
 			dialogue_animations_n = 5,
 			face_animations_n = 5,
@@ -1051,7 +1051,7 @@ return function ()
 			},
 		},
 		nde_vs_reached_waystone_a = {
-			category = "npc_talk",
+			category = "cut_scene_interrupt_three",
 			database = "vs_mission_giver_heroes",
 			dialogue_animations_n = 3,
 			face_animations_n = 3,

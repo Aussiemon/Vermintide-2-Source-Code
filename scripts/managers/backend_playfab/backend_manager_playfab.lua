@@ -864,7 +864,7 @@ BackendManagerPlayFab.available = function (self)
 	local settings = GameSettingsDevelopment.backend_settings
 
 	if IS_WINDOWS or IS_LINUX then
-		return rawget(_G, "Steam") ~= nil or DEDICATED_SERVER
+		return rawget(_G, "Steam") ~= nil or DEDICATED_SERVER or Development.parameter("use_lan_backend")
 	elseif IS_XB1 then
 		return true
 	elseif IS_PS4 then

@@ -1,7 +1,6 @@
 ﻿-- chunkname: @scripts/managers/debug/debug.lua
 
-local font_size = 26
-local font = "arial"
+local font, font_size = "arial", 26
 local font_mtrl = "materials/fonts/" .. font
 
 Debug = Debug or {}

@@ -14,7 +14,6 @@ BulldozerPlayer.init = function (self, network_manager, input_source, viewport_n
 	local peer_id = Network.peer_id()
 
 	self.peer_id = peer_id
-	self._debug_name = "Local #" .. peer_id:sub(-3, -1)
 	self._local_player_id = local_player_id
 	self._unique_id = unique_id
 	self._ui_id = ui_id
@@ -509,26 +508,20 @@ BulldozerPlayer.name = function (self)
 		return self._cached_name
 	end
 
-	local name = PlayerUtils.player_name(self:network_id(), Managers.state.network:lobby())
+	local name = PlayerUtils.player_name(self.peer_id, Managers.state.network:lobby())
+	local clan_tag_id = Application.user_setting("clan_tag")
 
-	if name then
-		local clan_tag = ""
-		local clan_tag_id = Application.user_setting("clan_tag")
+	if clan_tag_id and clan_tag_id ~= "0" then
+		local clan_tag_string = tostring(Clans.clan_tag(clan_tag_id))
 
-		if clan_tag_id and clan_tag_id ~= "0" then
-			local clan_tag_string = tostring(Clans.clan_tag(clan_tag_id))
-
-			if clan_tag_string ~= "" then
-				clan_tag = clan_tag_string .. "|"
-			end
+		if clan_tag_string ~= "" then
+			name = clan_tag_string .. "|" .. name
 		end
-
-		self._cached_name = clan_tag .. name
-
-		return name
 	end
 
-	return self._debug_name
+	self._cached_name = name
+
+	return name
 end
 
 BulldozerPlayer.cached_name = function (self)

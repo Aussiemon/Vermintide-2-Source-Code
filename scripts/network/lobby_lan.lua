@@ -131,6 +131,18 @@ LobbyInternal.lobby_id = function (lobby)
 end
 
 LobbyInternal.is_friend = function (peer_id)
+	local Steam = rawget(_G, "Steam") or stingray.Steam
+
+	if Steam and Steam.user_id() == peer_id then
+		return true
+	end
+
+	local Friends = rawget(_G, "Friends") or stingray.Friends
+
+	if Friends and Friends.in_category(peer_id, Friends.FRIEND_FLAG) then
+		return true
+	end
+
 	return false
 end
 

@@ -77,6 +77,12 @@ HandbookLogic.load_texture_package = function (self, texture_path, widget)
 end
 
 HandbookLogic._unload_packages = function (self)
+	if self._reusable_material then
+		Material.set_texture(self._reusable_material, "diffuse_map", UISettings.transparent_placeholder_texture)
+
+		self._reusable_material = nil
+	end
+
 	local reference_name = self._reference_name
 
 	for package_name in pairs(self._loaded_packages) do

@@ -56,6 +56,7 @@ ObjectiveSystem.init = function (self, entity_system_creation_context, system_na
 	self._group_by_name = {}
 	self._children_by_name = {}
 	self._extension_by_sync_object = {}
+	self._pending_sync_objects = {}
 	self._data_by_name = {}
 	self._sync_object_by_name = {}
 	self._total_num_main_objectives = 0
@@ -104,9 +105,13 @@ ObjectiveSystem.game_object_created = function (self, game_object_id)
 	local objective_name = NetworkLookup.objective_names[objective_name_id]
 	local extension = self._objective_by_name[objective_name]
 
-	extension:sync_objective(game_object_id, game_session)
+	if extension then
+		extension:sync_objective(game_object_id, game_session)
 
-	self._extension_by_sync_object[game_object_id] = extension
+		self._extension_by_sync_object[game_object_id] = extension
+	else
+		self._pending_sync_objects[objective_name] = game_object_id
+	end
 end
 
 ObjectiveSystem.deactivate_all_objectives = function (self)
@@ -301,6 +306,13 @@ ObjectiveSystem._activate_objective = function (self, objective_name)
 		end
 
 		local objective_extension = self._objective_by_name[objective_name]
+		local go_id = self._pending_sync_objects[objective_name]
+
+		if go_id then
+			objective_extension:sync_objective(go_id)
+
+			self._pending_sync_objects[objective_name] = nil
+		end
 
 		if objective_extension.activate then
 			objective_extension:activate()

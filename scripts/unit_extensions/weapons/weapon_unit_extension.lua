@@ -897,7 +897,7 @@ WeaponUnitExtension.update = function (self, unit, input, dt, context, t)
 		local weapon_state = self._synced_weapon_states[self._synced_weapon_state]
 
 		if weapon_state.update then
-			weapon_state:update(self.owner_unit, self.unit, self._synced_weapon_state_data, self:_is_local_player(), self.world, dt)
+			weapon_state:update(self.owner_unit, self.unit, self._synced_weapon_state_data, self:_is_local_player(), self.world, dt, self)
 		end
 	end
 end
@@ -1421,7 +1421,7 @@ WeaponUnitExtension.on_unwield = function (self, hand_name)
 	end
 end
 
-WeaponUnitExtension.change_synced_state = function (self, state_name)
+WeaponUnitExtension.change_synced_state = function (self, state_name, skip_sync)
 	if self._synced_weapon_state then
 		local weapon_state = self._synced_weapon_states[self._synced_weapon_state]
 
@@ -1441,6 +1441,22 @@ WeaponUnitExtension.change_synced_state = function (self, state_name)
 
 		if weapon_state.enter then
 			weapon_state:enter(self.owner_unit, self.unit, self._synced_weapon_state_data, self:_is_local_player(), self.world)
+		end
+	end
+
+	if not skip_sync then
+		local network_manager = Managers.state.network
+
+		if network_manager then
+			local network_transmit = network_manager.network_transmit
+			local owner_unit_id = Managers.state.unit_storage:go_id(self.owner_unit)
+			local state_id = NetworkLookup.weapon_synced_states[state_name or "n/a"]
+
+			if self.is_server then
+				network_transmit:send_rpc_clients("rpc_change_synced_weapon_state", owner_unit_id, state_id)
+			else
+				network_transmit:send_rpc_server("rpc_change_synced_weapon_state", owner_unit_id, state_id)
+			end
 		end
 	end
 end

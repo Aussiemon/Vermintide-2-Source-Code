@@ -148,29 +148,11 @@ StartGameWindowVersusCustomGame._update_can_play = function (self)
 	end
 end
 
-StartGameWindowVersusCustomGame._is_button_hover_enter = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	return hotspot.on_hover_enter
-end
-
-StartGameWindowVersusCustomGame._is_button_pressed = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	if hotspot.on_release then
-		hotspot.on_release = false
-
-		return true
-	end
-end
-
 StartGameWindowVersusCustomGame._handle_input = function (self, dt, t)
 	local parent = self._parent
 	local input_service = parent:window_input_service()
 
-	if input_service:get(SELECTION_INPUT) then
+	if input_service:get(SELECTION_INPUT, true) then
 		self:_option_selected(self._input_index, t)
 	end
 
@@ -193,27 +175,32 @@ StartGameWindowVersusCustomGame._handle_input = function (self, dt, t)
 		local widget = widgets_by_name[widget_name]
 		local is_selected = widget.content.is_selected
 
-		if not is_selected and self:_is_button_hover_enter(widget) then
+		if not is_selected and UIUtils.is_button_hover_enter(widget) then
 			self:_handle_new_selection(i)
 		end
 
-		if self:_is_button_pressed(widget) then
+		if UIUtils.is_button_pressed(widget) then
 			self:_option_selected(self._input_index, t)
 		end
 	end
 
 	if self:_can_play() then
-		if self:_is_button_hover_enter(widgets_by_name.play_button) then
+		if UIUtils.is_button_hover_enter(widgets_by_name.play_button) then
 			self._parent:play_sound("Play_hud_hover")
 		end
 
-		if input_service:get(START_GAME_INPUT) or self:_is_button_pressed(widgets_by_name.play_button) then
+		if input_service:get(START_GAME_INPUT) or UIUtils.is_button_pressed(widgets_by_name.play_button) then
+			self._play_button_pressed = true
 			self._play_button_pressed = true
 
-			local custom_game_settings = parent:get_custom_game_settings(self._mechanism_name) or parent:get_custom_game_settings("adventure")
-
-			parent:_play()
+			self:_play()
 		end
+	end
+
+	local consume = true
+
+	if input_service:get("right_stick_press", consume) and self._is_online then
+		parent:set_window_input_focus("versus_additional_custom_settings")
 	end
 end
 
@@ -237,20 +224,22 @@ end
 StartGameWindowVersusCustomGame._update_mission_option = function (self)
 	local parent = self._parent
 	local selected_level_id = parent:get_selected_level_id()
-
-	if not selected_level_id then
-		return
-	end
-
-	local level_settings = LevelSettings[selected_level_id]
-	local display_name = level_settings.display_name
-	local icon_texture = level_settings.level_image
-	local completed_difficulty_index = 0
 	local mission_widget = self._widgets_by_name.mission_setting
+	local completed_difficulty_index = 0
 
-	mission_widget.content.input_text = Localize(display_name)
-	mission_widget.content.icon_texture = icon_texture
-	mission_widget.content.icon_frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
+	if selected_level_id then
+		local level_settings = LevelSettings[selected_level_id]
+		local display_name = level_settings.display_name
+		local icon_texture = level_settings.level_image
+
+		mission_widget.content.input_text = Localize(display_name)
+		mission_widget.content.icon_texture = icon_texture
+		mission_widget.content.icon_frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
+	else
+		mission_widget.content.input_text = Localize("map_screen_quickplay_button")
+		mission_widget.content.icon_texture = "level_image_any"
+		mission_widget.content.icon_frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
+	end
 end
 
 StartGameWindowVersusCustomGame._update_difficulty_option = function (self)
@@ -273,6 +262,9 @@ StartGameWindowVersusCustomGame._update_difficulty_option = function (self)
 end
 
 StartGameWindowVersusCustomGame._play = function (self)
+	self._parent:play_sound("Play_vs_hud_play_menu_host_lobby")
+	self._parent:set_layout_by_name("versus_player_hosted_lobby")
+
 	local mission_id = self._parent:get_selected_level_id()
 	local is_private = self._parent:is_private_option_enabled()
 	local lobby = Managers.state.network:lobby()
@@ -306,9 +298,7 @@ StartGameWindowVersusCustomGame._option_selected = function (self, input_index, 
 	elseif selected_widget_name == "play_button" then
 		self._play_button_pressed = true
 
-		self._parent:play_sound("Play_vs_hud_play_menu_host_lobby")
 		self:_play()
-		self._parent:set_layout_by_name("versus_player_hosted_lobby")
 	else
 		ferror("Unknown selector_input_definition: %s", selected_widget_name)
 	end

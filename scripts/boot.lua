@@ -327,12 +327,6 @@ Boot.booting_update = function (self, dt)
 		Managers.package:init()
 		init_development_parameters()
 
-		local window_title = Development.parameter("window-title")
-
-		if window_title and IS_WINDOWS then
-			Window.set_title(window_title)
-		end
-
 		for dlc_name, dlc in pairs(DLCSettings) do
 			local package_name = dlc.package_name
 

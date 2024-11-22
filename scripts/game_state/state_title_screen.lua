@@ -58,7 +58,7 @@ StateTitleScreen.on_enter = function (self, params)
 	}
 
 	for _, parameter in pairs(args) do
-		if parameter == "-auto-host-level" or parameter == "-auto-join" or parameter == "-skip-splash" or parameter == "-deus-auto-host" or true or loading_context.join_lobby_data or loading_context.offline_invite or parameter == "-weave-name" then
+		if parameter == "-auto-host-level" or parameter == "-auto-join" or parameter == "-skip-splash" or parameter == "-deus-auto-host" or parameter == "-vs-auto-search" or loading_context.join_lobby_data or loading_context.offline_invite or parameter == "-weave-name" then
 			self._auto_start = true
 
 			break
@@ -434,6 +434,7 @@ StateTitleScreen.on_exit = function (self, application_shutdown)
 		LobbyInternal.shutdown_client()
 	end
 
+	World.destroy_gui(self._world, self._gui)
 	ScriptWorld.destroy_viewport(self._world, self._viewport_name)
 	Managers.world:destroy_world(self._world)
 	Managers.popup:remove_input_manager(application_shutdown)

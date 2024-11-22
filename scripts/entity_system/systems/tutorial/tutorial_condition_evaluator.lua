@@ -165,6 +165,10 @@ TutorialConditions.is_versus_mechanism = function (ctx)
 	return ctx:get("current_mechanism_name") == "versus"
 end
 
+TutorialConditions.is_adventure_mechanism = function (ctx)
+	return ctx:get("current_mechanism_name") == "adventure"
+end
+
 TutorialConditionEvaluator = class(TutorialConditionEvaluator)
 
 TutorialConditionEvaluator.init = function (self)

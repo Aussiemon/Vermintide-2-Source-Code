@@ -183,7 +183,7 @@ return function ()
 				"shadow_curse_arrival_a",
 			},
 			{
-				"query_context",
+				"user_context",
 				"player_profile",
 				OP.EQ,
 				"bright_wizard",
@@ -370,7 +370,7 @@ return function ()
 				"shadow_curse_arrival_a",
 			},
 			{
-				"query_context",
+				"user_context",
 				"player_profile",
 				OP.EQ,
 				"dwarf_ranger",
@@ -644,7 +644,7 @@ return function ()
 				"shadow_curse_arrival_a",
 			},
 			{
-				"query_context",
+				"user_context",
 				"player_profile",
 				OP.EQ,
 				"empire_soldier",
@@ -831,7 +831,7 @@ return function ()
 				"shadow_curse_arrival_a",
 			},
 			{
-				"query_context",
+				"user_context",
 				"player_profile",
 				OP.EQ,
 				"wood_elf",
@@ -1105,7 +1105,7 @@ return function ()
 				"shadow_curse_arrival_a",
 			},
 			{
-				"query_context",
+				"user_context",
 				"player_profile",
 				OP.EQ,
 				"witch_hunter",

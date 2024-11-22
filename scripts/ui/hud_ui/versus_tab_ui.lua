@@ -140,6 +140,7 @@ VersusTabUI.update = function (self, dt, t)
 			self._opponent_party_id = opponent_party_id
 		end
 
+		self:_update_round_start_timer(dt, t)
 		self:_update_objectives(dt, t)
 		self:_update_score(party_id, opponent_party_id)
 		self:_update_animations(dt, t)
@@ -185,6 +186,8 @@ VersusTabUI._draw = function (self, dt)
 			UIRenderer.draw_widget(ui_renderer, widget)
 		end
 	end
+
+	render_settings.alpha_multiplier = alpha_multiplier
 
 	local custom_game_slots = self._custom_game_slots
 
@@ -235,8 +238,6 @@ VersusTabUI._draw = function (self, dt)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
-
-	render_settings.alpha_multiplier = alpha_multiplier
 end
 
 VersusTabUI._set_team_name = function (self, local_player_party_id, opponent_party_id)
@@ -1320,7 +1321,7 @@ VersusTabUI._update_round_start_timer = function (self, dt, t)
 	end
 
 	if self._countdown_timer and self._countdown_timer <= 0 then
-		self:_set_round_starting_text()
+		self:_on_round_started()
 	end
 end
 

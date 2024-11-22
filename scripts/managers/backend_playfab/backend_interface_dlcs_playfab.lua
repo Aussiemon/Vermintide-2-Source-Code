@@ -47,6 +47,24 @@ end
 
 BackendInterfaceDLCsPlayfab._update_owned_dlcs_cb = function (self, result)
 	local function_result = result.FunctionResult
+	local new_dlcs = function_result.new_dlcs
+	local revoked_dlcs = function_result.revoked_dlcs
+	local execute_logic = not script_data["eac-untrusted"] and (not new_dlcs or not revoked_dlcs or #new_dlcs > 0 or #revoked_dlcs > 0)
+
+	self._owner_dlcs_cb_data = table.shallow_copy(function_result)
+	self._owner_dlcs_cb_data.dlcs_dirty = HAS_STEAM and execute_logic
+
+	if execute_logic then
+		self:_execute_dlc_specific_logic()
+	else
+		self:_handle_owned_dlcs_data()
+
+		self._updating_dlc_ownership = false
+	end
+end
+
+BackendInterfaceDLCsPlayfab._handle_owned_dlcs_data = function (self)
+	local function_result = self._owner_dlcs_cb_data
 	local owned_dlcs = function_result.owned_dlcs
 	local platform_dlcs = function_result.platform_dlcs
 	local excluded_dlcs = function_result.excluded_dlcs
@@ -58,7 +76,7 @@ BackendInterfaceDLCsPlayfab._update_owned_dlcs_cb = function (self, result)
 
 	local unlock_manager = Managers.unlock
 
-	unlock_manager:set_excluded_dlcs(excluded_dlcs, owned_dlcs)
+	unlock_manager:set_excluded_dlcs(excluded_dlcs)
 	self._backend_mirror:set_owned_dlcs(owned_dlcs)
 	self._backend_mirror:set_platform_dlcs(platform_dlcs)
 	print("Finished Updating Owned DLCS")
@@ -85,14 +103,10 @@ BackendInterfaceDLCsPlayfab._update_owned_dlcs_cb = function (self, result)
 		end
 	end
 
-	if not script_data["eac-untrusted"] and (not new_dlcs or not revoked_dlcs or #new_dlcs > 0 or #revoked_dlcs > 0) then
-		self:_execute_dlc_specific_logic()
+	self._backend_mirror:update_filtered_dlc_data()
 
-		if HAS_STEAM then
-			self._backend_mirror:handle_new_dlcs(new_dlcs)
-		end
-	else
-		self._updating_dlc_ownership = false
+	if function_result.dlcs_dirty then
+		self._backend_mirror:handle_new_dlcs(new_dlcs)
 	end
 end
 
@@ -110,6 +124,9 @@ end
 BackendInterfaceDLCsPlayfab._execute_dlc_logic_cb = function (self, result)
 	local function_result = result.FunctionResult
 	local new_rewards = function_result.item_grant_results
+
+	self:_handle_owned_dlcs_data()
+
 	local unseen_rewards = self._backend_mirror:get_user_data("unseen_rewards")
 
 	unseen_rewards = unseen_rewards and cjson.decode(unseen_rewards) or {}

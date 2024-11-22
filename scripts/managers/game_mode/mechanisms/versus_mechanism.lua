@@ -322,17 +322,37 @@ end
 VersusMechanism.set_is_hosting_versus_custom_game = function (self, is_hosting)
 	self._is_hosting_custom_game = is_hosting
 
+	local mechanism_manager = Managers.mechanism
+	local game_mode_manager = Managers.state.game_mode
+	local game_mode = game_mode_manager and game_mode_manager:game_mode()
+	local game_mode_state
+
 	if is_hosting then
 		Managers.party:server_init_friend_parties(true)
+
+		game_mode_state = "custom_game_lobby"
 	else
 		Managers.party:server_clear_friend_parties()
 		self._slot_reservation_handler:shrink()
+
+		game_mode_state = "party_lobby"
 	end
 
-	if Managers.mechanism:is_server() then
+	if mechanism_manager:is_server() then
 		LobbySetup.update_network_options_max_members()
-		Managers.mechanism:update_lobby_max_members()
+		mechanism_manager:update_lobby_max_members()
+
+		if game_mode then
+			game_mode:change_game_mode_state(game_mode_state)
+		end
 	end
+end
+
+VersusMechanism.can_join_custom_lobby = function (self)
+	local game_mode_manager = Managers.state.game_mode
+	local game_mode_key = game_mode_manager and game_mode_manager:game_mode_key()
+
+	return game_mode_key == "inn_vs"
 end
 
 VersusMechanism.is_hosting_versus_custom_game = function (self)
@@ -1061,35 +1081,12 @@ VersusMechanism.using_player_hosted = function (self)
 	return self._using_player_hosted
 end
 
-local dummy_members_table = {}
+local function is_player_hosting()
+	local network_handler = Managers.mechanism:network_handler()
+	local server_peer_id = network_handler.server_peer_id
+	local server_has_player = Managers.player:player_from_peer_id(server_peer_id)
 
-local function register_chat_channel_for_party(channel_id, party_id)
-	local function member_func()
-		table.clear(dummy_members_table)
-
-		local reservation_handler = Managers.mechanism:get_slot_reservation_handler()
-
-		if reservation_handler.supports_syncing then
-			local peers = reservation_handler:peers_by_party(party_id)
-
-			table.append(dummy_members_table, peers)
-		else
-			local party = Managers.party:get_party(party_id)
-			local occupied_slots = party.occupied_slots
-
-			for i = 1, #occupied_slots do
-				local status = occupied_slots[i]
-
-				if status.is_player then
-					dummy_members_table[#dummy_members_table + 1] = status.peer_id
-				end
-			end
-		end
-
-		return dummy_members_table
-	end
-
-	Managers.chat:register_channel(channel_id, member_func)
+	return server_has_player
 end
 
 VersusMechanism.get_chat_channel = function (self, peer_id, alt_chat_input)
@@ -1101,7 +1098,15 @@ VersusMechanism.get_chat_channel = function (self, peer_id, alt_chat_input)
 		return 1, CHAT_MESSAGE_TARGETS.all.message_target
 	end
 
-	local _, party_id = Managers.party:get_party_from_player_id(peer_id, 1)
+	local party_id
+
+	if is_player_hosting() then
+		party_id = self:reserved_party_id_by_peer(peer_id)
+	else
+		local _
+
+		_, party_id = Managers.party:get_party_from_player_id(peer_id, 1)
+	end
 
 	if party_id == 1 then
 		return 2, CHAT_MESSAGE_TARGETS.team.message_target
@@ -1112,13 +1117,40 @@ VersusMechanism.get_chat_channel = function (self, peer_id, alt_chat_input)
 	end
 end
 
+local _members_list = {}
+
+VersusMechanism._get_chat_members = function (self, party_id)
+	table.clear(_members_list)
+
+	local reservation_handler = self._slot_reservation_handler
+
+	if is_player_hosting() then
+		local peers = reservation_handler:peers_by_party(party_id)
+
+		table.append(_members_list, peers)
+	else
+		local party = Managers.party:get_party(party_id)
+		local occupied_slots = party.occupied_slots
+
+		for i = 1, #occupied_slots do
+			local status = occupied_slots[i]
+
+			if status.is_player then
+				_members_list[#_members_list + 1] = status.peer_id
+			end
+		end
+	end
+
+	return _members_list
+end
+
 VersusMechanism.register_chats = function (self)
 	if self._message_targets_initiated or not Managers.chat then
 		return
 	end
 
-	register_chat_channel_for_party(2, 1)
-	register_chat_channel_for_party(3, 2)
+	Managers.chat:register_channel(2, callback(self, "_get_chat_members", 1))
+	Managers.chat:register_channel(3, callback(self, "_get_chat_members", 2))
 
 	for _, message_target_data in pairs(CHAT_MESSAGE_TARGETS) do
 		Managers.chat:add_message_target(message_target_data.message_target, message_target_data.message_target_type, message_target_data.message_target_key)

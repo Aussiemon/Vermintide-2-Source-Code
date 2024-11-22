@@ -742,7 +742,7 @@ return function ()
 	})
 	define_rule({
 		name = "vmg_vs_new_spawn_horde_a",
-		probability = 0.4,
+		probability = 0.3,
 		response = "vmg_vs_new_spawn_horde_a",
 		criterias = {
 			{
@@ -968,7 +968,7 @@ return function ()
 			},
 		},
 		vmg_vs_early_loss_a = {
-			category = "npc_talk",
+			category = "cut_scene_interrupt_three",
 			database = "vs_mission_giver_pactsworn",
 			dialogue_animations_n = 6,
 			face_animations_n = 6,
@@ -1018,7 +1018,7 @@ return function ()
 			},
 		},
 		vmg_vs_early_win_a = {
-			category = "npc_talk",
+			category = "cut_scene_interrupt_three",
 			database = "vs_mission_giver_pactsworn",
 			dialogue_animations_n = 3,
 			face_animations_n = 3,
@@ -1660,7 +1660,7 @@ return function ()
 			},
 		},
 		vmg_vs_heroes_reached_safe_room_a = {
-			category = "npc_talk",
+			category = "cut_scene_interrupt_three",
 			database = "vs_mission_giver_pactsworn",
 			dialogue_animations_n = 6,
 			face_animations_n = 6,
@@ -1710,7 +1710,7 @@ return function ()
 			},
 		},
 		vmg_vs_heroes_reached_waystone_a = {
-			category = "npc_talk",
+			category = "cut_scene_interrupt_three",
 			database = "vs_mission_giver_pactsworn",
 			dialogue_animations_n = 3,
 			face_animations_n = 3,
@@ -1745,7 +1745,7 @@ return function ()
 			},
 		},
 		vmg_vs_heroes_team_wipe_a = {
-			category = "npc_talk",
+			category = "cut_scene_interrupt_three",
 			database = "vs_mission_giver_pactsworn",
 			dialogue_animations_n = 8,
 			face_animations_n = 8,
@@ -1805,7 +1805,7 @@ return function ()
 			},
 		},
 		vmg_vs_match_draw_a = {
-			category = "npc_talk",
+			category = "cut_scene_interrupt_three",
 			database = "vs_mission_giver_pactsworn",
 			dialogue_animations_n = 3,
 			face_animations_n = 3,

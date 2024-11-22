@@ -10,7 +10,13 @@ MatchmakingStatePartyJoins.init = function (self, params)
 end
 
 MatchmakingStatePartyJoins.terminate = function (self)
-	Managers.lobby:destroy_lobby("matchmaking_join_lobby")
+	local lobby_manager = Managers.lobby
+
+	if lobby_manager:query_lobby("matchmaking_join_lobby") then
+		lobby_manager:destroy_lobby("matchmaking_join_lobby")
+	else
+		printf("[MatchmakingStatePartyJoins] WARNING: Lobby `matchmaking_join_lobby` does not exist. State is possibly inconsistent.")
+	end
 
 	self._state_context.reserved_lobby = nil
 end

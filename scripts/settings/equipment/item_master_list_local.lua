@@ -147,8 +147,8 @@ ItemMasterList.grenade_fire_02 = {
 }
 ItemMasterList.grenade_engineer = {
 	description = "description_grenade_frag_01",
-	gamepad_hud_icon = "hud_icon_bomb_01",
-	hud_icon = "hud_inventory_icon_bomb",
+	gamepad_hud_icon = "hud_icon_bomb_engineer",
+	hud_icon = "hud_inventory_icon_bomb_engineer",
 	inventory_icon = "icons_placeholder",
 	is_local = true,
 	item_type = "grenade",

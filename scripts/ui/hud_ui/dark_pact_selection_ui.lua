@@ -7,8 +7,8 @@ local definitions = local_require("scripts/ui/hud_ui/dark_pact_selection_ui_defi
 local ordered_pactsworn_slots = definitions.ordered_pactsworn_slots
 local create_selection_widget = definitions.create_selection_widget
 local scenegraph_definition = definitions.scenegraph_definition
-local PROTRAIT_WIDTH = 121.00000000000001
-local PORTRAIT_HEIGHT = 143
+local PROTRAIT_WIDTH = 148
+local PORTRAIT_HEIGHT = 148
 
 DarkPactSelectionUI = class(DarkPactSelectionUI, BaseComponent)
 DarkPactSelectionUI._input_service_name = "dark_pact_selection"
@@ -44,14 +44,7 @@ DarkPactSelectionUI.init = function (self, ingame_hud, ingame_ui_context)
 	self._wwise_world = Managers.world:wwise_world(self._world)
 	self._ui_animator = UIAnimator:new(self._ui_scenegraph, definitions.animation_definitions)
 	self._current_anim_id = 0
-	self._analog_data = {
-		cycle_t = 0,
-		hold_cycle_continuous = 0.35,
-		hold_cycle_delay = 0.8,
-		last_t = 0,
-		last_x = 0,
-	}
-	self._selected_index = 1
+	self._selected_index = 0
 	self._input_captured = false
 	self._pending_profile = false
 
@@ -60,7 +53,7 @@ DarkPactSelectionUI.init = function (self, ingame_hud, ingame_ui_context)
 	local input_manager = self._input_manager
 	local input_service_name = self._input_service_name
 
-	input_manager:create_input_service(input_service_name, "DarkPactSelectionUIKeymaps")
+	input_manager:create_input_service(input_service_name, "DarkPactSelectionUIKeymaps", "DarkPactSelectionUIFilters")
 	input_manager:map_device_to_service(input_service_name, "keyboard")
 	input_manager:map_device_to_service(input_service_name, "mouse")
 	input_manager:map_device_to_service(input_service_name, "gamepad")
@@ -269,22 +262,22 @@ DarkPactSelectionUI.update = function (self, dt, t, player)
 		return
 	end
 
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 
-	if self._gamepad_active ~= gamepad_active then
-		if gamepad_active then
-			self:_select(1)
-		else
+	if self._mouse_active ~= mouse_active then
+		if mouse_active then
 			self:_deselect()
+		else
+			self:_select(1)
 		end
 
-		self._gamepad_active = gamepad_active
+		self._mouse_active = mouse_active
 	end
 
-	if gamepad_active then
-		self:_handle_gamepad_input(dt, t, input_service, profile_requester)
-	else
+	if mouse_active then
 		self:_handle_mouse_input(dt, t, input_service, profile_requester)
+	else
+		self:_handle_gamepad_input(dt, t, input_service, profile_requester)
 	end
 end
 
@@ -318,6 +311,7 @@ DarkPactSelectionUI._handle_mouse_input = function (self, dt, t, input_service, 
 
 			self:_set_enemy_pick_text(display_name)
 			self:_set_enemy_pick_info_text(profile_name)
+			self:_deselect()
 		end
 	end
 
@@ -326,39 +320,17 @@ DarkPactSelectionUI._handle_mouse_input = function (self, dt, t, input_service, 
 end
 
 DarkPactSelectionUI._handle_gamepad_input = function (self, dt, t, input_service, profile_requester)
-	local analog_move = input_service:get("analog_input")
-	local analog_data = self._analog_data
-	local analog_swapped = analog_data.last_x * analog_move.x < 0
-	local analog_cycling = false
-
-	if analog_move.x ~= 0 then
-		if analog_data.last_x == 0 or analog_swapped then
-			analog_data.cycle_t = t + analog_data.hold_cycle_delay
-		end
-
-		if t > analog_data.cycle_t then
-			analog_data.cycle_t = t + analog_data.hold_cycle_continuous
-			analog_cycling = true
-		end
-	end
-
-	local analog_ready = analog_data.reset or analog_swapped or analog_cycling
-
-	analog_data.last_x = analog_move.x
-
-	if input_service:get("move_right") or analog_ready and analog_move.x > 0 then
-		local selected_index = math.index_wrapper(self._selected_index + 1, #self._selector_widgets)
+	if input_service:get("move_right") then
+		local selected_index = math.min(self._selected_index + 1, #self._selector_widgets)
 
 		self._ingame_ui:play_sound("menu_versus_pactsworn_hover")
 		self:_select(selected_index)
-	elseif input_service:get("move_left") or analog_ready and analog_move.x < 0 then
-		local selected_index = math.index_wrapper(self._selected_index - 1, #self._selector_widgets)
+	elseif input_service:get("move_left") then
+		local selected_index = math.max(self._selected_index - 1, 1)
 
 		self._ingame_ui:play_sound("menu_versus_pactsworn_hover")
 		self:_select(selected_index)
 	end
-
-	analog_data.reset = analog_move.x == 0
 
 	if input_service:get("confirm") then
 		self:_confirm_choice(self._selected_index, profile_requester)
@@ -388,6 +360,8 @@ DarkPactSelectionUI._deselect = function (self)
 	for _, widget in pairs(selector_widgets) do
 		widget.content.selected = false
 	end
+
+	self._selected_index = 0
 end
 
 DarkPactSelectionUI._confirm_choice = function (self, selected_index, profile_requester)
@@ -503,7 +477,7 @@ DarkPactSelectionUI._create_selection_widgets = function (self, enemy_role, care
 		local profile_name = careers[i]
 
 		widget.content.profile_name = profile_name
-		widget.content.profile_texture = CareerSettings[profile_name].picking_image or "icons_placeholder"
+		widget.content.profile_texture = CareerSettings[profile_name].picking_image_square or "icons_placeholder"
 		widget.content.input_key = "keyboard_" .. i
 		widget.offset[1] = (i - 1) * offset_x
 		selector_widgets[#selector_widgets + 1] = widget

@@ -932,6 +932,16 @@ local category_settings = {
 		},
 		icon = UISettings.slot_icons.portrait_frame,
 	},
+	{
+		hero_specific_filter = true,
+		item_filter = "item_type == weapon_pose",
+		name = "poses",
+		display_name = Localize("inventory_screen_poses_title"),
+		item_types = {
+			"weapon_pose",
+		},
+		icon = UISettings.slot_icons.pose,
+	},
 }
 local num_tabs = #category_settings
 local widgets = {

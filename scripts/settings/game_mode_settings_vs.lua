@@ -366,6 +366,7 @@ GameModeSettings.versus.allowed_hotjoin_states = table.set({
 	"pre_start_round_state",
 	"party_lobby",
 	"dedicated_server_waiting_for_fully_reserved",
+	"custom_game_lobby",
 })
 GameModeSettings.versus.disable_host_migration = true
 GameModeSettings.versus.shuffle_character_picking_order = "players_first"
@@ -557,13 +558,13 @@ GameModeSettings.versus.game_mode_states = {
 }
 GameModeSettings.versus.experience = {
 	challenges = 500,
-	complete_match = 500,
+	complete_match = 400,
 	first_win_of_the_day = 500,
-	hero_kills = 25,
+	hero_kills = 10,
 	lose_match = 0,
 	rounds_played = 200,
 	special_kills = 10,
-	win_match = 300,
+	win_match = 100,
 }
 GameModeSettings.versus.mission_givers = {
 	{
@@ -593,6 +594,7 @@ GameModeSettings.inn_vs.game_mode_states = {
 	"party_lobby",
 	"dedicated_server_waiting_for_fully_reserved",
 	"dedicated_server_starting_game",
+	"custom_game_lobby",
 }
 GameModeSettings.inn_vs.mission_givers = nil
 GameModeSettings.inn_vs.hud_component_list_path = "scripts/ui/hud_ui/component_list_definitions/hud_component_list_inn_versus"

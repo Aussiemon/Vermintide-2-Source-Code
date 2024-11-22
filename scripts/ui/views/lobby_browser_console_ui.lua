@@ -10,6 +10,7 @@ local base_widget_definition = definitions.base_widget_definition
 local adventure_details_widget_definition = definitions.adventure_details_widget_definition
 local weave_details_widget_definition = definitions.weave_details_widget_definition
 local deus_details_widget_definition = definitions.deus_details_widget_definition
+local versus_details_widget_definition = definitions.versus_details_widget_definition
 local animation_definitions = definitions.animation_definitions
 
 LobbyBrowserConsoleUI = class(LobbyBrowserConsoleUI)
@@ -73,38 +74,31 @@ LobbyBrowserConsoleUI._create_ui_elements = function (self)
 	self._dot_timer = 0
 	self._details_filled = false
 
-	local base_widget_definition = base_widget_definition
+	UIUtils.create_widgets(base_widget_definition, false, self._widgets)
 
-	for name, widget in pairs(base_widget_definition) do
-		self._widgets[name] = UIWidget.init(widget)
-	end
+	local adventure_details = {}
 
-	local details_widgets = {}
-	local adventure_details_widget_definition = adventure_details_widget_definition
+	UIUtils.create_widgets(adventure_details_widget_definition, false, adventure_details)
 
-	for name, widget in pairs(adventure_details_widget_definition) do
-		details_widgets[name] = UIWidget.init(widget)
-	end
+	self._details_widgets.adventure = adventure_details
 
-	self._details_widgets.adventure = details_widgets
+	local deus_details = {}
 
-	local details_widgets = {}
-	local weave_details_widget_definition = weave_details_widget_definition
+	UIUtils.create_widgets(deus_details_widget_definition, false, deus_details)
 
-	for name, widget in pairs(weave_details_widget_definition) do
-		details_widgets[name] = UIWidget.init(widget)
-	end
+	self._details_widgets.deus = deus_details
 
-	self._details_widgets.weave = details_widgets
+	local weave_details = {}
 
-	local details_widgets = {}
-	local deus_details_widget_definition = deus_details_widget_definition
+	UIUtils.create_widgets(weave_details_widget_definition, false, weave_details)
 
-	for name, widget in pairs(deus_details_widget_definition) do
-		details_widgets[name] = UIWidget.init(widget)
-	end
+	self._details_widgets.weave = weave_details
 
-	self._details_widgets.deus = details_widgets
+	local versus_details = {}
+
+	UIUtils.create_widgets(versus_details_widget_definition, false, versus_details)
+
+	self._details_widgets.versus = versus_details
 
 	self:populate_lobby_list(self._lobbies or {}, false)
 	self:_create_filters()
@@ -1771,13 +1765,12 @@ LobbyBrowserConsoleUI._update_lobby_entry = function (self, index, offset_y, sel
 end
 
 LobbyBrowserConsoleUI._fill_versus_details = function (self, lobby_data)
-	local details_widgets = self._details_widgets.adventure
+	local details_widgets = self._details_widgets.versus
 	local level_image = "level_image_any"
 	local level_name
 	local selected_mission_id = lobby_data and (lobby_data.selected_mission_id or lobby_data.mission_id)
 	local matchmaking_type_id = lobby_data and lobby_data.matchmaking_type
-	local matchmaking_type = matchmaking_type_id and (IS_PS4 and matchmaking_type_id or NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)])
-	local mechanism = lobby_data and lobby_data.mechanism
+	local matchmaking_type = matchmaking_type_id and NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)]
 
 	if selected_mission_id and selected_mission_id ~= "any" then
 		if selected_mission_id == "default_start_level" then
@@ -1785,15 +1778,6 @@ LobbyBrowserConsoleUI._fill_versus_details = function (self, lobby_data)
 		end
 
 		local level_key = selected_mission_id
-
-		if mechanism == "weave" then
-			local weave_template = WeaveSettings.templates[selected_mission_id]
-
-			if weave_template then
-				level_key = weave_template.objectives[1].level_id
-			end
-		end
-
 		local level_settings = LevelSettings[level_key]
 
 		level_name = level_settings.display_name
@@ -1808,49 +1792,10 @@ LobbyBrowserConsoleUI._fill_versus_details = function (self, lobby_data)
 
 	level_name_widget.content.text = level_name and Localize(level_name) or " "
 
-	local occupied_profiles = {}
-
-	if lobby_data then
-		local num_profiles = #SPProfiles
-
-		for i = 1, num_profiles do
-			if not ProfileSynchronizer.is_free_in_lobby(i, lobby_data) then
-				occupied_profiles[i] = true
-			end
-		end
-	end
-
-	local content = details_widgets.hero_tabs.content
-
-	for i = 1, #ProfilePriority do
-		local profile_index = ProfilePriority[i]
-		local name_sufix = "_" .. tostring(i)
-		local hotspot_name = "hotspot" .. name_sufix
-		local hotspot_content = content[hotspot_name]
-
-		if occupied_profiles[profile_index] then
-			hotspot_content.disable_button = true
-		else
-			hotspot_content.disable_button = false
-		end
-	end
-
 	local level_image_frame_widget = details_widgets.level_image_frame
 	local level_image_frame_widget_content = level_image_frame_widget.content
-	local level_frame = "map_frame_00"
 
-	if lobby_data then
-		local completed_difficulty_index = self._parent:completed_level_difficulty_index(lobby_data)
-
-		if completed_difficulty_index > 0 then
-			local difficulty_key = DefaultDifficulties[completed_difficulty_index]
-			local settings = DifficultySettings[difficulty_key]
-
-			level_frame = settings.completed_frame_texture
-		end
-	end
-
-	level_image_frame_widget_content.texture_id = level_frame
+	level_image_frame_widget_content.texture_id = "map_frame_00"
 
 	local join_button_widget = self._widgets.join_button
 	local join_button_widget_content = join_button_widget.content
@@ -1873,46 +1818,50 @@ LobbyBrowserConsoleUI._fill_versus_details = function (self, lobby_data)
 
 	if lobby_data then
 		local matchmaking_type_lookup = {
-			custom = "lb_game_type_custom",
-			deed = "lb_game_type_deed",
-			deus = "area_selection_morris_name",
-			event = "lb_game_type_event",
+			custom = "map_host_setting",
 			["n/a"] = "lb_game_type_none",
 			standard = "lb_game_type_quick_play",
-			tutorial = "lb_game_type_prologue",
-			weave = "lb_game_type_weave",
-			weave_quick_play = "lb_game_type_weave_quick_play",
 		}
 		local mission_id = lobby_data.mission_id
 		local level_key = mission_id
-
-		if mechanism == "weave" then
-			local weave_template = WeaveSettings.templates[mission_id]
-
-			if weave_template then
-				level_key = weave_template.objectives[1].level_id
-			end
-
-			if lobby_data.quick_game == "true" then
-				matchmaking_type = "weave_quick_play"
-			else
-				matchmaking_type = "weave"
-			end
-		elseif mechanism == "deus" then
-			matchmaking_type = "deus"
-		end
-
 		local level_setting = LevelSettings[level_key]
 
-		details_information_widget_content.game_type_id = matchmaking_type and (matchmaking_type_lookup[matchmaking_type] or "lb_unknown") or "lb_game_type_none"
+		details_information_widget_content.game_type_id = matchmaking_type and matchmaking_type_lookup[matchmaking_type] or "lb_game_type_none"
 		details_information_widget_content.status_id = level_setting.hub_level and "lb_in_inn" or "lb_playing"
 	else
 		details_information_widget_content.game_type_id = "lb_unknown"
 		details_information_widget_content.status_id = "lb_unknown"
 	end
 
-	details_widgets.twitch_logo.content.visible = to_boolean(lobby_data and lobby_data.twitch_enabled)
-	self._details_type = "adventure"
+	local players_widget = details_widgets.players
+	local include_unreserved_peers = true
+	local reservation_data = LobbyAux.deserialize_lobby_reservation_data(lobby_data, include_unreserved_peers)
+
+	for party_id = 1, 2 do
+		local party_data = reservation_data[party_id]
+
+		for player_id = 1, 4 do
+			local player_data = party_data and party_data[player_id]
+			local peer_id = player_data and player_data.peer_id
+			local player_name = "---"
+
+			if peer_id then
+				player_name = PlayerUtils.player_name(peer_id, nil)
+				player_name = UIRenderer.crop_text(player_name, 18)
+			end
+
+			local id = string.format("player_%d_%d", party_id, player_id)
+
+			players_widget.content[id] = player_name
+
+			local wanted_color = peer_id and LobbyInternal.is_friend(peer_id) and "pale_green" or "font_default"
+			local text_color = Colors.color_definitions[wanted_color]
+
+			Colors.copy_no_alpha_to(players_widget.style[id].text_color, text_color)
+		end
+	end
+
+	self._details_type = "versus"
 	self._details_filled = true
 end
 

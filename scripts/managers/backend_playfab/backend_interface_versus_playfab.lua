@@ -92,12 +92,12 @@ BackendInterfaceVersusPlayFab.get_profile_data = function (self, key)
 	return self._profile_data[key]
 end
 
-BackendInterfaceVersusPlayFab.get_loadout_item_id = function (self, career_name, slot_name)
+BackendInterfaceVersusPlayFab.get_loadout_item_id = function (self, career_name, slot_name, is_bot)
 	if self._dirty then
 		self:_refresh()
 	end
 
-	return self._items_interface:get_loadout_item_id(career_name, slot_name)
+	return self._items_interface:get_loadout_item_id(career_name, slot_name, is_bot)
 end
 
 BackendInterfaceVersusPlayFab.set_loadout_item = function (self, item_id, career_name, slot_name)

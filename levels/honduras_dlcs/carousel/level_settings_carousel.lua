@@ -215,7 +215,7 @@ LevelSettings.carousel_hub = {
 }
 LevelSettings.farmlands_pvp = {
 	act = "act_versus",
-	act_presentation_order = 1,
+	act_presentation_order = 5,
 	ambient_sound_event = "silent_default_world_sound",
 	boss_spawning_method = "hand_placed",
 	default_surface_material = "dirt",
@@ -262,7 +262,7 @@ LevelSettings.farmlands_pvp = {
 }
 LevelSettings.bell_pvp = {
 	act = "act_versus",
-	act_presentation_order = 1,
+	act_presentation_order = 3,
 	ambient_sound_event = "silent_default_world_sound",
 	boss_spawning_method = "hand_placed",
 	default_surface_material = "stone_wet",
@@ -373,7 +373,7 @@ LevelSettings.military_pvp = {
 }
 LevelSettings.fort_pvp = {
 	act = "act_versus",
-	act_presentation_order = 1,
+	act_presentation_order = 4,
 	ambient_sound_event = "silent_default_world_sound",
 	boss_spawning_method = "hand_placed",
 	default_surface_material = "stone_wet",
@@ -424,7 +424,7 @@ LevelSettings.fort_pvp = {
 }
 LevelSettings.forest_ambush_pvp = {
 	act = "act_versus",
-	act_presentation_order = 1,
+	act_presentation_order = 8,
 	ambient_sound_event = "silent_default_world_sound",
 	boss_spawning_method = "hand_placed",
 	default_surface_material = "stone",
