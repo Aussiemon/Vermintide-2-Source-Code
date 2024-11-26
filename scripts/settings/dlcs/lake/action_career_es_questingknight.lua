@@ -58,16 +58,15 @@ ActionCareerESQuestingKnight.finish = function (self, reason, data)
 
 	if is_ability_cancel or not self._combo_no_wield or reason ~= "new_interupting_action" then
 		self.status_extension:set_stagger_immune(false)
-
-		local career_extension = self.career_extension
-
-		if not self._cooldown_started then
-			self._cooldown_started = true
-
-			career_extension:start_activated_ability_cooldown()
-		end
-
 		self.inventory_extension:wield_previous_non_level_slot()
+	end
+
+	local career_extension = self.career_extension
+
+	if not self._cooldown_started and self.has_been_within_damage_window then
+		self._cooldown_started = true
+
+		career_extension:start_activated_ability_cooldown()
 	end
 end
 

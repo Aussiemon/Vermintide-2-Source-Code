@@ -10,7 +10,6 @@ local game_session_game_object_field = GameSession.game_object_field
 PassiveAbilityWarriorPriest.init = function (self, extension_init_context, unit, extension_init_data, ability_init_data)
 	self._owner_unit = unit
 	self._player = extension_init_data.player
-	self._player_unique_id = extension_init_data.player:unique_id()
 	self._ability_init_data = ability_init_data
 	self._is_active = false
 	self._not_in_combat = true
@@ -105,43 +104,43 @@ PassiveAbilityWarriorPriest.update = function (self, dt, t)
 end
 
 PassiveAbilityWarriorPriest.on_player_killed_enemy = function (self, killing_blow, breed_killed, ai_unit)
-	local player_unique_id = self._player_unique_id
-	local status = Managers.party:get_status_from_unique_id(player_unique_id)
-	local health_state = status.game_mode_data.health_state
+	local status_extension = ScriptUnit.has_extension(self._owner_unit, "status_system")
 
-	if health_state == "alive" then
-		if not self._is_local_player then
-			return
-		end
-
-		local owner_unit = self._owner_unit
-		local position = POSITION_LOOKUP[owner_unit]
-		local killed_unit_position = POSITION_LOOKUP[ai_unit]
-		local distance_squared = Vector3.distance_squared(position, killed_unit_position)
-		local range = 6
-		local range_squared = range * range
-
-		if range_squared < distance_squared then
-			return
-		end
-
-		local resource_table = self._ability_init_data.resource_per_breed
-		local resource_to_add = resource_table.on_normal
-
-		if breed_killed and breed_killed.elite then
-			resource_to_add = resource_table.on_elite
-		elseif breed_killed and breed_killed.special then
-			resource_to_add = resource_table.on_special
-		elseif breed_killed and breed_killed.boss then
-			resource_to_add = resource_table.on_boss
-		end
-
-		if self._is_local_human then
-			Managers.state.event:trigger("glow_feedback")
-		end
-
-		self:modify_resource(resource_to_add)
+	if status_extension:is_knocked_down() then
+		return
 	end
+
+	if not self._is_local_player then
+		return
+	end
+
+	local owner_unit = self._owner_unit
+	local position = POSITION_LOOKUP[owner_unit]
+	local killed_unit_position = POSITION_LOOKUP[ai_unit]
+	local distance_squared = Vector3.distance_squared(position, killed_unit_position)
+	local range = 6
+	local range_squared = range * range
+
+	if range_squared < distance_squared then
+		return
+	end
+
+	local resource_table = self._ability_init_data.resource_per_breed
+	local resource_to_add = resource_table.on_normal
+
+	if breed_killed and breed_killed.elite then
+		resource_to_add = resource_table.on_elite
+	elseif breed_killed and breed_killed.special then
+		resource_to_add = resource_table.on_special
+	elseif breed_killed and breed_killed.boss then
+		resource_to_add = resource_table.on_boss
+	end
+
+	if self._is_local_human then
+		Managers.state.event:trigger("glow_feedback")
+	end
+
+	self:modify_resource(resource_to_add)
 end
 
 PassiveAbilityWarriorPriest.on_hit = function (self, hit_unit, attack_type, hit_zone_name, target_number, buff_type, is_critical, unmodified, unit)

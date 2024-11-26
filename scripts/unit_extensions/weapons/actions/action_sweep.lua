@@ -141,6 +141,7 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 	self._network_manager = Managers.state.network
 	self._last_potential_hit_result_has_result = false
 	self._last_potential_hit_result = {}
+	self.has_been_within_damage_window = false
 
 	local owner_unit = self.owner_unit
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
@@ -660,6 +661,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 	local final_frame = not is_within_damage_window and self._could_damage_last_update
 
 	self._could_damage_last_update = is_within_damage_window
+	self.has_been_within_damage_window = self.has_been_within_damage_window or is_within_damage_window
 
 	local position_previous = self._stored_position:unbox()
 	local rotation_previous = self._stored_rotation:unbox()
