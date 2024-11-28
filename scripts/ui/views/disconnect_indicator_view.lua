@@ -52,6 +52,20 @@ DisconnectIndicatorView.update = function (self, dt)
 		self._flash_counter = self._flash_counter - DisconnectIndicatorView.FLASH_CYCLE
 	end
 
+	local mechanism_name = Managers.level_transition_handler:get_current_mechanism()
+	local is_in_inn = Managers.level_transition_handler:in_hub_level()
+
+	if self._current_mechanism ~= mechanism_name or self._is_in_inn ~= is_in_inn then
+		self._current_mechanism = mechanism_name
+		self._is_in_inn = is_in_inn
+
+		if mechanism_name == "versus" and not is_in_inn then
+			self._icon_text_widget.content.text = Localize("lost_contact_with_server")
+		else
+			self._icon_text_widget.content.text = Localize("lost_contact_with_host")
+		end
+	end
+
 	self:_draw(dt)
 end
 

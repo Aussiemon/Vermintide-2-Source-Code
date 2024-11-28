@@ -1604,7 +1604,15 @@ StateIngame._check_exit = function (self, t)
 				if self.is_server then
 					self.parent.loading_context.previous_session_error = "broken_connection"
 				else
-					self.parent.loading_context.previous_session_error = "lobby_disconnected"
+					local current_mechanism_name = Managers.mechanism:current_mechanism_name()
+					local lobby_data = lobby:get_stored_lobby_data()
+					local matchmaking_type_id = lobby_data.matchmaking_type and tonumber(lobby_data.matchmaking_type)
+
+					if current_mechanism_name == "versus" and matchmaking_type_id and NetworkLookup.matchmaking_types[matchmaking_type_id] == "versus" then
+						self.parent.loading_context.previous_session_error = "server_disconnected"
+					else
+						self.parent.loading_context.previous_session_error = "lobby_disconnected"
+					end
 				end
 			elseif exit_type == "kicked_by_server" then
 				self.parent.loading_context.previous_session_error = "kicked_by_server"

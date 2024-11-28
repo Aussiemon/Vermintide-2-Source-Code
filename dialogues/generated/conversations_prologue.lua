@@ -3936,7 +3936,7 @@ return function ()
 			sound_events_duration = {
 				3.6084582805634,
 				4.198145866394,
-				3.7627770900726,
+				3.7756054401398,
 			},
 		},
 		pes_level_prologue_first_payback = {

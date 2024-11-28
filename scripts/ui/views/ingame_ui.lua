@@ -274,12 +274,6 @@ IngameUI.destroy = function (self)
 
 	self.text_popup_ui = nil
 
-	UIRenderer.destroy(self.ui_renderer, self.world)
-	UIRenderer.destroy(self.ui_top_renderer, self.top_world)
-
-	self.ui_renderer = nil
-	self.ui_top_renderer = nil
-
 	if self.popup_id then
 		Managers.popup:cancel_popup(self.popup_id)
 	end
@@ -301,6 +295,12 @@ IngameUI.destroy = function (self)
 
 		self.hint_ui_handler = nil
 	end
+
+	UIRenderer.destroy(self.ui_renderer, self.world)
+	UIRenderer.destroy(self.ui_top_renderer, self.top_world)
+
+	self.ui_renderer = nil
+	self.ui_top_renderer = nil
 
 	printf("[IngameUI] destroy")
 end

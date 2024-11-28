@@ -619,6 +619,14 @@ StartGameWindowVersusPlayerHostedLobby._update_mission_option = function (self)
 		selected_level_id = lobby and lobby:lobby_data("selected_mission_id")
 	end
 
+	selected_level_id = selected_level_id or "any"
+
+	if selected_level_id == self._selected_level_id then
+		return
+	end
+
+	self._selected_level_id = selected_level_id
+
 	local level_settings = selected_level_id and selected_level_id ~= "any" and LevelSettings[selected_level_id] or DummyAnyLevel
 	local display_name = level_settings.display_name
 	local icon_texture = level_settings.level_image

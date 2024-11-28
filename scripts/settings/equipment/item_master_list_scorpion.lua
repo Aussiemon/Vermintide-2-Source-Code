@@ -1352,6 +1352,7 @@ ItemMasterList.frame_scorpion_complete_all_helmgart_level_achievements_cataclysm
 	item_type = "frame",
 	rarity = "promo",
 	slot_type = "frame",
+	store_icon_override_key = "frame_scorpion_achieve_cata",
 	temporary_template = "frame_scorpion_complete_all_helmgart_level_achievements_cataclysm",
 	can_wield = CanWieldAllItemTemplates,
 }

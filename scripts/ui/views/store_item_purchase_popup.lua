@@ -1705,11 +1705,12 @@ StoreItemPurchasePopup._populate_item_widget = function (self, widget, item, pro
 
 	local purchase_ui_renderer = self._purchase_ui_renderer
 	local gui = purchase_ui_renderer.gui
+	local store_icon_override_key = item_data.store_icon_override_key
 
 	self._reference_id = (self._reference_id or 0) + 1
 
 	local reference_name = "StoreItemPurchasePopup_" .. product_id .. "_" .. self._reference_id
-	local package_product_id = has_parent and parent_id and parent_id or product_id
+	local package_product_id = has_parent and parent_id and parent_id or store_icon_override_key or product_id
 	local texture_name = "store_item_icon_" .. package_product_id
 	local package_name = "resource_packages/store/item_icons/" .. texture_name
 	local package_available = Application.can_get("package", package_name)

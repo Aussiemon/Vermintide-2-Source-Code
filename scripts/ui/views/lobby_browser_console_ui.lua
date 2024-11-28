@@ -1767,20 +1767,16 @@ end
 LobbyBrowserConsoleUI._fill_versus_details = function (self, lobby_data)
 	local details_widgets = self._details_widgets.versus
 	local level_image = "level_image_any"
-	local level_name
+	local level_name = "random_level"
 	local selected_mission_id = lobby_data and (lobby_data.selected_mission_id or lobby_data.mission_id)
 	local matchmaking_type_id = lobby_data and lobby_data.matchmaking_type
 	local matchmaking_type = matchmaking_type_id and NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)]
 
 	if selected_mission_id and selected_mission_id ~= "any" then
-		if selected_mission_id == "default_start_level" then
-			selected_mission_id = LevelSettingsDefaultStartLevel
-		end
-
 		local level_key = selected_mission_id
 		local level_settings = LevelSettings[level_key]
 
-		level_name = level_settings.display_name
+		level_name = level_settings.display_name or "lb_unknown"
 		level_image = level_settings.level_image or level_image
 	end
 
@@ -1790,7 +1786,7 @@ LobbyBrowserConsoleUI._fill_versus_details = function (self, lobby_data)
 
 	local level_name_widget = details_widgets.level_name
 
-	level_name_widget.content.text = level_name and Localize(level_name) or " "
+	level_name_widget.content.text = Localize(level_name)
 
 	local level_image_frame_widget = details_widgets.level_image_frame
 	local level_image_frame_widget_content = level_image_frame_widget.content

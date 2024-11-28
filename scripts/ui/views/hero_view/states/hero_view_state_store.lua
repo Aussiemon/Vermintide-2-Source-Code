@@ -1898,11 +1898,12 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 
 	local ui_top_renderer = self._ui_top_renderer
 	local top_gui = ui_top_renderer.gui
+	local store_icon_override_key = item_data.store_icon_override_key
 
 	self._reference_id = (self._reference_id or 0) + 1
 
 	local reference_name = product_id .. "_" .. self._reference_id
-	local texture_name = "store_item_icon_" .. product_id
+	local texture_name = "store_item_icon_" .. (store_icon_override_key or product_id)
 	local package_name = item_data.store_texture_package or "resource_packages/store/item_icons/" .. texture_name
 	local package_available = Application.can_get("package", package_name)
 
@@ -1962,10 +1963,12 @@ HeroViewStateStore._populate_collection_item = function (self, widget, product, 
 		end
 	end
 
+	local store_icon_override_key = item_data.store_icon_override_key
+
 	self._reference_id = (self._reference_id or 0) + 1
 
 	local reference_name = product_id .. "_" .. self._reference_id
-	local texture_name = "store_item_icon_" .. product_id
+	local texture_name = "store_item_icon_" .. (store_icon_override_key or product_id)
 	local package_name = item_data.store_texture_package or "resource_packages/store/item_icons/" .. texture_name
 	local package_available = Application.can_get("package", package_name)
 

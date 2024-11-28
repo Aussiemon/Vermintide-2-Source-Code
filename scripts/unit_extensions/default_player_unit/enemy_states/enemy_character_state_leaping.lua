@@ -13,10 +13,15 @@ local POSITION_LOOKUP = POSITION_LOOKUP
 EnemyCharacterStateLeaping.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
 	table.clear(self._temp_params)
 
+	self._time_entered_leap = t
+
 	local player = self._player
 	local input_extension = self._input_extension
 	local status_extension = self._status_extension
 	local locomotion_extension = self._locomotion_extension
+
+	locomotion_extension:set_mover_filter_property("enemy_leap_state", true)
+
 	local inventory_extension = self._inventory_extension
 	local first_person_extension = self._first_person_extension
 	local leap_data = status_extension.do_leap
@@ -48,13 +53,19 @@ EnemyCharacterStateLeaping.on_exit = function (self, unit, input, dt, context, t
 	local input_extension = self._input_extension
 	local locomotion_extension = self._locomotion_extension
 
+	locomotion_extension:set_mover_filter_property("enemy_leap_state", false)
+
+	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
+
+	movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration
+
 	if next_state == "walking" or next_state == "standing" then
 		ScriptUnit.extension(unit, "whereabouts_system"):set_landed()
 	elseif next_state and next_state ~= "falling" then
 		ScriptUnit.extension(unit, "whereabouts_system"):set_no_landing()
 	end
 
-	if next_state and next_state ~= "falling" and Managers.state.network:game() then
+	if next_state and next_state ~= "falling" and next_state ~= "staggered" and Managers.state.network:game() then
 		CharacterStateHelper.play_animation_event(unit, "land_still")
 		CharacterStateHelper.play_animation_event(unit, "to_onground")
 		locomotion_extension:force_on_ground(true)
@@ -112,6 +123,8 @@ EnemyCharacterStateLeaping.update = function (self, unit, input, dt, context, t)
 		return
 	end
 
+	self._time_spent_in_leap = t - self._time_entered_leap
+
 	if self:_update_movement(unit, dt, t) then
 		self:_finish(unit, t)
 
@@ -119,10 +132,7 @@ EnemyCharacterStateLeaping.update = function (self, unit, input, dt, context, t)
 			csm:change_state("walking", self._temp_params)
 			first_person_extension:change_state("walking")
 
-			return
-		elseif CharacterStateHelper.is_colliding_sides(unit) then
-			csm:change_state("walking", self._temp_params)
-			first_person_extension:change_state("walking")
+			self._leap_done = true
 
 			return
 		end
@@ -130,6 +140,8 @@ EnemyCharacterStateLeaping.update = function (self, unit, input, dt, context, t)
 		if not self._csm.state_next and locomotion_extension:current_velocity().z <= 0 then
 			csm:change_state("falling", self._temp_params)
 			first_person_extension:change_state("falling")
+
+			self._leap_done = true
 
 			return
 		end
@@ -172,6 +184,7 @@ EnemyCharacterStateLeaping._move_in_air = function (self, unit, dt, t)
 	local total_distance = Vector3.length(total_vector)
 	local distance_travelled = dot / total_distance
 	local move_direction = Vector3.normalize(self._leap_data.direction:unbox())
+	local player_movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local movement_settings_table = self._leap_data.movement_settings or PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local starting_speed = self._leap_data.speed
 	local speed = starting_speed
@@ -187,6 +200,8 @@ EnemyCharacterStateLeaping._move_in_air = function (self, unit, dt, t)
 	local glide_distance = total_distance * lerp_data.glide_distance or 0.7
 	local slow_distance = total_distance * lerp_data.slow_distance or 0.95
 	local full_distance = total_distance * lerp_data.full_distance or 1
+
+	self._old_position = current_position
 
 	if distance_travelled <= start_accel_distance then
 		local interval_distance_percentage = scale_percentage(zero_distance, start_accel_distance, distance_travelled)
@@ -265,9 +280,6 @@ EnemyCharacterStateLeaping._move_in_air = function (self, unit, dt, t)
 		local speed_multiplier = math.lerp(0.7, 0.6, interval_distance_percentage)
 
 		speed = speed * speed_multiplier
-
-		local gravity_multiplier = 0
-
 		movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration * interval_distance_percentage
 
 		local move_cap = math.clamp(movement_settings_table.move_speed, 0, movement_settings_table.max_move_speed)
@@ -281,6 +293,8 @@ EnemyCharacterStateLeaping._move_in_air = function (self, unit, dt, t)
 
 		locomotion_extension:set_wanted_velocity(new_move_direction * new_move_speed)
 	else
+		locomotion_extension:set_mover_filter_property("enemy_leap_state", false)
+
 		local interval_distance_percentage = scale_percentage(slow_distance, full_distance, distance_travelled)
 
 		interval_distance_percentage = math.ease_out_quad(interval_distance_percentage)
@@ -319,9 +333,8 @@ EnemyCharacterStateLeaping._update_movement = function (self, unit, dt, t)
 	self:_move_in_air(unit, dt, t)
 
 	local colliding_down = CharacterStateHelper.is_colliding_down(unit)
-	local colliding_sides = CharacterStateHelper.is_colliding_sides(unit)
 
-	self._leap_done = colliding_down or colliding_sides
+	self._leap_done = colliding_down
 
 	return self._leap_done
 end
@@ -387,7 +400,7 @@ EnemyCharacterStateLeaping._start_leap = function (self, unit, t)
 	locomotion_extension:set_forced_velocity(velocity)
 	locomotion_extension:set_wanted_velocity(velocity)
 
-	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
+	local movement_settings_table = self._leap_data.movement_settings or PlayerUnitMovementSettings.get_movement_settings_table(unit)
 
 	movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration * 0
 	self._leap_done = false

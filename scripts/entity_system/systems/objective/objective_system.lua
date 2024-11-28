@@ -31,6 +31,7 @@ local EXTENSIONS = {
 	"VersusMissionObjectiveExtension",
 	"VersusCapturePointObjectiveExtension",
 	"VersusSurviveEventObjectiveExtension",
+	"ObjectiveEventExtension",
 }
 
 ObjectiveSystem.init = function (self, entity_system_creation_context, system_name)
@@ -46,6 +47,9 @@ ObjectiveSystem.init = function (self, entity_system_creation_context, system_na
 	self._entity_system_creation_context = entity_system_creation_context
 	self._is_server = entity_system_creation_context.is_server
 	self._world = entity_system_creation_context.world
+	self._extensions = {}
+	self._units = {}
+	self._progress_listeners = {}
 	self._objective_lists = {}
 	self._active_objectives = {}
 	self._active_leaf_objectives = {}
@@ -74,6 +78,8 @@ ObjectiveSystem.init = function (self, entity_system_creation_context, system_na
 	end
 
 	self._objective_item_spawner = Managers.state.entity:system("objective_item_spawner_system")
+
+	Managers.state.event:register(self, "on_player_joined_party", "_on_player_joined_party")
 end
 
 ObjectiveSystem.on_game_entered = function (self)
@@ -88,6 +94,12 @@ end
 
 ObjectiveSystem.destroy = function (self)
 	self.network_event_delegate:unregister(self)
+
+	local event_manager = Managers.state.event
+
+	if event_manager then
+		event_manager:unregister("on_player_joined_party", self)
+	end
 end
 
 ObjectiveSystem.weave_essence_handler = function (self)
@@ -351,11 +363,34 @@ ObjectiveSystem.cb_game_session_disconnect = function (self, go_id)
 end
 
 ObjectiveSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
-	local extension_alias = self.NAME
-	local extension_pool_table
-	local extension = ScriptUnit.add_extension(self.extension_init_context, unit, extension_name, extension_alias, extension_init_data, extension_pool_table)
+	local progress_listener = Unit.get_data(unit, "listen_to_progress")
+
+	if progress_listener then
+		local listeners = self._progress_listeners[progress_listener] or {}
+
+		listeners[0] = #listeners + 1
+		listeners[listeners[0]] = unit
+		self._progress_listeners[progress_listener] = listeners
+	end
+
+	local extension
+
+	if extension_name == "ObjectiveEventExtension" then
+		extension = {}
+	else
+		local extension_alias = self.NAME
+		local extension_pool_table
+
+		extension = ScriptUnit.add_extension(self.extension_init_context, unit, extension_name, extension_alias, extension_init_data, extension_pool_table)
+	end
 
 	self.extensions[extension_name] = (self.extensions[extension_name] or 0) + 1
+	self._units[extension] = unit
+	self._extensions[unit] = extension
+
+	if extension_name == "ObjectiveEventExtension" then
+		return extension
+	end
 
 	local objective_name = extension:objective_name()
 
@@ -382,6 +417,15 @@ ObjectiveSystem.on_add_extension = function (self, world, unit, extension_name, 
 	return extension
 end
 
+ObjectiveSystem.on_remove_extension = function (self, unit, ...)
+	ObjectiveSystem.super.on_remove_extension(self, unit, ...)
+
+	local extension = self._extensions[unit]
+
+	self._units[extension] = nil
+	self._extensions[unit] = nil
+end
+
 ObjectiveSystem.update = function (self, context, t)
 	if script_data.testify then
 		Testify:poll_requests_through_handler(objective_system_testify, self)
@@ -401,6 +445,18 @@ ObjectiveSystem.update = function (self, context, t)
 		self:_update_server(dt, t)
 	else
 		self:_update_client(dt, t)
+	end
+end
+
+ObjectiveSystem._on_player_joined_party = function (self, peer_id, local_player_id, party_id, slot_id, is_bot)
+	if is_bot or peer_id ~= Network.peer_id() then
+		return
+	end
+
+	local extensions = self._extensions
+
+	for unit, extension in pairs(extensions) do
+		Unit.flow_event(unit, "local_player_party_changed")
 	end
 end
 
@@ -424,6 +480,7 @@ ObjectiveSystem._update_server = function (self, dt, t)
 		local extension = self._objective_by_name[objective_name]
 
 		extension:update(dt, t)
+		self:_update_progress_listeners(objective_name)
 
 		if extension:is_done() then
 			objects_to_remove[#objects_to_remove + 1] = idx
@@ -460,6 +517,30 @@ ObjectiveSystem._update_client = function (self, dt, t)
 		local extension = self._objective_by_name[objective_name]
 
 		extension:update(dt, t)
+		self:_update_progress_listeners(objective_name)
+	end
+end
+
+ObjectiveSystem._update_progress_listeners = function (self, objective_name)
+	local extension = self._objective_by_name[objective_name]
+	local progress = extension:get_percentage_done()
+	local unit = self._units[extension]
+
+	Unit.set_data(unit, "objective_progress", progress)
+	Unit.flow_event(unit, "objective_progress_update")
+
+	local progress_listeners = self._progress_listeners
+	local listeners = progress_listeners[objective_name]
+
+	if listeners then
+		local num_listeners = listeners[0]
+
+		for i = 1, num_listeners do
+			local listener = listeners[i]
+
+			Unit.set_data(listener, "objective_progress", progress)
+			Unit.flow_event(listener, "objective_progress_update")
+		end
 	end
 end
 

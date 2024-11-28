@@ -151,7 +151,7 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 		excluded_level_keys = search_config.excluded_level_keys
 	end
 
-	if quick_game or mission_id == nil then
+	if quick_game or mission_id == nil or mission_id == "any" then
 		local ignore_dlc_check = false
 
 		if Managers.account:offline_mode() then

@@ -482,6 +482,10 @@ LevelUnlockUtils.level_unlocked = function (statistics_db, player_stats_id, leve
 		return true
 	end
 
+	if level_key == "any" then
+		return true
+	end
+
 	local act_key = LevelUnlockUtils.get_act_key_by_level(level_key)
 	local settings = LevelSettings[level_key]
 

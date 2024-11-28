@@ -17026,9 +17026,9 @@ return function ()
 				2.2112290859222,
 				3.9369375705719,
 				3.5963125228882,
-				2.7414062023163,
+				2.7414166927338,
 				3.1426665782928,
-				3.4690728187561,
+				3.5508021116257,
 			},
 		},
 		erg_vs_downed_hero_a = {
@@ -17065,10 +17065,10 @@ return function ()
 				"erg_vs_downed_hero_a_04",
 			},
 			sound_events_duration = {
-				1.0715833902359,
+				1.0716041326523,
 				2.4983438253403,
-				2.0298540592194,
-				1.9546458125114,
+				2.0298750400543,
+				1.9546562433243,
 			},
 		},
 		erg_vs_globadier_hitting_many_a = {
@@ -17106,7 +17106,7 @@ return function ()
 			sound_events_duration = {
 				2.5417499542236,
 				1.937979221344,
-				2.2320103645325,
+				2.2320208549499,
 				3.3510625362396,
 			},
 		},
@@ -17182,10 +17182,10 @@ return function ()
 				"erg_vs_heroes_objective_almost_completed_b_04",
 			},
 			sound_events_duration = {
-				1.846895813942,
-				1.687895834446,
 				1.8469062447548,
-				2.5807707309723,
+				1.687895834446,
+				1.8291562199593,
+				2.5564374923706,
 			},
 		},
 		erg_vs_pact_proximity_banter_eight_b = {
@@ -17207,7 +17207,7 @@ return function ()
 				[1] = "erg_vs_pact_proximity_banter_eight_b_01",
 			},
 			sound_events_duration = {
-				[1] = 7.5952081680298,
+				[1] = 7.5395832061768,
 			},
 		},
 		erg_vs_pact_proximity_banter_eighteen_b = {
@@ -17229,7 +17229,7 @@ return function ()
 				[1] = "erg_vs_pact_proximity_banter_eighteen_b_01",
 			},
 			sound_events_duration = {
-				[1] = 8.530312538147,
+				[1] = 8.0016870498657,
 			},
 		},
 		erg_vs_pact_proximity_banter_eleven_b = {
@@ -17295,7 +17295,7 @@ return function ()
 				[1] = "erg_vs_pact_proximity_banter_five_b_01",
 			},
 			sound_events_duration = {
-				[1] = 4.3372917175293,
+				[1] = 4.2901043891907,
 			},
 		},
 		erg_vs_pact_proximity_banter_four_a = {
@@ -17361,7 +17361,7 @@ return function ()
 				[1] = "erg_vs_pact_proximity_banter_nine_a_01",
 			},
 			sound_events_duration = {
-				[1] = 4.1189270019531,
+				[1] = 4.0539479255676,
 			},
 		},
 		erg_vs_pact_proximity_banter_nineteen_a = {
@@ -17383,7 +17383,7 @@ return function ()
 				[1] = "erg_vs_pact_proximity_banter_nineteen_a_01",
 			},
 			sound_events_duration = {
-				[1] = 5.3741042613983,
+				[1] = 5.3738541603088,
 			},
 		},
 		erg_vs_pact_proximity_banter_one_b = {
@@ -17471,7 +17471,7 @@ return function ()
 				[1] = "erg_vs_pact_proximity_banter_six_b_01",
 			},
 			sound_events_duration = {
-				[1] = 4.86954164505,
+				[1] = 4.7612290382385,
 			},
 		},
 		erg_vs_pact_proximity_banter_sixteen_b = {
@@ -17515,7 +17515,7 @@ return function ()
 				[1] = "erg_vs_pact_proximity_banter_ten_b_01",
 			},
 			sound_events_duration = {
-				[1] = 2.3274374604225,
+				[1] = 2.4178438186645,
 			},
 		},
 		erg_vs_pact_proximity_banter_thirteen_b = {
@@ -17581,7 +17581,7 @@ return function ()
 				[1] = "erg_vs_pact_proximity_banter_twelve_b_01",
 			},
 			sound_events_duration = {
-				[1] = 5.1100311279297,
+				[1] = 4.8177709579468,
 			},
 		},
 		erg_vs_pact_proximity_banter_twenty_b = {
@@ -17664,7 +17664,7 @@ return function ()
 				2.1894791126251,
 				2.4817917346954,
 				1.6761354207993,
-				2.4879791736603,
+				2.4546875953674,
 			},
 		},
 		erg_vs_shooting_hooked_hero_a = {
@@ -17701,8 +17701,8 @@ return function ()
 			},
 			sound_events_duration = {
 				2.8337082862854,
-				1.8375728726387,
-				2.1347916126251,
+				1.8375833034515,
+				2.1348125934601,
 				1.663125038147,
 			},
 		},
@@ -18098,7 +18098,7 @@ return function ()
 				1.2009791135788,
 				2.5089790821075,
 				0.69497919082642,
-				0.89597916603088,
+				0.89600002765655,
 				0.98897916078568,
 				1.3069791793823,
 				1.6699792146683,

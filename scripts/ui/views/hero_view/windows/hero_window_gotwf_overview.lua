@@ -75,7 +75,6 @@ HeroWindowGotwfOverview._reset_current_item = function (self)
 	self._params.selected_item_index = nil
 	self._params.selected_item_claimed = nil
 	self._params.selected_item_already_owned = nil
-	self._params.selected_item_bundle_data = nil
 end
 
 HeroWindowGotwfOverview._sync_backend_gotwf = function (self)
@@ -624,11 +623,14 @@ HeroWindowGotwfOverview._populate_item_data = function (self, widget, index, ite
 
 	if item_type == "chips" then
 		item_name = "shillings_medium"
+	elseif item_type == "versus_currency_name" then
+		item_name = "versus_currency_small"
 	elseif item_type == "loot_chest" then
 		item_name = "loot_chest_generic"
 	end
 
-	local texture_name = "store_item_icon_" .. item_name
+	local store_icon_override_key = masterlist_item.store_icon_override_key
+	local texture_name = "store_item_icon_" .. (store_icon_override_key or item_name)
 	local package_name = "resource_packages/store/item_icons/" .. texture_name
 
 	if item_type == "frame" then
@@ -971,7 +973,7 @@ HeroWindowGotwfOverview._update_selected_reward = function (self, item_widget)
 
 	local reward_index = self._current_item_index
 	local reward = rewards[reward_index]
-	local selected_item = reward[math.min(internal_reward_index, #reward)]
+	local selected_item = self:_get_reward_item_from_bundle(reward) or reward[math.min(internal_reward_index, #reward)]
 	local claimed_status = claimed_rewards[self._current_item_index]
 	local is_claimed = claimed_status > 0
 	local already_owned = claimed_status > 1
@@ -979,7 +981,6 @@ HeroWindowGotwfOverview._update_selected_reward = function (self, item_widget)
 	self._params.selected_item = is_claimed and selected_item
 	self._params.selected_item_index = is_claimed and self._current_item_index
 	self._params.selected_item_claimed = is_claimed
-	self._params.selected_item_bundle_data = is_claimed and reward.bundle_data
 	self._params.selected_item_already_owned = already_owned
 	self._current_item_index = self._current_item_index
 end
@@ -1351,7 +1352,6 @@ HeroWindowGotwfOverview._handle_input = function (self, dt, t)
 		self._params.selected_item_index = is_claimed and self._current_item_index
 		self._params.selected_item_claimed = is_claimed
 		self._params.selected_item_already_owned = already_owned
-		self._params.selected_item_bundle_data = is_claimed and current_reward.bundle_data
 
 		if is_claimed then
 			self:_start_transition_animation("reveal_instant")
@@ -1368,8 +1368,13 @@ HeroWindowGotwfOverview._handle_input = function (self, dt, t)
 end
 
 HeroWindowGotwfOverview._get_reward_item_from_bundle = function (self, reward)
-	if reward.bundle then
-		local bundle = reward.bundle
+	local reward_item = reward[1]
+
+	if reward_item.reward_type == "bundle" then
+		local bundle_item_id = reward_item.item_id
+		local bundle_item = ItemMasterList[bundle_item_id]
+		local bundle = bundle_item.bundle
+		local bundled_items = bundle.BundledItems
 		local player = Managers.player:local_player()
 		local profile_index = player:profile_index()
 		local career_index = player:career_index()
@@ -1378,9 +1383,8 @@ HeroWindowGotwfOverview._get_reward_item_from_bundle = function (self, reward)
 		local career_name = career.name
 		local index = 1
 
-		for i = 1, #bundle do
-			local bundle_reward = bundle[i]
-			local item_id = bundle_reward.item_id
+		for i = 1, #bundled_items do
+			local item_id = bundled_items[i]
 			local item_data = rawget(ItemMasterList, item_id) or {}
 
 			if table.contains(item_data.can_wield, career_name) then
@@ -1390,7 +1394,11 @@ HeroWindowGotwfOverview._get_reward_item_from_bundle = function (self, reward)
 			end
 		end
 
-		return reward.bundle[index]
+		return {
+			reward_type = "bundle_item",
+			item_id = bundled_items[index],
+			bundle_item_id = reward_item.item_id,
+		}
 	end
 end
 

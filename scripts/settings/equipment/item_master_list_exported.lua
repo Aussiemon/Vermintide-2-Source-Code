@@ -12246,7 +12246,7 @@ ItemMasterList.level_chest_lesser = {
 	temporary_template = "",
 	can_wield = CanWieldAllItemTemplates,
 	chest_categories = {
-		"level_chest_lesser",
+		"level_up",
 	},
 }
 ItemMasterList.level_chest_02 = {

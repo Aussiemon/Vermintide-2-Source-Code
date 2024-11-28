@@ -191,7 +191,6 @@ StartGameWindowVersusCustomGame._handle_input = function (self, dt, t)
 
 		if input_service:get(START_GAME_INPUT) or UIUtils.is_button_pressed(widgets_by_name.play_button) then
 			self._play_button_pressed = true
-			self._play_button_pressed = true
 
 			self:_play()
 		end
@@ -265,7 +264,7 @@ StartGameWindowVersusCustomGame._play = function (self)
 	self._parent:play_sound("Play_vs_hud_play_menu_host_lobby")
 	self._parent:set_layout_by_name("versus_player_hosted_lobby")
 
-	local mission_id = self._parent:get_selected_level_id()
+	local mission_id = self._parent:get_selected_level_id() or "any"
 	local is_private = self._parent:is_private_option_enabled()
 	local lobby = Managers.state.network:lobby()
 	local search_config = {
@@ -277,7 +276,7 @@ StartGameWindowVersusCustomGame._play = function (self)
 		player_hosted = true,
 		quick_game = false,
 		mission_id = mission_id,
-		any_level = not mission_id,
+		any_level = mission_id == "any",
 		private_game = is_private or false,
 		party_lobby_host = lobby,
 		max_num_players = GameModeSettings.versus.max_num_players,

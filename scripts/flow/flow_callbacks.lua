@@ -325,6 +325,12 @@ function flow_callback_set_simple_animation_speed(params)
 	Unit.set_simple_animation_speed(params.unit, params.speed, params.group)
 end
 
+function flow_callback_get_animation_layer_info(params)
+	flow_return_table.time, flow_return_table.length = Unit.animation_layer_info(params.unit, params.layer)
+
+	return flow_return_table
+end
+
 function flow_query_number_of_active_players(params)
 	local output_value = 0
 	local side_manager = Managers.state.side
@@ -5808,4 +5814,29 @@ function flow_force_abort_interactable(params)
 	end
 
 	InteractionHelper:complete_interaction(interactor_unit, interactable_unit, InteractionResult.FAILURE)
+end
+
+function flow_callbacks_get_local_player_team_data(params)
+	flow_return_table.party_name = "undecided"
+	flow_return_table.team_name = "undecided"
+
+	local local_player = Managers.player:local_player()
+
+	if not local_player then
+		return flow_return_table
+	end
+
+	local local_player_party = Managers.party:get_party_from_unique_id(local_player:unique_id())
+
+	if not local_player_party then
+		return flow_return_table
+	end
+
+	flow_return_table.party_name = local_player_party.name
+
+	local team_name_key = Managers.state.game_mode:setting("party_names_lookup_by_id")[local_player_party.party_id]
+
+	flow_return_table.team_name = team_name_key
+
+	return flow_return_table
 end

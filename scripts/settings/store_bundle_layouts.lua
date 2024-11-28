@@ -2225,4 +2225,220 @@ StoreBundleLayouts = {
 			type = "spacing",
 		},
 	},
+	five_career_bundle_0008 = {
+		{
+			id = "dlc_logo",
+			type = "big_image",
+			settings = {
+				localize = false,
+				show_frame = true,
+				text = "",
+				texture_package = "resource_packages/store/bundle_icons/store_item_icon_five_career_bundle_0008",
+				texture_path = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_five_career_bundle_0008",
+				image_size = {
+					800.4,
+					591.6,
+				},
+				size = {
+					800.4,
+					591.6,
+				},
+			},
+		},
+		{
+			type = "spacing",
+		},
+		{
+			type = "divider_horizontal",
+		},
+		{
+			type = "spacing",
+		},
+		{
+			type = "header_text",
+			settings = {
+				localize = true,
+				text = "menu_store_dlc_title_including",
+			},
+		},
+		{
+			type = "spacing",
+			settings = {
+				size = {
+					260,
+					0,
+				},
+			},
+		},
+		{
+			id = "skin_bw_scholar_1003",
+			type = "item",
+			settings = {
+				hide_new = true,
+				hide_price = false,
+			},
+		},
+		{
+			type = "body_text",
+			settings = {
+				localize = true,
+				text = "display_name_skin_bw_scholar_1003",
+			},
+		},
+		{
+			type = "body_text",
+			settings = {
+				localize = true,
+				text = "description_skin_bw_scholar_1003",
+			},
+		},
+		{
+			type = "spacing",
+		},
+		{
+			type = "spacing",
+			settings = {
+				size = {
+					260,
+					0,
+				},
+			},
+		},
+		{
+			id = "skin_dr_slayer_1003",
+			type = "item",
+			settings = {
+				hide_new = true,
+				hide_price = false,
+			},
+		},
+		{
+			type = "body_text",
+			settings = {
+				localize = true,
+				text = "display_name_skin_dr_slayer_1003",
+			},
+		},
+		{
+			type = "body_text",
+			settings = {
+				localize = true,
+				text = "description_skin_dr_slayer_1003",
+			},
+		},
+		{
+			type = "spacing",
+		},
+		{
+			type = "spacing",
+			settings = {
+				size = {
+					260,
+					0,
+				},
+			},
+		},
+		{
+			id = "skin_es_mercenary_1003",
+			type = "item",
+			settings = {
+				hide_new = true,
+				hide_price = false,
+			},
+		},
+		{
+			type = "body_text",
+			settings = {
+				localize = true,
+				text = "display_name_skin_es_mercenary_1003",
+			},
+		},
+		{
+			type = "body_text",
+			settings = {
+				localize = true,
+				text = "description_skin_es_mercenary_1003",
+			},
+		},
+		{
+			type = "spacing",
+		},
+		{
+			type = "spacing",
+			settings = {
+				size = {
+					260,
+					0,
+				},
+			},
+		},
+		{
+			id = "skin_ww_thornsister_1001",
+			type = "item",
+			settings = {
+				hide_new = true,
+				hide_price = false,
+			},
+		},
+		{
+			type = "body_text",
+			settings = {
+				localize = true,
+				text = "display_name_skin_ww_thornsister_1001",
+			},
+		},
+		{
+			type = "body_text",
+			settings = {
+				localize = true,
+				text = "description_skin_ww_thornsister_1001",
+			},
+		},
+		{
+			type = "spacing",
+		},
+		{
+			type = "spacing",
+			settings = {
+				size = {
+					260,
+					0,
+				},
+			},
+		},
+		{
+			id = "skin_wh_bountyhunter_1003",
+			type = "item",
+			settings = {
+				hide_new = true,
+				hide_price = false,
+			},
+		},
+		{
+			type = "body_text",
+			settings = {
+				localize = true,
+				text = "display_name_skin_wh_bountyhunter_1003",
+			},
+		},
+		{
+			type = "body_text",
+			settings = {
+				localize = true,
+				text = "description_skin_wh_bountyhunter_1003",
+			},
+		},
+		{
+			type = "spacing",
+		},
+		{
+			type = "spacing",
+		},
+		{
+			type = "divider_horizontal",
+		},
+		{
+			type = "spacing",
+		},
+	},
 }

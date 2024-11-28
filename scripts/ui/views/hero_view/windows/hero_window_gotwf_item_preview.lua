@@ -545,10 +545,9 @@ HeroWindowGotwfItemPreview._sync_presentation_item = function (self, force_updat
 	local selected_product = params.selected_item
 
 	if selected_product ~= self._selected_product or force_update then
-		local reset_presentation = not selected_product or not self._selected_product or self._selected_product.item_id ~= selected_product.item_id
+		local reset_presentation = not selected_product or not self._selected_product or self._selected_product.item_id ~= selected_product.item_id or selected_product.reward_type == "currency"
 
 		self._selected_product = selected_product
-		self._selected_product_bundle_data = params.selected_item_bundle_data
 
 		local item = selected_product
 
@@ -629,6 +628,15 @@ HeroWindowGotwfItemPreview._present_item = function (self, item)
 		amount_text = amount and amount .. " " .. Localize("menu_store_panel_currency_tooltip_title") or ""
 		sub_title_text = ""
 		career_title_text = ""
+	elseif slot_type == "versus_currency_name" then
+		local amount = item.amount
+
+		description_text = Localize(masterlist_item.description)
+		amount_text = amount and string.format(Localize("achv_menu_vs_currency_reward_claimed"), amount) or ""
+		type_title_text = Localize("hero_view_prestige_reward")
+		display_name = "versus_currency_name"
+		sub_title_text = ""
+		career_title_text = ""
 	elseif slot_type == "crafting_material" then
 		local amount = item.amount
 
@@ -644,12 +652,14 @@ HeroWindowGotwfItemPreview._present_item = function (self, item)
 		career_title_text = ""
 	end
 
-	local bundle_data = self._selected_product_bundle_data
+	if reward_type == "bundle_item" then
+		local bundle_item_id = item.bundle_item_id
+		local bundle_item = ItemMasterList[bundle_item_id]
 
-	if bundle_data then
-		description_text = bundle_data.description_text and Localize(bundle_data.description_text) or ""
-		sub_title_text = bundle_data.subtitle_text and Localize(bundle_data.subtitle_text) or ""
-		career_title_text = bundle_data.career_title_text and Localize(bundle_data.career_title_text) or ""
+		type_title_text = bundle_item.information_text and Localize(bundle_item.information_text) or type_title_text
+		description_text = bundle_item.description and Localize(bundle_item.description) or description_text
+		sub_title_text = ""
+		career_title_text = ""
 	end
 
 	self:_show_object_set(item_preview_object_set_name)
@@ -925,18 +935,21 @@ HeroWindowGotwfItemPreview._setup_item_presentation = function (self, item)
 
 		self._item_texture_widget = UIWidget.init(widget_definition)
 		self._fadeout_loading_overlay = true
-	elseif slot_type == "loot_chest" or slot_type == "chips" or slot_type == "crafting_material" then
+	elseif slot_type == "loot_chest" or slot_type == "chips" or slot_type == "crafting_material" or slot_type == "versus_currency_name" then
 		self._reference_id = (self._reference_id or 0) + 1
 
 		local reference_name = item_key .. "_" .. self._reference_id
 
 		if slot_type == "chips" then
 			item_key = "shillings_medium"
+		elseif slot_type == "versus_currency_name" then
+			item_key = "versus_currency_small"
 		elseif slot_type == "loot_chest" then
 			item_key = "loot_chest_generic"
 		end
 
-		local texture_name = "store_item_icon_" .. item_key
+		local store_icon_override_key = masterlist_item.store_icon_override_key
+		local texture_name = "store_item_icon_" .. (store_icon_override_key or item_key)
 		local package_name = "resource_packages/store/item_icons/" .. texture_name
 		local package_available = Application.can_get("package", package_name)
 

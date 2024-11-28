@@ -77,6 +77,7 @@ PlayerUnitLocomotionExtension.init = function (self, extension_init_context, uni
 	self._system_data.all_update_units[unit] = self
 	self._mover_modes = {
 		dark_pact_noclip = false,
+		enemy_leap_state = false,
 		enemy_noclip = false,
 		ladder = false,
 	}
@@ -96,7 +97,7 @@ PlayerUnitLocomotionExtension.set_mover_filter_property = function (self, proper
 
 	local filter
 
-	filter = modes.ladder and "filter_player_ladder_mover" or modes.enemy_noclip and "filter_player_enemy_noclip_mover" or modes.dark_pact_noclip and "filter_player_mover_pactsworn_ghost_mode" or self._default_mover_filter
+	filter = modes.ladder and "filter_player_ladder_mover" or modes.enemy_noclip and "filter_player_enemy_noclip_mover" or modes.dark_pact_noclip and "filter_player_mover_pactsworn_ghost_mode" or modes.enemy_leap_state and "filter_player_enemy_leap_state_noclip_mover" or self._default_mover_filter
 
 	local mover = Unit.mover(self.unit)
 
