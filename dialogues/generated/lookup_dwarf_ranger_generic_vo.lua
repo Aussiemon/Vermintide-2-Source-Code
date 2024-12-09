@@ -20,6 +20,7 @@ assert(DialogueLookup[DialogueLookup_n + 17] == nil)
 assert(DialogueLookup[DialogueLookup_n + 18] == nil)
 assert(DialogueLookup[DialogueLookup_n + 19] == nil)
 assert(DialogueLookup[DialogueLookup_n + 20] == nil)
+assert(DialogueLookup[DialogueLookup_n + 21] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pdr_gameplay_path_clear"
 DialogueLookup[DialogueLookup_n + 2] = "pdr_generic_assemble"
@@ -39,6 +40,7 @@ DialogueLookup[DialogueLookup_n + 15] = "pdr_generic_reaction_sound"
 DialogueLookup[DialogueLookup_n + 16] = "pdr_generic_search_complete"
 DialogueLookup[DialogueLookup_n + 17] = "pdr_generic_search_progressing"
 DialogueLookup[DialogueLookup_n + 18] = "pdr_generic_search_start"
-DialogueLookup[DialogueLookup_n + 19] = "pdr_generic_success"
-DialogueLookup[DialogueLookup_n + 20] = "pdr_generic_unexpected_event_01"
-DialogueLookup_n = DialogueLookup_n + 20
+DialogueLookup[DialogueLookup_n + 19] = "pdr_generic_seeing_ruin_a"
+DialogueLookup[DialogueLookup_n + 20] = "pdr_generic_success"
+DialogueLookup[DialogueLookup_n + 21] = "pdr_generic_unexpected_event_01"
+DialogueLookup_n = DialogueLookup_n + 21

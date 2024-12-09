@@ -567,13 +567,6 @@ return function ()
 				"enemy_tag",
 				OP.EQ,
 				"beastmen_minotaur",
-				CombiningOP.OR_NEXT,
-			},
-			{
-				"query_context",
-				"enemy_tag",
-				OP.EQ,
-				"vs_chaos_troll",
 			},
 			{
 				"query_context",
@@ -1947,13 +1940,6 @@ return function ()
 				"enemy_tag",
 				OP.EQ,
 				"beastmen_minotaur",
-				CombiningOP.OR_NEXT,
-			},
-			{
-				"query_context",
-				"enemy_tag",
-				OP.EQ,
-				"vs_chaos_troll",
 			},
 			{
 				"query_context",
@@ -3345,13 +3331,6 @@ return function ()
 				"enemy_tag",
 				OP.EQ,
 				"beastmen_minotaur",
-				CombiningOP.OR_NEXT,
-			},
-			{
-				"query_context",
-				"enemy_tag",
-				OP.EQ,
-				"vs_chaos_troll",
 			},
 			{
 				"query_context",
@@ -4776,13 +4755,6 @@ return function ()
 				"enemy_tag",
 				OP.EQ,
 				"beastmen_minotaur",
-				CombiningOP.OR_NEXT,
-			},
-			{
-				"query_context",
-				"enemy_tag",
-				OP.EQ,
-				"vs_chaos_troll",
 			},
 			{
 				"query_context",
@@ -6156,13 +6128,6 @@ return function ()
 				"enemy_tag",
 				OP.EQ,
 				"beastmen_minotaur",
-				CombiningOP.OR_NEXT,
-			},
-			{
-				"query_context",
-				"enemy_tag",
-				OP.EQ,
-				"vs_chaos_troll",
 			},
 			{
 				"query_context",

@@ -1,0 +1,40 @@
+﻿-- chunkname: @dialogues/generated/lookup_npc_dlc_termite_1.lua
+
+assert(DialogueLookup[DialogueLookup_n + 1] == nil)
+assert(DialogueLookup[DialogueLookup_n + 2] == nil)
+assert(DialogueLookup[DialogueLookup_n + 3] == nil)
+assert(DialogueLookup[DialogueLookup_n + 4] == nil)
+assert(DialogueLookup[DialogueLookup_n + 5] == nil)
+assert(DialogueLookup[DialogueLookup_n + 6] == nil)
+assert(DialogueLookup[DialogueLookup_n + 7] == nil)
+assert(DialogueLookup[DialogueLookup_n + 8] == nil)
+assert(DialogueLookup[DialogueLookup_n + 9] == nil)
+assert(DialogueLookup[DialogueLookup_n + 10] == nil)
+assert(DialogueLookup[DialogueLookup_n + 11] == nil)
+assert(DialogueLookup[DialogueLookup_n + 12] == nil)
+assert(DialogueLookup[DialogueLookup_n + 13] == nil)
+assert(DialogueLookup[DialogueLookup_n + 14] == nil)
+assert(DialogueLookup[DialogueLookup_n + 15] == nil)
+assert(DialogueLookup[DialogueLookup_n + 16] == nil)
+assert(DialogueLookup[DialogueLookup_n + 17] == nil)
+assert(DialogueLookup[DialogueLookup_n + 18] == nil)
+
+DialogueLookup[DialogueLookup_n + 1] = "nik_temple_lake_crossing_destroy_bell_a"
+DialogueLookup[DialogueLookup_n + 2] = "nik_temple_lake_crossing_maze_a"
+DialogueLookup[DialogueLookup_n + 3] = "nik_temple_lake_crossing_start_a"
+DialogueLookup[DialogueLookup_n + 4] = "nik_temple_lake_crossing_temple_sighted_no_elf_b"
+DialogueLookup[DialogueLookup_n + 5] = "nik_temple_sanctum_find_waystone_b"
+DialogueLookup[DialogueLookup_n + 6] = "nik_temple_sanctum_find_waystone_puzzle_area_open_a"
+DialogueLookup[DialogueLookup_n + 7] = "nik_temple_sanctum_find_waystone_puzzle_door_open_a"
+DialogueLookup[DialogueLookup_n + 8] = "nik_temple_sanctum_find_waystone_puzzle_first_step_a"
+DialogueLookup[DialogueLookup_n + 9] = "nik_temple_sanctum_find_waystone_puzzle_first_step_c"
+DialogueLookup[DialogueLookup_n + 10] = "nik_temple_sanctum_find_waystone_puzzle_fragment_in_open_a"
+DialogueLookup[DialogueLookup_n + 11] = "nik_temple_sanctum_find_waystone_puzzle_fragment_three_placed_a"
+DialogueLookup[DialogueLookup_n + 12] = "nik_temple_sanctum_find_waystone_puzzle_fragment_two_placed_a"
+DialogueLookup[DialogueLookup_n + 13] = "nik_temple_sanctum_find_waystone_puzzle_start_b"
+DialogueLookup[DialogueLookup_n + 14] = "nik_temple_sanctum_find_waystone_puzzle_waystone_complete_b"
+DialogueLookup[DialogueLookup_n + 15] = "nik_temple_sanctum_great_seal_c"
+DialogueLookup[DialogueLookup_n + 16] = "nik_temple_sanctum_nightmare_gate_b"
+DialogueLookup[DialogueLookup_n + 17] = "nik_temple_start_banter_b"
+DialogueLookup[DialogueLookup_n + 18] = "nik_temple_wilds_lake_vista_no_elf_a"
+DialogueLookup_n = DialogueLookup_n + 18

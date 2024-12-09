@@ -2,6 +2,70 @@
 
 return function ()
 	define_rule({
+		name = "pbw_gameplay_pinging_monster_a_VS",
+		probability = 1,
+		response = "pbw_gameplay_pinging_monster_a_VS",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_enemy",
+			},
+			{
+				"query_context",
+				"is_ping",
+				OP.EQ,
+				1,
+			},
+			{
+				"query_context",
+				"distance",
+				OP.LTEQ,
+				7,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"vs_chaos_troll",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"vs_rat_ogre",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"faction_memory",
+				"time_since_ping_monster",
+				OP.TIMEDIFF,
+				OP.GT,
+				30,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_ping_monster",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
 		name = "pbw_vw_affirmative",
 		probability = 1,
 		response = "pbw_vw_affirmative",
@@ -453,6 +517,70 @@ return function ()
 			{
 				"user_memory",
 				"time_since_vw_wait",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_pinging_monster_a_VS",
+		probability = 1,
+		response = "pdr_gameplay_pinging_monster_a_VS",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_enemy",
+			},
+			{
+				"query_context",
+				"is_ping",
+				OP.EQ,
+				1,
+			},
+			{
+				"query_context",
+				"distance",
+				OP.LTEQ,
+				7,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"vs_chaos_troll",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"vs_rat_ogre",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"faction_memory",
+				"time_since_ping_monster",
+				OP.TIMEDIFF,
+				OP.GT,
+				30,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_ping_monster",
 				OP.TIMESET,
 			},
 		},
@@ -914,6 +1042,70 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pes_gameplay_pinging_monster_a_VS",
+		probability = 1,
+		response = "pes_gameplay_pinging_monster_a_VS",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_enemy",
+			},
+			{
+				"query_context",
+				"is_ping",
+				OP.EQ,
+				1,
+			},
+			{
+				"query_context",
+				"distance",
+				OP.LTEQ,
+				7,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"vs_chaos_troll",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"vs_rat_ogre",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"faction_memory",
+				"time_since_ping_monster",
+				OP.TIMEDIFF,
+				OP.GT,
+				30,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_ping_monster",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
 		name = "pes_vw_affirmative",
 		probability = 1,
 		response = "pes_vw_affirmative",
@@ -1365,6 +1557,70 @@ return function ()
 			{
 				"user_memory",
 				"time_since_vw_wait",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwe_gameplay_pinging_monster_a_VS",
+		probability = 1,
+		response = "pwe_gameplay_pinging_monster_a_VS",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_enemy",
+			},
+			{
+				"query_context",
+				"is_ping",
+				OP.EQ,
+				1,
+			},
+			{
+				"query_context",
+				"distance",
+				OP.LTEQ,
+				7,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"vs_chaos_troll",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"vs_rat_ogre",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"faction_memory",
+				"time_since_ping_monster",
+				OP.TIMEDIFF,
+				OP.GT,
+				30,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_ping_monster",
 				OP.TIMESET,
 			},
 		},
@@ -1826,6 +2082,70 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pwh_gameplay_pinging_monster_a_VS",
+		probability = 1,
+		response = "pwh_gameplay_pinging_monster_a_VS",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_enemy",
+			},
+			{
+				"query_context",
+				"is_ping",
+				OP.EQ,
+				1,
+			},
+			{
+				"query_context",
+				"distance",
+				OP.LTEQ,
+				7,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"vs_chaos_troll",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"vs_rat_ogre",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"faction_memory",
+				"time_since_ping_monster",
+				OP.TIMEDIFF,
+				OP.GT,
+				30,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_ping_monster",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
 		name = "pwh_vw_affirmative",
 		probability = 1,
 		response = "pwh_vw_affirmative",
@@ -2282,6 +2602,45 @@ return function ()
 		},
 	})
 	add_dialogues({
+		pbw_gameplay_pinging_monster_a_VS = {
+			category = "enemy_alerts",
+			database = "vs_player_vo_heroes",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pbw_gameplay_pinging_monster_a_01",
+				"pbw_gameplay_pinging_monster_a_02",
+				"pbw_gameplay_pinging_monster_a_03",
+				"pbw_gameplay_pinging_monster_a_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pbw_gameplay_pinging_monster_a_01",
+				"pbw_gameplay_pinging_monster_a_02",
+				"pbw_gameplay_pinging_monster_a_03",
+				"pbw_gameplay_pinging_monster_a_04",
+			},
+			sound_events_duration = {
+				0.80860418081284,
+				1.4378333091736,
+				1.5725417137146,
+				1.3520208597183,
+			},
+		},
 		pbw_vw_affirmative = {
 			category = "special_occasion",
 			database = "vs_player_vo_heroes",
@@ -2980,6 +3339,45 @@ return function ()
 				1.8469791412354,
 				0.58399999141693,
 				1.75,
+			},
+		},
+		pdr_gameplay_pinging_monster_a_VS = {
+			category = "enemy_alerts",
+			database = "vs_player_vo_heroes",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pdr_gameplay_pinging_monster_a_01",
+				"pdr_gameplay_pinging_monster_a_02",
+				"pdr_gameplay_pinging_monster_a_03",
+				"pdr_gameplay_pinging_monster_a_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_gameplay_pinging_monster_a_01",
+				"pdr_gameplay_pinging_monster_a_02",
+				"pdr_gameplay_pinging_monster_a_03",
+				"pdr_gameplay_pinging_monster_a_04",
+			},
+			sound_events_duration = {
+				1.2480624914169,
+				0.89589583873749,
+				1.4153125286102,
+				1.4341875314713,
 			},
 		},
 		pdr_vw_affirmative = {
@@ -3682,6 +4080,45 @@ return function ()
 				2.113979101181,
 			},
 		},
+		pes_gameplay_pinging_monster_a_VS = {
+			category = "enemy_alerts",
+			database = "vs_player_vo_heroes",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pes_gameplay_pinging_monster_a_01",
+				"pes_gameplay_pinging_monster_a_02",
+				"pes_gameplay_pinging_monster_a_03",
+				"pes_gameplay_pinging_monster_a_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_gameplay_pinging_monster_a_01",
+				"pes_gameplay_pinging_monster_a_02",
+				"pes_gameplay_pinging_monster_a_03",
+				"pes_gameplay_pinging_monster_a_04",
+			},
+			sound_events_duration = {
+				1.2569999694824,
+				0.87812501192093,
+				0.90289580821991,
+				1.2952916622162,
+			},
+		},
 		pes_vw_affirmative = {
 			category = "special_occasion",
 			database = "vs_player_vo_heroes",
@@ -4382,6 +4819,45 @@ return function ()
 				1.3719999790192,
 			},
 		},
+		pwe_gameplay_pinging_monster_a_VS = {
+			category = "enemy_alerts",
+			database = "vs_player_vo_heroes",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pwe_gameplay_pinging_monster_a_01",
+				"pwe_gameplay_pinging_monster_a_02",
+				"pwe_gameplay_pinging_monster_a_03",
+				"pwe_gameplay_pinging_monster_a_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwe_gameplay_pinging_monster_a_01",
+				"pwe_gameplay_pinging_monster_a_02",
+				"pwe_gameplay_pinging_monster_a_03",
+				"pwe_gameplay_pinging_monster_a_04",
+			},
+			sound_events_duration = {
+				1.5702500343323,
+				1.6680417060852,
+				0.86077082157135,
+				1.2936874628067,
+			},
+		},
 		pwe_vw_affirmative = {
 			category = "special_occasion",
 			database = "vs_player_vo_heroes",
@@ -5080,6 +5556,45 @@ return function ()
 				2.3539791107178,
 				1.3669999837875,
 				2.1559998989105,
+			},
+		},
+		pwh_gameplay_pinging_monster_a_VS = {
+			category = "enemy_alerts",
+			database = "vs_player_vo_heroes",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pwh_gameplay_pinging_monster_a_01",
+				"pwh_gameplay_pinging_monster_a_02",
+				"pwh_gameplay_pinging_monster_a_03",
+				"pwh_gameplay_pinging_monster_a_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwh_gameplay_pinging_monster_a_01",
+				"pwh_gameplay_pinging_monster_a_02",
+				"pwh_gameplay_pinging_monster_a_03",
+				"pwh_gameplay_pinging_monster_a_04",
+			},
+			sound_events_duration = {
+				1.1946250200272,
+				2.0374791622162,
+				1.9464583396912,
+				1.4368958473206,
 			},
 		},
 		pwh_vw_affirmative = {

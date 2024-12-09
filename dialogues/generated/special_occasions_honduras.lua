@@ -20153,13 +20153,13 @@ return function ()
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger",
+				"wood_elf",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger",
+				"wood_elf",
 			},
 		},
 	})
@@ -20184,7 +20184,7 @@ return function ()
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger",
+				"wood_elf",
 			},
 		},
 	})

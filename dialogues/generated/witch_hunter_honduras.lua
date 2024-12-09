@@ -3554,6 +3554,13 @@ return function ()
 				"enemy_tag",
 				OP.EQ,
 				"skaven_rat_ogre",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"vs_rat_ogre",
 			},
 			{
 				"query_context",
@@ -3618,6 +3625,13 @@ return function ()
 				"enemy_tag",
 				OP.EQ,
 				"skaven_rat_ogre",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"vs_rat_ogre",
 			},
 			{
 				"query_context",
@@ -7006,6 +7020,13 @@ return function ()
 				"enemy_tag",
 				OP.EQ,
 				"skaven_rat_ogre",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"vs_rat_ogre",
 			},
 			{
 				"query_context",
