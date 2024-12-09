@@ -26,6 +26,9 @@ UnlockSettings = {
 			penny = {
 				class = "AlwaysUnlocked",
 			},
+			termite = {
+				class = "AlwaysUnlocked",
+			},
 		},
 	},
 }

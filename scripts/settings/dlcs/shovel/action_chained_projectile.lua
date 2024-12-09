@@ -151,7 +151,7 @@ ActionChainedProjectile._shoot = function (self, t)
 			local charge_value = damage_profile.charge_value or "projectile"
 			local buff_type = DamageUtils.get_item_buff_type(self.item_name)
 
-			DamageUtils.buff_on_attack(self.owner_unit, hit_unit, charge_value, self._is_critical_strike, "full", hit_index, send_to_server, buff_type)
+			DamageUtils.buff_on_attack(self.owner_unit, hit_unit, charge_value, self._is_critical_strike, "full", hit_index, send_to_server, buff_type, nil, self.item_name)
 		else
 			self._is_critical_strike = false
 		end

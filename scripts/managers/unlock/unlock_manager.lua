@@ -146,6 +146,8 @@ UnlockManager._handle_popup_results = function (self, result)
 		else
 			Managers.account:force_exit_to_title_screen()
 		end
+	elseif result == "quit_game" then
+		Boot.quit_game = true
 	end
 end
 
@@ -804,7 +806,15 @@ UnlockManager._update_backend_unlocks = function (self, t)
 		end
 
 		if requires_restart then
-			self._popup_ids[#self._popup_ids + 1] = Managers.popup:queue_popup(Localize("popup_console_dlc_needs_restart"), Localize("popup_notice_topic"), "restart_game", Localize("menu_return_to_title_screen"))
+			local action = "restart_game"
+			local action_display_name = Localize("menu_return_to_title_screen")
+
+			if IS_WINDOWS then
+				action = "quit_game"
+				action_display_name = Localize("menu_quit")
+			end
+
+			self._popup_ids[#self._popup_ids + 1] = Managers.popup:queue_popup(Localize("popup_console_dlc_needs_restart"), Localize("popup_notice_topic"), action, action_display_name)
 		end
 
 		self._state = "query_unlocked"

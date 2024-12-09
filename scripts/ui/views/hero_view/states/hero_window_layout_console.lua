@@ -198,6 +198,19 @@ local window_layouts = {
 	},
 	{
 		close_on_exit = false,
+		input_focus_window = "cosmetics_inventory",
+		name = "cosmetics_selection_dark_pact",
+		sound_event_enter = "play_gui_equipment_button",
+		sound_event_exit = "play_gui_equipment_close",
+		windows = {
+			background = 2,
+			character_info = 3,
+			cosmetics_inventory = 4,
+			panel = 1,
+		},
+	},
+	{
+		close_on_exit = false,
 		input_focus_window = "pose_inventory",
 		name = "pose_selection",
 		sound_event_enter = "play_gui_equipment_button",

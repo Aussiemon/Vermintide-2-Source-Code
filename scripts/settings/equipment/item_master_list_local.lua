@@ -267,6 +267,18 @@ ItemMasterList.wpn_gargoyle_head = {
 	temporary_template = "gargoyle_head",
 	can_wield = CanWieldAllItemTemplates,
 }
+ItemMasterList.wpn_waystone_piece = {
+	gamepad_hud_icon = "consumables_icon_defence",
+	hud_icon = "consumables_icon_defence",
+	inventory_icon = "icons_placeholder",
+	is_local = true,
+	item_type = "inventory_item",
+	left_hand_unit = "units/weapons/player/pup_waystone_piece_01/wpn_waystone_piece_01",
+	rarity = "plentiful",
+	slot_type = "healthkit",
+	temporary_template = "waystone_piece",
+	can_wield = CanWieldAllItemTemplates,
+}
 ItemMasterList.wpn_magic_crystal = {
 	gamepad_hud_icon = "consumables_icon_defence",
 	hud_icon = "consumables_icon_defence",

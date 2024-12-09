@@ -1,6 +1,7 @@
 ﻿-- chunkname: @scripts/managers/achievements/achievement_templates_carousel.lua
 
 local ObjectiveTags = require("scripts/entity_system/systems/objective/objective_tags")
+local EventParams = require("scripts/managers/achievements/achievement_event_parameters")
 local achievements = AchievementTemplates.achievements
 local register_kill_stats_id = 1
 local register_kill_victim_unit = 2
@@ -1605,6 +1606,180 @@ achievements.vs_bile_troll_vomit = {
 	end,
 	progress = function (statistics_db, stats_id)
 		local count = math.min(statistics_db:get_persistent_stat(stats_id, "vs_bile_troll_vomit"), value)
+
+		return {
+			count,
+			value,
+		}
+	end,
+}
+
+local values = {
+	100,
+	1000,
+	2500,
+}
+
+for i = 1, #values do
+	achievements["vs_rat_ogre_damage_" .. string.format("%02d", i)] = {
+		display_completion_ui = true,
+		group = "vs_rat_ogre_damage",
+		required_dlc = "carousel",
+		name = "achv_rat_ogre_" .. string.format("%02d", i) .. "_vs_name",
+		desc = function ()
+			return string.format(Localize("achv_rat_ogre_" .. string.format("%02d", i) .. "_vs_desc"), values[i])
+		end,
+		icon = "rat_ogre_" .. i,
+		completed = function (statistics_db, stats_id)
+			return statistics_db:get_persistent_stat(stats_id, "damage_dealt_as_breed", "vs_rat_ogre") >= values[i]
+		end,
+		progress = function (statistics_db, stats_id)
+			local total = values[i]
+			local count = math.min(statistics_db:get_persistent_stat(stats_id, "damage_dealt_as_breed", "vs_rat_ogre"), total)
+
+			return {
+				count,
+				total,
+			}
+		end,
+	}
+end
+
+local value = 100
+
+achievements.vs_rat_ogre_hit_heroes_heavy = {
+	display_completion_ui = true,
+	icon = "rat_ogre_attack",
+	name = "achv_rat_ogre_hit_heroes_vs_name",
+	required_dlc = "carousel",
+	desc = function ()
+		return string.format(Localize("achv_rat_ogre_hit_heroes_vs_desc"), value)
+	end,
+	events = {
+		"on_hit",
+	},
+	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
+		local current_mechanism_name = Managers.mechanism:current_mechanism_name()
+
+		if current_mechanism_name ~= "versus" then
+			return
+		end
+
+		local attacker_unit = event_data[EventParams.on_hit.unit]
+
+		if not ALIVE[attacker_unit] then
+			return
+		end
+
+		local local_player_unit = Managers.player:local_player().player_unit
+
+		if local_player_unit ~= attacker_unit then
+			return
+		end
+
+		local damage_source = event_data[EventParams.on_hit.damage_source]
+
+		if damage_source ~= "vs_rat_ogre_hands" then
+			return
+		end
+
+		local attack_type = event_data[EventParams.on_hit.attack_type]
+
+		if attack_type ~= "heavy_attack" then
+			return
+		end
+
+		local hit_unit = event_data[EventParams.on_hit.hit_unit]
+		local breed = ALIVE[hit_unit] and Unit.get_data(hit_unit, "breed")
+
+		if not breed or not breed.is_player then
+			return
+		end
+
+		template_data.cooldown = template_data.cooldown or {}
+
+		local t = Managers.time:time("game")
+		local cd = template_data.cooldown[hit_unit]
+
+		if cd and t < cd then
+			return
+		end
+
+		template_data.cooldown[hit_unit] = t + 0.5
+
+		statistics_db:increment_stat(stats_id, "vs_rat_ogre_hit_heroes_heavy")
+	end,
+	completed = function (statistics_db, stats_id)
+		return statistics_db:get_persistent_stat(stats_id, "vs_rat_ogre_hit_heroes_heavy") >= value
+	end,
+	progress = function (statistics_db, stats_id)
+		local count = math.min(statistics_db:get_persistent_stat(stats_id, "vs_rat_ogre_hit_heroes_heavy"), value)
+
+		return {
+			count,
+			value,
+		}
+	end,
+}
+
+local value = 100
+
+achievements.vs_rat_ogre_hit_leap = {
+	display_completion_ui = true,
+	icon = "rat_ogre_leap",
+	name = "achv_rat_ogre_leap_vs_name",
+	required_dlc = "carousel",
+	desc = function ()
+		return string.format(Localize("achv_rat_ogre_leap_vs_desc"), value)
+	end,
+	events = {
+		"on_hit",
+	},
+	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
+		local current_mechanism_name = Managers.mechanism:current_mechanism_name()
+
+		if current_mechanism_name ~= "versus" then
+			return
+		end
+
+		local attacker_unit = event_data[EventParams.on_hit.unit]
+
+		if not ALIVE[attacker_unit] then
+			return
+		end
+
+		local local_player_unit = Managers.player:local_player().player_unit
+
+		if local_player_unit ~= attacker_unit then
+			return
+		end
+
+		local damage_source = event_data[EventParams.on_hit.damage_source]
+
+		if damage_source ~= "vs_rat_ogre_hands" then
+			return
+		end
+
+		local attack_type = event_data[EventParams.on_hit.attack_type]
+
+		if attack_type ~= "aoe" then
+			return
+		end
+
+		local hit_unit = event_data[EventParams.on_hit.hit_unit]
+		local breed = ALIVE[hit_unit] and Unit.get_data(hit_unit, "breed")
+
+		if not breed or not breed.is_player then
+			return
+		end
+
+		statistics_db:increment_stat(stats_id, "vs_rat_ogre_hit_leap")
+	end,
+	completed = function (statistics_db, stats_id)
+		return statistics_db:get_persistent_stat(stats_id, "vs_rat_ogre_hit_leap") >= value
+	end,
+	progress = function (statistics_db, stats_id)
+		local count = math.min(statistics_db:get_persistent_stat(stats_id, "vs_rat_ogre_hit_leap"), value)
 
 		return {
 			count,

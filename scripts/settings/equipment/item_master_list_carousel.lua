@@ -102,6 +102,27 @@ ItemMasterList.vs_chaos_troll_axe = {
 		"versus",
 	},
 }
+ItemMasterList.vs_rat_ogre_hands = {
+	description = "dw_1h_axe_skin_01_description",
+	display_name = "dw_1h_axe_skin_01_name",
+	has_power_level = true,
+	hud_icon = "weapon_generic_icon_axe1h",
+	inventory_icon = "icon_wpn_dw_axe_01_t1",
+	item_type = "dr_1h_axes",
+	left_hand_unit = "units/weapons/player/wpn_invisible_weapon",
+	property_table_name = "melee",
+	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_invisible_weapon",
+	slot_type = "melee",
+	template = "vs_rat_ogre_hands",
+	trait_table_name = "melee",
+	can_wield = {
+		"vs_rat_ogre",
+	},
+	mechanisms = {
+		"versus",
+	},
+}
 ItemMasterList.vs_gutter_runner_claws = {
 	description = "dw_1h_axe_skin_01_description",
 	display_name = "dw_1h_axe_skin_01_name",
@@ -2324,6 +2345,22 @@ ItemMasterList.chaos_troll_skin_0000 = {
 		"vs_chaos_troll",
 	},
 }
+ItemMasterList.skaven_rat_ogre_skin_0000 = {
+	description = "description_skaven_rat_ogre_skin_0000",
+	display_name = "skaven_rat_ogre_skin_0000",
+	hud_icon = "unit_frame_portrait_witch_hunter",
+	information_text = "information_text_character_skin",
+	inventory_icon = "icon_skaven_rat_ogre_skin_0000",
+	item_type = "skin",
+	name = "skaven_rat_ogre_skin_0000",
+	rarity = "plentiful",
+	skin_type = "unit",
+	slot_type = "skin",
+	temporary_template = "skaven_rat_ogre_skin_0000",
+	can_wield = {
+		"vs_rat_ogre",
+	},
+}
 ItemMasterList.frame_globadier_01 = {
 	description = "frame_versus_portrait_globadier_01_description",
 	display_name = "frame_versus_portrait_globadier_01_name",
@@ -2494,6 +2531,34 @@ ItemMasterList.frame_versus_02 = {
 	selection = "versus",
 	slot_type = "frame",
 	temporary_template = "frame_versus_02",
+	can_wield = CanWieldAllItemTemplates,
+}
+ItemMasterList.frame_rat_ogre_01 = {
+	description = "frame_rat_ogre_01_description",
+	display_name = "frame_rat_ogre_01_name",
+	display_unit = "units/weapons/weapon_display/display_portrait_frame",
+	hud_icon = "unit_frame_02",
+	information_text = "information_text_frame",
+	inventory_icon = "icon_portrait_frame_rat_ogre_01",
+	item_type = "frame",
+	rarity = "promo",
+	selection = "versus",
+	slot_type = "frame",
+	temporary_template = "frame_rat_ogre_01",
+	can_wield = CanWieldAllItemTemplates,
+}
+ItemMasterList.frame_rat_ogre_02 = {
+	description = "frame_rat_ogre_02_description",
+	display_name = "frame_rat_ogre_02_name",
+	display_unit = "units/weapons/weapon_display/display_portrait_frame",
+	hud_icon = "unit_frame_02",
+	information_text = "information_text_frame",
+	inventory_icon = "icon_portrait_frame_rat_ogre_02",
+	item_type = "frame",
+	rarity = "promo",
+	selection = "versus",
+	slot_type = "frame",
+	temporary_template = "frame_rat_ogre_02",
 	can_wield = CanWieldAllItemTemplates,
 }
 ItemMasterList.weapon_pose_pack_kerillian_dual_wield = {
@@ -3605,3 +3670,4 @@ UpdateItemMasterList({}, "vs_ratling_gunner")
 UpdateItemMasterList({}, "vs_poison_wind_globadier")
 UpdateItemMasterList({}, "vs_gutter_runner")
 UpdateItemMasterList({}, "vs_chaos_troll")
+UpdateItemMasterList({}, "vs_rat_ogre")

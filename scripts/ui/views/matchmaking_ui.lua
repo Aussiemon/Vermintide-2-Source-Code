@@ -186,6 +186,8 @@ MatchmakingUI.update = function (self, dt, t)
 	if show_detailed_matchmaking_info ~= self._show_detailed_matchmaking_info then
 		self._show_detailed_matchmaking_info = show_detailed_matchmaking_info
 		self._detailed_info_visibility_progress = 0
+
+		self:_set_in_view_ui_visibility(show_detailed_matchmaking_info)
 	end
 
 	for _, animation in pairs(self.ui_animations) do
@@ -472,22 +474,22 @@ MatchmakingUI._update_matchmaking_info = function (self, t)
 end
 
 MatchmakingUI._update_status = function (self, dt)
+	local rotation_progresss = ((self._rotation_progresss or 0) + dt * 0.2) % 1
+
+	self._rotation_progresss = rotation_progresss
+
+	local anim_progress = math.easeCubic(rotation_progresss)
+	local rotation_angle = anim_progress * 360
+	local radians = math.degrees_to_radians(rotation_angle)
+	local loading_icon = self:_get_widget("loading_status_frame")
+
+	loading_icon.style.texture_id.angle = radians
+
+	local connecting_rotation_speed = 200
+	local connecting_rotation_angle = dt * connecting_rotation_speed % 360
+	local connecting_radians = math.degrees_to_radians(connecting_rotation_angle)
+
 	if self._active_mechanism ~= "versus" then
-		local rotation_progresss = ((self._rotation_progresss or 0) + dt * 0.2) % 1
-
-		self._rotation_progresss = rotation_progresss
-
-		local anim_progress = math.easeCubic(rotation_progresss)
-		local rotation_angle = anim_progress * 360
-		local radians = math.degrees_to_radians(rotation_angle)
-		local loading_icon = self:_get_widget("loading_status_frame")
-
-		loading_icon.style.texture_id.angle = radians
-
-		local connecting_rotation_speed = 200
-		local connecting_rotation_angle = dt * connecting_rotation_speed % 360
-		local connecting_radians = math.degrees_to_radians(connecting_rotation_angle)
-
 		for i = 1, 4 do
 			local widget_name = "party_slot_" .. i
 			local widget = self:_get_detail_widget(widget_name)
@@ -987,6 +989,31 @@ MatchmakingUI._set_vote_time_progress = function (self, progress)
 
 	current_size[1] = default_size[1] * progress
 	uvs[2][1] = progress
+end
+
+MatchmakingUI._set_in_view_ui_visibility = function (self, show_detailed_ui)
+	local adventure_window_widget = self._widgets_by_name.window
+	local adventure_window_status_text = self._widgets_by_name.status_text
+	local deus_window_widget = self._widgets_deus_by_name.window
+	local deus_window_status_text = self._widgets_deus_by_name.status_text
+	local versus_window_widget = self._widgets_versus_by_name.window
+	local versus_window_status_text = self._widgets_versus_by_name.status_text
+	local uv1_1 = show_detailed_ui and 0 or 0.765
+	local size_x = show_detailed_ui and 506 or 118.91
+	local horz_alignment = show_detailed_ui and "left" or "right"
+
+	adventure_window_widget.content.texture_id.uvs[1][1] = uv1_1
+	adventure_window_widget.style.texture_id.texture_size[1] = size_x
+	adventure_window_widget.style.texture_id.horizontal_alignment = horz_alignment
+	adventure_window_status_text.content.visible = show_detailed_ui
+	deus_window_widget.content.texture_id.uvs[1][1] = uv1_1
+	deus_window_widget.style.texture_id.texture_size[1] = size_x
+	deus_window_widget.style.texture_id.horizontal_alignment = horz_alignment
+	deus_window_status_text.content.visible = show_detailed_ui
+	versus_window_widget.content.texture_id.uvs[1][1] = uv1_1
+	versus_window_widget.style.texture_id.texture_size[1] = size_x
+	versus_window_widget.style.texture_id.horizontal_alignment = horz_alignment
+	versus_window_status_text.content.visible = show_detailed_ui
 end
 
 MatchmakingUI.on_matchmaking_num_players_in_matchmaking = function (self, mechanism, num_players)

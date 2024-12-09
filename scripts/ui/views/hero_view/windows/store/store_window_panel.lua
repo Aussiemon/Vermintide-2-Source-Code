@@ -587,7 +587,7 @@ StoreWindowPanel._sync_wallet_matchmaking_location = function (self)
 		self._is_game_matchmaking = is_game_matchmaking
 
 		local ui_scenegraph = self._ui_scenegraph
-		local offset_value = is_game_matchmaking and 390 or 0
+		local offset_value = is_game_matchmaking and 26 or 0
 		local currency_types = self._currency_types
 
 		for i = 1, #currency_types do
@@ -623,7 +623,12 @@ StoreWindowPanel._sync_player_wallet = function (self)
 			local widget = top_widgets_by_name["currency_panel_widget_" .. currency_type]
 			local content = widget.content
 			local style = widget.style
+			local currency_settings = self._currency_ui_settings[currency_type]
 			local currency_text = UIUtils.comma_value(tostring(currency_amount))
+
+			if currency_settings.max_amount then
+				currency_text = string.format("%s/{#size(20)}%s{#reset()}", currency_text, tostring(currency_settings.max_amount))
+			end
 
 			content.currency_text = currency_text
 
@@ -640,7 +645,7 @@ StoreWindowPanel._sync_player_wallet = function (self)
 			scenegraph_definition["currency_node_" .. currency_type].position[1] = -92 - background_total_size
 
 			local is_game_matchmaking = Managers.matchmaking:is_game_matchmaking()
-			local offset_value = is_game_matchmaking and 390 or 0
+			local offset_value = is_game_matchmaking and 26 or 0
 
 			ui_scenegraph["currency_node_" .. currency_type].position[1] = scenegraph_definition["currency_node_" .. currency_type].position[1] - offset_value
 			background_total_size = background_total_size + background_size

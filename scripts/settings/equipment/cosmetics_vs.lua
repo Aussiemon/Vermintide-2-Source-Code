@@ -120,6 +120,26 @@ local chaos_troll_skin_0000 = {
 		"slot_hat",
 	},
 }
+local skaven_rat_ogre_skin_0000 = {
+	career = 1,
+	dark_pact = true,
+	first_person = "units/beings/player/dark_pact_first_person_base/skaven_rat_ogre/chr_first_person_base",
+	first_person_bot = "units/beings/player/dark_pact_first_person_base/skaven_rat_ogre/chr_first_person_bot_base",
+	third_person = "units/beings/player/dark_pact_third_person_base/skaven_rat_ogre/chr_third_person_base",
+	third_person_bot = "units/beings/player/dark_pact_third_person_base/skaven_rat_ogre/chr_third_person_base",
+	third_person_husk = "units/beings/player/dark_pact_third_person_base/skaven_rat_ogre/chr_third_person_base_husk",
+	first_person_attachment = {
+		unit = "units/beings/player/dark_pact_skins/skaven_rat_ogre/skin_0000/first_person/chr_first_person_mesh",
+		attachment_node_linking = AttachmentNodeLinking.rat_ogre_first_person_attachment,
+	},
+	third_person_attachment = {
+		unit = "units/beings/player/dark_pact_skins/skaven_rat_ogre/skin_0000/third_person/chr_third_person_mesh",
+		attachment_node_linking = AttachmentNodeLinking.rat_ogre_third_person_attachment,
+	},
+	always_hide_attachment_slots = {
+		"slot_hat",
+	},
+}
 
 return {
 	skaven_gutter_runner_skin_0000 = table.clone(skaven_gutter_runner_skin_0000),
@@ -128,4 +148,5 @@ return {
 	skaven_warpfire_thrower_skin_0000 = table.clone(skaven_warpfire_thrower_skin_0000),
 	skaven_ratling_gunner_skin_0000 = table.clone(skaven_ratling_gunner_skin_0000),
 	chaos_troll_skin_0000 = table.clone(chaos_troll_skin_0000),
+	skaven_rat_ogre_skin_0000 = table.clone(skaven_rat_ogre_skin_0000),
 }

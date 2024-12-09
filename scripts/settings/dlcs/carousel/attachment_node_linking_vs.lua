@@ -1844,6 +1844,582 @@ AttachmentNodeLinking.chaos_troll_third_person_attachment = {
 		target = "j_righthandpinky3",
 	},
 }
+AttachmentNodeLinking.rat_ogre_first_person_attachment = {
+	{
+		source = "root_point",
+		target = "root_point",
+	},
+	{
+		source = "j_spine2",
+		target = "j_spine2",
+	},
+	{
+		source = "j_leftshoulder",
+		target = "j_leftshoulder",
+	},
+	{
+		source = "j_leftarm",
+		target = "j_leftarm",
+	},
+	{
+		source = "j_leftarmroll",
+		target = "j_leftarmroll",
+	},
+	{
+		source = "j_leftforearm",
+		target = "j_leftforearm",
+	},
+	{
+		source = "j_lefthand",
+		target = "j_lefthand",
+	},
+	{
+		source = "j_leftinhandthumb",
+		target = "j_leftinhandthumb",
+	},
+	{
+		source = "j_lefthandthumb1",
+		target = "j_lefthandthumb1",
+	},
+	{
+		source = "j_lefthandthumb2",
+		target = "j_lefthandthumb2",
+	},
+	{
+		source = "j_lefthandthumb3",
+		target = "j_lefthandthumb3",
+	},
+	{
+		source = "j_leftweaponattach",
+		target = "j_leftweaponattach",
+	},
+	{
+		source = "j_leftinhandindex",
+		target = "j_leftinhandindex",
+	},
+	{
+		source = "j_lefthandindex1",
+		target = "j_lefthandindex1",
+	},
+	{
+		source = "j_lefthandindex2",
+		target = "j_lefthandindex2",
+	},
+	{
+		source = "j_lefthandindex3",
+		target = "j_lefthandindex3",
+	},
+	{
+		source = "j_lefthandindex4",
+		target = "j_lefthandindex4",
+	},
+	{
+		source = "j_leftinhandmiddle",
+		target = "j_leftinhandmiddle",
+	},
+	{
+		source = "j_lefthandmiddle1",
+		target = "j_lefthandmiddle1",
+	},
+	{
+		source = "j_lefthandmiddle2",
+		target = "j_lefthandmiddle2",
+	},
+	{
+		source = "j_lefthandmiddle3",
+		target = "j_lefthandmiddle3",
+	},
+	{
+		source = "j_lefthandmiddle4",
+		target = "j_lefthandmiddle4",
+	},
+	{
+		source = "j_leftinhandring",
+		target = "j_leftinhandring",
+	},
+	{
+		source = "j_lefthandring1",
+		target = "j_lefthandring1",
+	},
+	{
+		source = "j_lefthandring2",
+		target = "j_lefthandring2",
+	},
+	{
+		source = "j_lefthandring3",
+		target = "j_lefthandring3",
+	},
+	{
+		source = "j_lefthandring4",
+		target = "j_lefthandring4",
+	},
+	{
+		source = "j_leftforearmroll",
+		target = "j_leftforearmroll",
+	},
+	{
+		source = "j_rightshoulder",
+		target = "j_rightshoulder",
+	},
+	{
+		source = "j_rightarm",
+		target = "j_rightarm",
+	},
+	{
+		source = "j_rightforearm",
+		target = "j_rightforearm",
+	},
+	{
+		source = "j_righthand",
+		target = "j_righthand",
+	},
+	{
+		source = "j_rightinhandindex",
+		target = "j_rightinhandindex",
+	},
+	{
+		source = "j_righthandindex1",
+		target = "j_righthandindex1",
+	},
+	{
+		source = "j_righthandindex2",
+		target = "j_righthandindex2",
+	},
+	{
+		source = "j_righthandindex3",
+		target = "j_righthandindex3",
+	},
+	{
+		source = "j_righthandindex4",
+		target = "j_righthandindex4",
+	},
+	{
+		source = "j_rightinhandthumb",
+		target = "j_rightinhandthumb",
+	},
+	{
+		source = "j_righthandthumb1",
+		target = "j_righthandthumb1",
+	},
+	{
+		source = "j_righthandthumb2",
+		target = "j_righthandthumb2",
+	},
+	{
+		source = "j_righthandthumb3",
+		target = "j_righthandthumb3",
+	},
+	{
+		source = "j_rightinhandmiddle",
+		target = "j_rightinhandmiddle",
+	},
+	{
+		source = "j_righthandmiddle1",
+		target = "j_righthandmiddle1",
+	},
+	{
+		source = "j_righthandmiddle2",
+		target = "j_righthandmiddle2",
+	},
+	{
+		source = "j_righthandmiddle3",
+		target = "j_righthandmiddle3",
+	},
+	{
+		source = "j_righthandmiddle4",
+		target = "j_righthandmiddle4",
+	},
+	{
+		source = "j_righthandring5",
+		target = "j_righthandring5",
+	},
+	{
+		source = "j_righthandring1",
+		target = "j_righthandring1",
+	},
+	{
+		source = "j_righthandring2",
+		target = "j_righthandring2",
+	},
+	{
+		source = "j_righthandring3",
+		target = "j_righthandring3",
+	},
+	{
+		source = "j_righthandring4",
+		target = "j_righthandring4",
+	},
+	{
+		source = "j_rightweaponattach",
+		target = "j_rightweaponattach",
+	},
+	{
+		source = "j_rightforearmroll",
+		target = "j_rightforearmroll",
+	},
+	{
+		source = "j_rightarmroll",
+		target = "j_rightarmroll",
+	},
+}
+AttachmentNodeLinking.rat_ogre_third_person_attachment = {
+	{
+		source = "root_point",
+		target = "root_point",
+	},
+	{
+		source = "j_hips",
+		target = "j_hips",
+	},
+	{
+		source = "j_leftupleg",
+		target = "j_leftupleg",
+	},
+	{
+		source = "j_rightupleg",
+		target = "j_rightupleg",
+	},
+	{
+		source = "j_spine",
+		target = "j_spine",
+	},
+	{
+		source = "j_tail1",
+		target = "j_tail1",
+	},
+	{
+		source = "j_leftleg",
+		target = "j_leftleg",
+	},
+	{
+		source = "j_leftuplegroll",
+		target = "j_leftuplegroll",
+	},
+	{
+		source = "j_rightleg",
+		target = "j_rightleg",
+	},
+	{
+		source = "j_rightuplegroll",
+		target = "j_rightuplegroll",
+	},
+	{
+		source = "j_spine1",
+		target = "j_spine1",
+	},
+	{
+		source = "j_tail2",
+		target = "j_tail2",
+	},
+	{
+		source = "j_leftfoot",
+		target = "j_leftfoot",
+	},
+	{
+		source = "j_leftlegroll",
+		target = "j_leftlegroll",
+	},
+	{
+		source = "j_rightfoot",
+		target = "j_rightfoot",
+	},
+	{
+		source = "j_rightlegroll",
+		target = "j_rightlegroll",
+	},
+	{
+		source = "j_spine2",
+		target = "j_spine2",
+	},
+	{
+		source = "j_tail3",
+		target = "j_tail3",
+	},
+	{
+		source = "j_leftshoulder",
+		target = "j_leftshoulder",
+	},
+	{
+		source = "j_lefttoebase",
+		target = "j_lefttoebase",
+	},
+	{
+		source = "j_neck",
+		target = "j_neck",
+	},
+	{
+		source = "j_rightshoulder",
+		target = "j_rightshoulder",
+	},
+	{
+		source = "j_righttoebase",
+		target = "j_righttoebase",
+	},
+	{
+		source = "j_tail4",
+		target = "j_tail4",
+	},
+	{
+		source = "j_leftarm",
+		target = "j_leftarm",
+	},
+	{
+		source = "j_neck_1",
+		target = "j_neck_1",
+	},
+	{
+		source = "j_rightarm",
+		target = "j_rightarm",
+	},
+	{
+		source = "j_tail5",
+		target = "j_tail5",
+	},
+	{
+		source = "j_head",
+		target = "j_head",
+	},
+	{
+		source = "j_leftarmroll",
+		target = "j_leftarmroll",
+	},
+	{
+		source = "j_leftforearm",
+		target = "j_leftforearm",
+	},
+	{
+		source = "j_rightarmroll",
+		target = "j_rightarmroll",
+	},
+	{
+		source = "j_rightforearm",
+		target = "j_rightforearm",
+	},
+	{
+		source = "j_tail6",
+		target = "j_tail6",
+	},
+	{
+		source = "j_leftforearmroll",
+		target = "j_leftforearmroll",
+	},
+	{
+		source = "j_lefthand",
+		target = "j_lefthand",
+	},
+	{
+		source = "j_rightforearmroll",
+		target = "j_rightforearmroll",
+	},
+	{
+		source = "j_righthand",
+		target = "j_righthand",
+	},
+	{
+		source = "j_leftinfootindex",
+		target = "j_leftinfootindex",
+	},
+	{
+		source = "j_rightinfootindex",
+		target = "j_rightinfootindex",
+	},
+	{
+		source = "j_jaw",
+		target = "j_jaw",
+	},
+	{
+		source = "j_leftear",
+		target = "j_leftear",
+	},
+	{
+		source = "j_lefteye",
+		target = "j_lefteye",
+	},
+	{
+		source = "j_lefteyelidbottom",
+		target = "j_lefteyelidbottom",
+	},
+	{
+		source = "j_lefteyelidtop",
+		target = "j_lefteyelidtop",
+	},
+	{
+		source = "j_lip_left",
+		target = "j_lip_left",
+	},
+	{
+		source = "j_lip_right",
+		target = "j_lip_right",
+	},
+	{
+		source = "j_lip_upleft",
+		target = "j_lip_upleft",
+	},
+	{
+		source = "j_lip_upright",
+		target = "j_lip_upright",
+	},
+	{
+		source = "j_nose",
+		target = "j_nose",
+	},
+	{
+		source = "j_rightear",
+		target = "j_rightear",
+	},
+	{
+		source = "j_righteye",
+		target = "j_righteye",
+	},
+	{
+		source = "j_righteyelidbottom",
+		target = "j_righteyelidbottom",
+	},
+	{
+		source = "j_righteyelidtop",
+		target = "j_righteyelidtop",
+	},
+	{
+		source = "j_leftinhandindex",
+		target = "j_leftinhandindex",
+	},
+	{
+		source = "j_leftinhandmiddle",
+		target = "j_leftinhandmiddle",
+	},
+	{
+		source = "j_leftinhandring",
+		target = "j_leftinhandring",
+	},
+	{
+		source = "j_leftinhandthumb",
+		target = "j_leftinhandthumb",
+	},
+	{
+		source = "j_leftweaponattach",
+		target = "j_leftweaponattach",
+	},
+	{
+		source = "j_lip_downleft",
+		target = "j_lip_downleft",
+	},
+	{
+		source = "j_lip_downright",
+		target = "j_lip_downright",
+	},
+	{
+		source = "j_righthandring5",
+		target = "j_righthandring5",
+	},
+	{
+		source = "j_rightinhandindex",
+		target = "j_rightinhandindex",
+	},
+	{
+		source = "j_rightinhandmiddle",
+		target = "j_rightinhandmiddle",
+	},
+	{
+		source = "j_rightinhandthumb",
+		target = "j_rightinhandthumb",
+	},
+	{
+		source = "j_rightweaponattach",
+		target = "j_rightweaponattach",
+	},
+	{
+		source = "j_lefthandindex1",
+		target = "j_lefthandindex1",
+	},
+	{
+		source = "j_lefthandmiddle1",
+		target = "j_lefthandmiddle1",
+	},
+	{
+		source = "j_lefthandring1",
+		target = "j_lefthandring1",
+	},
+	{
+		source = "j_lefthandthumb1",
+		target = "j_lefthandthumb1",
+	},
+	{
+		source = "j_righthandindex1",
+		target = "j_righthandindex1",
+	},
+	{
+		source = "j_righthandmiddle1",
+		target = "j_righthandmiddle1",
+	},
+	{
+		source = "j_righthandring1",
+		target = "j_righthandring1",
+	},
+	{
+		source = "j_righthandthumb1",
+		target = "j_righthandthumb1",
+	},
+	{
+		source = "j_lefthandindex2",
+		target = "j_lefthandindex2",
+	},
+	{
+		source = "j_lefthandmiddle2",
+		target = "j_lefthandmiddle2",
+	},
+	{
+		source = "j_lefthandring2",
+		target = "j_lefthandring2",
+	},
+	{
+		source = "j_lefthandthumb2",
+		target = "j_lefthandthumb2",
+	},
+	{
+		source = "j_righthandindex2",
+		target = "j_righthandindex2",
+	},
+	{
+		source = "j_righthandmiddle2",
+		target = "j_righthandmiddle2",
+	},
+	{
+		source = "j_righthandring2",
+		target = "j_righthandring2",
+	},
+	{
+		source = "j_righthandthumb2",
+		target = "j_righthandthumb2",
+	},
+	{
+		source = "j_lefthandindex3",
+		target = "j_lefthandindex3",
+	},
+	{
+		source = "j_lefthandmiddle3",
+		target = "j_lefthandmiddle3",
+	},
+	{
+		source = "j_lefthandring3",
+		target = "j_lefthandring3",
+	},
+	{
+		source = "j_righthandindex3",
+		target = "j_righthandindex3",
+	},
+	{
+		source = "j_righthandmiddle3",
+		target = "j_righthandmiddle3",
+	},
+	{
+		source = "j_righthandring3",
+		target = "j_righthandring3",
+	},
+	{
+		source = "j_righthandthumb3",
+		target = "j_righthandthumb3",
+	},
+}
 AttachmentNodeLinking.vs_packmaster_claw = {
 	first_person = {
 		wielded = {
@@ -2107,6 +2683,80 @@ AttachmentNodeLinking.vs_warpfire_thrower_gun = {
 	},
 }
 AttachmentNodeLinking.vs_chaos_troll_axe = {
+	left = {
+		first_person = {
+			wielded = {
+				{
+					source = "j_leftweaponattach",
+					target = 0,
+				},
+			},
+			unwielded = {
+				{
+					source = "j_hips",
+					target = 0,
+				},
+			},
+		},
+		third_person = {
+			display = {
+				{
+					source = "j_leftweaponattach",
+					target = 0,
+				},
+			},
+			wielded = {
+				{
+					source = "j_leftweaponattach",
+					target = 0,
+				},
+			},
+			unwielded = {
+				{
+					source = "j_leftweaponattach",
+					target = 0,
+				},
+			},
+		},
+	},
+	right = {
+		first_person = {
+			wielded = {
+				{
+					source = "j_rightweaponattach",
+					target = 0,
+				},
+			},
+			unwielded = {
+				{
+					source = "j_hips",
+					target = 0,
+				},
+			},
+		},
+		third_person = {
+			display = {
+				{
+					source = "j_rightweaponattach",
+					target = 0,
+				},
+			},
+			wielded = {
+				{
+					source = "j_rightweaponattach",
+					target = 0,
+				},
+			},
+			unwielded = {
+				{
+					source = "j_rightweaponattach",
+					target = 0,
+				},
+			},
+		},
+	},
+}
+AttachmentNodeLinking.vs_rat_ogre_hands = {
 	left = {
 		first_person = {
 			wielded = {

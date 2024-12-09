@@ -8,3 +8,6 @@ AttackTemplates.shot_shotgun_vs = {
 	stagger_angle = "stab",
 	stagger_value = 2,
 }
+AttackTemplates.rat_ogre_leap_vs = {
+	stagger_value = 2,
+}

@@ -278,17 +278,17 @@ NetworkMatchHandler.sync_data_down_to = function (self, target_peer)
 end
 
 NetworkMatchHandler.send_rpc_up = function (self, rpc, ...)
-	if self._propagate_peer_id then
-		local propagate_channel = PEER_ID_TO_CHANNEL[self._propagate_peer_id]
-
-		if propagate_channel then
-			RPC[rpc](propagate_channel, ...)
-		end
-	elseif self._server_peer_id ~= self._my_peer_id then
+	if self._server_peer_id ~= self._my_peer_id then
 		local server_channel = PEER_ID_TO_CHANNEL[self._server_peer_id]
 
 		if server_channel then
 			RPC[rpc](server_channel, ...)
+		end
+	elseif self._propagate_peer_id then
+		local propagate_channel = PEER_ID_TO_CHANNEL[self._propagate_peer_id]
+
+		if propagate_channel then
+			RPC[rpc](propagate_channel, ...)
 		end
 	end
 end
@@ -297,14 +297,9 @@ NetworkMatchHandler.can_propagate = function (self)
 	return self._propagate_peer_id
 end
 
-NetworkMatchHandler.send_rpc_all = function (self, rpc, ...)
-	self:send_rpc_self(rpc, ...)
+NetworkMatchHandler.send_rpc_others = function (self, rpc, ...)
 	self:send_rpc_up(rpc, ...)
 	self:send_rpc_down(rpc, ...)
-end
-
-NetworkMatchHandler.send_rpc_self = function (self, rpc, ...)
-	RPC[rpc](PEER_ID_TO_CHANNEL[self._my_peer_id], ...)
 end
 
 NetworkMatchHandler.send_rpc = function (self, rpc, peer_id, ...)

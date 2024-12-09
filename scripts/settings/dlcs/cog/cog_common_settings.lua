@@ -92,12 +92,12 @@ settings.unlock_settings = {
 	cog = {
 		class = "UnlockDlc",
 		id = "1443780",
-		requires_restart = false,
+		requires_restart = true,
 	},
 	cog_upgrade = {
 		class = "UnlockDlc",
 		id = "1443790",
-		requires_restart = false,
+		requires_restart = true,
 	},
 }
 settings.unlock_settings_xb1 = {

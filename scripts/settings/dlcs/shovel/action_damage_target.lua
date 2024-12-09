@@ -92,7 +92,7 @@ ActionDamageTarget._apply_damage_step = function (self, hit_unit, power_level, s
 			local charge_value = damage_profile_template.charge_value or "instant_projectile"
 			local buff_type = DamageUtils.get_item_buff_type(self.item_name)
 
-			DamageUtils.buff_on_attack(self.owner_unit, hit_unit, charge_value, self._is_critical_strike, self._target_hit_zone, hit_index, send_to_server, buff_type)
+			DamageUtils.buff_on_attack(self.owner_unit, hit_unit, charge_value, self._is_critical_strike, self._target_hit_zone, hit_index, send_to_server, buff_type, nil, self.item_name)
 		end
 	end
 

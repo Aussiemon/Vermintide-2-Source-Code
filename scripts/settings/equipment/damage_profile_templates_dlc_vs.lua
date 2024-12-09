@@ -35,7 +35,7 @@ local drop_off_ranges = {
 	},
 }
 local damage_templates = {
-	playable_boss_melee_fury_light_vs = {
+	playable_boss_melee_frenzy_light_vs = {
 		charge_value = "light_attack",
 		fatigue_type = "chaos_cleave",
 		critical_strike = {},
@@ -91,7 +91,7 @@ local damage_templates = {
 			},
 		},
 	},
-	playable_boss_melee_fury_heavy_vs = {
+	playable_boss_melee_frenzy_heavy_vs = {
 		charge_value = "heavy_attack",
 		fatigue_type = "chaos_cleave",
 		critical_strike = {},
@@ -180,8 +180,8 @@ local damage_templates = {
 				boost_curve_coefficient = 2,
 				boost_curve_type = "default",
 				power_distribution = {
-					attack = 0.2,
-					impact = 1,
+					attack = 0.4,
+					impact = 0.4,
 				},
 			},
 		},
@@ -191,7 +191,7 @@ local damage_templates = {
 			boost_curve_type = "default",
 			power_distribution = {
 				attack = 0.1,
-				impact = 1,
+				impact = 0.1,
 			},
 		},
 	},
@@ -240,6 +240,92 @@ local damage_templates = {
 			power_distribution = {
 				attack = 0.5,
 				impact = 1,
+			},
+		},
+	},
+	playable_boss_melee_frenzy_slam_vs = {
+		charge_value = "heavy_attack",
+		fatigue_type = "chaos_cleave",
+		critical_strike = {},
+		armor_modifier = {
+			attack = {
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+			},
+			impact = {
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+			},
+		},
+		cleave_distribution = {
+			attack = 0.25,
+			impact = 0.2,
+		},
+		targets = {
+			{
+				attack_template = "slashing_linesman",
+				boost_curve_coefficient = 2,
+				boost_curve_type = "linesman_curve",
+				power_distribution = {
+					attack = 0.6,
+					impact = 0.6,
+				},
+			},
+			{
+				attack_template = "light_slashing_linesman",
+				boost_curve_coefficient = 2,
+				boost_curve_type = "linesman_curve",
+				power_distribution = {
+					attack = 0.4,
+					impact = 0.4,
+				},
+			},
+		},
+		default_target = {
+			attack_template = "light_slashing_linesman",
+			boost_curve_coefficient = 2,
+			boost_curve_type = "linesman_curve",
+			power_distribution = {
+				attack = 0.1,
+				impact = 0.1,
+			},
+		},
+	},
+	playable_boss_rat_ogre_leap_explosion_vs = {
+		charge_value = "aoe",
+		no_stagger_damage_reduction_ranged = true,
+		armor_modifier = {
+			attack = {
+				1,
+				0.25,
+				1.5,
+				1,
+				0.75,
+				0,
+			},
+			impact = {
+				1,
+				0.5,
+				1,
+				1,
+				0.75,
+				0,
+			},
+		},
+		default_target = {
+			attack_template = "drakegun",
+			damage_type = "drakegun",
+			power_distribution = {
+				attack = 0.25,
+				impact = 0.5,
 			},
 		},
 	},
@@ -2530,11 +2616,11 @@ local damage_templates = {
 	},
 }
 
-damage_templates.bile_troll_sweep = table.clone(damage_templates.playable_boss_melee_fury_light_vs)
-damage_templates.bile_troll_shove = table.clone(damage_templates.playable_boss_melee_fury_light_vs)
+damage_templates.bile_troll_sweep = table.clone(damage_templates.playable_boss_melee_frenzy_light_vs)
+damage_templates.bile_troll_shove = table.clone(damage_templates.playable_boss_melee_frenzy_light_vs)
 damage_templates.bile_troll_smiter = table.clone(damage_templates.playable_boss_melee_scrambler_heavy_vs)
-damage_templates.rat_ogre_sweep = table.clone(damage_templates.playable_boss_melee_fury_light_vs)
-damage_templates.rat_ogre_slam = table.clone(damage_templates.playable_boss_melee_fury_heavy_vs)
-damage_templates.rat_ogre_slam_aoe = table.clone(damage_templates.playable_boss_melee_scrambler_light_vs)
+damage_templates.rat_ogre_light_1 = table.clone(damage_templates.playable_boss_melee_frenzy_light_vs)
+damage_templates.rat_ogre_light_2 = table.clone(damage_templates.playable_boss_melee_scrambler_light_vs)
+damage_templates.rat_ogre_slam = table.clone(damage_templates.playable_boss_melee_frenzy_slam_vs)
 
 return damage_templates

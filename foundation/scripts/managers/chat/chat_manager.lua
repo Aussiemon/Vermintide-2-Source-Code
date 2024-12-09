@@ -574,13 +574,12 @@ ChatManager.send_chat_message = function (self, channel_id, local_player_id, mes
 			local network_handler = Managers.mechanism:network_handler()
 			local match_handler = network_handler:get_match_handler()
 
-			match_handler:send_rpc_all("rpc_chat_message", channel_id, peer_id, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev, message_type)
+			match_handler:send_rpc_others("rpc_chat_message", channel_id, peer_id, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev, message_type)
 		else
 			local network_handler = Managers.mechanism:network_handler()
 			local match_handler = network_handler:get_match_handler()
 
 			match_handler:send_rpc_up("rpc_chat_message", channel_id, peer_id, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev, message_type)
-			match_handler:send_rpc_self("rpc_chat_message", channel_id, peer_id, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev, message_type)
 		end
 
 		if not localize then

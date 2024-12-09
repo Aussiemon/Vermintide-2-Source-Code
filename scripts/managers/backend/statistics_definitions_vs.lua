@@ -543,6 +543,16 @@ player.vs_push_hero_off_map = {
 	source = "player_data",
 	value = 0,
 }
+player.vs_rat_ogre_hit_heroes_heavy = {
+	database_name = "vs_rat_ogre_hit_heroes_heavy",
+	source = "player_data",
+	value = 0,
+}
+player.vs_rat_ogre_hit_leap = {
+	database_name = "vs_rat_ogre_hit_leap",
+	source = "player_data",
+	value = 0,
+}
 
 local db_vs_hero_eliminations = "vs_hero_eliminations"
 
@@ -606,6 +616,16 @@ player.vs_award_horde_killer = {
 }
 player.vs_award_monster = {
 	database_name = "vs_award_monster",
+	source = "player_data",
+	value = 0,
+}
+player.vs_award_troll = {
+	database_name = "vs_award_troll",
+	source = "player_data",
+	value = 0,
+}
+player.vs_award_rat_ogre = {
+	database_name = "vs_award_rat_ogre",
 	source = "player_data",
 	value = 0,
 }

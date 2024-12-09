@@ -364,6 +364,31 @@ training_dummy_armored_bob.actions.action_dropped.default.projectile_info.projec
 training_dummy_armored_bob.actions.action_dropped.default.projectile_info.pickup_name = "training_dummy_armored_bob"
 training_dummy_armored_bob.actions.action_dropped.default.projectile_info.disable_throwing_dialogue = true
 
+local waystone_piece = table.clone(gargoyle_head)
+
+waystone_piece.left_hand_unit = "units/weapons/player/pup_waystone_piece_01/wpn_waystone_piece_01"
+waystone_piece.wield_anim_3p = "to_statue"
+waystone_piece.wield_anim = "to_statue"
+waystone_piece.actions.action_one.default.speed = 4
+waystone_piece.actions.action_one.default.throw_time = 0.35000000000000003
+waystone_piece.actions.action_one.default.throw_offset = {
+	0.35,
+	0.5,
+	0,
+}
+waystone_piece.actions.action_one.default.projectile_info = {
+	drop_on_player_destroyed = true,
+	pickup_name = "waystone_piece",
+	projectile_unit_name = "units/weapons/player/pup_waystone_piece_01/pup_waystone_piece_01",
+	projectile_unit_template_name = "pickup_projectile_unit",
+}
+waystone_piece.actions.action_dropped.default.projectile_info = {
+	drop_on_player_destroyed = true,
+	pickup_name = "waystone_piece",
+	projectile_unit_name = "units/weapons/player/pup_waystone_piece_01/pup_waystone_piece_01",
+	projectile_unit_template_name = "pickup_projectile_unit",
+}
+
 return {
 	cannon_ball = cannon_ball,
 	trail_cog = trail_cog,
@@ -372,4 +397,5 @@ return {
 	magic_crystal = magic_crystal,
 	training_dummy_bob = training_dummy_bob,
 	training_dummy_armored_bob = training_dummy_armored_bob,
+	waystone_piece = waystone_piece,
 }

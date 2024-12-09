@@ -886,7 +886,19 @@ local function create_status_widget(texture, offset)
 end
 
 local widget_definitions = {
-	window = UIWidgets.create_simple_texture("matchmaking_window", "window"),
+	window = UIWidgets.create_simple_uv_texture("matchmaking_window", {
+		{
+			0,
+			0,
+		},
+		{
+			1,
+			1,
+		},
+	}, "window", nil, nil, nil, nil, nil, {
+		506,
+		136,
+	}),
 	loading_icon = UIWidgets.create_simple_texture("matchmaking_icon", "loading_icon"),
 	loading_status_frame = UIWidgets.create_simple_rotated_texture("matchmaking_icon_effect", 0, {
 		71,
@@ -938,11 +950,20 @@ local widget_detail_definitions = {
 	timer_glow = UIWidgets.create_simple_texture("timer_detail", "timer_glow"),
 }
 local deus_widget_definitions = {
-	window = UIWidgets.create_simple_texture("matchmaking_top", "window", false, false, nil, {
-		-10,
+	window = UIWidgets.create_simple_uv_texture("matchmaking_top", {
+		{
+			0,
+			0,
+		},
+		{
+			1,
+			1,
+		},
+	}, "window", nil, nil, nil, {
+		-1,
 		15,
 		0,
-	}, "native"),
+	}, nil, "native"),
 	loading_icon = UIWidgets.create_simple_texture("matchmaking_icon_morris", "loading_icon", false, false, nil, {
 		0,
 		3,
@@ -1016,11 +1037,20 @@ local deus_widget_detail_definitions = {
 deus_widget_detail_definitions.detailed_info_box.content.no_background_changes = true
 
 local versus_widget_definitions = {
-	window = UIWidgets.create_simple_texture("matchmaking_top_vs", "window", false, false, nil, {
-		-10,
-		15,
-		2,
-	}, "native"),
+	window = UIWidgets.create_simple_uv_texture("matchmaking_top_vs", {
+		{
+			0,
+			0,
+		},
+		{
+			1,
+			1,
+		},
+	}, "window", nil, nil, nil, {
+		-2,
+		14,
+		0,
+	}, nil, "native"),
 	loading_status_frame = UIWidgets.create_simple_rotated_texture("matchmaking_icon_effect_morris", 0, {
 		71,
 		71,

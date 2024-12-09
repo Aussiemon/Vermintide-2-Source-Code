@@ -2247,15 +2247,17 @@ StoreWindowItemPreview._get_can_wield_display_text = function (self, can_wield)
 			local profile = SPProfiles[profile_index]
 			local hero_display_name = profile.character_name
 
-			if added_careers > 0 then
-				career_text = career_text .. ", "
+			if profile.affiliation ~= "dark_pact" then
+				if added_careers > 0 then
+					career_text = career_text .. ", "
+				end
+
+				added_careers = added_careers + 1
+
+				local career_display_name = career_settings.display_name
+
+				career_text = career_text .. Localize(career_display_name)
 			end
-
-			added_careers = added_careers + 1
-
-			local career_display_name = career_settings.display_name
-
-			career_text = career_text .. Localize(career_display_name)
 
 			local hero_display_name_localized = Localize(hero_display_name)
 

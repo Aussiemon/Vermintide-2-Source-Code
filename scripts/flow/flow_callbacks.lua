@@ -5652,6 +5652,36 @@ function flow_callback_whaling_village_elevator_speedrun(params)
 	achievement_manager:trigger_event("dwarf_elevator_speedrun")
 end
 
+function flow_callback_termite_part_1_skaven_markings_challenge(params)
+	local achievement_manager = Managers.state.achievement
+
+	achievement_manager:trigger_event("termite1_skaven_markings_challenge")
+end
+
+function flow_callback_termite_part_1_bell_challenge(params)
+	local achievement_manager = Managers.state.achievement
+
+	achievement_manager:trigger_event("termite1_bell_challenge")
+end
+
+function flow_callback_termite_part_1_towers_challenge(params)
+	local achievement_manager = Managers.state.achievement
+
+	achievement_manager:trigger_event("termite1_towers_challenge")
+end
+
+function flow_callback_termite_part_1_waystone_timer_challenge_easy(params)
+	local achievement_manager = Managers.state.achievement
+
+	achievement_manager:trigger_event("termite1_waystone_timer_challenge_easy")
+end
+
+function flow_callback_termite_part_1_waystone_timer_challenge_hard(params)
+	local achievement_manager = Managers.state.achievement
+
+	achievement_manager:trigger_event("termite1_waystone_timer_challenge_hard")
+end
+
 function flow_callback_register_combination_puzzle(params)
 	local group_name_id = params.puzzle_group
 	local puzzle_id = params.puzzle_name or ""

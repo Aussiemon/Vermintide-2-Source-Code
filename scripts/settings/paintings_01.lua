@@ -2025,6 +2025,95 @@ Paintings.ver_wood_elves_page_048 = {
 		wood = true,
 	},
 }
+Paintings.hor_dark_elves_page_06 = {
+	artist = "painting_dark_elves_page_06_artist",
+	description = "painting_dark_elves_page_06_description",
+	display_name = "painting_dark_elves_page_06_name",
+	frame = "wood",
+	icon = "icon_painting_1",
+	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_dark_elves_page_06_description",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true,
+	},
+}
+Paintings.hor_high_elves_page_030 = {
+	artist = "painting_high_elves_page_030_artist",
+	description = "painting_high_elves_page_030_description",
+	display_name = "painting_high_elves_page_030_name",
+	frame = "wood",
+	icon = "icon_painting_1",
+	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_high_elves_page_030_description",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true,
+	},
+}
+Paintings.ver_elvenruins02 = {
+	artist = "painting_elvenruins02_artist",
+	description = "painting_elvenruins02_description",
+	display_name = "painting_elvenruins02_name",
+	frame = "wood",
+	icon = "icon_painting_5",
+	orientation = "vertical",
+	sound_event = "painting_elvenruins02_description",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true,
+	},
+}
+Paintings.ver_high_elves_page_099 = {
+	artist = "painting_high_elves_page_099_artist",
+	description = "painting_high_elves_page_099_description",
+	display_name = "painting_high_elves_page_099_name",
+	frame = "wood",
+	icon = "icon_painting_2",
+	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_high_elves_page_099_description",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true,
+	},
+}
+Paintings.ver_wood_elves_page_025 = {
+	artist = "painting_wood_elves_page_025_artist",
+	description = "painting_wood_elves_page_025_description",
+	display_name = "painting_wood_elves_page_025_name",
+	frame = "wood",
+	icon = "icon_painting_2",
+	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_wood_elves_page_025_description",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true,
+	},
+}
+Paintings.hor_wood_elves_page_006 = {
+	artist = "painting_wood_elves_page_006_artist",
+	description = "painting_wood_elves_page_006_description",
+	display_name = "painting_wood_elves_page_006_name",
+	frame = "wood",
+	icon = "icon_painting_1",
+	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_wood_elves_page_006_description",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true,
+	},
+}
 DefaultPaintings = {
 	"hor_none",
 	"ver_none",
@@ -2165,6 +2254,12 @@ local painting_order = {
 	"ver_empire_page_041",
 	"ver_empire_page_039",
 	"ver_wood_elves_page_048",
+	"hor_dark_elves_page_06",
+	"hor_high_elves_page_030",
+	"ver_elvenruins02",
+	"ver_high_elves_page_099",
+	"ver_wood_elves_page_025",
+	"hor_wood_elves_page_006",
 }
 
 PaintingOrder = PaintingOrder or {}

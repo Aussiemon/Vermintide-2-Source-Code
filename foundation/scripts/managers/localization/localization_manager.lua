@@ -17,6 +17,7 @@ LocalizationManager.init = function (self, language_id)
 	self._language_id = language_id or Application.user_setting("language_id") or has_steam and Steam.language() or "en"
 	self._backend_localizations = {}
 
+	Crashify.print_property("locale", self._language_id)
 	rawset(_G, "Localize", function (text_id)
 		return self:lookup(text_id)
 	end)

@@ -30,6 +30,7 @@ return {
 	"scripts/settings/equipment/weapon_templates/spears_wood_elf",
 	"scripts/settings/equipment/weapon_templates/vs_ratling_gunner_gun",
 	"scripts/settings/equipment/weapon_templates/vs_1h_chaos_troll_axe",
+	"scripts/settings/equipment/weapon_templates/vs_rat_ogre_hands",
 	"scripts/settings/equipment/weapon_templates/vs_warpfire_thrower_gun",
 	"scripts/settings/equipment/weapon_templates/shortbows",
 	"scripts/settings/equipment/weapon_templates/shortbows_hagbane",

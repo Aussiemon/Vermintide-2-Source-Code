@@ -46,6 +46,12 @@ for i = 1, num_defined_levels do
 	total_defined_experience = total_defined_experience + experience_levels[i]
 end
 
+local max_reward_experience = 0
+
+for i = 1, math.min(#experience_levels, level_used_for_extra_levels_experience) do
+	max_reward_experience = max_reward_experience + experience_levels[i]
+end
+
 ExperienceSettings = ExperienceSettings or {}
 
 ExperienceSettings.get_player_level = function (player)
@@ -70,7 +76,6 @@ ExperienceSettings.get_player_level = function (player)
 end
 
 ExperienceSettings.get_highest_hero_level = function ()
-	local hero_attributes = Managers.backend:get_interface("hero_attributes")
 	local best_class, best_xp = nil, 0
 
 	for i = 1, 5 do
@@ -86,6 +91,29 @@ ExperienceSettings.get_highest_hero_level = function ()
 	local level = ExperienceSettings.get_level(best_xp)
 
 	return level, best_xp, best_class
+end
+
+ExperienceSettings.get_reward_level = function ()
+	local experience = 0
+	local spillover_experience = 0
+
+	for i = 1, 5 do
+		local profile = SPProfiles[i]
+		local hero_experience = ExperienceSettings.get_experience(profile.display_name)
+
+		if experience <= hero_experience then
+			experience = math.min(hero_experience, max_reward_experience)
+			spillover_experience = spillover_experience + math.max(0, hero_experience - max_reward_experience)
+		end
+
+		local hero_experience_pool = ExperienceSettings.get_experience_pool(profile.display_name)
+
+		spillover_experience = spillover_experience + hero_experience_pool
+	end
+
+	local level, _, _, extra_levels = ExperienceSettings.get_level(experience + spillover_experience)
+
+	return level + extra_levels
 end
 
 ExperienceSettings.get_experience = function (hero_name)
@@ -107,31 +135,33 @@ ExperienceSettings.get_level = function (experience)
 
 	local exp_total = 0
 	local level = 0
+	local extra_levels = 0
 	local progress = 0
 	local experience_into_level = 0
-	local previous_exp_total = 0
 
 	if experience >= total_defined_experience then
-		local experience_into_level = 0
-		local progress = 0
+		level = num_defined_levels
+		progress = 0
+		experience_into_level = 0
+		extra_levels = ExperienceSettings.get_extra_level(experience - total_defined_experience)
+	else
+		local previous_exp_total
 
-		return num_defined_levels, progress, experience_into_level
-	end
+		for i = 1, num_defined_levels do
+			previous_exp_total = exp_total
+			exp_total = exp_total + experience_levels[i]
 
-	for i = 1, num_defined_levels do
-		previous_exp_total = exp_total
-		exp_total = exp_total + experience_levels[i]
+			if experience < exp_total then
+				level = i - 1
+				experience_into_level = experience - previous_exp_total
+				progress = experience_into_level / experience_levels[i]
 
-		if experience < exp_total then
-			level = i - 1
-			experience_into_level = experience - previous_exp_total
-			progress = experience_into_level / experience_levels[i]
-
-			break
+				break
+			end
 		end
 	end
 
-	return level, progress, experience_into_level
+	return level, progress, experience_into_level, extra_levels
 end
 
 ExperienceSettings.get_extra_level = function (experience_pool)

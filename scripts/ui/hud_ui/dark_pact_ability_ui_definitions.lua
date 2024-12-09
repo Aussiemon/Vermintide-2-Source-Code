@@ -1507,6 +1507,27 @@ local function chaos_troll_cooldown_update(dt, t, ui_renderer, career_extension,
 	UIRenderer.draw_widget(ui_renderer, widget)
 end
 
+local function rat_ogre_cooldown_update(dt, t, ui_renderer, career_extension, ability_id, widget, is_player_dead, player_unit, horde_ability_extension)
+	if is_player_dead then
+		return
+	end
+
+	local ability_cooldown, full_cooldown = career_extension:current_ability_cooldown(ability_id)
+	local ability_data = career_extension:get_activated_ability_data(ability_id)
+	local uses_cooldown = career_extension:uses_cooldown(ability_id)
+	local content = widget.content
+	local style = widget.style
+	local on_cooldown = ability_cooldown ~= 0
+
+	content.is_cooldown = on_cooldown
+
+	if on_cooldown then
+		content.progress = 1 - math.clamp(ability_cooldown / full_cooldown, 0, content.current_progress or 1)
+	end
+
+	UIRenderer.draw_widget(ui_renderer, widget)
+end
+
 local function gutter_runner_foff_duration_update(dt, t, ui_renderer, career_extension, ability_id, widget, is_player_dead, player_unit, horde_ability_extension)
 	if is_player_dead then
 		return
@@ -1617,6 +1638,33 @@ local profile_ability_templates = {
 			},
 			update_functions = {
 				ability_icon = chaos_troll_cooldown_update,
+			},
+		},
+		{
+			ability_name = "horde_ability",
+			widget_definitions = {
+				ability = pre_defined_widgets.ability.definition,
+			},
+			update_functions = {
+				ability = pre_defined_widgets.ability.update_function,
+			},
+		},
+	},
+	vs_rat_ogre = {
+		{
+			widget_definitions = {
+				ability_icon = create_dark_pact_hud_ability_icon_widget(),
+			},
+		},
+		{
+			ability_name = "ogre_jump",
+			widget_definitions = {
+				ability_icon = create_dark_pact_hud_ability_icon_widget(),
+				priming = pre_defined_widgets.priming.definition,
+			},
+			update_functions = {
+				priming = pre_defined_widgets.priming.update_function,
+				ability_icon = rat_ogre_cooldown_update,
 			},
 		},
 		{

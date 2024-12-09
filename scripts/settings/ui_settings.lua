@@ -366,6 +366,7 @@ UISettings = UISettings or {
 		vs_gutter_runner = "unit_frame_portrait_enemy_gutter_runner",
 		vs_packmaster = "unit_frame_portrait_enemy_packmaster",
 		vs_poison_wind_globadier = "unit_frame_portrait_enemy_poison_wind",
+		vs_rat_ogre = "unit_frame_portrait_enemy_rat_ogre",
 		vs_ratling_gunner = "unit_frame_portrait_enemy_ratling_gunner",
 		vs_warpfire_thrower = "unit_frame_portrait_enemy_warpfire",
 	},
@@ -1088,6 +1089,11 @@ UISettings.hero_hat_camera_position_by_character = {
 		y = -2.1,
 		z = 0.88,
 	},
+	vs_rat_ogre = {
+		x = 1.2,
+		y = 0.5,
+		z = 0.6,
+	},
 	vs_chaos_troll = {
 		x = 0.8,
 		y = -0.2,
@@ -1154,6 +1160,11 @@ UISettings.hero_skin_camera_position_by_character = {
 		x = 0,
 		y = -1.2,
 		z = 0.25,
+	},
+	vs_rat_ogre = {
+		x = 1.2,
+		y = 0.5,
+		z = 0.6,
 	},
 	vs_chaos_troll = {
 		x = 0.8,
@@ -1574,6 +1585,26 @@ UISettings.dlc_order_data = {
 	{
 		display_name = "display_name_five_career_bundle_0007",
 		dlc = "five_career_bundle_0007",
+	},
+	{
+		display_name = "display_name_skin_dr_slayer_1003",
+		dlc = "slayer_skin_0001",
+	},
+	{
+		display_name = "display_name_skin_ww_thornsister_1001",
+		dlc = "sister_of_the_thorn_skin_0001",
+	},
+	{
+		display_name = "display_name_skin_es_mercenary_1003",
+		dlc = "mercenary_skin_0001",
+	},
+	{
+		display_name = "display_name_skin_bw_scholar_1003",
+		dlc = "pyromancer_skin_0001",
+	},
+	{
+		display_name = "display_name_skin_wh_bountyhunter_1003",
+		dlc = "bountyhunter_skin_0001",
 	},
 }
 

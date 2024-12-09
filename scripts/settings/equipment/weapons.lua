@@ -229,6 +229,7 @@ local checked_templates = {
 	vs_ratling_gunner = {},
 	vs_warpfire_thrower = {},
 	vs_chaos_troll = {},
+	vs_rat_ogre = {},
 }
 
 for _, item in pairs(ItemMasterList) do

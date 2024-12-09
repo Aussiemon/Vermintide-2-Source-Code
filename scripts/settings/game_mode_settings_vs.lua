@@ -338,12 +338,14 @@ GameModeSettings.versus.dark_pact_profile_order = {
 }
 GameModeSettings.versus.dark_pact_boss_profiles = {
 	"vs_chaos_troll",
+	"vs_rat_ogre",
 }
 GameModeSettings.versus.dark_pact_player_profile_to_ai_breed = {
 	vs_chaos_troll = "chaos_troll",
 	vs_gutter_runner = "skaven_gutter_runner",
 	vs_packmaster = "skaven_pack_master",
 	vs_poison_wind_globadier = "skaven_poison_wind_globadier",
+	vs_rat_ogre = "skaven_rat_ogre",
 	vs_ratling_gunner = "skaven_gutter_runner",
 	vs_warpfire_thrower = "skaven_warpfire_thrower",
 }

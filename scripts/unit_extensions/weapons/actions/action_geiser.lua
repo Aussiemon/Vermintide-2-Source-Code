@@ -282,7 +282,7 @@ ActionGeiser._update_damage = function (self, current_action)
 			local send_to_server = true
 			local buff_type = DamageUtils.get_item_buff_type(self.item_name)
 
-			DamageUtils.buff_on_attack(owner_unit, hit_unit, "aoe", is_critical_strike and allow_critical_proc, hit_zone_name, hit_index, send_to_server, buff_type)
+			DamageUtils.buff_on_attack(owner_unit, hit_unit, "aoe", is_critical_strike and allow_critical_proc, hit_zone_name, hit_index, send_to_server, buff_type, nil, self.item_name)
 
 			local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
 

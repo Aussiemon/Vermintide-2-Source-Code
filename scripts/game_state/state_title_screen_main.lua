@@ -100,6 +100,8 @@ end
 
 StateTitleScreenMain._setup_account_manager = function (self)
 	Managers.account = Managers.account or AccountManager:new()
+
+	Crashify.print_property("region", Managers.account:region())
 end
 
 StateTitleScreenMain.update = function (self, dt, t)

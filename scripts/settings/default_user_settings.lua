@@ -26,6 +26,7 @@ local default_user_settings = {
 	dynamic_range_sound = "high",
 	enable_gamepad_acceleration = true,
 	enabled_crosshairs = "all",
+	friend_join_mode = "lobby_friends",
 	friendly_fire_crosshair = true,
 	friendly_fire_hit_marker = true,
 	fsr2_enabled = false,

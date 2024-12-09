@@ -7,6 +7,13 @@ local widget_definitions = definitions.widget_definitions
 local scenegraph_definitions = definitions.scenegraph_definitions
 local animation_definitions = definitions.animation_definitions
 local camera_movement_functions = definitions.camera_movement_functions
+local PROFILE_FOV = {
+	vs_chaos_troll = 75,
+	vs_rat_ogre = 75,
+}
+local PROFILE_OFFSET = {
+	vs_rat_ogre = -0.5,
+}
 
 LevelEndViewVersus = class(LevelEndViewVersus, LevelEndViewBase)
 
@@ -519,9 +526,9 @@ LevelEndViewVersus._start_award_presentation = function (self)
 	local current_profile_name = hero_previewer:current_profile_name()
 	local profile = PROFILES_BY_NAME[current_profile_name]
 
-	if profile.role == "boss" then
-		self._fov = 75
-	end
+	self._fov = PROFILE_FOV[profile.display_name] or self._fov
+
+	local profile_offset = PROFILE_OFFSET[profile.display_name] or 0
 
 	hero_previewer:set_hero_rotation(0)
 
@@ -563,9 +570,9 @@ LevelEndViewVersus._start_award_presentation = function (self)
 	local time = 5
 	local right = Vector3(-1, 0, 0)
 	local forward = Matrix4x4.forward(self._camera_pose:unbox())
-	local neck_pos = Matrix4x4.translation(neck_pose)
-	local hips_pos = Matrix4x4.translation(hips_pose)
-	local base_pos = Matrix4x4.translation(base_pose)
+	local neck_pos = Matrix4x4.translation(neck_pose) + forward * profile_offset
+	local hips_pos = Matrix4x4.translation(hips_pose) + forward * profile_offset
+	local base_pos = Matrix4x4.translation(base_pose) + forward * profile_offset
 	local random_seed, index
 
 	random_seed, index = Math.next_random(self._random_seed, 1, #self._camera_movement_functions)

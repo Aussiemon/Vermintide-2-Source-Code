@@ -900,6 +900,34 @@ ScoreboardHelper.scoreboard_topic_stats_versus = {
 				"state_damage_dealt_as_pactsworn_breed",
 				"vs_chaos_troll",
 			},
+			{
+				"state_damage_dealt_as_pactsworn_breed",
+				"vs_rat_ogre",
+			},
+		},
+		sort_function = function (a, b)
+			return a.score > b.score
+		end,
+	},
+	{
+		name = "troll_damage",
+		stat_types = {
+			{
+				"state_damage_dealt_as_pactsworn_breed",
+				"vs_chaos_troll",
+			},
+		},
+		sort_function = function (a, b)
+			return a.score > b.score
+		end,
+	},
+	{
+		name = "rat_ogre_damage",
+		stat_types = {
+			{
+				"state_damage_dealt_as_pactsworn_breed",
+				"vs_rat_ogre",
+			},
 		},
 		sort_function = function (a, b)
 			return a.score > b.score

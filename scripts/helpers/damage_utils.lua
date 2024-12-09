@@ -2052,9 +2052,10 @@ DamageUtils.buff_on_attack = function (unit, hit_unit, attack_type, is_critical,
 		local attack_type_id = NetworkLookup.buff_attack_types[attack_type]
 		local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
 		local buff_type_id = NetworkLookup.buff_weapon_types[buff_type]
+		local damage_source_id = NetworkLookup.damage_sources[damage_source or "undefined"]
 
 		if hit_unit_id then
-			network_manager.network_transmit:send_rpc_server("rpc_buff_on_attack", attacker_unit_id, hit_unit_id, attack_type_id, is_critical, hit_zone_id, target_number, buff_type_id)
+			network_manager.network_transmit:send_rpc_server("rpc_buff_on_attack", attacker_unit_id, hit_unit_id, attack_type_id, is_critical, hit_zone_id, target_number, buff_type_id, damage_source_id)
 		end
 	end
 
@@ -2868,6 +2869,20 @@ DamageUtils.damage_level_unit = function (hit_unit, attacker_unit, hit_zone_name
 		return
 	end
 
+	local is_versus = Managers.mechanism:current_mechanism_name() == "versus"
+
+	if is_versus then
+		local is_objective = ScriptUnit.has_extension(hit_unit, "objective_system")
+
+		if is_objective then
+			local attacker_side = Managers.state.side.side_by_unit[attacker_unit]
+
+			if not attacker_side or attacker_side:name() ~= "heroes" then
+				return
+			end
+		end
+	end
+
 	local target_settings = damage_profile[target_index] or damage_profile.default_target
 
 	if not target_settings then
@@ -3082,7 +3097,7 @@ DamageUtils._projectile_hit_character = function (current_action, owner_unit, ow
 		if owner_player and breed and check_buffs and not shield_blocked then
 			local send_to_server = true
 			local buff_type = DamageUtils.get_item_buff_type(damage_source)
-			local buffs_checked = DamageUtils.buff_on_attack(owner_unit, hit_unit, "instant_projectile", is_critical_strike, hit_zone_name, target_number or num_penetrations + 1, send_to_server, buff_type, unmodified)
+			local buffs_checked = DamageUtils.buff_on_attack(owner_unit, hit_unit, "instant_projectile", is_critical_strike, hit_zone_name, target_number or num_penetrations + 1, send_to_server, buff_type, unmodified, damage_source)
 
 			hit_data.buffs_checked = hit_data.buffs_checked or buffs_checked
 		end

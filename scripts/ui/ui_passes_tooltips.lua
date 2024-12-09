@@ -5432,14 +5432,17 @@ UITooltipPasses = {
 					return 0
 				end
 			elseif ui_content.difficulty_key then
-				chest_level = ExperienceSettings.get_highest_hero_level()
+				chest_level = ExperienceSettings.get_reward_level()
 			else
 				chest_level = loot_interface:get_highest_chest_level(reward_name)
 			end
 
-			chest_level = chest_level or ExperienceSettings.get_highest_hero_level()
+			chest_level = chest_level or ExperienceSettings.get_reward_level()
 
-			local min, max = LootChestData.calculate_power_level(chest_level, power_level_pivots)
+			local min, max, absolute_max = LootChestData.calculate_power_level(chest_level, power_level_pivots)
+
+			max = math.min(max, absolute_max)
+
 			local chest_tier = item_data.chest_tier or 1
 			local bonus_pl_per_tier = power_level_settings.bonus_min_power_level_per_tier
 

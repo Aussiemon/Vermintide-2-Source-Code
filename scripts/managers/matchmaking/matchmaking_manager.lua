@@ -1458,7 +1458,7 @@ MatchmakingManager.rpc_matchmaking_request_join_lobby = function (self, channel_
 	local is_friend = false
 
 	if not DEDICATED_SERVER then
-		is_friend = IS_CONSOLE and true or LobbyInternal.is_friend(peer_id) or friend_join
+		is_friend = IS_CONSOLE and true or LobbyInternal.is_friend(peer_id)
 	end
 
 	local user_blocked
@@ -1470,6 +1470,7 @@ MatchmakingManager.rpc_matchmaking_request_join_lobby = function (self, channel_
 	end
 
 	local missing_dlc = self:_missing_required_dlc(lobby_mechanism, difficulty_key, client_unlocked_dlcs)
+	local friend_join_mode = Application.user_setting("friend_join_mode")
 
 	if not lobby_id_match then
 		reply = "lobby_id_mismatch"
@@ -1477,7 +1478,11 @@ MatchmakingManager.rpc_matchmaking_request_join_lobby = function (self, channel_
 		reply = "user_blocked"
 	elseif is_venture_over then
 		reply = "game_mode_ended"
-	elseif not DEDICATED_SERVER and not is_friend and not is_searching_for_players then
+	elseif not DEDICATED_SERVER and friend_join and friend_join_mode == "host_friends_only" and not is_friend then
+		reply = "friend_joining_friends_only"
+	elseif not DEDICATED_SERVER and friend_join and friend_join_mode == "disabled" then
+		reply = "friend_joining_disabled"
+	elseif not DEDICATED_SERVER and not friend_join and not is_searching_for_players then
 		reply = "not_searching_for_players"
 	elseif is_hosting_versus_custom_game and friend_join and is_friend then
 		reply = "custom_lobby_ok"

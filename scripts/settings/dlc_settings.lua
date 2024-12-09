@@ -311,6 +311,13 @@ DLCSettings = DLCSettings or {
 			ui = "scripts/settings/dlcs/gotwf/gotwf_ui_settings",
 		},
 	},
+	gotwf_2024 = {
+		localization = "localization/gotwf_2024",
+		package_name = "resource_packages/dlcs/gotwf_2024",
+		additional_settings = {
+			common = "scripts/settings/dlcs/gotwf/gotwf_2024_common_settings",
+		},
+	},
 	cosmetics_2022_q1 = {
 		localization = "localization/cosmetics_2022_q1",
 		package_name = "resource_packages/dlcs/cosmetics_2022_q1",
@@ -489,6 +496,16 @@ DLCSettings = DLCSettings or {
 		additional_settings = {
 			common = "scripts/settings/dlcs/cosmetics_2024_q3/cosmetics_2024_q3_common_settings",
 			equipment = "scripts/settings/dlcs/cosmetics_2024_q3/cosmetics_2024_q3_equipment_settings",
+		},
+	},
+	termite_part_1 = {
+		localization = "localization/termite_1",
+		package_name = "resource_packages/dlcs/termite_part_1",
+		additional_settings = {
+			achievements = "scripts/settings/dlcs/termite/termite_achievements_settings_part_1",
+			common = "scripts/settings/dlcs/termite/termite_common_settings_part_1",
+			level = "scripts/settings/dlcs/termite/termite_level_settings_part_1",
+			sound = "scripts/settings/dlcs/termite/termite_sound_settings_part_1",
 		},
 	},
 	handbook = {

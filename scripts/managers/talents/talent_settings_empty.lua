@@ -43,6 +43,7 @@ TalentTrees.vs_packmaster = empty
 TalentTrees.vs_ratling_gunner = empty
 TalentTrees.vs_warpfire_thrower = empty
 TalentTrees.vs_chaos_troll = empty
+TalentTrees.vs_rat_ogre = empty
 Talents.vs_gutter_runner = {
 	{
 		description = "empty",
@@ -54,3 +55,4 @@ Talents.vs_packmaster = {}
 Talents.vs_ratling_gunner = {}
 Talents.vs_warpfire_thrower = {}
 Talents.vs_chaos_troll = {}
+Talents.vs_rat_ogre = {}

@@ -123,6 +123,11 @@ settings.ui_texture_settings = {
 		"unit_frame_portrait_vs_chaos_troll_masked",
 		"unit_frame_portrait_vs_chaos_troll_twitch_icon",
 		"unit_frame_portrait_vs_chaos_troll_saturated",
+		"unit_frame_portrait_vs_rat_ogre",
+		"unit_frame_portrait_vs_rat_ogre_twitch",
+		"unit_frame_portrait_vs_rat_ogre_masked",
+		"unit_frame_portrait_vs_rat_ogre_twitch_icon",
+		"unit_frame_portrait_vs_rat_ogre_saturated",
 		"vs_info_ghost_spawn",
 		"vs_info_ghost_cantspawn",
 		"vs_info_ghost_catchup",
@@ -486,6 +491,16 @@ settings.hero_window_mood_settings = {
 	pactsworn = "menu_versus",
 }
 settings.hero_window_pactsworn_stats_by_name = {
+	vs_rat_ogre = {
+		{
+			"eliminations_as_breed",
+			"vs_rat_ogre",
+		},
+		{
+			"damage_dealt_as_breed",
+			"vs_rat_ogre",
+		},
+	},
 	vs_chaos_troll = {
 		{
 			"eliminations_as_breed",

@@ -207,7 +207,7 @@ CareerAbilityWHCaptain._run_ability = function (self, new_initial_speed)
 
 		for _, enemy_unit in pairs(nearby_enemy_units) do
 			if Unit.alive(enemy_unit) and side_manager:is_enemy(owner_unit, enemy_unit) then
-				DamageUtils.buff_on_attack(owner_unit, enemy_unit, "ability", false, "torso", target_number, false, "n/a")
+				DamageUtils.buff_on_attack(owner_unit, enemy_unit, "ability", false, "torso", target_number, false, "n/a", nil, damage_source)
 
 				target_number = target_number + 1
 			end

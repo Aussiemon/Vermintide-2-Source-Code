@@ -249,9 +249,9 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 
 				if side_manager:is_enemy(owner_unit, enemy_unit) then
 					if is_server then
-						network_transmit:send_rpc_server("rpc_buff_on_attack", attacker_unit_id, hit_unit_id, attack_type_id, false, hit_zone_id, target_number, buff_weapon_type_id)
+						network_transmit:send_rpc_server("rpc_buff_on_attack", attacker_unit_id, hit_unit_id, attack_type_id, false, hit_zone_id, target_number, buff_weapon_type_id, damage_source_id)
 					else
-						network_transmit:send_rpc_server("rpc_buff_on_attack", attacker_unit_id, hit_unit_id, attack_type_id, false, hit_zone_id, target_number, buff_weapon_type_id)
+						network_transmit:send_rpc_server("rpc_buff_on_attack", attacker_unit_id, hit_unit_id, attack_type_id, false, hit_zone_id, target_number, buff_weapon_type_id, damage_source_id)
 					end
 				end
 			end

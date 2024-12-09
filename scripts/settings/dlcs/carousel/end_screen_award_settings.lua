@@ -162,15 +162,31 @@ EndScreenAwardSettings[#EndScreenAwardSettings + 1] = {
 	award_material = "monster_award",
 	prio = 3,
 	sound = "Play_vs_hud_eom_parading_bile",
-	stat_key = "vs_award_monster",
+	stat_key = "vs_award_troll",
 	breeds = {
 		PlayerBreeds.vs_chaos_troll,
 	},
-	name = Localize("vs_award_monster_name"),
-	sub_header = Localize("vs_award_monster_description"),
-	screen_sub_header = Localize("vs_award_monster_sub_header"),
+	name = Localize("vs_award_troll_name"),
+	sub_header = Localize("vs_award_troll_description"),
+	screen_sub_header = Localize("vs_award_troll_sub_header"),
 	evaluate = function (session_scores)
-		return max_value(session_scores, "monster_damage")
+		return max_value(session_scores, "troll_damage")
+	end,
+}
+EndScreenAwardSettings[#EndScreenAwardSettings + 1] = {
+	award_mask_material = "roger_award_mask",
+	award_material = "roger_award",
+	prio = 3,
+	sound = "Play_vs_hud_eom_parading_bile",
+	stat_key = "vs_award_rat_ogre",
+	breeds = {
+		PlayerBreeds.vs_rat_ogre,
+	},
+	name = Localize("vs_award_rat_ogre_name"),
+	sub_header = Localize("vs_award_rat_ogre_description"),
+	screen_sub_header = Localize("vs_award_rat_ogre_sub_header"),
+	evaluate = function (session_scores)
+		return max_value(session_scores, "rat_ogre_damage")
 	end,
 }
 EndScreenAwardSettings[#EndScreenAwardSettings + 1] = {

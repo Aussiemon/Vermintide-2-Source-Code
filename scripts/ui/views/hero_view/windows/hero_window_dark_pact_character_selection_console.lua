@@ -430,7 +430,7 @@ HeroWindowDarkPactCharacterSelectionConsole._handle_mouse_selection = function (
 	if UIUtils.is_button_pressed(slot_skin_widget, "slot_skin") then
 		self:_play_sound("play_gui_equipment_selection_click")
 		self._parent:set_selected_cosmetic_slot_index(2)
-		self._parent:set_layout_by_name("cosmetics_selection")
+		self._parent:set_layout_by_name("cosmetics_selection_dark_pact")
 	end
 end
 
@@ -479,7 +479,7 @@ HeroWindowDarkPactCharacterSelectionConsole._handle_gamepad_selection = function
 		self._parent:pause_input(false)
 		self:_play_sound("play_gui_equipment_selection_click")
 		self._parent:set_selected_cosmetic_slot_index(2)
-		self._parent:set_layout_by_name("cosmetics_selection")
+		self._parent:set_layout_by_name("cosmetics_selection_dark_pact")
 
 		return
 	elseif self._higlight_inventory_selection and input_service:get("back") then

@@ -3,6 +3,8 @@
 require("scripts/unit_extensions/default_player_unit/careers/career_ability_dark_pact_base")
 require("scripts/unit_extensions/default_player_unit/careers/career_ability_dark_pact_horde")
 require("scripts/unit_extensions/default_player_unit/careers/career_ability_chaos_troll_vomit")
+require("scripts/unit_extensions/default_player_unit/careers/career_ability_rat_ogre_vs")
+require("scripts/unit_extensions/default_player_unit/careers/passive_ability_rat_ogre")
 require("scripts/unit_extensions/default_player_unit/careers/career_ability_corruptor_grab")
 require("scripts/unit_extensions/default_player_unit/careers/career_ability_corruptor_teleport")
 require("scripts/unit_extensions/default_player_unit/careers/career_ability_gutter_runner_foff")
@@ -199,6 +201,65 @@ ActivatedAbilitySettings.vs_chaos_troll = {
 		ability_class = CareerAbilityDarkPactHorde,
 	},
 }
+
+local rat_ogre_jump_data = {
+	hit_indicator_raidus = 3,
+	max_pitch = -10,
+	min_jump_dist = 5,
+	min_pitch = 60,
+	lerp_data = {
+		end_accel_distance = 0.5,
+		full_distance = 1,
+		glide_distance = 0.7,
+		slow_distance = 0.8,
+		start_accel_distance = 0.05,
+		zero_distance = 0,
+	},
+	movement_settings = {
+		jump_speed = 24,
+		max_move_speed = 100,
+		max_slam_speed = 100,
+		move_speed = 36,
+		player_speed_scale = 1,
+		slam_speed = 48,
+		vertical_height = 2,
+	},
+	priming_buffs = {
+		{
+			buff_template = "planted_decrease_movement",
+			external_optional_multiplier = 0.1,
+		},
+	},
+}
+
+ActivatedAbilitySettings.vs_rat_ogre = {
+	{
+		cooldown = 24,
+		cost = 1,
+		description = "career_active_desc_dr_2_2",
+		display_name = "career_active_name_dr_2",
+		icon = "bardin_slayer_activated_ability",
+		input_action = "action_two",
+		name = "ogre_jump",
+		prime_time = 2,
+		spawn_cooldown_percent = 0.1,
+		start_paused = true,
+		unpause_on_leave_ghost_mode = true,
+		ability_class = CareerAbilityRatOgreJump,
+		jump_ability_data = rat_ogre_jump_data,
+	},
+	{
+		cooldown = 0,
+		description = "career_active_desc_dr_2_2",
+		display_name = "career_active_name_dr_2",
+		draw_ui_in_ghost_mode = true,
+		icon = "bardin_slayer_activated_ability",
+		input_action = "versus_horde_ability",
+		name = "horde_ability",
+		spawn_cooldown_percent = 0,
+		ability_class = CareerAbilityDarkPactHorde,
+	},
+}
 PassiveAbilitySettings.vs_gutter_runner = {
 	description = "career_passive_desc_dr_2a_2",
 	display_name = "career_passive_name_dr_2",
@@ -251,6 +312,19 @@ PassiveAbilitySettings.vs_chaos_troll = {
 	icon = "bardin_slayer_passive",
 	buffs = {},
 	perks = {},
+}
+PassiveAbilitySettings.vs_rat_ogre = {
+	description = "career_passive_desc_dr_2a_2",
+	display_name = "career_passive_name_dr_2",
+	icon = "bardin_slayer_passive",
+	buffs = {},
+	perks = {},
+	passive_ability_classes = {
+		{
+			name = "vs_rat_ogre",
+			ability_class = PassiveAbilityRatOgre,
+		},
+	},
 }
 
 for ability_id, ability_list in pairs(ActivatedAbilitySettings) do

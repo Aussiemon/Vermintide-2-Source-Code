@@ -134,6 +134,7 @@ settings.currency_ui_settings = {
 		frame = "button_frame_01_gold",
 		icon_big = "store_icon_currency_versus_coin_big",
 		icon_small = "store_icon_currency_versus_coin",
+		max_amount = 999,
 		name = "menu_store_panel_versus_currency_tooltip_title",
 		tooltip_description = "menu_store_panel_versus_currency_tooltip_desc",
 		tooltip_input = "menu_store_panel_versus_currency_tooltip_obtain_desc",

@@ -509,6 +509,13 @@ NetworkServer.update_disconnect_kicked_peers_by_time = function (self, dt)
 end
 
 NetworkServer._update_lobby_data = function (self, dt, t)
+	local lobby = self.lobby_host
+	local lobby_data = lobby:get_stored_lobby_data()
+
+	if not lobby_data then
+		return
+	end
+
 	if self.profile_synchronizer:poll_sync_lobby_data_required() then
 		self._lobby_data_sync_requested = true
 	end
@@ -525,43 +532,19 @@ NetworkServer._update_lobby_data = function (self, dt, t)
 
 	self._lobby_data_sync_requested = false
 
-	local lobby = self.lobby_host
-	local lobby_data = lobby:get_stored_lobby_data()
-
-	if not lobby_data then
-		return
-	end
-
-	local members
-
-	if has_srh then
-		members = slot_handler:peers()
-	else
-		members = lobby:members():get_members()
-	end
-
 	local reserved_profiles = {}
 	local num_parties = Managers.party:get_num_game_participating_parties()
 
-	for i = 1, num_parties do
-		reserved_profiles[i] = {}
+	for party_id = 1, num_parties do
+		reserved_profiles[party_id] = {}
 	end
 
-	for i = 1, #members do
-		do
+	if has_srh then
+		local members = slot_handler:peers()
+
+		for i = 1, #members do
 			local peer_id = members[i]
-			local party_id
-
-			if has_srh then
-				party_id = slot_handler:party_id_by_peer(peer_id)
-
-				if not party_id then
-					goto label_1_0
-				end
-			else
-				party_id = 1
-			end
-
+			local party_id = slot_handler:party_id_by_peer(peer_id)
 			local profile_index = self.profile_synchronizer:get_persistent_profile_index_reservation(peer_id) or -1
 
 			table.insert(reserved_profiles[party_id], {
@@ -569,8 +552,19 @@ NetworkServer._update_lobby_data = function (self, dt, t)
 				profile_index = profile_index,
 			})
 		end
+	else
+		for party_id = 1, #reserved_profiles do
+			for profile_index = 1, 5 do
+				local peer_id = self.profile_synchronizer:get_profile_index_reservation(party_id, profile_index)
 
-		::label_1_0::
+				if peer_id then
+					table.insert(reserved_profiles[party_id], {
+						peer_id = peer_id,
+						profile_index = profile_index,
+					})
+				end
+			end
+		end
 	end
 
 	local serialized_reserved_profiles = LobbyAux.serialize_lobby_reservation_data(reserved_profiles)

@@ -169,10 +169,11 @@ ProximitySystem.on_add_extension = function (self, world, unit, extension_name, 
 
 		if breed and breed.proximity_system_check then
 			extension.special_broadphase_id = Broadphase.add(self.special_units_broadphase, unit, Unit.world_position(unit, 0), 0.5)
-			extension.bot_reaction_times = {}
-			extension.has_been_seen = false
 			self.special_unit_extension_map[unit] = extension
 		end
+
+		extension.bot_reaction_times = {}
+		extension.has_been_seen = false
 	elseif extension_name == "AIProximityExtension" then
 		extension.enemy_broadphase_id = Broadphase.add(self.enemy_broadphase, unit, Unit.world_position(unit, 0), 0.5)
 		extension.bot_reaction_times = {}

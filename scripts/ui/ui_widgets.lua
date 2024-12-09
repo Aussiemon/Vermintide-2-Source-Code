@@ -5614,6 +5614,16 @@ UIWidgets.create_simple_uv_texture = function (texture, uvs, scenegraph_id, mask
 		}
 	end
 
+	if texture_size == "native" then
+		local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture)
+		local settings_size = texture_settings.size
+
+		texture_size = {
+			settings_size[1],
+			settings_size[2],
+		}
+	end
+
 	return {
 		element = {
 			passes = {

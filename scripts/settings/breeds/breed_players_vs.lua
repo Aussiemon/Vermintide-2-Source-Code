@@ -277,6 +277,31 @@ vs_chaos_troll.default_gear = {
 	slot_melee = "vs_chaos_troll_axe",
 	slot_skin = "chaos_troll_skin_0000",
 }
+
+local vs_rat_ogre = table.clone(Breeds.skaven_rat_ogre)
+
+vs_rat_ogre.animation_sync_rpc = "rpc_sync_anim_state_5"
+vs_rat_ogre.cannot_be_aggroed = true
+vs_rat_ogre.parent_breed_name = "skaven_rat_ogre"
+vs_rat_ogre.poison_resistance = 100
+vs_rat_ogre.starting_animation = "to_1h_axe"
+vs_rat_ogre.climb_type = "climb"
+vs_rat_ogre.keep_weapon_on_death = true
+vs_rat_ogre.movement_speed_multiplier = 1.25
+vs_rat_ogre.breed_move_acceleration_up = 2
+vs_rat_ogre.breed_move_acceleration_down = 4
+vs_rat_ogre.run_threshold = 4
+vs_rat_ogre.priming_move_speed = 1
+vs_rat_ogre.run_on_spawn = nil
+vs_rat_ogre.run_on_death = nil
+vs_rat_ogre.run_on_despawn = nil
+vs_rat_ogre.combat_music_state = "rat_ogre"
+vs_rat_ogre.default_gear = {
+	slot_frame = "frame_0000",
+	slot_melee = "vs_rat_ogre_hands",
+	slot_skin = "skaven_rat_ogre_skin_0000",
+}
+PlayerBreeds.vs_rat_ogre = vs_rat_ogre
 PlayerBreeds.vs_chaos_troll = vs_chaos_troll
 PlayerBreeds.vs_gutter_runner = vs_gutter_runner
 PlayerBreeds.vs_packmaster = vs_packmaster
@@ -334,6 +359,11 @@ local vs_chaos_troll_action = table.clone(BreedActions.chaos_troll)
 
 vs_chaos_troll_action.climbing = climbing_action
 vs_chaos_troll_action.spawning = spawning_action
+
+local vs_rat_ogre_action = table.clone(BreedActions.skaven_rat_ogre)
+
+vs_rat_ogre_action.climbing = climbing_action
+vs_rat_ogre_action.spawning = spawning_action
 
 local vs_warpfire_thrower_action = table.clone(BreedActions.skaven_warpfire_thrower)
 
@@ -405,3 +435,4 @@ BreedActions.vs_poison_wind_globadier = vs_poison_wind_globadier_action
 BreedActions.vs_ratling_gunner = vs_ratling_gunner_action
 BreedActions.vs_warpfire_thrower = vs_warpfire_thrower_action
 BreedActions.vs_chaos_troll = vs_chaos_troll_action
+BreedActions.vs_rat_ogre = vs_rat_ogre_action

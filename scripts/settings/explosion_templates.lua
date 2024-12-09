@@ -1523,6 +1523,69 @@ ExplosionTemplates.gutter_runner_foff = {
 		radius = 3,
 	},
 }
+ExplosionTemplates.vs_rat_ogre_leap_landing = {
+	explosion = {
+		allow_friendly_fire_override = true,
+		attack_template = "rat_ogre_leap_vs",
+		catapult_force = 10,
+		catapult_force_z = 4,
+		catapult_players = true,
+		damage_profile = "playable_boss_rat_ogre_leap_explosion_vs",
+		effect_name = "fx/chr_rat_ogre_land_3p",
+		ignore_attacker_unit = true,
+		max_damage_radius = 4,
+		no_prop_damage = true,
+		player_push_speed = 50,
+		power_level = 50,
+		radius = 5,
+		sound_event_name = "Play_vs_rat_ogre_jump_attack_impact",
+		difficulty_power_level = {
+			easy = {
+				power_level = 100,
+				power_level_glance = 50,
+			},
+			normal = {
+				power_level = 200,
+				power_level_glance = 100,
+			},
+			hard = {
+				power_level = 300,
+				power_level_glance = 150,
+			},
+			harder = {
+				power_level = 400,
+				power_level_glance = 200,
+			},
+			hardest = {
+				power_level = 500,
+				power_level_glance = 250,
+			},
+			cataclysm = {
+				power_level = 1100,
+				power_level_glance = 550,
+			},
+			cataclysm_2 = {
+				power_level = 1150,
+				power_level_glance = 575,
+			},
+			cataclysm_3 = {
+				power_level = 1200,
+				power_level_glance = 600,
+			},
+			versus_base = {
+				power_level = 400,
+				power_level_glance = 200,
+			},
+		},
+		camera_effect = {
+			far_distance = 20,
+			far_scale = 0.15,
+			near_distance = 5,
+			near_scale = 1,
+			shake_name = "frag_grenade_explosion",
+		},
+	},
+}
 ExplosionTemplates.shadow_flare = {
 	spawn_unit = {
 		glow_time = 15,

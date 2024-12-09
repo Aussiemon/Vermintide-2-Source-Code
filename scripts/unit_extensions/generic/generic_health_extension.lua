@@ -566,6 +566,8 @@ GenericHealthExtension.was_attacked_by = function (self, player_unique_id)
 	if recent_data and t > recent_data.t then
 		self._health_system:return_recent_attacker(recent_data)
 
+		self._recent_attackers[player_unique_id] = nil
+
 		return false
 	end
 

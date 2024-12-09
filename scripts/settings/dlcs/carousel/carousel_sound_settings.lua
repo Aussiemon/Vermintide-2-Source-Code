@@ -60,6 +60,8 @@ settings.network_sound_events = {
 	"Play_hud_versus_score_5_ticks_to_win",
 	"versus_hud_player_lobby_match_found",
 	"versus_hud_player_lobby_enter_lobby",
+	"Play_vs_rat_ogre_jump_charge_vce_3p",
+	"Stop_vs_rat_ogre_jump_charge_vce_3p",
 }
 settings.blocked_auto_load_files = {
 	carousel_hub = true,

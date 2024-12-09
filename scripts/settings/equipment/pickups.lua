@@ -436,6 +436,20 @@ Pickups.level_events.gargoyle_head_vs = {
 	unit_template_name = "pickup_projectile_unit_limited",
 	wield_on_pickup = true,
 }
+Pickups.level_events.waystone_piece = {
+	debug_pickup_category = "level_event",
+	hud_description = "interaction_waystone_piece",
+	individual_pickup = false,
+	item_description = "interaction_waystone_piece",
+	item_name = "wpn_waystone_piece",
+	only_once = true,
+	slot_name = "slot_level_event",
+	spawn_weighting = 1e-06,
+	type = "inventory_item",
+	unit_name = "units/weapons/player/pup_waystone_piece_01/pup_waystone_piece_01",
+	unit_template_name = "pickup_projectile_unit",
+	wield_on_pickup = true,
+}
 Pickups.level_events.magic_crystal = {
 	debug_pickup_category = "level_event",
 	hud_description = "magic_crystal",
