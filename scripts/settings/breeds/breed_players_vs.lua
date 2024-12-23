@@ -287,6 +287,7 @@ vs_rat_ogre.poison_resistance = 100
 vs_rat_ogre.starting_animation = "to_1h_axe"
 vs_rat_ogre.climb_type = "climb"
 vs_rat_ogre.keep_weapon_on_death = true
+vs_rat_ogre.blood_effect_name = nil
 vs_rat_ogre.movement_speed_multiplier = 1.25
 vs_rat_ogre.breed_move_acceleration_up = 2
 vs_rat_ogre.breed_move_acceleration_down = 4

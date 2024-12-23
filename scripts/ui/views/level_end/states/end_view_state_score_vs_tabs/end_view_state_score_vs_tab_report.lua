@@ -27,6 +27,7 @@ EndViewStateScoreVSTabReport.on_enter = function (self, params)
 		snap_pixel_positions = true,
 	}
 	self._progression_presentation_done = self._context.progression_presentation_done
+	self._is_untrusted = script_data["eac-untrusted"]
 	self._animations = {}
 	self._ui_animations = {}
 	self._animation_callbacks = {}
@@ -115,6 +116,10 @@ EndViewStateScoreVSTabReport._extract_rewards = function (self)
 end
 
 EndViewStateScoreVSTabReport._trigger_telemetry_events = function (self)
+	if self._is_untrusted then
+		return
+	end
+
 	local start_level, start_experience = self._versus_level_start[1], self._versus_level_start[2]
 
 	Managers.telemetry_events:start_versus_experience(start_level, start_experience)

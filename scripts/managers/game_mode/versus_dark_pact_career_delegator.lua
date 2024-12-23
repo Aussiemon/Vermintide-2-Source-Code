@@ -130,14 +130,14 @@ VersusDarkPactCareerDelegator.request_careers = function (self, peer_id)
 
 		self._peer_picking_boss = peer_id
 
-		local random_boss_profile = table.random(self._bosses)
+		for i = 1, #self._bosses do
+			local boss_profile = self._bosses[i]
 
-		if random_boss_profile then
-			career_options[#career_options + 1] = random_boss_profile
+			career_options[#career_options + 1] = boss_profile
 
-			table.insert(self._picks_per_player[peer_id], random_boss_profile)
+			table.insert(self._picks_per_player[peer_id], boss_profile)
 
-			self._picks_per_career[random_boss_profile] = (self._picks_per_career[random_boss_profile] or 0) + 1
+			self._picks_per_career[boss_profile] = (self._picks_per_career[boss_profile] or 0) + 1
 
 			self:set_playable_boss_can_be_picked(false)
 		end

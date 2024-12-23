@@ -247,6 +247,7 @@ settings.anim_lookup = {
 	"death_crawl",
 	"attack_vomit_into",
 	"attack_jump_air",
+	"cancel_priming",
 }
 settings.inventory_package_list = {
 	"units/beings/player/dark_pact_first_person_base/chaos_troll/chr_first_person_base",

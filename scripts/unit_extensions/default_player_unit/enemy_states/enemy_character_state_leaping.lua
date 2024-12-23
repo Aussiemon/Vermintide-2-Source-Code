@@ -38,7 +38,7 @@ EnemyCharacterStateLeaping.on_enter = function (self, unit, input, dt, context, 
 	local distance = Vector3.length(projected_hit_pos - start_position)
 
 	self._percentage_done = 0
-	self.initial_jump_direction = Vector3Box(look_direction_flat)
+	self.initial_jump_direction = Vector3Box(projected_hit_pos - start_position)
 	self.jump_direction = Vector3Box(look_direction_flat)
 
 	self:_start_leap(unit, t)
@@ -50,34 +50,42 @@ EnemyCharacterStateLeaping.on_enter = function (self, unit, input, dt, context, 
 	self._played_landing_event = nil
 end
 
-EnemyCharacterStateLeaping.on_exit = function (self, unit, input, dt, context, t, next_state)
+EnemyCharacterStateLeaping.on_exit = function (self, unit, input, dt, context, t, next_state, is_destroy)
 	local input_extension = self._input_extension
 	local locomotion_extension = self._locomotion_extension
 
 	locomotion_extension:set_mover_filter_property("enemy_leap_state", false)
 
-	local player_position = Vector3.copy(POSITION_LOOKUP[unit])
-	local end_position = self._leap_data.projected_hit_pos:unbox()
+	if not is_destroy then
+		local player_position = Vector3.copy(POSITION_LOOKUP[unit])
+		local end_position = self._leap_data.projected_hit_pos:unbox()
 
-	if player_position.z < end_position.z then
-		player_position.z = end_position.z + 0.1
+		if player_position and end_position and player_position.z < end_position.z then
+			player_position.z = end_position.z + 0.1
 
-		locomotion_extension:teleport_to(player_position)
-	end
+			locomotion_extension:teleport_to(player_position)
+		end
 
-	locomotion_extension:set_forced_velocity(Vector3.zero())
-	locomotion_extension:set_wanted_velocity(Vector3.zero())
+		locomotion_extension:set_forced_velocity(Vector3.zero())
+		locomotion_extension:set_wanted_velocity(Vector3.zero())
 
-	if next_state == "walking" or next_state == "standing" then
-		ScriptUnit.extension(unit, "whereabouts_system"):set_landed()
-	elseif next_state and next_state ~= "falling" then
-		ScriptUnit.extension(unit, "whereabouts_system"):set_no_landing()
-	end
+		if next_state == "staggered" and self._leap_data.leap_events.finished then
+			local final_position = POSITION_LOOKUP[unit]
 
-	if next_state and next_state ~= "falling" and next_state ~= "staggered" and Managers.state.network:game() then
-		CharacterStateHelper.play_animation_event(unit, "land_still")
-		CharacterStateHelper.play_animation_event(unit, "to_onground")
-		locomotion_extension:force_on_ground(true)
+			self._leap_data.leap_events.finished(self, unit, false, final_position)
+		end
+
+		if next_state == "walking" or next_state == "standing" then
+			ScriptUnit.extension(unit, "whereabouts_system"):set_landed()
+		elseif next_state and next_state ~= "falling" then
+			ScriptUnit.extension(unit, "whereabouts_system"):set_no_landing()
+		end
+
+		if next_state and next_state ~= "falling" and next_state ~= "staggered" and Managers.state.network:game() then
+			CharacterStateHelper.play_animation_event(unit, "land_still")
+			CharacterStateHelper.play_animation_event(unit, "to_onground")
+			locomotion_extension:force_on_ground(true)
+		end
 	end
 end
 
@@ -133,14 +141,6 @@ EnemyCharacterStateLeaping.update = function (self, unit, input, dt, context, t)
 	end
 
 	self._time_spent_in_leap = t - self._time_entered_leap
-
-	if self._time_spent_in_leap then
-		local t_max = 2
-		local t_clamped = math.clamp(self._time_spent_in_leap, 0, t_max)
-		local t_normalized = (t_clamped - 0) / 2
-
-		self:_camera_effects(unit, t_normalized)
-	end
 
 	local is_done_moving, colliding_down, going_backwards = self:_update_movement(unit, dt, t)
 
@@ -387,11 +387,13 @@ EnemyCharacterStateLeaping._update_movement = function (self, unit, dt, t)
 
 	local leap_state = self:_move_in_air(unit, dt, t)
 	local colliding_down = CharacterStateHelper.is_colliding_down(unit)
-	local current_velocity = self._locomotion_extension:current_relative_velocity()
+	local current_vel = self._locomotion_extension:current_velocity()
+	local flat_current_vel = Vector3.flat(current_vel)
+	local dot = Vector3.dot(Vector3.normalize(Vector3Box.unbox(self.initial_jump_direction)), Vector3.normalize(flat_current_vel))
 	local going_backwards
 
-	if leap_state ~= "start_acceleration" then
-		going_backwards = current_velocity.y <= 0
+	if leap_state ~= "start_acceleration" and dot < 0 then
+		going_backwards = true
 	end
 
 	self._leap_done = colliding_down or going_backwards
@@ -453,6 +455,12 @@ EnemyCharacterStateLeaping._start_leap = function (self, unit, t)
 		first_person_extension:play_unit_sound_event(jump_sound_event, unit, 0, true)
 	end
 
+	local leap_events = self._leap_data.leap_events
+
+	if leap_events and leap_events.start then
+		leap_events.start(self, unit)
+	end
+
 	local direction = self._leap_data.direction:unbox()
 	local speed = PlayerUnitMovementSettings.leap.jump_speed
 	local velocity = direction * speed + Vector3.up()
@@ -468,7 +476,7 @@ EnemyCharacterStateLeaping._start_leap = function (self, unit, t)
 end
 
 EnemyCharacterStateLeaping._camera_effects = function (self, unit, alpha)
-	local fov_max = 1.75
+	local fov_max = 1.5
 	local fov_multiplier = math.lerp(1, fov_max, alpha)
 
 	Managers.state.camera:set_additional_fov_multiplier(fov_multiplier)

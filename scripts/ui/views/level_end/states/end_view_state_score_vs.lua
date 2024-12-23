@@ -30,7 +30,18 @@ EndViewStateScoreVS.on_enter = function (self, params)
 		alpha_multiplier = 0,
 		snap_pixel_positions = true,
 	}
-	self._layout_settings = definitions.tab_layouts
+
+	local tab_layouts = table.shallow_copy(definitions.tab_layouts)
+
+	for i = #tab_layouts, 1, -1 do
+		local condition = tab_layouts[i].condition_func
+
+		if condition and not condition() then
+			table.remove(tab_layouts, i)
+		end
+	end
+
+	self._layout_settings = tab_layouts
 
 	self:create_ui_elements(params)
 	self:_align_tabs()
@@ -85,7 +96,7 @@ EndViewStateScoreVS.create_ui_elements = function (self, params)
 	self._widgets, self._widgets_by_name = UIUtils.create_widgets(widget_definitions, {}, {})
 
 	local title_button_widgets = {}
-	local tab_layouts = definitions.tab_layouts
+	local tab_layouts = self._layout_settings
 	local offset = 0
 
 	for i = 1, #tab_layouts do

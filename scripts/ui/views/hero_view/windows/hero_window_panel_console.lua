@@ -49,7 +49,7 @@ HeroWindowPanelConsole.on_enter = function (self, params, offset)
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
-	self.is_in_inn = ingame_ui_context.is_in_inn
+	self.is_in_inn = ingame_ui_context.is_in_inn or false
 	self.force_ingame_menu = params.force_ingame_menu
 	self.hero_name = params.hero_name
 	self.career_index = params.career_index
@@ -89,7 +89,7 @@ HeroWindowPanelConsole.on_enter = function (self, params, offset)
 
 		system_button.content.button_hotspot.is_selected = true
 
-		if IS_WINDOWS then
+		if IS_WINDOWS or not self.is_in_inn then
 			system_button.content.visible = false
 		end
 	end
@@ -161,7 +161,7 @@ HeroWindowPanelConsole.create_ui_elements = function (self, params, offset)
 		window_position[3] = window_position[3] + offset[3]
 	end
 
-	self._widgets_by_name.bot_customization_button.content.visible = not self.force_ingame_menu
+	self._widgets_by_name.bot_customization_button.content.visible = not self.force_ingame_menu and self.is_in_inn
 end
 
 HeroWindowPanelConsole.on_exit = function (self, params)

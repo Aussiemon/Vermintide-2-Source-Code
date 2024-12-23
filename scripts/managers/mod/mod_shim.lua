@@ -102,7 +102,7 @@ ModShim.wedges = {
 		mods = {
 			"loadout_manager_vt2",
 		},
-		hooks = {
+		override_hooks = {
 			{
 				name = "BackendUtils.get_loadout_item",
 				func = function (vmf_mod, mod_func, mod_name, hooked_function, ...)
@@ -183,7 +183,7 @@ ModShim.wedges = {
 		mods = {
 			"HideBuffs",
 		},
-		hooks = {
+		override_hooks = {
 			{
 				name = "UnitFrameUI.draw",
 				func = function (vmf_mod, mod_func, mod_name, hooked_function, self, ...)
@@ -208,6 +208,35 @@ ModShim.wedges = {
 					else
 						return mod_func(hooked_function, self, ...)
 					end
+				end,
+			},
+		},
+	},
+	{
+		date = "12/5/2024 12:15:00 PM",
+		mods = {
+			"NeuterUltEffects",
+		},
+		new_hooks = {
+			{
+				name = "MoodHandler.set_mood",
+				func = function (vmf_mod, mod_name, hooked_function, self, mood_name, ...)
+					local mood_to_name = {
+						skill_ranger = "RANGER",
+						skill_shade = "SHADE",
+						skill_slayer = "SLAYER",
+						skill_zealot = "ZEALOT",
+					}
+
+					if mood_to_name[mood_name] and vmf_mod:get(vmf_mod.SETTING_NAMES[mood_to_name[mood_name] .. "_VISUAL"]) then
+						return
+					end
+
+					if (mood_name == "skill_huntsman_surge" or mood_name == "skill_huntsman_stealth") and vmf_mod:get(vmf_mod.SETTING_NAMES.HUNTSMAN_VISUAL) or (mood_name == "wounded" or mood_name == "bleeding_out") and vmf_mod:get(vmf_mod.SETTING_NAMES.WOUNDED) or mood_name == "knocked_down" and vmf_mod:get(vmf_mod.SETTING_NAMES.KNOCKED_DOWN) or mood_name == "heal_medkit" and vmf_mod:get(vmf_mod.SETTING_NAMES.HEALING) then
+						return
+					end
+
+					return hooked_function(self, mood_name, ...)
 				end,
 			},
 		},
@@ -344,6 +373,52 @@ ModShim._wedge_hook = function (self, vmf_mod, mod_name, hook_func_name, mod_wed
 	vmf_mod[hook_func_name] = hook_override
 end
 
+ModShim._add_hook = function (self, vmf_mod, mod_name, hook_func_name, mod_new_hook_lookup, object, method, object_name, method_name, wedge_func)
+	local hook_func = vmf_mod[hook_func_name]
+
+	if not hook_func then
+		printf("[ModShim] Trying to wedge non existing hook func '%s'. Ignoring.", hook_func_name)
+
+		return
+	end
+
+	local mod_override_upvalue = {}
+
+	hook_func(vmf_mod, object or object_name, method_name or method, function (func, ...)
+		if mod_override_upvalue.func then
+			return mod_override_upvalue.func(func, ...)
+		end
+
+		return wedge_func(vmf_mod, mod_name, func, ...)
+	end)
+
+	mod_new_hook_lookup[object] = mod_new_hook_lookup[object] or {}
+	mod_new_hook_lookup[object][method] = wedge_func
+	mod_new_hook_lookup[object][method_name] = wedge_func
+	mod_new_hook_lookup[object_name] = mod_new_hook_lookup[object_name] or {}
+	mod_new_hook_lookup[object_name][method] = wedge_func
+	mod_new_hook_lookup[object_name][method_name] = wedge_func
+
+	if script_data.debug_mod_shim then
+		printf("[ModShim] <%s:%s> wedged %s:%s (%s:%s)", mod_name, hook_func_name, object_name, method_name, object, method)
+	end
+
+	local function hook_override(_self, hook_obj, hook_method, mod_func, ...)
+		local func = mod_func
+		local wedge_func = mod_new_hook_lookup[hook_obj] and mod_new_hook_lookup[hook_obj][hook_method]
+
+		if wedge_func then
+			printf("[ModShim] <%s> overriding wedged function %s.%s with mods own hook", mod_name, hook_obj, hook_method)
+
+			mod_override_upvalue.func = mod_func
+		end
+
+		return hook_func(_self, hook_obj, hook_method, func, ...)
+	end
+
+	vmf_mod[hook_func_name] = hook_override
+end
+
 ModShim._mod_wedges = function (self, mod_name, timestamp)
 	if not timestamp then
 		printf("[ModShim] <%s> Wedges ignored due to not being able to deduce timestamp", mod_name)
@@ -373,62 +448,117 @@ ModShim._mod_created = function (self, vmf_mod, mod_name)
 		return
 	end
 
-	local mod_data = Managers.mod:currently_loading_mod()
-	local mod_wedges = self:_mod_wedges(mod_name, mod_data.timestamp)
-
 	if script_data.debug_mod_shim then
-		printf("[ModShim] Mod created <%s>. Has shims: %s%s", mod_name, #mod_wedges > 0, #mod_wedges > 0 and "\n\t" .. table.tostring(mod_wedges) or "")
+		printf("[ModShim] Mod created <%s>", mod_name)
 	end
+
+	local mod_data = Managers.mod:currently_loading_mod()
+
+	self:_handle_wedges(vmf_mod, mod_name, mod_data)
+end
+
+ModShim._handle_wedges = function (self, vmf_mod, mod_name, mod_data)
+	local mod_wedges = self:_mod_wedges(mod_name, mod_data.timestamp)
 
 	if table.is_empty(mod_wedges) then
 		return
+	end
+
+	if script_data.debug_mod_shim then
+		printf("[ModShim] \tHas wedges: %s%s", #mod_wedges > 0, #mod_wedges > 0 and "\n\t" .. table.tostring(mod_wedges) or "")
 	end
 
 	local mod_id = vmf_mod:get_internal_data("workshop_id")
 
 	self._wedged_mod_by_id[mod_id] = vmf_mod
 
-	local mod_wedge_lookup = {}
+	local mod_override_lookup = {}
+	local mod_new_hook_lookup = {}
 
 	for wedge_i = 1, #mod_wedges do
 		local wedge = mod_wedges[wedge_i]
-		local hooks = wedge.hooks
+		local override_hooks = wedge.override_hooks
 
-		if hooks then
-			for hook_i = 1, #hooks do
-				repeat
-					local hook = hooks[hook_i]
-					local name = hook.name
-					local object_name, method_name = string.match(name, "^([^:.]+)[:.]([^:.]+)$")
-					local object = rawget(_G, object_name)
+		if override_hooks then
+			self:_handle_hook_overrides(vmf_mod, mod_name, mod_data, override_hooks, mod_override_lookup)
+		end
 
-					if not object then
-						Application.error("[ModShim] Attempting to wedge method '%s' in '%s' for mod '%s' but the object does not exist in the global scope.", method_name, object_name, mod_name)
+		local new_hooks = wedge.new_hooks
 
-						break
-					end
+		if new_hooks then
+			self:_handle_new_hooks(vmf_mod, mod_name, mod_data, new_hooks, mod_new_hook_lookup)
+		end
+	end
+end
 
-					local method = rawget(object, method_name)
+ModShim._handle_hook_overrides = function (self, vmf_mod, mod_name, mod_data, override_hooks, mod_override_lookup)
+	for hook_i = 1, #override_hooks do
+		repeat
+			local hook = override_hooks[hook_i]
+			local name = hook.name
+			local object_name, method_name = string.match(name, "^([^:.]+)[:.]([^:.]+)$")
+			local object = rawget(_G, object_name)
 
-					if not method then
-						Application.error("[ModShim] Attempting to wedge method '%s' in '%s' for mod '%s' but it doesn't exist.", method_name, object_name, mod_name)
+			if not object then
+				Application.error("[ModShim] Attempting to wedge method '%s' in '%s' for mod '%s' but the object does not exist in the global scope.", method_name, object_name, mod_name)
 
-						break
-					end
-
-					if hook.func then
-						self:_wedge_hook(vmf_mod, mod_name, "hook", mod_wedge_lookup, object, method, object_name, method_name, hook.func)
-					end
-
-					if hook.func_safe then
-						self:_wedge_hook(vmf_mod, mod_name, "hook_safe", mod_wedge_lookup, object, method, object_name, method_name, hook.func_safe)
-					end
-
-					if hook.func_origin then
-						self:_wedge_hook(vmf_mod, mod_name, "hook_origin", mod_wedge_lookup, object, method, object_name, method_name, hook.func_origin)
-					end
-				until true
+				break
 			end
+
+			local method = rawget(object, method_name)
+
+			if not method then
+				Application.error("[ModShim] Attempting to wedge method '%s' in '%s' for mod '%s' but it doesn't exist.", method_name, object_name, mod_name)
+
+				break
+			end
+
+			if hook.func then
+				self:_wedge_hook(vmf_mod, mod_name, "hook", mod_override_lookup, object, method, object_name, method_name, hook.func)
+			end
+
+			if hook.func_safe then
+				self:_wedge_hook(vmf_mod, mod_name, "hook_safe", mod_override_lookup, object, method, object_name, method_name, hook.func_safe)
+			end
+
+			if hook.func_origin then
+				self:_wedge_hook(vmf_mod, mod_name, "hook_origin", mod_override_lookup, object, method, object_name, method_name, hook.func_origin)
+			end
+		until true
+	end
+end
+
+ModShim._handle_new_hooks = function (self, vmf_mod, mod_name, mod_data, new_hooks, mod_new_hook_lookup)
+	for hook_i = 1, #new_hooks do
+		local hook = new_hooks[hook_i]
+		local name = hook.name
+		local object_name, method_name = string.match(name, "^([^:.]+)[:.]([^:.]+)$")
+		local object = rawget(_G, object_name)
+
+		if not object then
+			Application.error("[ModShim] Attempting to wedge method '%s' in '%s' for mod '%s' but the object does not exist in the global scope.", method_name, object_name, mod_name)
+
+			break
+		end
+
+		local method = rawget(object, method_name)
+
+		if not method then
+			Application.error("[ModShim] Attempting to wedge method '%s' in '%s' for mod '%s' but it doesn't exist.", method_name, object_name, mod_name)
+
+			break
+		end
+
+		if hook.func then
+			self:_add_hook(vmf_mod, mod_name, "hook", mod_new_hook_lookup, object, method, object_name, method_name, hook.func)
+		end
+
+		if hook.func_safe then
+			self:_add_hook(vmf_mod, mod_name, "hook_safe", mod_new_hook_lookup, object, method, object_name, method_name, hook.func_safe)
+		end
+
+		if hook.func_origin then
+			self:_add_hook(vmf_mod, mod_name, "hook_origin", mod_new_hook_lookup, object, method, object_name, method_name, hook.func_origin)
 		end
 	end
 end

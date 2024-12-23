@@ -2249,6 +2249,22 @@ StoreBundleLayouts = {
 			type = "spacing",
 		},
 		{
+			type = "body_text",
+			settings = {
+				localize = true,
+				text = "menu_store_product_hero_skin_disclaimer_02_desc",
+			},
+		},
+		{
+			type = "spacing",
+			settings = {
+				size = {
+					260,
+					0,
+				},
+			},
+		},
+		{
 			type = "divider_horizontal",
 		},
 		{

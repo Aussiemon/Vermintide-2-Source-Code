@@ -477,18 +477,21 @@ local function lobby_level_display_name(lobby_data)
 		end
 	else
 		local level_key = mission_id
+		local display_name
 
 		if level_key == "n/a" then
-			level_key = nil
-		elseif level_key == "default_start_level" then
-			level_key = LevelSettingsDefaultStartLevel
+			display_name = "lb_unknown"
+		elseif level_key == "any" then
+			display_name = "map_screen_quickplay_button"
+		else
+			local level_settings = rawget(LevelSettings, level_key)
+
+			if level_settings then
+				display_name = level_settings.display_name
+			end
 		end
 
-		local level_setting = level_key and LevelSettings[level_key]
-		local level_display_name = level_key and level_setting.display_name
-		local level_text = level_key and Localize(level_display_name) or "-"
-
-		return level_text
+		return Localize(display_name or "lb_unknown")
 	end
 end
 
@@ -547,7 +550,12 @@ local function level_is_locked(lobby_data)
 	local weave_template = WeaveSettings.templates[mission_id]
 
 	if not weave_template then
-		local level_setting = LevelSettings[mission_id]
+		local level_setting = rawget(LevelSettings, mission_id)
+
+		if not level_setting then
+			return true
+		end
+
 		local in_inn = level_setting.hub_level
 
 		if in_inn then

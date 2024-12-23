@@ -78,6 +78,7 @@ local horde_ability_settings = {
 			vs_gutter_runner = 1.2,
 			vs_packmaster = 1.2,
 			vs_poison_wind_globadier = 1,
+			vs_rat_ogre_hands = 0.4,
 			vs_ratling_gunner_gun = 0.15,
 			vs_warpfire_thrower = 0.15,
 		},

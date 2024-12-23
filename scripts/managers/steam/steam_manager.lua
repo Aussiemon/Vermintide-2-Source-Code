@@ -35,7 +35,6 @@ SteamManager.on_inventory_result = function (self, handle, result)
 
 			self._request_user_inventory_callback(result, item_list)
 
-			self._request_user_inventory_handle = nil
 			self._request_user_inventory_callback = nil
 
 			table.dump(item_list, "ITEM-LIST", 3)
@@ -62,6 +61,10 @@ SteamManager.on_inventory_result = function (self, handle, result)
 
 			self._purchase_item_callback = nil
 		end
+	end
+
+	if handle == self._request_user_inventory_handle then
+		self._request_user_inventory_handle = nil
 	end
 
 	SteamInventory.destroy_result(handle)

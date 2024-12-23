@@ -3,7 +3,7 @@
 require("scripts/unit_extensions/default_player_unit/versus_horde_ability_extension")
 require("scripts/unit_extensions/default_player_unit/versus_horde_ability_husk_extension")
 
-local settings = require("scripts/settings/versus_horde_ability_settings")
+local settings = local_require("scripts/settings/versus_horde_ability_settings")
 
 VersusHordeAbilitySystem = class(VersusHordeAbilitySystem, ExtensionSystemBase)
 

@@ -622,7 +622,10 @@ StartGameWindowLobbyBrowser._handle_lobby_data = function (self, game_type, lobb
 	local level_name = "lb_unknown"
 	local mission_id = lobby_data.selected_mission_id or lobby_data.mission_id
 
-	if mission_id and mission_id ~= "n/a" then
+	if mission_id == "any" then
+		level_image = "level_image_any"
+		level_name = "map_screen_quickplay_button"
+	elseif mission_id and mission_id ~= "n/a" then
 		local level_settings = LevelSettings[mission_id]
 
 		level_image = level_settings.level_image

@@ -10,16 +10,6 @@ local planted_decrease_movement_settings = {
 			external_multiplier = 0.2,
 			start_time = 0,
 		},
-		{
-			buff_name = "set_rotation_limit",
-			external_value = 1.5,
-			start_time = 0,
-		},
-		{
-			buff_name = "planted_decrease_rotation_speed",
-			external_multiplier = 0.75,
-			start_time = 0,
-		},
 	},
 	light_attack = {
 		{
@@ -47,8 +37,14 @@ local planted_decrease_movement_settings = {
 			start_time = 0.3,
 		},
 		{
-			buff_name = "planted_return_to_normal_walk_movement",
+			buff_name = "planted_decrease_movement",
+			end_time = 1,
+			external_multiplier = 0.001,
 			start_time = 0.6,
+		},
+		{
+			buff_name = "planted_return_to_normal_walk_movement",
+			start_time = 1,
 		},
 		{
 			buff_name = "set_rotation_limit",
@@ -69,20 +65,13 @@ local planted_decrease_movement_settings = {
 			start_time = 0.8,
 		},
 	},
-	leap_charge = {
-		{
-			buff_name = "planted_decrease_movement",
-			external_multiplier = 1,
-			start_time = 0,
-		},
-	},
 }
 local knockback_tables = {
 	frenzy = {
 		catapult = false,
 		catapult_players = false,
-		player_knockback_speed = 12,
-		player_knockback_speed_blocked = 12,
+		player_knockback_speed = 9,
+		player_knockback_speed_blocked = 9,
 	},
 	slam = {
 		catapult = false,
@@ -236,7 +225,7 @@ weapon_template.actions = {
 					action = "action_one",
 					end_time = 1.8,
 					input = "action_one",
-					start_time = 1.1,
+					start_time = 0.8,
 					sub_action = "default_2",
 				},
 				{
@@ -282,7 +271,7 @@ weapon_template.actions = {
 				{
 					action = "action_one",
 					input = "action_one",
-					start_time = 1.8,
+					start_time = 1.4,
 					sub_action = "default",
 				},
 				{
@@ -298,8 +287,8 @@ weapon_template.actions = {
 			additional_critical_strike_chance = 0.1,
 			anim_end_event = "attack_finished",
 			anim_event = "attack_slam",
-			damage_profile_left = "rat_ogre_slam",
-			damage_profile_right = "rat_ogre_slam",
+			damage_profile_left = "rat_ogre_slam_left",
+			damage_profile_right = "rat_ogre_slam_right",
 			damage_window_end = 0.225,
 			damage_window_start = 0.1,
 			dedicated_target_range = 2,
@@ -334,9 +323,10 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					action = "action_one",
+					end_time = 1.33,
 					input = "action_one",
 					release_required = "action_one_hold",
-					start_time = 0.75,
+					start_time = 1.25,
 					sub_action = "default",
 				},
 			},

@@ -72,15 +72,7 @@ EnemyCharacterStateJumping.on_enter = function (self, unit, input, dt, context, 
 	move_anim = CharacterStateHelper.has_move_input(input_extension) and "jump_fwd" or "jump_idle"
 
 	CharacterStateHelper.play_animation_event(unit, move_anim)
-
-	local item_template = inventory_extension:get_wielded_slot_item_template()
-
-	self._play_fp_anim = item_template and item_template.jump_anim_enabled_1p
-
-	if self._play_fp_anim then
-		CharacterStateHelper.play_animation_event_first_person(first_person_extension, move_anim)
-	end
-
+	CharacterStateHelper.play_animation_event_first_person(first_person_extension, "idle")
 	first_person_extension:play_camera_effect_sequence("jump", t)
 	CharacterStateHelper.ghost_mode(self._ghost_mode_extension, input_extension)
 	CharacterStateHelper.look(input_extension, player.viewport_name, first_person_extension, status_extension, self._inventory_extension)

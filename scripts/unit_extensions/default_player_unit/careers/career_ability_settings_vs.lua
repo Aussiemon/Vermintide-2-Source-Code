@@ -204,7 +204,7 @@ ActivatedAbilitySettings.vs_chaos_troll = {
 
 local rat_ogre_jump_data = {
 	hit_indicator_raidus = 3,
-	max_pitch = -10,
+	max_pitch = -2,
 	min_jump_dist = 5,
 	min_pitch = 60,
 	lerp_data = {
@@ -226,8 +226,8 @@ local rat_ogre_jump_data = {
 	},
 	priming_buffs = {
 		{
-			buff_template = "planted_decrease_movement",
-			external_optional_multiplier = 0.1,
+			buff_template = "rat_ogre_planted_decrease_movement",
+			external_optional_multiplier = 0.001,
 		},
 	},
 }

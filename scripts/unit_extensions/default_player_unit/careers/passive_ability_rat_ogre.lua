@@ -18,6 +18,8 @@ PassiveAbilityRatOgre.init = function (self, extension_init_context, unit, exten
 	self._network_transmit = Managers.state.network.network_transmit
 
 	self:register_rpcs(self._network_event_delegate)
+
+	self._anim_value = 0
 end
 
 PassiveAbilityRatOgre.register_rpcs = function (self, network_event_delegate)
@@ -124,11 +126,19 @@ PassiveAbilityRatOgre.stop = function (self)
 		return
 	end
 
-	if not self._is_remote_player then
-		self._first_person_extension:play_animation_event("attack_jump_land")
-	end
+	if self._anim_value and self._anim_value > 0.2 then
+		if not self._is_remote_player then
+			self._first_person_extension:play_animation_event("attack_jump_land")
+		end
 
-	Unit.animation_event(unit, "attack_jump_land")
+		Unit.animation_event(unit, "attack_jump_land")
+	else
+		if not self._is_remote_player then
+			self._first_person_extension:play_animation_event("cancel_priming")
+		end
+
+		Unit.animation_event(unit, "cancel_priming")
+	end
 end
 
 PassiveAbilityRatOgre.update = function (self, dt, t)
@@ -146,15 +156,17 @@ PassiveAbilityRatOgre.update = function (self, dt, t)
 		local projected_hit_pos = self._jump_to_pos:unbox()
 		local distance_travelled = Vector3.length(current_position - starting_pos)
 		local percentage_done = distance_travelled / Vector3.length(projected_hit_pos - starting_pos)
-		local anim_value = math.clamp(percentage_done * 2, 0, 2)
+
+		self._anim_value = math.clamp(percentage_done * 2, 0, 2)
+
 		local anim_variable = "jump_rotation"
 		local variable_index = Unit.animation_find_variable(unit, anim_variable)
 
 		if self._is_remote_player then
-			Unit.animation_set_variable(unit, variable_index, anim_value)
+			Unit.animation_set_variable(unit, variable_index, self._anim_value)
 		else
-			Unit.animation_set_variable(unit, variable_index, anim_value)
-			self._first_person_extension:animation_set_variable(anim_variable, anim_value)
+			Unit.animation_set_variable(unit, variable_index, self._anim_value)
+			self._first_person_extension:animation_set_variable(anim_variable, self._anim_value)
 		end
 	end
 end

@@ -1405,7 +1405,14 @@ StoreWindowItemPreview._present_item = function (self, item, product)
 			elseif slot_type == "cosmetic_bundle" then
 				disclaimer_text = Localize("menu_store_product_pactsworn_skin_disclaimer_desc")
 			else
-				disclaimer_text = Localize("menu_store_product_hero_skin_disclaimer_desc")
+				local item_name = item_data.name
+				local skin_data = Cosmetics[item_name]
+
+				if skin_data and skin_data.always_hide_attachment_slots then
+					disclaimer_text = Localize("menu_store_product_hero_skin_disclaimer_02_desc")
+				else
+					disclaimer_text = Localize("menu_store_product_hero_skin_disclaimer_desc")
+				end
 			end
 		end
 
@@ -1589,15 +1596,17 @@ StoreWindowItemPreview._get_cosmetic_bundle_item_contents = function (self, item
 	local contained_items = {}
 	local bundle_contains = item_data.bundle_contains
 
-	for i = 1, #bundle_contains do
-		local steam_itemdefid = bundle_contains[i]
-		local item_key = SteamitemdefidToMasterList[steam_itemdefid]
-		local contained_item_data = ItemMasterList[item_key]
+	if bundle_contains and #bundle_contains > 0 then
+		for i = 1, #bundle_contains do
+			local steam_itemdefid = bundle_contains[i]
+			local item_key = SteamitemdefidToMasterList[steam_itemdefid]
+			local contained_item_data = ItemMasterList[item_key]
 
-		if contained_item_data then
-			local slot_type = contained_item_data.slot_type
+			if contained_item_data then
+				local slot_type = contained_item_data.slot_type
 
-			contained_items[slot_type] = contained_item_data.name
+				contained_items[slot_type] = contained_item_data.name
+			end
 		end
 	end
 

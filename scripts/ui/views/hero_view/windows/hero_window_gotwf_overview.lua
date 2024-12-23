@@ -837,6 +837,10 @@ HeroWindowGotwfOverview._claim_daily_reward = function (self, reward_offset)
 end
 
 HeroWindowGotwfOverview._claim_reward_result_cb = function (self, reward_index, login_rewards)
+	if not self._ui_animator then
+		return
+	end
+
 	if login_rewards.event_type ~= "calendar" then
 		self._awaiting_result = false
 
@@ -1368,6 +1372,10 @@ HeroWindowGotwfOverview._handle_input = function (self, dt, t)
 end
 
 HeroWindowGotwfOverview._get_reward_item_from_bundle = function (self, reward)
+	if not reward then
+		return
+	end
+
 	local reward_item = reward[1]
 
 	if reward_item.reward_type == "bundle" then

@@ -312,17 +312,23 @@ StateSplashScreen.packages_loaded = function (self)
 		self.splash_view:allow_console_skip()
 	end
 
+	local is_loaded = true
+
 	if not GlobalResources.loaded then
 		for i, name in ipairs(GlobalResources) do
-			if not package_manager:has_loaded(name) then
+			if package_manager:is_loading(name, "global") then
+				is_loaded = false
+			elseif not package_manager:has_loaded(name, "global") then
 				package_manager:load(name, "global", nil, true)
+
+				is_loaded = false
 			end
 		end
 
-		GlobalResources.loaded = true
+		GlobalResources.loaded = is_loaded
 	end
 
-	return true
+	return is_loaded
 end
 
 StateSplashScreen.cb_fade_in_done = function (self)

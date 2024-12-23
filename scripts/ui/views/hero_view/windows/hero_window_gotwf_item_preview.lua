@@ -612,7 +612,16 @@ HeroWindowGotwfItemPreview._present_item = function (self, item)
 		item_preview_object_set_name = item_preview_object_set_name or "flow_hat_lights"
 	elseif slot_type == "skin" then
 		type_title_text = Localize(item_type)
-		disclaimer_text = Localize("menu_store_product_hero_skin_disclaimer_desc")
+
+		local item_name = masterlist_item.name
+		local skin_data = Cosmetics[item_name]
+
+		if skin_data and skin_data.always_hide_attachment_slots then
+			disclaimer_text = Localize("menu_store_product_hero_skin_disclaimer_02_desc")
+		else
+			disclaimer_text = Localize("menu_store_product_hero_skin_disclaimer_desc")
+		end
+
 		item_preview_object_set_name = item_preview_object_set_name or "flow_character_lights"
 	elseif painting then
 		display_name = painting.display_name

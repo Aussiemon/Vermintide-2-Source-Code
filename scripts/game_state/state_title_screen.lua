@@ -132,7 +132,7 @@ StateTitleScreen._load_global_resources = function (self)
 		local package_manager = Managers.package
 
 		for i, name in ipairs(GlobalResources) do
-			if not package_manager:has_loaded(name) then
+			if not package_manager:has_loaded(name, "global") then
 				package_manager:load(name, "global", nil, true)
 			end
 		end

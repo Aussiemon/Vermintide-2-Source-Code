@@ -423,7 +423,8 @@ MenuInformationSlateUI._setup_backend_image_material = function (self, texture_n
 	if IS_CONSOLE then
 		self._material_references_to_unload[reference_name] = true
 
-		local cb = callback(self, "_cb_on_backend_image_loaded", material_name, reference_name, widget_cb)
+		local use_amazon_cdn_fallback = false
+		local cb = callback(self, "_cb_on_backend_image_loaded", material_name, reference_name, widget_cb, texture_name, use_amazon_cdn_fallback)
 
 		Managers.url_loader:load_resource(reference_name, "http://" .. CDN_SERVER .. "/" .. texture_name .. ".dds", cb, Application.guid())
 	else

@@ -2892,8 +2892,9 @@ MatchmakingManager.is_in_versus_custom_game_lobby = function (self)
 	local custom_game_id = "2"
 	local matchmaking_type = self.lobby:lobby_data("matchmaking_type")
 	local is_custom_game = matchmaking_type == custom_game_id
+	local is_versus = Managers.mechanism:current_mechanism_name() == "versus"
 
-	if self._state.NAME == "MatchmakingStateFriendClient" and is_custom_game then
+	if self._state.NAME == "MatchmakingStateFriendClient" and is_custom_game and is_versus then
 		return true
 	else
 		return hierarchical_matchmaking_states[self._state.NAME]

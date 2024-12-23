@@ -300,29 +300,39 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 		self._weave_personal_best_achieved = nil
 		self._completed_weave = nil
 
+		local win_conditions = mechanism_name == "versus" and Managers.mechanism:game_mechanism():win_conditions()
+		local context_rewards = {
+			team_scores = win_conditions and win_conditions:get_total_scores(),
+		}
+
+		level_end_view_context.rewards = context_rewards
+
 		if not self._booted_eac_untrusted then
 			local level, start_experience, start_experience_pool = self.rewards:get_level_start()
 			local versus_level, versus_start_experience = self.rewards:get_versus_level_start()
-			local win_track_start_experience = self.rewards:get_win_track_experience_start()
-			local rewards, end_of_level_rewards_arguments = self.rewards:get_rewards()
-			local win_conditions = mechanism_name == "versus" and Managers.mechanism:game_mechanism():win_conditions()
 
-			level_end_view_context.rewards = {
-				end_of_level_rewards = rewards and table.clone(rewards) or {},
-				level_start = {
-					level,
-					start_experience,
-					start_experience_pool,
-				},
-				versus_level_start = {
-					versus_level,
-					versus_start_experience,
-				},
-				mission_results = table.clone(self.rewards:get_mission_results()),
-				win_track_start_experience = win_track_start_experience,
-				team_scores = win_conditions and win_conditions:get_total_scores(),
+			context_rewards.level_start = {
+				level,
+				start_experience,
+				start_experience_pool,
 			}
+			context_rewards.versus_level_start = {
+				versus_level,
+				versus_start_experience,
+			}
+
+			local win_track_start_experience = self.rewards:get_win_track_experience_start()
+
+			context_rewards.win_track_start_experience = win_track_start_experience
+
+			local rewards, end_of_level_rewards_arguments = self.rewards:get_rewards()
+
+			context_rewards.end_of_level_rewards = rewards and table.clone(rewards) or {}
+			context_rewards.mission_results = table.clone(self.rewards:get_mission_results())
 			level_end_view_context.end_of_level_rewards_arguments = end_of_level_rewards_arguments and table.clone(end_of_level_rewards_arguments) or {}
+		else
+			context_rewards.end_of_level_rewards = {}
+			context_rewards.mission_results = {}
 		end
 
 		level_end_view_context.level_end_view = Managers.mechanism:get_level_end_view()

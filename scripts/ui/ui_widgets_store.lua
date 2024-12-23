@@ -956,8 +956,25 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 				return IS_CONSOLE and dlc_settings.additional_content_added and not content.owned
 			end,
 		},
+		{
+			pass_type = "text",
+			style_id = "additional_disclaimer",
+			text_id = "additional_disclaimer",
+			content_check_function = function (content, style)
+				return content.has_disclamer
+			end,
+		},
+		{
+			pass_type = "texture",
+			style_id = "disclaimer_marker",
+			texture_id = "disclaimer_marker",
+			content_check_function = function (content, style)
+				return content.has_disclamer
+			end,
+		},
 	}
 	local content = {
+		additional_disclaimer = "",
 		background_price = "store_thumbnail_pricetag_left",
 		background_price_center = "store_thumbnail_pricetag_middle",
 		background_price_right = "store_thumbnail_pricetag_right",
@@ -965,9 +982,11 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 		console_first_price_text = "",
 		console_secondary_price_text = "",
 		console_third_price_text = "",
+		disclaimer_marker = "tooltip_marker_gold",
 		discount = false,
 		discount_bg = "store_thumbnail_sale",
 		expire_time_icon = "icon_store_timer",
+		has_disclamer = false,
 		loading_icon = "loot_loading",
 		new_marker = "list_item_tag_new",
 		old_price = false,
@@ -1793,6 +1812,42 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 				22,
 				-182,
 				11,
+			},
+		},
+		disclaimer_marker = {
+			masked = true,
+			texture_size = {
+				20,
+				20,
+			},
+			offset = {
+				40,
+				76,
+				15,
+			},
+			color = Colors.get_color_table_with_alpha("white", 255),
+		},
+		additional_disclaimer = {
+			font_size = 24,
+			horizontal_alignment = "left",
+			localize = false,
+			upper_case = false,
+			use_shadow = true,
+			vertical_alignment = "center",
+			size = {
+				size[1] - 80,
+				30,
+			},
+			area_size = {
+				size[1] - 80,
+				30,
+			},
+			font_type = masked and "hell_shark_header_masked" or "hell_shark_header",
+			text_color = Colors.get_color_table_with_alpha("white", 180),
+			offset = {
+				62,
+				70,
+				15,
 			},
 		},
 	}

@@ -1189,8 +1189,6 @@ StateLoading._update_lobby_join = function (self, dt, t)
 
 			local network_options = LobbySetup.network_options()
 
-			self:_load_global_packages()
-
 			self._lobby_client = LobbyClient:new(network_options, lobby)
 
 			self._lobby_finder:destroy()
@@ -1239,8 +1237,6 @@ StateLoading._update_server_lobby_join = function (self, dt, t)
 	local state = lobby:state()
 
 	if lobby:is_joined() then
-		self._load_global_packages()
-
 		self._lobby_client = lobby
 		self._server_lobby = nil
 		self._handle_new_lobby_connection = true
@@ -1855,34 +1851,26 @@ StateLoading.on_exit = function (self, application_shutdown)
 	end
 end
 
-StateLoading._load_global_packages = function (self)
+StateLoading.global_packages_loaded = function (self)
+	local is_loaded = true
+
 	if not GlobalResources.loaded then
 		local package_manager = Managers.package
 
 		for i, name in ipairs(GlobalResources) do
-			if not package_manager:has_loaded(name) then
+			if package_manager:is_loading(name, "global") then
+				is_loaded = false
+			elseif not package_manager:has_loaded(name, "global") then
 				package_manager:load(name, "global", nil, true)
+
+				is_loaded = false
 			end
 		end
 
-		GlobalResources.loaded = true
-	end
-end
-
-StateLoading.global_packages_loaded = function (self)
-	if not GlobalResources.loaded then
-		self:_load_global_packages()
+		GlobalResources.loaded = is_loaded
 	end
 
-	local package_manager = Managers.package
-
-	for i, name in ipairs(GlobalResources) do
-		if not package_manager:has_loaded(name) then
-			return false
-		end
-	end
-
-	return true
+	return is_loaded
 end
 
 StateLoading._packages_loaded = function (self)
@@ -2377,7 +2365,7 @@ StateLoading.setup_lobby_host = function (self, wait_for_joined_callback, platfo
 		self:setup_menu_assets()
 	end
 
-	self._load_global_packages()
+	self:global_packages_loaded()
 
 	if not wait_for_joined_callback then
 		self:_create_network_server()

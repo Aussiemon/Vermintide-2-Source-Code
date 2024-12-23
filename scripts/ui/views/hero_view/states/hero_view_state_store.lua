@@ -1891,9 +1891,46 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 
 	content.type_tag_icon = rarity and item_type_icon and item_type_icon .. "_" .. rarity or item_type_icon
 
-	if item_data.item_type == "bundle" then
+	if item_data.item_type == "bundle" and item_data.bundle_contains and #item_data.bundle_contains ~= 0 then
 		content.bundle_content_amount_text = string.format("%dx ", #item_data.bundle_contains)
 		style.bundle_content_amount_text.offset[1] = #item_data.bundle_contains < 10 and content.size[1] - 70 or content.size[1] - 80
+	end
+
+	if item_data.item_type == "bundle" then
+		local bundle_contains = item_data.bundle_contains
+		local has_hidden_items = false
+
+		if bundle_contains and #bundle_contains > 0 then
+			for i = 1, #bundle_contains do
+				local bundle_item = bundle_contains[i]
+				local bundle_item_name
+
+				if type(bundle_item) == "number" then
+					bundle_item_name = SteamitemdefidToMasterList[bundle_item]
+				elseif type(bundle_item) == "string" then
+					bundle_item_name = bundle_item
+				end
+
+				if bundle_item_name then
+					local bundle_item_data = ItemMasterList[bundle_item_name]
+
+					if bundle_item_data and bundle_item_data.slot_type == "skin" then
+						local skin_data = Cosmetics[bundle_item_name]
+
+						if skin_data and skin_data.always_hide_attachment_slots then
+							has_hidden_items = true
+
+							break
+						end
+					end
+				end
+			end
+		end
+
+		if has_hidden_items then
+			content.has_disclamer = true
+			content.additional_disclaimer = Localize("menu_store_product_hero_skin_disclaimer_02_desc")
+		end
 	end
 
 	local ui_top_renderer = self._ui_top_renderer

@@ -420,13 +420,6 @@ BackendInterfaceItemPlayfab.get_weapon_skin_from_skin_key = function (self, skin
 	end
 end
 
-local fake_item_types = {
-	frame = true,
-	hat = true,
-	skin = true,
-	weapon_skin = true,
-}
-
 BackendInterfaceItemPlayfab.free_inventory_slots = function (self)
 	local items = self:get_all_backend_items()
 	local item_count = 0
