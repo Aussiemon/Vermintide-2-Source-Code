@@ -91,4 +91,60 @@ settings.explosion_templates = {
 			},
 		},
 	},
+	grudge_mark_termite_shockwave = {
+		explosion = {
+			ai_friendly_fire = true,
+			alert_enemies = true,
+			alert_enemies_radius = 15,
+			catapult_blocked_multiplier = 0.2,
+			catapult_force = 7.5,
+			catapult_force_z = 3,
+			catapult_players = true,
+			damage_profile = "ai_shockwave",
+			effect_name = "fx/chr_kruber_shockwave",
+			fatigue_type = "blocked_attack",
+			ignore_attacker_unit = true,
+			max_damage_radius = 10,
+			radius = 10,
+			sound_event_name = "Play_mutator_ticking_bomb_explosion",
+			difficulty_power_level = {
+				easy = {
+					power_level = 200,
+					power_level_glance = 100,
+				},
+				normal = {
+					power_level = 100,
+					power_level_glance = 100,
+				},
+				hard = {
+					power_level = 200,
+					power_level_glance = 200,
+				},
+				harder = {
+					power_level = 300,
+					power_level_glance = 300,
+				},
+				hardest = {
+					power_level = 400,
+					power_level_glance = 400,
+				},
+				cataclysm = {
+					power_level = 600,
+					power_level_glance = 300,
+				},
+				cataclysm_2 = {
+					power_level = 800,
+					power_level_glance = 400,
+				},
+				cataclysm_3 = {
+					power_level = 1000,
+					power_level_glance = 500,
+				},
+				versus_base = {
+					power_level = 200,
+					power_level_glance = 200,
+				},
+			},
+		},
+	},
 }

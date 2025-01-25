@@ -2309,10 +2309,7 @@ function flow_query_slots_status(params)
 end
 
 function flow_callback_damage_player_bot_ai(params)
-	if not Managers.player.is_server then
-		return
-	end
-
+	local attacker_unit = params.attacker_unit
 	local unit = params.unit
 	local damage = params.damage
 
@@ -2320,7 +2317,7 @@ function flow_callback_damage_player_bot_ai(params)
 		fassert(ScriptUnit.has_extension(unit, "health_system"), "Tried to kill unit %s from flow but the unit has no health extension", unit)
 
 		local hit_zone_name = "full"
-		local damage_type = "forced"
+		local damage_type = "level"
 		local hit_position = Unit.world_position(unit, 0)
 		local damage_direction = Vector3.up()
 		local max_damage = NetworkConstants.damage.max
@@ -2331,7 +2328,7 @@ function flow_callback_damage_player_bot_ai(params)
 		for i = 0, damage_chunks - 1 do
 			local damage_to_apply = math.min(clamped_damage - damage_chunks * i, damage_chunks)
 
-			DamageUtils.add_damage_network(unit, unit, damage_to_apply, hit_zone_name, damage_type, hit_position, damage_direction)
+			DamageUtils.add_damage_network(unit, attacker_unit, damage_to_apply, hit_zone_name, damage_type, hit_position, damage_direction)
 		end
 	end
 end
@@ -5682,6 +5679,18 @@ function flow_callback_termite_part_1_waystone_timer_challenge_hard(params)
 	achievement_manager:trigger_event("termite1_waystone_timer_challenge_hard")
 end
 
+function flow_callback_termite_part_2_mushroom_challenge(params)
+	local achievement_manager = Managers.state.achievement
+
+	achievement_manager:trigger_event("termite2_mushroom_challenge")
+end
+
+function flow_callback_termite_part_2_timer_challenge(params)
+	local achievement_manager = Managers.state.achievement
+
+	achievement_manager:trigger_event("termite2_timer_challenge")
+end
+
 function flow_callback_register_combination_puzzle(params)
 	local group_name_id = params.puzzle_group
 	local puzzle_id = params.puzzle_name or ""
@@ -5867,6 +5876,15 @@ function flow_callbacks_get_local_player_team_data(params)
 	local team_name_key = Managers.state.game_mode:setting("party_names_lookup_by_id")[local_player_party.party_id]
 
 	flow_return_table.team_name = team_name_key
+
+	return flow_return_table
+end
+
+function flow_callbacks_get_death_reaction_attacker_unit(params)
+	local death_system = Managers.state.entity:system("death_system")
+	local attacker_unit = death_system:flow_get_killing_blow_attacker_unit()
+
+	flow_return_table.attacker_unit = Unit.alive(attacker_unit) and attacker_unit or Unit.null_reference()
 
 	return flow_return_table
 end

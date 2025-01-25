@@ -840,6 +840,14 @@ PlayerUnitFirstPerson.camera_position_rotation = function (self)
 	return camera_position, camera_rotation
 end
 
+PlayerUnitFirstPerson.camera = function (self)
+	local player = Managers.player:owner(self.unit)
+	local viewport_name = player.viewport_name
+	local viewport = ScriptWorld.viewport(self.world, viewport_name)
+
+	return ScriptViewport.camera(viewport)
+end
+
 PlayerUnitFirstPerson.get_projectile_start_position_rotation = function (self)
 	local position
 

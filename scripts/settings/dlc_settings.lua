@@ -508,6 +508,16 @@ DLCSettings = DLCSettings or {
 			sound = "scripts/settings/dlcs/termite/termite_sound_settings_part_1",
 		},
 	},
+	termite_part_2 = {
+		localization = "localization/termite_2",
+		package_name = "resource_packages/dlcs/termite_part_2",
+		additional_settings = {
+			achievements = "scripts/settings/dlcs/termite/termite_achievements_settings_part_2",
+			common = "scripts/settings/dlcs/termite/termite_common_settings_part_2",
+			level = "scripts/settings/dlcs/termite/termite_level_settings_part_2",
+			sound = "scripts/settings/dlcs/termite/termite_sound_settings_part_2",
+		},
+	},
 	handbook = {
 		localization = "localization/handbook_tutorials",
 	},

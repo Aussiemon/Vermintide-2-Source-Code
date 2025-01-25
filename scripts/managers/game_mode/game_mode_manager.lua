@@ -13,7 +13,6 @@ require("scripts/managers/game_mode/horde_surge_handler")
 DLCUtils.require_list("game_mode_files")
 
 local RPCS = {
-	"rpc_to_client_spawn_player",
 	"rpc_is_ready_for_transition",
 	"rpc_apply_environment_variation",
 	"rpc_change_game_mode_state",
@@ -582,12 +581,8 @@ GameModeManager._init_game_mode = function (self, game_mode_key, game_mode_setti
 	self._game_mode = class:new(settings, self._world, self.network_server, self.is_server, self._profile_synchronizer, self._level_key, self.statistics_db, game_mode_settings)
 end
 
-GameModeManager.rpc_to_client_spawn_player = function (self, channel_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn)
-	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
-
-	if peer_id == Network.peer_id() then
-		Managers.state.entity:system("round_started_system"):player_spawned()
-	end
+GameModeManager.host_player_spawned = function (self)
+	Managers.state.entity:system("round_started_system"):player_spawned()
 end
 
 GameModeManager.round_started = function (self)

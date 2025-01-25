@@ -144,9 +144,9 @@ Pickups.level_events.training_dummy_bob = {
 				ai_system:set_attribute(ai_unit, "armor", "training_dummy", false)
 			end,
 		}
-		local unit = Managers.state.conflict:spawn_unit_immediate(breed, spawn_pos, spawn_rot, "pickup", nil, nil, optional_data)
+		local unit, go_id = Managers.state.conflict:spawn_unit_immediate(breed, spawn_pos, spawn_rot, "pickup", nil, nil, optional_data)
 
-		return unit
+		return unit, go_id
 	end,
 }
 Pickups.level_events.training_dummy_armored_bob = {
@@ -176,9 +176,9 @@ Pickups.level_events.training_dummy_armored_bob = {
 				ai_system:set_attribute(ai_unit, "armor", "training_dummy", true)
 			end,
 		}
-		local unit = Managers.state.conflict:spawn_unit_immediate(breed, spawn_pos, spawn_rot, "pickup", nil, nil, optional_data)
+		local unit, go_id = Managers.state.conflict:spawn_unit_immediate(breed, spawn_pos, spawn_rot, "pickup", nil, nil, optional_data)
 
-		return unit
+		return unit, go_id
 	end,
 }
 Pickups.level_events.torch = {

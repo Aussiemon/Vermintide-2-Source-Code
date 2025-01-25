@@ -973,6 +973,12 @@ SharedState._clear_peer_id_data = function (self, peer_id)
 	self:_increment_revision()
 end
 
+SharedState.has_peer_state = function (self, peer_id, local_player_id)
+	local peer_state = self._peer_state[peer_id]
+
+	return peer_state and peer_state[local_player_id]
+end
+
 SharedState._is_destroyed = function (self)
 	return self._server_state == nil
 end

@@ -181,6 +181,48 @@ local scenegraph_definition = {
 			-1,
 		},
 	},
+	custom_details_level_frame = {
+		horizontal_alignment = "left",
+		parent = "details_base",
+		vertical_alignment = "top",
+		size = {
+			100,
+			100,
+		},
+		position = {
+			40,
+			-12.5,
+			2,
+		},
+	},
+	custom_details_level_image = {
+		horizontal_alignment = "center",
+		parent = "custom_details_level_frame",
+		vertical_alignment = "center",
+		size = {
+			90,
+			90,
+		},
+		position = {
+			0,
+			0,
+			-1,
+		},
+	},
+	details_level_decoration = {
+		horizontal_alignment = "right",
+		parent = "details_level_frame",
+		vertical_alignment = "bottom",
+		position = {
+			0,
+			0,
+			2,
+		},
+		size = {
+			60,
+			60,
+		},
+	},
 	details_level_name = {
 		horizontal_alignment = "center",
 		parent = "details_level_image",
@@ -193,6 +235,20 @@ local scenegraph_definition = {
 		size = {
 			520,
 			170,
+		},
+	},
+	custom_details_level_name = {
+		horizontal_alignment = "left",
+		parent = "custom_details_level_image",
+		vertical_alignment = "bottom",
+		position = {
+			0,
+			-100,
+			-1,
+		},
+		size = {
+			260,
+			85,
 		},
 	},
 	details_hero_tabs = {
@@ -247,7 +303,7 @@ local scenegraph_definition = {
 			50,
 		},
 	},
-	details_players = {
+	details_players_anchor = {
 		horizontal_alignment = "center",
 		parent = "details_level_name",
 		vertical_alignment = "bottom",
@@ -260,6 +316,55 @@ local scenegraph_definition = {
 			520,
 			170,
 		},
+	},
+	details_players = {
+		parent = "details_players_anchor",
+		position = {
+			0,
+			0,
+			0,
+		},
+	},
+	custom_settings_frame = {
+		horizontal_alignment = "center",
+		parent = "details_locked_reason",
+		vertical_alignment = "bottom",
+		position = {
+			0,
+			110,
+			200,
+		},
+		size = {
+			420,
+			130,
+		},
+	},
+	custom_settings_label = {
+		horizontal_alignment = "center",
+		parent = "custom_settings_frame",
+		vertical_alignment = "top",
+		position = {
+			0,
+			20,
+			0,
+		},
+	},
+	custom_settings_anchor = {
+		horizontal_alignment = "center",
+		parent = "custom_settings_frame",
+		vertical_alignment = "center",
+		position = {
+			0,
+			0,
+			0,
+		},
+		size = {
+			450,
+			125,
+		},
+	},
+	custom_settings_window = {
+		parent = "custom_settings_anchor",
 	},
 	weave_details_base = {
 		horizontal_alignment = "left",
@@ -987,8 +1092,25 @@ local function create_lobby_browser_frame(scenegraph_id)
 					style_id = "bottom",
 				},
 				{
+					content_id = "scroller_hotspot",
+					pass_type = "hotspot",
+					style_id = "scroller_hotspot",
+				},
+				{
 					pass_type = "rect",
 					style_id = "scroll_bar",
+					content_change_function = function (content, style)
+						if not content.inner_scroller_hotspot.is_hover and content.scrollbar_hotspot.is_hover then
+							style.color = style.selected_color
+						else
+							style.color = style.base_color
+						end
+					end,
+				},
+				{
+					content_id = "scrollbar_hotspot",
+					pass_type = "hotspot",
+					style_id = "scrollbar_hotspot",
 				},
 				{
 					pass_type = "rect",
@@ -1104,6 +1226,25 @@ local function create_lobby_browser_frame(scenegraph_id)
 						style.offset[1] = Math.is_valid(style.offset[1]) and style.offset[1] or 0
 						style.offset[2] = Math.is_valid(style.offset[2]) and style.offset[2] or 0
 						style.offset[3] = Math.is_valid(style.offset[3]) and style.offset[3] or 0
+
+						if content.inner_scroller_hotspot.is_hover then
+							style.color = style.selected_color
+						else
+							style.color = style.base_color
+						end
+					end,
+				},
+				{
+					content_id = "inner_scroller_hotspot",
+					pass_type = "hotspot",
+					style_id = "inner_scroller_hotspot",
+					content_check_function = function (content, style)
+						return content.parent.show_scroller and not content.parent.filter_active
+					end,
+					content_change_function = function (content, style)
+						local inner_scroller_style = style.parent.inner_scroller
+
+						style.offset[2] = inner_scroller_style.offset[2] - style.area_size[2]
 					end,
 				},
 			},
@@ -1122,6 +1263,9 @@ local function create_lobby_browser_frame(scenegraph_id)
 			timer_text_id = "0:00:00",
 			wanted_scroller_offset = 0,
 			time_since_refresh_id = Localize("time_since_last_refresh") .. ":",
+			inner_scroller_hotspot = {},
+			scrollbar_hotspot = {},
+			scroller_hotspot = {},
 		},
 		style = {
 			info_bar = {
@@ -1254,9 +1398,38 @@ local function create_lobby_browser_frame(scenegraph_id)
 					0,
 					0,
 				},
+				base_color = {
+					224,
+					0,
+					0,
+					0,
+				},
+				selected_color = {
+					255,
+					0,
+					0,
+					0,
+				},
 				offset = {
 					browser_width - scroller_width,
 					-element_settings.spacing,
+					0,
+				},
+			},
+			scrollbar_hotspot = {
+				area_size = {
+					scroller_width,
+					element_settings.window_height,
+				},
+				color = {
+					224,
+					0,
+					0,
+					0,
+				},
+				offset = {
+					browser_width - scroller_width,
+					-element_settings.spacing - element_settings.window_height,
 					0,
 				},
 			},
@@ -1278,9 +1451,39 @@ local function create_lobby_browser_frame(scenegraph_id)
 					-100,
 				},
 				color = Colors.get_color_table_with_alpha("font_default", 255),
+				base_color = Colors.get_color_table_with_alpha("font_default", 255),
+				selected_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
 					browser_width - scroller_width + 2,
 					-element_settings.spacing,
+					0,
+				},
+				base_offset = {
+					browser_width - scroller_width + 2,
+					-element_settings.spacing,
+					0,
+				},
+			},
+			inner_scroller_hotspot = {
+				area_size = {
+					scroller_width - 4,
+					-100,
+				},
+				offset = {
+					browser_width - scroller_width + 2,
+					-element_settings.spacing,
+					0,
+				},
+			},
+			scroller_hotspot = {
+				vertical_alignment = "bottom",
+				area_size = {
+					browser_width,
+					entry_height * num_visible_entries + (num_visible_entries - 1) * spacing,
+				},
+				offset = {
+					0,
+					-element_settings.window_height,
 					0,
 				},
 			},
@@ -3485,6 +3688,12 @@ end
 
 local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinable, completed_difficulty_index)
 	local host_name = IS_WINDOWS and (lobby_data.unique_server_name or lobby_data.host) or lobby_data.name or "UNKNOWN"
+	local lobby_name = host_name
+
+	if lobby_data.custom_server_name and lobby_data.custom_server_name ~= "n/a" then
+		lobby_name = string.format("%s: %s", host_name, lobby_data.custom_server_name)
+	end
+
 	local num_players = lobby_data.num_players or 0
 	local mechanism = lobby_data.mechanism
 	local is_versus_custom_game = mechanism == "versus" and NetworkLookup.matchmaking_types[tonumber(lobby_data.matchmaking_type)] == "custom"
@@ -3623,7 +3832,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 					style_id = "lock_icon",
 					texture_id = "lock_icon_id",
 					content_check_function = function (content, style)
-						return not content.joinable
+						return false
 					end,
 					content_change_function = function (content, style)
 						if content.selected or content.lobby_hotspot.is_hover then
@@ -3638,7 +3847,44 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 					style_id = "lock_icon_shadow",
 					texture_id = "lock_icon_id",
 					content_check_function = function (content, style)
-						return not content.selected and not content.lobby_hotspot.is_hover and not content.joinable
+						return false
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "custom_game_settings",
+					texture_id = "custom_game_settings",
+					content_change_function = function (content, style)
+						if content.selected or content.lobby_hotspot.is_hover then
+							style.color = style.selected_color
+						else
+							style.color = style.base_color
+						end
+					end,
+					content_check_function = function (content, style)
+						if not Managers.mechanism:current_mechanism_name() == "versus" then
+							return false
+						end
+
+						local custom_game_settings = lobby_data.custom_game_settings
+						local has_custom_game_settings = custom_game_settings and custom_game_settings ~= "n/a" or false
+
+						return has_custom_game_settings and content.joinable
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "custom_game_settings_shadow",
+					texture_id = "custom_game_settings",
+					content_check_function = function (content, style)
+						if not Managers.mechanism:current_mechanism_name() == "versus" then
+							return false
+						end
+
+						local custom_game_settings = lobby_data.custom_game_settings
+						local has_custom_game_settings = custom_game_settings and custom_game_settings ~= "n/a" or false
+
+						return has_custom_game_settings and content.joinable
 					end,
 				},
 				{
@@ -3773,11 +4019,12 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 		},
 		content = {
 			background_id = "rect_masked",
+			custom_game_settings = "versus_custom_settings",
 			frame_id = "rect_masked",
 			lock_icon_id = "lobby_icon_lock",
 			selected = false,
 			lobby_hotspot = {},
-			host_name = host_name,
+			host_name = lobby_name,
 			num_players_id = num_players .. "/" .. (is_versus_custom_game and "8" or "4"),
 			difficulty_id = difficulty,
 			selected_level_name = selected_level_name,
@@ -3874,6 +4121,43 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 				},
 				offset = {
 					582,
+					-0 - 2,
+					2,
+				},
+			},
+			custom_game_settings = {
+				horizontal_alignment = "left",
+				masked = true,
+				vertical_alignment = "center",
+				color = Colors.get_color_table_with_alpha("font_default", 96),
+				base_color = Colors.get_color_table_with_alpha("font_default", 96),
+				selected_color = Colors.get_color_table_with_alpha("font_title", 255),
+				texture_size = {
+					45,
+					45,
+				},
+				offset = {
+					570,
+					-0,
+					3,
+				},
+			},
+			custom_game_settings_shadow = {
+				horizontal_alignment = "left",
+				masked = true,
+				vertical_alignment = "center",
+				color = {
+					255,
+					0,
+					0,
+					0,
+				},
+				texture_size = {
+					45,
+					45,
+				},
+				offset = {
+					572,
 					-0 - 2,
 					2,
 				},
@@ -4784,6 +5068,225 @@ local function create_versus_summary(scenegraph_id)
 	return widget
 end
 
+local function create_level_decoration_widget(icon, tooltip_text)
+	return {
+		scenegraph_id = "details_level_decoration",
+		element = {
+			passes = {
+				{
+					pass_type = "hover",
+				},
+				{
+					pass_type = "texture",
+					texture_id = "icon",
+				},
+				{
+					pass_type = "tooltip_text",
+					style_id = "tooltip_text",
+					text_id = "tooltip_text",
+					content_check_function = function (content)
+						return content.is_hover and content.tooltip_text
+					end,
+				},
+			},
+		},
+		content = {
+			icon = icon or "icons_placeholder",
+			tooltip_text = tooltip_text,
+		},
+		style = {
+			tooltip_text = {
+				cursor_side = "left",
+				font_size = 24,
+				font_type = "hell_shark",
+				horizontal_alignment = "left",
+				localize = true,
+				max_width = 600,
+				vertical_alignment = "top",
+				cursor_offset = {
+					-10,
+					-27,
+				},
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				offset = {
+					0,
+					0,
+					0,
+				},
+			},
+		},
+	}
+end
+
+local function create_custom_settings_widget()
+	return {
+		scenegraph_id = "custom_settings_frame",
+		element = {
+			passes = {
+				{
+					pass_type = "rounded_background",
+					style_id = "background",
+				},
+				{
+					pass_type = "rounded_background",
+					style_id = "inner_background",
+				},
+				{
+					pass_type = "texture",
+					style_id = "mask",
+					texture_id = "mask",
+				},
+			},
+		},
+		content = {
+			mask = "mask_rect",
+		},
+		style = {
+			background = {
+				corner_radius = 10,
+				horizontal_alignment = "center",
+				vertical_alignment = "bottom",
+				color = {
+					128,
+					60,
+					60,
+					60,
+				},
+				offset = {
+					0,
+					0,
+					1,
+				},
+				rect_size = {
+					430,
+					130,
+				},
+			},
+			inner_background = {
+				corner_radius = 10,
+				horizontal_alignment = "center",
+				vertical_alignment = "bottom",
+				color = {
+					255,
+					0,
+					0,
+					0,
+				},
+				offset = {
+					0,
+					2,
+					1,
+				},
+				rect_size = {
+					426,
+					126,
+				},
+			},
+			mask = {
+				corner_radius = 10,
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+				offset = {
+					0,
+					0,
+					1,
+				},
+				texture_size = {
+					430,
+					120,
+				},
+			},
+		},
+		offset = {
+			0,
+			0,
+			0,
+		},
+	}
+end
+
+local SETTINGS_UI_DATA = DLCSettings.carousel.custom_game_ui_settings
+
+local function create_custom_setting_func(setting_name, setting_value, setting_template, offset_y)
+	local setting_ui_data = SETTINGS_UI_DATA[setting_name]
+	local localized_value = setting_ui_data and setting_ui_data.localization_options and setting_ui_data.localization_options[setting_value]
+
+	setting_value = localized_value and Localize(localized_value) or setting_value
+
+	return {
+		scenegraph_id = "custom_settings_window",
+		element = {
+			passes = {
+				{
+					pass_type = "text",
+					style_id = "setting_name",
+					text_id = "setting_name",
+				},
+				{
+					pass_type = "text",
+					style_id = "setting_value",
+					text_id = "setting_value",
+				},
+			},
+		},
+		content = {
+			setting_name = "menu_settings_" .. setting_name,
+			setting_value = string.format("%s", setting_value),
+			setting_template = setting_template,
+		},
+		style = {
+			setting_name = {
+				dynamic_font_size = true,
+				font_size = 24,
+				font_type = "hell_shark_masked",
+				horizontal_alignment = "left",
+				localize = true,
+				use_shadow = true,
+				vertical_alignment = "top",
+				word_wrap = false,
+				area_size = {
+					300,
+					40,
+				},
+				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				offset = {
+					20,
+					0,
+					4,
+				},
+			},
+			setting_value = {
+				dynamic_font_size = true,
+				font_size = 24,
+				font_type = "hell_shark_masked",
+				horizontal_alignment = "right",
+				localize = false,
+				upper_case = true,
+				use_shadow = true,
+				vertical_alignment = "top",
+				word_wrap = false,
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				offset = {
+					-20,
+					0,
+					4,
+				},
+			},
+		},
+		offset = {
+			0,
+			offset_y,
+			0,
+		},
+	}
+end
+
 local lobby_browser_description_style = {
 	dynamic_font_size = true,
 	font_size = 50,
@@ -4964,6 +5467,38 @@ local objective_title_text_style = {
 		2,
 	},
 }
+local custom_settings_style = {
+	dynamic_font_size = true,
+	font_size = 24,
+	font_type = "hell_shark_header",
+	horizontal_alignment = "left",
+	localize = true,
+	upper_case = true,
+	use_shadow = true,
+	vertical_alignment = "top",
+	text_color = Colors.get_color_table_with_alpha("font_title", 255),
+	offset = {
+		30,
+		10,
+		2,
+	},
+}
+local custom_level_name_style = {
+	dynamic_font_size = true,
+	font_size = 42,
+	font_type = "hell_shark_header",
+	horizontal_alignment = "left",
+	localize = false,
+	upper_case = true,
+	use_shadow = true,
+	vertical_alignment = "top",
+	text_color = Colors.get_color_table_with_alpha("font_title", 255),
+	offset = {
+		110,
+		75,
+		2,
+	},
+}
 local adventure_details_widget_definition = {
 	level_image_frame = UIWidgets.create_simple_texture("map_frame_00", "details_level_frame"),
 	level_image = UIWidgets.create_simple_texture("level_image_any", "details_level_image"),
@@ -5022,6 +5557,19 @@ local versus_details_widget_definition = {
 	locked_reason = UIWidgets.create_simple_text("tutorial_no_text", "details_locked_reason", nil, nil, locked_reason_style),
 	details_information = create_details_information("details_level_info", "details_game_type", "details_status"),
 	players = create_versus_summary("details_players"),
+	custom_level_image_frame = UIWidgets.create_simple_texture("map_frame_00", "custom_details_level_frame"),
+	custom_level_image = UIWidgets.create_simple_texture("level_image_any", "custom_details_level_image"),
+	custom_level_name = UIWidgets.create_simple_text("THis is a test", "custom_details_level_name", nil, nil, custom_level_name_style),
+	custom_settings = create_custom_settings_widget(),
+	custom_settings_label = UIWidgets.create_simple_text("versus_custom_game_custom_ruleset", "custom_settings_label", nil, nil, custom_settings_style),
+	custom_settings_icon = UIWidgets.create_simple_texture("versus_custom_settings", "custom_settings_label", nil, nil, nil, {
+		0,
+		115,
+		60,
+	}, {
+		25,
+		25,
+	}),
 }
 
 return {
@@ -5041,5 +5589,6 @@ return {
 	create_lobby_filter_entry_func = create_lobby_filter_entry_func,
 	create_distance_filter_entry_func = create_distance_filter_entry_func,
 	create_level_filter_scroller_func = create_level_filter_scroller_func,
+	create_custom_setting_func = create_custom_setting_func,
 	element_settings = element_settings,
 }

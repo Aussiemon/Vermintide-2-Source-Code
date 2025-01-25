@@ -977,6 +977,7 @@ MatchmakingManager.set_matchmaking_data = function (self, next_mission_id, diffi
 	lobby_data.matchmaking = is_matchmaking and "true" or "false"
 	lobby_data.selected_mission_id = next_mission_id or LevelHelper:current_level_settings().level_id
 	lobby_data.unique_server_name = LobbyAux.get_unique_server_name()
+	lobby_data.custom_server_name = LobbyAux.get_unique_server_name()
 	lobby_data.host = Network.peer_id()
 	lobby_data.num_players = num_players
 	lobby_data.difficulty = difficulty
@@ -1192,6 +1193,8 @@ MatchmakingManager.cancel_matchmaking = function (self)
 		stored_lobby_data.matchmaking = "false"
 		stored_lobby_data.difficulty = "normal"
 		stored_lobby_data.selected_mission_id = LevelHelper:current_level_settings().level_id
+		stored_lobby_data.custom_game_settings = "n/a"
+		stored_lobby_data.custom_server_name = "n/a"
 		stored_lobby_data.matchmaking_type = not IS_PS4 and NetworkLookup.matchmaking_types["n/a"] or "n/a"
 
 		self.lobby:set_lobby_data(stored_lobby_data)
@@ -1441,7 +1444,7 @@ MatchmakingManager.rpc_matchmaking_request_join_lobby = function (self, channel_
 	local difficulty_key = difficulty_manager and difficulty_manager:get_difficulty()
 	local is_venture_over = mechanism_manager:is_venture_over()
 	local _, is_hosting_versus_custom_game = mechanism_manager:mechanism_try_call("is_hosting_versus_custom_game")
-	local is_friend, is_searching_for_dedicated_server, is_searching_for_players
+	local is_searching_for_dedicated_server, is_searching_for_players
 
 	if not DEDICATED_SERVER then
 		local search_type = SEARCH_TYPE[self._state.NAME]
@@ -1482,10 +1485,10 @@ MatchmakingManager.rpc_matchmaking_request_join_lobby = function (self, channel_
 		reply = "friend_joining_friends_only"
 	elseif not DEDICATED_SERVER and friend_join and friend_join_mode == "disabled" then
 		reply = "friend_joining_disabled"
-	elseif not DEDICATED_SERVER and not friend_join and not is_searching_for_players then
-		reply = "not_searching_for_players"
-	elseif is_hosting_versus_custom_game and friend_join and is_friend then
+	elseif is_hosting_versus_custom_game and (friend_join or is_friend) then
 		reply = "custom_lobby_ok"
+	elseif not DEDICATED_SERVER and not is_friend and not friend_join and not is_searching_for_players then
+		reply = "not_searching_for_players"
 	elseif is_searching_for_dedicated_server then
 		reply = "is_searching_for_dedicated_server"
 	elseif Managers.deed:has_deed() then
@@ -2285,6 +2288,12 @@ MatchmakingManager.set_game_privacy = function (self, is_private)
 
 		self:_set_lobby_data(lobby, "is_private", value)
 		Managers.state.network.network_transmit:send_rpc_clients("rpc_set_client_game_privacy", is_private)
+	end
+end
+
+MatchmakingManager.set_versus_custom_lobby_data = function (self, value)
+	if self.is_server and self.lobby:is_joined() and Managers.mechanism:current_mechanism_name() == "versus" then
+		self:_set_lobby_data(self.lobby, "custom_game_settings", value)
 	end
 end
 

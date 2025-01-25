@@ -1631,7 +1631,7 @@ return function ()
 			},
 		},
 		pes_temple_sanctum_find_waystone_puzzle_waystone_complete_a = {
-			category = "level_talk",
+			category = "level_talk_must_play",
 			database = "empire_soldier_dlc_termite_1",
 			dialogue_animations_n = 2,
 			face_animations_n = 2,

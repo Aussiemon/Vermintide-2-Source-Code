@@ -38,7 +38,6 @@ StartGameWindowVersusCustomGame.on_enter = function (self, params, offset)
 	self._input_index = params.input_index or 1
 
 	self:_handle_new_selection(self._input_index)
-	self:_update_mission_option()
 
 	self._is_focused = false
 	self._play_button_pressed = false
@@ -115,11 +114,14 @@ StartGameWindowVersusCustomGame.set_focus = function (self, focused)
 end
 
 StartGameWindowVersusCustomGame.update = function (self, dt, t)
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+
 	self:_update_can_play()
 	self:_update_animations(dt)
 
 	if self._is_focused then
 		self:_handle_input(dt, t)
+		self:_update_play_button_texture(gamepad_active)
 	end
 
 	self:_draw(dt)
@@ -220,46 +222,6 @@ StartGameWindowVersusCustomGame._can_play = function (self)
 	return can_play
 end
 
-StartGameWindowVersusCustomGame._update_mission_option = function (self)
-	local parent = self._parent
-	local selected_level_id = parent:get_selected_level_id()
-	local mission_widget = self._widgets_by_name.mission_setting
-	local completed_difficulty_index = 0
-
-	if selected_level_id then
-		local level_settings = LevelSettings[selected_level_id]
-		local display_name = level_settings.display_name
-		local icon_texture = level_settings.level_image
-
-		mission_widget.content.input_text = Localize(display_name)
-		mission_widget.content.icon_texture = icon_texture
-		mission_widget.content.icon_frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
-	else
-		mission_widget.content.input_text = Localize("map_screen_quickplay_button")
-		mission_widget.content.icon_texture = "level_image_any"
-		mission_widget.content.icon_frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
-	end
-end
-
-StartGameWindowVersusCustomGame._update_difficulty_option = function (self)
-	local selected_difficulty_key = self._parent:get_difficulty_option()
-
-	if selected_difficulty_key then
-		local difficulty_settings = DifficultySettings[selected_difficulty_key]
-		local difficulty_widget = self._widgets_by_name.difficulty_setting
-
-		difficulty_widget.content.input_text = Localize(difficulty_settings.display_name)
-
-		local display_image = difficulty_settings.display_image
-
-		difficulty_widget.content.icon_texture = display_image
-
-		local completed_frame_texture = difficulty_settings.completed_frame_texture
-
-		difficulty_widget.content.icon_frame_texture = completed_frame_texture
-	end
-end
-
 StartGameWindowVersusCustomGame._play = function (self)
 	self._parent:play_sound("Play_vs_hud_play_menu_host_lobby")
 	self._parent:set_layout_by_name("versus_player_hosted_lobby")
@@ -320,7 +282,7 @@ StartGameWindowVersusCustomGame._handle_new_selection = function (self, input_in
 	for i = 1, #selector_input_definition do
 		local widget_name = selector_input_definition[i]
 		local widget = widgets_by_name[widget_name]
-		local is_selected = i == input_index
+		local is_selected = i == input_index and self._gamepad_active
 
 		widget.content.is_selected = is_selected
 	end
@@ -349,7 +311,9 @@ StartGameWindowVersusCustomGame._update_animations = function (self, dt)
 
 	local widgets_by_name = self._widgets_by_name
 
-	UIWidgetUtils.animate_play_button(widgets_by_name.play_button, dt)
+	if not widgets_by_name.play_button.content.button_hotspot.disable_button then
+		UIWidgetUtils.animate_play_button(widgets_by_name.play_button, dt)
+	end
 end
 
 StartGameWindowVersusCustomGame._draw = function (self, dt)
@@ -370,4 +334,26 @@ StartGameWindowVersusCustomGame._draw = function (self, dt)
 	end
 
 	UIRenderer.end_pass(ui_top_renderer)
+end
+
+StartGameWindowVersusCustomGame._update_play_button_texture = function (self, gamepad_active)
+	local widgets_by_name = self._widgets_by_name
+
+	if self._gamepad_active ~= gamepad_active then
+		self._gamepad_active = gamepad_active
+
+		if gamepad_active then
+			local input_service = self._parent:window_input_service()
+			local input_action = "refresh"
+			local button_texture_data = UISettings.get_gamepad_input_texture_data(input_service, input_action, gamepad_active)
+
+			if button_texture_data then
+				widgets_by_name.play_button.content.texture_icon_id = button_texture_data.texture
+			end
+		else
+			widgets_by_name.play_button.content.texture_icon_id = "options_button_icon_quickplay"
+		end
+
+		self:_handle_new_selection(self._input_index)
+	end
 end

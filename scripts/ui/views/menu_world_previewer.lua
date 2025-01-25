@@ -488,6 +488,8 @@ MenuWorldPreviewer.end_character_rotation = function (self)
 end
 
 MenuWorldPreviewer.request_spawn_hero_unit = function (self, profile_name, career_index, state_character, callback, optional_scale, camera_move_duration, optional_skin, reset_camera)
+	self:clear_asynchronous_data()
+
 	self._requested_hero_spawn_data = {
 		frame_delay = 1,
 		profile_name = profile_name,

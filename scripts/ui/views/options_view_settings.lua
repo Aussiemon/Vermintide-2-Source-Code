@@ -1532,6 +1532,24 @@ local keybind_settings_definition = {
 		},
 	},
 	{
+		keybind_description = "weapon_poses_only",
+		keymappings_key = "PlayerControllerKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"weapon_poses_only",
+			"weapon_poses_only_hold",
+			"weapon_poses_only_release",
+		},
+	},
+	{
+		keybind_description = "social_wheel_page",
+		keymappings_key = "PlayerControllerKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"social_wheel_page",
+		},
+	},
+	{
 		keybind_description = "photomode_only",
 		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
@@ -1802,22 +1820,6 @@ local keybind_settings_definition = {
 		widget_type = "keybind",
 		actions = {
 			"ping_only_movement",
-		},
-	},
-	{
-		keybind_description = "ping_only_item",
-		keymappings_key = "PlayerControllerKeymaps",
-		widget_type = "keybind",
-		actions = {
-			"ping_only_item",
-		},
-	},
-	{
-		keybind_description = "ping_only_enemy",
-		keymappings_key = "PlayerControllerKeymaps",
-		widget_type = "keybind",
-		actions = {
-			"ping_only_enemy",
 		},
 	},
 	{

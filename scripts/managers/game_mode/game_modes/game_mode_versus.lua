@@ -42,7 +42,7 @@ GameModeVersus.init = function (self, settings, world, ...)
 	self._mechanism = Managers.mechanism:game_mechanism()
 	self._current_mechanism_state = self._mechanism:get_state()
 	self._adventure_spawning = AdventureSpawning:new(self._profile_synchronizer, hero_side, self._is_server, self._network_server)
-	self._versus_spawning = VersusSpawning:new(self._profile_synchronizer, dark_pact_side.available_profiles, self._is_server, settings, self._dark_pact_career_delegator)
+	self._versus_spawning = VersusSpawning:new("dark_pact", self._profile_synchronizer, dark_pact_side.available_profiles, self._is_server, settings, self._dark_pact_career_delegator)
 	self.pactsworn_video_transition_view = PactswornVideoTransitionView:new(self._world)
 
 	self:_register_player_spawner(self._adventure_spawning)
@@ -103,6 +103,11 @@ GameModeVersus.init = function (self, settings, world, ...)
 	self.pre_round_start_timer = math.huge
 	self._transition_state = "idle"
 	self._transition_state_time = 0
+	self._hero_bots_enabled = true
+
+	if self._mechanism:custom_settings_enabled() then
+		self._hero_bots_enabled = self._mechanism:get_custom_game_setting("hero_bots_enabled")
+	end
 end
 
 GameModeVersus.level_start_objectives = function (self)
@@ -246,9 +251,6 @@ end
 
 GameModeVersus.destroy = function (self)
 	if self._is_server then
-		local dp_party = Managers.state.side:get_party_from_side_name("dark_pact")
-
-		self:_clear_profile_reservations_for_party(dp_party)
 		self._dark_pact_career_delegator:destroy()
 	end
 
@@ -388,7 +390,7 @@ GameModeVersus._handle_round_end = function (self, reason, reason_data, all_obje
 	elseif not heroes_won then
 		local dialogue_system = Managers.state.entity:system("dialogue_system")
 
-		dialogue_system:queue_mission_giver_event("vs_mg_heroes_team_wipe")
+		dialogue_system:trigger_mission_giver_event("vs_mg_heroes_team_wipe")
 	end
 
 	self:_server_on_round_over(heroes_won)
@@ -412,8 +414,6 @@ GameModeVersus._get_end_reason = function (self, party_won_early_data)
 	end
 
 	if party_won_early_data then
-		self:_trigger_early_win_vo(party_won_early_data.party_id)
-
 		reason = party_won_early_data.party_id == 1 and "party_one_won_early" or "party_two_won_early"
 		reason_data = party_won_early_data
 	end
@@ -515,27 +515,6 @@ GameModeVersus.update = function (self, t, dt)
 	end
 end
 
-GameModeVersus._clear_profile_reservations_for_party = function (self, party)
-	local profile_synchronizer = self._profile_synchronizer
-	local occupied_slots = party.occupied_slots
-
-	for i = 1, #occupied_slots do
-		local status = occupied_slots[i]
-
-		if not status.is_bot then
-			local peer_id = status.peer_id
-			local local_player_id = status.local_player_id
-			local profile_index = profile_synchronizer:profile_by_peer(peer_id, local_player_id)
-
-			if profile_index then
-				profile_synchronizer:unassign_profiles_of_peer(peer_id, local_player_id)
-			end
-
-			profile_synchronizer:clear_profile_index_reservation(peer_id)
-		end
-	end
-end
-
 GameModeVersus._game_mode_state_changed = function (self, state_name, old_state_name)
 	if self._current_mechanism_state == "round_1" then
 		self._round_id = 1
@@ -562,6 +541,10 @@ GameModeVersus._game_mode_state_changed = function (self, state_name, old_state_
 		end
 
 		self:_stop_advertise_playing()
+
+		if self._mechanism:custom_settings_enabled() then
+			self:_custom_settings_telemetry()
+		end
 	elseif state_name == "player_team_parading_state" then
 		local is_hot_joining = old_state_name ~= "character_selection_state"
 
@@ -800,7 +783,7 @@ GameModeVersus.server_update = function (self, t, dt)
 		end
 	elseif state == "pre_start_round_state" then
 		self._adventure_spawning:server_update(t, dt)
-		self._versus_spawning:update(t, dt, "dark_pact")
+		self._versus_spawning:update(t, dt)
 
 		local time_left = math.ceil(self.pre_round_start_timer - t)
 
@@ -851,7 +834,7 @@ GameModeVersus.server_update = function (self, t, dt)
 		end
 	elseif state == "match_running_state" then
 		self._adventure_spawning:server_update(t, dt)
-		self._versus_spawning:update(t, dt, "dark_pact")
+		self._versus_spawning:update(t, dt)
 
 		if self._horde_surge_handler then
 			self._horde_surge_handler:server_update(t, dt)
@@ -1388,7 +1371,9 @@ GameModeVersus.flow_callback_add_game_mode_specific_spawn_point = function (self
 end
 
 GameModeVersus.respawn_unit_spawned = function (self, unit)
-	self._adventure_spawning:respawn_unit_spawned(unit)
+	if self._hero_rescues_enabled then
+		self._adventure_spawning:respawn_unit_spawned(unit)
+	end
 end
 
 GameModeVersus.get_respawn_handler = function (self)
@@ -1418,6 +1403,10 @@ GameModeVersus.force_respawn = function (self, peer_id, local_player_id)
 end
 
 GameModeVersus._handle_bots = function (self, t, dt)
+	if not self._hero_bots_enabled then
+		return
+	end
+
 	local in_session = Managers.state.network ~= nil and not Managers.state.network.game_session_shutdown
 
 	if not in_session then
@@ -1569,7 +1558,7 @@ end
 GameModeVersus._add_bot = function (self, party_id)
 	local party = Managers.party:get_party(party_id)
 	local slot_id = Managers.party:find_first_empty_slot_id(party)
-	local profile_index, career_index = self._mechanism:get_saved_bot(party_id, slot_id)
+	local profile_index, career_index = self._profile_synchronizer:get_bot_profile(party_id, slot_id)
 
 	profile_index = self._mechanism:parse_hero_profile_availability(profile_index, party_id, nil, nil)
 
@@ -1594,8 +1583,6 @@ GameModeVersus._add_bot = function (self, party_id)
 	local player = self:_add_bot_to_party(party_id, profile_index, career_index, slot_id)
 
 	bot_players[#bot_players + 1] = player
-
-	self._mechanism:set_saved_bot(party_id, slot_id, profile_index, career_index)
 end
 
 GameModeVersus._remove_bot = function (self, bot_player, remove_instant)
@@ -1751,6 +1738,10 @@ GameModeVersus.get_player_wounds = function (self, profile)
 	local affiliation = profile.affiliation
 	local player_wounds = self._settings.player_wounds[affiliation]
 
+	if self._mechanism:custom_settings_enabled() and affiliation == "heroes" then
+		player_wounds = self._mechanism:get_custom_game_setting("wounds_amount")
+	end
+
 	fassert(player_wounds, "Couldn't find player wounds for affiliation (%s)", affiliation)
 
 	return player_wounds
@@ -1881,6 +1872,16 @@ GameModeVersus._round_start_telemetry = function (self)
 	end
 
 	Managers.telemetry_events:versus_round_started(player_id, game_round, match_id, slot_melee, slot_ranged, talents)
+end
+
+GameModeVersus._custom_settings_telemetry = function (self)
+	local custom_settings_handler = self._mechanism:get_custom_game_settings_handler()
+	local settings_hash_map, is_default_settings, modified_settings = custom_settings_handler:get_telemetry_data()
+	local player = Managers.player:local_player()
+	local player_id = player:telemetry_id()
+	local match_id = self._mechanism:match_id()
+
+	Managers.telemetry_events:versus_custom_game_settings(player_id, match_id, settings_hash_map, is_default_settings, modified_settings)
 end
 
 GameModeVersus._round_end_telemetry = function (self)
@@ -2084,8 +2085,8 @@ GameModeVersus._trigger_early_win_vo = function (self, winning_party_id)
 	local losing_side = Managers.state.side.side_by_party[losing_party]
 	local dialogue_system = Managers.state.entity:system("dialogue_system")
 
-	dialogue_system:queue_mission_giver_event_for_side(side:name(), "vs_mg_early_win")
-	dialogue_system:queue_mission_giver_event_for_side(losing_side:name(), "vs_mg_early_loss")
+	dialogue_system:trigger_mission_giver_event("vs_mg_early_win", nil, side:name())
+	dialogue_system:trigger_mission_giver_event("vs_mg_early_loss", nil, losing_side:name())
 end
 
 GameModeVersus._trigger_draw_vo = function (self)
@@ -2178,7 +2179,7 @@ GameModeVersus._register_disabled_as_eliminiations = function (self)
 			elseif status_extension:is_pounced_down() then
 				credit_elim_to = Managers.player:owner(status_extension:get_pouncer_unit())
 				breed_name = "vs_gutter_runner"
-			elseif status_extension:is_disabled_by_pact_sworn() and player == Managers.player:local_player() then
+			elseif status_extension:is_disabled_by_pact_sworn() then
 				-- Nothing
 			end
 		end

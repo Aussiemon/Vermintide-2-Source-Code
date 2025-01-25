@@ -366,6 +366,16 @@ local function do_damage_calculation(attacker_unit, damage_source, original_powe
 
 	if is_friendly_fire then
 		local friendly_fire_multiplier = difficulty_settings.friendly_fire_multiplier or 0
+		local mechanism_ok, custom_setting_difficulty_override, custom_settings_enabled = Managers.mechanism:mechanism_try_call("get_custom_game_setting", "friendly_fire")
+
+		if mechanism_ok and custom_settings_enabled and custom_setting_difficulty_override then
+			local is_dark_pact_attacker = Managers.state.side:versus_is_dark_pact(attacker_unit) or Managers.state.side:versus_is_dark_pact(damage_source)
+
+			if not is_dark_pact_attacker then
+				difficulty_settings = DifficultySettings[custom_setting_difficulty_override]
+				friendly_fire_multiplier = difficulty_settings and difficulty_settings.friendly_fire_multiplier or 0
+			end
+		end
 
 		if damage_profile and damage_profile.friendly_fire_multiplier then
 			friendly_fire_multiplier = friendly_fire_multiplier * damage_profile.friendly_fire_multiplier
@@ -601,11 +611,27 @@ local function do_stagger_calculation(stagger_table, breed, blackboard, attacker
 
 	optional_modifier_data.is_ranged = is_ranged
 
+	local custom_setting_dark_pact_stagger_immunity = false
+	local mechanism_ok, custom_setting_pactsworn_stagger_immunity, custom_settings_enabled = Managers.mechanism:mechanism_try_call("get_custom_game_setting", "pactsworn_stagger_immunity")
+
+	if mechanism_ok and custom_settings_enabled and custom_setting_pactsworn_stagger_immunity then
+		local career_extension = ScriptUnit.has_extension(target_unit, "career_system")
+
+		if career_extension then
+			local profile_index = career_extension:profile_index()
+			local profile = SPProfiles[profile_index]
+
+			if profile.affiliation == "dark_pact" then
+				custom_setting_dark_pact_stagger_immunity = true
+			end
+		end
+	end
+
 	local stagger_count = is_player and status_extension and status_extension:stagger_count() or blackboard.stagger_count or 0
 
 	if hit_zone_name == "weakspot" and stagger_count == 0 and (not blackboard.stagger or blackboard.stagger_anim_done or is_player and not status_extension:accumulated_stagger()) then
 		stagger_type = stagger_types.weakspot
-	elseif stagger_table and not breed.stagger_immune then
+	elseif stagger_table and not breed.stagger_immune and not custom_setting_dark_pact_stagger_immunity then
 		local stagger_settings = stagger_table[target_unit_armor]
 		local stagger_range = stagger_settings.max - stagger_settings.min
 		local _, impact_power = ActionUtils.get_power_level_for_target(target_unit, original_power_level, damage_profile, target_index, is_critical_strike, attacker_unit, hit_zone_name, nil, damage_source, breed, range_scalar_multiplier, difficulty_level, target_unit_armor, nil)
@@ -2855,7 +2881,19 @@ DamageUtils.vs_dark_pact_can_damage = function (damaging_unit, hit_unit)
 end
 
 DamageUtils.allow_friendly_fire_ranged = function (difficulty_settings, attacker_player)
-	return difficulty_settings.friendly_fire_ranged and attacker_player and not attacker_player.bot_player
+	local friendly_fire_enabled = difficulty_settings.friendly_fire_ranged
+	local mechanism_ok, custom_setting_override, custom_settings_enabled = Managers.mechanism:mechanism_try_call("get_custom_game_setting", "friendly_fire")
+
+	if mechanism_ok and custom_settings_enabled then
+		local attacker_unit = attacker_player and attacker_player.player_unit
+		local is_dark_pact_attacker = attacker_unit and Managers.state.side:versus_is_dark_pact(attacker_unit)
+
+		if not is_dark_pact_attacker then
+			friendly_fire_enabled = not not custom_setting_override
+		end
+	end
+
+	return friendly_fire_enabled and attacker_player and not attacker_player.bot_player
 end
 
 DamageUtils.allow_friendly_fire_melee = function (difficulty_settings, attacker_player)

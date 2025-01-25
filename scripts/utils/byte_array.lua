@@ -117,6 +117,21 @@ ByteArray = {
 
 		return bit.bor(first_byte, second_byte), index
 	end,
+	write_hash = function (array, value, index)
+		index = index or #array + 1
+
+		for i = 1, 16, 2 do
+			local byte = tonumber(value:sub(i, i + 1), 16)
+
+			array[index] = byte
+			index = index + 1
+		end
+
+		return array, index
+	end,
+	read_hash = function (array, index)
+		return string.format("%02x%02x%02x%02x%02x%02x%02x%02x", array[index], array[index + 1], array[index + 2], array[index + 3], array[index + 4], array[index + 5], array[index + 6], array[index + 7]), index + 8
+	end,
 	read_string = function (array, start_index, end_index)
 		start_index = start_index or 1
 		end_index = end_index or #array

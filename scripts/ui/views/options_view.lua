@@ -1912,6 +1912,7 @@ OptionsView.changes_been_made = function (self)
 	return not table.is_empty(self.changed_user_settings) or not table.is_empty(self.changed_render_settings) or not table.is_empty(self.changed_versus_settings) or self.changed_keymaps or self.changed_bot_spawn_priority
 end
 
+local PLATFORM_KEYS = {}
 local needs_reload_settings = settings_definitions.needs_reload_settings
 local needs_restart_settings = settings_definitions.needs_restart_settings
 
@@ -2142,97 +2143,109 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, vers
 	local gamepad_look_sensitivity = user_settings.gamepad_look_sensitivity
 
 	if gamepad_look_sensitivity then
-		local platform_key = IS_WINDOWS and "xb1" or self.platform
-		local most_recent_device = Managers.input:get_most_recent_device()
+		table.clear(PLATFORM_KEYS)
 
-		platform_key = most_recent_device.type() == "sce_pad" and "ps_pad" or platform_key
+		PLATFORM_KEYS[#PLATFORM_KEYS + 1] = IS_WINDOWS and "xb1" or self.platform
+		PLATFORM_KEYS[#PLATFORM_KEYS + 1] = IS_WINDOWS and "ps_pad"
 
-		local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
-		local base_look_multiplier = base_filter.look_controller.multiplier_x
-		local base_melee_look_multiplier = base_filter.look_controller_melee.multiplier_x
-		local base_ranged_look_multiplier = base_filter.look_controller_ranged.multiplier_x
-		local input_filters = player_input_service:get_active_filters(platform_key)
-		local look_filter = input_filters.look_controller
-		local function_data = look_filter.function_data
+		for i = 1, #PLATFORM_KEYS do
+			local platform_key = PLATFORM_KEYS[i]
+			local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
+			local base_look_multiplier = base_filter.look_controller.multiplier_x
+			local base_melee_look_multiplier = base_filter.look_controller_melee.multiplier_x
+			local base_ranged_look_multiplier = base_filter.look_controller_ranged.multiplier_x
+			local input_filters = player_input_service:get_active_filters(platform_key)
+			local look_filter = input_filters.look_controller
+			local function_data = look_filter.function_data
 
-		function_data.multiplier_x = base_look_multiplier * 0.85^-gamepad_look_sensitivity
-		function_data.min_multiplier_x = base_filter.look_controller.multiplier_min_x and base_filter.look_controller.multiplier_min_x * 0.85^-gamepad_look_sensitivity or function_data.multiplier_x * 0.25
+			function_data.multiplier_x = base_look_multiplier * 0.85^-gamepad_look_sensitivity
+			function_data.min_multiplier_x = base_filter.look_controller.multiplier_min_x and base_filter.look_controller.multiplier_min_x * 0.85^-gamepad_look_sensitivity or function_data.multiplier_x * 0.25
 
-		local melee_look_filter = input_filters.look_controller_melee
-		local function_data = melee_look_filter.function_data
+			local melee_look_filter = input_filters.look_controller_melee
+			local function_data = melee_look_filter.function_data
 
-		function_data.multiplier_x = base_melee_look_multiplier * 0.85^-gamepad_look_sensitivity
-		function_data.min_multiplier_x = base_filter.look_controller_melee.multiplier_min_x and base_filter.look_controller_melee.multiplier_min_x * 0.85^-gamepad_look_sensitivity or function_data.multiplier_x * 0.25
+			function_data.multiplier_x = base_melee_look_multiplier * 0.85^-gamepad_look_sensitivity
+			function_data.min_multiplier_x = base_filter.look_controller_melee.multiplier_min_x and base_filter.look_controller_melee.multiplier_min_x * 0.85^-gamepad_look_sensitivity or function_data.multiplier_x * 0.25
 
-		local ranged_look_filter = input_filters.look_controller_ranged
-		local function_data = ranged_look_filter.function_data
+			local ranged_look_filter = input_filters.look_controller_ranged
+			local function_data = ranged_look_filter.function_data
 
-		function_data.multiplier_x = base_ranged_look_multiplier * 0.85^-gamepad_look_sensitivity
-		function_data.min_multiplier_x = base_filter.look_controller_ranged.multiplier_min_x and base_filter.look_controller_ranged.multiplier_min_x * 0.85^-gamepad_look_sensitivity or function_data.multiplier_x * 0.25
+			function_data.multiplier_x = base_ranged_look_multiplier * 0.85^-gamepad_look_sensitivity
+			function_data.min_multiplier_x = base_filter.look_controller_ranged.multiplier_min_x and base_filter.look_controller_ranged.multiplier_min_x * 0.85^-gamepad_look_sensitivity or function_data.multiplier_x * 0.25
+		end
 	end
 
 	local gamepad_look_sensitivity_y = user_settings.gamepad_look_sensitivity_y
 
 	if gamepad_look_sensitivity_y then
-		local platform_key = IS_WINDOWS and "xb1" or self.platform
-		local most_recent_device = Managers.input:get_most_recent_device()
+		table.clear(PLATFORM_KEYS)
 
-		platform_key = most_recent_device.type() == "sce_pad" and "ps_pad" or platform_key
+		PLATFORM_KEYS[#PLATFORM_KEYS + 1] = IS_WINDOWS and "xb1" or self.platform
+		PLATFORM_KEYS[#PLATFORM_KEYS + 1] = IS_WINDOWS and "ps_pad"
 
-		local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
-		local base_look_multiplier = base_filter.look_controller.multiplier_y
-		local base_melee_look_multiplier = base_filter.look_controller.multiplier_y
-		local base_ranged_look_multiplier = base_filter.look_controller.multiplier_y
-		local input_filters = player_input_service:get_active_filters(platform_key)
-		local look_filter = input_filters.look_controller
-		local function_data = look_filter.function_data
+		for i = 1, #PLATFORM_KEYS do
+			local platform_key = PLATFORM_KEYS[i]
+			local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
+			local base_look_multiplier = base_filter.look_controller.multiplier_y
+			local base_melee_look_multiplier = base_filter.look_controller.multiplier_y
+			local base_ranged_look_multiplier = base_filter.look_controller.multiplier_y
+			local input_filters = player_input_service:get_active_filters(platform_key)
+			local look_filter = input_filters.look_controller
+			local function_data = look_filter.function_data
 
-		function_data.multiplier_y = base_look_multiplier * 0.85^-gamepad_look_sensitivity_y
+			function_data.multiplier_y = base_look_multiplier * 0.85^-gamepad_look_sensitivity_y
 
-		local melee_look_filter = input_filters.look_controller_melee
-		local function_data = melee_look_filter.function_data
+			local melee_look_filter = input_filters.look_controller_melee
+			local function_data = melee_look_filter.function_data
 
-		function_data.multiplier_y = base_melee_look_multiplier * 0.85^-gamepad_look_sensitivity_y
+			function_data.multiplier_y = base_melee_look_multiplier * 0.85^-gamepad_look_sensitivity_y
 
-		local ranged_look_filter = input_filters.look_controller_ranged
-		local function_data = ranged_look_filter.function_data
+			local ranged_look_filter = input_filters.look_controller_ranged
+			local function_data = ranged_look_filter.function_data
 
-		function_data.multiplier_y = base_ranged_look_multiplier * 0.85^-gamepad_look_sensitivity_y
+			function_data.multiplier_y = base_ranged_look_multiplier * 0.85^-gamepad_look_sensitivity_y
+		end
 	end
 
 	local gamepad_zoom_sensitivity = user_settings.gamepad_zoom_sensitivity
 
 	if gamepad_zoom_sensitivity then
-		local platform_key = IS_WINDOWS and "xb1" or self.platform
-		local most_recent_device = Managers.input:get_most_recent_device()
+		table.clear(PLATFORM_KEYS)
 
-		platform_key = most_recent_device.type() == "sce_pad" and "ps_pad" or platform_key
+		PLATFORM_KEYS[#PLATFORM_KEYS + 1] = IS_WINDOWS and "xb1" or self.platform
+		PLATFORM_KEYS[#PLATFORM_KEYS + 1] = IS_WINDOWS and "ps_pad"
 
-		local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
-		local base_look_multiplier = base_filter.look_controller_zoom.multiplier_x
-		local input_filters = player_input_service:get_active_filters(platform_key)
-		local look_filter = input_filters.look_controller_zoom
-		local function_data = look_filter.function_data
+		for i = 1, #PLATFORM_KEYS do
+			local platform_key = PLATFORM_KEYS[i]
+			local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
+			local base_look_multiplier = base_filter.look_controller_zoom.multiplier_x
+			local input_filters = player_input_service:get_active_filters(platform_key)
+			local look_filter = input_filters.look_controller_zoom
+			local function_data = look_filter.function_data
 
-		function_data.multiplier_x = base_look_multiplier * 0.85^-gamepad_zoom_sensitivity
-		function_data.min_multiplier_x = base_filter.look_controller_zoom.multiplier_min_x and base_filter.look_controller_zoom.multiplier_min_x * 0.85^-gamepad_zoom_sensitivity or function_data.multiplier_x * 0.25
+			function_data.multiplier_x = base_look_multiplier * 0.85^-gamepad_zoom_sensitivity
+			function_data.min_multiplier_x = base_filter.look_controller_zoom.multiplier_min_x and base_filter.look_controller_zoom.multiplier_min_x * 0.85^-gamepad_zoom_sensitivity or function_data.multiplier_x * 0.25
+		end
 	end
 
 	local gamepad_zoom_sensitivity_y = user_settings.gamepad_zoom_sensitivity_y
 
 	if gamepad_zoom_sensitivity_y then
-		local platform_key = IS_WINDOWS and "xb1" or self.platform
-		local most_recent_device = Managers.input:get_most_recent_device()
+		table.clear(PLATFORM_KEYS)
 
-		platform_key = most_recent_device.type() == "sce_pad" and "ps_pad" or platform_key
+		PLATFORM_KEYS[#PLATFORM_KEYS + 1] = IS_WINDOWS and "xb1" or self.platform
+		PLATFORM_KEYS[#PLATFORM_KEYS + 1] = IS_WINDOWS and "ps_pad"
 
-		local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
-		local base_look_multiplier = base_filter.look_controller_zoom.multiplier_y
-		local input_filters = player_input_service:get_active_filters(platform_key)
-		local look_filter = input_filters.look_controller_zoom
-		local function_data = look_filter.function_data
+		for i = 1, #PLATFORM_KEYS do
+			local platform_key = PLATFORM_KEYS[i]
+			local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
+			local base_look_multiplier = base_filter.look_controller_zoom.multiplier_y
+			local input_filters = player_input_service:get_active_filters(platform_key)
+			local look_filter = input_filters.look_controller_zoom
+			local function_data = look_filter.function_data
 
-		function_data.multiplier_y = base_look_multiplier * 0.85^-gamepad_zoom_sensitivity_y
+			function_data.multiplier_y = base_look_multiplier * 0.85^-gamepad_zoom_sensitivity_y
+		end
 	end
 
 	local gamepad_left_dead_zone = user_settings.gamepad_left_dead_zone
@@ -2264,31 +2277,34 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, vers
 	local gamepad_look_invert_y = user_settings.gamepad_look_invert_y
 
 	if gamepad_look_invert_y ~= nil then
-		local platform_key = IS_WINDOWS and "xb1" or self.platform
-		local most_recent_device = Managers.input:get_most_recent_device()
+		table.clear(PLATFORM_KEYS)
 
-		platform_key = most_recent_device.type() == "sce_pad" and "ps_pad" or platform_key
+		PLATFORM_KEYS[#PLATFORM_KEYS + 1] = IS_WINDOWS and "xb1" or self.platform
+		PLATFORM_KEYS[#PLATFORM_KEYS + 1] = IS_WINDOWS and "ps_pad"
 
-		local input_filters = player_input_service:get_active_filters(platform_key)
-		local look_filter = input_filters.look_controller
-		local function_data = look_filter.function_data
+		for i = 1, #PLATFORM_KEYS do
+			local platform_key = PLATFORM_KEYS[i]
+			local input_filters = player_input_service:get_active_filters(platform_key)
+			local look_filter = input_filters.look_controller
+			local function_data = look_filter.function_data
 
-		function_data.filter_type = gamepad_look_invert_y and "scale_vector3_xy_accelerated_x_inverted" or "scale_vector3_xy_accelerated_x"
+			function_data.filter_type = gamepad_look_invert_y and "scale_vector3_xy_accelerated_x_inverted" or "scale_vector3_xy_accelerated_x"
 
-		local look_filter = input_filters.look_controller_melee
-		local function_data = look_filter.function_data
+			local look_filter = input_filters.look_controller_melee
+			local function_data = look_filter.function_data
 
-		function_data.filter_type = gamepad_look_invert_y and "scale_vector3_xy_accelerated_x_inverted" or "scale_vector3_xy_accelerated_x"
+			function_data.filter_type = gamepad_look_invert_y and "scale_vector3_xy_accelerated_x_inverted" or "scale_vector3_xy_accelerated_x"
 
-		local look_filter = input_filters.look_controller_ranged
-		local function_data = look_filter.function_data
+			local look_filter = input_filters.look_controller_ranged
+			local function_data = look_filter.function_data
 
-		function_data.filter_type = gamepad_look_invert_y and "scale_vector3_xy_accelerated_x_inverted" or "scale_vector3_xy_accelerated_x"
+			function_data.filter_type = gamepad_look_invert_y and "scale_vector3_xy_accelerated_x_inverted" or "scale_vector3_xy_accelerated_x"
 
-		local look_filter = input_filters.look_controller_zoom
-		local function_data = look_filter.function_data
+			local look_filter = input_filters.look_controller_zoom
+			local function_data = look_filter.function_data
 
-		function_data.filter_type = gamepad_look_invert_y and "scale_vector3_xy_accelerated_x_inverted" or "scale_vector3_xy_accelerated_x"
+			function_data.filter_type = gamepad_look_invert_y and "scale_vector3_xy_accelerated_x_inverted" or "scale_vector3_xy_accelerated_x"
+		end
 	end
 
 	local gamepad_use_ps4_style_input_icons = user_settings.gamepad_use_ps4_style_input_icons
@@ -2563,6 +2579,15 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, vers
 		Application.apply_user_settings()
 		GlobalShaderFlags.apply_settings()
 		Renderer.bake_static_shadows()
+
+		local current_level_settings = LevelHelper:current_level_settings()
+		local render_settings_overrides = current_level_settings and current_level_settings.render_settings_overrides
+
+		if render_settings_overrides then
+			for render_setting, value in pairs(render_settings_overrides) do
+				Application.set_render_setting(render_setting, tostring(value))
+			end
+		end
 	end
 
 	ShowCursorStack.update_clip_cursor()
@@ -7104,34 +7129,37 @@ OptionsView.cb_gamepad_look_sensitivity_setup = function (self)
 
 	sensitivity = math.clamp(sensitivity, min, max)
 
-	local platform_key = IS_WINDOWS and "xb1" or self.platform
-	local most_recent_device = Managers.input:get_most_recent_device()
+	table.clear(PLATFORM_KEYS)
 
-	platform_key = most_recent_device.type() == "sce_pad" and "ps_pad" or platform_key
+	PLATFORM_KEYS[#PLATFORM_KEYS + 1] = IS_WINDOWS and "xb1" or self.platform
+	PLATFORM_KEYS[#PLATFORM_KEYS + 1] = IS_WINDOWS and "ps_pad"
 
-	local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
-	local base_look_multiplier = base_filter.look_controller.multiplier_x
-	local base_melee_look_multiplier = base_filter.look_controller_melee.multiplier_x
-	local base_ranged_look_multiplier = base_filter.look_controller_ranged.multiplier_x
-	local input_service = self.input_manager:get_service("Player")
-	local input_filters = input_service:get_active_filters(platform_key)
-	local look_filter = input_filters.look_controller
-	local function_data = look_filter.function_data
+	for i = 1, #PLATFORM_KEYS do
+		local platform_key = PLATFORM_KEYS[i]
+		local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
+		local base_look_multiplier = base_filter.look_controller.multiplier_x
+		local base_melee_look_multiplier = base_filter.look_controller_melee.multiplier_x
+		local base_ranged_look_multiplier = base_filter.look_controller_ranged.multiplier_x
+		local input_service = self.input_manager:get_service("Player")
+		local input_filters = input_service:get_active_filters(platform_key)
+		local look_filter = input_filters.look_controller
+		local function_data = look_filter.function_data
 
-	function_data.multiplier_x = base_look_multiplier * 0.85^-sensitivity
-	function_data.min_multiplier_x = base_filter.look_controller.multiplier_min_x and base_filter.look_controller.multiplier_min_x * 0.85^-sensitivity or function_data.multiplier_x * 0.25
+		function_data.multiplier_x = base_look_multiplier * 0.85^-sensitivity
+		function_data.min_multiplier_x = base_filter.look_controller.multiplier_min_x and base_filter.look_controller.multiplier_min_x * 0.85^-sensitivity or function_data.multiplier_x * 0.25
 
-	local melee_look_filter = input_filters.look_controller_melee
-	local function_data = melee_look_filter.function_data
+		local melee_look_filter = input_filters.look_controller_melee
+		local function_data = melee_look_filter.function_data
 
-	function_data.multiplier_x = base_melee_look_multiplier * 0.85^-sensitivity
-	function_data.min_multiplier_x = base_filter.look_controller_melee.multiplier_min_x and base_filter.look_controller_melee.multiplier_min_x * 0.85^-sensitivity or function_data.multiplier_x * 0.25
+		function_data.multiplier_x = base_melee_look_multiplier * 0.85^-sensitivity
+		function_data.min_multiplier_x = base_filter.look_controller_melee.multiplier_min_x and base_filter.look_controller_melee.multiplier_min_x * 0.85^-sensitivity or function_data.multiplier_x * 0.25
 
-	local ranged_look_filter = input_filters.look_controller_ranged
-	local function_data = ranged_look_filter.function_data
+		local ranged_look_filter = input_filters.look_controller_ranged
+		local function_data = ranged_look_filter.function_data
 
-	function_data.multiplier_x = base_ranged_look_multiplier * 0.85^-sensitivity
-	function_data.min_multiplier_x = base_filter.look_controller_ranged.multiplier_min_x and base_filter.look_controller_ranged.multiplier_min_x * 0.85^-sensitivity or function_data.multiplier_x * 0.25
+		function_data.multiplier_x = base_ranged_look_multiplier * 0.85^-sensitivity
+		function_data.min_multiplier_x = base_filter.look_controller_ranged.multiplier_min_x and base_filter.look_controller_ranged.multiplier_min_x * 0.85^-sensitivity or function_data.multiplier_x * 0.25
+	end
 
 	return value, min, max, 1, "menu_settings_gamepad_look_sensitivity", default_value
 end
@@ -7158,31 +7186,34 @@ OptionsView.cb_gamepad_look_sensitivity_y_setup = function (self)
 
 	sensitivity = math.clamp(sensitivity, min, max)
 
-	local platform_key = IS_WINDOWS and "xb1" or self.platform
-	local most_recent_device = Managers.input:get_most_recent_device()
+	table.clear(PLATFORM_KEYS)
 
-	platform_key = most_recent_device.type() == "sce_pad" and "ps_pad" or platform_key
+	PLATFORM_KEYS[#PLATFORM_KEYS + 1] = IS_WINDOWS and "xb1" or self.platform
+	PLATFORM_KEYS[#PLATFORM_KEYS + 1] = IS_WINDOWS and "ps_pad"
 
-	local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
-	local base_look_multiplier = base_filter.look_controller.multiplier_y
-	local base_melee_look_multiplier = base_filter.look_controller_melee.multiplier_y
-	local base_ranged_look_multiplier = base_filter.look_controller_ranged.multiplier_y
-	local input_service = self.input_manager:get_service("Player")
-	local input_filters = input_service:get_active_filters(platform_key)
-	local look_filter = input_filters.look_controller
-	local function_data = look_filter.function_data
+	for i = 1, #PLATFORM_KEYS do
+		local platform_key = PLATFORM_KEYS[i]
+		local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
+		local base_look_multiplier = base_filter.look_controller.multiplier_y
+		local base_melee_look_multiplier = base_filter.look_controller_melee.multiplier_y
+		local base_ranged_look_multiplier = base_filter.look_controller_ranged.multiplier_y
+		local input_service = self.input_manager:get_service("Player")
+		local input_filters = input_service:get_active_filters(platform_key)
+		local look_filter = input_filters.look_controller
+		local function_data = look_filter.function_data
 
-	function_data.multiplier_y = base_look_multiplier * 0.85^-sensitivity
+		function_data.multiplier_y = base_look_multiplier * 0.85^-sensitivity
 
-	local melee_look_filter = input_filters.look_controller_melee
-	local function_data = melee_look_filter.function_data
+		local melee_look_filter = input_filters.look_controller_melee
+		local function_data = melee_look_filter.function_data
 
-	function_data.multiplier_y = base_melee_look_multiplier * 0.85^-sensitivity
+		function_data.multiplier_y = base_melee_look_multiplier * 0.85^-sensitivity
 
-	local ranged_look_filter = input_filters.look_controller_ranged
-	local function_data = ranged_look_filter.function_data
+		local ranged_look_filter = input_filters.look_controller_ranged
+		local function_data = ranged_look_filter.function_data
 
-	function_data.multiplier_y = base_ranged_look_multiplier * 0.85^-sensitivity
+		function_data.multiplier_y = base_ranged_look_multiplier * 0.85^-sensitivity
+	end
 
 	return value, min, max, 1, "menu_settings_gamepad_look_sensitivity_y", default_value
 end
@@ -7209,20 +7240,23 @@ OptionsView.cb_gamepad_zoom_sensitivity_setup = function (self)
 
 	sensitivity = math.clamp(sensitivity, min, max)
 
-	local platform_key = IS_WINDOWS and "xb1" or self.platform
-	local most_recent_device = Managers.input:get_most_recent_device()
+	table.clear(PLATFORM_KEYS)
 
-	platform_key = most_recent_device.type() == "sce_pad" and "ps_pad" or platform_key
+	PLATFORM_KEYS[#PLATFORM_KEYS + 1] = IS_WINDOWS and "xb1" or self.platform
+	PLATFORM_KEYS[#PLATFORM_KEYS + 1] = IS_WINDOWS and "ps_pad"
 
-	local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
-	local base_look_multiplier = base_filter.look_controller_zoom.multiplier_x
-	local input_service = self.input_manager:get_service("Player")
-	local input_filters = input_service:get_active_filters(platform_key)
-	local look_filter = input_filters.look_controller_zoom
-	local function_data = look_filter.function_data
+	for i = 1, #PLATFORM_KEYS do
+		local platform_key = PLATFORM_KEYS[i]
+		local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
+		local base_look_multiplier = base_filter.look_controller_zoom.multiplier_x
+		local input_service = self.input_manager:get_service("Player")
+		local input_filters = input_service:get_active_filters(platform_key)
+		local look_filter = input_filters.look_controller_zoom
+		local function_data = look_filter.function_data
 
-	function_data.multiplier_x = base_look_multiplier * 0.85^-sensitivity
-	function_data.min_multiplier_x = base_filter.look_controller_zoom.multiplier_min_x and base_filter.look_controller_zoom.multiplier_min_x * 0.85^-sensitivity or function_data.multiplier_x * 0.25
+		function_data.multiplier_x = base_look_multiplier * 0.85^-sensitivity
+		function_data.min_multiplier_x = base_filter.look_controller_zoom.multiplier_min_x and base_filter.look_controller_zoom.multiplier_min_x * 0.85^-sensitivity or function_data.multiplier_x * 0.25
+	end
 
 	return value, min, max, 1, "menu_settings_gamepad_zoom_sensitivity", default_value
 end
@@ -7249,19 +7283,22 @@ OptionsView.cb_gamepad_zoom_sensitivity_y_setup = function (self)
 
 	sensitivity = math.clamp(sensitivity, min, max)
 
-	local platform_key = IS_WINDOWS and "xb1" or self.platform
-	local most_recent_device = Managers.input:get_most_recent_device()
+	table.clear(PLATFORM_KEYS)
 
-	platform_key = most_recent_device.type() == "sce_pad" and "ps_pad" or platform_key
+	PLATFORM_KEYS[#PLATFORM_KEYS + 1] = IS_WINDOWS and "xb1" or self.platform
+	PLATFORM_KEYS[#PLATFORM_KEYS + 1] = IS_WINDOWS and "ps_pad"
 
-	local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
-	local base_look_multiplier = base_filter.look_controller_zoom.multiplier_y
-	local input_service = self.input_manager:get_service("Player")
-	local input_filters = input_service:get_active_filters(platform_key)
-	local look_filter = input_filters.look_controller_zoom
-	local function_data = look_filter.function_data
+	for i = 1, #PLATFORM_KEYS do
+		local platform_key = PLATFORM_KEYS[i]
+		local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
+		local base_look_multiplier = base_filter.look_controller_zoom.multiplier_y
+		local input_service = self.input_manager:get_service("Player")
+		local input_filters = input_service:get_active_filters(platform_key)
+		local look_filter = input_filters.look_controller_zoom
+		local function_data = look_filter.function_data
 
-	function_data.multiplier_y = base_look_multiplier * 0.85^-sensitivity
+		function_data.multiplier_y = base_look_multiplier * 0.85^-sensitivity
+	end
 
 	return value, min, max, 1, "menu_settings_gamepad_zoom_sensitivity_y", default_value
 end
@@ -7480,31 +7517,35 @@ OptionsView.cb_gamepad_look_invert_y_setup = function (self)
 	local default_value = DefaultUserSettings.get("user_settings", "gamepad_look_invert_y") or false
 	local invert_gamepad_y = Application.user_setting("gamepad_look_invert_y")
 	local input_service = self.input_manager:get_service("Player")
-	local platform_key = IS_WINDOWS and "xb1" or self.platform
-	local most_recent_device = Managers.input:get_most_recent_device()
 
-	platform_key = most_recent_device.type() == "sce_pad" and "ps_pad" or platform_key
+	table.clear(PLATFORM_KEYS)
 
-	local input_filters = input_service:get_active_filters(platform_key)
-	local look_filter = input_filters.look_controller
-	local function_data = look_filter.function_data
+	PLATFORM_KEYS[#PLATFORM_KEYS + 1] = IS_WINDOWS and "xb1" or self.platform
+	PLATFORM_KEYS[#PLATFORM_KEYS + 1] = IS_WINDOWS and "ps_pad"
 
-	function_data.filter_type = invert_gamepad_y and "scale_vector3_xy_accelerated_x_inverted" or "scale_vector3_xy_accelerated_x"
+	for i = 1, #PLATFORM_KEYS do
+		local platform_key = PLATFORM_KEYS[i]
+		local input_filters = input_service:get_active_filters(platform_key)
+		local look_filter = input_filters.look_controller
+		local function_data = look_filter.function_data
 
-	local look_filter = input_filters.look_controller_ranged
-	local function_data = look_filter.function_data
+		function_data.filter_type = invert_gamepad_y and "scale_vector3_xy_accelerated_x_inverted" or "scale_vector3_xy_accelerated_x"
 
-	function_data.filter_type = invert_gamepad_y and "scale_vector3_xy_accelerated_x_inverted" or "scale_vector3_xy_accelerated_x"
+		local look_filter = input_filters.look_controller_ranged
+		local function_data = look_filter.function_data
 
-	local look_filter = input_filters.look_controller_melee
-	local function_data = look_filter.function_data
+		function_data.filter_type = invert_gamepad_y and "scale_vector3_xy_accelerated_x_inverted" or "scale_vector3_xy_accelerated_x"
 
-	function_data.filter_type = invert_gamepad_y and "scale_vector3_xy_accelerated_x_inverted" or "scale_vector3_xy_accelerated_x"
+		local look_filter = input_filters.look_controller_melee
+		local function_data = look_filter.function_data
 
-	local look_filter = input_filters.look_controller_zoom
-	local function_data = look_filter.function_data
+		function_data.filter_type = invert_gamepad_y and "scale_vector3_xy_accelerated_x_inverted" or "scale_vector3_xy_accelerated_x"
 
-	function_data.filter_type = invert_gamepad_y and "scale_vector3_xy_accelerated_x_inverted" or "scale_vector3_xy_accelerated_x"
+		local look_filter = input_filters.look_controller_zoom
+		local function_data = look_filter.function_data
+
+		function_data.filter_type = invert_gamepad_y and "scale_vector3_xy_accelerated_x_inverted" or "scale_vector3_xy_accelerated_x"
+	end
 
 	local selection = invert_gamepad_y and 2 or 1
 	local default_option = default_value and 2 or 1

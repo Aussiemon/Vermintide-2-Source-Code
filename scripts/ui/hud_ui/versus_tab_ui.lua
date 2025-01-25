@@ -5,6 +5,7 @@ local animation_definitions = definitions.animation_definitions
 local scenegraph_definition = definitions.scenegraph_definition
 local create_empty_frame_widget = definitions.create_empty_frame_widget
 local console_cursor_definition = definitions.console_cursor_definition
+local custom_game_settings_widgets = definitions.custom_game_settings_widgets
 local NUM_MAX_TEAMS = 2
 local NUM_TEAMS_SIZE = 4
 local DO_RELOAD = false
@@ -97,6 +98,17 @@ VersusTabUI._create_ui_elements = function (self)
 
 	self:_create_player_slots()
 
+	self._custom_game_settings_widgets, self._custom_game_settings_widgets_by_name = {}, {}
+
+	UIUtils.create_widgets(custom_game_settings_widgets, self._custom_game_settings_widgets, self._custom_game_settings_widgets_by_name)
+
+	local custom_settings_enabled = Managers.mechanism:game_mechanism():custom_settings_enabled()
+
+	if custom_settings_enabled then
+		self:_setup_custom_settings()
+	end
+
+	self._custom_settings_enabled = custom_settings_enabled
 	self._ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
 end
 
@@ -145,7 +157,7 @@ VersusTabUI.update = function (self, dt, t)
 		self:_update_score(party_id, opponent_party_id)
 		self:_update_animations(dt, t)
 		self:_update_custom_lobby_slots()
-		self:_draw(dt)
+		self:_draw(dt, t)
 	end
 end
 
@@ -164,7 +176,7 @@ VersusTabUI._update_animations = function (self, dt, t)
 	end
 end
 
-VersusTabUI._draw = function (self, dt)
+VersusTabUI._draw = function (self, dt, t)
 	local ui_renderer = self._ui_top_renderer
 	local ui_scenegraph = self._ui_scenegraph
 	local input_manager = self._input_manager
@@ -237,7 +249,19 @@ VersusTabUI._draw = function (self, dt)
 		UIRenderer.draw_widget(ui_renderer, self._console_cursor)
 	end
 
+	if self._custom_settings_enabled and self._custom_game_settings_widgets then
+		UIRenderer.draw_all_widgets(ui_renderer, self._custom_game_settings_widgets)
+	end
+
+	if self._custom_settings_enabled and self._settings_widgets then
+		UIRenderer.draw_all_widgets(ui_renderer, self._settings_widgets)
+	end
+
 	UIRenderer.end_pass(ui_renderer)
+
+	if self._scrollbar_ui then
+		self._scrollbar_ui:update(dt, t, ui_renderer, input_service, render_settings)
+	end
 end
 
 VersusTabUI._set_team_name = function (self, local_player_party_id, opponent_party_id)
@@ -460,6 +484,48 @@ VersusTabUI._create_player_slots = function (self)
 	end
 
 	self._custom_game_slots = custom_game_slots
+end
+
+VersusTabUI._setup_custom_settings = function (self)
+	local custom_game_settings_handler = Managers.mechanism:game_mechanism():get_custom_game_settings_handler()
+	local settings_templates = custom_game_settings_handler and custom_game_settings_handler:get_settings_template()
+	local settings = custom_game_settings_handler:get_settings()
+	local settings_template = settings_templates
+	local settings_ui_data = DLCSettings.carousel.custom_game_ui_settings
+	local settings_widgets, settings_widgets_by_name = {}, {}
+	local settings_spacing = 34
+
+	for id, value in ipairs(settings) do
+		local data = settings_template[id]
+		local setting_name = data.setting_name
+		local values = data.values
+		local ui_data = settings_ui_data[setting_name]
+		local start_idx = data.values_reverse_lookup[value]
+		local default_value = data.default
+		local default_idx = data.values_reverse_lookup[default_value]
+		local widget_def = definitions.create_settings_widget("settings_anchor", data, ui_data, value, start_idx, id)
+		local widget = UIWidget.init(widget_def)
+
+		widget.offset = {
+			20,
+			-settings_spacing * id,
+			1,
+		}
+		widget.content.default_value = default_value
+		widget.content.default_idx = default_idx
+		settings_widgets[#settings_widgets + 1] = widget
+		settings_widgets_by_name[setting_name] = widget
+	end
+
+	self._settings_widgets = settings_widgets
+	self._settings_widgets_by_name = settings_widgets_by_name
+
+	local num_settings = #settings
+
+	self:_setup_custom_settings_scrollbar(num_settings, settings_spacing)
+
+	self._num_settings = num_settings
+	self._settings = settings
 end
 
 VersusTabUI._update_custom_lobby_slots = function (self)
@@ -1405,4 +1471,19 @@ VersusTabUI._get_current_set = function (self)
 	local rounds_played = self._win_conditions:get_current_round()
 
 	return math.round(rounds_played / 2)
+end
+
+VersusTabUI._setup_custom_settings_scrollbar = function (self, num_settings, spacing)
+	local settings_total_size = num_settings * spacing
+	local excess_area = settings_total_size - definitions.scenegraph_definition.settings_container.size[2]
+
+	if excess_area > 0 then
+		local ui_scenegraph = self._ui_scenegraph
+		local scroll_area_scenegraph_id = "settings_anchor"
+		local scroll_area_anchor_scenegraph_id = "settings_container"
+		local enable_auto_scroll = false
+		local optional_scroll_area_hotspot_widget, horizontal_scrollbar
+
+		self._scrollbar_ui = ScrollbarUI:new(ui_scenegraph, scroll_area_scenegraph_id, scroll_area_anchor_scenegraph_id, excess_area, enable_auto_scroll, optional_scroll_area_hotspot_widget, horizontal_scrollbar)
+	end
 end

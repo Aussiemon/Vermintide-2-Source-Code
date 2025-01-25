@@ -324,6 +324,7 @@ end
 HeroWindowGotwfOverview._animate_list_entries = function (self, dt)
 	local parent = self._parent
 	local list_widgets = self._list_widgets
+	local mouse_active = Managers.input:is_device_active("mouse")
 	local list_hovered = true
 
 	for idx, widget in ipairs(self._item_widgets) do
@@ -342,6 +343,8 @@ HeroWindowGotwfOverview._animate_list_entries = function (self, dt)
 				hotspot.on_hover_enter = false
 			end
 		end
+
+		content.is_gamepad_selected = idx == (self._current_item_index or 0) and not mouse_active
 
 		self:_animate_item_product(widget, dt, list_hovered)
 	end
@@ -368,7 +371,7 @@ HeroWindowGotwfOverview._animate_item_product = function (self, widget, dt, opti
 			on_hover_enter = false
 		end
 
-		local is_selected = hotspot.is_selected
+		local is_selected = hotspot.is_selected or content.is_gamepad_selected and i == num_rewards
 		local was_selected = hotspot.was_selected
 
 		if not was_selected and is_selected then

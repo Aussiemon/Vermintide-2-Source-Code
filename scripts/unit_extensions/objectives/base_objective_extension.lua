@@ -34,6 +34,8 @@ BaseObjectiveExtension.set_objective_data = function (self, objective_data)
 	self._score_for_completion = objective_data.score_for_completion or 0
 	self._time_for_completion = objective_data.time_for_completion or 0
 	self._on_last_leaf_complete_sound_event = objective_data.on_last_leaf_complete_sound_event
+	self._on_leaf_complete_sound_event = objective_data.on_leaf_complete_sound_event
+	self._on_section_progress_sound_event = objective_data.on_section_progress_sound_event
 
 	self:_set_objective_data(objective_data)
 end
@@ -80,17 +82,25 @@ BaseObjectiveExtension._local_side = function (self)
 	return self._local_side_cached
 end
 
-BaseObjectiveExtension.complete = function (self, last_leaf_objective)
+BaseObjectiveExtension.complete = function (self, is_root_objective, is_leaf_objective, is_last_leaf_objective)
 	if self._is_server and self._on_complete_func then
 		self._on_complete_func(self._unit)
 	end
 
 	if not DEDICATED_SERVER then
-		local last_leaf_complete_sound_event = self._on_last_leaf_complete_sound_event
+		local leaf_complete_sound_event = self._on_leaf_complete_sound_event
+		local last_leaf_complete_sound_event = self._on_last_leaf_complete_sound_event or leaf_complete_sound_event
 
-		if last_leaf_complete_sound_event and last_leaf_objective then
+		if is_last_leaf_objective and last_leaf_complete_sound_event then
 			local side_name = self:_local_side():name()
 			local complete_event = last_leaf_complete_sound_event[side_name]
+
+			if complete_event then
+				self:play_local_sound(complete_event)
+			end
+		elseif leaf_complete_sound_event and is_leaf_objective then
+			local side_name = self:_local_side():name()
+			local complete_event = leaf_complete_sound_event[side_name]
 
 			if complete_event then
 				self:play_local_sound(complete_event)
@@ -153,6 +163,25 @@ BaseObjectiveExtension.on_section_completed = function (self)
 	self._current_section = self._current_section + 1
 
 	Managers.state.event:trigger("obj_objective_section_completed", self)
+
+	if self:is_done() then
+		return
+	end
+
+	local sound_event = self._on_section_progress_sound_event
+
+	if sound_event then
+		local side = self:_local_side()
+
+		if side then
+			local side_name = side:name()
+			local progress_event = sound_event[side_name]
+
+			if progress_event then
+				self:play_local_sound(progress_event)
+			end
+		end
+	end
 end
 
 BaseObjectiveExtension.server_set_value = function (self, value)

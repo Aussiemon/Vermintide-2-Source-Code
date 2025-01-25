@@ -19,10 +19,18 @@ TerrorEventUtils.random = function (...)
 	return value
 end
 
-TerrorEventUtils.get_grudge_marked_name = function (breed_name, magic_number)
+TerrorEventUtils.get_grudge_marked_name = function (breed_name, magic_number, breed_enhancement_attributes)
 	local breed = Breeds[breed_name]
 	local faction = breed.race
-	local name_list = GrudgeMarkedNames[breed_name] or GrudgeMarkedNames[faction]
+	local name_list = GrudgeMarkedNames[BreedEnhancements] or GrudgeMarkedNames[breed_name] or GrudgeMarkedNames[faction]
+
+	if breed_enhancement_attributes then
+		for k, v in pairs(breed_enhancement_attributes) do
+			if GrudgeMarkedNames[k] then
+				name_list = GrudgeMarkedNames[k]
+			end
+		end
+	end
 
 	fassert(name_list, "%s is not a valid breed, or does not have a valid race set in its breed data", breed_name)
 

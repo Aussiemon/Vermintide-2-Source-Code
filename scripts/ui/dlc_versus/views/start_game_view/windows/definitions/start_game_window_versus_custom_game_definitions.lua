@@ -137,9 +137,23 @@ local scenegraph_definition = {
 			1,
 		},
 	},
+	custom_game_sub_title = {
+		horizontal_alignment = "center",
+		parent = "custom_game_background",
+		vertical_alignment = "top",
+		size = {
+			window_text_width,
+			50,
+		},
+		position = {
+			0,
+			-70,
+			1,
+		},
+	},
 	custom_game_divider = {
 		horizontal_alignment = "center",
-		parent = "custom_game_title",
+		parent = "custom_game_sub_title",
 		vertical_alignment = "top",
 		size = {
 			264,
@@ -147,7 +161,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-36,
+			-44,
 			1,
 		},
 	},
@@ -283,16 +297,31 @@ local custom_game_description_style = {
 		2,
 	},
 }
+local custom_game_sub_title_style = {
+	font_size = 34,
+	font_type = "hell_shark_header",
+	horizontal_alignment = "center",
+	localize = false,
+	upper_case = false,
+	use_shadow = true,
+	vertical_alignment = "center",
+	word_wrap = true,
+	text_color = Colors.get_color_table_with_alpha("white", 255),
+	offset = {
+		0,
+		0,
+		2,
+	},
+}
 local widgets = {
 	custom_game_description_background = UIWidgets.create_rect_with_outer_frame("custom_game_background", scenegraph_definition.custom_game_background.size, "frame_outer_fade_02", nil, UISettings.console_start_game_menu_rect_color),
-	custom_game_title = UIWidgets.create_simple_text(Localize("map_host_setting"), "custom_game_title", nil, nil, custom_game_title_style),
+	custom_game_title = UIWidgets.create_simple_text(Localize("start_game_window_specific_title"), "custom_game_title", nil, nil, custom_game_title_style),
+	quickplay_sub_title = UIWidgets.create_simple_text(Localize("versus_start_game_window_player_hosted_server"), "custom_game_sub_title", nil, nil, custom_game_sub_title_style),
 	custom_game_divider = UIWidgets.create_simple_texture("divider_01_top", "custom_game_divider"),
 	custom_game_description = UIWidgets.create_simple_text(Localize("start_game_host_versus_desc"), "custom_game_description", nil, nil, custom_game_description_style),
-	mission_setting = UIWidgets.create_start_game_console_setting_button("game_option_2", Localize("start_game_window_mission"), nil, nil, nil, scenegraph_definition.game_option_1.size),
 	play_button = UIWidgets.create_icon_and_name_button("play_button", "options_button_icon_quickplay", Localize("start_game_window_other_options_always_host")),
 }
 local selector_input_definition = {
-	"mission_setting",
 	"play_button",
 }
 

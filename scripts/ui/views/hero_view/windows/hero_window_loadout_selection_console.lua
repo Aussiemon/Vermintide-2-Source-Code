@@ -721,11 +721,16 @@ HeroWindowLoadoutSelectionConsole._delete_loadout = function (self)
 	local profile = SPProfiles[self._profile_index]
 	local career_settings = profile.careers[self._career_index]
 	local career_name = career_settings.name
+	local is_current_loadout = self._context_menu_loadout_index == self._selected_loadout_index
 	local backend_items = Managers.backend:get_interface("items")
 
 	backend_items:delete_loadout(career_name, self._context_menu_loadout_index)
 	self:_populate_loadout_buttons()
 	self._parent:update_full_loadout()
+
+	if is_current_loadout then
+		self._parent:set_loadout_dirty()
+	end
 
 	self._delete_progress = 0
 

@@ -618,9 +618,11 @@ ObjectiveSystem._complete_objective_server = function (self, extension, objects_
 		end
 	end
 
-	local last_leaf_objective = not self:_is_objective_container(objective_name) and table.is_empty(self._active_leaf_objectives)
+	local is_root_objective = self:is_root_objective(objective_name)
+	local is_leaf_objective = self:is_leaf_objective(objective_name)
+	local is_last_leaf_objective = self:is_last_leaf_objective(objective_name)
 
-	extension:complete(last_leaf_objective)
+	extension:complete(is_root_objective, is_leaf_objective, is_last_leaf_objective)
 	Managers.state.event:trigger("objective_completed", extension, objective_data)
 
 	local objective_name_id = NetworkLookup.objective_names[objective_name]
@@ -630,6 +632,18 @@ end
 
 ObjectiveSystem._is_last_active_objective = function (self, objective_name)
 	return self._active_objectives[2] == nil and self._active_objectives[1] == objective_name
+end
+
+ObjectiveSystem.is_root_objective = function (self, objective_name)
+	return self:_is_part_of_objective_container(objective_name)
+end
+
+ObjectiveSystem.is_leaf_objective = function (self, objective_name)
+	return not self:_is_objective_container(objective_name)
+end
+
+ObjectiveSystem.is_last_leaf_objective = function (self, objective_name)
+	return self:is_leaf_objective(objective_name) and table.is_empty(self._active_leaf_objectives)
 end
 
 ObjectiveSystem._get_first_objective = function (self)
@@ -987,10 +1001,12 @@ ObjectiveSystem.rpc_objective_completed = function (self, sender, objective_name
 		print("[ObjectiveSystem] Completed sub objective: s%", objective_name)
 	end
 
-	local last_leaf_objective = not self:_is_objective_container(objective_name) and table.is_empty(active_leaf_objectives)
+	local is_root_objective = self:is_root_objective(objective_name)
+	local is_leaf_objective = self:is_leaf_objective(objective_name)
+	local is_last_leaf_objective = self:is_last_leaf_objective(objective_name)
 	local extension = self._objective_by_name[objective_name]
 
-	extension:complete(last_leaf_objective)
+	extension:complete(is_root_objective, is_leaf_objective, is_last_leaf_objective)
 
 	local objective_data = self._data_by_name[objective_name]
 

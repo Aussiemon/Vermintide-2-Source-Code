@@ -310,22 +310,21 @@ ConsoleFriendsView._setup_party_entries = function (self)
 
 	for idx, player in ipairs(sorted_players) do
 		local name = player:name()
-		local career
+		local career_name
 
 		if player.local_player then
-			local career_name = player:career_name()
-
-			career = CareerSettings[career_name]
+			career_name = player:career_name()
 		else
 			local player_unit = player.player_unit
 
 			if Unit.alive(player_unit) then
 				local career_ext = ScriptUnit.extension(player_unit, "career_system")
-				local career_name = career_ext:career_name()
 
-				career = CareerSettings[career_name]
+				career_name = career_ext:career_name()
 			end
 		end
+
+		local career = CareerSettings[career_name]
 
 		self._party_entries[#self._party_entries + 1] = UIWidget.init(entry_definitions.create_party_entry(name, career, offset * idx))
 	end

@@ -13,11 +13,11 @@ TrainingDummyHealthExtension.init = function (self, extension_init_context, unit
 	}
 	self.network_transmit = extension_init_context.network_transmit
 	self.is_invincible = false
-	self.health = NetworkConstants.health.max
+	self.health = 300
 	self.unmodified_max_health = self.health
 	self.damage = 0
 	self.state = "alive"
-	self.fake_max_health = 255
+	self._next_regen_tick = -math.huge
 	self._side_name = "neutral"
 end
 
@@ -49,18 +49,6 @@ TrainingDummyHealthExtension.is_alive = function (self)
 	return true
 end
 
-TrainingDummyHealthExtension.current_health_percent = function (self)
-	return 1
-end
-
-TrainingDummyHealthExtension.current_health = function (self)
-	return self.health
-end
-
-TrainingDummyHealthExtension.get_max_health = function (self)
-	return self.fake_max_health
-end
-
 TrainingDummyHealthExtension.apply_client_predicted_damage = function (self, predicted_damage)
 	return
 end
@@ -75,6 +63,8 @@ TrainingDummyHealthExtension.add_damage = function (self, attacker_unit, damage_
 
 	self._recent_damage_type = damage_type
 	self._recent_hit_react_type = hit_react_type
+	self.damage = math.min(self.damage + damage_amount, self.health - 1)
+	self._next_regen_tick = Managers.time:time("game") + 3
 
 	if not DEDICATED_SERVER then
 		DamageUtils.add_unit_floating_damage_numbers(unit, damage_type, damage_amount, is_critical_strike)
@@ -102,12 +92,15 @@ TrainingDummyHealthExtension.add_damage = function (self, attacker_unit, damage_
 	end
 end
 
-TrainingDummyHealthExtension.set_max_health = function (self, health, update_unmodfied)
-	return
+TrainingDummyHealthExtension.update = function (self, dt, context, t)
+	if t > self._next_regen_tick and self.damage > 0 then
+		self._next_regen_tick = math.huge
+		self.damage = 0
+	end
 end
 
-TrainingDummyHealthExtension.get_damage_taken = function (self)
-	return 0
+TrainingDummyHealthExtension.set_max_health = function (self, health, update_unmodfied)
+	return
 end
 
 TrainingDummyHealthExtension.set_current_damage = function (self, damage)

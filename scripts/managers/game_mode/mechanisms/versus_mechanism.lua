@@ -4,6 +4,7 @@ require("scripts/managers/irc/irc_manager")
 require("scripts/managers/game_mode/mechanisms/versus_game_server_slot_reservation_handler")
 require("scripts/managers/game_mode/mechanisms/player_hosted_slot_reservation_handler")
 require("scripts/managers/game_mode/mechanisms/shared_state_versus")
+require("scripts/managers/game_mode/mechanisms/game_mode_custom_settings_handler")
 
 VersusMechanism = class(VersusMechanism)
 VersusMechanism.name = "Versus"
@@ -101,19 +102,15 @@ VersusMechanism.init = function (self, settings)
 
 	self._dark_pact_profiles = table.clone(PROFILES_BY_AFFILIATION.dark_pact)
 	self._spectator_profiles = table.clone(PROFILES_BY_AFFILIATION.spectators)
-	self._saved_bot_profiles = {}
-
-	local parties = Managers.party:parties()
-
-	for party_id = 1, #parties do
-		self._saved_bot_profiles[party_id] = {}
-	end
-
 	self._message_targets_initiated = false
 	self._challenge_progression = {}
 
 	self:register_chats()
 	self:_reset(settings, true)
+
+	if not DEDICATED_SERVER then
+		self._custom_game_settings_handler = GameModeCustomSettingsHandler:new("versus")
+	end
 end
 
 VersusMechanism.register_rpcs = function (self, network_event_delegate)
@@ -126,10 +123,18 @@ VersusMechanism.register_rpcs = function (self, network_event_delegate)
 	if self._shared_state then
 		self._shared_state:register_rpcs(self._network_event_delegate)
 	end
+
+	if not DEDICATED_SERVER then
+		self._custom_game_settings_handler:register_rpcs(network_event_delegate)
+	end
 end
 
 VersusMechanism.unregister_rpcs = function (self)
 	if self._network_event_delegate then
+		if not DEDICATED_SERVER then
+			self._custom_game_settings_handler:unregister_rpcs(self._network_event_delegate)
+		end
+
 		self._network_event_delegate:unregister(self)
 
 		self._network_event_delegate = nil
@@ -216,12 +221,6 @@ VersusMechanism.setup_mechanism_parties = function (self, mechanism_manager)
 			parties[1],
 		})
 	end
-
-	self._saved_bot_profiles = {}
-
-	for party_id = 1, #parties do
-		self._saved_bot_profiles[party_id] = {}
-	end
 end
 
 VersusMechanism.make_profiles_reservable = function (self)
@@ -263,6 +262,10 @@ VersusMechanism.destroy = function (self)
 		for package_name, _ in pairs(package_map) do
 			package_manager:unload(package_name, PACKAGE_REFERENCE_NAME)
 		end
+	end
+
+	if not DEDICATED_SERVER then
+		self._custom_game_settings_handler:destroy()
 	end
 
 	self._slot_reservation_handler:destroy()
@@ -328,10 +331,12 @@ VersusMechanism.set_is_hosting_versus_custom_game = function (self, is_hosting)
 	local game_mode_state
 
 	if is_hosting then
+		self:set_custom_game_settings_handler_enabled(true)
 		Managers.party:server_init_friend_parties(true)
 
 		game_mode_state = "custom_game_lobby"
 	else
+		self:set_custom_game_settings_handler_enabled(false)
 		Managers.party:server_clear_friend_parties()
 		self._slot_reservation_handler:shrink()
 
@@ -597,6 +602,16 @@ VersusMechanism._update_sides = function (self, state)
 	if state == "inn" then
 		heroes_id = 1
 		dark_pact_id = 2
+	elseif self:custom_settings_enabled() and self._current_set == 1 then
+		local starting_as_heroes_team_id = self:get_custom_game_setting("starting_as_heroes")
+
+		if state == "round_1" then
+			heroes_id = starting_as_heroes_team_id
+			dark_pact_id = starting_as_heroes_team_id == 1 and 2 or 1
+		else
+			heroes_id = starting_as_heroes_team_id == 1 and 2 or 1
+			dark_pact_id = starting_as_heroes_team_id
+		end
 	elseif self._settings.disadvantaged_team_starts then
 		local network_handler = Managers.mechanism:network_handler()
 		local side_order_state = network_handler:get_side_order_state()
@@ -888,19 +903,21 @@ VersusMechanism.preferred_slot_id = function (self, party_id, peer_id, local_pla
 	local party = Managers.party:get_party(party_id)
 	local profile_index = self:update_wanted_hero_character(peer_id, local_player_id, party_id)
 	local matching_bot_slot_id
-	local num_slots = party.num_slots
+	local profile_synchronizer = Managers.mechanism:profile_synchronizer()
 
-	for slot_id = 1, num_slots do
-		local player_status = party.slots[slot_id]
-		local is_player = player_status.is_player
+	if profile_synchronizer then
+		for slot_id = 1, party.num_slots do
+			local player_status = party.slots[slot_id]
+			local is_player = player_status.is_player
 
-		if not is_player then
-			local slot_profile_index = self:get_saved_bot(party_id, slot_id)
+			if not is_player then
+				local slot_profile_index = profile_synchronizer:get_bot_profile(party_id, slot_id)
 
-			if profile_index == slot_profile_index then
-				matching_bot_slot_id = slot_id
+				if profile_index == slot_profile_index then
+					matching_bot_slot_id = slot_id
 
-				break
+					break
+				end
 			end
 		end
 	end
@@ -967,9 +984,13 @@ VersusMechanism.update_wanted_hero_character = function (self, peer_id, local_pl
 	end
 
 	if not profile_index and status.slot_id then
-		profile_index, career_index = self:get_saved_bot(party_id, status.slot_id)
+		local profile_synchronizer = Managers.mechanism:profile_synchronizer()
 
-		if profile_index and career_index then
+		if profile_synchronizer then
+			profile_index, career_index = profile_synchronizer:get_bot_profile(party_id, status.slot_id)
+		end
+
+		if profile_index and career_index and profile_index ~= 0 and career_index ~= 0 then
 			local career_settings = SPProfiles[profile_index].careers[career_index]
 
 			if career_settings.required_dlc then
@@ -1591,28 +1612,6 @@ VersusMechanism.get_starting_level = function ()
 	return HUB_LEVEL_NAME
 end
 
-VersusMechanism.set_saved_bot = function (self, party_id, slot_id, profile_index, career_index)
-	local profile = SPProfiles[profile_index]
-
-	assert(profile.affiliation == "heroes" or profile.affiliation == "spectators", "profile is not a hero")
-
-	local saved_party_profiles = self._saved_bot_profiles[party_id]
-
-	saved_party_profiles[slot_id] = {
-		profile_index = profile_index,
-		career_index = career_index,
-	}
-end
-
-VersusMechanism.get_saved_bot = function (self, party_id, slot_id)
-	local saved_party_profiles = self._saved_bot_profiles[party_id]
-	local slot_bot_character = saved_party_profiles[slot_id]
-
-	if slot_bot_character then
-		return slot_bot_character.profile_index, slot_bot_character.career_index
-	end
-end
-
 VersusMechanism.create_versus_migration_info = function (self, gm_event_end_conditions_met, gm_event_end_reason)
 	local network_handler = Managers.mechanism:network_handler()
 	local level_transition_handler = Managers.level_transition_handler
@@ -1770,13 +1769,6 @@ VersusMechanism.try_reserve_profile_for_peer_by_mechanism = function (self, prof
 		return true
 	end
 
-	local game_mode = Managers.state.game_mode
-	local party_selection_logic = game_mode and game_mode.party_selection_logic and game_mode:party_selection_logic()
-
-	if party_selection_logic then
-		return true
-	end
-
 	if not allow_switching then
 		local previous_profile_index, previous_career_index = Managers.mechanism:get_persistent_profile_index_reservation(peer_id)
 
@@ -1873,4 +1865,37 @@ VersusMechanism.override_loading_screen_music = function (self)
 	end
 
 	return music_override
+end
+
+VersusMechanism.on_enter_custom_game_lobby = function (self)
+	self._custom_game_settings_handler:request_full_sync()
+end
+
+VersusMechanism.set_custom_game_settings_handler_enabled = function (self, enabled)
+	if self._custom_game_settings_handler then
+		self._custom_game_settings_handler:set_enabled(enabled)
+	end
+end
+
+VersusMechanism.get_custom_game_setting = function (self, setting_name)
+	local custom_settings_enabled = false
+	local setting
+
+	if self._custom_game_settings_handler then
+		setting, custom_settings_enabled = self._custom_game_settings_handler:get_setting(setting_name)
+	end
+
+	return setting, custom_settings_enabled
+end
+
+VersusMechanism.get_custom_game_settings_handler = function (self)
+	return self._custom_game_settings_handler
+end
+
+VersusMechanism.custom_settings_enabled = function (self)
+	if self._custom_game_settings_handler then
+		return self._custom_game_settings_handler:is_enabled()
+	end
+
+	return false
 end

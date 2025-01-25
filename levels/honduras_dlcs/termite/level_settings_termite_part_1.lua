@@ -3,7 +3,7 @@
 LevelSettings.dlc_termite_1 = {
 	act = "act_termite",
 	act_presentation_order = 1,
-	act_unlock_order = 0,
+	act_unlock_order = 1,
 	ambient_sound_event = "silent_default_world_sound",
 	boss_spawning_method = "hand_placed",
 	default_surface_material = "stone",

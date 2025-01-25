@@ -4,7 +4,6 @@ local social_wheel_settings_definitions = require("scripts/ui/social_wheel/socia
 local BASE_SOCIAL_WHEEL_SETTINGS = BASE_SOCIAL_WHEEL_SETTINGS or table.clone(SocialWheelSettings)
 local ICON_PLACEHOLDER_TEXTURE_PATH = "gui/1080p/single_textures/generic/transparent_placeholder_texture"
 local SOCIAL_WHEEL_REFERENCE_NAME = "social_wheel_ui"
-local SOCIAL_WHEEL_PAGE_NUM = 3
 local BASE_REFERENCE_NAME = "SocialWheelUI_"
 local BASE_MATERIAL_NAME = "weapon_pose_anim_%02d"
 local POSE_MASKED = false
@@ -181,6 +180,14 @@ SocialWheelUI._create_social_wheel = function (self, social_wheel_settings)
 					local category_widgets = Script.new_array(num_category_settings)
 
 					category_widget_pages[page_idx] = category_widgets
+
+					if not category_widget_pages.emotes_page_index then
+						category_widget_pages.emotes_page_index = page.emotes and page_idx or nil
+					end
+
+					if not category_widget_pages.weapon_poses_page_index then
+						category_widget_pages.weapon_poses_page_index = page.weapon_poses and page_idx or nil
+					end
 
 					for i = 1, num_category_settings do
 						local widget = definitions.create_social_widget(page[i], self:_widget_angle(category_settings.angle, num_category_settings, i), category_settings, get_active_context_func, page_idx)
@@ -436,6 +443,7 @@ SocialWheelUI._update_input = function (self, dt, t)
 
 	self.previous_ping_held = input_service:get("ping_hold")
 	self.previous_social_wheel_only_held = input_service:get("social_wheel_only_hold")
+	self.previous_weapon_poses_only_held = input_service:get("weapon_poses_only_hold")
 	self.previous_photomode_only_held = input_service:get("photomode_only_hold")
 end
 
@@ -716,11 +724,19 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service, increment_page)
 
 			category_page = category_page % num_pages + 1
 
-			if current_context.show_emotes and category_page < 2 then
-				category_page = 2
+			if current_context.show_emotes and category_page ~= selected_category_widgets.emotes_page_index then
+				category_page = selected_category_widgets.emotes_page_index
+			elseif current_context.show_poses and category_page ~= selected_category_widgets.weapon_poses_page_index then
+				category_page = selected_category_widgets.weapon_poses_page_index or 1
 			end
 		else
-			category_page = current_context.show_emotes and 2 or 1
+			category_page = 1
+
+			if current_context.show_emotes then
+				category_page = selected_category_widgets.emotes_page_index or 1
+			elseif current_context.show_poses then
+				category_page = selected_category_widgets.weapon_poses_page_index or 1
+			end
 		end
 
 		selected_category_widgets.current_page = category_page
@@ -738,9 +754,8 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service, increment_page)
 	self._active_context = current_context
 
 	local active_context = self._active_context
-	local min_required_pages = active_context.show_emotes and 2 or 1
 
-	if selected_category_widgets.num_pages and min_required_pages >= selected_category_widgets.num_pages then
+	if selected_category_widgets.num_pages and active_context.show_emotes or active_context.show_poses then
 		self._page_input_widget.content.visible = false
 		self._block_next_input = true
 	end
@@ -804,16 +819,8 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service, increment_page)
 
 		local position = active_context.position and active_context.position:unbox()
 
-		if position then
-			local ping_system = Managers.state.entity:system("ping_system")
-			local unique_id = self._player:unique_id()
-			local _, new_position, _ = ping_system:is_ping_response(nil, unique_id, position)
-
-			if not self._world_marker_preview_id or new_position and Vector3.distance_squared(new_position, position) == 0 then
-				local final_position = new_position or position
-
-				Managers.state.event:trigger("add_world_marker_position", "ping", final_position, cb)
-			end
+		if position and not self._world_marker_preview_id then
+			Managers.state.event:trigger("add_world_marker_position", "ping", position, cb)
 		end
 	end
 
@@ -905,11 +912,23 @@ SocialWheelUI._reset_social_wheel = function (self)
 	local social_wheel_gamepad = SocialWheelSettings[category .. "_gamepad"]
 
 	if social_wheel then
-		table.remove(social_wheel, SOCIAL_WHEEL_PAGE_NUM)
+		local weapon_pose_index = table.find_func_array(social_wheel, function (page)
+			return page.weapon_poses
+		end)
+
+		if weapon_pose_index then
+			table.remove(social_wheel, weapon_pose_index)
+		end
 	end
 
 	if social_wheel_gamepad then
-		table.remove(social_wheel_gamepad, SOCIAL_WHEEL_PAGE_NUM)
+		local weapon_pose_index = table.find_func_array(social_wheel_gamepad, function (page)
+			return page.weapon_poses
+		end)
+
+		if weapon_pose_index then
+			table.remove(social_wheel_gamepad, weapon_pose_index)
+		end
 	end
 
 	self:_create_social_wheel()
@@ -925,7 +944,9 @@ SocialWheelUI._create_weapon_pose_wheel = function (self, parent_item)
 	end
 
 	local functions = social_wheel_settings_definitions.functions
-	local weapon_pose_social_wheel_settings = {}
+	local weapon_pose_social_wheel_settings = {
+		weapon_poses = true,
+	}
 	local template_material_name = POSE_MASKED and "template_diffuse_masked" or "template_diffuse"
 
 	for i = 1, #weapon_poses do
@@ -975,11 +996,11 @@ SocialWheelUI._create_weapon_pose_wheel = function (self, parent_item)
 	local social_wheel_gamepad = SocialWheelSettings[category .. "_gamepad"]
 
 	if social_wheel then
-		table.insert(social_wheel, SOCIAL_WHEEL_PAGE_NUM, weapon_pose_social_wheel_settings)
+		table.insert(social_wheel, weapon_pose_social_wheel_settings)
 	end
 
 	if social_wheel_gamepad then
-		table.insert(social_wheel_gamepad, SOCIAL_WHEEL_PAGE_NUM, weapon_pose_social_wheel_settings)
+		table.insert(social_wheel_gamepad, weapon_pose_social_wheel_settings)
 	end
 
 	self:_create_social_wheel()
@@ -1103,6 +1124,16 @@ SocialWheelUI.update_open = function (self, dt, t, input_service)
 		return
 	end
 
+	local weapon_poses_only_held = input_service:get("weapon_poses_only_hold")
+	local weapon_poses_only_released = input_service:get("weapon_poses_only_release") or self.previous_weapon_poses_only_held and not weapon_poses_only_held
+
+	if weapon_poses_only_held and self._current_selection_widget_settings.has_pages and input_service:get("social_wheel_page") and not self._block_next_input then
+		self:_close_menu(dt, t, input_service, true)
+		self:_open_menu(dt, t, input_service, true)
+
+		return
+	end
+
 	if self._current_selection_widget_settings.has_pages and input_service:get("social_wheel_page") and not self._block_next_input then
 		self:_close_menu(dt, t, input_service, true)
 		self:_open_menu(dt, t, input_service, true)
@@ -1110,7 +1141,7 @@ SocialWheelUI.update_open = function (self, dt, t, input_service)
 		return
 	end
 
-	if ping_released or social_wheel_only_released or photomode_only_released then
+	if ping_released or social_wheel_only_released or photomode_only_released or weapon_poses_only_released then
 		self:_close_menu(dt, t, input_service)
 
 		return

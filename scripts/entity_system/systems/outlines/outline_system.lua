@@ -13,6 +13,7 @@ OutlineSystem.system_extensions = {
 	"DoorOutlineExtension",
 	"ObjectiveOutlineExtension",
 	"ObjectiveLightOutlineExtension",
+	"ObjectiveLargeOutlineExtension",
 	"ElevatorOutlineExtension",
 	"ConditionalInteractOutlineExtension",
 	"ConditionalPickupOutlineExtension",
@@ -183,6 +184,19 @@ OutlineSystem.add_ext_functions = {
 			method = "within_distance",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.objective_light,
+			flag = OutlineSettings.flags.wall_occluded,
+		})
+
+		extension.apply_method = "unit"
+		extension.pinged_method = "always"
+
+		return id
+	end,
+	ObjectiveLargeOutlineExtension = function (extension)
+		local id = extension:add_outline({
+			method = "within_distance",
+			outline_color = OutlineSettings.colors.interactable,
+			distance = OutlineSettings.ranges.objective_large,
 			flag = OutlineSettings.flags.wall_occluded,
 		})
 

@@ -58,6 +58,7 @@ OutlineSettings.ranges = {
 	elevators = 10,
 	interactable = 15,
 	objective = 35,
+	objective_large = 100,
 	objective_light = 20,
 	pickup = 10,
 	player_husk = 40,

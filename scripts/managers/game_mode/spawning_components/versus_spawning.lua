@@ -6,9 +6,11 @@ VersusSpawning = class(VersusSpawning)
 
 local RPCS = {
 	"rpc_from_server_send_spawn_state",
+	"rpc_to_server_spawn_failed",
 }
 
-VersusSpawning.init = function (self, profile_synchronizer, available_profiles, is_server, game_mode_settings, career_delegator)
+VersusSpawning.init = function (self, side_name, profile_synchronizer, available_profiles, is_server, game_mode_settings, career_delegator)
+	self._side_name = side_name
 	self._profile_synchronizer = profile_synchronizer
 	self._available_profiles = available_profiles
 	self._available_special_profiles = available_profiles
@@ -23,6 +25,12 @@ VersusSpawning.init = function (self, profile_synchronizer, available_profiles, 
 	self._spawn_groups = {}
 	self._used_spawn_group_positions = {}
 	self._num_spawn_points_used = 0
+
+	local mechanism_ok, custom_setting_override, custom_settings_enabled = Managers.mechanism:mechanism_try_call("get_custom_game_setting", "pactsworn_respawn_timer")
+
+	if mechanism_ok and custom_settings_enabled and custom_setting_override ~= "default" then
+		self._respawn_time_override = custom_setting_override
+	end
 end
 
 VersusSpawning.register_rpcs = function (self, network_event_delegate, network_transmit)
@@ -55,6 +63,10 @@ function get_special_profiles(profiles)
 end
 
 VersusSpawning.get_spawn_time = function (self, party)
+	if self._respawn_time_override then
+		return self._respawn_time_override
+	end
+
 	local pactsworn_party_id = party
 	local hero_party_id = Managers.state.side:get_side_from_name("heroes").party.party_id
 	local num_used_slots = party.num_used_slots
@@ -63,7 +75,9 @@ VersusSpawning.get_spawn_time = function (self, party)
 	local min_score = -150
 	local max_score = 0
 	local score_difference = (self._win_conditions:get_total_score(pactsworn_party_id) - self._win_conditions:get_total_score(hero_party_id) - min_score) / (max_score - min_score)
-	local score_difference = math.clamp(score_difference, 0, 1)
+
+	score_difference = math.clamp(score_difference, 0, 1)
+
 	local spawn_time = math.ceil(math.lerp(spawn_timers.min, spawn_timers.max, score_difference)) or 20
 	local current_set = self._mechanism:get_current_set()
 
@@ -83,8 +97,9 @@ local function cb_spawned_darkpact_bot_func(unit, breed, optional_data)
 	bot_data.unit = unit
 end
 
-VersusSpawning.update = function (self, t, dt, side_name)
+VersusSpawning.update = function (self, t, dt)
 	if Managers.state.network:game() then
+		local side_name = self._side_name
 		local undecided_profile_idx = FindProfileIndex("vs_undecided")
 		local party = Managers.state.side:get_party_from_side_name(side_name)
 		local occupied_slots = party.occupied_slots
@@ -321,7 +336,9 @@ VersusSpawning._spawn_enemy = function (self, status)
 	local session = Managers.state.network:game()
 
 	if session then
-		Managers.state.network.network_transmit:send_rpc("rpc_to_client_spawn_player", peer_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn, ammo_melee_percent_int, ammo_ranged_percent_int, ability_cooldown_percentage_int, healthkit_id, potion_id, grenade_id, network_additional_items, network_buff_ids)
+		local inventory_hash = self._profile_synchronizer:cached_inventory_hash(peer_id, local_player_id)
+
+		Managers.state.network.network_transmit:send_rpc("rpc_to_client_spawn_player", peer_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn, ammo_melee_percent_int, ammo_ranged_percent_int, ability_cooldown_percentage_int, healthkit_id, potion_id, grenade_id, network_additional_items, network_buff_ids, inventory_hash)
 	end
 end
 
@@ -403,4 +420,33 @@ VersusSpawning._play_sound = function (self, name)
 	local wwise_world = Managers.world:wwise_world(world)
 
 	WwiseWorld.trigger_event(wwise_world, name)
+end
+
+VersusSpawning.rpc_to_server_spawn_failed = function (self, channel_id, local_player_id)
+	print("[VersusSpawning] Client detected spawning mismatch. Trying again.")
+
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+	local side_name = self._side_name
+	local party = Managers.state.side:get_party_from_side_name(side_name)
+	local occupied_slots = party.occupied_slots
+
+	for i = 1, #occupied_slots do
+		local status = occupied_slots[i]
+		local other_peer_id = status.peer_id
+		local other_local_player_id = status.local_player_id
+
+		if peer_id == other_peer_id and local_player_id == other_local_player_id then
+			local data = status.game_mode_data
+
+			if data.spawn_state == "spawning" then
+				data.spawn_state = "w8_to_spawn"
+
+				break
+			end
+
+			print("[VersusSpawning] This shouldn't happen. How did we leave spawning?")
+
+			break
+		end
+	end
 end

@@ -341,6 +341,9 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 		ai_commander_system = {
 			player = self,
 		},
+		ping_system = {
+			player = self,
+		},
 	}
 	local using_ghost_mode_system = Managers.mechanism:mechanism_setting("using_ghost_mode_system")
 

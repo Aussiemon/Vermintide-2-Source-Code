@@ -364,7 +364,7 @@ local title_text_style = {
 	},
 }
 local widgets = {
-	background = UIWidgets.create_deus_panel_with_outer_frame("additional_option", scenegraph_definition.additional_option.size),
+	background = UIWidgets.create_rect_with_outer_frame("additional_option", scenegraph_definition.additional_option.size, "frame_outer_fade_02", nil, UISettings.console_start_game_menu_rect_color),
 	title_text = UIWidgets.create_simple_text(Localize("start_game_window_other_options_title"), "title_text", 32, nil, title_text_style),
 	title_divider = UIWidgets.create_simple_texture("infoslate_frame_02_horizontal", "title_divider"),
 	option_tooltip = create_option_tooltip("option_tooltip", scenegraph_definition.option_tooltip.size),

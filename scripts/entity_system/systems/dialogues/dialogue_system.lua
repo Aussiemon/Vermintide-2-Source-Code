@@ -992,7 +992,6 @@ DialogueSystem.physics_async_update = function (self, context, t)
 					break
 				elseif interrupted_by[dialogue_category] then
 					interrupt_dialogue_list[playing_dialogue] = true
-					playing_dialogues[playing_dialogue] = nil
 				elseif playing_dialogue.currently_playing_unit == dialogue_actor_unit then
 					will_play = false
 
@@ -1020,6 +1019,7 @@ DialogueSystem.physics_async_update = function (self, context, t)
 				local network_manager = Managers.state.network
 
 				for interrupt_dialogue, _ in pairs(interrupt_dialogue_list) do
+					playing_dialogues[interrupt_dialogue] = nil
 					interrupt_dialogue_list[interrupt_dialogue] = nil
 
 					local playing_unit = interrupt_dialogue.currently_playing_unit
@@ -1591,29 +1591,31 @@ DialogueSystem._update_player_jumping = function (self, t)
 	end
 end
 
-DialogueSystem.queue_mission_giver_event = function (self, event_name, event_data)
+DialogueSystem.queue_mission_giver_event = function (self, event_name, event_data, side_name)
 	self._mission_giver_events[#self._mission_giver_events + 1] = {
 		delay = DialogueSettings.mission_giver_events_delay,
 		event_name = event_name,
 		event_data = event_data,
+		side_name = side_name,
 	}
 end
 
-DialogueSystem.queue_mission_giver_event_for_side = function (self, side_name, event_name, event_data)
+DialogueSystem.trigger_mission_giver_event = function (self, event_name, event_data, side_name)
+	local surrounding_aware_system = Managers.state.entity:system("surrounding_aware_system")
+	local global_observers = surrounding_aware_system:get_global_observers()
 	local side = Managers.state.side:get_side_from_name(side_name)
-	local side_id = side.side_id
+	local side_id = side and side.side_id
 
-	self._mission_giver_events[#self._mission_giver_events + 1] = {
-		delay = DialogueSettings.mission_giver_events_delay,
-		event_name = event_name,
-		event_data = event_data,
-		side_id = side_id,
-	}
+	for unit, surrounding_aware_extension in pairs(global_observers) do
+		if not side_id or side_id == surrounding_aware_extension.side_id then
+			local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+
+			dialogue_input:trigger_networked_dialogue_event(event_name, event_data)
+		end
+	end
 end
 
 DialogueSystem._update_mission_giver_events = function (self, dt)
-	local surrounding_aware_system = Managers.state.entity:system("surrounding_aware_system")
-	local global_observers = surrounding_aware_system:get_global_observers()
 	local events = self._mission_giver_events
 	local num_events = #events
 	local i = 1
@@ -1624,16 +1626,7 @@ DialogueSystem._update_mission_giver_events = function (self, dt)
 		event.delay = event.delay - dt
 
 		if event.delay < 0 then
-			for unit, surrounding_aware_extension in pairs(global_observers) do
-				local side_id = event.side_id
-
-				if not side_id or side_id == surrounding_aware_extension.side_id then
-					local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
-
-					dialogue_input:trigger_networked_dialogue_event(event.event_name, event.event_data)
-				end
-			end
-
+			self:trigger_mission_giver_event(event.event_name, event.event_data, event.side_name)
 			table.swap_delete(events, i)
 
 			num_events = num_events - 1

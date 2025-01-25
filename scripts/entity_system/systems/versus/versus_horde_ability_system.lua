@@ -37,6 +37,12 @@ VersusHordeAbilitySystem.init = function (self, entity_system_creation_context, 
 			0,
 			0,
 		}
+
+		if self._mechanism:custom_settings_enabled() then
+			local custom_settings_recharge_rate_percent = self._mechanism:get_custom_game_setting("horde_ability_recharge_rate_percent")
+
+			self._custom_settings_modifier = custom_settings_recharge_rate_percent / 100
+		end
 	end
 
 	self._extensions = {}
@@ -147,12 +153,14 @@ VersusHordeAbilitySystem._server_update_ability_charges = function (self, dt)
 		if data.ability_charge then
 			local recharge_modifier_data = self:_recharge_modifier(peer_id)
 			local cooldown_mod = recharge_modifier_data.cooldown
-			local boost_mod = recharge_modifier_data.boost
+			local custom_settings_modifier = self._custom_settings_modifier or 1
 
-			recharge_increment = not self._round_started and 0 or dt * cooldown_mod
+			recharge_increment = not self._round_started and 0 or dt * cooldown_mod * custom_settings_modifier
 			data.ability_charge = math.clamp(data.ability_charge + recharge_increment, 0, cooldown)
 
 			if data.extension then
+				local boost_mod = recharge_modifier_data.boost
+
 				data.extension:server_set_ability_charge(math.floor(data.ability_charge), cooldown_mod, boost_mod)
 			end
 		end

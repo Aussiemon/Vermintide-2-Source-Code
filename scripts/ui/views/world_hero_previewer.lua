@@ -414,7 +414,14 @@ HeroPreviewer.play_character_animation = function (self, animation_event, force_
 	end
 end
 
+HeroPreviewer.clear_asynchronous_data = function (self)
+	self._delayed_pose_animation = false
+	self._pose_animation_event = nil
+end
+
 HeroPreviewer.request_spawn_hero_unit = function (self, profile_name, career_index, callback, optional_skin, optional_breed)
+	self:clear_asynchronous_data()
+
 	self._requested_hero_spawn_data = {
 		frame_delay = 1,
 		profile_name = profile_name,
@@ -979,6 +986,10 @@ local function get_wield_anim(default, optional_switch, career_name)
 end
 
 HeroPreviewer.reset_pose_animation = function (self)
+	if not self._pose_animation_event then
+		return
+	end
+
 	local wielded_slot_type = self._wielded_slot_type
 	local item_slot_info = self._item_info_by_slot[wielded_slot_type]
 	local item_name = item_slot_info.name

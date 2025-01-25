@@ -114,6 +114,8 @@ local function get_random_weapon_key(slot, rarity, weapon_pool, random_generator
 	return weapon_keys[random_index]
 end
 
+local cached_weapon_skins_combinations = {}
+
 local function get_possible_skins(item_key, rarity)
 	local deus_item_data = DeusWeapons[item_key]
 	local base_item_data = ItemMasterList[deus_item_data.base_item]
@@ -125,7 +127,18 @@ local function get_possible_skins(item_key, rarity)
 		}
 	elseif base_item_data.skin_combination_table then
 		local skin_combination_table = base_item_data.skin_combination_table
-		local skin_by_rarity = WeaponSkins.skin_combinations[skin_combination_table]
+		local skin_by_rarity
+
+		if cached_weapon_skins_combinations[skin_combination_table] then
+			skin_by_rarity = cached_weapon_skins_combinations[skin_combination_table]
+		else
+			local temp_skin_by_rarity = WeaponSkins.skin_combinations[skin_combination_table]
+
+			if temp_skin_by_rarity then
+				skin_by_rarity = table.clone(temp_skin_by_rarity)
+				cached_weapon_skins_combinations[skin_combination_table] = skin_by_rarity
+			end
+		end
 
 		skins = skin_by_rarity and skin_by_rarity[rarity]
 	end

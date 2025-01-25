@@ -34,6 +34,10 @@ GameModeInnVs.init = function (self, settings, world, network_server, ...)
 	if self._mechanism:is_hosting_versus_custom_game() then
 		self._mechanism:set_is_hosting_versus_custom_game(false)
 	end
+
+	if not DEDICATED_SERVER then
+		self._mechanism:set_custom_game_settings_handler_enabled(false)
+	end
 end
 
 GameModeInnVs.destroy = function (self)
@@ -44,10 +48,18 @@ end
 
 GameModeInnVs.register_rpcs = function (self, network_event_delegate, network_transmit)
 	GameModeInnVs.super.register_rpcs(self, network_event_delegate, network_transmit)
+
+	if self._simple_spawning then
+		self._simple_spawning:register_rpcs(network_event_delegate, network_transmit)
+	end
 end
 
 GameModeInnVs.unregister_rpcs = function (self)
 	GameModeInnVs.super.unregister_rpcs(self)
+
+	if self._simple_spawning then
+		self._simple_spawning:unregister_rpcs()
+	end
 end
 
 GameModeInnVs.local_player_ready_to_start = function (self)

@@ -1,38 +1,40 @@
 ﻿-- chunkname: @scripts/settings/ping_templates.lua
 
-PingTypes = {
-	ACKNOWLEDGE = 1,
-	CANCEL = 2,
-	CHAT_ONLY = 3,
-	CONTEXT = 4,
-	DENY = 5,
-	ENEMY_AMBUSH = 6,
-	ENEMY_ATTACK = 7,
-	ENEMY_BOSS = 8,
-	ENEMY_GENERIC = 9,
-	ENEMY_PATROL = 10,
-	ENEMY_POSITION = 24,
-	LOCAL_ONLY = 23,
-	MOVEMENTY_COME_HERE = 14,
-	MOVEMENT_GENERIC = 11,
-	MOVEMENT_GROUP_UP = 12,
-	MOVEMENT_WAIT = 13,
-	PING_ONLY = 15,
-	PLAYER_COVER_ME = 16,
-	PLAYER_HELP = 17,
-	PLAYER_PICK_UP = 18,
-	PLAYER_PICK_UP_ACKNOWLEDGE = 19,
-	PLAYER_THANK_YOU = 20,
-	UNIT_DOWNED = 22,
-	VO_ONLY = 21,
-}
-IgnoreCooldownPingTypes = {
-	[PingTypes.CONTEXT] = true,
-	[PingTypes.PLAYER_PICK_UP] = false,
-	[PingTypes.ENEMY_POSITION] = true,
-}
+PingTypes = table.mirror_array_inplace({
+	"ACKNOWLEDGE",
+	"CANCEL",
+	"CHAT_ONLY",
+	"CONTEXT",
+	"DENY",
+	"ENEMY_AMBUSH",
+	"ENEMY_ATTACK",
+	"ENEMY_BOSS",
+	"ENEMY_GENERIC",
+	"ENEMY_PATROL",
+	"MOVEMENT_GENERIC",
+	"MOVEMENT_GROUP_UP",
+	"MOVEMENT_WAIT",
+	"MOVEMENTY_COME_HERE",
+	"PING_ONLY",
+	"PLAYER_COVER_ME",
+	"PLAYER_HELP",
+	"PLAYER_PICK_UP",
+	"PLAYER_PICK_UP_ACKNOWLEDGE",
+	"PLAYER_THANK_YOU",
+	"VO_ONLY",
+	"UNIT_DOWNED",
+	"LOCAL_ONLY",
+	"ENEMY_POSITION",
+})
 IgnoreFreeEvents = {
 	[PingTypes.CONTEXT] = true,
+	[PingTypes.CANCEL] = true,
+	[PingTypes.MOVEMENT_GENERIC] = true,
+	[PingTypes.ENEMY_GENERIC] = true,
+	[PingTypes.UNIT_DOWNED] = true,
+}
+IgnoreFreeCombatEvents = {
+	[PingTypes.CANCEL] = true,
 }
 IgnoreChatPings = {
 	[PingTypes.CANCEL] = true,

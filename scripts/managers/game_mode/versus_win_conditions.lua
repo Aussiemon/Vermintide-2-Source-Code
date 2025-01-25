@@ -89,8 +89,14 @@ end
 VersusWinConditions.setup_round = function (self, is_server)
 	local objective_settings = self.mechanism:get_objective_settings()
 
-	self._is_server = is_server
 	self._round_timer = objective_settings.round_timer or 36000
+	self._early_win_enabled = true
+
+	if self.mechanism:custom_settings_enabled() then
+		self._early_win_enabled = self.mechanism:get_custom_game_setting("early_win_enabled")
+	end
+
+	self._is_server = is_server
 	self._current_round = self._current_round + 1
 
 	if self._current_round % 2 == 1 then
@@ -424,8 +430,8 @@ VersusWinConditions._trigger_about_to_early_win_vo = function (self)
 
 	local dialogue_system = Managers.state.entity:system("dialogue_system")
 
-	dialogue_system:queue_mission_giver_event_for_side("heroes", "vs_mg_about_to_early_win")
-	dialogue_system:queue_mission_giver_event_for_side("dark_pact", "vs_mg_about_to_early_loss")
+	dialogue_system:queue_mission_giver_event("vs_mg_about_to_early_win", nil, "heroes")
+	dialogue_system:queue_mission_giver_event("vs_mg_about_to_early_loss", nil, "dark_pact")
 end
 
 VersusWinConditions._has_nested_parent_objectives = function (self, objective_data)
@@ -612,6 +618,10 @@ VersusWinConditions.save_points_collected = function (self, party_id, set_number
 end
 
 VersusWinConditions.update_early_win_conditions = function (self)
+	if not self._early_win_enabled then
+		return
+	end
+
 	if not self._has_objectives then
 		return
 	end

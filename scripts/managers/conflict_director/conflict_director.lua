@@ -1896,7 +1896,9 @@ end
 ConflictDirector.spawn_unit_immediate = function (self, breed, spawn_pos, spawn_rot, spawn_category, spawn_animation, spawn_type, optional_data, group_data)
 	self.spawn_queue_id = self.spawn_queue_id + 1
 
-	self:_spawn_unit(breed, spawn_pos, spawn_rot, spawn_category, spawn_animation, spawn_type, optional_data, group_data, self.spawn_queue_id)
+	local unit, go_id = self:_spawn_unit(breed, spawn_pos, spawn_rot, spawn_category, spawn_animation, spawn_type, optional_data, group_data, self.spawn_queue_id)
+
+	return unit, go_id
 end
 
 local dialogue_system_init_data = {
@@ -2115,6 +2117,8 @@ ConflictDirector._post_spawn_unit = function (self, ai_unit, go_id, breed, spawn
 
 		dialogue_system:queue_mission_giver_event("vs_mg_new_spawn_monster")
 	end
+
+	Unit.flow_event(ai_unit, "lua_ai_unit_spawned")
 end
 
 ConflictDirector.set_disabled = function (self, state)

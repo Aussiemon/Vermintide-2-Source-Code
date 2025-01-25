@@ -113,8 +113,8 @@ WeaveCapturePointExtension._activate = function (self)
 	end
 end
 
-WeaveCapturePointExtension.complete = function (self, last_leaf_objective)
-	WeaveCapturePointExtension.super.complete(self, last_leaf_objective)
+WeaveCapturePointExtension.complete = function (self, ...)
+	WeaveCapturePointExtension.super.complete(self, ...)
 
 	local audio_system = Managers.state.entity:system("audio_system")
 

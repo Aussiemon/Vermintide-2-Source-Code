@@ -80,6 +80,7 @@ local IGNORED_DAMAGE_TYPES = {
 	gas = true,
 	heal = true,
 	health_degen = true,
+	level = true,
 	life_drain = true,
 	life_tap = true,
 	plague_ground = true,

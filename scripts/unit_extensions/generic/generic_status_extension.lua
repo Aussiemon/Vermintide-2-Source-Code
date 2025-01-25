@@ -1882,8 +1882,6 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 
 		SurroundingAwareSystem.add_event(unit, dialogue_event, DialogueSettings.grabbed_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
 		Managers.music:trigger_event("enemy_pack_master_grabbed_stinger")
-
-		self.pack_master_hoisted = false
 	elseif grabbed_status == "pack_master_dragging" then
 		if not is_grabbed then
 			self:_set_packmaster_unhooked(locomotion, grabbed_status)
@@ -1934,8 +1932,6 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 		Vector3.set_z(dir, 0)
 		Unit.set_local_rotation(unit, 0, Quaternion.look(dir, Vector3.up()))
 		locomotion:set_disabled(true, LocomotionUtils.update_local_animation_driven_movement_plus_mover)
-
-		self.pack_master_hoisted = true
 	elseif grabbed_status == "pack_master_hanging" then
 		locomotion:set_disabled(true, LocomotionUtils.update_local_animation_driven_movement_plus_mover)
 
@@ -2111,7 +2107,7 @@ GenericStatusExtension.get_disabler_unit = function (self)
 end
 
 GenericStatusExtension.is_disabled_by_pact_sworn = function (self)
-	return self:is_hanging_from_hook() or self:is_grabbed_by_tentacle() or self:is_grabbed_by_chaos_spawn() or self:is_in_vortex() or self:is_grabbed_by_corruptor() or self:is_pounced_down() or self:is_grabbed_by_pack_master() or self:is_pack_master_hoisted()
+	return self:is_hanging_from_hook() or self:is_grabbed_by_tentacle() or self:is_grabbed_by_chaos_spawn() or self:is_in_vortex() or self:is_grabbed_by_corruptor() or self:is_pounced_down() or self:is_grabbed_by_pack_master()
 end
 
 GenericStatusExtension.is_disabled = function (self)
@@ -2282,8 +2278,8 @@ GenericStatusExtension.is_hanging_from_hook = function (self)
 	return self.pack_master_status == "pack_master_hanging"
 end
 
-GenericStatusExtension.is_pack_master_hoisted = function (self)
-	return self.pack_master_hoisted
+GenericStatusExtension.is_dropping_from_hook = function (self)
+	return self.pack_master_status == "pack_master_dropping"
 end
 
 GenericStatusExtension.get_pack_master_grabber = function (self)

@@ -162,6 +162,15 @@ MatchmakingUI.update = function (self, dt, t)
 	local ingame_player_list_ui = parent:component("IngamePlayerListUI")
 	local player_list_active = ingame_player_list_ui and ingame_player_list_ui:is_active()
 	local show_detailed_matchmaking_info = not menu_active and not player_list_active and not in_menu_current_view
+	local is_in_store_view = false
+
+	if in_menu_current_view then
+		local current_view = ingame_ui.views[ingame_ui.current_view]
+		local state = current_view and current_view.current_state and current_view:current_state()
+
+		is_in_store_view = state and state.NAME == "HeroViewStateStore"
+	end
+
 	local versus_slot_status_ui = parent:component("VersusSlotStatusUI")
 	local versus_slot_status_ui_active = versus_slot_status_ui and versus_slot_status_ui:is_active()
 
@@ -186,8 +195,12 @@ MatchmakingUI.update = function (self, dt, t)
 	if show_detailed_matchmaking_info ~= self._show_detailed_matchmaking_info then
 		self._show_detailed_matchmaking_info = show_detailed_matchmaking_info
 		self._detailed_info_visibility_progress = 0
+	end
 
-		self:_set_in_view_ui_visibility(show_detailed_matchmaking_info)
+	if is_in_store_view ~= self._is_in_store_view then
+		self._is_in_store_view = is_in_store_view
+
+		self:_set_in_view_ui_visibility(not is_in_store_view)
 	end
 
 	for _, animation in pairs(self.ui_animations) do
@@ -556,7 +569,24 @@ MatchmakingUI._update_mission_vote_status = function (self)
 
 		self:_set_detail_difficulty_text(difficulty_display_name or "")
 	elseif mechanism == "versus" then
-		-- Nothing
+		local detail_text = "mission_vote_quick_play"
+		local difficulty_text = "vs_ui_versus_tag"
+
+		if not quick_game then
+			if mission_id == "any" then
+				detail_text = "map_screen_quickplay_button"
+			else
+				local level_settings = mission_id and LevelSettings[mission_id]
+				local display_name = level_settings and level_settings.display_name
+
+				detail_text = display_name or detail_text
+			end
+
+			difficulty_text = "player_hosted_title"
+		end
+
+		self:_set_detail_level_text(detail_text, true)
+		self:_set_detail_difficulty_text(difficulty_text)
 	else
 		local difficulty_settings = DifficultySettings[difficulty]
 		local difficulty_display_name = difficulty_settings and difficulty_settings.display_name

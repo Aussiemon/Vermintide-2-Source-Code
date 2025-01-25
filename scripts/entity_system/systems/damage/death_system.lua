@@ -26,6 +26,7 @@ DeathSystem.init = function (self, entity_system_creation_context, system_name)
 		unit = {},
 		husk = {},
 	}
+	self._current_death_reaction_killing_blow = nil
 end
 
 DeathSystem.destroy = function (self)
@@ -158,6 +159,8 @@ DeathSystem.update = function (self, context, t)
 	local death_reactions_to_start = self.death_reactions_to_start
 
 	for unit, killing_blow in pairs(death_reactions_to_start) do
+		self._current_death_reaction_killing_blow = killing_blow
+
 		local death_extension = self.unit_extensions[unit]
 
 		start_death_reaction(unit, death_extension, killing_blow, active_reactions, t, context, self.is_server)
@@ -190,6 +193,8 @@ local function is_hot_join_sync(killing_blow)
 end
 
 DeathSystem.kill_unit = function (self, unit, killing_blow)
+	self._current_death_reaction_killing_blow = killing_blow
+
 	local extension = self.unit_extensions[unit]
 	local breed = Unit.get_data(unit, "breed")
 
@@ -317,4 +322,10 @@ DeathSystem.get_dead = function (self, fill_table)
 	end
 
 	return sum
+end
+
+DeathSystem.flow_get_killing_blow_attacker_unit = function (self)
+	local killing_blow = self._current_death_reaction_killing_blow
+
+	return killing_blow and killing_blow[DamageDataIndex.ATTACKER]
 end

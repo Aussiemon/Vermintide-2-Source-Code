@@ -84,6 +84,19 @@ TelemetryEvents.versus_round_started = function (self, player_id, game_round, ma
 	self._manager:register_event(event)
 end
 
+TelemetryEvents.versus_custom_game_settings = function (self, player_id, match_id, settings, is_default_ruleset, modified_settings)
+	local event = self:_create_event("versus_custom_game_settings")
+
+	event:set_data({
+		player_id = player_id,
+		match_id = match_id,
+		settings = settings,
+		is_default_ruleset = is_default_ruleset,
+		modified_settings = modified_settings,
+	})
+	self._manager:register_event(event)
+end
+
 TelemetryEvents.versus_round_ended = function (self, score, game_round, match_id)
 	local event = self:_create_event("versus_round_end")
 
@@ -653,7 +666,7 @@ TelemetryEvents.player_used_item = function (self, player, item_name, position)
 	self._manager:register_event(event)
 end
 
-TelemetryEvents.ping_used = function (self, player, own_ping, ping_type, ping_target, player_position)
+TelemetryEvents.ping_used = function (self, player, ping_type, ping_target, player_position)
 	if player and player.remote then
 		return
 	end
@@ -663,7 +676,6 @@ TelemetryEvents.ping_used = function (self, player, own_ping, ping_type, ping_ta
 	}, "ping_used", self._session)
 
 	event:set_data({
-		own_ping = own_ping,
 		ping_type = ping_type,
 		ping_target = ping_target,
 		player_position = player_position,

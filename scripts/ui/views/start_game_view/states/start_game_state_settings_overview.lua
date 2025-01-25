@@ -112,6 +112,9 @@ StartGameStateSettingsOverview.on_enter = function (self, params)
 
 	self:_initial_windows_setups(window_params)
 	self:_calculate_current_weave()
+
+	self._input_paused = false
+
 	Managers.state.event:trigger("tutorial_trigger", "start_game_menu_opened")
 end
 
@@ -873,7 +876,7 @@ StartGameStateSettingsOverview.post_update = function (self, dt, t)
 
 	local transitioning = self.parent:transitioning()
 
-	if not transitioning and not self._transition_timer then
+	if not transitioning and not self._transition_timer and not self:input_paused() then
 		self:_handle_input(dt, t)
 	end
 
@@ -953,6 +956,14 @@ StartGameStateSettingsOverview._handle_input = function (self, dt, t)
 			self:set_layout_by_name(return_layout_name)
 		end
 	end
+end
+
+StartGameStateSettingsOverview.pause_input = function (self, pause)
+	self._input_paused = pause
+end
+
+StartGameStateSettingsOverview.input_paused = function (self)
+	return self._input_paused
 end
 
 StartGameStateSettingsOverview.close_menu = function (self, ignore_sound_on_close_menu)

@@ -9,6 +9,7 @@ NetworkState = class(NetworkState)
 NetworkState.init = function (self, is_server, network_handler, server_peer_id, own_peer_id)
 	self._shared_state = SharedState:new("network_state_" .. server_peer_id, shared_state_spec, is_server, network_handler, server_peer_id, own_peer_id)
 	self._loaded_or_loading_packages = {}
+	self._loaded_or_loading_package_peers = {}
 	self._is_server = is_server
 	self._server_peer_id = server_peer_id
 	self._own_peer_id = own_peer_id
@@ -243,6 +244,14 @@ NetworkState.set_loaded_or_loading_packages = function (self, loaded_or_loading_
 	self._loaded_or_loading_packages = loaded_or_loading_packages
 end
 
+NetworkState.loaded_or_loading_package_peers = function (self)
+	return self._loaded_or_loading_package_peers
+end
+
+NetworkState.set_loaded_or_loading_package_peers = function (self, loaded_or_loading_peers)
+	self._loaded_or_loading_package_peers = loaded_or_loading_peers
+end
+
 NetworkState.get_profile_index_reservation = function (self, party_id, profile_index)
 	local key = self._shared_state:get_key("profile_index_reservation", nil, nil, profile_index, nil, party_id)
 	local value = self._shared_state:get_server(key)
@@ -257,21 +266,53 @@ NetworkState.set_profile_index_reservation = function (self, party_id, profile_i
 
 	if peer_id and peer_id ~= "" then
 		local persistent_hero_reservation_key = self._shared_state:get_key("persistent_hero_reservation", peer_id)
+		local previous_data = self._shared_state:get_server(persistent_hero_reservation_key)
+		local p_profile_index, p_career_index, p_party_id = previous_data.profile_index, previous_data.career_index, previous_data.party_id
 
-		if self._shared_state:get_server(persistent_hero_reservation_key) ~= profile_index then
+		if p_profile_index ~= profile_index or p_career_index ~= career_index or p_party_id ~= party_id then
 			self._shared_state:set_server(persistent_hero_reservation_key, {
 				profile_index = profile_index,
 				career_index = career_index,
+				party_id = party_id,
 			})
 		end
 	end
 end
 
+NetworkState.clear_persistent_profile_index_reservation = function (self, peer_id)
+	local key = self._shared_state:get_key("persistent_hero_reservation", peer_id)
+
+	self._shared_state:set_server(key, {
+		career_index = 0,
+		party_id = 0,
+		profile_index = 0,
+	})
+end
+
+NetworkState.set_bot_profile = function (self, party_id, slot_id, profile_index, career_index)
+	local key = self._shared_state:get_key("bot_profile", nil, slot_id, nil, nil, party_id)
+	local value = self._shared_state:get_server(key)
+
+	if value.profile_index ~= profile_index or value.career_index ~= career_index then
+		self._shared_state:set_server(key, {
+			profile_index = profile_index,
+			career_index = career_index,
+		})
+	end
+end
+
+NetworkState.get_bot_profile = function (self, party_id, slot_id)
+	local key = self._shared_state:get_key("bot_profile", nil, slot_id, nil, nil, party_id)
+	local value = self._shared_state:get_server(key)
+
+	return value.profile_index, value.career_index
+end
+
 NetworkState.get_persistent_profile_index_reservation = function (self, peer_id)
 	local key = self._shared_state:get_key("persistent_hero_reservation", peer_id)
-	local data = self._shared_state:get_server(key, peer_id)
+	local data = self._shared_state:get_server(key)
 
-	return data.profile_index, data.career_index
+	return data.profile_index, data.career_index, data.party_id
 end
 
 NetworkState.get_peers_with_full_profiles = function (self)
@@ -286,7 +327,7 @@ NetworkState.get_profile = function (self, peer_id, local_player_id)
 
 	for _, peer in ipairs(peers_with_full_profiles) do
 		if peer.peer_id == peer_id and peer.local_player_id == local_player_id then
-			return peer.profile_index, peer.career_index
+			return peer.profile_index, peer.career_index, peer.is_bot
 		end
 	end
 
@@ -398,4 +439,8 @@ NetworkState.set_game_mode_event_data = function (self, data)
 	local key = self._shared_state:get_key("game_mode_event_data")
 
 	self._shared_state:set_server(key, data)
+end
+
+NetworkState.has_peer_state = function (self, peer_id, local_player_id)
+	return self._shared_state:has_peer_state(peer_id, local_player_id)
 end

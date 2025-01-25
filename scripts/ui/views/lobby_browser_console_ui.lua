@@ -60,6 +60,7 @@ LobbyBrowserConsoleUI._create_ui_elements = function (self)
 	self._lobby_entry_widgets = {}
 	self._empty_lobby_entry_widgets = {}
 	self._details_widgets = {}
+	self._dynamic_details_widgets = {}
 	self._ui_animations = {}
 	self._selected_lobby_index = 1
 	self._mouse_selected_index = 1
@@ -81,24 +82,28 @@ LobbyBrowserConsoleUI._create_ui_elements = function (self)
 	UIUtils.create_widgets(adventure_details_widget_definition, false, adventure_details)
 
 	self._details_widgets.adventure = adventure_details
+	self._dynamic_details_widgets.adventure = {}
 
 	local deus_details = {}
 
 	UIUtils.create_widgets(deus_details_widget_definition, false, deus_details)
 
 	self._details_widgets.deus = deus_details
+	self._dynamic_details_widgets.deus = {}
 
 	local weave_details = {}
 
 	UIUtils.create_widgets(weave_details_widget_definition, false, weave_details)
 
 	self._details_widgets.weave = weave_details
+	self._dynamic_details_widgets.weave = {}
 
 	local versus_details = {}
 
 	UIUtils.create_widgets(versus_details_widget_definition, false, versus_details)
 
 	self._details_widgets.versus = versus_details
+	self._dynamic_details_widgets.versus = {}
 
 	self:populate_lobby_list(self._lobbies or {}, false)
 	self:_create_filters()
@@ -425,6 +430,10 @@ LobbyBrowserConsoleUI.populate_lobby_list = function (self, lobbies, ignore_scro
 		local inner_scroller_style = widget_style.inner_scroller
 
 		inner_scroller_style.texture_size[2] = math.min(-(element_settings.window_height / (self._num_lobbies / element_settings.num_visible_entries)), -30) + 4
+
+		local inner_scroller_hotspot_style = widget_style.inner_scroller_hotspot
+
+		inner_scroller_hotspot_style.area_size[2] = -inner_scroller_style.texture_size[2]
 	end
 end
 
@@ -451,9 +460,9 @@ LobbyBrowserConsoleUI._handle_input_description = function (self, dt, t)
 end
 
 LobbyBrowserConsoleUI._handle_input = function (self, dt, t, loading)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 
-	if not gamepad_active then
+	if mouse_active then
 		return
 	end
 
@@ -478,9 +487,9 @@ LobbyBrowserConsoleUI._handle_input = function (self, dt, t, loading)
 end
 
 LobbyBrowserConsoleUI._handle_mouse_input = function (self, dt, t, loading)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 
-	if gamepad_active then
+	if not mouse_active then
 		return
 	end
 
@@ -677,6 +686,7 @@ end
 
 LobbyBrowserConsoleUI._handle_browser_input_mouse = function (self, input_service, element_settings, dt, t)
 	local old_selected_lobby_index = self._mouse_selected_index
+	local old_selected_list_index = self._selected_lobby_index
 	local num_visible_entries = element_settings.num_visible_entries
 	local entry_size_y = element_settings.height + element_settings.spacing
 
@@ -765,42 +775,67 @@ LobbyBrowserConsoleUI._handle_browser_input_mouse = function (self, input_servic
 		end
 	end
 
+	if num_visible_entries < self._num_lobbies then
+		local frame_widget = self._widgets.frame
+
+		if left_pressed then
+			if UIUtils.is_button_hover(frame_widget, "inner_scroller_hotspot") then
+				self:_calculate_input_offset(element_settings, input_service)
+			elseif UIUtils.is_button_hover(frame_widget, "scrollbar_hotspot") then
+				self:_update_scroller_position(entry_size_y, num_visible_entries, element_settings, input_service)
+
+				return
+			end
+		elseif input_service:get("left_hold") and self._progress_diff then
+			self:_update_scroller_position(entry_size_y, num_visible_entries, element_settings, input_service)
+
+			return
+		else
+			self._progress_diff = nil
+		end
+	else
+		self._progress_diff = nil
+	end
+
 	local scroll_value = input_service:get("scroll_axis")
 	local scroll_y = scroll_value[2]
+	local widget = self._widgets.frame
 
-	if scroll_y < 0 then
-		self._selected_lobby_index = math.clamp(self._selected_lobby_index + 1, 1, self._num_lobbies)
-		self._visible_list_index = math.clamp(self._visible_list_index + 1, 1, math.min(num_visible_entries, self._num_lobbies))
+	if UIUtils.is_button_hover(widget, "scroller_hotspot") then
+		if scroll_y < 0 then
+			self._selected_lobby_index = math.clamp(self._selected_lobby_index + 1, 1, self._num_lobbies)
+			self._visible_list_index = math.clamp(self._visible_list_index + 1, 1, math.min(num_visible_entries, self._num_lobbies))
 
-		if num_visible_entries < self._num_lobbies then
-			local old_wanted_pos = self._wanted_pos
+			if num_visible_entries < self._num_lobbies then
+				local old_wanted_pos = self._wanted_pos
 
-			self._wanted_pos = math.clamp(self._wanted_pos + entry_size_y, self._base_pos_y, self._num_lobbies * entry_size_y - num_visible_entries * entry_size_y)
+				self._wanted_pos = math.clamp(self._wanted_pos + entry_size_y, self._base_pos_y, self._num_lobbies * entry_size_y - num_visible_entries * entry_size_y)
 
-			if self._wanted_pos ~= old_wanted_pos then
-				self._visible_list_index = math.clamp(self._visible_list_index - 1, 1, num_visible_entries)
+				if self._wanted_pos ~= old_wanted_pos then
+					self._visible_list_index = math.clamp(self._visible_list_index - 1, 1, num_visible_entries)
+				end
+
+				self._ui_animations.move = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.lobby_entry_anchor.position, 2, self._ui_scenegraph.lobby_entry_anchor.position[2], self._wanted_pos, 0.3, math.easeOutCubic)
 			end
+		elseif scroll_y > 0 then
+			self._selected_lobby_index = math.clamp(self._selected_lobby_index - 1, 1, self._num_lobbies)
+			self._visible_list_index = math.clamp(self._visible_list_index - 1, 1, math.min(num_visible_entries, self._num_lobbies))
 
-			self._ui_animations.move = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.lobby_entry_anchor.position, 2, self._ui_scenegraph.lobby_entry_anchor.position[2], self._wanted_pos, 0.3, math.easeOutCubic)
-		end
-	elseif scroll_y > 0 then
-		self._selected_lobby_index = math.clamp(self._selected_lobby_index - 1, 1, self._num_lobbies)
-		self._visible_list_index = math.clamp(self._visible_list_index - 1, 1, math.min(num_visible_entries, self._num_lobbies))
+			if num_visible_entries < self._num_lobbies then
+				local old_wanted_pos = self._wanted_pos
 
-		if num_visible_entries < self._num_lobbies then
-			local old_wanted_pos = self._wanted_pos
+				self._wanted_pos = math.clamp(self._wanted_pos - entry_size_y, self._base_pos_y, self._num_lobbies * entry_size_y + entry_size_y)
 
-			self._wanted_pos = math.clamp(self._wanted_pos - entry_size_y, self._base_pos_y, self._num_lobbies * entry_size_y + entry_size_y)
+				if self._wanted_pos ~= old_wanted_pos then
+					self._visible_list_index = math.clamp(self._visible_list_index + 1, 1, num_visible_entries)
+				end
 
-			if self._wanted_pos ~= old_wanted_pos then
-				self._visible_list_index = math.clamp(self._visible_list_index + 1, 1, num_visible_entries)
+				self._ui_animations.move = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.lobby_entry_anchor.position, 2, self._ui_scenegraph.lobby_entry_anchor.position[2], self._wanted_pos, 0.3, math.easeOutCubic)
 			end
-
-			self._ui_animations.move = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.lobby_entry_anchor.position, 2, self._ui_scenegraph.lobby_entry_anchor.position[2], self._wanted_pos, 0.3, math.easeOutCubic)
 		end
 	end
 
-	if self._selected_lobby_index ~= old_selected_lobby_index then
+	if self._selected_lobby_index ~= old_selected_list_index then
 		local widget = self._widgets.frame
 		local widget_content = widget.content
 		local progress = self._wanted_pos / (self._num_lobbies * entry_size_y - num_visible_entries * entry_size_y)
@@ -808,6 +843,39 @@ LobbyBrowserConsoleUI._handle_browser_input_mouse = function (self, input_servic
 		progress = self:_is_nan_or_inf(progress) and 0 or progress
 		self._ui_animations.scrollbar = UIAnimation.init(UIAnimation.function_by_time, widget_content, "scrollbar_progress", widget_content.scrollbar_progress, progress, 0.3, math.easeOutCubic)
 	end
+end
+
+LobbyBrowserConsoleUI._calculate_input_offset = function (self, element_settings, input_service)
+	local frame_widget = self._widgets.frame
+	local frame_pos = self._ui_scenegraph.lobby_browser_frame.world_position[2]
+	local base_offset = frame_widget.style.inner_scroller.base_offset[2]
+	local start_point = frame_pos + base_offset
+	local end_point = start_point - element_settings.window_height
+	local scroller_height = frame_widget.style.inner_scroller.texture_size[2]
+	local cursor_pos = input_service:get("cursor")
+	local input_pos = UIInverseScaleVectorToResolution(cursor_pos)[2]
+	local progress = math.inv_lerp(start_point + scroller_height * 0.5, end_point - scroller_height * 0.5, input_pos)
+	local scrollbar_progress = frame_widget.content.scrollbar_progress
+
+	self._progress_diff = scrollbar_progress - progress
+end
+
+LobbyBrowserConsoleUI._update_scroller_position = function (self, entry_size_y, num_visible_entries, element_settings, input_service)
+	local frame_widget = self._widgets.frame
+	local frame_pos = self._ui_scenegraph.lobby_browser_frame.world_position[2]
+	local base_offset = frame_widget.style.inner_scroller.base_offset[2]
+	local start_point = frame_pos + base_offset
+	local end_point = start_point - element_settings.window_height
+	local scroller_height = frame_widget.style.inner_scroller.texture_size[2]
+	local cursor_pos = input_service:get("cursor")
+	local input_pos = UIInverseScaleVectorToResolution(cursor_pos)[2]
+	local progress = math.inv_lerp(start_point + scroller_height * 0.5, end_point - scroller_height * 0.5, input_pos)
+	local scrollbar_progress = math.clamp(progress + (self._progress_diff or 0), 0, 1)
+
+	frame_widget.content.scrollbar_progress = scrollbar_progress
+	self._ui_scenegraph.lobby_entry_anchor.position[2] = scrollbar_progress * (self._num_lobbies * entry_size_y - num_visible_entries * entry_size_y)
+	self._selected_lobby_index = math.clamp(math.round(scrollbar_progress * self._num_lobbies), 1, self._num_lobbies)
+	self._wanted_pos = math.clamp(self._base_pos_y + entry_size_y * self._selected_lobby_index - 1, self._base_pos_y, self._num_lobbies * entry_size_y - num_visible_entries * entry_size_y)
 end
 
 LobbyBrowserConsoleUI._is_nan_or_inf = function (self, value)
@@ -1641,6 +1709,12 @@ end
 LobbyBrowserConsoleUI._select_lobby = function (self, old_selected_lobby_index, new_selected_lobby_index, device_selected_lobby_index)
 	self._details_filled = false
 
+	if self._scrollbar_ui then
+		self._scrollbar_ui:destroy(self._ui_scenegraph)
+
+		self._scrollbar_ui = nil
+	end
+
 	local widgets = self._lobby_entry_widgets
 
 	if old_selected_lobby_index then
@@ -1685,7 +1759,9 @@ LobbyBrowserConsoleUI._select_lobby = function (self, old_selected_lobby_index, 
 	local lobby_data = valid_current_lobbies_by_id[self._selected_lobby_id]
 
 	if lobby_data then
-		self:_update_lobby_details(valid_current_lobbies_by_id)
+		local active_selection = true
+
+		self:_update_lobby_details(valid_current_lobbies_by_id, active_selection)
 	end
 end
 
@@ -1701,7 +1777,7 @@ LobbyBrowserConsoleUI._update_lobby_data = function (self, dt, t)
 	self:_update_lobby_list(valid_current_lobbies_by_id, dt, t)
 end
 
-LobbyBrowserConsoleUI._update_lobby_details = function (self, valid_lobbies_by_id)
+LobbyBrowserConsoleUI._update_lobby_details = function (self, valid_lobbies_by_id, active_selection)
 	local selected_lobby_id = self._selected_lobby_id
 
 	if not selected_lobby_id then
@@ -1719,7 +1795,7 @@ LobbyBrowserConsoleUI._update_lobby_details = function (self, valid_lobbies_by_i
 		elseif mechanism == "deus" and DeusJourneySettings[mission_id] then
 			self:_fill_deus_details(lobby_data)
 		elseif mechanism == "versus" then
-			self:_fill_versus_details(lobby_data)
+			self:_fill_versus_details(lobby_data, active_selection)
 		else
 			self:_fill_details(lobby_data)
 		end
@@ -1764,8 +1840,9 @@ LobbyBrowserConsoleUI._update_lobby_entry = function (self, index, offset_y, sel
 	end
 end
 
-LobbyBrowserConsoleUI._fill_versus_details = function (self, lobby_data)
+LobbyBrowserConsoleUI._fill_versus_details = function (self, lobby_data, active_selection)
 	local details_widgets = self._details_widgets.versus
+	local dynamic_details_widgets = self._dynamic_details_widgets.versus
 	local level_image = "level_image_any"
 	local level_name = "random_level"
 	local selected_mission_id = lobby_data and (lobby_data.selected_mission_id or lobby_data.mission_id)
@@ -1792,6 +1869,19 @@ LobbyBrowserConsoleUI._fill_versus_details = function (self, lobby_data)
 	local level_image_frame_widget_content = level_image_frame_widget.content
 
 	level_image_frame_widget_content.texture_id = "map_frame_00"
+
+	local custom_level_image_widget = details_widgets.custom_level_image
+
+	custom_level_image_widget.content.texture_id = level_image
+
+	local custom_level_name_widget = details_widgets.custom_level_name
+
+	custom_level_name_widget.content.text = Localize(level_name)
+
+	local custom_level_image_frame_widget = details_widgets.custom_level_image_frame
+	local custom_level_image_frame_widget_content = custom_level_image_frame_widget.content
+
+	custom_level_image_frame_widget_content.texture_id = "map_frame_00"
 
 	local join_button_widget = self._widgets.join_button
 	local join_button_widget_content = join_button_widget.content
@@ -1854,6 +1944,66 @@ LobbyBrowserConsoleUI._fill_versus_details = function (self, lobby_data)
 			local text_color = Colors.color_definitions[wanted_color]
 
 			Colors.copy_no_alpha_to(players_widget.style[id].text_color, text_color)
+		end
+	end
+
+	if active_selection then
+		local custom_game_settings = lobby_data.custom_game_settings
+		local has_custom_game_settings = custom_game_settings and custom_game_settings ~= "n/a" or false
+
+		table.clear(dynamic_details_widgets)
+
+		self._scrollbar_ui = nil
+
+		if has_custom_game_settings then
+			local custom_game_settings_table = GameModeCustomSettingsHandlerUtility.parse_packed_custom_settings(custom_game_settings, "versus")
+			local offset_y = 0
+
+			for i = 1, #custom_game_settings_table do
+				local setting = custom_game_settings_table[i]
+				local widget_def = definitions.create_custom_setting_func(setting.name, setting.value, setting.template, offset_y)
+
+				dynamic_details_widgets[#dynamic_details_widgets + 1] = UIWidget.init(widget_def)
+				offset_y = offset_y - 30
+			end
+
+			local scroll_area_scenegraph_id = "custom_settings_window"
+			local scroll_area_anchor_scenegraph_id = "custom_settings_anchor"
+			local height = self._ui_scenegraph[scroll_area_scenegraph_id].size[2]
+			local scroll_height = math.abs(offset_y) - height
+			local optional_scroll_area_hotspot
+			local enable_auto_scroll = true
+
+			if scroll_height > 0 then
+				self._scrollbar_ui = ScrollbarUI:new(self._ui_scenegraph, scroll_area_scenegraph_id, scroll_area_anchor_scenegraph_id, scroll_height, enable_auto_scroll, optional_scroll_area_hotspot)
+			end
+
+			level_image_widget.content.visible = false
+			level_name_widget.content.visible = false
+			level_image_frame_widget_content.visible = false
+			custom_level_image_widget.content.visible = true
+			custom_level_name_widget.content.visible = true
+			custom_level_image_frame_widget_content.visible = true
+
+			local details_player_scenegraph_entry = self._ui_scenegraph.details_players
+
+			details_player_scenegraph_entry.position[2] = 180
+			details_widgets.custom_settings.content.visible = true
+			details_widgets.custom_settings_label.content.visible = true
+			details_widgets.custom_settings_icon.content.visible = true
+		else
+			local details_player_scenegraph_entry = self._ui_scenegraph.details_players
+
+			details_player_scenegraph_entry.position[2] = 0
+			level_image_widget.content.visible = true
+			level_name_widget.content.visible = true
+			level_image_frame_widget_content.visible = true
+			custom_level_image_widget.content.visible = false
+			custom_level_name_widget.content.visible = false
+			custom_level_image_frame_widget_content.visible = false
+			details_widgets.custom_settings.content.visible = false
+			details_widgets.custom_settings_label.content.visible = false
+			details_widgets.custom_settings_icon.content.visible = false
 		end
 	end
 
@@ -2399,6 +2549,10 @@ LobbyBrowserConsoleUI._draw = function (self, dt, t)
 
 	self:_render_lobby_browser(ui_renderer, ui_scenegraph, input_service, dt)
 	UIRenderer.end_pass(ui_renderer)
+
+	if self._scrollbar_ui then
+		self._scrollbar_ui:update(dt, t, ui_renderer, input_service, render_settings)
+	end
 end
 
 LobbyBrowserConsoleUI._render_filter = function (self, ui_renderer, ui_scenegraph, input_service, dt, t)
@@ -2454,6 +2608,12 @@ LobbyBrowserConsoleUI._render_lobby_browser = function (self, ui_renderer, ui_sc
 		local details_widgets = self._details_widgets[self._details_type]
 
 		for _, widget in pairs(details_widgets) do
+			UIRenderer.draw_widget(ui_renderer, widget)
+		end
+
+		local dynamic_details_widgets = self._dynamic_details_widgets[self._details_type]
+
+		for _, widget in pairs(dynamic_details_widgets) do
 			UIRenderer.draw_widget(ui_renderer, widget)
 		end
 	end

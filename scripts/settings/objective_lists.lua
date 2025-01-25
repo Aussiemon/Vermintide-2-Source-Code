@@ -489,6 +489,10 @@ ObjectiveLists.military_pvp_set_2 = {
 			vo_context_on_activate = {
 				objective_part = 1,
 			},
+			on_leaf_complete_sound_event = {
+				dark_pact = "versus_hud_sub_objective_completed_pactsworn",
+				heroes = "versus_hud_sub_objective_completed_heroes",
+			},
 		},
 	},
 	{
@@ -504,6 +508,10 @@ ObjectiveLists.military_pvp_set_2 = {
 			vo_context_on_complete = {
 				objective_part = 2,
 			},
+			on_leaf_complete_sound_event = {
+				dark_pact = "versus_hud_sub_objective_completed_pactsworn",
+				heroes = "versus_hud_sub_objective_completed_heroes",
+			},
 		},
 	},
 	{
@@ -513,6 +521,10 @@ ObjectiveLists.military_pvp_set_2 = {
 			play_arrive_vo = true,
 			objective_type = ObjectiveTypes.objective_socket,
 			score_per_socket = socket_points,
+			on_leaf_complete_sound_event = {
+				dark_pact = "versus_hud_sub_objective_completed_pactsworn",
+				heroes = "versus_hud_sub_objective_completed_heroes",
+			},
 		},
 	},
 	{
@@ -1416,6 +1428,10 @@ ObjectiveLists.fort_pvp_set_3 = {
 			num_sockets = 1,
 			objective_type = ObjectiveTypes.objective_socket,
 			score_per_socket = socket_points,
+			on_last_leaf_complete_sound_event = {
+				dark_pact = "versus_hud_sub_objective_completed_pactsworn",
+				heroes = "versus_hud_sub_objective_completed_heroes",
+			},
 		},
 	},
 	{

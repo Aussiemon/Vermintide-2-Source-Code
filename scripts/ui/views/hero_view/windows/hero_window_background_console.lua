@@ -605,15 +605,24 @@ HeroWindowBackgroundConsole._update_wielded_slot = function (self)
 	end
 end
 
+HeroWindowBackgroundConsole._hero_affiliation = function (self)
+	local hero_name = self.hero_name
+	local profile_index = FindProfileIndex(hero_name)
+	local profile = SPProfiles[profile_index]
+
+	return profile and profile.affiliation
+end
+
 HeroWindowBackgroundConsole._populate_loadout = function (self)
 	local world_previewer = self.world_previewer
 	local hero_name = self.hero_name
-	local slots = InventorySettings.slots_by_slot_index
 	local career_index = self.career_index
 	local profile_index = FindProfileIndex(hero_name)
 	local profile = SPProfiles[profile_index]
 	local career_data = profile.careers[career_index]
 	local career_name = career_data.name
+	local affiliation = self:_hero_affiliation()
+	local slots = InventorySettings.slots_per_affiliation[affiliation]
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
 	local hero_experience = hero_attributes:get(hero_name, "experience") or 0
 	local hero_level = ExperienceSettings.get_level(hero_experience)
@@ -665,8 +674,8 @@ HeroWindowBackgroundConsole._populate_loadout = function (self)
 	else
 		local post_crashify_exception = false
 
-		for _, slot in pairs(slots) do
-			local slot_name = slot.name
+		for _, slot_name in pairs(slots) do
+			local slot = InventorySettings.slots_by_name[slot_name]
 			local slot_type = slot.type
 			local item, skip_wield_anim = self.parent:get_temporary_loadout_item(slot_type) or BackendUtils.get_loadout_item(career_name, slot_name)
 

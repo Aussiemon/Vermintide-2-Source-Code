@@ -362,6 +362,7 @@ TalentExtension._check_resync = function (self)
 	local peer_id = self.player:network_id()
 	local local_player_id = self.player:local_player_id()
 	local is_bot = self.player.bot_player
+	local force_resync = true
 
-	Managers.state.network.profile_synchronizer:resync_loadout(peer_id, local_player_id, is_bot)
+	Managers.state.network.profile_synchronizer:resync_loadout(peer_id, local_player_id, is_bot, force_resync)
 end

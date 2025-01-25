@@ -228,6 +228,7 @@ PackageChunkPackages = {
 	"resource_packages/dlcs/cosmetics_2024_q2",
 	"resource_packages/dlcs/cosmetics_2024_q3",
 	"resource_packages/dlcs/termite_part_1",
+	"resource_packages/dlcs/termite_part_2",
 	"units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_mesh",
 	"units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
 	"units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_mesh",

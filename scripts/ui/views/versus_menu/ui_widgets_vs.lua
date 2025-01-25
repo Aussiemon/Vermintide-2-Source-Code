@@ -7816,3 +7816,1111 @@ UIWidgets.create_dark_pact_selection_widget = function (scenegraph_id)
 		},
 	}
 end
+
+UIWidgets.create_settings_stepper_widget = function (scenegraph_id, data, ui_data, start_value, start_idx, setting_id, on_setting_changed_cb)
+	local settings = data.values or {}
+	local num_settings = #settings or 0
+	local setting_name = "menu_settings_" .. data.setting_name
+	local tooltip_text = "tooltip_" .. data.setting_name
+	local reset_button_size = {
+		26,
+		26,
+	}
+	local stepper_arrow_size = {
+		32,
+		32,
+	}
+
+	local function update_hotspot(content, style, dt)
+		local parent = content.parent
+		local hover_progress = content.hover_progress or 0
+		local hover_speed = 15
+
+		if parent.can_hover and content.is_hover then
+			hover_progress = math.min(hover_progress + dt * hover_speed, 1)
+		else
+			hover_progress = math.max(hover_progress - dt * hover_speed, 0)
+		end
+
+		content.hover_progress = hover_progress
+
+		local press_progress = content.press_progress or 1
+		local press_speed = 25
+
+		if parent.can_hover and content.is_held then
+			press_progress = math.max(press_progress - dt * press_speed, 0.5)
+		else
+			press_progress = math.min(press_progress + dt * press_speed, 1)
+		end
+
+		content.press_progress = press_progress
+	end
+
+	local function animate_button(content, style, hotspot, dt)
+		local hover_progress = hotspot.hover_progress or 0
+		local press_progress = hotspot.press_progress or 1
+
+		style.color[1] = 255 * hover_progress
+
+		if content.can_hover and hotspot.is_hover then
+			style.color[1] = 255 * press_progress
+		end
+	end
+
+	local definition = {
+		element = {
+			passes = {
+				{
+					pass_type = "text",
+					style_id = "setting_name",
+					text_id = "setting_name",
+					content_change_function = function (content, style, _, dt)
+						local fade_progress = content.fade_progress or 0
+
+						style.text_color[1] = 100 + 155 * fade_progress
+					end,
+				},
+				{
+					content_id = "left_arrow",
+					pass_type = "texture_uv",
+					style_id = "left_arrow",
+					content_change_function = function (content, style, _, dt)
+						local fade_progress = content.parent.fade_progress or 0
+
+						style.color[1] = 100 + 155 * fade_progress
+					end,
+				},
+				{
+					content_id = "left_arrow_hover",
+					pass_type = "texture_uv",
+					style_id = "left_arrow_hover",
+					content_check_function = function (content, style)
+						local parent = content.parent
+
+						return parent.is_server
+					end,
+					content_change_function = function (content, style, _, dt)
+						local parent = content.parent
+						local hotspot = parent.left_arrow_hotspot
+
+						animate_button(content, style, hotspot)
+					end,
+				},
+				{
+					content_id = "left_arrow_hotspot",
+					pass_type = "hotspot",
+					style_id = "left_arrow_hotspot",
+					content_check_function = function (content, style)
+						return content.parent.is_server and content.parent.focused
+					end,
+					content_change_function = function (content, style, _, dt)
+						local parent = content.parent
+
+						update_hotspot(content, style, dt)
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "setting_value_bg",
+					texture_id = "setting_value_bg",
+				},
+				{
+					pass_type = "text",
+					style_id = "setting_value",
+					text_id = "setting_value",
+					content_change_function = function (content, style, _, dt)
+						local values = content.data.values
+						local ui_data = content.ui_data
+						local setting_idx = content.setting_idx
+						local new_value = values[setting_idx]
+
+						if content.value ~= new_value then
+							content.value = new_value
+
+							local localization_options = ui_data and ui_data.localization_options
+							local value_text = ""
+
+							if localization_options and localization_options[new_value] then
+								local text = localization_options[new_value]
+
+								value_text = Localize(text)
+							else
+								value_text = string.format("%s", content.value)
+							end
+
+							if (not localization_options or not localization_options[new_value]) and ui_data and ui_data.setting_type then
+								local value_suffixes = DLCSettings.carousel and DLCSettings.carousel.custom_game_settigns_values_suffix
+
+								if value_suffixes and value_suffixes[ui_data.setting_type] then
+									value_text = value_text .. value_suffixes[ui_data.setting_type]
+								end
+							end
+
+							content.setting_value = value_text
+						end
+
+						if content.value ~= content.default_value then
+							style.text_color = style.modified_color
+						else
+							style.text_color = style.default_color
+						end
+
+						local fade_progress = content.fade_progress or 0
+
+						style.text_color[1] = 100 + 155 * fade_progress
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "right_arrow",
+					texture_id = "right_arrow",
+					content_change_function = function (content, style, _, dt)
+						local fade_progress = content.fade_progress or 0
+
+						style.color[1] = 100 + 155 * fade_progress
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "right_arrow_hover",
+					texture_id = "right_arrow_hover",
+					content_check_function = function (content, style)
+						return content.is_server
+					end,
+					content_change_function = function (content, style, _, dt)
+						local hotspot = content.right_arrow_hotspot
+
+						animate_button(content, style, hotspot)
+					end,
+				},
+				{
+					content_id = "right_arrow_hotspot",
+					pass_type = "hotspot",
+					style_id = "right_arrow_hotspot",
+					content_check_function = function (content, style)
+						return content.parent.is_server and content.parent.focused
+					end,
+					content_change_function = function (content, style, _, dt)
+						local parent = content.parent
+
+						update_hotspot(content, style, dt)
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "divider",
+					texture_id = "divider",
+				},
+				{
+					content_id = "setting_highlight_hotspot",
+					pass_type = "hotspot",
+					style_id = "setting_highlight_hotspot",
+					content_change_function = function (content, style, _, dt)
+						local hover_progress = content.hover_progress or 0
+						local hover_speed = 15
+
+						if content.parent.can_hover and content.is_hover or content.parent.is_gamepad_active and content.parent.focused and content.parent.is_selected then
+							hover_progress = math.min(hover_progress + dt * hover_speed, 1)
+						else
+							hover_progress = math.max(hover_progress - dt * hover_speed, 0)
+						end
+
+						content.hover_progress = hover_progress
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "setting_highlight",
+					texture_id = "setting_highlight",
+					content_change_function = function (content, style, _, dt)
+						local hover_progress = content.setting_highlight_hotspot.hover_progress or 0
+
+						style.color[1] = 255 * hover_progress
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "reset_setting_button",
+					texture_id = "reset_setting_button",
+					content_check_function = function (content, style)
+						return content.is_server and not content.is_gamepad_active
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "reset_setting_button_hovered",
+					texture_id = "reset_setting_button_hovered",
+					content_check_function = function (content, style)
+						return content.is_server and not content.is_gamepad_active and content.focused
+					end,
+					content_change_function = function (content, style, _, dt)
+						local hotspot = content.reset_setting_button_hotspot
+
+						animate_button(content, style, hotspot)
+					end,
+				},
+				{
+					content_id = "reset_setting_button_hotspot",
+					pass_type = "hotspot",
+					style_id = "reset_setting_button_hotspot",
+					content_check_function = function (content, style)
+						local parent = content.parent
+
+						return parent.is_server and not parent.is_gamepad_active
+					end,
+					content_change_function = function (content, style, _, dt)
+						local parent = content.parent
+
+						update_hotspot(content, style, dt)
+					end,
+				},
+				{
+					pass_type = "option_tooltip",
+					style_id = "tooltip_text",
+					text_id = "tooltip_text",
+					content_check_function = function (content, style)
+						return content.can_hover and content.setting_highlight_hotspot.is_hover
+					end,
+				},
+			},
+		},
+		content = {
+			default_idx = 1,
+			default_value = 0,
+			divider = "rect_masked",
+			reset_setting_button = "achievement_refresh_off",
+			reset_setting_button_hovered = "achievement_refresh_on",
+			right_arrow = "arrow_off_01",
+			right_arrow_hover = "arrow_on",
+			setting_highlight = "party_selection_glow",
+			setting_value_bg = "rect_masked",
+			data = data,
+			ui_data = ui_data,
+			id = setting_id,
+			name = data.setting_name,
+			on_setting_changed_cb = on_setting_changed_cb,
+			settings = settings,
+			num_settings = num_settings,
+			setting_idx = start_idx,
+			setting_value = tostring(start_value),
+			setting_name = setting_name,
+			left_arrow = {
+				texture_id = "arrow_off_01",
+				uvs = {
+					{
+						1,
+						0,
+					},
+					{
+						0,
+						1,
+					},
+				},
+			},
+			left_arrow_hover = {
+				texture_id = "arrow_on",
+				uvs = {
+					{
+						1,
+						0,
+					},
+					{
+						0,
+						1,
+					},
+				},
+			},
+			left_arrow_hotspot = {
+				allow_multi_hover = true,
+			},
+			right_arrow_hotspot = {
+				allow_multi_hover = true,
+			},
+			setting_highlight_hotspot = {
+				allow_multi_hover = true,
+			},
+			reset_setting_button_hotspot = {
+				allow_multi_hover = true,
+			},
+			tooltip_text = tooltip_text,
+		},
+		style = {
+			setting_name = {
+				font_size = 20,
+				font_type = "hell_shark_masked",
+				horizontal_alignment = "left",
+				localize = true,
+				masked = true,
+				upper_case = false,
+				use_shadow = true,
+				vertical_alignment = "center",
+				size = {
+					380,
+					30,
+				},
+				area_size = {
+					380,
+					30,
+				},
+				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				offset = {
+					0,
+					0,
+					3,
+				},
+			},
+			left_arrow = {
+				masked = true,
+				texture_size = stepper_arrow_size,
+				offset = {
+					368,
+					0,
+					3,
+				},
+				color = Colors.get_color_table_with_alpha("white", 120),
+			},
+			left_arrow_hover = {
+				masked = true,
+				texture_size = stepper_arrow_size,
+				offset = {
+					368,
+					0,
+					5,
+				},
+				color = Colors.get_color_table_with_alpha("white", 120),
+			},
+			left_arrow_hotspot = {
+				size = stepper_arrow_size,
+				offset = {
+					368,
+					0,
+					3,
+				},
+			},
+			setting_value_bg = {
+				masked = true,
+				size = {
+					128,
+					30,
+				},
+				offset = {
+					400,
+					0,
+					4,
+				},
+				color = Colors.get_color_table_with_alpha("black", 120),
+			},
+			setting_value = {
+				dynamic_font_size = true,
+				font_size = 24,
+				font_type = "hell_shark_masked",
+				horizontal_alignment = "center",
+				localize = false,
+				masked = true,
+				upper_case = false,
+				use_shadow = true,
+				vertical_alignment = "center",
+				size = {
+					128,
+					30,
+				},
+				area_size = {
+					128,
+					30,
+				},
+				modified_color = Colors.get_color_table_with_alpha("pale_golden_rod", 255),
+				default_color = Colors.get_color_table_with_alpha("font_default", 180),
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					400,
+					0,
+					5,
+				},
+			},
+			right_arrow = {
+				masked = true,
+				texture_size = stepper_arrow_size,
+				offset = {
+					528,
+					0,
+					3,
+				},
+				color = Colors.get_color_table_with_alpha("white", 120),
+			},
+			right_arrow_hover = {
+				masked = true,
+				texture_size = stepper_arrow_size,
+				offset = {
+					528,
+					0,
+					4,
+				},
+				color = Colors.get_color_table_with_alpha("white", 120),
+			},
+			right_arrow_hotspot = {
+				size = stepper_arrow_size,
+				offset = {
+					528,
+					0,
+					3,
+				},
+			},
+			divider = {
+				masked = true,
+				size = {
+					560,
+					2,
+				},
+				offset = {
+					0,
+					-2,
+					1,
+				},
+				color = Colors.get_color_table_with_alpha("gray", 100),
+			},
+			setting_highlight_hotspot = {
+				size = {
+					580,
+					34,
+				},
+				offset = {
+					0,
+					0,
+					1,
+				},
+			},
+			setting_highlight = {
+				masked = true,
+				texture_size = {
+					580,
+					34,
+				},
+				offset = {
+					0,
+					0,
+					1,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+			},
+			reset_setting_button = {
+				masked = true,
+				texture_size = reset_button_size,
+				offset = {
+					338,
+					2,
+					3,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+			},
+			reset_setting_button_hovered = {
+				masked = true,
+				texture_size = reset_button_size,
+				offset = {
+					338,
+					2,
+					4,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+			},
+			reset_setting_button_hotspot = {
+				size = reset_button_size,
+				offset = {
+					338,
+					2,
+					1,
+				},
+			},
+			tooltip_text = {
+				font_size = 24,
+				font_type = "hell_shark_masked",
+				horizontal_alignment = "left",
+				localize = true,
+				upper_case = false,
+				use_shadow = true,
+				vertical_alignment = "center",
+				size = {
+					180,
+					30,
+				},
+				area_size = {
+					180,
+					30,
+				},
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					0,
+					0,
+					1,
+				},
+			},
+		},
+		offset = {
+			0,
+			0,
+			1,
+		},
+		scenegraph_id = scenegraph_id,
+	}
+
+	return definition
+end
+
+UIWidgets.create_settings_slider_widget = function (scenegraph_id, data, ui_data, start_value, start_idx, setting_id, on_setting_changed_cb)
+	local settings = data.values or {}
+	local num_settings = #settings or 1
+	local setting_name = "menu_settings_" .. data.setting_name
+	local tooltip_text = "tooltip_" .. data.setting_name
+	local reset_button_size = {
+		26,
+		26,
+	}
+	local slider_size = {
+		280,
+		8,
+	}
+	local min_offset = 580 - slider_size[1] - 30 + 8
+	local max_offset = min_offset + slider_size[1]
+	local background_frame_settings = UIFrameSettings.button_frame_02
+	local slider_button_size = {
+		11.9,
+		22.95,
+	}
+	local slider_button_hovered_size = {
+		28.9,
+		21.25,
+	}
+	local setting_idx = start_idx
+	local start_slider_value = math.clamp(setting_idx / num_settings, 0, 1)
+
+	local function update_hotspot(content, style, dt)
+		local parent = content.parent
+		local hover_progress = content.hover_progress or 0
+		local hover_speed = 15
+
+		if parent.can_hover and content.is_hover then
+			hover_progress = math.min(hover_progress + dt * hover_speed, 1)
+		else
+			hover_progress = math.max(hover_progress - dt * hover_speed, 0)
+		end
+
+		content.hover_progress = hover_progress
+
+		local press_progress = content.press_progress or 1
+		local press_speed = 25
+
+		if parent.can_hover and content.is_held then
+			press_progress = math.max(press_progress - dt * press_speed, 0.5)
+		else
+			press_progress = math.min(press_progress + dt * press_speed, 1)
+		end
+
+		content.press_progress = press_progress
+	end
+
+	local function animate_button(content, style, hotspot, dt)
+		local hover_progress = hotspot.hover_progress or 0
+		local press_progress = hotspot.press_progress or 1
+
+		style.color[1] = 255 * hover_progress
+
+		if content.can_hover and hotspot.is_hover then
+			style.color[1] = 255 * press_progress
+		end
+	end
+
+	local definition = {
+		element = {
+			passes = {
+				{
+					pass_type = "text",
+					style_id = "setting_name",
+					text_id = "setting_name",
+					content_change_function = function (content, style, _, dt)
+						local fade_progress = content.fade_progress or 0
+
+						style.text_color[1] = 100 + 155 * fade_progress
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "setting_value_bg",
+					texture_id = "setting_value_bg",
+				},
+				{
+					pass_type = "text",
+					style_id = "setting_value",
+					text_id = "setting_value",
+					content_change_function = function (content, style, _, dt)
+						local values = content.data.values
+						local ui_data = content.ui_data
+						local setting_idx = content.setting_idx
+						local new_value = values[setting_idx]
+
+						if content.value ~= new_value then
+							content.value = new_value
+
+							local localization_options = ui_data and ui_data.localization_options
+							local value_text = ""
+
+							if localization_options and localization_options[new_value] then
+								local text = localization_options[new_value]
+
+								value_text = Localize(text)
+							else
+								value_text = string.format("%s", content.value)
+							end
+
+							if (not localization_options or not localization_options[new_value]) and ui_data and ui_data.setting_type then
+								local value_suffixes = DLCSettings.carousel and DLCSettings.carousel.custom_game_settigns_values_suffix
+
+								if value_suffixes and value_suffixes[ui_data.setting_type] then
+									value_text = value_text .. value_suffixes[ui_data.setting_type]
+								end
+							end
+
+							content.setting_value = value_text
+						end
+
+						if content.value ~= content.default_value then
+							style.text_color = style.modified_color
+						else
+							style.text_color = style.default_color
+						end
+
+						local fade_progress = content.fade_progress or 0
+
+						style.text_color[1] = 100 + 155 * fade_progress
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "divider",
+					texture_id = "divider",
+				},
+				{
+					content_id = "setting_highlight_hotspot",
+					pass_type = "hotspot",
+					style_id = "setting_highlight_hotspot",
+					content_change_function = function (content, style, _, dt)
+						local hover_progress = content.hover_progress or 0
+						local hover_speed = 15
+
+						if content.parent.can_hover and content.is_hover or content.parent.is_gamepad_active and content.parent.focused and content.parent.is_selected then
+							hover_progress = math.min(hover_progress + dt * hover_speed, 1)
+						else
+							hover_progress = math.max(hover_progress - dt * hover_speed, 0)
+						end
+
+						content.hover_progress = hover_progress
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "setting_highlight",
+					texture_id = "setting_highlight",
+					content_change_function = function (content, style, _, dt)
+						local hover_progress = content.setting_highlight_hotspot.hover_progress or 0
+
+						style.color[1] = 255 * hover_progress
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "reset_setting_button",
+					texture_id = "reset_setting_button",
+					content_check_function = function (content, style)
+						return content.is_server and not content.is_gamepad_active
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "reset_setting_button_hovered",
+					texture_id = "reset_setting_button_hovered",
+					content_check_function = function (content, style)
+						return content.is_server and not content.is_gamepad_active and content.focused
+					end,
+					content_change_function = function (content, style, _, dt)
+						local hotspot = content.reset_setting_button_hotspot
+
+						animate_button(content, style, hotspot)
+					end,
+				},
+				{
+					content_id = "reset_setting_button_hotspot",
+					pass_type = "hotspot",
+					style_id = "reset_setting_button_hotspot",
+					content_check_function = function (content, style)
+						local parent = content.parent
+
+						return parent.is_server and not parent.is_gamepad_active
+					end,
+					content_change_function = function (content, style, _, dt)
+						local parent = content.parent
+
+						update_hotspot(content, style, dt)
+					end,
+				},
+				{
+					pass_type = "option_tooltip",
+					style_id = "tooltip_text",
+					text_id = "tooltip_text",
+					content_check_function = function (content, style)
+						return content.can_hover and content.setting_highlight_hotspot.is_hover
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "slider_background",
+					texture_id = "slider_background",
+				},
+				{
+					pass_type = "texture_frame",
+					style_id = "background_frame",
+					texture_id = "background_frame",
+				},
+				{
+					pass_type = "texture",
+					style_id = "slider_button",
+					texture_id = "slider_button",
+					content_check_function = function (content, style)
+						return true
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "slider_button_hovered",
+					texture_id = "slider_button_hovered",
+					content_check_function = function (content, style)
+						return content.can_hover and content.slider_button_hotspot.is_hover
+					end,
+				},
+				{
+					content_check_hover = "slider_button_hotspot",
+					pass_type = "held",
+					style_id = "slider_background",
+					held_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+						local gamepad_active = Managers.input:is_device_active("gamepad")
+
+						if gamepad_active then
+							return
+						end
+
+						if not ui_content.can_hover then
+							return
+						end
+
+						local cursor = UIInverseScaleVectorToResolution(input_service:get("cursor"))
+						local scenegraph_id = ui_content.scenegraph_id
+						local world_position = UISceneGraph.get_world_position(ui_scenegraph, scenegraph_id)
+						local size_x = ui_style.size[1]
+						local cursor_x = cursor[1]
+						local pos_start = world_position[1] + ui_style.offset[1] + 20
+						local cursor_x_norm = cursor_x - pos_start
+						local value = math.clamp(cursor_x_norm / size_x, 0, 1)
+
+						ui_content.current_slider_value = value
+					end,
+					release_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+						local setting_id = ui_content.id
+						local new_idx = ui_content.setting_idx
+
+						ui_content.on_setting_changed_cb(setting_id, new_idx)
+					end,
+				},
+				{
+					content_id = "slider_button_hotspot",
+					pass_type = "hotspot",
+					style_id = "slider_button_hotspot",
+					content_check_function = function (content, style)
+						return content.parent.can_hover and content.parent.is_server and content.parent.focused
+					end,
+				},
+				{
+					pass_type = "local_offset",
+					offset_function = function (ui_scenegraph, ui_style, ui_content)
+						local internal_value = ui_content.current_slider_value
+						local min = 1
+						local max = ui_content.num_settings
+						local setting_idx = math.clamp(math.round(max * internal_value), min, max)
+
+						ui_content.setting_idx = setting_idx
+
+						local slider_box_style = ui_style.slider_background
+						local slider_box_size = slider_box_style.size
+						local base_offset_x = slider_box_style.offset[1]
+						local size_x = slider_box_size[1] * internal_value
+						local slider_icon_style = ui_style.slider_button
+						local slider_icon_hover_style = ui_style.slider_button_hovered
+						local slider_icon_hotspot_style = ui_style.slider_button_hotspot
+						local slider_icon_offset = slider_icon_style.offset
+						local slider_icon_size = slider_icon_style.texture_size
+						local slider_icon_x = math.max(0, math.min(size_x - slider_icon_size[1], slider_box_size[1] - slider_icon_size[1]))
+
+						slider_icon_style.offset[1] = base_offset_x + size_x - slider_icon_size[1] / 2
+						slider_icon_hover_style.offset[1] = slider_icon_style.offset[1] + slider_icon_size[1] / 2 - slider_icon_hover_style.texture_size[1] / 2
+						slider_icon_hotspot_style.offset[1] = slider_icon_style.offset[1] + slider_icon_size[1] / 2 - slider_icon_hotspot_style.size[1] / 2
+					end,
+				},
+			},
+		},
+		content = {
+			default_idx = 1,
+			default_value = 0,
+			divider = "rect_masked",
+			reset_setting_button = "achievement_refresh_off",
+			reset_setting_button_hovered = "achievement_refresh_on",
+			setting_highlight = "party_selection_glow",
+			setting_value_bg = "rect_masked",
+			slider_background = "rect_masked",
+			slider_button = "slider_thumb",
+			slider_button_hovered = "slider_thumb_hover",
+			data = data,
+			ui_data = ui_data,
+			id = setting_id,
+			name = data.setting_name,
+			on_setting_changed_cb = on_setting_changed_cb,
+			settings = settings,
+			num_settings = num_settings,
+			setting_idx = start_idx,
+			setting_value = tostring(start_value),
+			setting_name = setting_name,
+			setting_highlight_hotspot = {
+				allow_multi_hover = true,
+			},
+			reset_setting_button_hotspot = {
+				allow_multi_hover = true,
+			},
+			tooltip_text = tooltip_text,
+			background_frame = background_frame_settings.texture,
+			slider_button_hotspot = {
+				allow_multi_hover = true,
+			},
+			current_slider_value = start_slider_value,
+			min_offset = min_offset,
+			max_offset = max_offset,
+			scenegraph_id = scenegraph_id,
+		},
+		style = {
+			setting_name = {
+				font_size = 20,
+				font_type = "hell_shark_masked",
+				horizontal_alignment = "left",
+				localize = true,
+				masked = true,
+				upper_case = false,
+				use_shadow = true,
+				vertical_alignment = "center",
+				size = {
+					380,
+					30,
+				},
+				area_size = {
+					380,
+					30,
+				},
+				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				offset = {
+					0,
+					34,
+					3,
+				},
+			},
+			setting_value_bg = {
+				masked = true,
+				size = {
+					128,
+					30,
+				},
+				offset = {
+					400,
+					34,
+					4,
+				},
+				color = Colors.get_color_table_with_alpha("black", 120),
+			},
+			setting_value = {
+				dynamic_font_size = true,
+				font_size = 24,
+				font_type = "hell_shark_masked",
+				horizontal_alignment = "center",
+				localize = false,
+				masked = true,
+				upper_case = false,
+				use_shadow = true,
+				vertical_alignment = "center",
+				size = {
+					128,
+					30,
+				},
+				area_size = {
+					128,
+					30,
+				},
+				modified_color = Colors.get_color_table_with_alpha("pale_golden_rod", 255),
+				default_color = Colors.get_color_table_with_alpha("font_default", 180),
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					400,
+					34,
+					5,
+				},
+			},
+			divider = {
+				masked = true,
+				size = {
+					560,
+					2,
+				},
+				offset = {
+					0,
+					-2,
+					1,
+				},
+				color = Colors.get_color_table_with_alpha("gray", 100),
+			},
+			setting_highlight_hotspot = {
+				size = {
+					580,
+					68,
+				},
+				offset = {
+					0,
+					0,
+					1,
+				},
+			},
+			setting_highlight = {
+				masked = true,
+				texture_size = {
+					580,
+					68,
+				},
+				offset = {
+					0,
+					0,
+					1,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+			},
+			reset_setting_button = {
+				masked = true,
+				texture_size = reset_button_size,
+				offset = {
+					338,
+					36,
+					3,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+			},
+			reset_setting_button_hovered = {
+				masked = true,
+				texture_size = reset_button_size,
+				offset = {
+					338,
+					36,
+					4,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+			},
+			reset_setting_button_hotspot = {
+				size = reset_button_size,
+				offset = {
+					338,
+					36,
+					1,
+				},
+			},
+			tooltip_text = {
+				font_size = 24,
+				font_type = "hell_shark_masked",
+				horizontal_alignment = "left",
+				localize = true,
+				upper_case = false,
+				use_shadow = true,
+				vertical_alignment = "center",
+				size = {
+					180,
+					30,
+				},
+				area_size = {
+					180,
+					30,
+				},
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					0,
+					34,
+					1,
+				},
+			},
+			slider_background = {
+				masked = true,
+				size = slider_size,
+				offset = {
+					min_offset,
+					8,
+					5,
+				},
+				color = Colors.get_color_table_with_alpha("black", 255),
+			},
+			background_frame = {
+				masked = true,
+				frame_margins = {
+					-3,
+					-3,
+				},
+				size = slider_size,
+				texture_size = background_frame_settings.texture_size,
+				texture_sizes = background_frame_settings.texture_sizes,
+				offset = {
+					min_offset,
+					8,
+					6,
+				},
+				color = {
+					255,
+					255,
+					255,
+					255,
+				},
+			},
+			slider_button = {
+				masked = true,
+				texture_size = slider_button_size,
+				offset = {
+					0,
+					2,
+					7,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+			},
+			slider_button_hovered = {
+				masked = true,
+				texture_size = slider_button_hovered_size,
+				offset = {
+					0,
+					2,
+					8,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+			},
+			slider_button_hotspot = {
+				size = slider_button_hovered_size,
+				offset = {
+					0,
+					2,
+					9,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+			},
+		},
+		offset = {
+			0,
+			0,
+			1,
+		},
+		scenegraph_id = scenegraph_id,
+	}
+
+	return definition
+end

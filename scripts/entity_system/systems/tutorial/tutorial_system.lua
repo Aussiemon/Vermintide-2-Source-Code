@@ -164,6 +164,7 @@ TutorialSystem.on_add_extension = function (self, world, unit, extension_name, e
 		extension.set_active = activate_func
 		extension.server_only = server_only
 		extension.network_synced = network_synced
+		extension.always_show = Unit.get_data(unit, "always_show")
 	end
 
 	POSITION_LOOKUP[unit] = Unit.world_position(unit, 0)
@@ -494,10 +495,15 @@ TutorialSystem.iterate_info_slates = function (self, t, unit, extension, raycast
 end
 
 TutorialSystem.on_tutorial_trigger = function (self, trigger_name)
-	local seen_handbook_popups = SaveData.seen_handbook_popups
 	local ctx = self._condition_context
 
+	if ctx:get("has_max_level_character") then
+		return
+	end
+
 	ctx:clear_cache()
+
+	local seen_handbook_popups = SaveData.seen_handbook_popups
 
 	for popup_id, popup_settings in pairs(HandbookSettings.popups) do
 		if seen_handbook_popups[popup_id] then

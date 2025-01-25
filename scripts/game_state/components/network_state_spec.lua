@@ -58,6 +58,7 @@ local function encode_inventory(inventory)
 	local byte_array = {}
 
 	ByteArray.write_int32(byte_array, inventory.inventory_id)
+	ByteArray.write_hash(byte_array, inventory.inventory_hash)
 	ByteArray.write_int32(byte_array, #network_inventory_list_1p)
 
 	for i = 1, #network_inventory_list_1p do
@@ -83,9 +84,10 @@ local function decode_inventory(compressed_byte_array_string)
 	ByteArray.write_string(byte_array, byte_array_string)
 
 	local index = 1
-	local inventory_id
+	local inventory_id, inventory_hash
 
 	inventory_id, index = ByteArray.read_int32(byte_array, index)
+	inventory_hash, index = ByteArray.read_hash(byte_array, index)
 
 	local inventory_pack_1p_count
 
@@ -115,6 +117,7 @@ local function decode_inventory(compressed_byte_array_string)
 
 	return {
 		inventory_id = inventory_id,
+		inventory_hash = inventory_hash,
 		first_person = first_person_packages,
 		third_person = third_person_packages,
 	}
@@ -130,6 +133,20 @@ local function decode_character_data(character_string)
 	return {
 		profile_index = tonumber(split[1]),
 		career_index = tonumber(split[2]),
+	}
+end
+
+local function encode_persistent_character_data(character_data)
+	return string.format("%d:%d:%d", character_data.profile_index, character_data.career_index, character_data.party_id)
+end
+
+local function decode_persistent_character_data(character_string)
+	local split = string.split(character_string, ":")
+
+	return {
+		profile_index = tonumber(split[1]),
+		career_index = tonumber(split[2]),
+		party_id = tonumber(split[3]),
 	}
 end
 
@@ -265,10 +282,24 @@ local spec = {
 			type = "table",
 			default_value = {
 				career_index = 0,
+				party_id = 0,
 				profile_index = 0,
 			},
 			composite_keys = {
 				peer_id = true,
+			},
+			encode = encode_persistent_character_data,
+			decode = decode_persistent_character_data,
+		},
+		bot_profile = {
+			type = "table",
+			default_value = {
+				career_index = 0,
+				profile_index = 0,
+			},
+			composite_keys = {
+				local_player_id = true,
+				party_id = true,
 			},
 			encode = encode_character_data,
 			decode = decode_character_data,
@@ -377,6 +408,7 @@ local spec = {
 				local_player_id = true,
 			},
 			default_value = {
+				inventory_hash = "0000000000000000",
 				inventory_id = 0,
 				first_person = {},
 				third_person = {},

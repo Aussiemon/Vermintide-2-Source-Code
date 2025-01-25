@@ -904,9 +904,16 @@ HeroViewStateLoot.draw = function (self, dt)
 		end
 	end
 
+	local present_reward_options = self._present_reward_options
+
+	if gamepad_active and not present_reward_options and input_service:get("special_1_hold") then
+		local tooltip_widget = self._gamepad_tooltip_widgets_by_name.chest_tooltip
+
+		UIRenderer.draw_widget(loot_ui_renderer, tooltip_widget)
+	end
+
 	UIRenderer.end_pass(loot_ui_renderer)
 
-	local present_reward_options = self._present_reward_options
 	local padding = -200
 	local internal_screen_width = 1920
 	local active_reward_options = self._active_reward_options
@@ -1095,6 +1102,10 @@ HeroViewStateLoot._select_grid_item = function (self, item, t, reset_num_chests)
 	local num_chests_to_multi_open = 2
 
 	if item then
+		local gamepad_tooltip_widget = self._gamepad_tooltip_widgets_by_name.chest_tooltip
+
+		gamepad_tooltip_widget.content.item = item
+
 		local unit_name, sound_event, package_name
 		local item_data = item.data
 

@@ -34,6 +34,10 @@ TutorialConditions.player_level = function (ctx)
 	return ExperienceSettings.get_level(experience)
 end
 
+TutorialConditions.has_max_level_character = function (ctx)
+	return ExperienceSettings.get_highest_character_level() == ExperienceSettings.max_level
+end
+
 TutorialConditions.has_unlocked_non_dlc_career_for_current_hero = function (ctx)
 	local player = ctx:get("player")
 	local player_level = ctx:get("player_level")

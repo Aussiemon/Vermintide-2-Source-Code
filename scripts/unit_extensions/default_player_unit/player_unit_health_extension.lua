@@ -77,6 +77,13 @@ PlayerUnitHealthExtension.create_health_game_object = function (self)
 	local difficulty_settings = difficulty_manager:get_difficulty_settings()
 	local max_health_alive = self:_get_base_max_health()
 	local game_object_id = self.network_manager:unit_game_object_id(unit)
+	local num_wounds = difficulty_settings.wounds
+	local mechanism_ok, num_wounds_override, custom_settings_enabled = Managers.mechanism:mechanism_try_call("get_setting", "wounds_amount")
+
+	if mechanism_ok and custom_settings_enabled then
+		num_wounds = num_wounds_override
+	end
+
 	local game_object_data_table = {
 		current_temporary_health = 0,
 		go_type = NetworkLookup.go_types.player_unit_health,
@@ -84,8 +91,8 @@ PlayerUnitHealthExtension.create_health_game_object = function (self)
 		current_health = max_health_alive,
 		max_health = max_health_alive,
 		uncursed_max_health = max_health_alive,
-		current_wounds = difficulty_settings.wounds,
-		max_wounds = difficulty_settings.wounds,
+		current_wounds = num_wounds,
+		max_wounds = num_wounds,
 	}
 	local callback = callback(self, "cb_game_session_disconnect")
 	local health_game_object_id = self.network_manager:create_game_object("player_unit_health", game_object_data_table, callback)
@@ -129,6 +136,12 @@ PlayerUnitHealthExtension._get_base_max_health = function (self)
 	local career_data = current_hero.careers[career_index]
 	local attributes = career_data.attributes
 	local max_hp = attributes.max_hp
+	local setting_name = career_data.name .. "_hp"
+	local mechanism_ok, hp_override, custom_settings_enabled = Managers.mechanism:mechanism_try_call("get_custom_game_setting", setting_name)
+
+	if mechanism_ok and custom_settings_enabled and hp_override then
+		return hp_override
+	end
 
 	return max_hp
 end
@@ -521,6 +534,15 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 	end
 
 	local unit = self.unit
+	local mechanism_ok, custom_setting_damage_multiplier, custom_settings_enabled = Managers.mechanism:mechanism_try_call("get_custom_game_setting", "hero_damage_taken")
+
+	if mechanism_ok and custom_settings_enabled then
+		local unit_side = Managers.state.side.side_by_unit[unit]
+		local unit_is_hero = unit_side:name() == "heroes"
+
+		damage_amount = unit_is_hero and damage_amount * custom_setting_damage_multiplier or damage_amount
+	end
+
 	local attacker_player = AiUtils.get_actual_attacker_player(attacker_unit, unit, damage_source_name)
 
 	if not source_attacker_unit then

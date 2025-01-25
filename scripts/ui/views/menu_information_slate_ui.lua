@@ -11,7 +11,12 @@ MenuInformationSlateUI = class(MenuInformationSlateUI)
 
 local PRODUCT_PLACEHOLDER_TEXTURE_PATH = "gui/1080p/single_textures/generic/transparent_placeholder_texture"
 local CDN_SERVER = "cdn.fatsharkgames.se"
+local FOLDER = "vermintide2"
 local CDN_URL = "information.json"
+
+if IS_CONSOLE then
+	CDN_URL = "information_" .. PLATFORM .. ".json"
+end
 
 MenuInformationSlateUI.init = function (self, ui_renderer, input_service)
 	self._ui_renderer = ui_renderer
@@ -106,12 +111,12 @@ end
 
 MenuInformationSlateUI._fetch_backend_information = function (self)
 	if IS_CONSOLE then
-		self:_fetch_cdn_data(CDN_URL, callback(self, "_parse_cdn_data"))
+		self:_fetch_cdn_data(FOLDER .. "/" .. CDN_URL, callback(self, "_parse_cdn_data"))
 	else
 		local information_data_json = Managers.backend:get_title_data("information")
 		local information_data = information_data_json and cjson.decode(information_data_json)
 
-		if information_data then
+		if information_data and not table.is_empty(information_data) then
 			self._information_data = information_data
 
 			local slate_data = information_data[1] or information_data
@@ -203,7 +208,7 @@ MenuInformationSlateUI._parse_cdn_data = function (self, info)
 	local json_data = info.message
 	local data = json_data and cjson.decode(json_data)
 
-	if data then
+	if data and not table.is_empty(data) then
 		self._information_data = data
 
 		local slate_data = data[1] or data
@@ -426,7 +431,7 @@ MenuInformationSlateUI._setup_backend_image_material = function (self, texture_n
 		local use_amazon_cdn_fallback = false
 		local cb = callback(self, "_cb_on_backend_image_loaded", material_name, reference_name, widget_cb, texture_name, use_amazon_cdn_fallback)
 
-		Managers.url_loader:load_resource(reference_name, "http://" .. CDN_SERVER .. "/" .. texture_name .. ".dds", cb, Application.guid())
+		Managers.url_loader:load_resource(reference_name, "http://" .. CDN_SERVER .. "/" .. FOLDER .. "/" .. texture_name .. ".dds", cb, Application.guid())
 	else
 		local cdn = Managers.backend:get_interface("cdn")
 		local cb = callback(self, "_cb_on_backend_url_loaded", texture_name, reference_name, material_name, widget_cb)
@@ -455,7 +460,7 @@ MenuInformationSlateUI._cb_on_backend_url_loaded = function (self, texture_name,
 
 		local cb = callback(self, "_cb_on_backend_image_loaded", material_name, reference_name, widget_cb, texture_name, use_amazon_cdn_fallback)
 
-		Managers.url_loader:load_resource(reference_name, "http://" .. CDN_SERVER .. "/vermintide2/" .. texture_name .. ".dds", cb, Application.guid())
+		Managers.url_loader:load_resource(reference_name, "http://" .. CDN_SERVER .. "/" .. FOLDER .. "/" .. texture_name .. ".dds", cb, Application.guid())
 
 		return
 	end
@@ -483,7 +488,7 @@ MenuInformationSlateUI._cb_on_backend_image_loaded = function (self, material_na
 
 		local cb = callback(self, "_cb_on_backend_image_loaded", material_name, reference_name, widget_cb, texture_name, use_amazon_cdn_fallback)
 
-		Managers.url_loader:load_resource(reference_name, "http://" .. CDN_SERVER .. "/vermintide2/" .. texture_name .. ".dds", cb, Application.guid())
+		Managers.url_loader:load_resource(reference_name, "http://" .. CDN_SERVER .. "/" .. FOLDER .. "/" .. texture_name .. ".dds", cb, Application.guid())
 	else
 		self._material_references_to_unload[reference_name] = nil
 
@@ -572,9 +577,12 @@ MenuInformationSlateUI._populate_info_slate = function (self)
 	self:_parse_information_data(slate_data)
 	self:_create_switch_panel()
 
-	self._expanded = false
+	if self._expanded then
+		self:_start_animation("expand_instantly")
+	else
+		self:_start_animation("collapse_instantly")
+	end
 
-	self:_start_animation("collapse_instantly")
 	self:_start_animation("animate_in")
 	self:_play_sound("play_gui_info_slate_tab_changed")
 end

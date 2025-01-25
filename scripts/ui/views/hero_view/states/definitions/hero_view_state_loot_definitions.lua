@@ -721,6 +721,20 @@ local scenegraph_definition = {
 			1,
 		},
 	},
+	gamepad_chest_tooltip = {
+		horizontal_alignment = "left",
+		parent = "item_window",
+		vertical_alignment = "top",
+		size = {
+			450,
+			0,
+		},
+		position = {
+			475,
+			-75,
+			0,
+		},
+	},
 }
 
 for i = 1, num_loot_options do
@@ -2686,6 +2700,19 @@ for i = 1, num_loot_options do
 	gamepad_tooltip_widgets["item_tooltip_" .. (i - 1) * 3 + 3] = UIWidgets.create_simple_item_presentation("gamepad_tooltip_option_" .. (i - 1) * 3 + 3, console_tooltip_pass_definition)
 end
 
+local console_chest_tooltip_pass_definition = {
+	"console_item_titles",
+	"item_information_text",
+	"loot_chest_difficulty",
+	"loot_chest_power_range",
+	"item_rarity_rate",
+	"console_keywords",
+	"console_item_description",
+	"console_item_background",
+}
+
+gamepad_tooltip_widgets.chest_tooltip = UIWidgets.create_simple_item_presentation("gamepad_chest_tooltip", console_chest_tooltip_pass_definition)
+
 local option_background_widgets = {}
 
 for i = 1, num_loot_options do
@@ -2744,9 +2771,14 @@ local generic_input_actions = {
 				description_text = Localize("interaction_action_open"),
 			},
 			{
+				description_text = "input_description_tooltip",
+				input_action = "special_1",
+				priority = 3,
+			},
+			{
 				description_text = "input_description_close",
 				input_action = "back",
-				priority = 3,
+				priority = 4,
 			},
 		},
 	},
@@ -2771,9 +2803,14 @@ local generic_input_actions = {
 				description_text = Localize("interaction_action_open") .. " 5",
 			},
 			{
+				description_text = "input_description_tooltip",
+				input_action = "special_1",
+				priority = 4,
+			},
+			{
 				description_text = "input_description_close",
 				input_action = "back",
-				priority = 4,
+				priority = 5,
 			},
 		},
 	},

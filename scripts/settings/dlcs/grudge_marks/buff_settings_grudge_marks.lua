@@ -35,6 +35,8 @@ local function teleport_validation_func(pos, validation_data)
 	return true
 end
 
+local TERMITE_BOSS_RAGE_DURATION = 10
+
 settings.buff_templates = {
 	grudge_mark_health = {
 		buffs = {
@@ -67,7 +69,7 @@ settings.buff_templates = {
 	grudge_mark_termite_health = {
 		buffs = {
 			{
-				multiplier = 2,
+				multiplier = 1,
 				name = "grudge_mark_health",
 				stat_buff = "max_health",
 			},
@@ -75,6 +77,62 @@ settings.buff_templates = {
 				apply_buff_func = "ai_update_max_health",
 				name = "grudge_mark_health_update",
 				remove_buff_func = "ai_update_max_health",
+			},
+		},
+	},
+	grudge_mark_termite_boss_raging = {
+		buffs = {
+			{
+				buff_to_add = "grudge_mark_termite_boss_raging_buff",
+				chunk_amount = 4,
+				name = "grudge_mark_termite_boss_raging",
+				update_func = "add_buff_based_on_health_chunks",
+			},
+		},
+	},
+	grudge_mark_termite_boss_raging_buff = {
+		activation_sound = "enemy_grudge_raging",
+		activation_sound_3p = true,
+		buffs = {
+			{
+				max_stacks = 1,
+				name = "grudge_mark_termite_particle_buff",
+				refresh_durations = true,
+				duration = TERMITE_BOSS_RAGE_DURATION,
+				particles = {
+					{
+						continuous = true,
+						destroy_policy = "stop",
+						effect = "fx/cw_khorne_boss",
+						first_person = false,
+						orphaned_policy = "stop",
+						third_person = true,
+					},
+				},
+			},
+			{
+				max_stacks = 1,
+				multiplier = -0.5,
+				name = "grudge_mark_termite_damage_taken_buff",
+				refresh_durations = true,
+				stat_buff = "damage_taken",
+				duration = TERMITE_BOSS_RAGE_DURATION,
+			},
+			{
+				apply_buff_func = "make_stagger_immune",
+				max_stacks = 1,
+				name = "grudge_mark_termite_stagger_immune_buff",
+				refresh_durations = true,
+				remove_buff_func = "remove_stagger_immunity",
+				duration = TERMITE_BOSS_RAGE_DURATION,
+			},
+			{
+				max_stacks = 1,
+				multiplier = 0.25,
+				name = "grudge_mark_termite_damage_dealt_buff",
+				refresh_durations = true,
+				stat_buff = "damage_dealt",
+				duration = TERMITE_BOSS_RAGE_DURATION,
 			},
 		},
 	},
@@ -617,6 +675,19 @@ settings.buff_function_templates = {
 			end
 		end
 	end,
+	remove_stagger_immunity = function (unit, buff, params)
+		if ALIVE[unit] then
+			local blackboard = BLACKBOARDS[unit]
+
+			if blackboard then
+				local stagger_immunity = {
+					health_threshold = 0,
+				}
+
+				blackboard.stagger_immunity = nil
+			end
+		end
+	end,
 	apply_buff_to_all_players = function (unit, buff, params)
 		if not is_server() then
 			return
@@ -647,6 +718,33 @@ settings.buff_function_templates = {
 		local audio_system = Managers.state.entity:system("audio_system")
 
 		audio_system:play_audio_unit_event("enemy_grudge_intangible_destroy", unit)
+	end,
+	add_buff_based_on_health_chunks = function (unit, buff, params)
+		if not is_server() then
+			return
+		end
+
+		if ALIVE[unit] then
+			local health_extension = ScriptUnit.extension(unit, "health_system")
+			local buff_extension = ScriptUnit.extension(unit, "buff_system")
+			local buff_system = Managers.state.entity:system("buff_system")
+			local template = buff.template
+			local buff_to_add = template.buff_to_add
+			local chunk_size = health_extension:get_max_health() / template.chunk_amount
+			local total_damage_taken = health_extension:get_damage_taken()
+
+			buff.next_chunk = buff.next_chunk or chunk_size
+
+			if total_damage_taken >= buff.next_chunk then
+				buff_system:add_buff_synced(unit, buff_to_add, BuffSyncType.All)
+
+				buff.next_chunk = buff.next_chunk + chunk_size
+			end
+
+			if chunk_size > health_extension:current_health() then
+				buff_system:add_buff_synced(unit, buff_to_add, BuffSyncType.All)
+			end
+		end
 	end,
 	ai_spawn_mirror_images = function (unit, buff, params)
 		if not is_server() then
@@ -1356,6 +1454,19 @@ settings.proc_functions = {
 	grudge_mark_shockwave = function (owner_unit, buff, params, world)
 		local damage_source = "grenade_frag_01"
 		local explosion_template = ExplosionUtils.get_template("grudge_mark_shockwave")
+		local explosion_position = POSITION_LOOKUP[owner_unit]
+
+		DamageUtils.create_explosion(world, owner_unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, owner_unit, false)
+
+		local attacker_unit_id = Managers.state.unit_storage:go_id(owner_unit)
+		local explosion_template_id = NetworkLookup.explosion_templates[explosion_template.name]
+		local damage_source_id = NetworkLookup.damage_sources[damage_source]
+
+		Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false, attacker_unit_id)
+	end,
+	grudge_mark_termite_shockwave = function (owner_unit, buff, params, world)
+		local damage_source = "grenade_frag_01"
+		local explosion_template = ExplosionUtils.get_template("grudge_mark_termite_shockwave")
 		local explosion_position = POSITION_LOOKUP[owner_unit]
 
 		DamageUtils.create_explosion(world, owner_unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, owner_unit, false)

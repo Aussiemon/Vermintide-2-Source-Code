@@ -5,6 +5,9 @@ require("scripts/managers/game_mode/spawning_components/spawning_helper")
 
 local MINIMUM_HEALTH = 0.5
 local REAL_PLAYER_LOCAL_ID = 1
+local RPCS = {
+	"rpc_to_server_spawn_failed",
+}
 
 DeusSpawning = class(DeusSpawning)
 
@@ -16,6 +19,7 @@ DeusSpawning.init = function (self, profile_synchronizer, side, is_server, netwo
 	self._respawns_enabled = true
 	self._spawning = true
 	self._respawn_handler = RespawnHandler:new(profile_synchronizer, is_server)
+	self._peers_ongoing_game_object_sync = {}
 	self._spawn_points = {}
 	self._num_spawn_points_used = 0
 	self._status_updates_active = true
@@ -24,11 +28,18 @@ DeusSpawning.init = function (self, profile_synchronizer, side, is_server, netwo
 end
 
 DeusSpawning.register_rpcs = function (self, network_event_delegate, network_transmit)
+	network_event_delegate:register(self, unpack(RPCS))
+
+	self._network_event_delegate = network_event_delegate
+
 	self._respawn_handler:register_rpcs(network_event_delegate, network_transmit)
 end
 
 DeusSpawning.unregister_rpcs = function (self)
 	self._respawn_handler:unregister_rpcs()
+	self._network_event_delegate:unregister(self)
+
+	self._network_event_delegate = nil
 end
 
 DeusSpawning._restore_player_game_mode_data = function (self, peer_id, local_player_id, profile_index, career_index)
@@ -290,6 +301,15 @@ DeusSpawning._update_spawning = function (self, dt, t, occupied_slots)
 	if self._spawning then
 		local own_peer_id = self._deus_run_controller:get_own_peer_id()
 		local local_player_is_ready = false
+		local joining_peers, num_joining_peers = Managers.state.network.network_server:peers_ongoing_game_object_sync(self._peers_ongoing_game_object_sync)
+
+		for i = 1, num_joining_peers do
+			local other_peer_id = joining_peers[i]
+
+			if not self._profile_synchronizer:all_synced_for_peer(other_peer_id, 1) then
+				return
+			end
+		end
 
 		for i = 1, #occupied_slots do
 			local status = occupied_slots[i]
@@ -408,7 +428,10 @@ DeusSpawning._spawn_player = function (self, status)
 		local ability_cooldown_percent_int = math.floor(ability_cooldown_perentage * 100)
 
 		printf("rpc_to_client_spawn_player %s %d", tostring(peer_id), local_player_id)
-		Managers.state.network.network_transmit:send_rpc("rpc_to_client_spawn_player", peer_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn, ammo_melee_percent_int, ammo_ranged_percent_int, ability_cooldown_percent_int, healthkit_id, potion_id, grenade_id, network_additional_items, network_buff_ids)
+
+		local inventory_hash = self._profile_synchronizer:cached_inventory_hash(peer_id, local_player_id)
+
+		Managers.state.network.network_transmit:send_rpc("rpc_to_client_spawn_player", peer_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn, ammo_melee_percent_int, ammo_ranged_percent_int, ability_cooldown_percent_int, healthkit_id, potion_id, grenade_id, network_additional_items, network_buff_ids, inventory_hash)
 	end
 
 	data.spawn_state = is_initial_spawn and "initial_spawning" or "spawning"
@@ -576,4 +599,38 @@ end
 
 DeusSpawning.get_respawn_handler = function (self)
 	return self._respawn_handler
+end
+
+DeusSpawning.rpc_to_server_spawn_failed = function (self, channel_id, local_player_id)
+	print("[DeusSpawning] Client detected spawning mismatch. Trying again.")
+
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+	local party = self._side.party
+	local occupied_slots = party.occupied_slots
+
+	for i = 1, #occupied_slots do
+		local status = occupied_slots[i]
+		local other_peer_id = status.peer_id
+		local other_local_player_id = status.local_player_id
+
+		if peer_id == other_peer_id and local_player_id == other_local_player_id then
+			local data = status.game_mode_data
+
+			if data.spawn_state == "initial_spawning" then
+				data.spawn_state = "is_initial_spawn"
+
+				break
+			end
+
+			if data.spawn_state == "spawning" then
+				data.spawn_state = "spawn"
+
+				break
+			end
+
+			print("[DeusSpawning] This shouldn't happen. How did we leave spawning?")
+
+			break
+		end
+	end
 end

@@ -755,7 +755,7 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				icon = "markus_huntsman_passive_crit_buff_on_headshot",
-				is_cooldown = true,
+				is_cooldown = false,
 				max_stacks = 1,
 				stat_buff = "critical_strike_chance",
 			},

@@ -48,27 +48,8 @@ NetworkUtils.network_clamp_position = function (pos)
 	return Vector3.clamp(pos, pos_min, pos_max)
 end
 
-NetworkUtils.get_user_name = function (peer_id, lobby)
-	if IS_CONSOLE then
-		if lobby:has_user_name(peer_id) then
-			return lobby:user_name(peer_id)
-		else
-			return
-		end
-	elseif rawget(_G, "Steam") then
-		return Steam.user_name(peer_id)
-	end
-
-	return tostring(peer_id)
-end
-
 NetworkUtils.announce_chat_peer_joined = function (peer_id, lobby)
-	local sender = NetworkUtils.get_user_name(peer_id, lobby)
-
-	if not sender then
-		return
-	end
-
+	local sender = PlayerUtils.player_name(peer_id, lobby)
 	local message = string.format(Localize("system_chat_player_joined_the_game"), sender)
 	local pop_chat = true
 
@@ -89,12 +70,7 @@ NetworkUtils.announce_chat_peer_left = function (peer_id, lobby)
 		return
 	end
 
-	local sender = NetworkUtils.get_user_name(peer_id, lobby)
-
-	if not sender then
-		return
-	end
-
+	local sender = PlayerUtils.player_name(peer_id, lobby)
 	local message = string.format(Localize("system_chat_player_left_the_game"), sender)
 	local pop_chat = true
 

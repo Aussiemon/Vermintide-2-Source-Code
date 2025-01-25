@@ -15,8 +15,9 @@ local function resync_loadout()
 		talent_extension:talents_changed()
 	else
 		local is_bot = local_player.bot_player
+		local force_resync = false
 
-		profile_synchronizer:resync_loadout(local_player:network_id(), local_player:local_player_id(), is_bot)
+		profile_synchronizer:resync_loadout(local_player:network_id(), local_player:local_player_id(), is_bot, force_resync)
 	end
 end
 

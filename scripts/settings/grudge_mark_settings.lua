@@ -15,10 +15,8 @@ BreedEnhancements = BreedEnhancements or {
 	},
 	termite_base = {
 		"grudge_mark_termite_health",
-		"grudge_mark_unstaggerable",
-		"grudge_mark_shockwave_attacks",
-		"grudge_mark_crushing_blow",
-		no_attribute = true,
+		"grudge_mark_termite_boss_raging",
+		display_name = "display_name_enraged",
 	},
 	termite_small = {
 		"grudge_mark_termite_health_small",
@@ -289,5 +287,8 @@ GrudgeMarkedNames = {
 	},
 	beastmen = {
 		"name_grudge_beastmen_001",
+	},
+	termite_base = {
+		"name_grudge_termite_rat_ogre",
 	},
 }

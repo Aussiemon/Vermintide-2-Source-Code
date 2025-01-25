@@ -19,45 +19,20 @@ PlayFabMirrorAdventure.set_mechanism = function (self, mechanism_key)
 
 	self._mechanism_key = mechanism_key
 
+	local verify_slots = table.clone(InventorySettings.slots_per_affiliation)
+
+	table.insert(verify_slots.heroes, "talents")
+
 	if mechanism_key == "versus" then
 		self._characters_data_key = "vs_characters_data"
-		self._verify_slot_keys_per_affiliation = {
-			heroes = {
-				"slot_ranged",
-				"slot_melee",
-				"slot_hat",
-				"slot_skin",
-				"slot_necklace",
-				"slot_trinket_1",
-				"slot_ring",
-				"slot_frame",
-				"talents",
-				"slot_pose",
-			},
-			dark_pact = {
-				"slot_melee",
-				"slot_skin",
-				"slot_frame",
-			},
-			spectators = {},
-		}
 	else
 		self._characters_data_key = "characters_data"
-		self._verify_slot_keys_per_affiliation = {
-			heroes = {
-				"slot_ranged",
-				"slot_melee",
-				"slot_hat",
-				"slot_skin",
-				"slot_necklace",
-				"slot_trinket_1",
-				"slot_ring",
-				"slot_frame",
-				"talents",
-				"slot_pose",
-			},
+		verify_slots = {
+			heroes = verify_slots.heroes,
 		}
 	end
+
+	self._verify_slot_keys_per_affiliation = verify_slots
 end
 
 PlayFabMirrorAdventure.request_characters = function (self, mechanism_key)

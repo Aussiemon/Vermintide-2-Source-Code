@@ -7,9 +7,9 @@ PlayerUtils.unique_player_id = function (peer_id, local_player_id)
 end
 
 PlayerUtils.split_unique_player_id = function (unique_player_id)
-	local result = string.split_deprecated(unique_player_id, ":")
+	local peer_id, local_player_id = string.match(unique_player_id, "^([^:]+):(.*)$")
 
-	return result[1], tonumber(result[2])
+	return peer_id, tonumber(local_player_id)
 end
 
 PlayerUtils.get_random_alive_hero = function ()
@@ -116,21 +116,7 @@ PlayerUtils.broadphase_query = function (position, radius, result_table, broadph
 end
 
 PlayerUtils.peer_id_compare = function (peer_a, peer_b)
-	local upper_a = tonumber(string.format("0x%s", string.sub(peer_a, 1, 8)))
-	local upper_b = tonumber(string.format("0x%s", string.sub(peer_b, 1, 8)))
-
-	if upper_a ~= upper_b then
-		return upper_a < upper_b
-	end
-
-	local lower_a = tonumber(string.format("0x%s", string.sub(peer_a, 8, 16)))
-	local lower_b = tonumber(string.format("0x%s", string.sub(peer_b, 8, 16)))
-
-	if lower_a ~= lower_b then
-		return lower_a < lower_b
-	end
-
-	return true
+	return peer_a <= peer_b
 end
 
 PlayerUtils.player_name = function (peer_id, lobby)
@@ -142,7 +128,9 @@ PlayerUtils.player_name = function (peer_id, lobby)
 	local name
 
 	if IS_CONSOLE then
-		name = lobby:user_name(peer_id)
+		if lobby:has_user_name(peer_id) then
+			name = lobby:user_name(peer_id)
+		end
 	elseif Steam then
 		name = Steam.user_name(peer_id)
 	end
@@ -150,6 +138,8 @@ PlayerUtils.player_name = function (peer_id, lobby)
 	if not name or name == "" then
 		name = string.format("Peer #%s", string.sub(peer_id, -3))
 	end
+
+	name = string.gsub(name, "{#", "{​#")
 
 	return name
 end

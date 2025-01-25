@@ -229,8 +229,8 @@ NetworkMatchHandler.get_match_owner = function (self)
 	end
 end
 
-NetworkMatchHandler.is_leader = function (self, peer_id)
-	peer_id = peer_id or Network.peer_id()
+NetworkMatchHandler.is_leader = function (self, optional_peer_id)
+	local peer_id = optional_peer_id or self._my_peer_id
 
 	return self:query_peer_data(peer_id, "leader_peer_id") == peer_id
 end

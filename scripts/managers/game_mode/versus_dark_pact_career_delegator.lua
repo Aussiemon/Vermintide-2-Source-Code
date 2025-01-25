@@ -34,6 +34,7 @@ VersusDarkPactCareerDelegator.init = function (self)
 	self._mechanism = Managers.mechanism:game_mechanism()
 
 	self:_override_available_profiles(GameModeSettings.versus)
+	self:_initialize_custom_settings()
 end
 
 VersusDarkPactCareerDelegator._override_available_profiles = function (self, settings)
@@ -92,10 +93,16 @@ VersusDarkPactCareerDelegator._roll_career_options = function (self, num_career_
 		local num_times_picked = self._picks_per_career[career]
 		local career_weights = weights_by_career[career] or weights_by_career.default
 		local repetition_weight = self:_weight_by_repetition(peer_id, career)
-		local weighted_roll = math.random() * (career_weights[num_times_picked] or 0) * repetition_weight
+		local custom_spawn_chance_multiplier = 1
+
+		if self._custom_settings_spawn_chance_multipliers and not table.is_empty(self._custom_settings_spawn_chance_multipliers) then
+			custom_spawn_chance_multiplier = self._custom_settings_spawn_chance_multipliers[career]
+		end
+
+		local weighted_roll = math.random() * (career_weights[num_times_picked] or 0) * repetition_weight * custom_spawn_chance_multiplier
 		local smallest_roll = table.min(rolls)
 
-		if weighted_roll > rolls[smallest_roll] then
+		if weighted_roll >= rolls[smallest_roll] then
 			selected_careers[smallest_roll] = career
 			rolls[smallest_roll] = weighted_roll
 		end
@@ -116,7 +123,7 @@ VersusDarkPactCareerDelegator.request_careers = function (self, peer_id)
 	self:_release_career_for_player(peer_id)
 
 	local settings = Managers.state.game_mode:game_mode():settings()
-	local num_career_options = settings.dark_pact_picking_rules.special_pick_options
+	local num_career_options = self._custom_num_special_pick_options or settings.dark_pact_picking_rules.special_pick_options
 	local career_options = self:_roll_career_options(num_career_options, self._all_careers, peer_id)
 
 	if self._playable_boss_can_be_picked then
@@ -149,6 +156,10 @@ VersusDarkPactCareerDelegator.request_careers = function (self, peer_id)
 end
 
 VersusDarkPactCareerDelegator.set_playable_boss_can_be_picked = function (self, is_next)
+	if self._custom_setting_no_bosses or #self._bosses == 0 then
+		return
+	end
+
 	if DEDICATED_SERVER then
 		cprint("[VS BOSS] setting is_playble_boss_next")
 	elseif Managers.state.network.is_server then
@@ -287,5 +298,63 @@ VersusDarkPactCareerDelegator._register_player_career = function (self, peer_id,
 
 	for i = #weights_by_repetition + 1, #last_picks do
 		last_picks[i] = nil
+	end
+end
+
+VersusDarkPactCareerDelegator._initialize_custom_settings = function (self)
+	local mechanism_ok, num_pactsworn_picking_options, custom_settings_enabled = Managers.mechanism:mechanism_try_call("get_custom_game_setting", "num_pactsworn_picking_options")
+
+	if not custom_settings_enabled then
+		return
+	end
+
+	if num_pactsworn_picking_options then
+		self._custom_num_special_pick_options = num_pactsworn_picking_options
+	end
+
+	local all_careers = self._all_careers
+
+	self._custom_settings_spawn_chance_multipliers = {}
+
+	local num_rollable_careers = 0
+
+	for i = 1, #all_careers do
+		local career_name = all_careers[i]
+		local setting_name = career_name .. "_spawn_chance_multiplier"
+		local _, multiplier, _ = Managers.mechanism:mechanism_try_call("get_custom_game_setting", setting_name)
+
+		if mechanism_ok and custom_settings_enabled and multiplier then
+			self._custom_settings_spawn_chance_multipliers[career_name] = multiplier
+
+			if multiplier ~= 0 then
+				num_rollable_careers = num_rollable_careers + 1
+			end
+		end
+	end
+
+	local all_bosses = self._bosses
+	local new_boss_table = {}
+
+	for i = 1, #self._bosses do
+		local boss_name = all_bosses[i]
+		local setting_name = boss_name .. "_spawn_chance_multiplier"
+		local _, setting, _ = Managers.mechanism:mechanism_try_call("get_custom_game_setting", setting_name)
+
+		if setting ~= "default" and setting ~= false then
+			self._custom_settings_spawn_chance_multipliers[boss_name] = setting
+			self._all_careers[#self._all_careers + 1] = boss_name
+			num_rollable_careers = num_rollable_careers + 1
+		elseif setting == "default" then
+			new_boss_table[#new_boss_table + 1] = boss_name
+		end
+	end
+
+	self._bosses = new_boss_table
+	self._custom_setting_no_bosses = #self._bosses == 0
+
+	if num_rollable_careers == 0 then
+		table.clear(self._custom_settings_spawn_chance_multipliers)
+	elseif num_rollable_careers < self._custom_num_special_pick_options then
+		self._custom_num_special_pick_options = num_rollable_careers
 	end
 end

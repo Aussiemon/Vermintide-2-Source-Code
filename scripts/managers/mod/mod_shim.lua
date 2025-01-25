@@ -350,6 +350,14 @@ ModShim._wedge_hook = function (self, vmf_mod, mod_name, hook_func_name, mod_wed
 			printf("[ModShim] <%s> hooking into %s.%s with wedged function", mod_name, hook_obj, hook_method)
 
 			function func(hooked_function_or_any, ...)
+				if not vmf_mod:is_enabled() then
+					if type(hooked_function_or_any) == "function" then
+						return hooked_function_or_any(...)
+					end
+
+					return
+				end
+
 				local wedge_func_ok, wedge_func_result = pcall(wedge_func, vmf_mod, mod_func, mod_name, hooked_function_or_any, ...)
 
 				if not wedge_func_ok then

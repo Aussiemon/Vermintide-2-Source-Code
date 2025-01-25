@@ -21,6 +21,8 @@ VersusSurviveEventObjectiveExtension._set_objective_data = function (self, objec
 	self._score_for_completion = objective_data.score_for_completion or survive_default_settings.score_for_completion
 	self._time_for_completion = objective_data.time_for_completion or survive_default_settings.time_for_completion
 	self._on_last_leaf_complete_sound_event = objective_data.on_last_leaf_complete_sound_event or survive_default_settings.on_last_leaf_complete_sound_event
+	self._on_leaf_complete_sound_event = objective_data.on_leaf_complete_sound_event or survive_default_settings.on_leaf_complete_sound_event
+	self._on_section_progress_sound_event = objective_data.on_section_progress_sound_event or survive_default_settings.on_section_progress_sound_event
 end
 
 VersusSurviveEventObjectiveExtension._activate = function (self)

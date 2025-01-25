@@ -4,10 +4,27 @@ require("scripts/managers/game_mode/spawning_components/spawning_helper")
 
 SimpleSpawning = class(SimpleSpawning)
 
+local RPCS = {
+	"rpc_to_server_spawn_failed",
+}
+
 SimpleSpawning.init = function (self, profile_synchronizer, use_spawn_point_groups)
 	self._profile_synchronizer = profile_synchronizer
 	self._spawn_point_groups = {}
+	self._peers_ongoing_game_object_sync = {}
 	self._use_spawn_point_groups = use_spawn_point_groups
+end
+
+SimpleSpawning.register_rpcs = function (self, network_event_delegate, network_transmit)
+	network_event_delegate:register(self, unpack(RPCS))
+
+	self._network_event_delegate = network_event_delegate
+end
+
+SimpleSpawning.unregister_rpcs = function (self)
+	self._network_event_delegate:unregister(self)
+
+	self._network_event_delegate = nil
 end
 
 SimpleSpawning.setup_data = function (self, peer_id, local_player_id)
@@ -49,6 +66,33 @@ end
 SimpleSpawning.update = function (self, t, dt, party)
 	if Managers.state.network:game() then
 		local player_manager = Managers.player
+		local joining_peers, num_joining_peers = Managers.state.network.network_server:peers_ongoing_game_object_sync(self._peers_ongoing_game_object_sync)
+
+		for i = 1, num_joining_peers do
+			local other_peer_id = joining_peers[i]
+
+			if not self._profile_synchronizer:all_synced_for_peer(other_peer_id, 1) then
+				return
+			end
+		end
+
+		local parties = Managers.party:parties()
+
+		for party_i = 1, #parties do
+			local other_party = parties[party_i]
+			local other_occupied_slots = other_party.occupied_slots
+
+			for i = 1, #other_occupied_slots do
+				local status = other_occupied_slots[i]
+				local other_peer_id = status.peer_id
+				local other_local_player_id = status.local_player_id
+
+				if not self._profile_synchronizer:all_synced_for_peer(other_peer_id, other_local_player_id) then
+					return
+				end
+			end
+		end
+
 		local occupied_slots = party.occupied_slots
 
 		for i = 1, #occupied_slots do
@@ -80,8 +124,9 @@ SimpleSpawning.update = function (self, t, dt, party)
 					local ammo_ranged_percent_int = 100
 					local ability_cooldown_percentage_int = 100
 					local non_item_id = NetworkLookup.item_names["n/a"]
+					local inventory_hash = self._profile_synchronizer:cached_inventory_hash(peer_id, local_player_id)
 
-					Managers.state.network.network_transmit:send_rpc("rpc_to_client_spawn_player", peer_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn, ammo_melee_percent_int, ammo_ranged_percent_int, ability_cooldown_percentage_int, non_item_id, non_item_id, non_item_id, {}, {})
+					Managers.state.network.network_transmit:send_rpc("rpc_to_client_spawn_player", peer_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn, ammo_melee_percent_int, ammo_ranged_percent_int, ability_cooldown_percentage_int, non_item_id, non_item_id, non_item_id, {}, {}, inventory_hash)
 
 					data.spawn_state = "spawning"
 				end
@@ -130,4 +175,36 @@ SimpleSpawning.flow_callback_add_spawn_point = function (self, unit)
 	end
 
 	spawn_points[#spawn_points + 1] = spawn_point
+end
+
+SimpleSpawning.rpc_to_server_spawn_failed = function (self, channel_id, local_player_id)
+	print("[SimpleSpawning] Client detected spawning mismatch. Trying again.")
+
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+	local parties = Managers.party:parties()
+
+	for party_id = 1, #parties do
+		local party = parties[party_id]
+		local occupied_slots = party.occupied_slots
+
+		for i = 1, #occupied_slots do
+			local status = occupied_slots[i]
+			local other_peer_id = status.peer_id
+			local other_local_player_id = status.local_player_id
+
+			if peer_id == other_peer_id and local_player_id == other_local_player_id then
+				local data = status.game_mode_data
+
+				if data.spawn_state == "spawning" then
+					data.spawn_state = "not_spawned"
+
+					break
+				end
+
+				print("[SimpleSpawning] This shouldn't happen. How did we leave spawning?")
+
+				break
+			end
+		end
+	end
 end

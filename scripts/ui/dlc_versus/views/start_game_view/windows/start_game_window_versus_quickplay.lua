@@ -85,10 +85,13 @@ StartGameWindowVersusQuickplay.set_focus = function (self, focused)
 end
 
 StartGameWindowVersusQuickplay.update = function (self, dt, t)
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+
 	self:_update_can_play()
 	self:_update_animations(dt)
 	self:_handle_gamepad_activity()
 	self:_handle_input(dt, t)
+	self:_update_play_button_texture(gamepad_active)
 	self:_draw(dt)
 end
 
@@ -281,7 +284,7 @@ StartGameWindowVersusQuickplay._handle_new_selection = function (self, input_ind
 	for i = 1, #selector_input_definitions do
 		local widget_name = selector_input_definitions[i].widget_name
 		local widget = widgets_by_name[widget_name]
-		local is_selected = i == input_index
+		local is_selected = i == input_index and self._gamepad_active
 
 		widget.content.is_selected = is_selected
 	end
@@ -307,6 +310,10 @@ StartGameWindowVersusQuickplay._update_animations = function (self, dt)
 			animations[animation_name] = nil
 		end
 	end
+
+	local widgets_by_name = self._widgets_by_name
+
+	UIWidgetUtils.animate_play_button(widgets_by_name.play_button, dt)
 end
 
 StartGameWindowVersusQuickplay._update_button_animations = function (self, dt)
@@ -323,4 +330,26 @@ StartGameWindowVersusQuickplay._draw = function (self, dt)
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, parent_scenegraph_id, render_settings)
 	UIRenderer.draw_all_widgets(ui_top_renderer, self._widgets)
 	UIRenderer.end_pass(ui_top_renderer)
+end
+
+StartGameWindowVersusQuickplay._update_play_button_texture = function (self, gamepad_active)
+	local widgets_by_name = self._widgets_by_name
+
+	if self._gamepad_active ~= gamepad_active then
+		self._gamepad_active = gamepad_active
+
+		if gamepad_active then
+			local input_service = self._parent:window_input_service()
+			local input_action = "refresh"
+			local button_texture_data = UISettings.get_gamepad_input_texture_data(input_service, input_action, gamepad_active)
+
+			if button_texture_data then
+				widgets_by_name.play_button.content.texture_icon_id = button_texture_data.texture
+			end
+		else
+			widgets_by_name.play_button.content.texture_icon_id = "options_button_icon_quickplay"
+		end
+
+		self:_handle_new_selection(self._input_index)
+	end
 end

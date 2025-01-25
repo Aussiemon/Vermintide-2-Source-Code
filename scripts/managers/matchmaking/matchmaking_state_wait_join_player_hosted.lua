@@ -16,6 +16,8 @@ MatchmakingStateWaitJoinPlayerHosted.destroy = function (self)
 end
 
 MatchmakingStateWaitJoinPlayerHosted.on_enter = function (self, state_context)
+	Managers.mechanism:mechanism_try_call("on_enter_custom_game_lobby")
+
 	self._current_lobby = Managers.state.network:lobby()
 	self._state_context = state_context
 	self._search_config = state_context.search_config

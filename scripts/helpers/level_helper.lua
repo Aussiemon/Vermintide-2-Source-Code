@@ -4,9 +4,15 @@ LevelHelper = LevelHelper or {}
 LevelHelper.INGAME_WORLD_NAME = "level_world"
 
 LevelHelper.current_level_settings = function (self)
-	local level_key = Managers.state.game_mode:level_key()
+	local game_mode_manager = Managers.state.game_mode
 
-	return LevelSettings[level_key]
+	if game_mode_manager then
+		local level_key = Managers.state.game_mode:level_key()
+
+		return LevelSettings[level_key]
+	end
+
+	return nil
 end
 
 LevelHelper.current_level = function (self, world)

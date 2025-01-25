@@ -1051,7 +1051,12 @@ local versus_widget_definitions = {
 		14,
 		0,
 	}, nil, "native"),
-	loading_status_frame = UIWidgets.create_simple_rotated_texture("matchmaking_icon_effect_morris", 0, {
+	loading_icon = UIWidgets.create_simple_texture("matchmaking_icon_versus", "loading_icon", false, false, nil, {
+		0,
+		3,
+		3,
+	}),
+	loading_status_frame = UIWidgets.create_simple_rotated_texture("matchmaking_icon_effect_versus", 0, {
 		71,
 		71,
 	}, "loading_status_frame", false, false, nil, nil, {

@@ -205,6 +205,31 @@ LevelTransitionHandler.load_current_level = function (self)
 
 		self.loading_packages[new_level_key] = true
 		self._has_loaded_all_packages = false
+
+		local current_level_settings = currently_loaded_level_key and LevelSettings[currently_loaded_level_key]
+		local current_level_render_overrides = current_level_settings and current_level_settings.render_settings_overrides
+
+		if current_level_render_overrides then
+			dprint("Restoring override render_settings for level: %q", new_level_key)
+
+			for render_setting, _ in pairs(current_level_render_overrides) do
+				local value = Application.user_setting("render_settings", render_setting)
+
+				dprint("Restoring: %q = %q", render_setting, value)
+				Application.set_render_setting(render_setting, tostring(value))
+			end
+		end
+
+		local new_level_render_overrides = level_settings.render_settings_overrides
+
+		if new_level_render_overrides then
+			dprint("Setting render_settings overrides for level: %q", new_level_key)
+
+			for render_setting, value in pairs(new_level_render_overrides) do
+				dprint("Overriding: %q = %q", render_setting, value)
+				Application.set_render_setting(render_setting, tostring(value))
+			end
+		end
 	end
 
 	self._currently_loaded_level_key = new_level_key

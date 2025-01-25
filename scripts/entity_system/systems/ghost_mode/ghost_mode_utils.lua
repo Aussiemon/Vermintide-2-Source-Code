@@ -24,6 +24,14 @@ GhostModeUtils.in_range_of_enemies = function (position, side, is_boss)
 	local in_range = false
 	local min_dist = is_boss and GameModeSettings.versus.boss_minimum_spawn_distance or GameModeSettings.versus.dark_pact_minimum_spawn_distance
 	local min_dist_vertical = GameModeSettings.versus.dark_pact_minimum_spawn_distance_vertical
+	local setting_name = is_boss and "boss_spawn_range_distance" or "special_spawn_range_distance"
+	local mechanism_ok, custom_setting_distance_override, custom_settings_enabled = Managers.mechanism:mechanism_try_call("get_custom_game_setting", setting_name)
+
+	if mechanism_ok and custom_settings_enabled then
+		min_dist = custom_setting_distance_override
+		min_dist_vertical = math.clamp(0, GameModeSettings.versus.dark_pact_minimum_spawn_distance_vertical, min_dist)
+	end
+
 	local min_dist_sq = min_dist^2
 
 	for i = 1, #enemy_positions do
@@ -111,6 +119,12 @@ end
 GhostModeUtils.far_enough_to_enter_ghost_mode = function (unit)
 	local unit_pos = POSITION_LOOKUP[unit]
 	local allowed_enter_ghost_dist = GameModeSettings.versus.dark_pact_catch_up_distance
+	local mechanism_ok, custom_setting_distance_override, custom_settings_enabled = Managers.mechanism:mechanism_try_call("get_custom_game_setting", "catch_up_with_heroes")
+
+	if custom_settings_enabled then
+		allowed_enter_ghost_dist = custom_setting_distance_override
+	end
+
 	local side = Managers.state.side.side_by_unit[unit]
 	local enemy_units = side.ENEMY_PLAYER_AND_BOT_UNITS
 

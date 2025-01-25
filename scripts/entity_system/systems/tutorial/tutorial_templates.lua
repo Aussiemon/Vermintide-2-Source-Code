@@ -575,6 +575,11 @@ TutorialTemplates.objective_unit = {
 					best_unit = objective_unit
 					best_distance_sq = distance_sq
 				end
+
+				if extension.always_show then
+					objective_units_n = objective_units_n + 1
+					objective_units[objective_units_n] = objective_unit
+				end
 			end
 		end
 
@@ -585,9 +590,10 @@ TutorialTemplates.objective_unit = {
 			data.alerts_horde = unit_get_data(best_unit, "alerts_horde") or false
 			data.objective_icon = unit_get_data(best_unit, "icon") or "hud_tutorial_icon_mission"
 			data.objective_wave = unit_get_data(best_unit, "tutorial_wave") or false
-			objective_units[1] = best_unit
+			objective_units_n = objective_units_n + 1
+			objective_units[objective_units_n] = best_unit
 
-			return true, objective_units, 1
+			return true, objective_units, objective_units_n
 		end
 
 		return false

@@ -223,10 +223,13 @@ PlayerUnitGhostModeExtension.get_distance_from_players = function (self, unit)
 	local distance_to_spawn = math.huge
 	local profile_index = self._player:profile_index()
 	local profile = SPProfiles[profile_index]
-	local min_dist = GameModeSettings.versus.dark_pact_minimum_spawn_distance
+	local is_boss = profile.enemy_role and profile.enemy_role == "boss"
+	local min_dist = is_boss and GameModeSettings.versus.boss_minimum_spawn_distance or GameModeSettings.versus.dark_pact_minimum_spawn_distance
+	local setting_name = is_boss and "boss_spawn_range_distance" or "special_spawn_range_distance"
+	local mechanism_ok, custom_setting_distance_override, custom_settings_enabled = Managers.mechanism:mechanism_try_call("get_custom_game_setting", setting_name)
 
-	if profile.enemy_role and profile.enemy_role == "boss" then
-		min_dist = GameModeSettings.versus.boss_minimum_spawn_distance
+	if mechanism_ok and custom_settings_enabled then
+		min_dist = custom_setting_distance_override
 	end
 
 	for i = 1, #enemy_positions do

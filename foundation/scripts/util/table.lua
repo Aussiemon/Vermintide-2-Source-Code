@@ -683,10 +683,10 @@ table.mirror_array_inplace = function (t)
 	return t
 end
 
-table.keys = function (t, out)
+table.keys = function (t, out, optional_offset)
 	out = out or {}
 
-	local n = 0
+	local n = optional_offset or 0
 
 	for key in pairs(t) do
 		n = n + 1
@@ -896,16 +896,16 @@ table.map = function (t, func)
 	return copy
 end
 
-table.filter = function (t, func)
-	local copy = {}
+table.filter = function (t, func, out)
+	out = out or {}
 
 	for k, v in pairs(t) do
 		if func(v) == true then
-			copy[k] = v
+			out[k] = v
 		end
 	end
 
-	return copy
+	return out
 end
 
 table.filter_to_array = function (t, func)
@@ -952,6 +952,16 @@ table.find_func = function (t, func)
 	for key, value in pairs(t) do
 		if func(key, value) then
 			return key, value
+		end
+	end
+end
+
+table.find_func_array = function (t, func)
+	for i = 1, #t do
+		local value = t[i]
+
+		if func(value) then
+			return i, value
 		end
 	end
 end

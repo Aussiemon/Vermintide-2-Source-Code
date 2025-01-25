@@ -732,6 +732,48 @@ local scenegraph_definition = {
 			1,
 		},
 	},
+	settings_container = {
+		horizontal_alignment = "center",
+		parent = "screen",
+		vertical_alignment = "center",
+		size = {
+			480,
+			560,
+		},
+		position = {
+			0,
+			-140,
+			10,
+		},
+	},
+	settings_anchor = {
+		horizontal_alignment = "left",
+		parent = "settings_container",
+		vertical_alignment = "top",
+		size = {
+			0,
+			0,
+		},
+		position = {
+			0,
+			-10,
+			100,
+		},
+	},
+	custom_ruleset_text = {
+		horizontal_alignment = "center",
+		parent = "settings_container",
+		vertical_alignment = "top",
+		size = {
+			480,
+			30,
+		},
+		position = {
+			0,
+			40,
+			1,
+		},
+	},
 }
 local level_name_style = {
 	dynamic_font_size = false,
@@ -1002,6 +1044,295 @@ function create_empty_frame_widget(scenegraph_id)
 	}
 end
 
+function create_settings_widget(scenegraph_id, data, ui_data, start_value, start_idx, setting_id, on_setting_changed_cb)
+	local settings = data.values or {}
+	local num_settings = #settings or 0
+	local setting_name = "menu_settings_" .. data.setting_name
+	local tooltip_text = "tooltip_" .. data.setting_name
+
+	local function update_hotspot(content, style, dt)
+		local parent = content.parent
+		local hover_progress = content.hover_progress or 0
+		local hover_speed = 15
+
+		if content.is_hover then
+			hover_progress = math.min(hover_progress + dt * hover_speed, 1)
+		else
+			hover_progress = math.max(hover_progress - dt * hover_speed, 0)
+		end
+
+		content.hover_progress = hover_progress
+
+		local press_progress = content.press_progress or 1
+		local press_speed = 25
+
+		if content.is_held then
+			press_progress = math.max(press_progress - dt * press_speed, 0.5)
+		else
+			press_progress = math.min(press_progress + dt * press_speed, 1)
+		end
+
+		content.press_progress = press_progress
+	end
+
+	local function animate_button(content, style, hotspot, dt)
+		local hover_progress = hotspot.hover_progress or 0
+		local press_progress = hotspot.press_progress or 1
+
+		style.color[1] = 255 * hover_progress
+
+		if hotspot.is_hover then
+			style.color[1] = 255 * press_progress
+		end
+	end
+
+	local definition = {
+		element = {
+			passes = {
+				{
+					pass_type = "text",
+					style_id = "setting_name",
+					text_id = "setting_name",
+					content_change_function = function (content, style, _, dt)
+						return
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "setting_value_bg",
+					texture_id = "setting_value_bg",
+				},
+				{
+					pass_type = "text",
+					style_id = "setting_value",
+					text_id = "setting_value",
+					content_change_function = function (content, style, _, dt)
+						local values = content.data.values
+						local ui_data = content.ui_data
+						local setting_idx = content.setting_idx
+						local new_value = values[setting_idx]
+
+						if content.value ~= new_value then
+							content.value = new_value
+
+							local localization_options = ui_data and ui_data.localization_options
+
+							if localization_options and localization_options[new_value] then
+								local text = localization_options[new_value]
+
+								content.setting_value = Localize(text)
+							else
+								content.setting_value = tostring(content.value)
+							end
+						end
+
+						if content.value ~= content.default_value then
+							style.text_color = style.modified_color
+						else
+							style.text_color = style.default_color
+						end
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "divider",
+					texture_id = "divider",
+				},
+				{
+					content_id = "setting_highlight_hotspot",
+					pass_type = "hotspot",
+					style_id = "setting_highlight_hotspot",
+					content_change_function = function (content, style, _, dt)
+						local hover_progress = content.hover_progress or 0
+						local hover_speed = 15
+
+						if content.is_hover or content.parent.is_gamepad_active and content.parent.focused and content.parent.is_selected then
+							hover_progress = math.min(hover_progress + dt * hover_speed, 1)
+						else
+							hover_progress = math.max(hover_progress - dt * hover_speed, 0)
+						end
+
+						content.hover_progress = hover_progress
+					end,
+				},
+				{
+					pass_type = "texture",
+					style_id = "setting_highlight",
+					texture_id = "setting_highlight",
+					content_change_function = function (content, style, _, dt)
+						local hover_progress = content.setting_highlight_hotspot.hover_progress or 0
+
+						style.color[1] = 255 * hover_progress
+					end,
+				},
+				{
+					pass_type = "option_tooltip",
+					style_id = "tooltip_text",
+					text_id = "tooltip_text",
+					content_check_function = function (content, style)
+						return content.setting_highlight_hotspot.is_hover
+					end,
+				},
+			},
+		},
+		content = {
+			default_idx = 1,
+			default_value = 0,
+			divider = "rect_masked",
+			setting_highlight = "party_selection_glow",
+			setting_value_bg = "rect_masked",
+			data = data,
+			ui_data = ui_data,
+			id = setting_id,
+			name = data.setting_name,
+			on_setting_changed_cb = on_setting_changed_cb,
+			settings = settings,
+			num_settings = num_settings,
+			setting_idx = start_idx,
+			setting_value = tostring(start_value),
+			setting_name = setting_name,
+			setting_highlight_hotspot = {
+				allow_multi_hover = true,
+			},
+			tooltip_text = tooltip_text,
+		},
+		style = {
+			setting_name = {
+				font_size = 20,
+				font_type = "hell_shark_masked",
+				horizontal_alignment = "left",
+				localize = true,
+				masked = true,
+				upper_case = false,
+				use_shadow = true,
+				vertical_alignment = "center",
+				size = {
+					380,
+					30,
+				},
+				area_size = {
+					380,
+					30,
+				},
+				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				offset = {
+					0,
+					0,
+					3,
+				},
+			},
+			setting_value_bg = {
+				masked = true,
+				size = {
+					128,
+					30,
+				},
+				offset = {
+					320,
+					0,
+					4,
+				},
+				color = Colors.get_color_table_with_alpha("black", 120),
+			},
+			setting_value = {
+				dynamic_font_size = true,
+				font_size = 22,
+				font_type = "hell_shark_masked",
+				horizontal_alignment = "center",
+				localize = false,
+				masked = true,
+				upper_case = false,
+				use_shadow = true,
+				vertical_alignment = "center",
+				size = {
+					128,
+					30,
+				},
+				area_size = {
+					128,
+					30,
+				},
+				modified_color = Colors.get_color_table_with_alpha("pale_golden_rod", 255),
+				default_color = Colors.get_color_table_with_alpha("font_default", 180),
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					320,
+					0,
+					5,
+				},
+			},
+			divider = {
+				masked = true,
+				size = {
+					440,
+					2,
+				},
+				offset = {
+					0,
+					-2,
+					1,
+				},
+				color = Colors.get_color_table_with_alpha("gray", 100),
+			},
+			setting_highlight_hotspot = {
+				size = {
+					440,
+					34,
+				},
+				offset = {
+					0,
+					0,
+					1,
+				},
+			},
+			setting_highlight = {
+				masked = true,
+				texture_size = {
+					440,
+					34,
+				},
+				offset = {
+					0,
+					0,
+					1,
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+			},
+			tooltip_text = {
+				font_size = 24,
+				font_type = "hell_shark_masked",
+				horizontal_alignment = "left",
+				localize = true,
+				upper_case = false,
+				use_shadow = true,
+				vertical_alignment = "center",
+				size = {
+					180,
+					30,
+				},
+				area_size = {
+					180,
+					30,
+				},
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					0,
+					0,
+					1,
+				},
+			},
+		},
+		offset = {
+			0,
+			0,
+			1,
+		},
+		scenegraph_id = scenegraph_id,
+	}
+
+	return definition
+end
+
 local widget_definitions = {
 	level_name = UIWidgets.create_simple_text("level_name", "level_name", nil, nil, level_name_style),
 	sub_title = UIWidgets.create_simple_text("sub_title", "sub_title", nil, nil, sub_title_style),
@@ -1023,6 +1354,28 @@ local widget_definitions = {
 	team_2_text = UIWidgets.create_simple_text(Localize("vs_lobby_enemy_team"), "team_2_text", nil, nil, team_2_text_style),
 	team_2_side_text = UIWidgets.create_simple_text("", "team_2_side_text", nil, nil, team_2_side_text_style),
 	input_description_text = UIWidgets.create_simple_text("player_list_show_mouse_description", "player_list_input_description", nil, nil, input_description_style),
+}
+local custom_ruleset_text_style = {
+	dynamic_font_size = false,
+	font_size = 24,
+	font_type = "hell_shark",
+	horizontal_alignment = "center",
+	localize = false,
+	upper_case = true,
+	use_shadow = true,
+	vertical_alignment = "center",
+	word_wrap = true,
+	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	offset = {
+		0,
+		0,
+		2,
+	},
+}
+local custom_game_settings_widgets = {
+	settings_background = UIWidgets.create_rect_with_outer_frame("settings_container", scenegraph_definition.settings_container.size, "frame_outer_fade_02", nil, UISettings.console_start_game_menu_rect_color, Colors.get_color_table_with_alpha("font_default", 125)),
+	settings_mask = UIWidgets.create_simple_texture("mask_rect", "settings_container"),
+	custom_ruleset_text = UIWidgets.create_simple_text(Localize("versus_custom_game_custom_ruleset"), "custom_ruleset_text", nil, nil, custom_ruleset_text_style),
 }
 local animation_definitions = {
 	on_enter = {
@@ -1052,6 +1405,8 @@ return {
 	animation_definitions = animation_definitions,
 	scenegraph_definition = scenegraph_definition,
 	widget_definitions = widget_definitions,
+	custom_game_settings_widgets = custom_game_settings_widgets,
+	create_settings_widget = create_settings_widget,
 	console_cursor_definition = UIWidgets.create_console_cursor("console_cursor"),
 	item_tooltip = UIWidgets.create_simple_item_presentation("item_tooltip", UISettings.console_tooltip_pass_definitions),
 }

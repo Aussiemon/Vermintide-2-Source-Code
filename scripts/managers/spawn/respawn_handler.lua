@@ -3,9 +3,9 @@
 RespawnHandler = class(RespawnHandler)
 
 local RESPAWN_DISTANCE = 70
-local END_OF_LEVEL_BUFFER = 35
 local RESPAWN_TIME = 30
 local RESPAWN_MOVE_TIME = 10
+local FAST_RESPAWN_TIME = 2
 local RPCS = {
 	"rpc_to_client_respawn_player",
 	"rpc_respawn_confirmed",
@@ -297,7 +297,17 @@ RespawnHandler.server_update = function (self, dt, t, slots)
 			if not data.ready_for_respawn and not data.respawn_timer then
 				local peer_id = status.peer_id
 				local local_player_id = status.local_player_id
-				local respawn_time = Development.parameter("fast_respawns") and 2 or Managers.mechanism:setting("hero_respawn_time") or RESPAWN_TIME
+				local respawn_time
+
+				if self._custom_game_respawn_time_override then
+					respawn_time = self._custom_game_respawn_time_override
+				elseif Development.parameter("fast_respawns") then
+					respawn_time = FAST_RESPAWN_TIME
+				elseif Managers.mechanism:setting("hero_respawn_time") then
+					respawn_time = Managers.mechanism:setting("hero_respawn_time")
+				else
+					respawn_time = RESPAWN_TIME
+				end
 
 				if peer_id and local_player_id then
 					local player = Managers.player:player(peer_id, local_player_id)

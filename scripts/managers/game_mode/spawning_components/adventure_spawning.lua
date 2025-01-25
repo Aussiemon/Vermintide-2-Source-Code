@@ -4,6 +4,9 @@ require("scripts/managers/spawn/respawn_handler")
 require("scripts/managers/game_mode/spawning_components/spawning_helper")
 
 local REAL_PLAYER_LOCAL_ID = 1
+local RPCS = {
+	"rpc_to_server_spawn_failed",
+}
 
 AdventureSpawning = class(AdventureSpawning)
 
@@ -38,11 +41,18 @@ AdventureSpawning.get_saved_game_mode_data = function (self)
 end
 
 AdventureSpawning.register_rpcs = function (self, network_event_delegate, network_transmit)
+	network_event_delegate:register(self, unpack(RPCS))
+
+	self._network_event_delegate = network_event_delegate
+
 	self._respawn_handler:register_rpcs(network_event_delegate, network_transmit)
 end
 
 AdventureSpawning.unregister_rpcs = function (self)
 	self._respawn_handler:unregister_rpcs()
+	self._network_event_delegate:unregister(self)
+
+	self._network_event_delegate = nil
 end
 
 AdventureSpawning._assign_data_to_slot = function (self, slot, data)
@@ -448,8 +458,9 @@ AdventureSpawning._spawn_player = function (self, status)
 		local ammo_ranged_percent_int = math.floor(ammo.slot_ranged * 100)
 		local ability_cooldown_perentage = data.ability_cooldown_percentage or 1
 		local ability_cooldown_percent_int = math.floor(ability_cooldown_perentage * 100)
+		local inventory_hash = self._profile_synchronizer:cached_inventory_hash(peer_id, local_player_id)
 
-		Managers.state.network.network_transmit:send_rpc("rpc_to_client_spawn_player", peer_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn, ammo_melee_percent_int, ammo_ranged_percent_int, ability_cooldown_percent_int, healthkit_id, potion_id, grenade_id, network_additional_items, network_buff_ids)
+		Managers.state.network.network_transmit:send_rpc("rpc_to_client_spawn_player", peer_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn, ammo_melee_percent_int, ammo_ranged_percent_int, ability_cooldown_percent_int, healthkit_id, potion_id, grenade_id, network_additional_items, network_buff_ids, inventory_hash)
 	end
 
 	data.spawn_state = is_initial_spawn and "initial_spawning" or "spawning"
@@ -661,4 +672,38 @@ AdventureSpawning.get_spawn_point_from_spawn_group = function (self, group_id)
 	local spawn_point = spawn_points[self._used_spawn_group_positions[group_id]]
 
 	return spawn_point.pos, spawn_point.rot
+end
+
+AdventureSpawning.rpc_to_server_spawn_failed = function (self, channel_id, local_player_id)
+	print("[AdventureSpawning] Client detected spawning mismatch. Trying again.")
+
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+	local party = self._side.party
+	local occupied_slots = party.occupied_slots
+
+	for i = 1, #occupied_slots do
+		local status = occupied_slots[i]
+		local other_peer_id = status.peer_id
+		local other_local_player_id = status.local_player_id
+
+		if peer_id == other_peer_id and local_player_id == other_local_player_id then
+			local data = status.game_mode_data
+
+			if data.spawn_state == "initial_spawning" then
+				data.spawn_state = "is_initial_spawn"
+
+				break
+			end
+
+			if data.spawn_state == "spawning" then
+				data.spawn_state = "spawn"
+
+				break
+			end
+
+			print("[AdventureSpawning] This shouldn't happen. How did we leave spawning?")
+
+			break
+		end
+	end
 end

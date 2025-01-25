@@ -1341,7 +1341,10 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 					local item_skin = item and item.skin
 
 					if item_skin then
-						return item.data.item_type ~= "weapon_skin" and WeaponSkins.default_skins[item.ItemId] ~= item_skin
+						local item_id = item.ItemId or item.item_id
+						local trimmed_item_id = item_id and string.gsub(item_id, "^vs_", "")
+
+						return item.data.item_type ~= "weapon_skin" and WeaponSkins.default_skins[trimmed_item_id] ~= item_skin
 					end
 				end,
 			}
@@ -16252,6 +16255,11 @@ UIWidgets.create_icon_and_name_button = function (scenegraph_id, icon, text)
 					pass_type = "texture",
 					style_id = "texture_hover_id",
 					texture_id = "texture_hover_id",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return not button_hotspot.disable_button
+					end,
 				},
 				{
 					pass_type = "texture",
@@ -18380,7 +18388,8 @@ UIWidgets.create_item_option_overview = function (scenegraph_id, size)
 				end
 
 				local item_key = item.key
-				local default_skin = WeaponSkins.default_skins[item_key]
+				local trimmed_item_key = string.gsub(item_key, "^vs_", "")
+				local default_skin = WeaponSkins.default_skins[trimmed_item_key]
 				local current_skin = item.skin
 
 				return current_skin and current_skin ~= default_skin

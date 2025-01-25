@@ -200,9 +200,35 @@ string.damerau_levenshtein_distance = function (s, t, lim)
 	return d[#d]
 end
 
-string.pad_end = function (str, target_length, pad_str)
-	for i = #str, target_length - 1 do
+string.pad_left = function (str, target_length, pad_str)
+	local str_size = #str
+	local pad_size = #pad_str
+
+	for i = str_size + pad_size, target_length, pad_size do
+		str = pad_str .. str
+	end
+
+	local rest = (target_length - str_size) % pad_size
+
+	if rest ~= 0 then
+		str = string.sub(pad_str, pad_size - rest + 1, pad_size) .. str
+	end
+
+	return str
+end
+
+string.pad_right = function (str, target_length, pad_str)
+	local str_size = #str
+	local pad_size = #pad_str
+
+	for i = str_size + pad_size, target_length, pad_size do
 		str = str .. pad_str
+	end
+
+	local rest = (target_length - str_size) % pad_size
+
+	if rest ~= 0 then
+		str = str .. string.sub(pad_str, 1, rest)
 	end
 
 	return str

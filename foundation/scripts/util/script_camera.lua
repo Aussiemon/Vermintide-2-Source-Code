@@ -43,3 +43,10 @@ ScriptCamera.force_update = function (world, camera)
 
 	World.update_unit(world, camera_unit)
 end
+
+ScriptCamera.world_to_screen_uv = function (...)
+	local pos = Camera.world_to_screen(...)
+	local resolution_x, resolution_y = Application.resolution()
+
+	return Vector3(pos[1] / resolution_x, pos[2] / resolution_y, 0)
+end

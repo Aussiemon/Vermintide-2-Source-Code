@@ -49,12 +49,12 @@ WeaveDoomWheelExtension._activate = function (self)
 	return
 end
 
-WeaveDoomWheelExtension.complete = function (self, last_leaf_objective)
+WeaveDoomWheelExtension.complete = function (self, ...)
 	if self._on_fuze_complete_func then
 		self._on_fuze_complete_func(self._unit)
 	end
 
-	WeaveDoomWheelExtension.super.complete(self, last_leaf_objective)
+	WeaveDoomWheelExtension.super.complete(self, ...)
 end
 
 WeaveDoomWheelExtension._deactivate = function (self)

@@ -20,6 +20,7 @@ local PICKING_STATES_STRINGS_LOOKUP = {
 	picking = "versus_hero_selection_view_picking",
 	waiting = "versus_hero_selection_view_waiting",
 }
+local ClientStateLookup = VersusPartySelectionLogicUtility.ClientStateLookup
 
 VersusPartyCharSelectionView = class(VersusPartyCharSelectionView, BaseView)
 
@@ -156,45 +157,54 @@ VersusPartyCharSelectionView.update = function (self, dt, t)
 	self.super.update(self, dt, t)
 end
 
-VersusPartyCharSelectionView._update_hero_picking_progress = function (self, party, picker_list, num_slots, settings)
-	local duplicate_hero_profiles_allowed = settings.duplicate_hero_profiles_allowed
-	local duplicate_hero_careers_allowed = settings.duplicate_hero_careers_allowed
+VersusPartyCharSelectionView._update_hero_picking_progress = function (self, party, party_data, num_slots)
+	local picker_list = party_data.picker_list
+	local party_id = party.party_id
+
+	for _, careers in pairs(self._hero_group_widgets_lookup) do
+		for _, widget in pairs(careers) do
+			widget.content.taken = nil
+			widget.content.taken_id = nil
+		end
+	end
 
 	for i = 1, num_slots do
 		local picking_progress_data = self._picking_progress_data[i]
 		local player_data = picker_list[i]
-		local status = player_data.status
 		local slot_id = player_data.slot_id
-		local slot_data = party.slots_data[slot_id]
-		local profile_index = status.selected_profile_index or 0
-		local career_index = status.selected_career_index or 0
+		local is_picking = ClientStateLookup[player_data.state] == ClientStateLookup.player_picking_character
+		local has_picked = ClientStateLookup[player_data.state] >= ClientStateLookup.player_has_picked_character
+		local is_bot = VersusPartySelectionLogicUtility.picker_index_is_bot(party_data, slot_id)
+		local profile_index, career_index
 
-		if not picking_progress_data.has_picked and player_data.state == "player_has_picked_character" and profile_index > 0 then
-			picking_progress_data.has_picked = true
-
-			local character_taken = false
-
-			if not duplicate_hero_profiles_allowed then
-				local hero_widget = self._hero_group_widgets_lookup[profile_index][career_index]
-
-				hero_widget.content.taken = true
-				hero_widget.content.taken_id = slot_id
-				character_taken = true
+		if is_bot then
+			if has_picked or is_picking then
+				profile_index, career_index = self._profile_synchronizer:get_bot_profile(party_id, slot_id)
 			end
+		else
+			local peer_id = player_data.status.peer_id
 
-			if not duplicate_hero_careers_allowed then
-				local careers = self._hero_group_widgets_lookup[profile_index]
+			profile_index, career_index = self._profile_synchronizer:get_persistent_profile_index_reservation(peer_id)
+		end
 
-				for _, career in ipairs(careers) do
-					career.content.taken = true
-					character_taken = true
+		local careers = self._hero_group_widgets_lookup[profile_index]
+
+		if careers then
+			for career_i, widget in pairs(careers) do
+				if is_picking then
+					widget.content.taken = nil
+				elseif has_picked then
+					widget.content.taken = true
+					widget.content.has_picked = true
+				end
+
+				if career_i == career_index then
+					widget.taken_id = slot_id
 				end
 			end
-
-			if character_taken then
-				self:play_sound("Play_versus_menu_error")
-			end
 		end
+
+		profile_index, career_index = profile_index or 0, career_index or 0
 
 		if picking_progress_data.profile_index ~= profile_index or picking_progress_data.career_index ~= career_index then
 			picking_progress_data.profile_index = profile_index
@@ -475,7 +485,6 @@ VersusPartyCharSelectionView._update_player_party = function (self, dt, t)
 	local picker_list = party_data.picker_list
 	local current_picker_index = party_data.current_picker_index
 	local player_state = self._local_player_data.state
-	local settings = self._party_selection_logic:settings()
 	local local_player_is_picking = self:local_player_is_picking()
 
 	self:_update_background_music(party_state)
@@ -483,7 +492,7 @@ VersusPartyCharSelectionView._update_player_party = function (self, dt, t)
 	self:_update_party_state_player_picking_character(party_state, picker_list, current_picker_index, party)
 	self:_update_party_state_player_has_picked_character(party_state, picker_list, current_picker_index, party)
 	self:_update_party_state_parading(party_state, party)
-	self:_update_hero_picking_progress(party, picker_list, num_slots, settings)
+	self:_update_hero_picking_progress(party, party_data, num_slots)
 	self:_update_timer_progress_bar(party_data, local_player_is_picking, num_slots)
 	self:_handle_step_transitions_animations()
 

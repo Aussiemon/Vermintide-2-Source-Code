@@ -91,7 +91,7 @@ local scenegraph_definition = {
 		size = game_option_size,
 		position = {
 			0,
-			game_option_size[2] + 50,
+			game_option_size[2] + 200,
 			1,
 		},
 	},
@@ -105,7 +105,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			0,
+			-230,
 			1,
 		},
 	},
@@ -133,7 +133,21 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			20,
+			40,
+			1,
+		},
+	},
+	settings_button = {
+		horizontal_alignment = "left",
+		parent = "button_controls",
+		vertical_alignment = "top",
+		size = {
+			490,
+			70,
+		},
+		position = {
+			0,
+			-170,
 			1,
 		},
 	},
@@ -148,6 +162,20 @@ local scenegraph_definition = {
 		position = {
 			0,
 			-625,
+			1,
+		},
+	},
+	lobby_name = {
+		horizontal_alignment = "center",
+		parent = "menu_root",
+		vertical_alignment = "top",
+		size = {
+			825,
+			119,
+		},
+		position = {
+			0,
+			-100,
 			1,
 		},
 	},
@@ -217,6 +245,24 @@ local scenegraph_definition = {
 			10,
 		},
 	},
+	toggle_settings_button = {
+		horizontal_alignment = "left",
+		parent = "settings_container",
+		vertical_alignment = "top",
+		size = {
+			600,
+			36,
+		},
+		position = {
+			0,
+			200,
+			1,
+		},
+	},
+}
+local check_box_tooltip_data = {
+	title = Localize("start_game_window_other_options_private"),
+	description = Localize("start_game_window_other_options_private_description"),
 }
 
 local function create_team_widget(scenegraph_id, team_definition, team_color)
@@ -392,11 +438,259 @@ local locked_reason_style = {
 	},
 }
 local disable_with_gamepad = true
+local lobby_name = {
+	scenegraph_id = "lobby_name",
+	element = {
+		passes = {
+			{
+				pass_type = "texture",
+				style_id = "background",
+				texture_id = "background",
+				content_change_function = function (content, style)
+					style.color[1] = content.input.active and 255 or 127
+				end,
+			},
+			{
+				pass_type = "texture",
+				style_id = "top_detail_bar",
+				texture_id = "detail_bar",
+			},
+			{
+				pass_type = "texture",
+				style_id = "bottom_detail_bar",
+				texture_id = "detail_bar",
+			},
+			{
+				pass_type = "texture",
+				style_id = "top_center",
+				texture_id = "top_center",
+			},
+			{
+				pass_type = "texture",
+				style_id = "top_detail",
+				texture_id = "top_detail",
+			},
+			{
+				pass_type = "texture",
+				style_id = "top_detail_glow",
+				texture_id = "top_detail_glow",
+				content_check_function = function (content, style)
+					return content.input.active
+				end,
+			},
+			{
+				pass_type = "texture",
+				style_id = "bottom_center",
+				texture_id = "bottom_center",
+			},
+			{
+				content_id = "hotspot",
+				pass_type = "hotspot",
+			},
+			{
+				content_id = "input",
+				input_text_id = "text",
+				pass_type = "keystrokes",
+			},
+			{
+				content_id = "input",
+				pass_type = "text",
+				style_id = "default_text",
+				text_id = "default_text",
+				content_check_function = function (content)
+					return content.text == ""
+				end,
+			},
+			{
+				content_id = "input",
+				pass_type = "text",
+				style_id = "input_text",
+				text_id = "text",
+				content_change_function = function (content, style)
+					local alpha = 0
+
+					if content.active then
+						alpha = 127 + 128 * math.sin(5 * Managers.time:time("ui"))
+					end
+
+					style.caret_color[1] = alpha
+				end,
+			},
+		},
+	},
+	content = {
+		background = "mission_objective_bg",
+		bottom_center = "mission_objective_02",
+		default_text = "Test 1",
+		detail_bar = "mission_objective_05",
+		top_center = "mission_objective_04",
+		top_detail = "mission_objective_01",
+		top_detail_glow = "mission_objective_glow_02",
+		hotspot = {},
+		input = {
+			caret_index = 1,
+			input_mode = "insert",
+			max_length = 32,
+			text = "",
+			text_index = 1,
+		},
+	},
+	style = {
+		background = {
+			horizontal_alignment = "center",
+			vertical_alignment = "center",
+			color = {
+				255,
+				255,
+				255,
+				255,
+			},
+			offset = {
+				0,
+				0,
+				-1,
+			},
+			texture_size = {
+				825,
+				90,
+			},
+		},
+		top_center = {
+			masked = false,
+			texture_size = {
+				54,
+				22,
+			},
+			offset = {
+				385.5,
+				90,
+				5,
+			},
+			color = Colors.get_color_table_with_alpha("white", 255),
+		},
+		top_detail = {
+			masked = false,
+			texture_size = {
+				54,
+				22,
+			},
+			offset = {
+				385.5,
+				90,
+				6,
+			},
+			color = Colors.get_color_table_with_alpha("white", 255),
+		},
+		top_detail_glow = {
+			masked = false,
+			texture_size = {
+				54,
+				22,
+			},
+			offset = {
+				385.5,
+				90,
+				7,
+			},
+			color = Colors.get_color_table_with_alpha("white", 255),
+		},
+		bottom_center = {
+			masked = false,
+			texture_size = {
+				54,
+				22,
+			},
+			offset = {
+				385.5,
+				10,
+				5,
+			},
+			color = Colors.get_color_table_with_alpha("white", 255),
+		},
+		top_detail_bar = {
+			masked = false,
+			texture_size = {
+				544,
+				5,
+			},
+			offset = {
+				140.5,
+				100,
+				2,
+			},
+			color = Colors.get_color_table_with_alpha("white", 255),
+		},
+		bottom_detail_bar = {
+			masked = false,
+			texture_size = {
+				544,
+				5,
+			},
+			offset = {
+				140.5,
+				14,
+				2,
+			},
+			color = Colors.get_color_table_with_alpha("white", 255),
+		},
+		default_text = {
+			dynamic_font = false,
+			font_size = 46,
+			font_type = "hell_shark_arial",
+			horizontal_alignment = "center",
+			horizontal_scroll = true,
+			pixel_perfect = false,
+			vertical_alignment = "center",
+			word_wrap = true,
+			text_color = Colors.get_color_table_with_alpha("dim_gray", 255),
+			offset = {
+				0,
+				0,
+				0,
+			},
+			area_size = {
+				825,
+				90,
+			},
+		},
+		input_text = {
+			dynamic_font = false,
+			font_size = 46,
+			font_type = "hell_shark_arial",
+			horizontal_alignment = "center",
+			horizontal_scroll = true,
+			pixel_perfect = false,
+			vertical_alignment = "center",
+			word_wrap = true,
+			text_color = Colors.get_color_table_with_alpha("font_default", 255),
+			offset = {
+				0,
+				0,
+				1,
+			},
+			area_size = {
+				825,
+				90,
+			},
+			caret_size = {
+				2,
+				46,
+			},
+			caret_offset = {
+				0,
+				-8,
+				4,
+			},
+			caret_color = Colors.get_table("white"),
+		},
+	},
+}
 local widget_definitions = {
 	mission_setting = UIWidgets.create_start_game_console_setting_button("game_option_1", Localize("start_game_window_mission"), nil, nil, nil, scenegraph_definition.game_option_1.size),
-	settings_container = settings_container_widget,
 	team_1 = create_team_widget("team_1_panel", UISettings.teams_ui_assets.team_hammers, Colors.get_color_table_with_alpha("local_player_team_lighter", 255)),
 	team_2 = create_team_widget("team_2_panel", UISettings.teams_ui_assets.team_skulls, Colors.get_color_table_with_alpha("opponent_team_lighter", 255)),
+	toggle_custom_settings_button = UIWidgets.create_default_checkbox_button_console("toggle_settings_button", scenegraph_definition.toggle_settings_button.size, Localize("start_game_window_toggle_custom_setting"), 24, check_box_tooltip_data, "menu_frame_03_morris"),
+	lobby_name = lobby_name,
 	leave_game_button = UIWidgets.create_default_button("leave_game_button", scenegraph_definition.leave_game_button.size, nil, nil, Localize("exit"), MENU_BUTTON_FONT_SIZE, nil, nil, nil, disable_with_gamepad),
 }
 local host_widget_definitions = {
@@ -450,7 +744,7 @@ local function create_player_panel_widget(team_index, player_index)
 					style_id = "empty_hover_frame",
 					texture_id = "empty_hover_frame",
 					content_check_function = function (content)
-						return content.empty and content.button_hotspot.is_hover
+						return content.empty and content.button_hotspot.is_hover or content.is_gamepad_active and content.empty and content.is_selected
 					end,
 				},
 				{
@@ -481,7 +775,12 @@ local function create_player_panel_widget(team_index, player_index)
 					style_id = "hover_frame",
 					texture_id = "hover_frame",
 					content_check_function = function (content)
-						return not content.empty and content.is_local_player and content.button_hotspot.is_hover
+						return not content.empty and content.button_hotspot.is_hover or content.is_gamepad_active and not content.empty and content.is_selected
+					end,
+					content_change_function = function (content, style, _, dt)
+						local focused = content.focused
+
+						style.color[1] = focused and 150 + 105 * math.sin(Managers.time:time("ui") * 7.5) or 255
 					end,
 				},
 				{

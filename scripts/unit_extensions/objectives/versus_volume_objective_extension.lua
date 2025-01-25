@@ -27,6 +27,7 @@ VersusVolumeObjectiveExtension._set_objective_data = function (self, objective_d
 	self._volume_name = objective_data.volume_name
 	self._volume_type = objective_data.volume_type or volume_default_settings.volume_type
 	self._on_last_leaf_complete_sound_event = objective_data.on_last_leaf_complete_sound_event or volume_default_settings.on_last_leaf_complete_sound_event
+	self._on_leaf_complete_sound_event = objective_data.on_leaf_complete_sound_event or volume_default_settings.on_leaf_complete_sound_event
 
 	local name = VOLUME_TYPE_TO_FUNC_NAME[self._volume_type]
 

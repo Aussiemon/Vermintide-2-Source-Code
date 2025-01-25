@@ -1357,6 +1357,11 @@ Game._handle_win32_graphics_quality = function (self)
 		dirty = true
 	end
 
+	if Application.user_setting("dlss_enabled") and not Application.render_caps("dlss_supported") then
+		print("[Boot] Disabling dlss_enabled because dlss_supported was false.")
+		Application.set_user_setting("dlss_enabled", false)
+	end
+
 	local function is_same(current, new)
 		if current == new then
 			return true

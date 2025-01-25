@@ -3663,7 +3663,7 @@ return function ()
 				[1] = "pwh_level_skaven_stronghold_story_eleven_01",
 			},
 			sound_events_duration = {
-				[1] = 3.4567,
+				[1] = 3.1526875495911,
 			},
 		},
 		pwh_level_skaven_stronghold_story_five_01 = {

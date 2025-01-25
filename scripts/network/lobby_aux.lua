@@ -144,6 +144,8 @@ LobbyAux.get_unique_server_name = function ()
 	return unique_name
 end
 
+LobbyAux.MAX_CUSTOM_SERVER_NAME_LENGTH = 32
+
 local function level_exists_locally(lobby)
 	local mission_id = lobby.selected_mission_id or lobby.mission_id
 	local level_exists_locally = mission_id and rawget(NetworkLookup.mission_ids, mission_id)

@@ -298,14 +298,6 @@ NetworkServer.is_in_post_game = function (self)
 	end
 end
 
-NetworkServer.rpc_to_client_spawn_player = function (self, channel_id, ...)
-	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
-
-	if peer_id == self.my_peer_id then
-		-- Nothing
-	end
-end
-
 NetworkServer.on_game_entered = function (self, game_network_manager)
 	network_printf("[NETWORK SERVER]: On Game Entered")
 
@@ -427,7 +419,7 @@ NetworkServer.destroy = function (self)
 end
 
 NetworkServer.register_rpcs = function (self, network_event_delegate, network_transmit)
-	network_event_delegate:register(self, "rpc_notify_lobby_joined", "rpc_to_client_spawn_player", "rpc_post_game_notified", "rpc_want_to_spawn_player", "rpc_level_load_started", "rpc_level_loaded", "rpc_game_started", "rpc_is_ingame", "game_object_sync_done", "rpc_notify_connected", "rpc_loading_synced", "rpc_clear_peer_state", "rpc_notify_in_post_game", "rpc_client_respawn_player", "rpc_provide_slot_reservation_info", "rpc_slot_reservation_request_peers", "rpc_slot_reservation_request_party_change")
+	network_event_delegate:register(self, "rpc_notify_lobby_joined", "rpc_post_game_notified", "rpc_want_to_spawn_player", "rpc_level_load_started", "rpc_level_loaded", "rpc_game_started", "rpc_is_ingame", "game_object_sync_done", "rpc_notify_connected", "rpc_loading_synced", "rpc_clear_peer_state", "rpc_notify_in_post_game", "rpc_client_respawn_player", "rpc_provide_slot_reservation_info", "rpc_slot_reservation_request_peers", "rpc_slot_reservation_request_party_change")
 	network_event_delegate:register_with_return(self, "approve_channel")
 
 	self.network_event_delegate = network_event_delegate
@@ -545,12 +537,15 @@ NetworkServer._update_lobby_data = function (self, dt, t)
 		for i = 1, #members do
 			local peer_id = members[i]
 			local party_id = slot_handler:party_id_by_peer(peer_id)
-			local profile_index = self.profile_synchronizer:get_persistent_profile_index_reservation(peer_id) or -1
 
-			table.insert(reserved_profiles[party_id], {
-				peer_id = peer_id,
-				profile_index = profile_index,
-			})
+			if party_id then
+				local profile_index = self.profile_synchronizer:get_persistent_profile_index_reservation(peer_id)
+
+				table.insert(reserved_profiles[party_id], {
+					peer_id = peer_id,
+					profile_index = profile_index,
+				})
+			end
 		end
 	else
 		for party_id = 1, #reserved_profiles do
@@ -1592,4 +1587,12 @@ end
 
 NetworkServer.get_match_handler = function (self)
 	return self._match_handler
+end
+
+NetworkServer.get_bot_profile = function (self, party_id, slot_id)
+	return self._network_state:get_bot_profile(party_id, slot_id)
+end
+
+NetworkServer.set_bot_profile = function (self, party_id, slot_id, profile_index, career_index)
+	self._network_state:set_bot_profile(party_id, slot_id, profile_index, career_index)
 end

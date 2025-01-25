@@ -1,8 +1,9 @@
 ﻿-- chunkname: @scripts/unit_extensions/default_player_unit/ping/context_aware_ping_extension.lua
 
-local MAX_FREE_EVENTS = 5
-local EVENT_REFRESH_RATE = 4
-local PING_COOLDOWN = 2
+local MAX_FREE_EVENTS = 2
+local EVENT_REFRESH_RATE = 2.5
+local COMBAT_EVENT_REFRESH_RATE = 0.2
+local WORLD_MARKER_COOLDOWN = 0.15
 local PING_RANGE = 50
 
 ContextAwarePingExtension = class(ContextAwarePingExtension)
@@ -15,8 +16,8 @@ ContextAwarePingExtension.init = function (self, extension_init_context, unit, e
 	self._ping_context = nil
 	self._social_wheel_context = nil
 	self._ping_position = Vector3Box()
-	self._ping_timer = 0
 	self._num_free_events = MAX_FREE_EVENTS
+	self._num_free_combat_events = MAX_FREE_EVENTS
 	self._last_update_t = 0
 
 	local settings = Managers.state.game_mode:settings()
@@ -34,6 +35,7 @@ ContextAwarePingExtension.init = function (self, extension_init_context, unit, e
 	self._double_press_counter = 0
 	self._can_ping = false
 	self._listen_for_double_press = false
+	self._ping_system = Managers.state.entity:system("ping_system")
 end
 
 ContextAwarePingExtension.extensions_ready = function (self, world, unit)
@@ -61,6 +63,12 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 		self._num_free_events = math.min(self._num_free_events + free_events_to_add, MAX_FREE_EVENTS)
 	end
 
+	if self._num_free_combat_events < MAX_FREE_EVENTS then
+		local free_events_to_add = (t - self._last_update_t) / COMBAT_EVENT_REFRESH_RATE
+
+		self._num_free_combat_events = math.min(self._num_free_combat_events + free_events_to_add, MAX_FREE_EVENTS)
+	end
+
 	self:_handle_ping_input(t, dt, input, unit, context)
 
 	self._last_update_t = t
@@ -70,15 +78,19 @@ ContextAwarePingExtension._have_free_events = function (self)
 	return self._num_free_events > 0
 end
 
+ContextAwarePingExtension._have_free_combat_events = function (self)
+	return self._num_free_combat_events > 0
+end
+
 ContextAwarePingExtension._consume_ping_event = function (self)
 	self._num_free_events = self._num_free_events - 1
 end
 
-ContextAwarePingExtension.ping_attempt = function (self, unit, unit_to_ping, t, ping_type, social_wheel_event_id)
-	if t < self._ping_timer and not IgnoreCooldownPingTypes[ping_type] then
-		return
-	end
+ContextAwarePingExtension._consume_combat_ping_event = function (self)
+	self._num_free_combat_events = self._num_free_combat_events - 1
+end
 
+ContextAwarePingExtension.ping_attempt = function (self, unit, unit_to_ping, t, ping_type, social_wheel_event_id)
 	if not IgnoreFreeEvents[ping_type] and not self:_have_free_events() then
 		if ping_type ~= nil then
 			local error_message = Localize("social_wheel_too_many_messages_warning")
@@ -86,6 +98,8 @@ ContextAwarePingExtension.ping_attempt = function (self, unit, unit_to_ping, t, 
 			Managers.chat:add_local_system_message(1, error_message, true)
 		end
 
+		return false
+	elseif not IgnoreFreeCombatEvents[ping_type] and not self:_have_free_combat_events() then
 		return false
 	end
 
@@ -103,10 +117,10 @@ ContextAwarePingExtension.ping_attempt = function (self, unit, unit_to_ping, t, 
 
 	network_manager.network_transmit:send_rpc_server("rpc_ping_unit", pinger_unit_id, pinged_unit_id, is_level_unit, false, ping_type, social_wheel_event_id)
 
-	self._ping_timer = t + PING_COOLDOWN
-
 	if not IgnoreFreeEvents[ping_type] then
 		self:_consume_ping_event()
+	elseif not IgnoreFreeCombatEvents[ping_type] then
+		self:_consume_combat_ping_event()
 	end
 
 	return true
@@ -120,54 +134,45 @@ ContextAwarePingExtension.ping_world_position_attempt = function (self, unit, po
 	ping_type = ping_type or PingTypes.CONTEXT
 	is_double_press = not not is_double_press
 
-	if IgnoreCooldownPingTypes[ping_type] then
-		social_wheel_event_id = social_wheel_event_id or NetworkLookup.social_wheel_events["n/a"]
-
-		local network_manager = Managers.state.network
-		local pinger_unit_id = network_manager:unit_game_object_id(unit)
-
-		network_manager.network_transmit:send_rpc_server("rpc_ping_world_position", pinger_unit_id, position, ping_type, social_wheel_event_id, is_double_press)
-
-		if not IgnoreFreeEvents[ping_type] then
-			self:_consume_ping_event()
-		end
-
+	if not self._world_markers_enabled then
 		return
-	else
-		if not self._world_markers_enabled then
-			return
-		end
-
-		if not self:_have_free_events() then
-			local error_message = Localize("social_wheel_too_many_messages_warning")
-
-			Managers.chat:add_local_system_message(1, error_message, true)
-
-			return false
-		end
-
-		if LEVEL_EDITOR_TEST then
-			return false
-		end
-
-		if t < self._ping_timer then
-			return false
-		end
-
-		self._ping_timer = t + PING_COOLDOWN
-		social_wheel_event_id = social_wheel_event_id or NetworkLookup.social_wheel_events["n/a"]
-
-		local network_manager = Managers.state.network
-		local pinger_unit_id = network_manager:unit_game_object_id(unit)
-
-		network_manager.network_transmit:send_rpc_server("rpc_ping_world_position", pinger_unit_id, position, ping_type, social_wheel_event_id, is_double_press)
-
-		if not IgnoreFreeEvents[ping_type] then
-			self:_consume_ping_event()
-		end
-
-		return true
 	end
+
+	local world_marker_cooldown = self._world_marker_cooldown or 0
+
+	if t < world_marker_cooldown then
+		return
+	end
+
+	if not self:_have_free_events() then
+		local error_message = Localize("social_wheel_too_many_messages_warning")
+
+		Managers.chat:add_local_system_message(1, error_message, true)
+
+		return false
+	elseif not self:_have_free_combat_events() then
+		return false
+	end
+
+	if LEVEL_EDITOR_TEST then
+		return false
+	end
+
+	self._world_marker_cooldown = t + WORLD_MARKER_COOLDOWN
+	social_wheel_event_id = social_wheel_event_id or NetworkLookup.social_wheel_events["n/a"]
+
+	local network_manager = Managers.state.network
+	local pinger_unit_id = network_manager:unit_game_object_id(unit)
+
+	network_manager.network_transmit:send_rpc_server("rpc_ping_world_position", pinger_unit_id, position, ping_type, social_wheel_event_id, is_double_press)
+
+	if not IgnoreFreeEvents[ping_type] then
+		self:_consume_ping_event()
+	elseif not IgnoreFreeCombatEvents[ping_type] then
+		self:_consume_combat_ping_event()
+	end
+
+	return true
 end
 
 ContextAwarePingExtension.social_message_attempt = function (self, unit, social_wheel_event_id, target_unit)
@@ -198,123 +203,181 @@ end
 local INDEX_POSITION = 1
 local INDEX_DISTANCE = 2
 local INDEX_ACTOR = 4
+local VALID_ENEMY_PLAYERS = {}
 
 ContextAwarePingExtension._check_raycast = function (self, unit)
 	local ping_unit, social_wheel_unit, ping_unit_distance, social_wheel_unit_distance, position
+	local darkness_system = Managers.state.entity:system("darkness_system")
+	local first_person_extension = self._first_person_extension
+	local camera_position = first_person_extension:current_position()
+	local camera_rotation = first_person_extension:current_rotation()
+	local camera_forward = Quaternion.forward(camera_rotation)
+	local camera_right = Quaternion.right(camera_rotation)
+	local camera_up = Quaternion.up(camera_rotation)
+	local hits, hits_n = self._physics_world:immediate_raycast(camera_position, camera_forward, PING_RANGE, "all", "collision_filter", "filter_ray_ping")
+	local best_ping_utility = -math.huge
+	local best_social_utility = 2000
 
-	if self._status_extension:is_disabled() and Managers.mechanism:current_mechanism_name() == "versus" then
-		ping_unit = unit
-	else
-		local darkness_system = Managers.state.entity:system("darkness_system")
-		local first_person_extension = self._first_person_extension
-		local camera_position = first_person_extension:current_position()
-		local camera_rotation = first_person_extension:current_rotation()
-		local camera_forward = Quaternion.forward(camera_rotation)
-		local camera_right = Quaternion.right(camera_rotation)
-		local camera_up = Quaternion.up(camera_rotation)
-		local hits, hits_n = self._physics_world:immediate_raycast(camera_position, camera_forward, PING_RANGE, "all", "collision_filter", "filter_ray_ping")
-		local best_ping_utility = -math.huge
-		local best_social_utility = 2000
+	for i = 1, hits_n do
+		local hit = hits[i]
+		local actor = hit[INDEX_ACTOR]
+		local hit_position = hit[INDEX_POSITION]
+		local distance = hit[INDEX_DISTANCE]
 
-		for i = 1, hits_n do
-			local hit = hits[i]
-			local actor = hit[INDEX_ACTOR]
-			local hit_position = hit[INDEX_POSITION]
-			local distance = hit[INDEX_DISTANCE]
+		if actor then
+			local hit_unit = Actor.unit(actor)
 
-			if actor then
-				local hit_unit = Actor.unit(actor)
+			if hit_unit ~= unit then
+				local ping_ext = ScriptUnit.has_extension(hit_unit, "ping_system")
 
-				if hit_unit ~= unit then
-					local ping_ext = ScriptUnit.has_extension(hit_unit, "ping_system")
+				if ping_ext then
+					local ghost_mode_ext = ScriptUnit.has_extension(hit_unit, "ghost_mode_system")
 
-					if ping_ext then
-						local ghost_mode_ext = ScriptUnit.has_extension(hit_unit, "ghost_mode_system")
+					if (not ghost_mode_ext or not ghost_mode_ext:is_in_ghost_mode()) and distance > 0.05 then
+						local status_ext = ScriptUnit.has_extension(hit_unit, "status_system")
+						local is_pickup = ScriptUnit.has_extension(hit_unit, "pickup_system")
+						local breed = Unit.get_data(hit_unit, "breed")
+						local has_breed = breed ~= nil
+						local is_alive = HEALTH_ALIVE[hit_unit]
+						local half_width, half_height
 
-						if (not ghost_mode_ext or not ghost_mode_ext:is_in_ghost_mode()) and distance > 0.05 then
-							local status_ext = ScriptUnit.has_extension(hit_unit, "status_system")
-							local is_pickup = ScriptUnit.has_extension(hit_unit, "pickup_system")
-							local breed = Unit.get_data(hit_unit, "breed")
-							local has_breed = breed ~= nil
-							local is_alive = HEALTH_ALIVE[hit_unit]
-							local half_width, half_height
+						if is_pickup then
+							local _, half_extents = Unit.box(hit_unit, true)
 
-							if is_pickup then
-								local _, half_extents = Unit.box(hit_unit, true)
+							half_width = half_extents.x * 0.75
+							half_height = half_extents.z * 0.75
+						elseif has_breed then
+							half_height = (breed.aoe_height or DEFAULT_BREED_AOE_HEIGHT) * 0.5
+							half_width = breed.aoe_radius or DEFAULT_BREED_AOE_RADIUS
+						elseif status_ext then
+							local _, half_extents = Unit.box(hit_unit, true)
 
-								half_width = half_extents.x * 0.75
-								half_height = half_extents.z * 0.75
-							elseif has_breed then
-								half_height = (breed.aoe_height or DEFAULT_BREED_AOE_HEIGHT) * 0.5
-								half_width = breed.aoe_radius or DEFAULT_BREED_AOE_RADIUS
-							elseif status_ext then
-								local _, half_extents = Unit.box(hit_unit, true)
-
-								half_width = half_extents.x * 0.75
-								half_height = half_extents.z
-							else
-								half_width = 0.25
-								half_height = 0.25
-							end
-
-							local hit_unit_center_pos = Unit.local_position(hit_unit, 0) + Vector3(0, 0, half_height)
-							local hit_offset = hit_position - hit_unit_center_pos
-							local x_diff = math.abs(Vector3.dot(hit_offset, camera_right))
-							local y_diff = math.abs(Vector3.dot(hit_offset, camera_up))
-							local epsilon = 0.01
-							local direct_hit = x_diff <= half_width + epsilon and y_diff <= half_height + epsilon
-							local utility
-
-							if direct_hit then
-								utility = math.huge
-							else
-								local angle_width = math.atan(half_width / distance)
-								local angle_height = math.atan(half_height / distance)
-								local angle_x_diff = math.atan(x_diff / distance)
-								local angle_y_diff = math.atan(y_diff / distance)
-								local x_offset = math.max(angle_x_diff - angle_width, epsilon) / math.log(angle_width)
-								local y_offset = math.max(angle_y_diff - angle_height, epsilon) / math.log(angle_width)
-
-								utility = 1 / (x_offset * y_offset)
-							end
-
-							local is_enemy = has_breed and Managers.state.side:is_enemy(self._unit, hit_unit)
-							local is_incapacitated_player = status_ext and status_ext:is_disabled()
-
-							if (ping_ext.always_pingable or is_pickup or is_alive and (is_enemy or is_incapacitated_player)) and not darkness_system:is_in_darkness(hit_position) and best_ping_utility < utility then
-								ping_unit = hit_unit
-								ping_unit_distance = distance
-								best_ping_utility = utility
-								position = hit_position
-							end
-
-							local is_valid_social_wheel_pickup = false
-
-							if is_pickup then
-								local pickup_settings = is_pickup:get_pickup_settings()
-
-								is_valid_social_wheel_pickup = pickup_settings.slot_name or pickup_settings.type == "ammo"
-							end
-
-							if (is_valid_social_wheel_pickup and distance <= INTERACT_RAY_DISTANCE or is_alive and status_ext) and best_social_utility < utility then
-								social_wheel_unit = hit_unit
-								social_wheel_unit_distance = distance
-								best_social_utility = utility
-							end
+							half_width = half_extents.x * 0.75
+							half_height = half_extents.z
+						else
+							half_width = 0.25
+							half_height = 0.25
 						end
-					elseif Unit.get_data(hit_unit, "breed") then
-						-- Nothing
-					else
-						position = hit_position
 
-						break
+						local hit_unit_center_pos = Unit.local_position(hit_unit, 0) + Vector3(0, 0, half_height)
+						local hit_offset = hit_position - hit_unit_center_pos
+						local x_diff = math.abs(Vector3.dot(hit_offset, camera_right))
+						local y_diff = math.abs(Vector3.dot(hit_offset, camera_up))
+						local epsilon = 0.01
+						local direct_hit = x_diff <= half_width + epsilon and y_diff <= half_height + epsilon
+						local utility
+
+						if direct_hit then
+							utility = math.huge
+						else
+							local angle_width = math.atan(half_width / distance)
+							local angle_height = math.atan(half_height / distance)
+							local angle_x_diff = math.atan(x_diff / distance)
+							local angle_y_diff = math.atan(y_diff / distance)
+							local x_offset = math.max(angle_x_diff - angle_width, epsilon) / math.log(angle_width)
+							local y_offset = math.max(angle_y_diff - angle_height, epsilon) / math.log(angle_width)
+
+							utility = 1 / (x_offset * y_offset)
+						end
+
+						local is_enemy = has_breed and Managers.state.side:is_enemy(self._unit, hit_unit)
+						local is_incapacitated_player = status_ext and status_ext:is_disabled()
+
+						if (ping_ext.always_pingable or is_pickup or is_alive and (is_enemy or is_incapacitated_player)) and not darkness_system:is_in_darkness(hit_position) and best_ping_utility < utility then
+							ping_unit = hit_unit
+							ping_unit_distance = distance
+							best_ping_utility = utility
+							position = hit_position
+						end
+
+						local is_valid_social_wheel_pickup = false
+
+						if is_pickup then
+							local pickup_settings = is_pickup:get_pickup_settings()
+
+							is_valid_social_wheel_pickup = pickup_settings.slot_name or pickup_settings.type == "ammo"
+						end
+
+						if (is_valid_social_wheel_pickup and distance <= INTERACT_RAY_DISTANCE or is_alive and status_ext) and best_social_utility < utility then
+							social_wheel_unit = hit_unit
+							social_wheel_unit_distance = distance
+							best_social_utility = utility
+						end
 					end
+				elseif Unit.get_data(hit_unit, "breed") then
+					-- Nothing
+				else
+					position = hit_position
+
+					break
 				end
 			end
 		end
 	end
 
+	if not ping_unit and position then
+		local side = Managers.state.side.side_by_unit[self._unit]
+
+		if side:name() == "dark_pact" then
+			local valid_enemies = VALID_ENEMY_PLAYERS
+			local valid_enemies_n = 0
+			local enemy_player_units = side.ENEMY_PLAYER_AND_BOT_UNITS
+
+			for i = 1, #enemy_player_units do
+				local enemy_unit = enemy_player_units[i]
+				local enemy_position = POSITION_LOOKUP[enemy_unit]
+
+				if enemy_position then
+					enemy_position = enemy_position + Vector3.up()
+
+					local is_looking_at_enemy = self:_is_camera_looking_at_position(enemy_position, position, 0.075)
+
+					if is_looking_at_enemy then
+						valid_enemies_n = valid_enemies_n + 1
+						valid_enemies[valid_enemies_n] = enemy_unit
+					end
+				end
+			end
+
+			local closest_enemy_unit
+			local closest_dist_sq = math.huge
+
+			for i = 1, valid_enemies_n do
+				local enemy_pos = POSITION_LOOKUP[valid_enemies[i]]
+				local dist_sq = Vector3.distance_squared(enemy_pos, camera_position)
+
+				if dist_sq < closest_dist_sq then
+					closest_enemy_unit = valid_enemies[i]
+					closest_dist_sq = dist_sq
+				end
+			end
+
+			if closest_enemy_unit then
+				ping_unit = closest_enemy_unit
+				ping_unit_distance = math.sqrt(closest_dist_sq)
+			end
+		end
+	end
+
 	return ping_unit, social_wheel_unit, ping_unit_distance, social_wheel_unit_distance, position
+end
+
+ContextAwarePingExtension._is_camera_looking_at_position = function (self, position, aim_position, uv_margin)
+	local camera = self._first_person_extension:camera()
+
+	if Camera.inside_frustum(camera, aim_position) then
+		local aim_screen_uv = ScriptCamera.world_to_screen_uv(camera, aim_position)
+		local max_dist_sq = uv_margin * uv_margin
+
+		if Camera.inside_frustum(camera, position) then
+			local enemy_screen_uv = ScriptCamera.world_to_screen_uv(camera, position)
+			local distance_sq = Vector3.distance_squared(enemy_screen_uv, aim_screen_uv)
+
+			if distance_sq <= max_dist_sq then
+				return true
+			end
+		end
+	end
 end
 
 ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, unit, context)
@@ -347,28 +410,37 @@ ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, uni
 	elseif self._social_wheel_context and not self._listen_for_double_press then
 		local social_wheel_only_released = self._input_extension:get("social_wheel_only_release")
 		local social_wheel_only_held = self._input_extension:get("social_wheel_only_hold")
+		local weapon_poses_only_released = self._input_extension:get("weapon_poses_only_release")
+		local weapon_poses_only_held = self._input_extension:get("weapon_poses_only_hold")
 		local photomode_only_released = self._input_extension:get("photomode_only_released")
 		local photomode_only_held = self._input_extension:get("photomode_only_hold")
-		local ping_released = self._input_extension:get("ping_release")
 		local ping_held = self._input_extension:get("ping_hold")
 
-		if not ping_held or (social_wheel_only_released or not social_wheel_only_held) and (photomode_only_released or not photomode_only_held) then
+		if not ping_held or (social_wheel_only_released or not social_wheel_only_held) and (weapon_poses_only_released or not weapon_poses_only_held) and (photomode_only_released or not photomode_only_held) then
 			self._social_wheel_context = nil
 			self._can_ping = false
 		end
 	elseif not self._can_ping then
 		local input_extension = self._input_extension
 		local ping = input_extension:get("ping")
-		local ping_only = input_extension:get("ping_only")
-		local ping_only_enemy = input_extension:get("ping_only_enemy")
-		local ping_only_movement = input_extension:get("ping_only_movement")
-		local ping_only_item = input_extension:get("ping_only_item")
+		local tag_only = input_extension:get("ping_only")
+		local world_marker_only = input_extension:get("ping_only_movement")
 		local social_wheel_only = input_extension:get("social_wheel_only")
+		local weapon_poses_only = input_extension:get("weapon_poses_only")
 		local photomode_only = input_extension:get("photomode_only")
-		local is_ping_only = ping_only or ping_only_enemy or ping_only_movement or ping_only_item
 
-		if ping or is_ping_only or social_wheel_only or photomode_only then
+		if ping or tag_only or world_marker_only or social_wheel_only or weapon_poses_only or photomode_only then
 			local ping_unit, social_wheel_unit, ping_unit_distance, social_wheel_unit_distance, position = self:_check_raycast(unit)
+
+			if tag_only then
+				position = nil
+			elseif world_marker_only then
+				ping_unit = nil
+				ping_unit_distance = nil
+				social_wheel_unit = nil
+				social_wheel_unit_distance = nil
+			end
+
 			local stored_ping_position
 
 			if position then
@@ -377,17 +449,10 @@ ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, uni
 				stored_ping_position = self._ping_position
 			end
 
+			local is_double_press = self._double_press_counter >= 1
 			local ping_type
 
-			if not ping_only and is_ping_only then
-				if ping_only_enemy then
-					ping_type = PingTypes.ENEMY_GENERIC
-				elseif ping_only_movement then
-					ping_type = PingTypes.MOVEMENT_GENERIC
-				elseif ping_only_item then
-					ping_type = PingTypes.PLAYER_PICK_UP
-				end
-			elseif not ping and self._status_extension:is_ready_for_assisted_respawn() then
+			if not ping and self._status_extension:is_ready_for_assisted_respawn() then
 				local input_service = Managers.input:get_service("Player")
 
 				if input_service then
@@ -399,18 +464,21 @@ ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, uni
 				if status_ext and status_ext:is_knocked_down() then
 					ping_type = PingTypes.UNIT_DOWNED
 				end
+			elseif not is_double_press and position and self._ping_system:is_ping_cancel(self._player:unique_id(), position) then
+				ping_type = PingTypes.CANCEL
 			end
 
-			if is_ping_only then
+			if tag_only then
 				if ping_unit then
-					self:ping_attempt(unit, ping_unit, t, ping_type)
-				elseif position then
-					ping_type = ping_type or ping_only and PingTypes.MOVEMENT_GENERIC or PingTypes.CONTEXT
+					self:ping_attempt(unit, ping_unit, t, ping_type or PingTypes.CONTEXT)
+				end
+			elseif world_marker_only and position then
+				local social_wheel_event_id
 
-					local social_wheel_event_id
-					local is_double_press = self._double_press_counter >= 1
+				self:ping_world_position_attempt(unit, position, t, ping_type or PingTypes.CONTEXT, social_wheel_event_id, is_double_press)
 
-					self:ping_world_position_attempt(unit, position, t, ping_type, social_wheel_event_id, is_double_press)
+				if Managers.state.game_mode:setting("allow_double_ping") then
+					self:_start_listen_for_double_press(t)
 				end
 			elseif social_wheel_only then
 				self._social_wheel_context = {
@@ -419,8 +487,12 @@ ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, uni
 					distance = social_wheel_unit_distance,
 					position = stored_ping_position,
 				}
+			elseif weapon_poses_only then
+				self._social_wheel_context = {
+					min_t = 0,
+					show_poses = true,
+				}
 			elseif ping then
-				local is_double_press = self._double_press_counter >= 1
 				local social_wheel_delay = Application.user_setting("social_wheel_delay") or DefaultUserSettings.get("user_settings", "social_wheel_delay")
 
 				self._ping_context = {
@@ -459,7 +531,7 @@ ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, uni
 	if self._listen_for_double_press then
 		if t >= self._double_press_end_time then
 			self:_reset_listen_for_double_press()
-		elseif self._input_extension:get("ping") or self._input_extension:get("ping_only") then
+		elseif self._input_extension:get("ping") or self._input_extension:get("ping_only_movement") then
 			self._double_press_counter = self._double_press_counter + 1
 
 			self:_start_listen_for_double_press(t)

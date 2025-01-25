@@ -84,13 +84,49 @@ PlayerManager.rpc_sync_loadout_slot = function (self, channel_id, peer_id, local
 	end
 end
 
-PlayerManager.rpc_to_client_spawn_player = function (self, channel_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn, ammo_melee_percent_int, ammo_ranged_percent_int, ability_cooldown_percent_int, healthkit_id, potion_id, grenade_id, network_additional_items, network_buff_ids)
+PlayerManager.rpc_to_client_spawn_player = function (self, channel_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn, ammo_melee_percent_int, ammo_ranged_percent_int, ability_cooldown_percent_int, healthkit_id, potion_id, grenade_id, network_additional_items, network_buff_ids, server_inventory_hash)
 	if script_data.network_debug_connections then
 		printf("PlayerManager:rpc_to_client_spawn_player(%s, %s, %s, %s)", tostring(channel_id), tostring(profile_index), tostring(position), tostring(rotation))
 	end
 
 	if self.is_server and not Managers.state.network:in_game_session() then
 		return
+	end
+
+	local my_peer_id = Network.peer_id()
+	local player = self:player(my_peer_id, local_player_id)
+	local is_bot = not not player.bot_player
+	local failed = false
+	local profile_synchronizer = Managers.state.network.profile_synchronizer
+	local loaded_inventory_id = profile_synchronizer:own_loaded_inventory_id()
+
+	if loaded_inventory_id == 0 then
+		failed = true
+	else
+		local latest_inventory_hash = profile_synchronizer:hash_inventory(profile_index, career_index, is_bot)
+		local cached_inventory_hash = profile_synchronizer:cached_inventory_hash(my_peer_id, local_player_id)
+
+		if latest_inventory_hash ~= cached_inventory_hash or latest_inventory_hash ~= string.pad_left(server_inventory_hash, 16, "0") then
+			if latest_inventory_hash ~= cached_inventory_hash then
+				local force_resync = true
+
+				profile_synchronizer:resync_loadout(my_peer_id, local_player_id, is_bot, force_resync, latest_inventory_hash)
+			end
+
+			failed = true
+		end
+	end
+
+	if failed then
+		local network_transmit = self.network_manager.network_transmit
+
+		network_transmit:send_rpc_server("rpc_to_server_spawn_failed", local_player_id)
+
+		return
+	end
+
+	if CHANNEL_TO_PEER_ID[channel_id] == my_peer_id then
+		Managers.state.game_mode:host_player_spawned()
 	end
 
 	local initial_buff_names = {}
@@ -105,7 +141,6 @@ PlayerManager.rpc_to_client_spawn_player = function (self, channel_id, local_pla
 
 	local ammo_melee = ammo_melee_percent_int * 0.01
 	local ammo_ranged = ammo_ranged_percent_int * 0.01
-	local player = self:player(Network.peer_id(), local_player_id)
 
 	player:set_profile_index(profile_index)
 	player:set_career_index(career_index)

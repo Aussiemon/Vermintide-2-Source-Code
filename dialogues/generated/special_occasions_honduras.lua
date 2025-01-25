@@ -123,9 +123,175 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pbw_gameplay_elf_3_special_kills_in_a_row_01",
+		name = "pbw_gameplay_bright_wizard_hit_by_vomit_b",
 		probability = 1,
-		response = "pbw_gameplay_elf_3_special_kills_in_a_row_01",
+		response = "pbw_gameplay_bright_wizard_hit_by_vomit_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"gameplay_bright_wizard_hit_by_vomit_a",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_gameplay_bright_wizard_misses_bomb_new_b",
+		probability = 1,
+		response = "pbw_gameplay_bright_wizard_misses_bomb_new_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_bright_wizard_misses_bomb_new_a_01",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_bright_wizard_misses_bomb_new_a_01",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_bright_wizard_misses_bomb_new_a_01",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_bright_wizard_misses_bomb_new_a_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_gameplay_bright_wizard_on_a_frenzy_new_b",
+		probability = 0.7,
+		response = "pbw_gameplay_bright_wizard_on_a_frenzy_new_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"gameplay_bright_wizard_on_a_frenzy",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_gameplay_dwarf_ranger_hit_by_vomit_a",
+		probability = 1,
+		response = "pbw_gameplay_dwarf_ranger_hit_by_vomit_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"hit_by_vomit",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMEDIFF,
+				OP.GT,
+				300,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_gameplay_dwarf_ranger_on_a_frenzy_new_c",
+		probability = 1,
+		response = "pbw_gameplay_dwarf_ranger_on_a_frenzy_new_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pdr_gameplay_dwarf_ranger_on_a_frenzy_new_b",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_gameplay_elf_3_special_kills_in_a_row",
+		probability = 1,
+		response = "pbw_gameplay_elf_3_special_kills_in_a_row",
 		criterias = {
 			{
 				"query_context",
@@ -220,6 +386,81 @@ return function ()
 				"sound_event",
 				OP.EQ,
 				"pwe_gameplay_elf_3_special_kills_in_a_row_01_reply_03",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_gameplay_elf_3_special_kills_in_a_row_agnostic_01_c",
+		probability = 1,
+		response = "pbw_gameplay_elf_3_special_kills_in_a_row_agnostic_01_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_elf_3_special_kills_in_a_row_agnostic_01_b_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_gameplay_elf_3_special_kills_in_a_row_agnostic_02_c",
+		probability = 1,
+		response = "pbw_gameplay_elf_3_special_kills_in_a_row_agnostic_02_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_elf_3_special_kills_in_a_row_agnostic_02_b_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_gameplay_elf_3_special_kills_in_a_row_hoggar_c",
+		probability = 0.4,
+		response = "pbw_gameplay_elf_3_special_kills_in_a_row_hoggar_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_elf_3_special_kills_in_a_row_01",
 			},
 			{
 				"user_context",
@@ -858,7 +1099,7 @@ return function ()
 				"time_since_player_missed_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				20,
+				30,
 			},
 		},
 		on_done = {
@@ -1107,6 +1348,76 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pbw_gameplay_empire_soldier_hit_by_vomit_a",
+		probability = 1,
+		response = "pbw_gameplay_empire_soldier_hit_by_vomit_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"hit_by_vomit",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMEDIFF,
+				OP.GT,
+				300,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_gameplay_empire_soldier_on_a_frenzy_new_c",
+		probability = 1,
+		response = "pbw_gameplay_empire_soldier_on_a_frenzy_new_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pes_gameplay_empire_soldier_on_a_frenzy_new_b",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+	})
+	define_rule({
 		name = "pbw_gameplay_hanging_help",
 		probability = 1,
 		response = "pbw_gameplay_hanging_help",
@@ -1152,9 +1463,9 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pbw_gameplay_hunter_3_special_kills_in_a_row_01",
+		name = "pbw_gameplay_hunter_3_special_kills_in_a_row",
 		probability = 1,
-		response = "pbw_gameplay_hunter_3_special_kills_in_a_row_01",
+		response = "pbw_gameplay_hunter_3_special_kills_in_a_row",
 		criterias = {
 			{
 				"query_context",
@@ -1205,6 +1516,31 @@ return function ()
 				"witch_hunter_special_kills_in_row",
 				OP.ADD,
 				1,
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_gameplay_hunter_3_special_kills_in_a_row_agnostic_c",
+		probability = 1,
+		response = "pbw_gameplay_hunter_3_special_kills_in_a_row_agnostic_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_hunter_3_special_kills_in_a_row_agnostic_01_b_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
 			},
 		},
 	})
@@ -1769,7 +2105,7 @@ return function ()
 				"time_since_player_missed_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				20,
+				30,
 			},
 		},
 		on_done = {
@@ -1873,9 +2209,9 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pbw_gameplay_ranger_3_special_kills_in_a_row_01",
+		name = "pbw_gameplay_ranger_3_special_kills_in_a_row",
 		probability = 1,
-		response = "pbw_gameplay_ranger_3_special_kills_in_a_row_01",
+		response = "pbw_gameplay_ranger_3_special_kills_in_a_row",
 		criterias = {
 			{
 				"query_context",
@@ -1945,6 +2281,31 @@ return function ()
 				"sound_event",
 				OP.EQ,
 				"pdr_gameplay_ranger_3_special_kills_in_a_row_01_reply_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_gameplay_ranger_3_special_kills_in_a_row_agnostic_c",
+		probability = 1,
+		response = "pbw_gameplay_ranger_3_special_kills_in_a_row_agnostic_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_ranger_3_special_kills_in_a_row_agnostic_01_b_01",
 			},
 			{
 				"user_context",
@@ -2558,7 +2919,7 @@ return function ()
 				"time_since_player_missed_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				20,
+				30,
 			},
 		},
 		on_done = {
@@ -4114,9 +4475,9 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pbw_gameplay_soldier_3_special_kills_in_a_row_01",
+		name = "pbw_gameplay_soldier_3_special_kills_in_a_row",
 		probability = 1,
-		response = "pbw_gameplay_soldier_3_special_kills_in_a_row_01",
+		response = "pbw_gameplay_soldier_3_special_kills_in_a_row",
 		criterias = {
 			{
 				"query_context",
@@ -4167,6 +4528,31 @@ return function ()
 				"empire_soldier_special_kills_in_row",
 				OP.ADD,
 				1,
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_gameplay_soldier_3_special_kills_in_a_row_agnostic_c",
+		probability = 1,
+		response = "pbw_gameplay_soldier_3_special_kills_in_a_row_agnostic_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_soldier_3_special_kills_in_a_row_agnostic_01_b_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
 			},
 		},
 	})
@@ -4738,7 +5124,7 @@ return function ()
 				"time_since_player_missed_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				20,
+				30,
 			},
 		},
 		on_done = {
@@ -4955,6 +5341,76 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pbw_gameplay_witch_hunter_hit_by_vomit_a",
+		probability = 1,
+		response = "pbw_gameplay_witch_hunter_hit_by_vomit_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"hit_by_vomit",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMEDIFF,
+				OP.GT,
+				300,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_gameplay_witch_hunter_on_a_frenzy_new_c",
+		probability = 1,
+		response = "pbw_gameplay_witch_hunter_on_a_frenzy_new_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pwh_gameplay_witch_hunter_on_a_frenzy_new_b",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+	})
+	define_rule({
 		name = "pbw_gameplay_wizard_3_special_kills_in_a_row_01_reply_01",
 		probability = 1,
 		response = "pbw_gameplay_wizard_3_special_kills_in_a_row_01_reply_01",
@@ -5020,6 +5476,38 @@ return function ()
 				"sound_event",
 				OP.EQ,
 				"pwh_gameplay_wizard_3_special_kills_in_a_row_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_gameplay_wizard_3_special_kills_in_a_row_agnostic_b",
+		probability = 0.5,
+		response = "pbw_gameplay_wizard_3_special_kills_in_a_row_agnostic_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"gameplay_wizard_3_special_kills_in_a_row",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pdr_gameplay_wizard_kills_3_specials_in_a_row_02",
 			},
 			{
 				"user_context",
@@ -6088,6 +6576,76 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pbw_gameplay_wood_elf_hit_by_vomit_a",
+		probability = 1,
+		response = "pbw_gameplay_wood_elf_hit_by_vomit_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"hit_by_vomit",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMEDIFF,
+				OP.GT,
+				300,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_gameplay_wood_elf_on_a_frenzy_new_c",
+		probability = 1,
+		response = "pbw_gameplay_wood_elf_on_a_frenzy_new_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pwe_gameplay_wood_elf_on_a_frenzy_new_b",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+	})
+	define_rule({
 		name = "pbw_killing_a_second_rat_ogre_02",
 		probability = 1,
 		response = "pbw_killing_a_second_rat_ogre_02",
@@ -6132,7 +6690,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_all_stairs_conversation_a",
-		probability = 1,
+		probability = 0.5,
 		response = "pdr_all_stairs_conversation_a",
 		criterias = {
 			{
@@ -6258,9 +6816,175 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pdr_gameplay_elf_3_special_kills_in_a_row_01",
+		name = "pdr_gameplay_bright_wizard_hit_by_vomit_a",
 		probability = 1,
-		response = "pdr_gameplay_elf_3_special_kills_in_a_row_01",
+		response = "pdr_gameplay_bright_wizard_hit_by_vomit_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"hit_by_vomit",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMEDIFF,
+				OP.GT,
+				300,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_bright_wizard_on_a_frenzy_new_c",
+		probability = 1,
+		response = "pdr_gameplay_bright_wizard_on_a_frenzy_new_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pbw_gameplay_bright_wizard_on_a_frenzy_new_b",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_dwarf_ranger_hit_by_vomit_b",
+		probability = 1,
+		response = "pdr_gameplay_dwarf_ranger_hit_by_vomit_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"gameplay_dwarf_ranger_hit_by_vomit_a",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_dwarf_ranger_misses_bomb_new_b",
+		probability = 1,
+		response = "pdr_gameplay_dwarf_ranger_misses_bomb_new_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_dwarf_ranger_misses_bomb_new_a_01",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_dwarf_ranger_misses_bomb_new_a_01",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_dwarf_ranger_misses_bomb_new_a_01",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_dwarf_ranger_misses_bomb_new_a_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_dwarf_ranger_on_a_frenzy_new_b",
+		probability = 0.7,
+		response = "pdr_gameplay_dwarf_ranger_on_a_frenzy_new_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"gameplay_dwarf_ranger_on_a_frenzy",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_elf_3_special_kills_in_a_row",
+		probability = 1,
+		response = "pdr_gameplay_elf_3_special_kills_in_a_row",
 		criterias = {
 			{
 				"query_context",
@@ -6336,6 +7060,81 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"wood_elf",
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_elf_3_special_kills_in_a_row_agnostic_01_c",
+		probability = 1,
+		response = "pdr_gameplay_elf_3_special_kills_in_a_row_agnostic_01_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_elf_3_special_kills_in_a_row_agnostic_01_b_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_elf_3_special_kills_in_a_row_agnostic_02_c",
+		probability = 1,
+		response = "pdr_gameplay_elf_3_special_kills_in_a_row_agnostic_02_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_elf_3_special_kills_in_a_row_agnostic_02_b_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_elf_3_special_kills_in_a_row_hoggar_c",
+		probability = 0.4,
+		response = "pdr_gameplay_elf_3_special_kills_in_a_row_hoggar_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_elf_3_special_kills_in_a_row_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
 			},
 		},
 	})
@@ -6862,7 +7661,7 @@ return function ()
 				"time_since_player_missed_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				20,
+				30,
 			},
 		},
 		on_done = {
@@ -7015,6 +7814,76 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pdr_gameplay_empire_soldier_hit_by_vomit_a",
+		probability = 1,
+		response = "pdr_gameplay_empire_soldier_hit_by_vomit_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"hit_by_vomit",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMEDIFF,
+				OP.GT,
+				300,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_empire_soldier_on_a_frenzy_new_c",
+		probability = 1,
+		response = "pdr_gameplay_empire_soldier_on_a_frenzy_new_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pes_gameplay_empire_soldier_on_a_frenzy_new_b",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+		},
+	})
+	define_rule({
 		name = "pdr_gameplay_hanging_help",
 		probability = 1,
 		response = "pdr_gameplay_hanging_help",
@@ -7060,9 +7929,9 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pdr_gameplay_hunter_3_special_kills_in_a_row_01",
+		name = "pdr_gameplay_hunter_3_special_kills_in_a_row",
 		probability = 1,
-		response = "pdr_gameplay_hunter_3_special_kills_in_a_row_01",
+		response = "pdr_gameplay_hunter_3_special_kills_in_a_row",
 		criterias = {
 			{
 				"query_context",
@@ -7132,6 +8001,31 @@ return function ()
 				"sound_event",
 				OP.EQ,
 				"pwh_gameplay_hunter_3_special_kills_in_a_row_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_hunter_3_special_kills_in_a_row_agnostic_c",
+		probability = 1,
+		response = "pdr_gameplay_hunter_3_special_kills_in_a_row_agnostic_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_hunter_3_special_kills_in_a_row_agnostic_01_b_01",
 			},
 			{
 				"user_context",
@@ -7870,7 +8764,7 @@ return function ()
 				"time_since_player_missed_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				20,
+				30,
 			},
 		},
 		on_done = {
@@ -8306,6 +9200,38 @@ return function ()
 				"sound_event",
 				OP.EQ,
 				"pbw_gameplay_ranger_3_special_kills_in_a_row_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_ranger_3_special_kills_in_a_row_agnostic_b",
+		probability = 0.5,
+		response = "pdr_gameplay_ranger_3_special_kills_in_a_row_agnostic_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"gameplay_ranger_3_special_kills_in_a_row",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pwh_gameplay_ranger_killing_3_specials_in_a_row_02",
 			},
 			{
 				"user_context",
@@ -10745,34 +11671,9 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pdr_gameplay_soldier_3_special_kills_in_a_row_01_reply_01",
+		name = "pdr_gameplay_soldier_3_special_kills_in_a_row",
 		probability = 1,
-		response = "pdr_gameplay_soldier_3_special_kills_in_a_row_01_reply_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak",
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pes_gameplay_soldier_3_special_kills_in_a_row_01_reply_01",
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"dwarf_ranger",
-			},
-		},
-	})
-	define_rule({
-		name = "pdr_gameplay_soldier_3_special_kills_in_a_row_02",
-		probability = 1,
-		response = "pdr_gameplay_soldier_3_special_kills_in_a_row_02",
+		response = "pdr_gameplay_soldier_3_special_kills_in_a_row",
 		criterias = {
 			{
 				"query_context",
@@ -10823,6 +11724,56 @@ return function ()
 				"empire_soldier_special_kills_in_row",
 				OP.ADD,
 				1,
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_soldier_3_special_kills_in_a_row_01_reply_01",
+		probability = 1,
+		response = "pdr_gameplay_soldier_3_special_kills_in_a_row_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_soldier_3_special_kills_in_a_row_01_reply_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_soldier_3_special_kills_in_a_row_agnostic_c",
+		probability = 1,
+		response = "pdr_gameplay_soldier_3_special_kills_in_a_row_agnostic_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_soldier_3_special_kills_in_a_row_agnostic_01_b_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
 			},
 		},
 	})
@@ -11449,7 +12400,7 @@ return function ()
 				"time_since_player_missed_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				20,
+				30,
 			},
 		},
 		on_done = {
@@ -11698,9 +12649,79 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pdr_gameplay_wizard_3_special_kills_in_a_row_01",
+		name = "pdr_gameplay_witch_hunter_hit_by_vomit_a",
 		probability = 1,
-		response = "pdr_gameplay_wizard_3_special_kills_in_a_row_01",
+		response = "pdr_gameplay_witch_hunter_hit_by_vomit_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"hit_by_vomit",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMEDIFF,
+				OP.GT,
+				300,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_witch_hunter_on_a_frenzy_new_c",
+		probability = 1,
+		response = "pdr_gameplay_witch_hunter_on_a_frenzy_new_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pwh_gameplay_witch_hunter_on_a_frenzy_new_b",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_wizard_3_special_kills_in_a_row",
+		probability = 1,
+		response = "pdr_gameplay_wizard_3_special_kills_in_a_row",
 		criterias = {
 			{
 				"query_context",
@@ -11770,6 +12791,31 @@ return function ()
 				"sound_event",
 				OP.EQ,
 				"pbw_gameplay_wizard_3_special_kills_in_a_row_01_reply_03",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_wizard_3_special_kills_in_a_row_agnostic_c",
+		probability = 1,
+		response = "pdr_gameplay_wizard_3_special_kills_in_a_row_agnostic_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_wizard_3_special_kills_in_a_row_agnostic_01_b_01",
 			},
 			{
 				"user_context",
@@ -12495,7 +13541,7 @@ return function ()
 				"time_since_player_missed_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				20,
+				30,
 			},
 		},
 		on_done = {
@@ -12712,6 +13758,76 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pdr_gameplay_wood_elf_hit_by_vomit_a",
+		probability = 1,
+		response = "pdr_gameplay_wood_elf_hit_by_vomit_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"hit_by_vomit",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMEDIFF,
+				OP.GT,
+				300,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_wood_elf_on_a_frenzy_new_c",
+		probability = 1,
+		response = "pdr_gameplay_wood_elf_on_a_frenzy_new_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pwe_gameplay_wood_elf_on_a_frenzy_new_b",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+		},
+	})
+	define_rule({
 		name = "pdr_hunter_shoots_rat_ogre_01",
 		probability = 1,
 		response = "pdr_hunter_shoots_rat_ogre_01",
@@ -12839,9 +13955,149 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pes_gameplay_elf_3_special_kills_in_a_row_01",
+		name = "pes_gameplay_bright_wizard_hit_by_vomit_a",
 		probability = 1,
-		response = "pes_gameplay_elf_3_special_kills_in_a_row_01",
+		response = "pes_gameplay_bright_wizard_hit_by_vomit_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"hit_by_vomit",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMEDIFF,
+				OP.GT,
+				300,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pes_gameplay_bright_wizard_on_a_frenzy_new_c",
+		probability = 1,
+		response = "pes_gameplay_bright_wizard_on_a_frenzy_new_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pbw_gameplay_bright_wizard_on_a_frenzy_new_b",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+		},
+	})
+	define_rule({
+		name = "pes_gameplay_dwarf_ranger_hit_by_vomit_a",
+		probability = 1,
+		response = "pes_gameplay_dwarf_ranger_hit_by_vomit_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"hit_by_vomit",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMEDIFF,
+				OP.GT,
+				300,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pes_gameplay_dwarf_ranger_on_a_frenzy_new_c",
+		probability = 1,
+		response = "pes_gameplay_dwarf_ranger_on_a_frenzy_new_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pdr_gameplay_dwarf_ranger_on_a_frenzy_new_b",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+		},
+	})
+	define_rule({
+		name = "pes_gameplay_elf_3_special_kills_in_a_row",
+		probability = 1,
+		response = "pes_gameplay_elf_3_special_kills_in_a_row",
 		criterias = {
 			{
 				"query_context",
@@ -12892,6 +14148,81 @@ return function ()
 				"wood_elf_special_kills_in_row",
 				OP.ADD,
 				1,
+			},
+		},
+	})
+	define_rule({
+		name = "pes_gameplay_elf_3_special_kills_in_a_row_agnostic_01_c",
+		probability = 1,
+		response = "pes_gameplay_elf_3_special_kills_in_a_row_agnostic_01_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_elf_3_special_kills_in_a_row_agnostic_01_b_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+		},
+	})
+	define_rule({
+		name = "pes_gameplay_elf_3_special_kills_in_a_row_agnostic_02_c",
+		probability = 1,
+		response = "pes_gameplay_elf_3_special_kills_in_a_row_agnostic_02_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_elf_3_special_kills_in_a_row_agnostic_02_b_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+		},
+	})
+	define_rule({
+		name = "pes_gameplay_elf_3_special_kills_in_a_row_hoggar_c",
+		probability = 0.4,
+		response = "pes_gameplay_elf_3_special_kills_in_a_row_hoggar_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_elf_3_special_kills_in_a_row_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
 			},
 		},
 	})
@@ -13474,7 +14805,7 @@ return function ()
 				"time_since_player_missed_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				20,
+				30,
 			},
 		},
 		on_done = {
@@ -13760,6 +15091,102 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pes_gameplay_empire_soldier_hit_by_vomit_b",
+		probability = 1,
+		response = "pes_gameplay_empire_soldier_hit_by_vomit_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"gameplay_empire_soldier_hit_by_vomit_a",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+		},
+	})
+	define_rule({
+		name = "pes_gameplay_empire_soldier_misses_bomb_new_b",
+		probability = 1,
+		response = "pes_gameplay_empire_soldier_misses_bomb_new_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_empire_soldier_misses_bomb_new_a_01",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_empire_soldier_misses_bomb_new_a_01",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_empire_soldier_misses_bomb_new_a_01",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_empire_soldier_misses_bomb_new_a_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+		},
+	})
+	define_rule({
+		name = "pes_gameplay_empire_soldier_on_a_frenzy_new_b",
+		probability = 0.7,
+		response = "pes_gameplay_empire_soldier_on_a_frenzy_new_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"gameplay_empire_soldier_on_a_frenzy",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+		},
+	})
+	define_rule({
 		name = "pes_gameplay_hanging_help",
 		probability = 1,
 		response = "pes_gameplay_hanging_help",
@@ -13805,9 +15232,9 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pes_gameplay_hunter_3_special_kills_in_a_row_01",
+		name = "pes_gameplay_hunter_3_special_kills_in_a_row",
 		probability = 1,
-		response = "pes_gameplay_hunter_3_special_kills_in_a_row_01",
+		response = "pes_gameplay_hunter_3_special_kills_in_a_row",
 		criterias = {
 			{
 				"query_context",
@@ -13902,6 +15329,31 @@ return function ()
 				"sound_event",
 				OP.EQ,
 				"pwh_gameplay_hunter_3_special_kills_in_a_row_01_reply_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+		},
+	})
+	define_rule({
+		name = "pes_gameplay_hunter_3_special_kills_in_a_row_agnostic_c",
+		probability = 1,
+		response = "pes_gameplay_hunter_3_special_kills_in_a_row_agnostic_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_hunter_3_special_kills_in_a_row_agnostic_01_b_01",
 			},
 			{
 				"user_context",
@@ -14472,7 +15924,7 @@ return function ()
 				"time_since_player_missed_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				20,
+				30,
 			},
 		},
 		on_done = {
@@ -14907,9 +16359,9 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pes_gameplay_ranger_3_special_kills_in_a_row_01",
+		name = "pes_gameplay_ranger_3_special_kills_in_a_row",
 		probability = 1,
-		response = "pes_gameplay_ranger_3_special_kills_in_a_row_01",
+		response = "pes_gameplay_ranger_3_special_kills_in_a_row",
 		criterias = {
 			{
 				"query_context",
@@ -14979,6 +16431,31 @@ return function ()
 				"sound_event",
 				OP.EQ,
 				"pdr_gameplay_ranger_3_special_kills_in_a_row_01_reply_02",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+		},
+	})
+	define_rule({
+		name = "pes_gameplay_ranger_3_special_kills_in_a_row_agnostic_c",
+		probability = 1,
+		response = "pes_gameplay_ranger_3_special_kills_in_a_row_agnostic_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_ranger_3_special_kills_in_a_row_agnostic_01_b_01",
 			},
 			{
 				"user_context",
@@ -15437,7 +16914,7 @@ return function ()
 				"time_since_player_missed_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				20,
+				30,
 			},
 		},
 		on_done = {
@@ -17086,6 +18563,31 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pes_gameplay_soldier_3_special_kills_in_a_row_agnostic_b",
+		probability = 0.5,
+		response = "pes_gameplay_soldier_3_special_kills_in_a_row_agnostic_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"gameplay_soldier_3_special_kills_in_a_row",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+		},
+	})
+	define_rule({
 		name = "pes_gameplay_soldier_downed_3_times_02_reply_01",
 		probability = 1,
 		response = "pes_gameplay_soldier_downed_3_times_02_reply_01",
@@ -17927,6 +19429,76 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pes_gameplay_witch_hunter_hit_by_vomit_a",
+		probability = 1,
+		response = "pes_gameplay_witch_hunter_hit_by_vomit_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"hit_by_vomit",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMEDIFF,
+				OP.GT,
+				300,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pes_gameplay_witch_hunter_on_a_frenzy_new_c",
+		probability = 1,
+		response = "pes_gameplay_witch_hunter_on_a_frenzy_new_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pwh_gameplay_witch_hunter_on_a_frenzy_new_b",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+		},
+	})
+	define_rule({
 		name = "pes_gameplay_wizard_3_special_kills_in_a_row_01_reply_01",
 		probability = 1,
 		response = "pes_gameplay_wizard_3_special_kills_in_a_row_01_reply_01",
@@ -17942,6 +19514,31 @@ return function ()
 				"sound_event",
 				OP.EQ,
 				"pbw_gameplay_wizard_3_special_kills_in_a_row_01_reply_02",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+		},
+	})
+	define_rule({
+		name = "pes_gameplay_wizard_3_special_kills_in_a_row_agnostic_c",
+		probability = 1,
+		response = "pes_gameplay_wizard_3_special_kills_in_a_row_agnostic_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_wizard_3_special_kills_in_a_row_agnostic_01_b_01",
 			},
 			{
 				"user_context",
@@ -18594,7 +20191,7 @@ return function ()
 				"time_since_player_missed_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				20,
+				30,
 			},
 		},
 		on_done = {
@@ -18843,6 +20440,76 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pes_gameplay_wood_elf_hit_by_vomit_a",
+		probability = 1,
+		response = "pes_gameplay_wood_elf_hit_by_vomit_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"hit_by_vomit",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMEDIFF,
+				OP.GT,
+				300,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pes_gameplay_wood_elf_on_a_frenzy_new_c",
+		probability = 1,
+		response = "pes_gameplay_wood_elf_on_a_frenzy_new_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pwe_gameplay_wood_elf_on_a_frenzy_new_b",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+		},
+	})
+	define_rule({
 		name = "pes_pes_gameplay_wizard_potions_above_half_health_03_reply_01",
 		probability = 1,
 		response = "pes_pes_gameplay_wizard_potions_above_half_health_03_reply_01",
@@ -18958,6 +20625,76 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pwe_gameplay_bright_wizard_hit_by_vomit_a",
+		probability = 1,
+		response = "pwe_gameplay_bright_wizard_hit_by_vomit_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"hit_by_vomit",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMEDIFF,
+				OP.GT,
+				300,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwe_gameplay_bright_wizard_on_a_frenzy_new_c",
+		probability = 1,
+		response = "pwe_gameplay_bright_wizard_on_a_frenzy_new_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pbw_gameplay_bright_wizard_on_a_frenzy_new_b",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+		},
+	})
+	define_rule({
 		name = "pwe_gameplay_dwarf_picks_up_a_bomb",
 		probability = 1,
 		response = "pwe_gameplay_dwarf_picks_up_a_bomb",
@@ -19018,6 +20755,76 @@ return function ()
 				"user_memory",
 				"time_since_dwarf_picks_up_a_bomb",
 				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwe_gameplay_dwarf_ranger_hit_by_vomit_a",
+		probability = 1,
+		response = "pwe_gameplay_dwarf_ranger_hit_by_vomit_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"hit_by_vomit",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMEDIFF,
+				OP.GT,
+				300,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwe_gameplay_dwarf_ranger_on_a_frenzy_new_c",
+		probability = 1,
+		response = "pwe_gameplay_dwarf_ranger_on_a_frenzy_new_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pdr_gameplay_dwarf_ranger_on_a_frenzy_new_b",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
 			},
 		},
 	})
@@ -19112,6 +20919,31 @@ return function ()
 				"sound_event",
 				OP.EQ,
 				"pdr_gameplay_elf_3_special_kills_in_a_row_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+		},
+	})
+	define_rule({
+		name = "pwe_gameplay_elf_3_special_kills_in_a_row_agnostic_b",
+		probability = 0.5,
+		response = "pwe_gameplay_elf_3_special_kills_in_a_row_agnostic_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"gameplay_elf_3_special_kills_in_a_row",
 			},
 			{
 				"user_context",
@@ -19981,6 +21813,76 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pwe_gameplay_empire_soldier_hit_by_vomit_a",
+		probability = 1,
+		response = "pwe_gameplay_empire_soldier_hit_by_vomit_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"hit_by_vomit",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMEDIFF,
+				OP.GT,
+				300,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwe_gameplay_empire_soldier_on_a_frenzy_new_c",
+		probability = 1,
+		response = "pwe_gameplay_empire_soldier_on_a_frenzy_new_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pes_gameplay_empire_soldier_on_a_frenzy_new_b",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+		},
+	})
+	define_rule({
 		name = "pwe_gameplay_hanging_help",
 		probability = 1,
 		response = "pwe_gameplay_hanging_help",
@@ -20026,9 +21928,9 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pwe_gameplay_hunter_3_special_kills_in_a_row_01",
+		name = "pwe_gameplay_hunter_3_special_kills_in_a_row",
 		probability = 1,
-		response = "pwe_gameplay_hunter_3_special_kills_in_a_row_01",
+		response = "pwe_gameplay_hunter_3_special_kills_in_a_row",
 		criterias = {
 			{
 				"query_context",
@@ -20079,6 +21981,31 @@ return function ()
 				"witch_hunter_special_kills_in_row",
 				OP.ADD,
 				1,
+			},
+		},
+	})
+	define_rule({
+		name = "pwe_gameplay_hunter_3_special_kills_in_a_row_agnostic_c",
+		probability = 1,
+		response = "pwe_gameplay_hunter_3_special_kills_in_a_row_agnostic_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_hunter_3_special_kills_in_a_row_agnostic_01_b_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
 			},
 		},
 	})
@@ -20711,7 +22638,7 @@ return function ()
 				"time_since_player_missed_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				20,
+				30,
 			},
 		},
 		on_done = {
@@ -20960,6 +22887,57 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pwe_gameplay_i_will_tank",
+		probability = 1,
+		response = "pwe_gameplay_i_will_tank",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"surrounded",
+			},
+			{
+				"query_context",
+				"has_shield",
+				OP.EQ,
+				1,
+			},
+			{
+				"query_context",
+				"current_amount",
+				OP.GTEQ,
+				7,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"user_memory",
+				"time_since_i_will_tank",
+				OP.TIMEDIFF,
+				OP.GT,
+				1200,
+			},
+		},
+		on_done = {
+			{
+				"user_memory",
+				"time_since_i_will_tank",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
 		name = "pwe_gameplay_kiling_a_second_rat_ogre_01",
 		probability = 1,
 		response = "pwe_gameplay_kiling_a_second_rat_ogre_01",
@@ -21095,9 +23073,9 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pwe_gameplay_ranger_3_special_kills_in_a_row_01",
+		name = "pwe_gameplay_ranger_3_special_kills_in_a_row",
 		probability = 1,
-		response = "pwe_gameplay_ranger_3_special_kills_in_a_row_01",
+		response = "pwe_gameplay_ranger_3_special_kills_in_a_row",
 		criterias = {
 			{
 				"query_context",
@@ -21148,6 +23126,31 @@ return function ()
 				"dwarf_ranger_special_kills_in_row",
 				OP.ADD,
 				1,
+			},
+		},
+	})
+	define_rule({
+		name = "pwe_gameplay_ranger_3_special_kills_in_a_row_agnostic_c",
+		probability = 1,
+		response = "pwe_gameplay_ranger_3_special_kills_in_a_row_agnostic_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_ranger_3_special_kills_in_a_row_agnostic_01_b_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
 			},
 		},
 	})
@@ -21805,7 +23808,7 @@ return function ()
 				"time_since_player_missed_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				20,
+				30,
 			},
 		},
 		on_done = {
@@ -23425,9 +25428,9 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pwe_gameplay_soldier_3_special_kills_in_a_row_01",
+		name = "pwe_gameplay_soldier_3_special_kills_in_a_row",
 		probability = 1,
-		response = "pwe_gameplay_soldier_3_special_kills_in_a_row_01",
+		response = "pwe_gameplay_soldier_3_special_kills_in_a_row",
 		criterias = {
 			{
 				"query_context",
@@ -23547,6 +25550,31 @@ return function ()
 				"sound_event",
 				OP.EQ,
 				"pes_gameplay_soldier_3_special_kills_in_a_row_02",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+		},
+	})
+	define_rule({
+		name = "pwe_gameplay_soldier_3_special_kills_in_a_row_agnostic_c",
+		probability = 1,
+		response = "pwe_gameplay_soldier_3_special_kills_in_a_row_agnostic_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_soldier_3_special_kills_in_a_row_agnostic_01_b_01",
 			},
 			{
 				"user_context",
@@ -24241,7 +26269,7 @@ return function ()
 				"time_since_player_missed_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				20,
+				30,
 			},
 		},
 		on_done = {
@@ -24490,9 +26518,79 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pwe_gameplay_wizard_3_special_kills_in_a_row_01",
+		name = "pwe_gameplay_witch_hunter_hit_by_vomit_a",
 		probability = 1,
-		response = "pwe_gameplay_wizard_3_special_kills_in_a_row_01",
+		response = "pwe_gameplay_witch_hunter_hit_by_vomit_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"hit_by_vomit",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMEDIFF,
+				OP.GT,
+				300,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwe_gameplay_witch_hunter_on_a_frenzy_new_c",
+		probability = 1,
+		response = "pwe_gameplay_witch_hunter_on_a_frenzy_new_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pwh_gameplay_witch_hunter_on_a_frenzy_new_b",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+		},
+	})
+	define_rule({
+		name = "pwe_gameplay_wizard_3_special_kills_in_a_row",
+		probability = 1,
+		response = "pwe_gameplay_wizard_3_special_kills_in_a_row",
 		criterias = {
 			{
 				"query_context",
@@ -24543,6 +26641,31 @@ return function ()
 				"bright_wizard_special_kills_in_row",
 				OP.ADD,
 				1,
+			},
+		},
+	})
+	define_rule({
+		name = "pwe_gameplay_wizard_3_special_kills_in_a_row_agnostic_c",
+		probability = 1,
+		response = "pwe_gameplay_wizard_3_special_kills_in_a_row_agnostic_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_wizard_3_special_kills_in_a_row_agnostic_01_b_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
 			},
 		},
 	})
@@ -25019,7 +27142,7 @@ return function ()
 				"time_since_player_missed_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				20,
+				30,
 			},
 		},
 		on_done = {
@@ -25191,6 +27314,130 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pwe_gameplay_wood_elf_hit_by_vomit_b",
+		probability = 1,
+		response = "pwe_gameplay_wood_elf_hit_by_vomit_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"gameplay_wood_elf_hit_by_vomit_a",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+		},
+	})
+	define_rule({
+		name = "pwe_gameplay_wood_elf_misses_bomb_new_b",
+		probability = 1,
+		response = "pwe_gameplay_wood_elf_misses_bomb_new_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_wood_elf_misses_bomb_new_a_01",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_wood_elf_misses_bomb_new_a_01",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_wood_elf_misses_bomb_new_a_01",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_wood_elf_misses_bomb_new_a_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+		},
+	})
+	define_rule({
+		name = "pwe_gameplay_wood_elf_on_a_frenzy_new_b",
+		probability = 1,
+		response = "pwe_gameplay_wood_elf_on_a_frenzy_new_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pes_gameplay_wood_elf_on_a_frenzy",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_witch_hunter_on_a_frenzy_new_a_01",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_witch_hunter_on_a_frenzy_new_a_01",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_witch_hunter_on_a_frenzy_new_a_01",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_wood_elf_on_a_frenzy_08",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+		},
+	})
+	define_rule({
 		name = "pwh_all_stairs_conversation_b",
 		probability = 1,
 		response = "pwh_all_stairs_conversation_b",
@@ -25249,9 +27496,149 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pwh_gameplay_elf_3_special_kills_in_a_row_01",
+		name = "pwh_gameplay_bright_wizard_hit_by_vomit_a",
 		probability = 1,
-		response = "pwh_gameplay_elf_3_special_kills_in_a_row_01",
+		response = "pwh_gameplay_bright_wizard_hit_by_vomit_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"hit_by_vomit",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMEDIFF,
+				OP.GT,
+				300,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_bright_wizard_on_a_frenzy_new_c",
+		probability = 1,
+		response = "pwh_gameplay_bright_wizard_on_a_frenzy_new_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pbw_gameplay_bright_wizard_on_a_frenzy_new_b",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_dwarf_ranger_hit_by_vomit_a",
+		probability = 1,
+		response = "pwh_gameplay_dwarf_ranger_hit_by_vomit_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"hit_by_vomit",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMEDIFF,
+				OP.GT,
+				300,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_dwarf_ranger_on_a_frenzy_new_c",
+		probability = 1,
+		response = "pwh_gameplay_dwarf_ranger_on_a_frenzy_new_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pdr_gameplay_dwarf_ranger_on_a_frenzy_new_b",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_elf_3_special_kills_in_a_row",
+		probability = 1,
+		response = "pwh_gameplay_elf_3_special_kills_in_a_row",
 		criterias = {
 			{
 				"query_context",
@@ -25309,6 +27696,81 @@ return function ()
 		name = "pwh_gameplay_elf_3_special_kills_in_a_row_01_reply_01",
 		probability = 1,
 		response = "pwh_gameplay_elf_3_special_kills_in_a_row_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_elf_3_special_kills_in_a_row_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_elf_3_special_kills_in_a_row_agnostic_01_c",
+		probability = 1,
+		response = "pwh_gameplay_elf_3_special_kills_in_a_row_agnostic_01_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_elf_3_special_kills_in_a_row_agnostic_01_b_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_elf_3_special_kills_in_a_row_agnostic_02_c",
+		probability = 1,
+		response = "pwh_gameplay_elf_3_special_kills_in_a_row_agnostic_02_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_elf_3_special_kills_in_a_row_agnostic_02_b_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_elf_3_special_kills_in_a_row_hoggar_c",
+		probability = 0.4,
+		response = "pwh_gameplay_elf_3_special_kills_in_a_row_hoggar_c",
 		criterias = {
 			{
 				"query_context",
@@ -25959,7 +28421,7 @@ return function ()
 				"time_since_player_missed_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				20,
+				30,
 			},
 		},
 		on_done = {
@@ -26131,6 +28593,76 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pwh_gameplay_empire_soldier_hit_by_vomit_a",
+		probability = 1,
+		response = "pwh_gameplay_empire_soldier_hit_by_vomit_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"hit_by_vomit",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMEDIFF,
+				OP.GT,
+				300,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_empire_soldier_on_a_frenzy_new_c",
+		probability = 1,
+		response = "pwh_gameplay_empire_soldier_on_a_frenzy_new_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pes_gameplay_empire_soldier_on_a_frenzy_new_b",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+		},
+	})
+	define_rule({
 		name = "pwh_gameplay_hanging_help",
 		probability = 1,
 		response = "pwh_gameplay_hanging_help",
@@ -26216,6 +28748,38 @@ return function ()
 				"sound_event",
 				OP.EQ,
 				"pdr_gameplay_hunter_3_special_kills_in_a_row_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_hunter_3_special_kills_in_a_row_agnostic_b",
+		probability = 0.5,
+		response = "pwh_gameplay_hunter_3_special_kills_in_a_row_agnostic_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"gameplay_hunter_3_special_kills_in_a_row",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pbw_gameplay_hunter_kills_3_specials_in_a_row_02",
 			},
 			{
 				"user_context",
@@ -27078,6 +29642,57 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pwh_gameplay_i_will_tank",
+		probability = 1,
+		response = "pwh_gameplay_i_will_tank",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"surrounded",
+			},
+			{
+				"query_context",
+				"has_shield",
+				OP.EQ,
+				1,
+			},
+			{
+				"query_context",
+				"current_amount",
+				OP.GTEQ,
+				7,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_memory",
+				"time_since_i_will_tank",
+				OP.TIMEDIFF,
+				OP.GT,
+				1200,
+			},
+		},
+		on_done = {
+			{
+				"user_memory",
+				"time_since_i_will_tank",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
 		name = "pwh_gameplay_killing_a_rat_ogre_01",
 		probability = 1,
 		response = "pwh_gameplay_killing_a_rat_ogre_01",
@@ -27207,9 +29822,9 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pwh_gameplay_ranger_3_special_kills_in_a_row_01",
+		name = "pwh_gameplay_ranger_3_special_kills_in_a_row",
 		probability = 1,
-		response = "pwh_gameplay_ranger_3_special_kills_in_a_row_01",
+		response = "pwh_gameplay_ranger_3_special_kills_in_a_row",
 		criterias = {
 			{
 				"query_context",
@@ -27279,6 +29894,31 @@ return function ()
 				"sound_event",
 				OP.EQ,
 				"pdr_gameplay_ranger_3_special_kills_in_a_row_01_reply_03",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_ranger_3_special_kills_in_a_row_agnostic_c",
+		probability = 1,
+		response = "pwh_gameplay_ranger_3_special_kills_in_a_row_agnostic_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_ranger_3_special_kills_in_a_row_agnostic_01_b_01",
 			},
 			{
 				"user_context",
@@ -27949,7 +30589,7 @@ return function ()
 				"time_since_player_missed_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				20,
+				30,
 			},
 		},
 		on_done = {
@@ -29562,9 +32202,9 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pwh_gameplay_soldier_3_special_kills_in_a_row_01",
+		name = "pwh_gameplay_soldier_3_special_kills_in_a_row",
 		probability = 1,
-		response = "pwh_gameplay_soldier_3_special_kills_in_a_row_01",
+		response = "pwh_gameplay_soldier_3_special_kills_in_a_row",
 		criterias = {
 			{
 				"query_context",
@@ -29615,6 +32255,31 @@ return function ()
 				"empire_soldier_special_kills_in_row",
 				OP.ADD,
 				1,
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_soldier_3_special_kills_in_a_row_agnostic_c",
+		probability = 1,
+		response = "pwh_gameplay_soldier_3_special_kills_in_a_row_agnostic_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_soldier_3_special_kills_in_a_row_agnostic_01_b_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
 			},
 		},
 	})
@@ -30256,7 +32921,7 @@ return function ()
 				"time_since_player_missed_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				20,
+				30,
 			},
 		},
 		on_done = {
@@ -30274,9 +32939,111 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pwh_gameplay_wizard_3_special_kills_in_a_row_01",
+		name = "pwh_gameplay_witch_hunter_hit_by_vomit_b",
 		probability = 1,
-		response = "pwh_gameplay_wizard_3_special_kills_in_a_row_01",
+		response = "pwh_gameplay_witch_hunter_hit_by_vomit_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"gameplay_witch_hunter_hit_by_vomit_a",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_witch_hunter_misses_bomb_new_b",
+		probability = 1,
+		response = "pwh_gameplay_witch_hunter_misses_bomb_new_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_witch_hunter_misses_bomb_new_a_01",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_witch_hunter_misses_bomb_new_a_01",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_witch_hunter_misses_bomb_new_a_01",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_witch_hunter_misses_bomb_new_a_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_witch_hunter_on_a_frenzy_new_b",
+		probability = 0.7,
+		response = "pwh_gameplay_witch_hunter_on_a_frenzy_new_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"gameplay_witch_hunter_on_a_frenzy",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.NEQ,
+				"pbw_gameplay_witch_hunter_on_a_frenzy_09",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_wizard_3_special_kills_in_a_row",
+		probability = 1,
+		response = "pwh_gameplay_wizard_3_special_kills_in_a_row",
 		criterias = {
 			{
 				"query_context",
@@ -30346,6 +33113,31 @@ return function ()
 				"sound_event",
 				OP.EQ,
 				"pbw_gameplay_wizard_3_special_kills_in_a_row_01_reply_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_wizard_3_special_kills_in_a_row_agnostic_c",
+		probability = 1,
+		response = "pwh_gameplay_wizard_3_special_kills_in_a_row_agnostic_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_wizard_3_special_kills_in_a_row_agnostic_01_b_01",
 			},
 			{
 				"user_context",
@@ -31071,7 +33863,7 @@ return function ()
 				"time_since_player_missed_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				20,
+				30,
 			},
 		},
 		on_done = {
@@ -31262,6 +34054,76 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pwh_gameplay_wood_elf_hit_by_vomit_a",
+		probability = 1,
+		response = "pwh_gameplay_wood_elf_hit_by_vomit_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"hit_by_vomit",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMEDIFF,
+				OP.GT,
+				300,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_hit_by_vomit",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_wood_elf_on_a_frenzy_new_c",
+		probability = 1,
+		response = "pwh_gameplay_wood_elf_on_a_frenzy_new_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"pwe_gameplay_wood_elf_on_a_frenzy_new_b",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+		},
+	})
+	define_rule({
 		name = "pwh_pwh_gameplay_soldier_potions_above_half_health_02_reply_01",
 		probability = 1,
 		response = "pwh_pwh_gameplay_soldier_potions_above_half_health_02_reply_01",
@@ -31388,7 +34250,153 @@ return function ()
 				[1] = 2.9307708740234,
 			},
 		},
-		pbw_gameplay_elf_3_special_kills_in_a_row_01 = {
+		pbw_gameplay_bright_wizard_hit_by_vomit_b = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pbw_gameplay_bright_wizard_hit_by_vomit_b_01",
+				"pbw_gameplay_bright_wizard_hit_by_vomit_b_02",
+				"pbw_gameplay_bright_wizard_hit_by_vomit_b_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pbw_gameplay_bright_wizard_hit_by_vomit_b_01",
+				"pbw_gameplay_bright_wizard_hit_by_vomit_b_02",
+				"pbw_gameplay_bright_wizard_hit_by_vomit_b_03",
+			},
+			sound_events_duration = {
+				4.9770283699036,
+				5.7014374732971,
+				8.6923751831055,
+			},
+		},
+		pbw_gameplay_bright_wizard_misses_bomb_new_b = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pbw_gameplay_bright_wizard_misses_bomb_new_b_01",
+				"pbw_gameplay_bright_wizard_misses_bomb_new_b_02",
+				"pbw_gameplay_bright_wizard_misses_bomb_new_b_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pbw_gameplay_bright_wizard_misses_bomb_new_b_01",
+				"pbw_gameplay_bright_wizard_misses_bomb_new_b_02",
+				"pbw_gameplay_bright_wizard_misses_bomb_new_b_03",
+			},
+			sound_events_duration = {
+				1.75,
+				1.8055208921433,
+				3.4955208301544,
+			},
+		},
+		pbw_gameplay_bright_wizard_on_a_frenzy_new_b = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pbw_gameplay_bright_wizard_on_a_frenzy_new_b_01",
+				"pbw_gameplay_bright_wizard_on_a_frenzy_new_b_02",
+				"pbw_gameplay_bright_wizard_on_a_frenzy_new_b_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pbw_gameplay_bright_wizard_on_a_frenzy_new_b_01",
+				"pbw_gameplay_bright_wizard_on_a_frenzy_new_b_02",
+				"pbw_gameplay_bright_wizard_on_a_frenzy_new_b_03",
+			},
+			sound_events_duration = {
+				4.0030832290649,
+				3.6396250724792,
+				3.9778957366943,
+			},
+		},
+		pbw_gameplay_dwarf_ranger_hit_by_vomit_a = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pbw_gameplay_dwarf_ranger_hit_by_vomit_a_01",
+			},
+			sound_events = {
+				[1] = "pbw_gameplay_dwarf_ranger_hit_by_vomit_a_01",
+			},
+			sound_events_duration = {
+				[1] = 3.3888957500458,
+			},
+		},
+		pbw_gameplay_dwarf_ranger_on_a_frenzy_new_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pbw_gameplay_dwarf_ranger_on_a_frenzy_new_c_01",
+			},
+			sound_events = {
+				[1] = "pbw_gameplay_dwarf_ranger_on_a_frenzy_new_c_01",
+			},
+			sound_events_duration = {
+				[1] = 2.0842499732971,
+			},
+		},
+		pbw_gameplay_elf_3_special_kills_in_a_row = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
 			dialogue_animations_n = 1,
@@ -31452,6 +34460,72 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 4.7536039352417,
+			},
+		},
+		pbw_gameplay_elf_3_special_kills_in_a_row_agnostic_01_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pbw_gameplay_elf_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events = {
+				[1] = "pbw_gameplay_elf_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events_duration = {
+				[1] = 2.0364167690277,
+			},
+		},
+		pbw_gameplay_elf_3_special_kills_in_a_row_agnostic_02_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pbw_gameplay_elf_3_special_kills_in_a_row_agnostic_02_c_01",
+			},
+			sound_events = {
+				[1] = "pbw_gameplay_elf_3_special_kills_in_a_row_agnostic_02_c_01",
+			},
+			sound_events_duration = {
+				[1] = 2.2105417251587,
+			},
+		},
+		pbw_gameplay_elf_3_special_kills_in_a_row_hoggar_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_shout",
+			},
+			face_animations = {
+				[1] = "face_happy",
+			},
+			localization_strings = {
+				[1] = "pbw_gameplay_elf_3_special_kills_in_a_row_hoggar_c_01",
+			},
+			sound_events = {
+				[1] = "pbw_gameplay_elf_3_special_kills_in_a_row_hoggar_c_01",
+			},
+			sound_events_duration = {
+				[1] = 2.4893958568573,
 			},
 		},
 		pbw_gameplay_elf_caught_by_slaver_3_times_02 = {
@@ -31831,23 +34905,30 @@ return function ()
 		pbw_gameplay_elf_misses_bomb_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
 				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
 				[1] = "face_angry",
+				[2] = "face_angry",
 			},
 			localization_strings = {
 				[1] = "pbw_gameplay_elf_misses_bomb_01",
+				[2] = "pbw_gameplay_wood_elf_misses_bomb_new_a_01",
 			},
+			randomize_indexes = {},
 			sound_events = {
 				[1] = "pbw_gameplay_elf_misses_bomb_01",
+				[2] = "pbw_gameplay_wood_elf_misses_bomb_new_a_01",
 			},
 			sound_events_duration = {
 				[1] = 4.604395866394,
+				[2] = 3.4182915687561,
 			},
 		},
 		pbw_gameplay_elf_potions_above_half_health_01 = {
@@ -31982,6 +35063,50 @@ return function ()
 				[1] = 2.4987916946411,
 			},
 		},
+		pbw_gameplay_empire_soldier_hit_by_vomit_a = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pbw_gameplay_empire_soldier_hit_by_vomit_a_01",
+			},
+			sound_events = {
+				[1] = "pbw_gameplay_empire_soldier_hit_by_vomit_a_01",
+			},
+			sound_events_duration = {
+				[1] = 2.8502292633057,
+			},
+		},
+		pbw_gameplay_empire_soldier_on_a_frenzy_new_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pbw_gameplay_empire_soldier_on_a_frenzy_new_c_01",
+			},
+			sound_events = {
+				[1] = "pbw_gameplay_empire_soldier_on_a_frenzy_new_c_01",
+			},
+			sound_events_duration = {
+				[1] = 3.5132083892822,
+			},
+		},
 		pbw_gameplay_hanging_help = {
 			category = "player_alerts",
 			database = "special_occasions_honduras",
@@ -32031,7 +35156,7 @@ return function ()
 				1.9411041736603,
 			},
 		},
-		pbw_gameplay_hunter_3_special_kills_in_a_row_01 = {
+		pbw_gameplay_hunter_3_special_kills_in_a_row = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
 			dialogue_animations_n = 1,
@@ -32051,6 +35176,28 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 4.2738122940064,
+			},
+		},
+		pbw_gameplay_hunter_3_special_kills_in_a_row_agnostic_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pbw_gameplay_hunter_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events = {
+				[1] = "pbw_gameplay_hunter_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events_duration = {
+				[1] = 2.2889583110809,
 			},
 		},
 		pbw_gameplay_hunter_3_special_kills_in_a_row_reply_01 = {
@@ -32342,23 +35489,30 @@ return function ()
 		pbw_gameplay_hunter_misses_bomb_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
 				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
 				[1] = "face_angry",
+				[2] = "face_angry",
 			},
 			localization_strings = {
 				[1] = "pbw_gameplay_hunter_misses_bomb_01",
+				[2] = "pbw_gameplay_witch_hunter_misses_bomb_new_a_01",
 			},
+			randomize_indexes = {},
 			sound_events = {
 				[1] = "pbw_gameplay_hunter_misses_bomb_01",
+				[2] = "pbw_gameplay_witch_hunter_misses_bomb_new_a_01",
 			},
 			sound_events_duration = {
 				[1] = 3.7887916564941,
+				[2] = 3.6728959083557,
 			},
 		},
 		pbw_gameplay_killing_a_second_rat_ogre_01 = {
@@ -32405,7 +35559,7 @@ return function ()
 				[1] = 3.1148540973663,
 			},
 		},
-		pbw_gameplay_ranger_3_special_kills_in_a_row_01 = {
+		pbw_gameplay_ranger_3_special_kills_in_a_row = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
 			dialogue_animations_n = 1,
@@ -32447,6 +35601,28 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 4.5054793357849,
+			},
+		},
+		pbw_gameplay_ranger_3_special_kills_in_a_row_agnostic_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pbw_gameplay_ranger_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events = {
+				[1] = "pbw_gameplay_ranger_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events_duration = {
+				[1] = 2.8149790763855,
 			},
 		},
 		pbw_gameplay_ranger_caught_by_slaver_3_times_02 = {
@@ -32804,23 +35980,30 @@ return function ()
 		pbw_gameplay_ranger_misses_bomb_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
 				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
 				[1] = "face_smug",
+				[2] = "face_angry",
 			},
 			localization_strings = {
 				[1] = "pbw_gameplay_ranger_misses_bomb_01",
+				[2] = "pbw_gameplay_dwarf_ranger_misses_bomb_new_a_01",
 			},
+			randomize_indexes = {},
 			sound_events = {
 				[1] = "pbw_gameplay_ranger_misses_bomb_01",
+				[2] = "pbw_gameplay_dwarf_ranger_misses_bomb_new_a_01",
 			},
 			sound_events_duration = {
 				[1] = 4.56014585495,
+				[2] = 3.5132915973663,
 			},
 		},
 		pbw_gameplay_ranger_potions_above_half_health_01 = {
@@ -34099,7 +37282,7 @@ return function ()
 				[1] = 3.2757709026337,
 			},
 		},
-		pbw_gameplay_soldier_3_special_kills_in_a_row_01 = {
+		pbw_gameplay_soldier_3_special_kills_in_a_row = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
 			dialogue_animations_n = 1,
@@ -34119,6 +37302,28 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 3.5566458702087,
+			},
+		},
+		pbw_gameplay_soldier_3_special_kills_in_a_row_agnostic_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pbw_gameplay_soldier_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events = {
+				[1] = "pbw_gameplay_soldier_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events_duration = {
+				[1] = 2.5683751106262,
 			},
 		},
 		pbw_gameplay_soldier_caught_by_slaver_3_times_02 = {
@@ -34432,23 +37637,30 @@ return function ()
 		pbw_gameplay_soldier_misses_bomb_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
 				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
 				[1] = "face_smug",
+				[2] = "face_angry",
 			},
 			localization_strings = {
 				[1] = "pbw_gameplay_soldier_misses_bomb_01",
+				[2] = "pbw_gameplay_empire_soldier_misses_bomb_new_a_01",
 			},
+			randomize_indexes = {},
 			sound_events = {
 				[1] = "pbw_gameplay_soldier_misses_bomb_01",
+				[2] = "pbw_gameplay_empire_soldier_misses_bomb_new_a_01",
 			},
 			sound_events_duration = {
 				[1] = 2.8350625038147,
+				[2] = 3.2698540687561,
 			},
 		},
 		pbw_gameplay_soldier_potions_above_half_health_01 = {
@@ -34561,6 +37773,50 @@ return function ()
 				[1] = 4.4978542327881,
 			},
 		},
+		pbw_gameplay_witch_hunter_hit_by_vomit_a = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pbw_gameplay_witch_hunter_hit_by_vomit_a_01",
+			},
+			sound_events = {
+				[1] = "pbw_gameplay_witch_hunter_hit_by_vomit_a_01",
+			},
+			sound_events_duration = {
+				[1] = 3.2922916412353,
+			},
+		},
+		pbw_gameplay_witch_hunter_on_a_frenzy_new_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pbw_gameplay_witch_hunter_on_a_frenzy_new_c_01",
+			},
+			sound_events = {
+				[1] = "pbw_gameplay_witch_hunter_on_a_frenzy_new_c_01",
+			},
+			sound_events_duration = {
+				[1] = 2.7717499732971,
+			},
+		},
 		pbw_gameplay_wizard_3_special_kills_in_a_row_01_reply_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
@@ -34625,6 +37881,28 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 3.4194791316986,
+			},
+		},
+		pbw_gameplay_wizard_3_special_kills_in_a_row_agnostic_b = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_shout",
+			},
+			face_animations = {
+				[1] = "face_bored",
+			},
+			localization_strings = {
+				[1] = "pbw_gameplay_wizard_3_special_kills_in_a_row_agnostic_01_b_01",
+			},
+			sound_events = {
+				[1] = "pbw_gameplay_wizard_3_special_kills_in_a_row_agnostic_01_b_01",
+			},
+			sound_events_duration = {
+				[1] = 3.1821665763855,
 			},
 		},
 		pbw_gameplay_wizard_downed_3_times_03_reply_01 = {
@@ -35419,6 +38697,50 @@ return function ()
 				[1] = 0.81927084922791,
 			},
 		},
+		pbw_gameplay_wood_elf_hit_by_vomit_a = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pbw_gameplay_wood_elf_hit_by_vomit_a_01",
+			},
+			sound_events = {
+				[1] = "pbw_gameplay_wood_elf_hit_by_vomit_a_01",
+			},
+			sound_events_duration = {
+				[1] = 2.816166639328,
+			},
+		},
+		pbw_gameplay_wood_elf_on_a_frenzy_new_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pbw_gameplay_wood_elf_on_a_frenzy_new_c_01",
+			},
+			sound_events = {
+				[1] = "pbw_gameplay_wood_elf_on_a_frenzy_new_c_01",
+			},
+			sound_events_duration = {
+				[1] = 4.2754583358765,
+			},
+		},
 		pbw_killing_a_second_rat_ogre_02 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
@@ -35507,7 +38829,153 @@ return function ()
 				[1] = 3.8214375972748,
 			},
 		},
-		pdr_gameplay_elf_3_special_kills_in_a_row_01 = {
+		pdr_gameplay_bright_wizard_hit_by_vomit_a = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pdr_gameplay_bright_wizard_hit_by_vomit_a_01",
+			},
+			sound_events = {
+				[1] = "pdr_gameplay_bright_wizard_hit_by_vomit_a_01",
+			},
+			sound_events_duration = {
+				[1] = 2.3261249065399,
+			},
+		},
+		pdr_gameplay_bright_wizard_on_a_frenzy_new_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pdr_gameplay_bright_wizard_on_a_frenzy_new_c_01",
+			},
+			sound_events = {
+				[1] = "pdr_gameplay_bright_wizard_on_a_frenzy_new_c_01",
+			},
+			sound_events_duration = {
+				[1] = 1.9641041755676,
+			},
+		},
+		pdr_gameplay_dwarf_ranger_hit_by_vomit_b = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pdr_gameplay_dwarf_ranger_hit_by_vomit_b_01",
+				"pdr_gameplay_dwarf_ranger_hit_by_vomit_b_02",
+				"pdr_gameplay_dwarf_ranger_hit_by_vomit_b_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_gameplay_dwarf_ranger_hit_by_vomit_b_01",
+				"pdr_gameplay_dwarf_ranger_hit_by_vomit_b_02",
+				"pdr_gameplay_dwarf_ranger_hit_by_vomit_b_03",
+			},
+			sound_events_duration = {
+				3.6528332233429,
+				1.9246875047684,
+				3.5737292766571,
+			},
+		},
+		pdr_gameplay_dwarf_ranger_misses_bomb_new_b = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pdr_gameplay_dwarf_ranger_misses_bomb_new_b_01",
+				"pdr_gameplay_dwarf_ranger_misses_bomb_new_b_02",
+				"pdr_gameplay_dwarf_ranger_misses_bomb_new_b_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_gameplay_dwarf_ranger_misses_bomb_new_b_01",
+				"pdr_gameplay_dwarf_ranger_misses_bomb_new_b_02",
+				"pdr_gameplay_dwarf_ranger_misses_bomb_new_b_03",
+			},
+			sound_events_duration = {
+				3.1499791145325,
+				2.7082707881927,
+				2.4727082252502,
+			},
+		},
+		pdr_gameplay_dwarf_ranger_on_a_frenzy_new_b = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pdr_gameplay_dwarf_ranger_on_a_frenzy_new_b_01",
+				"pdr_gameplay_dwarf_ranger_on_a_frenzy_new_b_02",
+				"pdr_gameplay_dwarf_ranger_on_a_frenzy_new_b_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_gameplay_dwarf_ranger_on_a_frenzy_new_b_01",
+				"pdr_gameplay_dwarf_ranger_on_a_frenzy_new_b_02",
+				"pdr_gameplay_dwarf_ranger_on_a_frenzy_new_b_03",
+			},
+			sound_events_duration = {
+				3.4419167041779,
+				2.914520740509,
+				4.6620416641235,
+			},
+		},
+		pdr_gameplay_elf_3_special_kills_in_a_row = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
 			dialogue_animations_n = 1,
@@ -35549,6 +39017,72 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 2.1117708683014,
+			},
+		},
+		pdr_gameplay_elf_3_special_kills_in_a_row_agnostic_01_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pdr_gameplay_elf_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events = {
+				[1] = "pdr_gameplay_elf_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events_duration = {
+				[1] = 3.2057707309723,
+			},
+		},
+		pdr_gameplay_elf_3_special_kills_in_a_row_agnostic_02_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pdr_gameplay_elf_3_special_kills_in_a_row_agnostic_02_c_01",
+			},
+			sound_events = {
+				[1] = "pdr_gameplay_elf_3_special_kills_in_a_row_agnostic_02_c_01",
+			},
+			sound_events_duration = {
+				[1] = 4.4603748321533,
+			},
+		},
+		pdr_gameplay_elf_3_special_kills_in_a_row_hoggar_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_shout",
+			},
+			face_animations = {
+				[1] = "face_happy",
+			},
+			localization_strings = {
+				[1] = "pdr_gameplay_elf_3_special_kills_in_a_row_hoggar_c_01",
+			},
+			sound_events = {
+				[1] = "pdr_gameplay_elf_3_special_kills_in_a_row_hoggar_c_01",
+			},
+			sound_events_duration = {
+				[1] = 1.8347083330154,
 			},
 		},
 		pdr_gameplay_elf_caught_by_slaver_3_times_02 = {
@@ -35840,23 +39374,30 @@ return function ()
 		pdr_gameplay_elf_misses_bomb_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
 				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
 				[1] = "face_angry",
+				[2] = "face_angry",
 			},
 			localization_strings = {
 				[1] = "pdr_gameplay_elf_misses_bomb_01",
+				[2] = "pdr_gameplay_wood_elf_misses_bomb_new_a_01",
 			},
+			randomize_indexes = {},
 			sound_events = {
 				[1] = "pdr_gameplay_elf_misses_bomb_01",
+				[2] = "pdr_gameplay_wood_elf_misses_bomb_new_a_01",
 			},
 			sound_events_duration = {
 				[1] = 4.140124797821,
+				[2] = 3.1304166316986,
 			},
 		},
 		pdr_gameplay_elf_potions_above_half_health_02 = {
@@ -35925,6 +39466,50 @@ return function ()
 				[1] = 2.7524583339691,
 			},
 		},
+		pdr_gameplay_empire_soldier_hit_by_vomit_a = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pdr_gameplay_empire_soldier_hit_by_vomit_a_01",
+			},
+			sound_events = {
+				[1] = "pdr_gameplay_empire_soldier_hit_by_vomit_a_01",
+			},
+			sound_events_duration = {
+				[1] = 2.2216665744781,
+			},
+		},
+		pdr_gameplay_empire_soldier_on_a_frenzy_new_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pdr_gameplay_empire_soldier_on_a_frenzy_new_c_01",
+			},
+			sound_events = {
+				[1] = "pdr_gameplay_empire_soldier_on_a_frenzy_new_c_01",
+			},
+			sound_events_duration = {
+				[1] = 3.8053333759308,
+			},
+		},
 		pdr_gameplay_hanging_help = {
 			category = "player_alerts",
 			database = "special_occasions_honduras",
@@ -35974,7 +39559,7 @@ return function ()
 				4.147979259491,
 			},
 		},
-		pdr_gameplay_hunter_3_special_kills_in_a_row_01 = {
+		pdr_gameplay_hunter_3_special_kills_in_a_row = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
 			dialogue_animations_n = 1,
@@ -36016,6 +39601,28 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 4.1999998092651,
+			},
+		},
+		pdr_gameplay_hunter_3_special_kills_in_a_row_agnostic_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pdr_gameplay_hunter_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events = {
+				[1] = "pdr_gameplay_hunter_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events_duration = {
+				[1] = 4.8352708816528,
 			},
 		},
 		pdr_gameplay_hunter_caught_by_slaver_3_times_02 = {
@@ -36483,23 +40090,30 @@ return function ()
 		pdr_gameplay_hunter_misses_bomb_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
 				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
 				[1] = "face_neutral",
+				[2] = "face_neutral",
 			},
 			localization_strings = {
 				[1] = "pdr_gameplay_hunter_misses_bomb_01",
+				[2] = "pdr_gameplay_witch_hunter_misses_bomb_new_a_01",
 			},
+			randomize_indexes = {},
 			sound_events = {
 				[1] = "pdr_gameplay_hunter_misses_bomb_01",
+				[2] = "pdr_gameplay_witch_hunter_misses_bomb_new_a_01",
 			},
 			sound_events_duration = {
 				[1] = 3.9068748950958,
+				[2] = 2.8127291202545,
 			},
 		},
 		pdr_gameplay_hunter_potions_above_half_health_02 = {
@@ -36809,6 +40423,28 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 4.8357706069946,
+			},
+		},
+		pdr_gameplay_ranger_3_special_kills_in_a_row_agnostic_b = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_shout",
+			},
+			face_animations = {
+				[1] = "face_bored",
+			},
+			localization_strings = {
+				[1] = "pdr_gameplay_ranger_3_special_kills_in_a_row_agnostic_01_b_01",
+			},
+			sound_events = {
+				[1] = "pdr_gameplay_ranger_3_special_kills_in_a_row_agnostic_01_b_01",
+			},
+			sound_events_duration = {
+				[1] = 2.548187494278,
 			},
 		},
 		pdr_gameplay_ranger_3_special_kills_in_a_row_reply_01 = {
@@ -38813,6 +42449,28 @@ return function ()
 				[1] = 3.2379791736603,
 			},
 		},
+		pdr_gameplay_soldier_3_special_kills_in_a_row = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_shout",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pdr_gameplay_soldier_3_special_kills_in_a_row_02",
+			},
+			sound_events = {
+				[1] = "pdr_gameplay_soldier_3_special_kills_in_a_row_02",
+			},
+			sound_events_duration = {
+				[1] = 4.8414373397827,
+			},
+		},
 		pdr_gameplay_soldier_3_special_kills_in_a_row_01_reply_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
@@ -38835,26 +42493,26 @@ return function ()
 				[1] = 4.1999998092651,
 			},
 		},
-		pdr_gameplay_soldier_3_special_kills_in_a_row_02 = {
+		pdr_gameplay_soldier_3_special_kills_in_a_row_agnostic_c = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
 			dialogue_animations_n = 1,
 			face_animations_n = 1,
 			sound_events_n = 1,
 			dialogue_animations = {
-				[1] = "dialogue_shout",
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1] = "face_neutral",
+				[1] = "face_angry",
 			},
 			localization_strings = {
-				[1] = "pdr_gameplay_soldier_3_special_kills_in_a_row_02",
+				[1] = "pdr_gameplay_soldier_3_special_kills_in_a_row_agnostic_01_c_01",
 			},
 			sound_events = {
-				[1] = "pdr_gameplay_soldier_3_special_kills_in_a_row_02",
+				[1] = "pdr_gameplay_soldier_3_special_kills_in_a_row_agnostic_01_c_01",
 			},
 			sound_events_duration = {
-				[1] = 4.8414373397827,
+				[1] = 4.6121459007263,
 			},
 		},
 		pdr_gameplay_soldier_caught_by_slaver_3_times_two = {
@@ -39234,23 +42892,30 @@ return function ()
 		pdr_gameplay_soldier_misses_bomb_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
 				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
 				[1] = "face_smug",
+				[2] = "face_angry",
 			},
 			localization_strings = {
 				[1] = "pdr_gameplay_soldier_misses_bomb_01",
+				[2] = "pdr_gameplay_empire_soldier_misses_bomb_new_a_01",
 			},
+			randomize_indexes = {},
 			sound_events = {
 				[1] = "pdr_gameplay_soldier_misses_bomb_01",
+				[2] = "pdr_gameplay_empire_soldier_misses_bomb_new_a_01",
 			},
 			sound_events_duration = {
 				[1] = 2.8095417022705,
+				[2] = 3.0319583415985,
 			},
 		},
 		pdr_gameplay_soldier_potions_above_half_health_01 = {
@@ -39385,7 +43050,51 @@ return function ()
 				[1] = 3.2187917232513,
 			},
 		},
-		pdr_gameplay_wizard_3_special_kills_in_a_row_01 = {
+		pdr_gameplay_witch_hunter_hit_by_vomit_a = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pdr_gameplay_witch_hunter_hit_by_vomit_a_01",
+			},
+			sound_events = {
+				[1] = "pdr_gameplay_witch_hunter_hit_by_vomit_a_01",
+			},
+			sound_events_duration = {
+				[1] = 2.5088748931885,
+			},
+		},
+		pdr_gameplay_witch_hunter_on_a_frenzy_new_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pdr_gameplay_witch_hunter_on_a_frenzy_new_c_01",
+			},
+			sound_events = {
+				[1] = "pdr_gameplay_witch_hunter_on_a_frenzy_new_c_01",
+			},
+			sound_events_duration = {
+				[1] = 2.8894166946411,
+			},
+		},
+		pdr_gameplay_wizard_3_special_kills_in_a_row = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
 			dialogue_animations_n = 1,
@@ -39427,6 +43136,28 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 2.8754374980927,
+			},
+		},
+		pdr_gameplay_wizard_3_special_kills_in_a_row_agnostic_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pdr_gameplay_wizard_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events = {
+				[1] = "pdr_gameplay_wizard_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events_duration = {
+				[1] = 4.5834164619446,
 			},
 		},
 		pdr_gameplay_wizard_caught_by_slaver_3_times_02 = {
@@ -39828,23 +43559,30 @@ return function ()
 		pdr_gameplay_wizard_misses_bomb_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
 				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
 				[1] = "face_neutral",
+				[2] = "face_angry",
 			},
 			localization_strings = {
 				[1] = "pdr_gameplay_wizard_misses_bomb_01",
+				[2] = "pdr_gameplay_bright_wizard_misses_bomb_new_a_01",
 			},
+			randomize_indexes = {},
 			sound_events = {
 				[1] = "pdr_gameplay_wizard_misses_bomb_01",
+				[2] = "pdr_gameplay_bright_wizard_misses_bomb_new_a_01",
 			},
 			sound_events_duration = {
 				[1] = 4.7575626373291,
+				[2] = 2.4005000591278,
 			},
 		},
 		pdr_gameplay_wizard_potions_above_half_health_01 = {
@@ -39957,6 +43695,50 @@ return function ()
 				[1] = 2.0555417537689,
 			},
 		},
+		pdr_gameplay_wood_elf_hit_by_vomit_a = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pdr_gameplay_wood_elf_hit_by_vomit_a_01",
+			},
+			sound_events = {
+				[1] = "pdr_gameplay_wood_elf_hit_by_vomit_a_01",
+			},
+			sound_events_duration = {
+				[1] = 2.5424792766571,
+			},
+		},
+		pdr_gameplay_wood_elf_on_a_frenzy_new_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pdr_gameplay_wood_elf_on_a_frenzy_new_c_01",
+			},
+			sound_events = {
+				[1] = "pdr_gameplay_wood_elf_on_a_frenzy_new_c_01",
+			},
+			sound_events_duration = {
+				[1] = 3.7657291889191,
+			},
+		},
 		pdr_hunter_shoots_rat_ogre_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
@@ -40045,7 +43827,95 @@ return function ()
 				[1] = 3.9320623874664,
 			},
 		},
-		pes_gameplay_elf_3_special_kills_in_a_row_01 = {
+		pes_gameplay_bright_wizard_hit_by_vomit_a = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pes_gameplay_bright_wizard_hit_by_vomit_a_01",
+			},
+			sound_events = {
+				[1] = "pes_gameplay_bright_wizard_hit_by_vomit_a_01",
+			},
+			sound_events_duration = {
+				[1] = 4.1270418167114,
+			},
+		},
+		pes_gameplay_bright_wizard_on_a_frenzy_new_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pes_gameplay_bright_wizard_on_a_frenzy_new_c_01",
+			},
+			sound_events = {
+				[1] = "pes_gameplay_bright_wizard_on_a_frenzy_new_c_01",
+			},
+			sound_events_duration = {
+				[1] = 3.7891874313355,
+			},
+		},
+		pes_gameplay_dwarf_ranger_hit_by_vomit_a = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pes_gameplay_dwarf_ranger_hit_by_vomit_a_01",
+			},
+			sound_events = {
+				[1] = "pes_gameplay_dwarf_ranger_hit_by_vomit_a_01",
+			},
+			sound_events_duration = {
+				[1] = 2.0778124332428,
+			},
+		},
+		pes_gameplay_dwarf_ranger_on_a_frenzy_new_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pes_gameplay_dwarf_ranger_on_a_frenzy_new_c_01",
+			},
+			sound_events = {
+				[1] = "pes_gameplay_dwarf_ranger_on_a_frenzy_new_c_01",
+			},
+			sound_events_duration = {
+				[1] = 1.5361875295639,
+			},
+		},
+		pes_gameplay_elf_3_special_kills_in_a_row = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
 			dialogue_animations_n = 1,
@@ -40065,6 +43935,72 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 2.4657082557678,
+			},
+		},
+		pes_gameplay_elf_3_special_kills_in_a_row_agnostic_01_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pes_gameplay_elf_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events = {
+				[1] = "pes_gameplay_elf_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events_duration = {
+				[1] = 2.7325832843781,
+			},
+		},
+		pes_gameplay_elf_3_special_kills_in_a_row_agnostic_02_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pes_gameplay_elf_3_special_kills_in_a_row_agnostic_02_c_01",
+			},
+			sound_events = {
+				[1] = "pes_gameplay_elf_3_special_kills_in_a_row_agnostic_02_c_01",
+			},
+			sound_events_duration = {
+				[1] = 3.4557292461395,
+			},
+		},
+		pes_gameplay_elf_3_special_kills_in_a_row_hoggar_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_shout",
+			},
+			face_animations = {
+				[1] = "face_happy",
+			},
+			localization_strings = {
+				[1] = "pes_gameplay_elf_3_special_kills_in_a_row_hoggar_c_01",
+			},
+			sound_events = {
+				[1] = "pes_gameplay_elf_3_special_kills_in_a_row_hoggar_c_01",
+			},
+			sound_events_duration = {
+				[1] = 1.2190208435059,
 			},
 		},
 		pes_gameplay_elf_caught_by_slaver_3_times_02 = {
@@ -40400,23 +44336,30 @@ return function ()
 		pes_gameplay_elf_misses_bomb_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
 				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
 				[1] = "face_angry",
+				[2] = "face_angry",
 			},
 			localization_strings = {
 				[1] = "pes_gameplay_elf_misses_bomb_01",
+				[2] = "pes_gameplay_wood_elf_misses_bomb_new_a_01",
 			},
+			randomize_indexes = {},
 			sound_events = {
 				[1] = "pes_gameplay_elf_misses_bomb_01",
+				[2] = "pes_gameplay_wood_elf_misses_bomb_new_a_01",
 			},
 			sound_events_duration = {
 				[1] = 2.2866249084473,
+				[2] = 2.3903748989105,
 			},
 		},
 		pes_gameplay_elf_potions_above_half_health_01 = {
@@ -40573,6 +44516,103 @@ return function ()
 				[1] = 2.0554165840149,
 			},
 		},
+		pes_gameplay_empire_soldier_hit_by_vomit_b = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pes_gameplay_empire_soldier_hit_by_vomit_b_01",
+				"pes_gameplay_empire_soldier_hit_by_vomit_b_02",
+				"pes_gameplay_empire_soldier_hit_by_vomit_b_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_gameplay_empire_soldier_hit_by_vomit_b_01",
+				"pes_gameplay_empire_soldier_hit_by_vomit_b_02",
+				"pes_gameplay_empire_soldier_hit_by_vomit_b_03",
+			},
+			sound_events_duration = {
+				3.5916249752045,
+				3.6953125,
+				3.824916601181,
+			},
+		},
+		pes_gameplay_empire_soldier_misses_bomb_new_b = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pes_gameplay_empire_soldier_misses_bomb_new_b_01",
+				"pes_gameplay_empire_soldier_misses_bomb_new_b_02",
+				"pes_gameplay_empire_soldier_misses_bomb_new_b_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_gameplay_empire_soldier_misses_bomb_new_b_01",
+				"pes_gameplay_empire_soldier_misses_bomb_new_b_02",
+				"pes_gameplay_empire_soldier_misses_bomb_new_b_03",
+			},
+			sound_events_duration = {
+				1.4563958644867,
+				2.3552083969116,
+				4.0796875953674,
+			},
+		},
+		pes_gameplay_empire_soldier_on_a_frenzy_new_b = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+				[2] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pes_gameplay_empire_soldier_on_a_frenzy_new_b_02",
+				[2] = "pes_gameplay_empire_soldier_on_a_frenzy_new_b_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1] = "pes_gameplay_empire_soldier_on_a_frenzy_new_b_02",
+				[2] = "pes_gameplay_empire_soldier_on_a_frenzy_new_b_03",
+			},
+			sound_events_duration = {
+				[1] = 3.1220207214356,
+				[2] = 2.3419165611267,
+			},
+		},
 		pes_gameplay_hanging_help = {
 			category = "player_alerts",
 			database = "special_occasions_honduras",
@@ -40622,7 +44662,7 @@ return function ()
 				2.6665208339691,
 			},
 		},
-		pes_gameplay_hunter_3_special_kills_in_a_row_01 = {
+		pes_gameplay_hunter_3_special_kills_in_a_row = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
 			dialogue_animations_n = 1,
@@ -40686,6 +44726,28 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 3.9385209083557,
+			},
+		},
+		pes_gameplay_hunter_3_special_kills_in_a_row_agnostic_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pes_gameplay_hunter_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events = {
+				[1] = "pes_gameplay_hunter_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events_duration = {
+				[1] = 3.0449376106262,
 			},
 		},
 		pes_gameplay_hunter_caught_by_slaver_3_times_02 = {
@@ -41021,23 +45083,30 @@ return function ()
 		pes_gameplay_hunter_misses_bomb_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
 				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
 				[1] = "face_angry",
+				[2] = "face_angry",
 			},
 			localization_strings = {
 				[1] = "pes_gameplay_hunter_misses_bomb_01",
+				[2] = "pes_gameplay_witch_hunter_misses_bomb_new_a_01",
 			},
+			randomize_indexes = {},
 			sound_events = {
 				[1] = "pes_gameplay_hunter_misses_bomb_01",
+				[2] = "pes_gameplay_witch_hunter_misses_bomb_new_a_01",
 			},
 			sound_events_duration = {
 				[1] = 3.3298124074936,
+				[2] = 2.179208278656,
 			},
 		},
 		pes_gameplay_hunter_potions_above_half_health_01 = {
@@ -41317,7 +45386,7 @@ return function ()
 				[1] = 2.1504166126251,
 			},
 		},
-		pes_gameplay_ranger_3_special_kills_in_a_row_01 = {
+		pes_gameplay_ranger_3_special_kills_in_a_row = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
 			dialogue_animations_n = 1,
@@ -41359,6 +45428,28 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 2.1559791564941,
+			},
+		},
+		pes_gameplay_ranger_3_special_kills_in_a_row_agnostic_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pes_gameplay_ranger_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events = {
+				[1] = "pes_gameplay_ranger_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events_duration = {
+				[1] = 3.3429374694824,
 			},
 		},
 		pes_gameplay_ranger_caught_by_slaver_3_times_02 = {
@@ -41606,23 +45697,30 @@ return function ()
 		pes_gameplay_ranger_misses_bomb_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
 				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
 				[1] = "face_smug",
+				[2] = "face_angry",
 			},
 			localization_strings = {
 				[1] = "pes_gameplay_ranger_misses_bomb_01",
+				[2] = "pes_gameplay_dwarf_ranger_misses_bomb_new_a_01",
 			},
+			randomize_indexes = {},
 			sound_events = {
 				[1] = "pes_gameplay_ranger_misses_bomb_01",
+				[2] = "pes_gameplay_dwarf_ranger_misses_bomb_new_a_01",
 			},
 			sound_events_duration = {
 				[1] = 2.3357915878296,
+				[2] = 2.7004375457764,
 			},
 		},
 		pes_gameplay_ranger_potions_above_half_health_01 = {
@@ -42989,6 +47087,28 @@ return function ()
 				[1] = 4.2556457519531,
 			},
 		},
+		pes_gameplay_soldier_3_special_kills_in_a_row_agnostic_b = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_shout",
+			},
+			face_animations = {
+				[1] = "face_bored",
+			},
+			localization_strings = {
+				[1] = "pes_gameplay_soldier_3_special_kills_in_a_row_agnostic_01_b_01",
+			},
+			sound_events = {
+				[1] = "pes_gameplay_soldier_3_special_kills_in_a_row_agnostic_01_b_01",
+			},
+			sound_events_duration = {
+				[1] = 2.0282292366028,
+			},
+		},
 		pes_gameplay_soldier_downed_3_times_02_reply_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
@@ -43649,6 +47769,50 @@ return function ()
 				[1] = 0.90499997138977,
 			},
 		},
+		pes_gameplay_witch_hunter_hit_by_vomit_a = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pes_gameplay_witch_hunter_hit_by_vomit_a_01",
+			},
+			sound_events = {
+				[1] = "pes_gameplay_witch_hunter_hit_by_vomit_a_01",
+			},
+			sound_events_duration = {
+				[1] = 2.500479221344,
+			},
+		},
+		pes_gameplay_witch_hunter_on_a_frenzy_new_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pes_gameplay_witch_hunter_on_a_frenzy_new_c_01",
+			},
+			sound_events = {
+				[1] = "pes_gameplay_witch_hunter_on_a_frenzy_new_c_01",
+			},
+			sound_events_duration = {
+				[1] = 2.6370832920074,
+			},
+		},
 		pes_gameplay_wizard_3_special_kills_in_a_row_01_reply_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
@@ -43669,6 +47833,28 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 1.7826042175293,
+			},
+		},
+		pes_gameplay_wizard_3_special_kills_in_a_row_agnostic_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pes_gameplay_wizard_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events = {
+				[1] = "pes_gameplay_wizard_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events_duration = {
+				[1] = 2.2398333549499,
 			},
 		},
 		pes_gameplay_wizard_caught_by_slaver_3_times_02 = {
@@ -44048,23 +48234,30 @@ return function ()
 		pes_gameplay_wizard_misses_bomb_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
 				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
 				[1] = "face_smug",
+				[2] = "face_angry",
 			},
 			localization_strings = {
 				[1] = "pes_gameplay_wizard_misses_bomb_01",
+				[2] = "pes_gameplay_bright_wizard_misses_bomb_new_a_01",
 			},
+			randomize_indexes = {},
 			sound_events = {
 				[1] = "pes_gameplay_wizard_misses_bomb_01",
+				[2] = "pes_gameplay_bright_wizard_misses_bomb_new_a_01",
 			},
 			sound_events_duration = {
 				[1] = 3.0859167575836,
+				[2] = 2.0736458301544,
 			},
 		},
 		pes_gameplay_wizard_potions_above_half_health_01 = {
@@ -44199,6 +48392,50 @@ return function ()
 				[1] = 3.3370625972748,
 			},
 		},
+		pes_gameplay_wood_elf_hit_by_vomit_a = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pes_gameplay_wood_elf_hit_by_vomit_a_01",
+			},
+			sound_events = {
+				[1] = "pes_gameplay_wood_elf_hit_by_vomit_a_01",
+			},
+			sound_events_duration = {
+				[1] = 1.754666686058,
+			},
+		},
+		pes_gameplay_wood_elf_on_a_frenzy_new_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pes_gameplay_wood_elf_on_a_frenzy_new_c_01",
+			},
+			sound_events = {
+				[1] = "pes_gameplay_wood_elf_on_a_frenzy_new_c_01",
+			},
+			sound_events_duration = {
+				[1] = 1.8971041440964,
+			},
+		},
 		pes_pes_gameplay_wizard_potions_above_half_health_03_reply_01 = {
 			category = "casual_talk",
 			database = "special_occasions_honduras",
@@ -44287,6 +48524,50 @@ return function ()
 				[1] = 5.4828124046326,
 			},
 		},
+		pwe_gameplay_bright_wizard_hit_by_vomit_a = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pwe_gameplay_bright_wizard_hit_by_vomit_a_01",
+			},
+			sound_events = {
+				[1] = "pwe_gameplay_bright_wizard_hit_by_vomit_a_01",
+			},
+			sound_events_duration = {
+				[1] = 2.3612916469574,
+			},
+		},
+		pwe_gameplay_bright_wizard_on_a_frenzy_new_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pwe_gameplay_bright_wizard_on_a_frenzy_new_c_01",
+			},
+			sound_events = {
+				[1] = "pwe_gameplay_bright_wizard_on_a_frenzy_new_c_01",
+			},
+			sound_events_duration = {
+				[1] = 3.5516250133514,
+			},
+		},
 		pwe_gameplay_dwarf_picks_up_a_bomb = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
@@ -44307,6 +48588,50 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 4.1708331108093,
+			},
+		},
+		pwe_gameplay_dwarf_ranger_hit_by_vomit_a = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pwe_gameplay_dwarf_ranger_hit_by_vomit_a_01",
+			},
+			sound_events = {
+				[1] = "pwe_gameplay_dwarf_ranger_hit_by_vomit_a_01",
+			},
+			sound_events_duration = {
+				[1] = 1.5770416259766,
+			},
+		},
+		pwe_gameplay_dwarf_ranger_on_a_frenzy_new_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pwe_gameplay_dwarf_ranger_on_a_frenzy_new_c_01",
+			},
+			sound_events = {
+				[1] = "pwe_gameplay_dwarf_ranger_on_a_frenzy_new_c_01",
+			},
+			sound_events_duration = {
+				[1] = 3.4302499294281,
 			},
 		},
 		pwe_gameplay_elf_3_special_kills_in_a_row_01 = {
@@ -44395,6 +48720,35 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 4.5519165992737,
+			},
+		},
+		pwe_gameplay_elf_3_special_kills_in_a_row_agnostic_b = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
+			dialogue_animations = {
+				[1] = "dialogue_shout",
+				[2] = "dialogue_shout",
+			},
+			face_animations = {
+				[1] = "face_bored",
+				[2] = "face_bored",
+			},
+			localization_strings = {
+				[1] = "pwe_gameplay_elf_3_special_kills_in_a_row_agnostic_01_b_01",
+				[2] = "pwe_gameplay_elf_3_special_kills_in_a_row_agnostic_02_b_01",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1] = "pwe_gameplay_elf_3_special_kills_in_a_row_agnostic_01_b_01",
+				[2] = "pwe_gameplay_elf_3_special_kills_in_a_row_agnostic_02_b_01",
+			},
+			sound_events_duration = {
+				[1] = 3.9807291030884,
+				[2] = 2.9054374694824,
 			},
 		},
 		pwe_gameplay_elf_downed_3_times_02_reply_01 = {
@@ -45079,6 +49433,50 @@ return function ()
 				[1] = 6.4049792289734,
 			},
 		},
+		pwe_gameplay_empire_soldier_hit_by_vomit_a = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pwe_gameplay_empire_soldier_hit_by_vomit_a_01",
+			},
+			sound_events = {
+				[1] = "pwe_gameplay_empire_soldier_hit_by_vomit_a_01",
+			},
+			sound_events_duration = {
+				[1] = 2.503312587738,
+			},
+		},
+		pwe_gameplay_empire_soldier_on_a_frenzy_new_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pwe_gameplay_empire_soldier_on_a_frenzy_new_c_01",
+			},
+			sound_events = {
+				[1] = "pwe_gameplay_empire_soldier_on_a_frenzy_new_c_01",
+			},
+			sound_events_duration = {
+				[1] = 3.8584582805634,
+			},
+		},
 		pwe_gameplay_hanging_help = {
 			category = "player_alerts",
 			database = "special_occasions_honduras",
@@ -45128,7 +49526,7 @@ return function ()
 				3.8779792785645,
 			},
 		},
-		pwe_gameplay_hunter_3_special_kills_in_a_row_01 = {
+		pwe_gameplay_hunter_3_special_kills_in_a_row = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
 			dialogue_animations_n = 1,
@@ -45148,6 +49546,28 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 2.9366042613983,
+			},
+		},
+		pwe_gameplay_hunter_3_special_kills_in_a_row_agnostic_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pwe_gameplay_hunter_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events = {
+				[1] = "pwe_gameplay_hunter_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events_duration = {
+				[1] = 2.4137291908264,
 			},
 		},
 		pwe_gameplay_hunter_caught_by_slaver_3_times_02 = {
@@ -45527,23 +49947,30 @@ return function ()
 		pwe_gameplay_hunter_misses_bomb_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
 				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
 				[1] = "face_neutral",
+				[2] = "face_neutral",
 			},
 			localization_strings = {
 				[1] = "pwe_gameplay_hunter_misses_bomb_01",
+				[2] = "pwe_gameplay_witch_hunter_misses_bomb_new_a_01",
 			},
+			randomize_indexes = {},
 			sound_events = {
 				[1] = "pwe_gameplay_hunter_misses_bomb_01",
+				[2] = "pwe_gameplay_witch_hunter_misses_bomb_new_a_01",
 			},
 			sound_events_duration = {
 				[1] = 5.9340415000916,
+				[2] = 1.8220416307449,
 			},
 		},
 		pwe_gameplay_hunter_potions_above_half_health_01 = {
@@ -45678,6 +50105,55 @@ return function ()
 				[1] = 2.8994374275208,
 			},
 		},
+		pwe_gameplay_i_will_tank = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 6,
+			face_animations_n = 6,
+			randomize_indexes_n = 0,
+			sound_events_n = 6,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+			},
+			localization_strings = {
+				"pwe_gameplay_i_will_tank_a_01",
+				"pwe_gameplay_i_will_tank_a_02",
+				"pwe_gameplay_i_will_tank_a_03",
+				"pwe_gameplay_i_will_tank_a_04",
+				"pwe_gameplay_i_will_tank_a_05",
+				"pwe_gameplay_i_will_tank_a_06",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwe_gameplay_i_will_tank_a_01",
+				"pwe_gameplay_i_will_tank_a_02",
+				"pwe_gameplay_i_will_tank_a_03",
+				"pwe_gameplay_i_will_tank_a_04",
+				"pwe_gameplay_i_will_tank_a_05",
+				"pwe_gameplay_i_will_tank_a_06",
+			},
+			sound_events_duration = {
+				0.9716249704361,
+				1.3750624656677,
+				1.5539375543594,
+				1.5255625247955,
+				2.4047915935516,
+				1.9097917079925,
+			},
+		},
 		pwe_gameplay_kiling_a_second_rat_ogre_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
@@ -45744,7 +50220,7 @@ return function ()
 				[1] = 3.7440209388733,
 			},
 		},
-		pwe_gameplay_ranger_3_special_kills_in_a_row_01 = {
+		pwe_gameplay_ranger_3_special_kills_in_a_row = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
 			dialogue_animations_n = 1,
@@ -45764,6 +50240,28 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 2.9564583301544,
+			},
+		},
+		pwe_gameplay_ranger_3_special_kills_in_a_row_agnostic_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pwe_gameplay_ranger_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events = {
+				[1] = "pwe_gameplay_ranger_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events_duration = {
+				[1] = 3.6878957748413,
 			},
 		},
 		pwe_gameplay_ranger_caught_by_slaver_3_times_02 = {
@@ -46165,23 +50663,30 @@ return function ()
 		pwe_gameplay_ranger_misses_bomb_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
 				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
 				[1] = "face_smug",
+				[2] = "face_angry",
 			},
 			localization_strings = {
 				[1] = "pwe_gameplay_ranger_misses_bomb_01",
+				[2] = "pwe_gameplay_dwarf_ranger_misses_bomb_new_a_01",
 			},
+			randomize_indexes = {},
 			sound_events = {
 				[1] = "pwe_gameplay_ranger_misses_bomb_01",
+				[2] = "pwe_gameplay_dwarf_ranger_misses_bomb_new_a_01",
 			},
 			sound_events_duration = {
 				[1] = 4.726583480835,
+				[2] = 2.876770734787,
 			},
 		},
 		pwe_gameplay_ranger_potions_above_half_health_02 = {
@@ -47504,7 +52009,7 @@ return function ()
 				[1] = 3.4262707233429,
 			},
 		},
-		pwe_gameplay_soldier_3_special_kills_in_a_row_01 = {
+		pwe_gameplay_soldier_3_special_kills_in_a_row = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
 			dialogue_animations_n = 1,
@@ -47590,6 +52095,28 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 4.8394584655762,
+			},
+		},
+		pwe_gameplay_soldier_3_special_kills_in_a_row_agnostic_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pwe_gameplay_soldier_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events = {
+				[1] = "pwe_gameplay_soldier_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events_duration = {
+				[1] = 2.7704374790192,
 			},
 		},
 		pwe_gameplay_soldier_caught_by_slaver_3_times_02 = {
@@ -48013,23 +52540,30 @@ return function ()
 		pwe_gameplay_soldier_misses_bomb_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
 				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
 				[1] = "face_smug",
+				[2] = "face_angry",
 			},
 			localization_strings = {
 				[1] = "pwe_gameplay_soldier_misses_bomb_01",
+				[2] = "pwe_gameplay_empire_soldier_misses_bomb_new_a_01",
 			},
+			randomize_indexes = {},
 			sound_events = {
 				[1] = "pwe_gameplay_soldier_misses_bomb_01",
+				[2] = "pwe_gameplay_empire_soldier_misses_bomb_new_a_01",
 			},
 			sound_events_duration = {
 				[1] = 4.9409790039063,
+				[2] = 2.8372707366943,
 			},
 		},
 		pwe_gameplay_soldier_potions_above_half_health_01 = {
@@ -48164,7 +52698,51 @@ return function ()
 				[1] = 2.7780208587647,
 			},
 		},
-		pwe_gameplay_wizard_3_special_kills_in_a_row_01 = {
+		pwe_gameplay_witch_hunter_hit_by_vomit_a = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pwe_gameplay_witch_hunter_hit_by_vomit_a_01",
+			},
+			sound_events = {
+				[1] = "pwe_gameplay_witch_hunter_hit_by_vomit_a_01",
+			},
+			sound_events_duration = {
+				[1] = 2.613874912262,
+			},
+		},
+		pwe_gameplay_witch_hunter_on_a_frenzy_new_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pwe_gameplay_witch_hunter_on_a_frenzy_new_c_01",
+			},
+			sound_events = {
+				[1] = "pwe_gameplay_witch_hunter_on_a_frenzy_new_c_01",
+			},
+			sound_events_duration = {
+				[1] = 4.1971249580383,
+			},
+		},
+		pwe_gameplay_wizard_3_special_kills_in_a_row = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
 			dialogue_animations_n = 1,
@@ -48184,6 +52762,28 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 5.1773748397827,
+			},
+		},
+		pwe_gameplay_wizard_3_special_kills_in_a_row_agnostic_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pwe_gameplay_wizard_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events = {
+				[1] = "pwe_gameplay_wizard_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events_duration = {
+				[1] = 2.4079167842865,
 			},
 		},
 		pwe_gameplay_wizard_caught_by_slaver_3_times_02 = {
@@ -48431,23 +53031,30 @@ return function ()
 		pwe_gameplay_wizard_misses_bomb_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
 				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
 				[1] = "face_smug",
+				[2] = "face_angry",
 			},
 			localization_strings = {
 				[1] = "pwe_gameplay_wizard_misses_bomb_01",
+				[2] = "pwe_gameplay_bright_wizard_misses_bomb_new_a_01",
 			},
+			randomize_indexes = {},
 			sound_events = {
 				[1] = "pwe_gameplay_wizard_misses_bomb_01",
+				[2] = "pwe_gameplay_bright_wizard_misses_bomb_new_a_01",
 			},
 			sound_events_duration = {
 				[1] = 2.6887917518616,
+				[2] = 2.5805416107178,
 			},
 		},
 		pwe_gameplay_wizard_potions_above_half_health_01 = {
@@ -48538,6 +53145,108 @@ return function ()
 				[1] = 3.7039999961853,
 			},
 		},
+		pwe_gameplay_wood_elf_hit_by_vomit_b = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pwe_gameplay_wood_elf_hit_by_vomit_b_01",
+				"pwe_gameplay_wood_elf_hit_by_vomit_b_02",
+				"pwe_gameplay_wood_elf_hit_by_vomit_b_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwe_gameplay_wood_elf_hit_by_vomit_b_01",
+				"pwe_gameplay_wood_elf_hit_by_vomit_b_02",
+				"pwe_gameplay_wood_elf_hit_by_vomit_b_03",
+			},
+			sound_events_duration = {
+				4.205958366394,
+				3.9265625476837,
+				2.3617498874664,
+			},
+		},
+		pwe_gameplay_wood_elf_misses_bomb_new_b = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pwe_gameplay_wood_elf_misses_bomb_new_b_01",
+				"pwe_gameplay_wood_elf_misses_bomb_new_b_02",
+				"pwe_gameplay_wood_elf_misses_bomb_new_b_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwe_gameplay_wood_elf_misses_bomb_new_b_01",
+				"pwe_gameplay_wood_elf_misses_bomb_new_b_02",
+				"pwe_gameplay_wood_elf_misses_bomb_new_b_03",
+			},
+			sound_events_duration = {
+				2.4676249027252,
+				2.2457916736603,
+				2.1130623817444,
+			},
+		},
+		pwe_gameplay_wood_elf_on_a_frenzy_new_b = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pwe_gameplay_wood_elf_on_a_frenzy_new_b_01",
+				"pwe_gameplay_wood_elf_on_a_frenzy_new_b_02",
+				"pwe_gameplay_wood_elf_on_a_frenzy_new_b_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwe_gameplay_wood_elf_on_a_frenzy_new_b_01",
+				"pwe_gameplay_wood_elf_on_a_frenzy_new_b_02",
+				"pwe_gameplay_wood_elf_on_a_frenzy_new_b_03",
+			},
+			sound_events_duration = {
+				3.5003125667572,
+				3.8881874084473,
+				5.2699790000916,
+			},
+		},
 		pwh_all_stairs_conversation_b = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
@@ -48582,7 +53291,95 @@ return function ()
 				[1] = 3.3018751144409,
 			},
 		},
-		pwh_gameplay_elf_3_special_kills_in_a_row_01 = {
+		pwh_gameplay_bright_wizard_hit_by_vomit_a = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_bright_wizard_hit_by_vomit_a_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_bright_wizard_hit_by_vomit_a_01",
+			},
+			sound_events_duration = {
+				[1] = 3.279937505722,
+			},
+		},
+		pwh_gameplay_bright_wizard_on_a_frenzy_new_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_bright_wizard_on_a_frenzy_new_c_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_bright_wizard_on_a_frenzy_new_c_01",
+			},
+			sound_events_duration = {
+				[1] = 3.7837500572205,
+			},
+		},
+		pwh_gameplay_dwarf_ranger_hit_by_vomit_a = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_dwarf_ranger_hit_by_vomit_a_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_dwarf_ranger_hit_by_vomit_a_01",
+			},
+			sound_events_duration = {
+				[1] = 4.0091457366943,
+			},
+		},
+		pwh_gameplay_dwarf_ranger_on_a_frenzy_new_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_dwarf_ranger_on_a_frenzy_new_c_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_dwarf_ranger_on_a_frenzy_new_c_01",
+			},
+			sound_events_duration = {
+				[1] = 4.9780831336975,
+			},
+		},
+		pwh_gameplay_elf_3_special_kills_in_a_row = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
 			dialogue_animations_n = 1,
@@ -48624,6 +53421,72 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 8.637770652771,
+			},
+		},
+		pwh_gameplay_elf_3_special_kills_in_a_row_agnostic_01_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_elf_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_elf_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events_duration = {
+				[1] = 3.11683344841,
+			},
+		},
+		pwh_gameplay_elf_3_special_kills_in_a_row_agnostic_02_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_elf_3_special_kills_in_a_row_agnostic_02_c_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_elf_3_special_kills_in_a_row_agnostic_02_c_01",
+			},
+			sound_events_duration = {
+				[1] = 5.2821249961853,
+			},
+		},
+		pwh_gameplay_elf_3_special_kills_in_a_row_hoggar_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_shout",
+			},
+			face_animations = {
+				[1] = "face_happy",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_elf_3_special_kills_in_a_row_hoggar_c_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_elf_3_special_kills_in_a_row_hoggar_c_01",
+			},
+			sound_events_duration = {
+				[1] = 3.0498125553131,
 			},
 		},
 		pwh_gameplay_elf_caught_by_slaver_3_times_02 = {
@@ -49003,23 +53866,30 @@ return function ()
 		pwh_gameplay_elf_misses_bomb_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
 				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
 				[1] = "face_angry",
+				[2] = "face_angry",
 			},
 			localization_strings = {
 				[1] = "pwh_gameplay_elf_misses_bomb_01",
+				[2] = "pwh_gameplay_wood_elf_misses_bomb_new_a_01",
 			},
+			randomize_indexes = {},
 			sound_events = {
 				[1] = "pwh_gameplay_elf_misses_bomb_01",
+				[2] = "pwh_gameplay_wood_elf_misses_bomb_new_a_01",
 			},
 			sound_events_duration = {
 				[1] = 2.9102499485016,
+				[2] = 3.0002083778381,
 			},
 		},
 		pwh_gameplay_elf_potions_above_half_health_01 = {
@@ -49108,6 +53978,50 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 1.1868749856949,
+			},
+		},
+		pwh_gameplay_empire_soldier_hit_by_vomit_a = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_empire_soldier_hit_by_vomit_a_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_empire_soldier_hit_by_vomit_a_01",
+			},
+			sound_events_duration = {
+				[1] = 2.9968333244324,
+			},
+		},
+		pwh_gameplay_empire_soldier_on_a_frenzy_new_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_empire_soldier_on_a_frenzy_new_c_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_empire_soldier_on_a_frenzy_new_c_01",
+			},
+			sound_events_duration = {
+				[1] = 2.7256457805634,
 			},
 		},
 		pwh_gameplay_hanging_help = {
@@ -49201,6 +54115,28 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 3.2337501049042,
+			},
+		},
+		pwh_gameplay_hunter_3_special_kills_in_a_row_agnostic_b = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_shout",
+			},
+			face_animations = {
+				[1] = "face_bored",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_hunter_3_special_kills_in_a_row_agnostic_01_b_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_hunter_3_special_kills_in_a_row_agnostic_01_b_01",
+			},
+			sound_events_duration = {
+				[1] = 3.790833234787,
 			},
 		},
 		pwh_gameplay_hunter_3_special_kills_in_a_row_reply_01 = {
@@ -49885,6 +54821,55 @@ return function ()
 				[1] = 4.9445209503174,
 			},
 		},
+		pwh_gameplay_i_will_tank = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 6,
+			face_animations_n = 6,
+			randomize_indexes_n = 0,
+			sound_events_n = 6,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+			},
+			localization_strings = {
+				"pwh_gameplay_i_will_tank_a_01",
+				"pwh_gameplay_i_will_tank_a_02",
+				"pwh_gameplay_i_will_tank_a_03",
+				"pwh_gameplay_i_will_tank_a_04",
+				"pwh_gameplay_i_will_tank_a_05",
+				"pwh_gameplay_i_will_tank_a_06",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwh_gameplay_i_will_tank_a_01",
+				"pwh_gameplay_i_will_tank_a_02",
+				"pwh_gameplay_i_will_tank_a_03",
+				"pwh_gameplay_i_will_tank_a_04",
+				"pwh_gameplay_i_will_tank_a_05",
+				"pwh_gameplay_i_will_tank_a_06",
+			},
+			sound_events_duration = {
+				1.8839166164398,
+				1.7064583301544,
+				3.3422291278839,
+				2.5617916584015,
+				2.3844583034515,
+				2.3366875648499,
+			},
+		},
 		pwh_gameplay_killing_a_rat_ogre_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
@@ -49951,7 +54936,7 @@ return function ()
 				[1] = 3.5244584083557,
 			},
 		},
-		pwh_gameplay_ranger_3_special_kills_in_a_row_01 = {
+		pwh_gameplay_ranger_3_special_kills_in_a_row = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
 			dialogue_animations_n = 1,
@@ -49993,6 +54978,28 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 3.37464594841,
+			},
+		},
+		pwh_gameplay_ranger_3_special_kills_in_a_row_agnostic_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_ranger_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_ranger_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events_duration = {
+				[1] = 4.3822498321533,
 			},
 		},
 		pwh_gameplay_ranger_3_special_kills_in_a_row_reply_01 = {
@@ -50372,23 +55379,30 @@ return function ()
 		pwh_gameplay_ranger_misses_bomb_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
 				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
 				[1] = "face_smug",
+				[2] = "face_angry",
 			},
 			localization_strings = {
 				[1] = "pwh_gameplay_ranger_misses_bomb_01",
+				[2] = "pwh_gameplay_dwarf_ranger_misses_bomb_new_a_01",
 			},
+			randomize_indexes = {},
 			sound_events = {
 				[1] = "pwh_gameplay_ranger_misses_bomb_01",
+				[2] = "pwh_gameplay_dwarf_ranger_misses_bomb_new_a_01",
 			},
 			sound_events_duration = {
 				[1] = 5.2872290611267,
+				[2] = 2.6981666088104,
 			},
 		},
 		pwh_gameplay_ranger_potions_above_half_health_01 = {
@@ -51711,7 +56725,7 @@ return function ()
 				[1] = 1.5932500362396,
 			},
 		},
-		pwh_gameplay_soldier_3_special_kills_in_a_row_01 = {
+		pwh_gameplay_soldier_3_special_kills_in_a_row = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
 			dialogue_animations_n = 1,
@@ -51731,6 +56745,28 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 4.221604347229,
+			},
+		},
+		pwh_gameplay_soldier_3_special_kills_in_a_row_agnostic_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_soldier_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_soldier_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events_duration = {
+				[1] = 4.887312412262,
 			},
 		},
 		pwh_gameplay_soldier_caught_by_slaver_3_times_02 = {
@@ -52088,26 +57124,135 @@ return function ()
 		pwh_gameplay_solider_misses_bomb_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
 				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
 				[1] = "face_smug",
+				[2] = "face_angry",
 			},
 			localization_strings = {
 				[1] = "pwh_gameplay_solider_misses_bomb_01",
+				[2] = "pwh_gameplay_empire_soldier_misses_bomb_new_a_01",
 			},
+			randomize_indexes = {},
 			sound_events = {
 				[1] = "pwh_gameplay_solider_misses_bomb_01",
+				[2] = "pwh_gameplay_empire_soldier_misses_bomb_new_a_01",
 			},
 			sound_events_duration = {
 				[1] = 1.8142499923706,
+				[2] = 2.5177083015442,
 			},
 		},
-		pwh_gameplay_wizard_3_special_kills_in_a_row_01 = {
+		pwh_gameplay_witch_hunter_hit_by_vomit_b = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pwh_gameplay_witch_hunter_hit_by_vomit_b_01",
+				"pwh_gameplay_witch_hunter_hit_by_vomit_b_02",
+				"pwh_gameplay_witch_hunter_hit_by_vomit_b_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwh_gameplay_witch_hunter_hit_by_vomit_b_01",
+				"pwh_gameplay_witch_hunter_hit_by_vomit_b_02",
+				"pwh_gameplay_witch_hunter_hit_by_vomit_b_03",
+			},
+			sound_events_duration = {
+				5.3632497787476,
+				5.6878747940064,
+				3.7884583473206,
+			},
+		},
+		pwh_gameplay_witch_hunter_misses_bomb_new_b = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pwh_gameplay_witch_hunter_misses_bomb_new_b_01",
+				"pwh_gameplay_witch_hunter_misses_bomb_new_b_02",
+				"pwh_gameplay_witch_hunter_misses_bomb_new_b_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwh_gameplay_witch_hunter_misses_bomb_new_b_01",
+				"pwh_gameplay_witch_hunter_misses_bomb_new_b_02",
+				"pwh_gameplay_witch_hunter_misses_bomb_new_b_03",
+			},
+			sound_events_duration = {
+				3.9458749294281,
+				4.0268125534058,
+				3.1619167327881,
+			},
+		},
+		pwh_gameplay_witch_hunter_on_a_frenzy_new_b = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pwh_gameplay_witch_hunter_on_a_frenzy_new_b_01",
+				"pwh_gameplay_witch_hunter_on_a_frenzy_new_b_02",
+				"pwh_gameplay_witch_hunter_on_a_frenzy_new_b_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwh_gameplay_witch_hunter_on_a_frenzy_new_b_01",
+				"pwh_gameplay_witch_hunter_on_a_frenzy_new_b_02",
+				"pwh_gameplay_witch_hunter_on_a_frenzy_new_b_03",
+			},
+			sound_events_duration = {
+				3.3085417747498,
+				3.6614167690277,
+				3.8466250896454,
+			},
+		},
+		pwh_gameplay_wizard_3_special_kills_in_a_row = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
 			dialogue_animations_n = 1,
@@ -52149,6 +57294,28 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 2.4483957290649,
+			},
+		},
+		pwh_gameplay_wizard_3_special_kills_in_a_row_agnostic_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_wizard_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_wizard_3_special_kills_in_a_row_agnostic_01_c_01",
+			},
+			sound_events_duration = {
+				[1] = 3.5675625801086,
 			},
 		},
 		pwh_gameplay_wizard_caught_by_slaver_3_times_02 = {
@@ -52594,23 +57761,30 @@ return function ()
 		pwh_gameplay_wizard_misses_bomb_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
 				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
 				[1] = "face_smug",
+				[2] = "face_angry",
 			},
 			localization_strings = {
 				[1] = "pwh_gameplay_wizard_misses_bomb_01",
+				[2] = "pwh_gameplay_bright_wizard_misses_bomb_new_a_01",
 			},
+			randomize_indexes = {},
 			sound_events = {
 				[1] = "pwh_gameplay_wizard_misses_bomb_01",
+				[2] = "pwh_gameplay_bright_wizard_misses_bomb_new_a_01",
 			},
 			sound_events_duration = {
 				[1] = 2.9468123912811,
+				[2] = 3.5577917098999,
 			},
 		},
 		pwh_gameplay_wizard_potions_above_half_health_01_reply_01 = {
@@ -52721,6 +57895,50 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 2.536333322525,
+			},
+		},
+		pwh_gameplay_wood_elf_hit_by_vomit_a = {
+			category = "player_feedback",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_wood_elf_hit_by_vomit_a_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_wood_elf_hit_by_vomit_a_01",
+			},
+			sound_events_duration = {
+				[1] = 5.0936460494995,
+			},
+		},
+		pwh_gameplay_wood_elf_on_a_frenzy_new_c = {
+			category = "special_occasion",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_angry",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_wood_elf_on_a_frenzy_new_c_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_wood_elf_on_a_frenzy_new_c_01",
+			},
+			sound_events_duration = {
+				[1] = 3.4874792098999,
 			},
 		},
 		pwh_pwh_gameplay_soldier_potions_above_half_health_02_reply_01 = {

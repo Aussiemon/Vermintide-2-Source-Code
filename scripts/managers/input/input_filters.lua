@@ -173,7 +173,7 @@ InputFilters.scale_vector3_xy_accelerated_x = {
 
 		local multiplier_y = filter_data.multiplier_y
 
-		if val.y ~= 0 and filter_data.multiplier_return_y and filter_data.angle_to_slow_down_inside then
+		if val.y ~= 0 and filter_data.multiplier_return_y and filter_data.angle_to_slow_down_inside and Application.user_setting("enable_gamepad_acceleration") then
 			local player = Managers.player:local_player()
 			local viewport_name = player.viewport_name
 			local world = Managers.world:world("level_world")

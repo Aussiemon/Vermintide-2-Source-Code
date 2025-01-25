@@ -22,8 +22,9 @@ LocalizationManager.init = function (self, language_id)
 		return self:lookup(text_id)
 	end)
 
+	string.original_upper = string.upper
+	string.original_lower = string.lower
 	string.upper = Utf8.upper
-	string.lower = Utf8.lower
 end
 
 LocalizationManager.destroy = function (self)

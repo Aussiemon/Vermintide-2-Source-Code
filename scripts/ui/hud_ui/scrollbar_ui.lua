@@ -53,8 +53,9 @@ ScrollbarUI.update = function (self, dt, t, ui_renderer, input_service, render_s
 	self:_draw(dt, t, ui_renderer, input_service, render_settings)
 end
 
-ScrollbarUI.force_update_progress = function (self)
-	local offset = self._ui_scenegraph[self._scroll_area_scenegraph_id].local_position[1]
+ScrollbarUI.force_update_progress = function (self, offset_index)
+	local offset_index = offset_index or 1
+	local offset = self._ui_scenegraph[self._scroll_area_scenegraph_id].local_position[offset_index]
 
 	self._progress = math.inv_lerp(0, self._excess_area, math.abs(offset))
 end

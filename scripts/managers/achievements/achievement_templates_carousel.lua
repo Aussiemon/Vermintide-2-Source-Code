@@ -58,6 +58,13 @@ achievements.vs_disable_reviving_hero = {
 			return
 		end
 
+		local victim_interactor_ext = ScriptUnit.extension(victim_unit, "interactor_system")
+		local is_interacting, interaction_type = victim_interactor_ext:is_interacting()
+
+		if not is_interacting or interaction_type ~= "revive" then
+			return
+		end
+
 		statistics_db:increment_stat(stats_id, "vs_disable_reviving_hero")
 	end,
 	completed = function (statistics_db, stats_id)
@@ -1198,7 +1205,7 @@ achievements.vs_kill_hoisted_hero = {
 
 		local status_ext = ScriptUnit.has_extension(victim_unit, "status_system")
 
-		if status_ext and status_ext:is_pack_master_hoisted() then
+		if status_ext and (status_ext:is_hanging_from_hook() or status_ext:is_dropping_from_hook()) then
 			statistics_db:increment_stat(stats_id, "vs_kill_hoisted_hero")
 		end
 	end,

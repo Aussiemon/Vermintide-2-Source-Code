@@ -20,6 +20,7 @@ Development._hardcoded_dev_params = {
 	show_fps = false,
 	spawn_empty_chest = true,
 	telemetry_log_interval = "600",
+	text_watermark = "BETA",
 	tobii_button = false,
 	use_beta_overlay = true,
 	use_local_backend = false,

@@ -372,7 +372,7 @@ StartGameWindowDifficultyConsole._set_info_window = function (self, difficulty_k
 	local xp_decimal = xp_multiplier_number % 1
 	local xp_integer = xp_multiplier_number - xp_decimal
 
-	widgets_by_name.xp_multiplier.content.text = string.format("%s: %s.%sx", Localize("difficulty_xp_multiplier"), xp_integer, string.pad_end(string.sub(tostring(xp_decimal), 3, 4), 2, "0"))
+	widgets_by_name.xp_multiplier.content.text = string.format("%s: %s.%sx", Localize("difficulty_xp_multiplier"), xp_integer, string.pad_right(string.sub(tostring(xp_decimal), 3, 4), 2, "0"))
 end
 
 StartGameWindowDifficultyConsole._update_difficulty_locks = function (self)

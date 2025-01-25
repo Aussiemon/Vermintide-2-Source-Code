@@ -954,6 +954,7 @@ NetworkLookup.damage_types = {
 	"kinetic",
 	"cutting",
 	"vomit_ground",
+	"level",
 	"vomit_face",
 	"plague_ground",
 	"plague_face",

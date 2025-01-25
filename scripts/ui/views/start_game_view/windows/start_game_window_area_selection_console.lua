@@ -399,7 +399,7 @@ StartGameWindowAreaSelectionConsole._handle_input = function (self, dt, t)
 		self:_on_select_button_pressed()
 	end
 
-	if input_service:get("toggle_menu", true) then
+	if input_service:get("toggle_menu", true) or input_service:get("back_menu", true) then
 		local layout_name = "custom_game"
 
 		self.parent:set_layout_by_name(layout_name)

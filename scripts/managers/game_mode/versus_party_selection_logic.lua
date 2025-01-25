@@ -5,7 +5,7 @@ local DRAW_DEBUG = false
 VersusPartySelectionLogicUtility = {}
 
 VersusPartySelectionLogicUtility.picker_index_is_bot = function (party_data, picker_index)
-	local is_bot = party_data.picker_list[picker_index].is_bot
+	local is_bot = party_data.picker_list[picker_index].status.is_bot
 
 	return is_bot ~= false
 end
@@ -194,6 +194,8 @@ local ClientStateLookup = {
 	startup = 1,
 }
 
+VersusPartySelectionLogicUtility.ClientStateLookup = ClientStateLookup
+
 VersusPartySelectionLogic.init = function (self, is_server, settings, network_server, profile_synchronizer, network_event_delegate, network_transmit)
 	self._timer_paused = false
 	self._timer = 0
@@ -239,7 +241,7 @@ VersusPartySelectionLogic.init = function (self, is_server, settings, network_se
 
 	if is_server then
 		Managers.state.event:register(self, "on_player_left_party", "on_player_left_party")
-		self:_setup_picking_order(is_server)
+		self:_setup_picking_order()
 
 		local players = Managers.player:human_players()
 
@@ -461,12 +463,13 @@ VersusPartySelectionLogic.hot_join_sync = function (self, peer_id)
 
 			if ClientStateLookup[player_data.state] >= ClientStateLookup.player_picking_character then
 				local slot_id = player_data.slot_id
-				local mechanism = Managers.mechanism:game_mechanism()
 				local is_bot = VersusPartySelectionLogicUtility.picker_index_is_bot(party_data, slot_id)
 
 				if is_bot then
-					profile_index, career_index = mechanism:get_saved_bot(party_id, slot_id)
+					profile_index, career_index = self._profile_synchronizer:get_bot_profile(party_id, slot_id)
 				elseif player_data.status.peer_id and player_data.status.local_player_id then
+					local mechanism = Managers.mechanism:game_mechanism()
+
 					profile_index, career_index = mechanism:update_wanted_hero_character(player_data.status.peer_id, player_data.status.local_player_id, party_id)
 				else
 					Crashify.print_exception("VersusPartySelectionLogic", "Supposed human player missing peer_id and local_player_id. Party: %s, pick id: %s", party_id, picker_id)
@@ -646,13 +649,20 @@ VersusPartySelectionLogic.get_random_available_character = function (self, party
 	return profile_index, career_index
 end
 
-VersusPartySelectionLogic._is_hero_locked = function (self, profile_index, party_data)
+VersusPartySelectionLogic._is_hero_locked = function (self, profile_index, party_data, except_peer_id)
 	if self._settings.duplicate_hero_careers_allowed then
 		return false
 	end
 
-	if not profile_index then
-		return false
+	if not profile_index or profile_index == 0 then
+		return true
+	end
+
+	local party_id = party_data.party_id
+	local reserver_peer = profile_index and self._profile_synchronizer:get_profile_index_reservation(party_id, profile_index)
+
+	if reserver_peer and reserver_peer ~= except_peer_id then
+		return true
 	end
 
 	local picker_list = party_data.picker_list
@@ -672,12 +682,13 @@ VersusPartySelectionLogic._ensure_picker_has_character = function (self, party_d
 	local peer_id, local_player_id, slot_id = self:_peer_from_picker_data(party_data, picker_index)
 	local party_id = party_data.party_id
 	local profile_index, career_index
-	local mechanism = Managers.mechanism:game_mechanism()
 	local is_bot = VersusPartySelectionLogicUtility.picker_index_is_bot(party_data, picker_index)
 
 	if is_bot then
-		profile_index, career_index = mechanism:get_saved_bot(party_id, slot_id)
+		profile_index, career_index = self._profile_synchronizer:get_bot_profile(party_id, slot_id)
 	else
+		local mechanism = Managers.mechanism:game_mechanism()
+
 		profile_index, career_index = mechanism:update_wanted_hero_character(peer_id, local_player_id, party_id)
 	end
 
@@ -807,7 +818,7 @@ local function make_index_array(party, shuffle_order)
 	return array
 end
 
-VersusPartySelectionLogic._setup_picking_order = function (self, is_server)
+VersusPartySelectionLogic._setup_picking_order = function (self)
 	local shuffle_order = Managers.state.game_mode:setting("shuffle_character_picking_order")
 	local pick_data_per_party = self._pick_data_per_party
 	local parties = Managers.party:game_participating_parties()
@@ -826,13 +837,11 @@ VersusPartySelectionLogic._setup_picking_order = function (self, is_server)
 end
 
 VersusPartySelectionLogic._sync_party_array = function (self, peer_id)
-	local party_array = {}
 	local pick_data_per_party = self._pick_data_per_party
 
 	for party_id, party_data in ipairs(pick_data_per_party) do
 		local picker_list = party_data.picker_list
-
-		table.clear(party_array)
+		local party_array = {}
 
 		for j = 1, #picker_list do
 			party_array[j] = picker_list[j].slot_id
@@ -1035,25 +1044,21 @@ end
 VersusPartySelectionLogic._try_pick_hero = function (self, party_data, picker_index, profile_index, career_index, force_sync)
 	local party_id = party_data.party_id
 	local is_bot = VersusPartySelectionLogicUtility.picker_index_is_bot(party_data, picker_index)
-	local mechanism = Managers.mechanism:game_mechanism()
 	local peer_id, _, slot_id = self:_peer_from_picker_data(party_data, picker_index)
 	local current_profile_idx, current_career_idx
 
 	if is_bot then
-		current_profile_idx, current_career_idx = mechanism:get_saved_bot(party_id, slot_id)
+		current_profile_idx, current_career_idx = self._profile_synchronizer:get_bot_profile(party_id, slot_id)
 	else
 		current_profile_idx, current_career_idx = Managers.mechanism:get_persistent_profile_index_reservation(peer_id)
 	end
 
-	if self:_is_hero_locked(current_profile_idx, party_data) then
+	if self:_is_hero_locked(current_profile_idx, party_data, peer_id) then
 		current_profile_idx, current_career_idx = nil
 	end
 
 	repeat
 		if current_profile_idx and current_career_idx and profile_index == current_profile_idx and career_index == current_career_idx then
-			profile_index = current_profile_idx
-			career_index = current_career_idx
-
 			break
 		end
 
@@ -1077,7 +1082,7 @@ VersusPartySelectionLogic._try_pick_hero = function (self, party_data, picker_in
 			profile_index, career_index = self:get_character_or_random(profile_index, career_index, party_data, is_bot)
 
 			printf("[VersusPartySelectionLogic] No profile provided for %s %s. Fallbacking to %s %s.", is_bot and "BOT in slot" or "Peer", is_bot and picker_index or peer_id, profile_index, career_index)
-		elseif self:_is_hero_locked(profile_index, party_data) then
+		elseif self:_is_hero_locked(profile_index, party_data, peer_id) then
 			local failed_profile_index, failed_career_index = profile_index, career_index
 
 			profile_index, career_index = self:get_character_or_random(profile_index, career_index, party_data, is_bot)
@@ -1086,7 +1091,7 @@ VersusPartySelectionLogic._try_pick_hero = function (self, party_data, picker_in
 		end
 
 		if is_bot then
-			mechanism:set_saved_bot(party_id, slot_id, profile_index, career_index)
+			self._profile_synchronizer:set_bot_profile(party_id, slot_id, profile_index, career_index)
 
 			break
 		end
@@ -1095,6 +1100,9 @@ VersusPartySelectionLogic._try_pick_hero = function (self, party_data, picker_in
 
 		if not success then
 			Crashify.print_exception("VersusPartySelectionLogic", "gave peer %s in party %s hero %s, but could not reserve it", peer_id, party_id, profile_index)
+
+			profile_index = current_profile_idx
+			career_index = current_career_idx
 		end
 	until true
 

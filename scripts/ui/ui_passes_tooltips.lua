@@ -3306,8 +3306,10 @@ UITooltipPasses = {
 			local item_data = item.data
 			local item_skin = item.skin
 			local item_type = item_data.item_type
+			local item_id = item.ItemId or item.item_id
+			local trimmed_item_id = item_id and string.gsub(item_id, "^vs_", "")
 
-			if item_skin and item_type ~= "weapon_skin" and WeaponSkins.default_skins[item.ItemId] ~= item_skin then
+			if item_skin and item_type ~= "weapon_skin" and WeaponSkins.default_skins[trimmed_item_id] ~= item_skin then
 				content.text = item.hidden_description and HIDDEN_DESCRIPTION_TEXT or content.prefix_text
 
 				local position_x = position[1]

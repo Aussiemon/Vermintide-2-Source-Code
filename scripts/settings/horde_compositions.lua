@@ -25429,6 +25429,2338 @@ HordeCompositions = {
 			},
 		},
 	},
+	termite_lvl2_wave_1_small_slaves = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					20,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					20,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					20,
+					"skaven_clan_rat",
+					2,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					24,
+					"skaven_clan_rat",
+					6,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					18,
+					"skaven_clan_rat",
+					14,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					18,
+					"skaven_clan_rat",
+					14,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					18,
+					"skaven_clan_rat",
+					14,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					20,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_1_medium_slaves = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					32,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					32,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					35,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					40,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					32,
+					"skaven_clan_rat",
+					12,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					32,
+					"skaven_clan_rat",
+					12,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					32,
+					"skaven_clan_rat",
+					12,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					32,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_1_commanders = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					4,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					5,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					7,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					7,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					7,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					3,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_2_slaves_shields = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					30,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					25,
+					"skaven_clan_rat_with_shield",
+					2,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					28,
+					"skaven_clan_rat_with_shield",
+					2,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					30,
+					"skaven_clan_rat_with_shield",
+					5,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					20,
+					"skaven_clan_rat_with_shield",
+					8,
+					"skaven_clan_rat",
+					10,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					20,
+					"skaven_clan_rat_with_shield",
+					8,
+					"skaven_clan_rat",
+					10,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					20,
+					"skaven_clan_rat_with_shield",
+					8,
+					"skaven_clan_rat",
+					10,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					25,
+					"skaven_clan_rat_with_shield",
+					2,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_3_shields = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					35,
+					"skaven_clan_rat_with_shield",
+					2,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					35,
+					"skaven_clan_rat_with_shield",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					40,
+					"skaven_clan_rat_with_shield",
+					4,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					45,
+					"skaven_clan_rat_with_shield",
+					7,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					42,
+					"skaven_clan_rat_with_shield",
+					12,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					42,
+					"skaven_clan_rat_with_shield",
+					12,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					42,
+					"skaven_clan_rat_with_shield",
+					12,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					35,
+					"skaven_clan_rat_with_shield",
+					3,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_3_clan_shields = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					35,
+					"skaven_clan_rat",
+					2,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					40,
+					"skaven_clan_rat",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					40,
+					"skaven_clan_rat",
+					4,
+					"skaven_clan_rat_with_shield",
+					2,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					40,
+					"skaven_clan_rat",
+					7,
+					"skaven_clan_rat_with_shield",
+					4,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					35,
+					"skaven_clan_rat",
+					12,
+					"skaven_clan_rat_with_shield",
+					6,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					35,
+					"skaven_clan_rat",
+					12,
+					"skaven_clan_rat_with_shield",
+					6,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					35,
+					"skaven_clan_rat",
+					12,
+					"skaven_clan_rat_with_shield",
+					6,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					40,
+					"skaven_clan_rat",
+					3,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_3_commanders = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					2,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					2,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					4,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					6,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					6,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					6,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					2,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_4_slave_clan_shield = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					25,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					20,
+					"skaven_clan_rat",
+					2,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					15,
+					"skaven_clan_rat",
+					7,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					15,
+					"skaven_clan_rat",
+					10,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					15,
+					"skaven_clan_rat",
+					10,
+					"skaven_clan_rat_with_shield",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					15,
+					"skaven_clan_rat",
+					10,
+					"skaven_clan_rat_with_shield",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					15,
+					"skaven_clan_rat",
+					10,
+					"skaven_clan_rat_with_shield",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					20,
+					"skaven_clan_rat",
+					2,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_4_command_shield = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					4,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					3,
+					"skaven_storm_vermin_with_shield",
+					2,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					4,
+					"skaven_storm_vermin_with_shield",
+					2,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					5,
+					"skaven_storm_vermin_with_shield",
+					4,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					5,
+					"skaven_storm_vermin_with_shield",
+					4,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					5,
+					"skaven_storm_vermin_with_shield",
+					4,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					4,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_5_monks = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					4,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					5,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					6,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					8,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					10,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					10,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					10,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					5,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_5_slave_clan_shield = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					40,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					35,
+					"skaven_clan_rat",
+					8,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					40,
+					"skaven_clan_rat",
+					10,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					40,
+					"skaven_clan_rat",
+					15,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					35,
+					"skaven_clan_rat",
+					18,
+					"skaven_clan_rat_with_shield",
+					4,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					35,
+					"skaven_clan_rat",
+					18,
+					"skaven_clan_rat_with_shield",
+					4,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					35,
+					"skaven_clan_rat",
+					18,
+					"skaven_clan_rat_with_shield",
+					4,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					35,
+					"skaven_clan_rat",
+					8,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_5_slave_clan = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					40,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					35,
+					"skaven_clan_rat",
+					10,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					35,
+					"skaven_clan_rat",
+					15,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					35,
+					"skaven_clan_rat",
+					20,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					32,
+					"skaven_clan_rat",
+					30,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					32,
+					"skaven_clan_rat",
+					30,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					32,
+					"skaven_clan_rat",
+					30,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					35,
+					"skaven_clan_rat",
+					10,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_5_commanders = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					5,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					7,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					8,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					10,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					10,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					10,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					5,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_6_commander_shields = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					6,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					8,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					8,
+					"skaven_storm_vermin_with_shield",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					10,
+					"skaven_storm_vermin_with_shield",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					11,
+					"skaven_storm_vermin_with_shield",
+					5,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					11,
+					"skaven_storm_vermin_with_shield",
+					5,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					11,
+					"skaven_storm_vermin_with_shield",
+					5,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					8,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_6_slave_clan_shields = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					30,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					30,
+					"skaven_clan_rat",
+					4,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					32,
+					"skaven_clan_rat",
+					5,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					35,
+					"skaven_clan_rat",
+					10,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					35,
+					"skaven_clan_rat",
+					12,
+					"skaven_clan_rat_with_shield",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					35,
+					"skaven_clan_rat",
+					12,
+					"skaven_clan_rat_with_shield",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					35,
+					"skaven_clan_rat",
+					12,
+					"skaven_clan_rat_with_shield",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					30,
+					"skaven_clan_rat",
+					4,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_6_flush_slave_clan_shields = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					24,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					18,
+					"skaven_clan_rat",
+					6,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					20,
+					"skaven_clan_rat",
+					6,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					20,
+					"skaven_clan_rat",
+					10,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					20,
+					"skaven_clan_rat",
+					12,
+					"skaven_clan_rat_with_shield",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					20,
+					"skaven_clan_rat",
+					12,
+					"skaven_clan_rat_with_shield",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					20,
+					"skaven_clan_rat",
+					12,
+					"skaven_clan_rat_with_shield",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					18,
+					"skaven_clan_rat",
+					6,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_6_monks = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					1,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					2,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					2,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					4,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					4,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					4,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					2,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_7_slaves = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					1,
+					"skaven_slave",
+					12,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					1,
+					"skaven_slave",
+					15,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					1,
+					"skaven_slave",
+					20,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					2,
+					"skaven_slave",
+					20,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					3,
+					"skaven_slave",
+					15,
+					"skaven_clan_rat",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					3,
+					"skaven_slave",
+					15,
+					"skaven_clan_rat",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					3,
+					"skaven_slave",
+					15,
+					"skaven_clan_rat",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					1,
+					"skaven_slave",
+					15,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_7_medium_slaves = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					30,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					25,
+					"skaven_clan_rat",
+					6,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					30,
+					"skaven_clan_rat",
+					8,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					35,
+					"skaven_clan_rat",
+					10,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					28,
+					"skaven_clan_rat",
+					15,
+					"skaven_clan_rat_with_shield",
+					2,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					28,
+					"skaven_clan_rat",
+					15,
+					"skaven_clan_rat_with_shield",
+					2,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					28,
+					"skaven_clan_rat",
+					15,
+					"skaven_clan_rat_with_shield",
+					2,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					25,
+					"skaven_clan_rat",
+					6,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_7_monks = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					5,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					6,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					8,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					10,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					10,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					10,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					5,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_7_commanders = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_clan_rat_with_shield",
+					8,
+					"skaven_storm_vermin_commander",
+					2,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_clan_rat_with_shield",
+					8,
+					"skaven_storm_vermin_commander",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_clan_rat_with_shield",
+					10,
+					"skaven_storm_vermin_commander",
+					4,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_clan_rat_with_shield",
+					10,
+					"skaven_storm_vermin_commander",
+					6,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_clan_rat_with_shield",
+					11,
+					"skaven_storm_vermin_commander",
+					8,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_clan_rat_with_shield",
+					11,
+					"skaven_storm_vermin_commander",
+					8,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_clan_rat_with_shield",
+					11,
+					"skaven_storm_vermin_commander",
+					8,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_clan_rat_with_shield",
+					8,
+					"skaven_storm_vermin_commander",
+					3,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_8_slave_clan_shield = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					20,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					20,
+					"skaven_clan_rat",
+					8,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					22,
+					"skaven_clan_rat",
+					10,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					15,
+					"skaven_clan_rat",
+					20,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					12,
+					"skaven_clan_rat",
+					24,
+					"skaven_clan_rat_with_shield",
+					4,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					12,
+					"skaven_clan_rat",
+					24,
+					"skaven_clan_rat_with_shield",
+					4,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					12,
+					"skaven_clan_rat",
+					24,
+					"skaven_clan_rat_with_shield",
+					4,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					20,
+					"skaven_clan_rat",
+					8,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_8_big_slaves = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					30,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					32,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					38,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					45,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					37,
+					"skaven_clan_rat",
+					10,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					37,
+					"skaven_clan_rat",
+					10,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					37,
+					"skaven_clan_rat",
+					10,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_slave",
+					32,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_8_monks = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					2,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					2,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					5,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					7,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					7,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					7,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					2,
+				},
+			},
+		},
+	},
+	termite_lvl2_wave_8_commander_shields = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					3,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					4,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					6,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					8,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					8,
+					"skaven_storm_vermin_with_shield",
+					2,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					8,
+					"skaven_storm_vermin_with_shield",
+					2,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					8,
+					"skaven_storm_vermin_with_shield",
+					2,
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					4,
+				},
+			},
+		},
+	},
 	pathfind_test_light = {
 		{
 			{

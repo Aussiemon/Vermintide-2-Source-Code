@@ -204,11 +204,13 @@ BossHealthUI._update_enemy_portrait_name_and_attributes = function (self, unit, 
 		end
 
 		local magic_number = grudge_marked.name_index
-		local enemy_name = TerrorEventUtils.get_grudge_marked_name(breed_name, magic_number)
+		local enemy_name = TerrorEventUtils.get_grudge_marked_name(breed_name, magic_number, attributes.breed_enhancements)
 
 		self:_set_portrait_and_title(true, breed_name, enemy_name)
 	else
-		self:_set_portrait_and_title(false, breed_name, breed_name)
+		local title = (Breeds[breed_name] or PlayerBreeds[breed_name]).display_name or breed_name
+
+		self:_set_portrait_and_title(false, breed_name, title)
 	end
 end
 
@@ -293,7 +295,7 @@ BossHealthUI._update_timed_prioritization = function (self, dt, t)
 
 	self._prioritization_timer = nil
 
-	self:event_clear_prioritized_unit(self._prioritized_reason)
+	self:event_clear_prioritized_unit(self._prioritized_reason, true)
 end
 
 BossHealthUI._draw = function (self, dt, t)
