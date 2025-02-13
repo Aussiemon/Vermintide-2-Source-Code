@@ -1,7 +1,7 @@
 ﻿-- chunkname: @scripts/settings/material_effect_mappings_woods.lua
 
-MaterialEffectMappings = MaterialEffectMappings or {}
-MaterialEffectMappings.life_impact = MaterialEffectMappings.life_impact or {
+require("scripts/settings/material_effect_mappings_utility")
+MaterialEffectMappingsUtility.add("life_impact", {
 	sound = {
 		cloth = {
 			event = "weapon_life_staff_thorn_whip_hit",
@@ -219,8 +219,8 @@ MaterialEffectMappings.life_impact = MaterialEffectMappings.life_impact or {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.throwing_javelin = MaterialEffectMappings.throwing_javelin or {
+})
+MaterialEffectMappingsUtility.add("throwing_javelin", {
 	decal = {
 		material_drawer_mapping = {
 			dirt = "units/projection_decals/hit_dirt_slash_1",
@@ -509,4 +509,4 @@ MaterialEffectMappings.throwing_javelin = MaterialEffectMappings.throwing_javeli
 	world_interaction = {
 		water = {},
 	},
-}
+})

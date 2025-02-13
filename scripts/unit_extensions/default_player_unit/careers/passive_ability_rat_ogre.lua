@@ -48,7 +48,13 @@ PassiveAbilityRatOgre.destroy = function (self)
 	self:unregister_rpcs()
 end
 
-PassiveAbilityRatOgre.rpc_start_leap = function (self, channel_id, from_position, to_position)
+PassiveAbilityRatOgre.rpc_start_leap = function (self, channel_id, unit_id, from_position, to_position)
+	local unit = Managers.state.unit_storage:unit(unit_id)
+
+	if unit ~= self._unit then
+		return
+	end
+
 	if self._is_server then
 		if not DEDICATED_SERVER then
 			self:set_leap_data(from_position, to_position)
@@ -56,13 +62,19 @@ PassiveAbilityRatOgre.rpc_start_leap = function (self, channel_id, from_position
 
 		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
-		self._network_transmit:send_rpc_clients_except("rpc_start_leap", peer_id, from_position, to_position)
+		self._network_transmit:send_rpc_clients_except("rpc_start_leap", peer_id, unit_id, from_position, to_position)
 	else
 		self:set_leap_data(from_position, to_position)
 	end
 end
 
-PassiveAbilityRatOgre.rpc_stop_leap = function (self, channel_id)
+PassiveAbilityRatOgre.rpc_stop_leap = function (self, channel_id, unit_id)
+	local unit = Managers.state.unit_storage:unit(unit_id)
+
+	if unit ~= self._unit then
+		return
+	end
+
 	if self._is_server then
 		if not DEDICATED_SERVER then
 			self:stop()
@@ -70,21 +82,23 @@ PassiveAbilityRatOgre.rpc_stop_leap = function (self, channel_id)
 
 		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
-		self._network_transmit:send_rpc_clients_except("rpc_stop_leap", peer_id)
+		self._network_transmit:send_rpc_clients_except("rpc_stop_leap", peer_id, unit_id)
 	else
 		self:stop()
 	end
 end
 
 PassiveAbilityRatOgre.start_leap = function (self, from_position, to_position)
+	local unit_id = Managers.state.unit_storage:go_id(self._unit)
+
 	if not self._is_server and not self._is_remote_player then
-		self._network_transmit:send_rpc_server("rpc_start_leap", from_position, to_position)
+		self._network_transmit:send_rpc_server("rpc_start_leap", unit_id, from_position, to_position)
 		self:set_leap_data(from_position, to_position)
 	elseif self._is_server and not DEDICATED_SERVER then
-		self._network_transmit:send_rpc_clients("rpc_start_leap", from_position, to_position)
+		self._network_transmit:send_rpc_clients("rpc_start_leap", unit_id, from_position, to_position)
 		self:set_leap_data(from_position, to_position)
 	elseif self._is_server then
-		self._network_transmit:send_rpc_clients("rpc_start_leap", from_position, to_position)
+		self._network_transmit:send_rpc_clients("rpc_start_leap", unit_id, from_position, to_position)
 	end
 end
 
@@ -106,14 +120,20 @@ PassiveAbilityRatOgre.set_leap_data = function (self, from_position, to_position
 end
 
 PassiveAbilityRatOgre.stop_leap = function (self)
+	local unit_id = Managers.state.unit_storage:go_id(self._unit)
+
+	if not unit_id then
+		return
+	end
+
 	if not self._is_server and not self._is_remote_player then
-		self._network_transmit:send_rpc_server("rpc_stop_leap")
+		self._network_transmit:send_rpc_server("rpc_stop_leap", unit_id)
 		self:stop()
 	elseif self._is_server and not DEDICATED_SERVER then
-		self._network_transmit:send_rpc_clients("rpc_stop_leap")
+		self._network_transmit:send_rpc_clients("rpc_stop_leap", unit_id)
 		self:stop()
 	elseif self._is_server then
-		self._network_transmit:send_rpc_clients("rpc_stop_leap")
+		self._network_transmit:send_rpc_clients("rpc_stop_leap", unit_id)
 	end
 end
 

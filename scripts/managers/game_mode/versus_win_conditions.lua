@@ -94,6 +94,13 @@ VersusWinConditions.setup_round = function (self, is_server)
 
 	if self.mechanism:custom_settings_enabled() then
 		self._early_win_enabled = self.mechanism:get_custom_game_setting("early_win_enabled")
+
+		local custom_round_time_limit = self.mechanism:get_custom_game_setting("round_time_limit")
+
+		if custom_round_time_limit then
+			self._round_timer = custom_round_time_limit * 60
+			self._custom_round_time_limit = true
+		end
 	end
 
 	self._is_server = is_server
@@ -171,6 +178,10 @@ VersusWinConditions._server_update_round_timer = function (self, dt)
 	self._round_timer = math.max(self._round_timer - dt, 0)
 
 	GameSession.set_game_object_field(game, self._go_id, "round_timer", self._round_timer)
+
+	if self._custom_round_time_limit then
+		self:custom_game_round_timer()
+	end
 end
 
 VersusWinConditions.client_update = function (self, t, dt)
@@ -198,6 +209,10 @@ VersusWinConditions.client_update = function (self, t, dt)
 
 	if script_data.debug_early_win then
 		Debug.text("Heroes about to win: %s", self._heroes_close_to_winning)
+	end
+
+	if self._custom_round_time_limit then
+		self:custom_game_round_timer()
 	end
 end
 
@@ -487,6 +502,37 @@ VersusWinConditions.round_timer = function (self)
 	return self._round_timer
 end
 
+VersusWinConditions._get_round_timer_formatted = function (self)
+	if not self._round_timer then
+		return
+	end
+
+	local minutes = math.floor(self._round_timer / 60)
+	local seconds = math.floor(self._round_timer % 60)
+
+	if seconds < 10 then
+		seconds = string.format("0%s", seconds)
+	end
+
+	if minutes < 10 then
+		minutes = string.format("0%s", minutes)
+	end
+
+	return string.format("%s:%s", minutes, seconds)
+end
+
+VersusWinConditions.custom_game_round_timer = function (self)
+	if self:is_round_timer_started() then
+		local updated_formatted_timer = self:_get_round_timer_formatted()
+
+		if self._formatted_round_timer ~= updated_formatted_timer then
+			Managers.state.event:trigger("ui_update_round_timer", self:_get_round_timer_formatted())
+
+			self._formatted_round_timer = updated_formatted_timer
+		end
+	end
+end
+
 VersusWinConditions.is_final_round = function (self)
 	return self._final_round
 end
@@ -529,52 +575,55 @@ end
 
 VersusWinConditions.play_score_sfx = function (self, current_objective_extension)
 	local event = "Play_hud_versus_score_points"
-	local close_to_win_events = settings.versus_close_to_win_score_ticks
-	local early_win_data = self:_get_hero_early_win_data(false)
-	local score_to_win = early_win_data.other_party_score_potential - early_win_data.score + 1
-	local num_score_ticks_to_win = 0
-	local current_objective_sections_left = current_objective_extension:get_num_sections_left()
-	local current_objective_score_per_section = current_objective_extension:get_score_per_section()
-	local remaining_objectives = self._objective_system:get_remaining_objectives_list()
-	local num_ramping_ticks = #close_to_win_events
-	local num_sections_checked = 0
 
-	if current_objective_sections_left > 0 and current_objective_score_per_section > 0 then
-		for i = 1, current_objective_sections_left do
-			num_score_ticks_to_win = num_score_ticks_to_win + 1
-			score_to_win = score_to_win - current_objective_score_per_section
-			num_sections_checked = num_sections_checked + 1
+	if self._early_win_enabled then
+		local close_to_win_events = settings.versus_close_to_win_score_ticks
+		local early_win_data = self:_get_hero_early_win_data(false)
+		local score_to_win = early_win_data.other_party_score_potential - early_win_data.score + 1
+		local num_score_ticks_to_win = 0
+		local current_objective_sections_left = current_objective_extension:get_num_sections_left()
+		local current_objective_score_per_section = current_objective_extension:get_score_per_section()
+		local remaining_objectives = self._objective_system:get_remaining_objectives_list()
+		local num_ramping_ticks = #close_to_win_events
+		local num_sections_checked = 0
 
-			if score_to_win <= 0 or num_sections_checked == num_ramping_ticks then
-				break
-			end
-		end
-	end
-
-	if score_to_win > 0 then
-		for i, objective in ipairs(remaining_objectives) do
-			local _, objective_data = next(objective)
-			local score_per_section = objective_data.score_per_section or objective_data.score_per_socket or objective_data.score_for_completion or 0
-			local num_sections = objective_data.num_sockets or objective_data.num_sections or 1
-
-			for section = 1, num_sections do
-				score_to_win = score_to_win - score_per_section
+		if current_objective_sections_left > 0 and current_objective_score_per_section > 0 then
+			for i = 1, current_objective_sections_left do
 				num_score_ticks_to_win = num_score_ticks_to_win + 1
+				score_to_win = score_to_win - current_objective_score_per_section
 				num_sections_checked = num_sections_checked + 1
 
 				if score_to_win <= 0 or num_sections_checked == num_ramping_ticks then
 					break
 				end
 			end
+		end
 
-			if score_to_win <= 0 or num_sections_checked == num_ramping_ticks then
-				break
+		if score_to_win > 0 then
+			for i, objective in ipairs(remaining_objectives) do
+				local _, objective_data = next(objective)
+				local score_per_section = objective_data.score_per_section or objective_data.score_per_socket or objective_data.score_for_completion or 0
+				local num_sections = objective_data.num_sockets or objective_data.num_sections or 1
+
+				for section = 1, num_sections do
+					score_to_win = score_to_win - score_per_section
+					num_score_ticks_to_win = num_score_ticks_to_win + 1
+					num_sections_checked = num_sections_checked + 1
+
+					if score_to_win <= 0 or num_sections_checked == num_ramping_ticks then
+						break
+					end
+				end
+
+				if score_to_win <= 0 or num_sections_checked == num_ramping_ticks then
+					break
+				end
 			end
 		end
-	end
 
-	if score_to_win <= 0 and close_to_win_events[num_score_ticks_to_win + 1] then
-		event = close_to_win_events[num_score_ticks_to_win + 1]
+		if score_to_win <= 0 and close_to_win_events[num_score_ticks_to_win + 1] then
+			event = close_to_win_events[num_score_ticks_to_win + 1]
+		end
 	end
 
 	local sound_event_id = NetworkLookup.sound_events[event]

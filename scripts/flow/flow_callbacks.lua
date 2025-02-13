@@ -2309,8 +2309,8 @@ function flow_query_slots_status(params)
 end
 
 function flow_callback_damage_player_bot_ai(params)
-	local attacker_unit = params.attacker_unit
 	local unit = params.unit
+	local attacker_unit = Unit.alive(params.attacker_unit) and params.attacker_unit or unit
 	local damage = params.damage
 
 	if unit_alive(unit) then
@@ -2339,7 +2339,7 @@ function flow_callback_get_health_player_bot_ai(params)
 	end
 
 	local unit = params.unit
-	local current_health
+	local current_health = 0
 
 	if unit_alive(unit) then
 		fassert(ScriptUnit.has_extension(unit, "health_system"), "Tried to get unit %s health from flow but the unit has no health extension", unit)
@@ -2347,7 +2347,9 @@ function flow_callback_get_health_player_bot_ai(params)
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 		local status_extension = ScriptUnit.has_extension(unit, "status_system")
 
-		current_health = status_extension and (status_extension:is_knocked_down() or status_extension:is_ready_for_assisted_respawn()) and 0 or health_extension:current_health()
+		if not status_extension or not status_extension:is_knocked_down() and not status_extension:is_ready_for_assisted_respawn() then
+			current_health = health_extension:current_health()
+		end
 	end
 
 	flow_return_table.currenthealth = current_health
@@ -5885,6 +5887,15 @@ function flow_callbacks_get_death_reaction_attacker_unit(params)
 	local attacker_unit = death_system:flow_get_killing_blow_attacker_unit()
 
 	flow_return_table.attacker_unit = Unit.alive(attacker_unit) and attacker_unit or Unit.null_reference()
+
+	return flow_return_table
+end
+
+function flow_callbacks_get_owner_of_unit_that_occupied_objective_socket(params)
+	local objective_socket_system = Managers.state.entity:system("objective_socket_system")
+	local owner_unit = objective_socket_system:get_owner_of_unit_that_occupied_socket(params.socket_unit, params.socket_name)
+
+	flow_return_table.owner_unit = Unit.alive(owner_unit) and owner_unit or Unit.null_reference()
 
 	return flow_return_table
 end

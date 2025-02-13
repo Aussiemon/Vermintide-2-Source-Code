@@ -1,7 +1,7 @@
 ﻿-- chunkname: @scripts/settings/material_effect_mappings_chaos.lua
 
-MaterialEffectMappings = MaterialEffectMappings or {}
-MaterialEffectMappings.enemy_chaos_walk = {
+require("scripts/settings/material_effect_mappings_utility")
+MaterialEffectMappingsUtility.add("enemy_chaos_walk", {
 	sound = {
 		cloth = {
 			event = "enemy_chaos_walk",
@@ -151,8 +151,8 @@ MaterialEffectMappings.enemy_chaos_walk = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_troll_footstep_single = {
+})
+MaterialEffectMappingsUtility.add("enemy_troll_footstep_single", {
 	sound = {
 		cloth = {
 			event = "enemy_troll_footstep_walk",
@@ -320,8 +320,8 @@ MaterialEffectMappings.enemy_troll_footstep_single = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_troll_footstep_single_run = {
+})
+MaterialEffectMappingsUtility.add("enemy_troll_footstep_single_run", {
 	sound = {
 		cloth = {
 			event = "enemy_troll_footstep_run",
@@ -489,8 +489,8 @@ MaterialEffectMappings.enemy_troll_footstep_single_run = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_troll_land_death = {
+})
+MaterialEffectMappingsUtility.add("enemy_troll_land_death", {
 	sound = {
 		cloth = {
 			event = "enemy_troll_land_death",
@@ -658,8 +658,8 @@ MaterialEffectMappings.enemy_troll_land_death = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_sorcerer_footstep_walk = {
+})
+MaterialEffectMappingsUtility.add("enemy_sorcerer_footstep_walk", {
 	sound = {
 		cloth = {
 			event = "enemy_chaos_sorcerer_walk",
@@ -829,8 +829,8 @@ MaterialEffectMappings.enemy_sorcerer_footstep_walk = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_marauder_run = {
+})
+MaterialEffectMappingsUtility.add("enemy_marauder_run", {
 	sound = {
 		cloth = {
 			event = "enemy_marauder_footstep_run",
@@ -980,8 +980,8 @@ MaterialEffectMappings.enemy_marauder_run = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_marauder_walk = {
+})
+MaterialEffectMappingsUtility.add("enemy_marauder_walk", {
 	sound = {
 		cloth = {
 			event = "enemy_marauder_footstep_walk",
@@ -1131,8 +1131,8 @@ MaterialEffectMappings.enemy_marauder_walk = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_marauder_land = {
+})
+MaterialEffectMappingsUtility.add("enemy_marauder_land", {
 	sound = {
 		cloth = {
 			event = "enemy_marauder_footstep_land",
@@ -1282,8 +1282,8 @@ MaterialEffectMappings.enemy_marauder_land = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_marauder_slide = {
+})
+MaterialEffectMappingsUtility.add("enemy_marauder_slide", {
 	sound = {
 		cloth = {
 			event = "enemy_marauder_footstep_slide",
@@ -1433,8 +1433,8 @@ MaterialEffectMappings.enemy_marauder_slide = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_marauder_land_knee = {
+})
+MaterialEffectMappingsUtility.add("enemy_marauder_land_knee", {
 	sound = {
 		cloth = {
 			event = "enemy_marauder_land_knee",
@@ -1584,8 +1584,8 @@ MaterialEffectMappings.enemy_marauder_land_knee = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_marauder_land_body = {
+})
+MaterialEffectMappingsUtility.add("enemy_marauder_land_body", {
 	sound = {
 		cloth = {
 			event = "enemy_marauder_land_body",
@@ -1735,8 +1735,8 @@ MaterialEffectMappings.enemy_marauder_land_body = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_chaos_spawn_run_small_foot = {
+})
+MaterialEffectMappingsUtility.add("enemy_chaos_spawn_run_small_foot", {
 	sound = {
 		cloth = {
 			event = "enemy_chaos_spawn_footstep_run_small_foot",
@@ -1886,8 +1886,8 @@ MaterialEffectMappings.enemy_chaos_spawn_run_small_foot = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_chaos_spawn_run_big_foot = {
+})
+MaterialEffectMappingsUtility.add("enemy_chaos_spawn_run_big_foot", {
 	sound = {
 		cloth = {
 			event = "enemy_chaos_spawn_footstep_run_big_foot",
@@ -2037,8 +2037,8 @@ MaterialEffectMappings.enemy_chaos_spawn_run_big_foot = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_chaos_spawn_land = {
+})
+MaterialEffectMappingsUtility.add("enemy_chaos_spawn_land", {
 	sound = {
 		cloth = {
 			event = "enemy_chaos_spawn_land",
@@ -2188,8 +2188,8 @@ MaterialEffectMappings.enemy_chaos_spawn_land = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_chaos_spawn_attack_ground = {
+})
+MaterialEffectMappingsUtility.add("enemy_chaos_spawn_attack_ground", {
 	sound = {
 		cloth = {
 			event = "enemy_chaos_spawn_attack_ground",
@@ -2339,8 +2339,8 @@ MaterialEffectMappings.enemy_chaos_spawn_attack_ground = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_chaos_spawn_attack_ground_tentacle = {
+})
+MaterialEffectMappingsUtility.add("enemy_chaos_spawn_attack_ground_tentacle", {
 	sound = {
 		cloth = {
 			event = "enemy_chaos_spawn_attack_ground_tentacle",
@@ -2490,8 +2490,8 @@ MaterialEffectMappings.enemy_chaos_spawn_attack_ground_tentacle = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_chaos_spawn_footstep_slide = {
+})
+MaterialEffectMappingsUtility.add("enemy_chaos_spawn_footstep_slide", {
 	sound = {
 		cloth = {
 			event = "enemy_chaos_spawn_footstep_slide",
@@ -2641,8 +2641,8 @@ MaterialEffectMappings.enemy_chaos_spawn_footstep_slide = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_plague_walker_walk = {
+})
+MaterialEffectMappingsUtility.add("enemy_plague_walker_walk", {
 	sound = {
 		cloth = {
 			event = "Play_enemy_plague_walker_footstep_walk",
@@ -2792,8 +2792,8 @@ MaterialEffectMappings.enemy_plague_walker_walk = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_plague_walker_walk_light = {
+})
+MaterialEffectMappingsUtility.add("enemy_plague_walker_walk_light", {
 	sound = {
 		cloth = {
 			event = "Play_enemy_plague_walker_footstep_walk_light",
@@ -2943,8 +2943,8 @@ MaterialEffectMappings.enemy_plague_walker_walk_light = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_plague_walker_land = {
+})
+MaterialEffectMappingsUtility.add("enemy_plague_walker_land", {
 	sound = {
 		cloth = {
 			event = "Play_enemy_plague_walker_footstep_land",
@@ -3094,8 +3094,8 @@ MaterialEffectMappings.enemy_plague_walker_land = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_plague_walker_bodyfall = {
+})
+MaterialEffectMappingsUtility.add("enemy_plague_walker_bodyfall", {
 	sound = {
 		cloth = {
 			event = "Play_enemy_plague_walker_footstep_bodyfall",
@@ -3245,4 +3245,4 @@ MaterialEffectMappings.enemy_plague_walker_bodyfall = {
 	world_interaction = {
 		water = {},
 	},
-}
+})

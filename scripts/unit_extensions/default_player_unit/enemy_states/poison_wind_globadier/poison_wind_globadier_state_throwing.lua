@@ -318,8 +318,10 @@ PoisonWindGlobadierStateThrowing._update_priming = function (self, unit, t, dt)
 		local unit = self._unit
 		local first_person_extension = self._first_person_extension
 
-		CharacterStateHelper.play_animation_event(unit, "globe_charge_hold")
-		CharacterStateHelper.play_animation_event_first_person(first_person_extension, "globe_charge_hold")
+		if not self._thrown then
+			CharacterStateHelper.play_animation_event(unit, "globe_charge_hold")
+			CharacterStateHelper.play_animation_event_first_person(first_person_extension, "globe_charge_hold")
+		end
 	end
 
 	local update_priming = not self._done_priming

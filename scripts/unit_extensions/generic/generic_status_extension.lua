@@ -1804,9 +1804,22 @@ GenericStatusExtension._set_packmaster_unhooked = function (self, locomotion, gr
 	end
 
 	self.pack_master_status = "pack_master_unhooked"
+	self.pack_master_grabber = nil
+	self.pack_master_player = nil
 end
 
 GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grabbed, grabber_unit)
+	if self.is_server then
+		local current_grabber = self.pack_master_grabber
+
+		if grabber_unit and grabber_unit ~= current_grabber and ALIVE[current_grabber] then
+			local valid_set = false
+			local actual_value = true
+
+			return valid_set, actual_value, current_grabber
+		end
+	end
+
 	local unit = self.unit
 
 	self.pack_master_grabber = is_grabbed and grabber_unit or nil
@@ -1838,7 +1851,7 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 		if not is_grabbed then
 			self:_set_packmaster_unhooked(locomotion, grabbed_status)
 
-			return
+			return true
 		end
 
 		local breed = ALIVE[grabber_unit] and Unit.get_data(grabber_unit, "breed")
@@ -1886,7 +1899,7 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 		if not is_grabbed then
 			self:_set_packmaster_unhooked(locomotion, grabbed_status)
 
-			return
+			return true
 		end
 
 		if previous_status == "pack_master_pulling" then
@@ -1902,7 +1915,7 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 		if not is_grabbed then
 			self:_set_packmaster_unhooked(locomotion, grabbed_status)
 
-			return
+			return true
 		end
 
 		if not self.is_husk then
@@ -1973,6 +1986,8 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 			locomotion:set_disabled(false, nil, nil, true)
 		end
 	end
+
+	return true
 end
 
 GenericStatusExtension.query_pack_master_player = function (self)

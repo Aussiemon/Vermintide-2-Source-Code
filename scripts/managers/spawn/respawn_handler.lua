@@ -27,6 +27,12 @@ RespawnHandler.init = function (self, profile_synchronizer, is_server)
 	self._boss_door_dist_lookup = {}
 	self._next_move_players_t = 0
 	self._is_server = is_server
+
+	local mechanism_ok, hero_rescues_enabled, custom_settings_enabled = Managers.mechanism:mechanism_try_call("get_custom_game_setting", "hero_rescues_enabled")
+
+	if mechanism_ok and custom_settings_enabled and hero_rescues_enabled then
+		self._custom_game_respawn_time_override = RESPAWN_TIME
+	end
 end
 
 RespawnHandler.register_rpcs = function (self, network_event_delegate, network_transmit)

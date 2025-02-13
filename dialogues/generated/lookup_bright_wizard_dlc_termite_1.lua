@@ -31,6 +31,7 @@ assert(DialogueLookup[DialogueLookup_n + 28] == nil)
 assert(DialogueLookup[DialogueLookup_n + 29] == nil)
 assert(DialogueLookup[DialogueLookup_n + 30] == nil)
 assert(DialogueLookup[DialogueLookup_n + 31] == nil)
+assert(DialogueLookup[DialogueLookup_n + 32] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pbw_temple_lake_crossing_destroy_bell_complete_a"
 DialogueLookup[DialogueLookup_n + 2] = "pbw_temple_lake_crossing_long_route_a"
@@ -58,9 +59,10 @@ DialogueLookup[DialogueLookup_n + 23] = "pbw_temple_sanctum_goods_elevator_b"
 DialogueLookup[DialogueLookup_n + 24] = "pbw_temple_sanctum_great_seal_a"
 DialogueLookup[DialogueLookup_n + 25] = "pbw_temple_sanctum_nightmare_gate_a"
 DialogueLookup[DialogueLookup_n + 26] = "pbw_temple_sanctum_nightmare_gate_c"
-DialogueLookup[DialogueLookup_n + 27] = "pbw_temple_start_banter_a"
-DialogueLookup[DialogueLookup_n + 28] = "pbw_temple_start_banter_c"
-DialogueLookup[DialogueLookup_n + 29] = "pbw_temple_wilds_gate_gather_a"
-DialogueLookup[DialogueLookup_n + 30] = "pbw_temple_wilds_lake_vista_elf_b"
-DialogueLookup[DialogueLookup_n + 31] = "pbw_temple_wilds_lake_vista_no_elf_b"
-DialogueLookup_n = DialogueLookup_n + 31
+DialogueLookup[DialogueLookup_n + 27] = "pbw_temple_slotted_waystone_DUMMY"
+DialogueLookup[DialogueLookup_n + 28] = "pbw_temple_start_banter_a"
+DialogueLookup[DialogueLookup_n + 29] = "pbw_temple_start_banter_c"
+DialogueLookup[DialogueLookup_n + 30] = "pbw_temple_wilds_gate_gather_a"
+DialogueLookup[DialogueLookup_n + 31] = "pbw_temple_wilds_lake_vista_elf_b"
+DialogueLookup[DialogueLookup_n + 32] = "pbw_temple_wilds_lake_vista_no_elf_b"
+DialogueLookup_n = DialogueLookup_n + 32

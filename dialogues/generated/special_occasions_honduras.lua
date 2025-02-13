@@ -17558,7 +17558,7 @@ return function ()
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter",
+				"empire_soldier",
 			},
 		},
 	})
@@ -27406,21 +27406,21 @@ return function ()
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_gameplay_witch_hunter_on_a_frenzy_new_a_01",
+				"pbw_gameplay_wood_elf_on_a_frenzy_new_a_01",
 				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_gameplay_witch_hunter_on_a_frenzy_new_a_01",
+				"pdr_gameplay_wood_elf_on_a_frenzy_new_a_01",
 				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_gameplay_witch_hunter_on_a_frenzy_new_a_01",
+				"pwh_gameplay_wood_elf_on_a_frenzy_new_a_01",
 				CombiningOP.OR_NEXT,
 			},
 			{

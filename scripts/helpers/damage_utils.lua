@@ -1746,12 +1746,10 @@ DamageUtils.add_damage_network = function (attacked_unit, attacker_unit, origina
 		return 0
 	end
 
-	if DamageUtils.is_in_inn then
-		local attacked_side = Managers.state.side.side_by_unit[attacked_unit]
+	local attacked_side = Managers.state.side.side_by_unit[attacked_unit]
 
-		if attacked_side and attacked_side.VALID_ENEMY_PLAYERS_AND_BOTS[attacked_unit] then
-			return 0
-		end
+	if DamageUtils.is_in_inn and attacked_side and attacked_side.VALID_ENEMY_PLAYERS_AND_BOTS[attacked_unit] then
+		return 0
 	end
 
 	local player_manager = Managers.player
@@ -1772,6 +1770,14 @@ DamageUtils.add_damage_network = function (attacked_unit, attacker_unit, origina
 	local victim_units = FrameTable.alloc_table()
 
 	if is_server or LEVEL_EDITOR_TEST then
+		local mechanism_ok, custom_setting_damage_multiplier, custom_settings_enabled = Managers.mechanism:mechanism_try_call("get_custom_game_setting", "hero_damage_taken")
+
+		if mechanism_ok and custom_settings_enabled then
+			local unit_is_hero = attacked_side and attacked_side:name() == "heroes"
+
+			original_damage_amount = unit_is_hero and original_damage_amount * custom_setting_damage_multiplier or original_damage_amount
+		end
+
 		local attacker_breed = AiUtils.unit_breed(attacker_unit)
 
 		if attacker_breed and attacker_breed.is_hero then
@@ -1858,12 +1864,10 @@ DamageUtils.add_damage_network_player = function (damage_profile, target_index, 
 		return 0
 	end
 
-	if DamageUtils.is_in_inn then
-		local attacked_side = Managers.state.side.side_by_unit[hit_unit]
+	local attacked_side = Managers.state.side.side_by_unit[hit_unit]
 
-		if attacked_side and attacked_side.VALID_ENEMY_PLAYERS_AND_BOTS[hit_unit] then
-			return 0
-		end
+	if DamageUtils.is_in_inn and attacked_side and attacked_side.VALID_ENEMY_PLAYERS_AND_BOTS[hit_unit] then
+		return 0
 	end
 
 	local player_manager = Managers.player
@@ -1948,6 +1952,14 @@ DamageUtils.add_damage_network_player = function (damage_profile, target_index, 
 
 	if player_manager.is_server or LEVEL_EDITOR_TEST then
 		local num_victim_units = #victim_units
+		local mechanism_ok, custom_setting_damage_multiplier, custom_settings_enabled = Managers.mechanism:mechanism_try_call("get_custom_game_setting", "hero_damage_taken")
+
+		if mechanism_ok and custom_settings_enabled then
+			local unit_is_hero = attacked_side and attacked_side:name() == "heroes"
+
+			damage_amount = unit_is_hero and damage_amount * custom_setting_damage_multiplier or damage_amount
+		end
+
 		local t = Managers.time:time("game")
 
 		for i = 1, num_victim_units do

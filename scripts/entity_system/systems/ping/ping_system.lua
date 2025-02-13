@@ -8,6 +8,9 @@ local PING_DURATION = 15
 local SELF_PING_DURATION = 5
 local MAX_PING_RESPONSE_UV_DISTANCE = 0.05
 local VERSUS_ENEMY_PING_DURATION = 5
+local REFRESH_PING_SOUND_COOLDOWN = 2
+local UNIQUE_PING_SOUND_COOLDOWN = 0.7
+local PLAY_SOUND_WHEN_PINGING_SAME_UNIT = true
 local RPCS = {
 	"rpc_ping_unit",
 	"rpc_ping_world_position",
@@ -44,7 +47,7 @@ PingSystem.init = function (self, context, system_name)
 	self._wwise_world = Managers.world:wwise_world(self._world)
 	self._pinged_units = {}
 	self._world_markers = {}
-	self._ping_sound_cooldown = {}
+	self._last_ping_t = {}
 
 	local settings = Managers.state.game_mode:settings()
 	local ping_mode = settings.ping_mode
@@ -210,7 +213,11 @@ PingSystem._handle_ping = function (self, ping_type, social_wheel_event_id, send
 		return
 	end
 
+	local pinging_same_unit = false
+
 	if self._pinged_units[pinger_unit] then
+		pinging_same_unit = pinged_unit and pinged_unit == self._pinged_units[pinger_unit].pinged_unit
+
 		self:_remove_ping(pinger_unit, true)
 	end
 
@@ -272,11 +279,16 @@ PingSystem._handle_ping = function (self, ping_type, social_wheel_event_id, send
 	end
 
 	local skip_sound = false
+	local last_ping_t = self._last_ping_t[pinger_unit] or 0
 
-	if t < (self._ping_sound_cooldown[pinger_unit] or 0) then
+	if pinging_same_unit and (not PLAY_SOUND_WHEN_PINGING_SAME_UNIT or t < last_ping_t + REFRESH_PING_SOUND_COOLDOWN) then
+		skip_sound = true
+	elseif not pinged_unit and t < last_ping_t + REFRESH_PING_SOUND_COOLDOWN then
+		skip_sound = true
+	elseif pinged_unit and not pinging_same_unit and t < last_ping_t + UNIQUE_PING_SOUND_COOLDOWN then
 		skip_sound = true
 	else
-		self._ping_sound_cooldown[pinger_unit] = t + 0.5
+		self._last_ping_t[pinger_unit] = t
 	end
 
 	if not skip_sound then

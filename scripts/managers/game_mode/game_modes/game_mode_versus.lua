@@ -107,6 +107,7 @@ GameModeVersus.init = function (self, settings, world, ...)
 
 	if self._mechanism:custom_settings_enabled() then
 		self._hero_bots_enabled = self._mechanism:get_custom_game_setting("hero_bots_enabled")
+		self._hero_rescues_enabled = self._mechanism:get_custom_game_setting("hero_rescues_enabled") or false
 	end
 end
 
@@ -515,6 +516,37 @@ GameModeVersus.update = function (self, t, dt)
 	end
 end
 
+local parties_scratch = {}
+
+GameModeVersus._clear_profile_reservations = function (self, optional_party)
+	local parties = parties_scratch
+
+	if optional_party then
+		parties[1] = optional_party
+	else
+		parties = Managers.party:game_participating_parties()
+	end
+
+	for i = 1, #parties do
+		local party = parties[i]
+		local profile_synchronizer = self._profile_synchronizer
+		local occupied_slots = party.occupied_slots
+
+		for slot_i = 1, #occupied_slots do
+			local status = occupied_slots[slot_i]
+			local peer_id = status.peer_id
+			local local_player_id = status.local_player_id
+			local profile_index = profile_synchronizer:profile_by_peer(peer_id, local_player_id)
+
+			if profile_index then
+				profile_synchronizer:unassign_profiles_of_peer(peer_id, local_player_id)
+			end
+
+			profile_synchronizer:clear_profile_index_reservation(peer_id, true)
+		end
+	end
+end
+
 GameModeVersus._game_mode_state_changed = function (self, state_name, old_state_name)
 	if self._current_mechanism_state == "round_1" then
 		self._round_id = 1
@@ -529,6 +561,10 @@ GameModeVersus._game_mode_state_changed = function (self, state_name, old_state_
 	if state_name == "waiting_for_players_to_join" then
 		self._mechanism:increment_total_rounds_started()
 	elseif state_name == "character_selection_state" then
+		if self._is_server then
+			self:_clear_profile_reservations()
+		end
+
 		self._versus_party_selection_logic = VersusPartySelectionLogic:new(self._is_server, self._settings, self._network_server, self._profile_synchronizer, self._network_event_delegate, self._network_transmit)
 
 		self._mechanism:make_profiles_reservable()
@@ -1372,7 +1408,12 @@ end
 
 GameModeVersus.respawn_unit_spawned = function (self, unit)
 	if self._hero_rescues_enabled then
-		self._adventure_spawning:respawn_unit_spawned(unit)
+		local set_id = Unit.get_data(unit, "vs_set_id")
+		local current_set = self._mechanism:get_current_set()
+
+		if set_id == current_set then
+			self._adventure_spawning:respawn_unit_spawned(unit)
+		end
 	end
 end
 
@@ -1739,7 +1780,7 @@ GameModeVersus.get_player_wounds = function (self, profile)
 	local player_wounds = self._settings.player_wounds[affiliation]
 
 	if self._mechanism:custom_settings_enabled() and affiliation == "heroes" then
-		player_wounds = self._mechanism:get_custom_game_setting("wounds_amount")
+		player_wounds = self._mechanism:get_custom_game_setting("wounds_amount") + 1
 	end
 
 	fassert(player_wounds, "Couldn't find player wounds for affiliation (%s)", affiliation)

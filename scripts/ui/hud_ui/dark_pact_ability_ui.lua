@@ -190,6 +190,16 @@ DarkPactAbilityUI.draw = function (self, dt, t)
 		return
 	end
 
+	local player, _ = self:_get_player_unit()
+	local profile_index = player and player:profile_index()
+	local profile_settings = profile_index and SPProfiles[profile_index]
+
+	if profile_settings and profile_settings.affiliation ~= "dark_pact" then
+		self:set_visible(false)
+
+		return
+	end
+
 	local ui_renderer = self._ui_renderer
 	local ui_scenegraph = self._ui_scenegraph
 	local input_service = self._input_manager:get_service("ingame_menu")

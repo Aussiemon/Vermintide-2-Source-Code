@@ -5032,6 +5032,11 @@ IngamePlayerListKeymaps.win32 = InputUtils.keymaps_key_approved("win32") and {
 	},
 	force_start = {},
 	switch_team = {},
+	scroll_axis = {
+		"mouse",
+		"wheel",
+		"axis",
+	},
 	move_up = {},
 	move_down = {},
 	mute_voice = {},

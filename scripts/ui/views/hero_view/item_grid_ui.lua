@@ -99,6 +99,11 @@ ItemGridUI.get_equipped_weapon_pose_parent = function (self, hero_name, career_i
 	local career = profile.careers[career_index]
 	local career_name = career.name
 	local pose_item = BackendUtils.get_loadout_item(career_name, "slot_pose")
+
+	if not pose_item then
+		return
+	end
+
 	local parent = pose_item.data.parent
 	local backend_items = Managers.backend:get_interface("items")
 	local parent_item = backend_items:get_item_from_key(parent)

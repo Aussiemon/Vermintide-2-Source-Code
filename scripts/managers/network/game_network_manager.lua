@@ -639,13 +639,13 @@ end
 GameNetworkManager.game_object_created_objective = function (self, game_object_id, owner_id, go_template)
 	local objective_system = Managers.state.entity:system("objective_system")
 
-	objective_system:game_object_created(game_object_id)
+	objective_system:game_object_created(self.game_session, game_object_id)
 end
 
 GameNetworkManager.game_object_destroyed_objective = function (self, game_object_id)
 	local objective_system = Managers.state.entity:system("objective_system")
 
-	objective_system:game_object_destroyed(game_object_id)
+	objective_system:game_object_destroyed(self.game_session, game_object_id)
 end
 
 GameNetworkManager.game_object_created_horde_surge = function (self, game_object_id, owner_id, go_template)

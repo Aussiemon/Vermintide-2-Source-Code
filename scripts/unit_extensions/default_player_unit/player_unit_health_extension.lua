@@ -81,7 +81,7 @@ PlayerUnitHealthExtension.create_health_game_object = function (self)
 	local mechanism_ok, num_wounds_override, custom_settings_enabled = Managers.mechanism:mechanism_try_call("get_setting", "wounds_amount")
 
 	if mechanism_ok and custom_settings_enabled then
-		num_wounds = num_wounds_override
+		num_wounds = num_wounds_override + 1
 	end
 
 	local game_object_data_table = {
@@ -534,15 +534,6 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 	end
 
 	local unit = self.unit
-	local mechanism_ok, custom_setting_damage_multiplier, custom_settings_enabled = Managers.mechanism:mechanism_try_call("get_custom_game_setting", "hero_damage_taken")
-
-	if mechanism_ok and custom_settings_enabled then
-		local unit_side = Managers.state.side.side_by_unit[unit]
-		local unit_is_hero = unit_side:name() == "heroes"
-
-		damage_amount = unit_is_hero and damage_amount * custom_setting_damage_multiplier or damage_amount
-	end
-
 	local attacker_player = AiUtils.get_actual_attacker_player(attacker_unit, unit, damage_source_name)
 
 	if not source_attacker_unit then

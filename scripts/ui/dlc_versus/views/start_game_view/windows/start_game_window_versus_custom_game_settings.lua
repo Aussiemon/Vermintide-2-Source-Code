@@ -13,9 +13,9 @@ local setting_widget_type_func = {
 	slider = UIWidgets.create_settings_slider_widget,
 }
 local setting_widget_height = {
-	default = 34,
-	slider = 68,
-	stepper = 34,
+	default = 36,
+	slider = 36,
+	stepper = 36,
 }
 
 StartGameWindowVersusCustomGameSettings.on_enter = function (self, params, offset)
@@ -33,18 +33,19 @@ StartGameWindowVersusCustomGameSettings.on_enter = function (self, params, offse
 	self._is_server = ingame_ui_context.is_server
 
 	local game_mechanism = Managers.mechanism:game_mechanism()
-	local custom_game_settings_handler = game_mechanism:get_custom_game_settings_handler()
+	local custom_game_settings_handler = game_mechanism and game_mechanism:get_custom_game_settings_handler()
 
-	self._settings_templates = custom_game_settings_handler:get_settings_template()
+	self._settings_templates = custom_game_settings_handler and custom_game_settings_handler:get_settings_template()
 	self._custom_game_settings_handler = custom_game_settings_handler
 	self._game_mechanism = game_mechanism
 	self._selected_setting_index = nil
 	self._input_focused = false
 	self._is_loading = true
-	self._custom_settings_toggled = game_mechanism:is_hosting_versus_custom_game() and game_mechanism:custom_settings_enabled() or false
+	self._custom_settings_toggled = game_mechanism and game_mechanism:custom_settings_enabled() or false
 
 	self:_create_ui_elements()
 	Managers.state.event:register(self, "event_focus_custom_game_settings_input", "focus_custom_game_settings_input")
+	Managers.state.event:register(self, "event_reset_host_settings", "_reset_host_settings")
 end
 
 StartGameWindowVersusCustomGameSettings._create_ui_elements = function (self)
@@ -120,6 +121,7 @@ StartGameWindowVersusCustomGameSettings.on_exit = function (self, params)
 	self._ui_animator = nil
 
 	Managers.state.event:unregister("event_focus_custom_game_settings_input", self)
+	Managers.state.event:unregister("event_reset_host_settings", self)
 end
 
 StartGameWindowVersusCustomGameSettings.update = function (self, dt, t)
@@ -242,9 +244,14 @@ StartGameWindowVersusCustomGameSettings._client_sync_settings = function (self)
 		local current_setting_idx = widget.content.setting_idx
 		local new_value = settings[id]
 		local new_setting_idx = setting_data.values_reverse_lookup[new_value]
+		local content = widget.content
 
 		if current_setting_idx ~= new_setting_idx then
-			widget.content.setting_idx = new_setting_idx
+			content.setting_idx = new_setting_idx
+
+			if content.widget_type == "slider" then
+				content.current_slider_value = math.clamp(new_setting_idx / content.num_settings, 0, 1)
+			end
 		end
 	end
 end
@@ -271,6 +278,27 @@ StartGameWindowVersusCustomGameSettings.focus_custom_game_settings_input = funct
 
 	self._custom_settings_toggled = focus_setting
 	self._settings_is_dirty = true
+end
+
+StartGameWindowVersusCustomGameSettings._reset_host_settings = function (self, should_reset)
+	if should_reset then
+		local settings = self._custom_game_settings_handler:get_settings()
+		local settings_templates = self._settings_templates
+
+		for id = 1, #settings do
+			local setting_data = settings_templates[id]
+			local widget = self._settings_widgets_by_name[setting_data.setting_name]
+			local new_value = setting_data.default
+			local new_setting_idx = setting_data.values_reverse_lookup[new_value]
+			local content = widget.content
+
+			content.setting_idx = new_setting_idx
+
+			if content.widget_type == "slider" then
+				content.current_slider_value = math.clamp(new_setting_idx / content.num_settings, 0, 1)
+			end
+		end
+	end
 end
 
 local function get_target_srollbar_height(settings_widgets, selected_index)
@@ -341,70 +369,84 @@ StartGameWindowVersusCustomGameSettings._handle_gamepad_input = function (self, 
 		end
 	end
 
-	local selected_setting_widget = settings_widgets[selected_idx]
-	local content = selected_setting_widget.content
-	local input_cooldown_multiplier = content.input_cooldown_multiplier
-	local on_cooldown_last_frame = false
-	local input_made = false
+	if self._is_server and self._game_mechanism:is_hosting_versus_custom_game() then
+		local selected_setting_widget = settings_widgets[selected_idx]
+		local content = selected_setting_widget.content
+		local input_cooldown_multiplier = content.input_cooldown_multiplier
+		local on_cooldown_last_frame = false
+		local input_made = false
 
-	if content.input_cooldown then
-		on_cooldown_last_frame = true
+		if content.input_cooldown then
+			on_cooldown_last_frame = true
 
-		local current_input_cooldown = content.input_cooldown
-		local new_cooldown = math.max(current_input_cooldown - dt, 0)
-		local input_cooldown = new_cooldown > 0 and new_cooldown or nil
+			local current_input_cooldown = content.input_cooldown
+			local new_cooldown = math.max(current_input_cooldown - dt, 0)
+			local input_cooldown = new_cooldown > 0 and new_cooldown or nil
 
-		content.input_cooldown = input_cooldown
-	end
-
-	if selected_setting_widget and not content.input_cooldown then
-		if input_service:get("move_left") or content.widget_type == "slider" and input_service:get("move_left_hold") then
-			local new_idx = content.setting_idx - 1
-
-			if new_idx < 1 then
-				new_idx = content.widget_type == "slider" and 1 or content.num_settings
-			end
-
-			content.setting_idx = new_idx
-			content.current_slider_value = math.clamp(new_idx / content.num_settings, 0, 1)
-
-			content.on_setting_changed_cb(content.id, new_idx)
-
-			input_made = true
-		elseif input_service:get("move_right") or content.widget_type == "slider" and input_service:get("move_right_hold") then
-			local new_idx = content.setting_idx + 1
-
-			if new_idx > content.num_settings then
-				new_idx = content.widget_type == "slider" and content.num_settings or 1
-			end
-
-			content.setting_idx = new_idx
-			content.current_slider_value = math.clamp(new_idx / content.num_settings, 0, 1)
-
-			content.on_setting_changed_cb(content.id, new_idx)
-
-			input_made = true
-		elseif input_service:get("special_1") then
-			local new_idx = content.default_idx
-
-			content.setting_idx = new_idx
-			content.current_slider_value = math.clamp(new_idx / content.num_settings, 0, 1)
-
-			content.on_setting_changed_cb(content.id, new_idx)
-
-			input_made = true
+			content.input_cooldown = input_cooldown
 		end
-	end
 
-	if selected_setting_widget and input_made then
-		if on_cooldown_last_frame then
-			input_cooldown_multiplier = math.max(input_cooldown_multiplier - 0.1, 0.1)
-			content.input_cooldown = 0.2 * math.ease_in_exp(input_cooldown_multiplier)
-			content.input_cooldown_multiplier = input_cooldown_multiplier
-		else
-			input_cooldown_multiplier = 1
-			content.input_cooldown = 0.2 * math.ease_in_exp(input_cooldown_multiplier)
-			content.input_cooldown_multiplier = input_cooldown_multiplier
+		if selected_setting_widget and not content.input_cooldown then
+			if input_service:get("move_left") or content.widget_type == "slider" and input_service:get("move_left_hold") then
+				local new_idx = content.setting_idx - 1
+
+				if new_idx < 1 then
+					new_idx = content.widget_type == "slider" and 1 or content.num_settings
+				end
+
+				content.setting_idx = new_idx
+
+				if content.widget_type == "slider" then
+					local step = 1 / content.num_settings
+					local slider_value = content.current_slider_value - step
+
+					content.current_slider_value = math.clamp(slider_value, 0, 1)
+				end
+
+				content.on_setting_changed_cb(content.id, new_idx)
+
+				input_made = true
+			elseif input_service:get("move_right") or content.widget_type == "slider" and input_service:get("move_right_hold") then
+				local new_idx = content.setting_idx + 1
+
+				if new_idx > content.num_settings then
+					new_idx = content.widget_type == "slider" and content.num_settings or 1
+				end
+
+				content.setting_idx = new_idx
+
+				if content.widget_type == "slider" then
+					local step = 1 / content.num_settings
+					local slider_value = content.current_slider_value + step
+
+					content.current_slider_value = math.clamp(slider_value, 0, 1)
+				end
+
+				content.on_setting_changed_cb(content.id, new_idx)
+
+				input_made = true
+			elseif input_service:get("special_1") then
+				local new_idx = content.default_idx
+
+				content.setting_idx = new_idx
+				content.current_slider_value = math.clamp(new_idx / content.num_settings, 0, 1)
+
+				content.on_setting_changed_cb(content.id, new_idx)
+
+				input_made = true
+			end
+		end
+
+		if selected_setting_widget and input_made then
+			if on_cooldown_last_frame then
+				input_cooldown_multiplier = math.max(input_cooldown_multiplier - 0.1, 0.1)
+				content.input_cooldown = 0.2 * math.ease_in_exp(input_cooldown_multiplier)
+				content.input_cooldown_multiplier = input_cooldown_multiplier
+			else
+				input_cooldown_multiplier = 1
+				content.input_cooldown = 0.2 * math.ease_in_exp(input_cooldown_multiplier)
+				content.input_cooldown_multiplier = input_cooldown_multiplier
+			end
 		end
 	end
 

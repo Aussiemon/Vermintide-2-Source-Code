@@ -295,6 +295,12 @@ PackmasterStateDragging.update = function (self, unit, input, dt, context, t)
 		return
 	end
 
+	local actual_packmaster_grabber = target_unit_status_extension:get_pack_master_grabber()
+
+	if actual_packmaster_grabber and actual_packmaster_grabber ~= self._unit then
+		csm:change_state("walking", params)
+	end
+
 	self:update_damage(unit, target_unit, t)
 end
 

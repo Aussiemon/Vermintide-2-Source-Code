@@ -1093,9 +1093,6 @@ function create_settings_widget(scenegraph_id, data, ui_data, start_value, start
 					pass_type = "text",
 					style_id = "setting_name",
 					text_id = "setting_name",
-					content_change_function = function (content, style, _, dt)
-						return
-					end,
 				},
 				{
 					pass_type = "texture",
@@ -1116,14 +1113,27 @@ function create_settings_widget(scenegraph_id, data, ui_data, start_value, start
 							content.value = new_value
 
 							local localization_options = ui_data and ui_data.localization_options
+							local value_text = ""
 
 							if localization_options and localization_options[new_value] then
 								local text = localization_options[new_value]
 
-								content.setting_value = Localize(text)
+								value_text = Localize(text)
+							elseif type(content.value) == "number" and ui_data and ui_data.setting_type == "multiplier" then
+								value_text = string.format("%.2f", content.value)
 							else
-								content.setting_value = tostring(content.value)
+								value_text = string.format("%s", content.value)
 							end
+
+							if (not localization_options or not localization_options[new_value]) and ui_data and ui_data.setting_type then
+								local value_suffixes = DLCSettings.carousel and DLCSettings.carousel.custom_game_settigns_values_suffix
+
+								if ui_data and value_suffixes and value_suffixes[ui_data.setting_type] then
+									value_text = value_text .. value_suffixes[ui_data.setting_type]
+								end
+							end
+
+							content.setting_value = value_text
 						end
 
 						if content.value ~= content.default_value then

@@ -432,7 +432,6 @@ weapon_template.synced_states = {
 
 				Unit.animation_event(owner_unit, "no_anim_upperbody")
 				Unit.animation_event(owner_unit, "to_combat")
-				Unit.animation_event(owner_unit, "idle")
 			end
 
 			local wwise_world = Managers.world:wwise_world(world)

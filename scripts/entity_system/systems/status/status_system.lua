@@ -83,85 +83,135 @@ local rpc_status_change_bool_funcs = {
 		local t = Managers.time:time("game")
 
 		status_ext:set_pushed(status_bool, t)
+
+		return true
 	end,
 	pounced_down = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		status_ext:set_pounced_down(status_bool, other_unit)
+
+		return true
 	end,
 	dead = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		status_ext:set_dead(status_bool)
+
+		return true
 	end,
 	knocked_down = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		status_ext:set_knocked_down(status_bool)
+
+		return true
 	end,
 	revived = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		status_ext:set_revived(status_bool, other_unit)
+
+		return true
 	end,
 	reviving = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		status_ext:set_reviving(status_bool, other_unit)
+
+		return true
 	end,
 	pack_master_pulling = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
-		status_ext:set_pack_master("pack_master_pulling", status_bool, other_unit)
+		local set_valid, valid_value, valid_other_unit = status_ext:set_pack_master("pack_master_pulling", status_bool, other_unit)
+
+		return set_valid, valid_value, valid_other_unit
 	end,
 	pack_master_dragging = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
-		status_ext:set_pack_master("pack_master_dragging", status_bool, other_unit)
+		local set_valid, valid_value, valid_other_unit = status_ext:set_pack_master("pack_master_dragging", status_bool, other_unit)
+
+		return set_valid, valid_value, valid_other_unit
 	end,
 	pack_master_hoisting = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
-		status_ext:set_pack_master("pack_master_hoisting", status_bool, other_unit)
+		local set_valid, valid_value, valid_other_unit = status_ext:set_pack_master("pack_master_hoisting", status_bool, other_unit)
+
+		return set_valid, valid_value, valid_other_unit
 	end,
 	pack_master_hanging = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
-		status_ext:set_pack_master("pack_master_hanging", status_bool, other_unit)
+		local set_valid, valid_value, valid_other_unit = status_ext:set_pack_master("pack_master_hanging", status_bool, other_unit)
+
+		return set_valid, valid_value, valid_other_unit
 	end,
 	pack_master_dropping = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
-		status_ext:set_pack_master("pack_master_dropping", status_bool, other_unit)
+		local set_valid, valid_value, valid_other_unit = status_ext:set_pack_master("pack_master_dropping", status_bool, other_unit)
+
+		return set_valid, valid_value, valid_other_unit
 	end,
 	pack_master_released = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
-		status_ext:set_pack_master("pack_master_released", status_bool, other_unit)
+		local set_valid, valid_value, valid_other_unit = status_ext:set_pack_master("pack_master_released", status_bool, other_unit)
+
+		return set_valid, valid_value, valid_other_unit
 	end,
 	pack_master_unhooked = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
-		status_ext:set_pack_master("pack_master_unhooked", status_bool, other_unit)
+		local set_valid, valid_value, valid_other_unit = status_ext:set_pack_master("pack_master_unhooked", status_bool, other_unit)
+
+		return set_valid, valid_value, valid_other_unit
 	end,
 	chaos_corruptor_grabbed = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		status_ext:set_grabbed_by_corruptor(status, status_bool, other_unit)
+
+		return true
 	end,
 	chaos_corruptor_dragging = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		status_ext:set_grabbed_by_corruptor(status, status_bool, other_unit)
+
+		return true
 	end,
 	chaos_corruptor_released = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		status_ext:set_grabbed_by_corruptor(status, status_bool, other_unit)
+
+		return true
 	end,
 	crouching = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		status_ext:set_crouching(status_bool)
+
+		return true
 	end,
 	pulled_up = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		status_ext:set_pulled_up(status_bool, other_unit)
+
+		return true
 	end,
 	ladder_climbing = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		local ladder_unit = Level.unit_by_index(level, other_unit_go_id)
 
 		status_ext:set_is_on_ladder(status_bool, ladder_unit)
+
+		return true
 	end,
 	ledge_hanging = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		local ledge_unit = Level.unit_by_index(level, other_unit_go_id)
 
 		status_ext:set_is_ledge_hanging(status_bool, ledge_unit)
+
+		return true
 	end,
 	ready_for_assisted_respawn = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		local flavour_unit = Level.unit_by_index(level, other_unit_go_id)
 
 		Managers.state.game_mode:player_respawned(status_ext.unit)
 		status_ext:set_ready_for_assisted_respawn(status_bool, flavour_unit)
+
+		return true
 	end,
 	assisted_respawning = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		status_ext:set_assisted_respawning(status_bool, other_unit)
+
+		return true
 	end,
 	respawned = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		status_ext:set_respawned(status_bool)
+
+		return true
 	end,
 	overcharge_exploding = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		status_ext:set_overcharge_exploding(status_bool)
+
+		return true
 	end,
 	dodging = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		status_ext:set_is_dodging(status_bool)
+
+		return true
 	end,
 	grabbed_by_tentacle = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		status_ext:set_grabbed_by_tentacle(status_bool, other_unit)
@@ -171,37 +221,57 @@ local rpc_status_change_bool_funcs = {
 		if Unit.alive(other_unit) then
 			tentacle_spline_extension:set_target_unit(unit)
 		end
+
+		return true
 	end,
 	grabbed_by_chaos_spawn = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		status_ext:set_grabbed_by_chaos_spawn(status_bool, other_unit)
+
+		return true
 	end,
 	in_vortex = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		status_ext:set_in_vortex(status_bool, other_unit)
+
+		return true
 	end,
 	near_vortex = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		status_ext:set_near_vortex(status_bool, other_unit)
+
+		return true
 	end,
 	invisible = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		status_ext:set_invisible(status_bool)
+
+		return true
 	end,
 	in_end_zone = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		status_ext:set_in_end_zone(status_bool, other_unit)
+
+		return true
 	end,
 	in_liquid = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		status_ext:set_in_liquid(status_bool, other_unit)
+
+		return true
 	end,
 	charged = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		local t = Managers.time:time("game")
 
 		status_ext:set_charged(status_bool, t)
+
+		return true
 	end,
 	block_broken = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		local t = Managers.time:time("game")
 
 		status_ext:set_block_broken(status_bool, t, other_unit)
+
+		return true
 	end,
 	gutter_runner_leaping = function (status_ext, status, level, status_bool, unit, unit_go_id, other_unit, other_unit_go_id)
 		status_ext:set_gutter_runner_leaping(status_bool)
+
+		return true
 	end,
 }
 
@@ -217,16 +287,20 @@ StatusSystem.rpc_status_change_bool = function (self, channel_id, status_id, sta
 	local status = NetworkLookup.statuses[status_id]
 	local level = LevelHelper:current_level(self.world)
 
-	if rpc_status_change_bool_funcs[status] then
-		rpc_status_change_bool_funcs[status](status_ext, status, level, status_bool, unit, game_object_id, other_unit, other_object_id)
-	else
-		fassert(false, "Unhandled status %s", status)
-	end
+	fassert(rpc_status_change_bool_funcs[status], "Unhandled status %s", status)
+
+	local set_valid, actual_status_bool, actual_other_unit = rpc_status_change_bool_funcs[status](status_ext, status, level, status_bool, unit, game_object_id, other_unit, other_object_id)
 
 	if Managers.player.is_server then
 		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
-		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_status_change_bool", peer_id, status_id, status_bool, game_object_id, other_object_id)
+		if set_valid then
+			Managers.state.network.network_transmit:send_rpc_clients_except("rpc_status_change_bool", peer_id, status_id, status_bool, game_object_id, other_object_id)
+		else
+			other_object_id = self.unit_storage:go_id(actual_other_unit) or NetworkConstants.invalid_game_object_id
+
+			Managers.state.network.network_transmit:send_rpc("rpc_status_change_bool", peer_id, status_id, actual_status_bool, game_object_id, other_object_id)
+		end
 	end
 end
 

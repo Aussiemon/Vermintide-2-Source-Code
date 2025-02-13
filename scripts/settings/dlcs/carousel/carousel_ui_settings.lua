@@ -781,8 +781,9 @@ settings.custom_game_ui_settings = {
 	starting_as_heroes = {
 		widget_type = "stepper",
 		localization_options = {
-			[1] = "versus_team_name_hammers",
-			[2] = "versus_team_name_skulls",
+			"versus_team_name_hammers",
+			"versus_team_name_skulls",
+			random = "inventory_screen_random_tooltip",
 		},
 	},
 	wounds_amount = {
@@ -851,21 +852,27 @@ settings.custom_game_ui_settings = {
 		},
 	},
 	vs_ratling_gunner_spawn_chance_multiplier = {
+		setting_type = "multiplier",
 		widget_type = "slider",
 	},
 	vs_packmaster_spawn_chance_multiplier = {
+		setting_type = "multiplier",
 		widget_type = "slider",
 	},
 	vs_gutter_runner_spawn_chance_multiplier = {
+		setting_type = "multiplier",
 		widget_type = "slider",
 	},
 	vs_poison_wind_globadier_spawn_chance_multiplier = {
+		setting_type = "multiplier",
 		widget_type = "slider",
 	},
 	vs_warpfire_thrower_spawn_chance_multiplier = {
+		setting_type = "multiplier",
 		widget_type = "slider",
 	},
 	vs_chaos_troll_spawn_chance_multiplier = {
+		setting_type = "multiplier",
 		widget_type = "slider",
 		localization_options = {
 			[false] = "menu_settings_off",
@@ -873,10 +880,32 @@ settings.custom_game_ui_settings = {
 		},
 	},
 	vs_rat_ogre_spawn_chance_multiplier = {
+		setting_type = "multiplier",
 		widget_type = "slider",
 		localization_options = {
 			[false] = "menu_settings_off",
 			default = "menu_settings_forced",
 		},
+	},
+	vs_ratling_gunner_hp = {
+		widget_type = "slider",
+	},
+	vs_packmaster_hp = {
+		widget_type = "slider",
+	},
+	vs_gutter_runner_hp = {
+		widget_type = "slider",
+	},
+	vs_poison_wind_globadier_hp = {
+		widget_type = "slider",
+	},
+	vs_warpfire_thrower_hp = {
+		widget_type = "slider",
+	},
+	vs_chaos_troll_hp = {
+		widget_type = "slider",
+	},
+	vs_rat_ogre_hp = {
+		widget_type = "slider",
 	},
 }

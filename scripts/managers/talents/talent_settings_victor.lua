@@ -1139,6 +1139,7 @@ TalentBuffTemplates.witch_hunter = {
 	victor_witchhunter_critical_hit_chance_on_ping_target_killed = {
 		buffs = {
 			{
+				authority = "server",
 				buff_func = "add_buff_to_all_players",
 				buff_to_add = "victor_witchhunter_ping_target_crit_chance",
 				event = "on_pingable_target_killed",

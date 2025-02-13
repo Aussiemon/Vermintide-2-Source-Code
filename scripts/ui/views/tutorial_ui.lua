@@ -1487,9 +1487,19 @@ TutorialUI.play_sound = function (self, event)
 	WwiseWorld.trigger_event(self.wwise_world, event)
 end
 
-TutorialUI.add_health_bar = function (self, unit)
+TutorialUI.add_health_bar = function (self, unit, replace_hidden)
+	local found = false
+
 	for i = 1, definitions.NUMBER_OF_HEALTH_BARS do
-		if self.health_bars[i] == nil then
+		local health_bar = self.health_bars[i]
+
+		if replace_hidden and health_bar and not health_bar.visible then
+			self:remove_health_bar(unit)
+
+			health_bar = nil
+		end
+
+		if not health_bar then
 			local color = Unit.has_data(unit, "health_bar_color") and Unit.get_data(unit, "health_bar_color") or "red"
 			local widget_definition = definitions.health_bar_definitions[i]
 			local widget = UIWidget.init(widget_definition)
@@ -1507,8 +1517,17 @@ TutorialUI.add_health_bar = function (self, unit)
 				widget = widget,
 				scenegraph_definition = self.floating_icons_ui_scene_graph[widget_definition.scenegraph_id],
 			}
+			found = i
 
 			break
+		end
+	end
+
+	if not found then
+		if replace_hidden then
+			Application.warning("[TutorialUI] ERROR: Tried to exceed the limit of %s visible health bars.", definitions.NUMBER_OF_HEALTH_BARS)
+		else
+			self:add_health_bar(unit, true)
 		end
 	end
 end
@@ -1540,10 +1559,10 @@ TutorialUI.show_health_bar = function (self, unit, visible)
 
 	if health_bar then
 		health_bar.visible = visible
-	else
+	elseif visible then
 		self:add_health_bar(unit)
 
-		local health_bar = self:_get_health_bar_by_unit(unit)
+		health_bar = self:_get_health_bar_by_unit(unit)
 
 		if health_bar then
 			health_bar.visible = visible

@@ -449,6 +449,7 @@ ProjectileSystem.rpc_spawn_pickup_projectile = function (self, channel_id, proje
 			network_rotation = network_rotation,
 			network_velocity = network_velocity,
 			network_angular_velocity = network_angular_velocity,
+			owner_peer_id = owner_peer_id,
 		},
 		pickup_system = {
 			has_physics = true,

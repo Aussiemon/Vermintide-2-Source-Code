@@ -467,6 +467,12 @@ ChatManager.set_chat_enabled = function (self, chat_enabled)
 end
 
 ChatManager.is_chat_enabled = function (self)
+	local network_handler_available = Managers.mechanism:network_handler()
+
+	if not network_handler_available then
+		return false
+	end
+
 	return self._chat_enabled
 end
 

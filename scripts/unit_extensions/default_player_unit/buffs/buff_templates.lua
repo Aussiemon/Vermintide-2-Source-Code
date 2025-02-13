@@ -193,7 +193,6 @@ ProcEvents = {
 	"on_special_killed",
 	"on_elite_killed",
 	"on_pingable_target_killed",
-	"on_block",
 	"on_block_broken",
 	"on_knocked_down",
 	"on_ledge_hang_start",
@@ -247,6 +246,7 @@ ProcEvents = {
 	"on_boon_granted",
 	"on_death",
 	"on_damage_dealt",
+	"on_block",
 	"on_push_used",
 	"on_backstab",
 	"on_sweep",
@@ -294,6 +294,7 @@ ProcEventParams = {
 	on_damage_dealt = make_proc_param_lookup("attacked_unit", "attacker_unit", "damage_amount", "hit_zone_name", "no_crit_headshot_damage", "is_critical_strike", "buff_attack_type", "target_index", "damage_source", "damage_type", "first_hit", "PROC_MODIFIABLE"),
 	on_critical_hit = make_proc_param_lookup("hit_unit", "attack_type", "hit_zone_name", "target_number", "buff_type"),
 	on_ranged_hit = make_proc_param_lookup("hit_unit", "attack_type", "hit_zone_name", "target_number", "buff_type", "is_critical", "unmodified"),
+	on_hit = make_proc_param_lookup("hit_unit", "attack_type", "hit_zone_name", "target_number", "buff_type", "is_critical", "unmodified"),
 }
 
 local buff_params = {}
@@ -930,34 +931,7 @@ ProcFunctions = {
 
 		career_extension:reduce_activated_ability_cooldown_percent(cooldown_reduction)
 	end,
-	bardin_ironbreaker_add_power_buff_on_block = function (owner_unit, buff, params)
-		if not Managers.state.network.is_server then
-			return
-		end
-
-		local template = buff.template
-
-		if Unit.alive(owner_unit) then
-			local buff_to_add = template.buff_to_add
-			local buff_system = Managers.state.entity:system("buff_system")
-
-			if not buff.buff_list then
-				buff.buff_list = {}
-			end
-
-			local num_buff_list = #buff.buff_list
-			local max_sub_buff_stacks = template.max_sub_buff_stacks
-
-			if num_buff_list < max_sub_buff_stacks then
-				buff.buff_list[num_buff_list + 1] = buff_system:add_buff(owner_unit, buff_to_add, owner_unit, true)
-			end
-		end
-	end,
 	maidenguard_add_power_buff_on_block = function (owner_unit, buff, params)
-		if not Managers.state.network.is_server then
-			return
-		end
-
 		local template = buff.template
 
 		if ALIVE[owner_unit] then
@@ -975,7 +949,7 @@ ProcFunctions = {
 				local max_sub_buff_stacks = template.max_sub_buff_stacks
 
 				if num_buff_list < max_sub_buff_stacks then
-					buff.buff_list[num_buff_list + 1] = buff_system:add_buff(owner_unit, buff_to_add, owner_unit, true)
+					buff.buff_list[num_buff_list + 1] = buff_system:add_buff_synced(owner_unit, buff_to_add, BuffSyncType.LocalAndServer)
 				end
 			end
 		end
@@ -1725,10 +1699,6 @@ ProcFunctions = {
 		end
 	end,
 	add_buff_to_all_players = function (owner_unit, buff, params)
-		if not Managers.state.network.is_server then
-			return
-		end
-
 		local buff_system = Managers.state.entity:system("buff_system")
 		local template = buff.template
 		local buff_to_add = template.buff_to_add
@@ -1831,12 +1801,10 @@ ProcFunctions = {
 	block_increase_enemy_damage_taken = function (owner_unit, buff, params)
 		local attacking_unit = params[1]
 
-		if Unit.alive(attacking_unit) then
-			local attacker_buff_extension = ScriptUnit.has_extension(attacking_unit, "buff_system")
+		if ALIVE[attacking_unit] then
+			local buff_system = Managers.state.entity:system("buff_system")
 
-			if attacker_buff_extension then
-				attacker_buff_extension:add_buff("defence_debuff_enemies")
-			end
+			buff_system:add_buff_synced(attacking_unit, "defence_debuff_enemies", BuffSyncType.All)
 		end
 	end,
 	add_buff = function (unit, buff, params)
@@ -3270,12 +3238,8 @@ ProcFunctions = {
 		end
 	end,
 	maidenguard_remove_on_block_speed_buff = function (owner_unit, buff, params, world, param_order)
-		if not Managers.state.network.is_server then
-			return
-		end
-
 		if ALIVE[owner_unit] then
-			local target_index = params[param_order.target_index]
+			local target_index = params[param_order.target_number]
 			local template = buff.template
 			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 			local buff_system = Managers.state.entity:system("buff_system")
@@ -3288,7 +3252,7 @@ ProcFunctions = {
 					local buff_to_remove = table.remove(reference_buff.buff_list, #reference_buff.buff_list)
 
 					if buff_to_remove then
-						buff_system:remove_server_controlled_buff(owner_unit, buff_to_remove)
+						buff_system:remove_buff_synced(owner_unit, buff_to_remove)
 					end
 				end
 			end

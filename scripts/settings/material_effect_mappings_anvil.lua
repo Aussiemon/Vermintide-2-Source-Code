@@ -1,7 +1,7 @@
 ﻿-- chunkname: @scripts/settings/material_effect_mappings_anvil.lua
 
-MaterialEffectMappings = MaterialEffectMappings or {}
-MaterialEffectMappings.throwing_axe = MaterialEffectMappings.throwing_axe or {
+require("scripts/settings/material_effect_mappings_utility")
+MaterialEffectMappingsUtility.add("throwing_axe", {
 	decal = {
 		material_drawer_mapping = {
 			dirt = "units/projection_decals/hit_dirt_slash_1",
@@ -290,4 +290,4 @@ MaterialEffectMappings.throwing_axe = MaterialEffectMappings.throwing_axe or {
 	world_interaction = {
 		water = {},
 	},
-}
+})

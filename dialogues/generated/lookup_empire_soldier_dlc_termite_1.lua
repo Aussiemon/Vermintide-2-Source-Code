@@ -28,6 +28,7 @@ assert(DialogueLookup[DialogueLookup_n + 25] == nil)
 assert(DialogueLookup[DialogueLookup_n + 26] == nil)
 assert(DialogueLookup[DialogueLookup_n + 27] == nil)
 assert(DialogueLookup[DialogueLookup_n + 28] == nil)
+assert(DialogueLookup[DialogueLookup_n + 29] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pes_temple_lake_crossing_destroy_bell_complete_a"
 DialogueLookup[DialogueLookup_n + 2] = "pes_temple_lake_crossing_long_route_a"
@@ -52,9 +53,10 @@ DialogueLookup[DialogueLookup_n + 20] = "pes_temple_sanctum_goods_elevator_a"
 DialogueLookup[DialogueLookup_n + 21] = "pes_temple_sanctum_goods_elevator_b"
 DialogueLookup[DialogueLookup_n + 22] = "pes_temple_sanctum_great_seal_b"
 DialogueLookup[DialogueLookup_n + 23] = "pes_temple_sanctum_nightmare_gate_d"
-DialogueLookup[DialogueLookup_n + 24] = "pes_temple_start_banter_a"
-DialogueLookup[DialogueLookup_n + 25] = "pes_temple_start_banter_c"
-DialogueLookup[DialogueLookup_n + 26] = "pes_temple_wilds_gate_gather_a"
-DialogueLookup[DialogueLookup_n + 27] = "pes_temple_wilds_lake_vista_elf_b"
-DialogueLookup[DialogueLookup_n + 28] = "pes_temple_wilds_lake_vista_no_elf_b"
-DialogueLookup_n = DialogueLookup_n + 28
+DialogueLookup[DialogueLookup_n + 24] = "pes_temple_slotted_waystone_DUMMY"
+DialogueLookup[DialogueLookup_n + 25] = "pes_temple_start_banter_a"
+DialogueLookup[DialogueLookup_n + 26] = "pes_temple_start_banter_c"
+DialogueLookup[DialogueLookup_n + 27] = "pes_temple_wilds_gate_gather_a"
+DialogueLookup[DialogueLookup_n + 28] = "pes_temple_wilds_lake_vista_elf_b"
+DialogueLookup[DialogueLookup_n + 29] = "pes_temple_wilds_lake_vista_no_elf_b"
+DialogueLookup_n = DialogueLookup_n + 29

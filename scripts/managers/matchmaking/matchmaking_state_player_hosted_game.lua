@@ -48,6 +48,25 @@ MatchmakingStatePlayerHostedGame.force_start_game = function (self)
 		if Managers.state.network.is_server then
 			Managers.state.network.network_server:set_custom_game_started_or_cancelled()
 		end
+
+		local audio_event = "versus_hud_player_lobby_match_found"
+		local audio_system = Managers.state.entity:system("audio_system")
+
+		audio_system:play_sound_local(audio_event)
+
+		local network_transmit = Managers.state.network.network_transmit
+		local event_id = NetworkLookup.sound_events[audio_event]
+		local leaders = Managers.party:server_get_friend_party_leaders()
+
+		for _, leader in pairs(leaders) do
+			if PEER_ID_TO_CHANNEL[leader] then
+				network_transmit:send_rpc("rpc_vs_play_matchmaking_sfx", leader, event_id)
+			end
+		end
+
+		if game_mechanism.server_decide_side_order then
+			game_mechanism:server_decide_side_order()
+		end
 	end
 end
 

@@ -3832,7 +3832,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 					style_id = "lock_icon",
 					texture_id = "lock_icon_id",
 					content_check_function = function (content, style)
-						return false
+						return not content.joinable
 					end,
 					content_change_function = function (content, style)
 						if content.selected or content.lobby_hotspot.is_hover then
@@ -3847,7 +3847,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 					style_id = "lock_icon_shadow",
 					texture_id = "lock_icon_id",
 					content_check_function = function (content, style)
-						return false
+						return not content.selected and not content.lobby_hotspot.is_hover and not content.joinable
 					end,
 				},
 				{

@@ -106,13 +106,7 @@ ObjectiveSystem.weave_essence_handler = function (self)
 	return self._weave_essence_handler
 end
 
-ObjectiveSystem.game_object_created = function (self, game_object_id)
-	local game_session = Network.game_session()
-
-	if not game_session then
-		return
-	end
-
+ObjectiveSystem.game_object_created = function (self, game_session, game_object_id)
 	local objective_name_id = GameSession.game_object_field(game_session, game_object_id, "objective_name")
 	local objective_name = NetworkLookup.objective_names[objective_name_id]
 	local extension = self._objective_by_name[objective_name]
@@ -460,12 +454,19 @@ ObjectiveSystem._on_player_joined_party = function (self, peer_id, local_player_
 	end
 end
 
-ObjectiveSystem.game_object_destroyed = function (self, game_object_id)
+ObjectiveSystem.game_object_destroyed = function (self, game_session, game_object_id)
+	local objective_name_id = GameSession.game_object_field(game_session, game_object_id, "objective_name")
+	local objective_name = NetworkLookup.objective_names[objective_name_id]
+
+	self._pending_sync_objects[objective_name] = game_object_id
+
 	local objective_extension = self._extension_by_sync_object[game_object_id]
 
-	objective_extension:desync_objective()
+	if objective_extension then
+		objective_extension:desync_objective()
 
-	self._extension_by_sync_object[game_object_id] = nil
+		self._extension_by_sync_object[game_object_id] = nil
+	end
 end
 
 ObjectiveSystem._update_server = function (self, dt, t)
@@ -996,9 +997,9 @@ ObjectiveSystem.rpc_objective_completed = function (self, sender, objective_name
 
 	if root_index then
 		table.remove(active_root_objectives, root_index)
-		print("[ObjectiveSystem] Completed root objective: s%", objective_name)
+		printf("[ObjectiveSystem] Completed root objective: %s", objective_name)
 	else
-		print("[ObjectiveSystem] Completed sub objective: s%", objective_name)
+		printf("[ObjectiveSystem] Completed sub objective: %s", objective_name)
 	end
 
 	local is_root_objective = self:is_root_objective(objective_name)

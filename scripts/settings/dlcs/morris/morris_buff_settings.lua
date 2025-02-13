@@ -4159,7 +4159,7 @@ dlc_settings.proc_functions = {
 		end
 	end,
 	pent_up_anger_on_block = function (owner_unit, buff, params)
-		if not is_local(owner_unit) or not ALIVE[owner_unit] then
+		if not ALIVE[owner_unit] then
 			return
 		end
 

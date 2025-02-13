@@ -71,6 +71,12 @@ VersusTabUI.init = function (self, parent, ingame_ui_context)
 	end
 
 	self._round_has_started = round_has_started
+
+	local _, custom_round_time_limit, custom_settings_enabled = Managers.mechanism:mechanism_try_call("get_custom_game_setting", "round_time_limit")
+
+	if custom_settings_enabled and custom_round_time_limit then
+		self._custom_round_timer_active = true
+	end
 end
 
 VersusTabUI._create_ui_elements = function (self)
@@ -615,11 +621,12 @@ VersusTabUI._update_party_slots_data = function (self, party_id, team_slots, tea
 			if player_exists then
 				if profile_updated then
 					local is_player_controlled = player:is_player_controlled()
-					local player_portrait_frame = self:_get_portrait_frame(profile_index, career_index)
+					local player_portrait_frame = CosmeticUtils.get_cosmetic_slot(player, "slot_frame")
+					local player_portrait_frame_name = player_portrait_frame and player_portrait_frame.item_name or "default"
 					local level_text = player and (is_player_controlled and ExperienceSettings.get_player_level(player) or UISettings.bots_level_display_text)
 					local portrait_texture = self:_get_hero_portrait(profile_index, career_index)
 					local player_frame_scenegraph_id = "team_" .. team .. "_player_frame_" .. j
-					local portrait_widget = self:_create_portrait_frame(player_frame_scenegraph_id, player_portrait_frame, level_text, portrait_texture)
+					local portrait_widget = self:_create_portrait_frame(player_frame_scenegraph_id, player_portrait_frame_name, level_text, portrait_texture)
 
 					player_slot.portrait_widget = portrait_widget
 
@@ -748,27 +755,6 @@ VersusTabUI._get_hero_portrait = function (self, profile_index, career_index)
 	local portrait_texture = career.portrait_image
 
 	return portrait_texture or default_portrait
-end
-
-VersusTabUI._get_portrait_frame = function (self, profile_index, career_index)
-	local profile = SPProfiles[profile_index]
-	local career_data = profile and profile.careers[career_index]
-	local career_name = career_data and career_data.name
-
-	if career_name == "vs_undecided" then
-		return "default"
-	end
-
-	local item = career_name and BackendUtils.get_loadout_item(career_name, "slot_frame")
-
-	if not item then
-		return "default"
-	end
-
-	local item_data = item.data
-	local frame_name = item_data.temporary_template
-
-	return frame_name or "default"
 end
 
 VersusTabUI._create_portrait_frame = function (self, scenegraph_id, frame_settings_name, level_text, portrait_texture, optional_scale)
@@ -1440,8 +1426,13 @@ VersusTabUI._on_round_started = function (self)
 	self._round_has_started = true
 
 	local objective_widget = self._widgets_by_name.score
+	local var_1_0 = objective_widget.content
 
-	objective_widget.content.pre_round_timer_done = true
+	if self._custom_round_timer_active then
+		-- Nothing
+	end
+
+	var_1_0.pre_round_timer_done = true
 end
 
 VersusTabUI.round_started = function (self)

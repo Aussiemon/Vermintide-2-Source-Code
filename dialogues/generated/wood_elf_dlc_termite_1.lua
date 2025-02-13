@@ -435,19 +435,13 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item",
+				"heard_speak",
 			},
 			{
 				"query_context",
-				"item_tag",
+				"dialogue_name_nopre",
 				OP.EQ,
-				"temple_sanctum_find_waystone_puzzle_first_step_a",
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"wood_elf",
+				"temple_slotted_waystone_DUMMY",
 			},
 			{
 				"user_context",
@@ -493,6 +487,12 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"wood_elf",
+			},
+			{
+				"user_memory",
+				"slotted_first_event_piece",
+				OP.EQ,
+				1,
 			},
 		},
 	})
@@ -1025,6 +1025,45 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pwe_temple_slotted_waystone_DUMMY",
+		probability = 1,
+		response = "pwe_temple_slotted_waystone_DUMMY",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"temple_slotted_first_event_piece",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"user_memory",
+				"slotted_first_event_piece",
+				OP.EQ,
+				0,
+			},
+		},
+		on_done = {
+			{
+				"user_memory",
+				"slotted_first_event_piece",
+				OP.ADD,
+				1,
+			},
+		},
+	})
+	define_rule({
 		name = "pwe_temple_start_banter_c",
 		probability = 1,
 		response = "pwe_temple_start_banter_c",
@@ -1469,7 +1508,7 @@ return function ()
 			},
 		},
 		pwe_temple_sanctum_find_waystone_puzzle_first_step_a = {
-			category = "level_talk",
+			category = "npc_talk",
 			database = "wood_elf_dlc_termite_1",
 			dialogue_animations_n = 3,
 			face_animations_n = 3,
@@ -1892,6 +1931,28 @@ return function ()
 				3.3976459503174,
 				2.3205833435059,
 				2.9447083473206,
+			},
+		},
+		pwe_temple_slotted_waystone_DUMMY = {
+			category = "level_talk",
+			database = "wood_elf_dlc_termite_1",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "dummy",
+			},
+			sound_events = {
+				[1] = "dummy",
+			},
+			sound_events_duration = {
+				[1] = 0.20000000298023,
 			},
 		},
 		pwe_temple_start_banter_c = {

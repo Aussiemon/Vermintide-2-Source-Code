@@ -8,7 +8,7 @@ EffectHelper = EffectHelper or {}
 EffectHelper.temporary_material_drawer_mapping = {}
 
 EffectHelper.play_surface_material_effects = function (effect_name, world, hit_unit, position, rotation, normal, sound_character, husk, unit, hit_actor)
-	local effect_settings = MaterialEffectMappings[effect_name]
+	local effect_settings = MaterialEffectMappingsUtility.get(effect_name)
 	local material_ids = EffectHelper.query_material_surface(hit_unit, position, normal)
 	local material
 	local has_material = true
@@ -194,7 +194,7 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 end
 
 EffectHelper.play_skinned_surface_material_effects = function (effect_name, world, hit_unit, position, rotation, normal, husk, enemy_type, damage_sound, no_damage, hit_zone_name, shield_blocked, breed)
-	local effect_settings = MaterialEffectMappings[effect_name]
+	local effect_settings = MaterialEffectMappingsUtility.get(effect_name)
 
 	if not effect_settings then
 		return
@@ -457,7 +457,7 @@ EffectHelper.remote_play_skinned_surface_material_effects = function (effect_nam
 end
 
 EffectHelper.create_surface_material_drawer_mapping = function (effect_name)
-	local material_drawer_mapping = MaterialEffectMappings[effect_name].decal.material_drawer_mapping
+	local material_drawer_mapping = MaterialEffectMappingsUtility.get(effect_name).decal.material_drawer_mapping
 
 	for _, material in ipairs(MaterialEffectSettings.material_contexts.surface_material) do
 		local drawer
@@ -530,7 +530,7 @@ EffectHelper.flow_cb_play_footstep_surface_material_effects = function (effect_n
 
 		EffectHelper.play_surface_material_effects(effect_name, world, hit_unit, position, rotation, normal, sound_character, husk, unit)
 	else
-		local effect_settings = MaterialEffectMappings[effect_name]
+		local effect_settings = MaterialEffectMappingsUtility.get(effect_name)
 		local level_settings = LevelHelper:current_level_settings()
 		local material = level_settings.default_surface_material or DefaultSurfaceMaterial
 		local switches = effect_settings.additional_sound_parameters and effect_settings.additional_sound_parameters.switch_params

@@ -370,10 +370,16 @@ timer_counter_text_style.offset = {
 	2,
 }
 timer_counter_text_style.text_color = Colors.get_color_table_with_alpha("white_smoke", 255)
+timer_counter_text_style.size = {
+	50,
+	50,
+}
+timer_counter_text_style.dynamic_font_size = true
 
 local round_starting_text_style = table.clone(objective_text_style)
 
 round_starting_text_style.font_size = 24
+round_starting_text_style.dynamic_font_size = true
 round_starting_text_style.word_wrap = false
 round_starting_text_style.offset = {
 	0,
@@ -381,6 +387,10 @@ round_starting_text_style.offset = {
 	2,
 }
 round_starting_text_style.text_color = Colors.get_color_table_with_alpha("white_smoke", 255)
+round_starting_text_style.size = {
+	50,
+	50,
+}
 
 local saturated_color = {
 	255,

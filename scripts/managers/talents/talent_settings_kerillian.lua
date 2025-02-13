@@ -962,6 +962,7 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				amount_to_add = 2,
+				authority = "client",
 				buff_func = "maidenguard_add_power_buff_on_block",
 				buff_to_add = "kerillian_maidenguard_speed_on_block_dummy_buff",
 				event = "on_block",
@@ -979,6 +980,7 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				amount_to_add = 2,
+				authority = "client",
 				buff_func = "maidenguard_add_power_buff_on_block",
 				buff_to_add = "kerillian_maidenguard_speed_on_block_dummy_buff",
 				event = "on_push",
@@ -1019,10 +1021,11 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_maidenguard_power_on_blocked_attacks_remove_damage = {
 		buffs = {
 			{
+				authority = "client",
 				buff_func = "maidenguard_remove_on_block_speed_buff",
 				buff_to_remove = "kerillian_maidenguard_speed_on_block_dummy_buff",
 				chunk_size = 1,
-				event = "on_damage_dealt",
+				event = "on_hit",
 				max_stacks = 1,
 				reference_buffs = {
 					"kerillian_maidenguard_speed_on_block",
@@ -1931,7 +1934,7 @@ Talents.wood_elf = {
 		},
 	},
 	{
-		buffer = "both",
+		buffer = "client",
 		description = "kerillian_maidenguard_speed_on_block_desc",
 		icon = "kerillian_maidenguard_improved_dodge",
 		name = "kerillian_maidenguard_speed_on_block",

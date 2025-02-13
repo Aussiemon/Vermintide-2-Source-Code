@@ -52,6 +52,12 @@ VersusMissionObjectiveUI.init = function (self, parent, ingame_ui_context)
 	self:_register_rpcs()
 	self:_register_events()
 
+	local _, custom_round_time_limit, custom_settings_enabled = Managers.mechanism:mechanism_try_call("get_custom_game_setting", "round_time_limit")
+
+	if custom_settings_enabled and custom_round_time_limit then
+		self._custom_round_timer_active = true
+	end
+
 	self._win_conditions = Managers.mechanism:game_mechanism():win_conditions()
 
 	local game_mode_state = Managers.state.game_mode:game_mode():game_mode_state()
@@ -338,6 +344,12 @@ VersusMissionObjectiveUI._set_pre_round_timer = function (self, time_left)
 	self._countdown_timer = time_left
 end
 
+VersusMissionObjectiveUI.set_round_timer = function (self, time_left)
+	local widget = self._widgets_by_name.objective
+
+	widget.content.pre_round_timer = time_left
+end
+
 VersusMissionObjectiveUI._set_round_starting_text = function (self)
 	local widget = self._widgets_by_name.round_starting_text
 
@@ -518,11 +530,19 @@ VersusMissionObjectiveUI._on_round_started = function (self)
 	local round_starting_text_widget = self._widgets_by_name.round_starting_text
 	local obj_text_widget = self._objective_text_widget
 	local objective_widget = self._widgets_by_name.objective
+	local remove_timer = not self._custom_round_timer_active
 
 	round_start_timer_widget.content.visible = false
 	round_starting_text_widget.content.visible = false
 	obj_text_widget.content.visible = true
-	objective_widget.content.pre_round_timer_done = true
+	objective_widget.content.pre_round_timer_done = remove_timer
+	objective_widget.style.pre_round_timer.font_size = remove_timer and 50 or 32
+
+	if not remove_timer then
+		local widget = self._widgets_by_name.objective
+
+		widget.content.pre_round_timer = ""
+	end
 
 	local params = {
 		wwise_world = self._wwise_world,
@@ -538,6 +558,7 @@ VersusMissionObjectiveUI._register_events = function (self)
 
 	if event_manager then
 		event_manager:register(self, "ui_update_start_round_counter", "update_start_round_counter")
+		event_manager:register(self, "ui_update_round_timer", "set_round_timer")
 		event_manager:register(self, "ui_round_started", "round_started")
 	end
 end
@@ -547,6 +568,7 @@ VersusMissionObjectiveUI._unregister_events = function (self)
 
 	if event_manager then
 		event_manager:unregister("ui_update_start_round_counter", self)
+		event_manager:unregister("ui_update_round_timer", self)
 		event_manager:unregister("ui_round_started", self)
 	end
 end

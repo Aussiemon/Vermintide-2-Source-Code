@@ -29,7 +29,7 @@ ObjectiveSocketSystem.init = function (self, entity_system_creation_context, sys
 			return
 		end
 
-		extension:objective_entered_zone_client(socket_id)
+		extension:objective_entered_zone_client(socket_id, unit)
 
 		if self.is_server then
 			local network_manager = self.network_manager
@@ -53,7 +53,7 @@ ObjectiveSocketSystem.init = function (self, entity_system_creation_context, sys
 		end
 	end
 
-	self.objective_entered_zone_client = function (extension, socket_id)
+	self.objective_entered_zone_client = function (extension, socket_id, objective_unit)
 		local socket = extension:socket_from_id(socket_id)
 
 		fassert(socket.open == true, "Socket was already occupied.")
@@ -65,6 +65,18 @@ ObjectiveSocketSystem.init = function (self, entity_system_creation_context, sys
 
 		extension.num_open_sockets = num_open_sockets
 		extension.num_closed_sockets = num_closed_sockets
+
+		local projectile_extension = ScriptUnit.has_extension(objective_unit, "projectile_locomotion_system")
+
+		if projectile_extension then
+			local owner_peer_id = projectile_extension.owner_peer_id
+			local player = Managers.player:player_from_peer_id(owner_peer_id)
+			local player_unit = player and player.player_unit
+
+			if player_unit then
+				extension.owner_of_unit_that_occupied_socket[socket.socket_name] = player_unit
+			end
+		end
 
 		local flow_event = "lua_" .. socket.socket_name .. "_occupied"
 
@@ -92,6 +104,7 @@ ObjectiveSocketSystem.on_add_extension = function (self, world, unit, extension_
 	end
 
 	extension.objective_entered_zone_client = self.objective_entered_zone_client
+	extension.owner_of_unit_that_occupied_socket = {}
 
 	fassert(self.socket_extensions[unit] == nil, "This unit already has a socket extension.")
 
@@ -137,4 +150,10 @@ ObjectiveSocketSystem.rpc_objective_entered_socket_zone = function (self, channe
 	local objective_socket_extension = ScriptUnit.extension(unit, "objective_socket_system")
 
 	objective_socket_extension:objective_entered_zone_client(socket_id)
+end
+
+ObjectiveSocketSystem.get_owner_of_unit_that_occupied_socket = function (self, socket_unit, socket_name)
+	local extension = self.socket_extensions[socket_unit]
+
+	return extension.owner_of_unit_that_occupied_socket[socket_name]
 end

@@ -90,8 +90,19 @@ HeroWindowCosmeticsLoadoutConsole.create_ui_elements = function (self, params, o
 
 	self._menu_input_description:set_input_description(nil)
 
-	widgets_by_name.loadout_grid.content.profile_index = self.params.profile_index
-	widgets_by_name.loadout_grid.content.career_index = self.params.career_index
+	local loadout_grid_widget = widgets_by_name.loadout_grid
+	local loadout_grid_widget_content = loadout_grid_widget.content
+
+	loadout_grid_widget_content.profile_index = self.params.profile_index
+	loadout_grid_widget_content.career_index = self.params.career_index
+
+	local slots = InventorySettings.slots_by_cosmetic_index
+
+	for _, slot in pairs(slots) do
+		local index = slot.cosmetic_index
+
+		loadout_grid_widget_content["layout_" .. tostring(index) .. "_1"] = slot.layout_name or DEFAULT_COSMETICS_LAYOUT
+	end
 end
 
 HeroWindowCosmeticsLoadoutConsole.on_exit = function (self, params)
@@ -372,7 +383,6 @@ HeroWindowCosmeticsLoadoutConsole._equip_item_presentation = function (self, ite
 
 		content[item_tooltip_name] = display_name
 		content["item" .. name_sufix] = item
-		content["layout" .. name_sufix] = slot.layout_name or DEFAULT_COSMETICS_LAYOUT
 
 		local backend_id = item.backend_id
 		local rarity = item.rarity

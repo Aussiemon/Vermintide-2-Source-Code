@@ -177,7 +177,6 @@ VersusMechanism._reset = function (self, settings, on_init)
 		self._using_dedicated_servers = true
 		self._using_dedicated_aws_servers = true
 		self._using_player_hosted = true
-		self._current_set = 1
 		self._num_sets = 1
 		self._force_start_dedicated_server = false
 		self._join_signaling_timer = 0
@@ -331,7 +330,6 @@ VersusMechanism.set_is_hosting_versus_custom_game = function (self, is_hosting)
 	local game_mode_state
 
 	if is_hosting then
-		self:set_custom_game_settings_handler_enabled(true)
 		Managers.party:server_init_friend_parties(true)
 
 		game_mode_state = "custom_game_lobby"
@@ -512,9 +510,13 @@ VersusMechanism.server_decide_side_order = function (self)
 		return
 	end
 
-	local heroes_id = Managers.party:get_party(1).name == "heroes" and 2 or 1
+	local current_set = self:get_current_set()
+	local is_first_round = current_set == 0
+	local heroes_id
 
-	if self._state == "round_2" then
+	if is_first_round then
+		heroes_id = math.random(1, 2)
+	elseif self._state == "round_2" then
 		local score = {}
 
 		for i = 1, 2 do
@@ -523,6 +525,18 @@ VersusMechanism.server_decide_side_order = function (self)
 
 		if score[1] ~= score[2] then
 			heroes_id = table.max(score)
+		else
+			heroes_id = math.random(1, 2)
+		end
+	elseif not is_first_round then
+		heroes_id = Managers.party:get_party(1).name == "heroes" and 2 or 1
+	end
+
+	if self:custom_settings_enabled() then
+		local starting_as_heroes = self:get_custom_game_setting("starting_as_heroes")
+
+		if is_first_round and starting_as_heroes ~= "random" then
+			heroes_id = starting_as_heroes
 		end
 	end
 
@@ -602,16 +616,6 @@ VersusMechanism._update_sides = function (self, state)
 	if state == "inn" then
 		heroes_id = 1
 		dark_pact_id = 2
-	elseif self:custom_settings_enabled() and self._current_set == 1 then
-		local starting_as_heroes_team_id = self:get_custom_game_setting("starting_as_heroes")
-
-		if state == "round_1" then
-			heroes_id = starting_as_heroes_team_id
-			dark_pact_id = starting_as_heroes_team_id == 1 and 2 or 1
-		else
-			heroes_id = starting_as_heroes_team_id == 1 and 2 or 1
-			dark_pact_id = starting_as_heroes_team_id
-		end
 	elseif self._settings.disadvantaged_team_starts then
 		local network_handler = Managers.mechanism:network_handler()
 		local side_order_state = network_handler:get_side_order_state()
@@ -619,11 +623,8 @@ VersusMechanism._update_sides = function (self, state)
 		if side_order_state then
 			heroes_id = side_order_state
 			dark_pact_id = side_order_state == 1 and 2 or 1
-		elseif state == "round_1" then
-			heroes_id = 1
-			dark_pact_id = 2
 		else
-			ferror("Unknown state %s", state)
+			ferror("VersusMechanism:_update_sides - no side order state exists! Current state: %s", state)
 		end
 	elseif state == "inn" then
 		heroes_id = 1

@@ -34,6 +34,7 @@ GameModeCustomSettingsHandler = class(GameModeCustomSettingsHandler)
 local RPCS = {
 	"rpc_game_mode_custom_settings_full_sync",
 	"rpc_game_mode_custom_settings_request_full_sync",
+	"rpc_game_mode_custom_settings_handler_set_enabled",
 }
 
 GameModeCustomSettingsHandler.init = function (self, game_mode_name, custom_settings)
@@ -51,11 +52,13 @@ GameModeCustomSettingsHandler.server_set_setting = function (self, setting_name,
 
 	self._settings[setting_data.id] = value
 
+	self:_print_settings()
+
 	local network_handler = Managers.mechanism:network_handler()
 	local match_handler = network_handler:get_match_handler()
 	local packed_settings = self:pack_settings(self._settings, self._settings_template)
 
-	match_handler:send_rpc_others("rpc_game_mode_custom_settings_full_sync", packed_settings)
+	match_handler:send_rpc_others("rpc_game_mode_custom_settings_full_sync", packed_settings, self._enabled)
 end
 
 GameModeCustomSettingsHandler.pack_settings = function (self, settings, settings_template)
@@ -123,11 +126,25 @@ GameModeCustomSettingsHandler.reset_custom_settings = function (self)
 	end
 end
 
-GameModeCustomSettingsHandler.set_enabled = function (self, enabled)
+GameModeCustomSettingsHandler.set_enabled = function (self, enabled, do_sync)
 	self._enabled = enabled
 
 	if not enabled then
 		self:reset_custom_settings()
+	end
+
+	if DEDICATED_SERVER then
+		return
+	end
+
+	if do_sync then
+		local network_handler = Managers.mechanism:network_handler()
+		local match_handler = network_handler and network_handler:get_match_handler()
+
+		if match_handler and match_handler:is_match_owner() then
+			printf("GameModeCustomSettingsHandler: match_owner called set_enabled(%s)", tostring(enabled))
+			match_handler:send_rpc_others("rpc_game_mode_custom_settings_handler_set_enabled", enabled)
+		end
 	end
 end
 
@@ -151,15 +168,17 @@ GameModeCustomSettingsHandler.get_settings_template = function (self)
 	return self._settings_template
 end
 
-GameModeCustomSettingsHandler.rpc_game_mode_custom_settings_full_sync = function (self, channel_id, settings)
-	self:set_enabled(true)
+GameModeCustomSettingsHandler.rpc_game_mode_custom_settings_full_sync = function (self, channel_id, settings, enabled)
+	self:set_enabled(enabled)
 
 	self._settings = self:unpack_settings(settings, self._settings_template)
+
+	self:_print_settings()
 
 	local network_handler = Managers.mechanism:network_handler()
 	local match_handler = network_handler:get_match_handler()
 
-	match_handler:propagate_rpc("rpc_game_mode_custom_settings_full_sync", CHANNEL_TO_PEER_ID[channel_id], settings)
+	match_handler:propagate_rpc("rpc_game_mode_custom_settings_full_sync", CHANNEL_TO_PEER_ID[channel_id], settings, enabled)
 end
 
 GameModeCustomSettingsHandler.rpc_game_mode_custom_settings_request_full_sync = function (self, channel_id)
@@ -170,8 +189,41 @@ GameModeCustomSettingsHandler.rpc_game_mode_custom_settings_request_full_sync = 
 		local match_handler = network_handler:get_match_handler()
 		local packed_settings = self:pack_settings(self._settings, self._settings_template)
 
-		match_handler:send_rpc("rpc_game_mode_custom_settings_full_sync", peer_id, packed_settings)
+		match_handler:send_rpc("rpc_game_mode_custom_settings_full_sync", peer_id, packed_settings, self._enabled)
 	end
+end
+
+GameModeCustomSettingsHandler.rpc_game_mode_custom_settings_handler_set_enabled = function (self, channel_id, enabled)
+	printf("GameModeCustomSettingsHandler: rpc_game_mode_custom_settings_handler_set_enabled, enabled = %s", tostring(enabled))
+	self:set_enabled(enabled)
+
+	local event_manager = Managers.state.event
+
+	if event_manager then
+		event_manager:trigger("lobby_member_game_mode_custom_settings_handler_enabled", enabled)
+	end
+
+	local network_handler = Managers.mechanism:network_handler()
+	local match_handler = network_handler and network_handler:get_match_handler()
+
+	if match_handler then
+		match_handler:propagate_rpc("rpc_game_mode_custom_settings_handler_set_enabled", CHANNEL_TO_PEER_ID[channel_id], enabled)
+	end
+end
+
+GameModeCustomSettingsHandler._print_settings = function (self)
+	local to_print = string.format("GameModeCustomSettingsHandler: settings updated: \n Custom Settings Enabled = %s \n", self._enabled)
+
+	for i = 1, #self._settings_template do
+		local setting = self._settings_template[i]
+		local setting_name = setting.setting_name
+		local setting_value = self:get_setting(setting_name)
+		local line = string.format("\n %s: %s", setting_name, setting_value)
+
+		to_print = to_print .. line
+	end
+
+	print(to_print)
 end
 
 GameModeCustomSettingsHandler.get_telemetry_data = function (self)

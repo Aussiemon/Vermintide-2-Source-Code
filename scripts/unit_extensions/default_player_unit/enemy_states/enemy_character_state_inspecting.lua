@@ -52,6 +52,12 @@ EnemyCharacterStateInspecting.update = function (self, unit, input, dt, context,
 		return
 	end
 
+	if not csm.state_next and status_extension.do_leap then
+		csm:change_state("leaping")
+
+		return
+	end
+
 	self._locomotion_extension:set_disable_rotation_update()
 	CharacterStateHelper.look(input_extension, self._player.viewport_name, self._first_person_extension, status_extension, self._inventory_extension)
 end

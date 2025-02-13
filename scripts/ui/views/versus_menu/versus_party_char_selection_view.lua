@@ -11,7 +11,6 @@ local generic_input_actions = definitions.generic_input_actions
 local animation_definitions = definitions.animation_definitions
 local scenegraph_definition = definitions.scenegraph_definition
 local other_definitions = definitions.other_definitions
-local intro_view_widgets_definitions = definitions.intro_view_widgets_definitions
 local top_detail_widgets_definitions = definitions.top_detail_widgets_definitions
 local create_player_name_box_widgets = definitions.create_player_name_box_widgets
 local EMPTY_TABLE = {}
@@ -89,10 +88,8 @@ VersusPartyCharSelectionView.on_enter = function (self, params)
 end
 
 VersusPartyCharSelectionView._setup_roster_widgets_definitions = function (self)
-	local hero_group_widgets_defs = {}
-	local hero_roster_detail_widgets_defs = {}
+	local hero_group_widgets_defs, hero_roster_detail_widgets_defs = definitions.create_hero_roster_widget_defitions()
 
-	hero_group_widgets_defs, hero_roster_detail_widgets_defs = definitions.create_hero_roster_widget_defitions()
 	self._hero_group_widgets_defs = hero_group_widgets_defs
 	self._hero_roster_detail_widgets_defs = hero_roster_detail_widgets_defs
 end
@@ -133,6 +130,12 @@ VersusPartyCharSelectionView.on_exit = function (self)
 	if not Managers.state.game_mode:setting("display_parading_view") then
 		self:play_sound("vs_unmute_reset_all")
 	end
+
+	local event_manager = Managers.state.event
+
+	if event_manager then
+		event_manager:unregister("party_selection_logic_state_set", self)
+	end
 end
 
 VersusPartyCharSelectionView.post_update = function (self, dt, t)
@@ -143,8 +146,6 @@ VersusPartyCharSelectionView.post_update = function (self, dt, t)
 	self:_handle_input(dt, t)
 
 	if self._team_previewer then
-		local input_disabled = true
-
 		self:_update_team_previewer(dt, t)
 	end
 end
@@ -218,13 +219,11 @@ VersusPartyCharSelectionView._update_timer_progress_bar = function (self, party_
 		local bar_scenegraph_id = "progress_bar"
 		local ui_scenegraph = self._ui_scenegraph
 		local default_scenegraph_size = scenegraph_definition[bar_scenegraph_id].size
-		local current_picker_index = party_data.current_picker_index
 		local slider_timer = party_data.slider_timer
 		local time_finished = party_data.time_finished
 		local total_slider_time = party_data.total_slider_time
 		local slider_percent = math.clamp((time_finished - slider_timer) / total_slider_time, 0, 1)
 		local slider_x = slider_percent * default_scenegraph_size[1]
-		local bar_width = default_scenegraph_size[1] / num_slots
 
 		for i = 1, num_slots do
 			local picking_progress_data = self._picking_progress_data[i]
@@ -265,18 +264,7 @@ VersusPartyCharSelectionView._update_party_state_startup = function (self, party
 		self._start_timer_value = timer
 	end
 
-	if self._last_party_state ~= "startup" then
-		self:_update_all_player_name_box_widgets()
-		self:_set_your_turn_text_position(picker_list)
-		self:_set_top_detail_widgets_visible(false)
-	end
-
 	if timer <= self._start_timer_value - GameSettings.transition_fade_out_speed then
-		local player_data = picker_list[1]
-		local slot_id = player_data.slot_id
-		local slot_data = party.slots_data[slot_id]
-		local picker_status = party.slots[slot_id]
-		local picking_player_name = self:_get_player_name_by_status(picker_status, slot_id)
 		local rounded_time = math.ceil(timer)
 		local countdown_timer = self._widgets_by_name.countdown_timer
 
@@ -316,13 +304,6 @@ VersusPartyCharSelectionView._update_party_state_player_picking_character = func
 
 	if party_state ~= "player_picking_character" then
 		return
-	end
-
-	if self._last_party_state ~= "player_picking_character" then
-		self:_start_widget_animation("name_box_fade_to_black", self._player_name_box_widgets[current_picker_index])
-		self:_level_flow_event("chr_" .. current_picker_index .. "_selected")
-		self:_set_current_picker_text(current_picker_index)
-		self:_update_all_player_name_box_widgets()
 	end
 
 	self._next_character_update_idx = math.index_wrapper((self._next_character_update_idx or 0) + 1, current_picker_index)
@@ -371,46 +352,6 @@ VersusPartyCharSelectionView._update_party_state_player_picking_character = func
 				end
 			end
 		end
-	end
-
-	if self._last_party_state ~= "player_picking_character" and local_player_is_picking then
-		self:play_sound("menu_versus_character_selection_your_turn_indicator")
-		self:play_sound("menu_versus_character_selection_meter_start")
-	end
-end
-
-VersusPartyCharSelectionView._update_party_state_player_has_picked_character = function (self, party_state, picker_list, current_picker_index, party)
-	if party_state ~= "player_has_picked_character" then
-		return
-	end
-
-	if self._last_party_state ~= "player_has_picked_character" then
-		self:play_sound("menu_versus_character_selection_locked")
-
-		local local_player_is_picking = self:local_player_is_picking()
-
-		if local_player_is_picking then
-			self:play_sound("menu_versus_character_selection_meter_stop")
-		end
-
-		self:_play_selected_hero_sound(self._data_by_pick_index[current_picker_index].career_index, self._data_by_pick_index[current_picker_index].profile_index)
-		self:_start_widget_animation("name_box_fade_to_gray", self._player_name_box_widgets[current_picker_index])
-		self:_level_flow_event("chr_" .. current_picker_index .. "_unselected")
-	end
-end
-
-VersusPartyCharSelectionView._update_party_state_parading = function (self, party_state, party)
-	if party_state ~= "parading" then
-		return
-	end
-
-	if self._last_party_state ~= "parading" then
-		self:_level_flow_event("vs_team_heroes_selected")
-		self:play_sound("menu_versus_character_selection_start_game_buildup")
-
-		self._prev_timer_value = 0
-
-		self:_set_on_selection_complete_camera_animation()
 	end
 end
 
@@ -477,6 +418,11 @@ VersusPartyCharSelectionView._update_player_party = function (self, dt, t)
 	if #self._team_heroes == 0 and not self._team_previewer then
 		self:_setup_team_heroes()
 		self:_setup_team_previewer()
+		self:_update_all_player_name_box_widgets()
+		self:_set_your_turn_text_position()
+		self:_set_top_detail_widgets_visible(false)
+		Managers.state.event:register(self, "party_selection_logic_state_set", "on_party_selection_logic_state_set")
+		self:on_party_selection_logic_state_set(party_data.state, self._party_id, party_data.current_picker_index)
 	end
 
 	local party = self._party
@@ -484,20 +430,13 @@ VersusPartyCharSelectionView._update_player_party = function (self, dt, t)
 	local num_slots = party.num_slots
 	local picker_list = party_data.picker_list
 	local current_picker_index = party_data.current_picker_index
-	local player_state = self._local_player_data.state
 	local local_player_is_picking = self:local_player_is_picking()
 
 	self:_update_background_music(party_state)
 	self:_update_party_state_startup(party_state, picker_list, party)
 	self:_update_party_state_player_picking_character(party_state, picker_list, current_picker_index, party)
-	self:_update_party_state_player_has_picked_character(party_state, picker_list, current_picker_index, party)
-	self:_update_party_state_parading(party_state, party)
 	self:_update_hero_picking_progress(party, party_data, num_slots)
 	self:_update_timer_progress_bar(party_data, local_player_is_picking, num_slots)
-	self:_handle_step_transitions_animations()
-
-	self._last_player_state = player_state
-	self._last_party_state = party_state
 end
 
 VersusPartyCharSelectionView._update_roster_widgets_animations = function (self, dt, t)
@@ -508,7 +447,6 @@ VersusPartyCharSelectionView._update_roster_widgets_animations = function (self,
 	end
 
 	local party_state = party_data.state
-	local fade_speed = 10
 	local picker_data = party_data.picker_list[self._picker_list_id]
 	local is_inactive = false
 	local hero_group_widgets_lookup = self._hero_group_widgets_lookup
@@ -520,13 +458,11 @@ VersusPartyCharSelectionView._update_roster_widgets_animations = function (self,
 			if carrer_widgets then
 				for j = 1, #carrer_widgets do
 					local roster_hero_widget = carrer_widgets[j]
-					local timer = self._party_selection_logic:timer()
 					local content = roster_hero_widget.content
 					local style = roster_hero_widget.style
 					local offset = roster_hero_widget.offset
 					local hotspot = content.button_hotspot
 					local taken = content.taken
-					local taken_id = content.taken_id
 					local locked = content.locked
 					local other_picking = content.other_picking
 					local gamepad_selected = content.gamepad_selected
@@ -576,8 +512,6 @@ VersusPartyCharSelectionView._update_roster_widgets_animations = function (self,
 						end
 
 						local select_easing_progress = math.easeCubic(selection_progress)
-						local select_easing_in_progress = math.easeInCubic(selection_progress)
-						local combined_progress = math.max(hover_progress, selection_progress)
 
 						offset[3] = hover_progress > 0 and 10 or 0
 
@@ -615,10 +549,10 @@ VersusPartyCharSelectionView._update_roster_widgets_animations = function (self,
 								local default_offset = pass_style.default_offset
 
 								if default_offset then
-									local offset = pass_style.offset
+									local pass_offset = pass_style.offset
 
-									offset[1] = default_offset[1] - increase_width * 0.5
-									offset[2] = default_offset[2] - increase_height * 0.5
+									pass_offset[1] = default_offset[1] - increase_width * 0.5
+									pass_offset[2] = default_offset[2] - increase_height * 0.5
 								end
 							end
 						end
@@ -683,7 +617,7 @@ VersusPartyCharSelectionView._handle_hover_sync = function (self)
 			if carrer_widgets then
 				for j = 1, #carrer_widgets do
 					local roster_hero_widget = carrer_widgets[j]
-					local is_career_hovered_by_other, picker_index = self:_is_item_hovered_by_other(i, j)
+					local is_career_hovered_by_other = self:_is_item_hovered_by_other(i, j)
 
 					roster_hero_widget.content.hovered_by_other = is_career_hovered_by_other
 				end
@@ -700,11 +634,8 @@ VersusPartyCharSelectionView.draw = function (self, dt)
 	local ui_renderer = self._ui_renderer
 	local ui_top_renderer = self._ui_top_renderer
 	local ui_scenegraph = self._ui_scenegraph
-	local input_manager = self.input_manager
-	local parent = self.parent
 	local input_service = self:input_service()
 	local render_settings = self.render_settings
-	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local party_data = self._party_selection_logic:get_party_data(self._party_id)
 	local party_state = party_data.state
 	local alpha_multiplier = render_settings.alpha_multiplier or 1
@@ -1009,9 +940,6 @@ end
 
 VersusPartyCharSelectionView._handle_gamepad_selection = function (self)
 	local is_picking = self:local_player_is_picking()
-	local hero_group_widgets = self._hero_group_widgets
-	local num_max_rows = self._num_max_hero_rows
-	local num_max_columns = self._num_max_hero_columns
 	local gamepad_selected_index = self._gamepad_selected_index or 1
 	local input_service = self:input_service()
 
@@ -1123,10 +1051,10 @@ VersusPartyCharSelectionView._handle_mouse_selection = function (self)
 					end
 
 					if button_hotspot.on_pressed and is_picking then
-						local profile_index = self._profile_indices[i]
-						local career_index = j
+						local selected_profile_index = self._profile_indices[i]
+						local selected_career_index = j
 
-						self._party_selection_logic:select_character(profile_index, career_index)
+						self._party_selection_logic:select_character(selected_profile_index, selected_career_index)
 						self:play_sound("play_gui_hero_select_career_click")
 
 						return
@@ -1184,25 +1112,6 @@ VersusPartyCharSelectionView._setup_picking_progress_bar = function (self, num_p
 
 	progress_bar_size[1] = 0
 	progress_bar_passive_size[1] = 0
-end
-
-VersusPartyCharSelectionView._handle_step_transitions_animations = function (self)
-	local party_data = self._party_selection_logic:get_party_data(self._party_id)
-
-	if not party_data then
-		return
-	end
-
-	local party_state = party_data.state
-
-	if party_state == "player_picking_character" then
-		if self._last_party_state == "startup" then
-			self:_start_step_transtion_animation("transition_to_selection")
-		end
-	elseif party_state == "parading" and self._last_party_state ~= "parading" then
-		self:_start_step_transtion_animation("transition_to_team_parading")
-		self:play_sound("Play_menu_versus_parading_start_transition")
-	end
 end
 
 VersusPartyCharSelectionView._start_step_transtion_animation = function (self, animation_name)
@@ -1265,7 +1174,7 @@ VersusPartyCharSelectionView._set_player_name = function (self, player)
 	return player_name
 end
 
-VersusPartyCharSelectionView._set_your_turn_text_position = function (self, picker_list)
+VersusPartyCharSelectionView._set_your_turn_text_position = function (self)
 	local your_turn_indicator = self._widgets_by_name.your_turn_indicator_text
 	local new_scenegraph_id = "player_name_box_" .. self._picker_list_id
 
@@ -1310,7 +1219,6 @@ VersusPartyCharSelectionView._update_selcted_career_passive_and_career_skill = f
 	local hero_career_widget = self._widgets_by_name.hero_career_name_text
 	local passive_content = passive_skill_widget.content
 	local career_content = career_skill_widget.content
-	local hero_career_content = hero_career_widget.content
 	local profile_settings = SPProfiles[profile_index]
 	local career_settings = profile_settings.careers[career_index]
 	local passive_skill_settings = CareerUtils.get_passive_ability_by_career(career_settings)
@@ -1516,8 +1424,7 @@ VersusPartyCharSelectionView._setup_team_previewer = function (self, spawn_on_se
 		return
 	end
 
-	local spawn_on_setup = spawn_on_setup or false
-
+	spawn_on_setup = spawn_on_setup or false
 	self._team_previewer = TeamPreviewer:new(self._ingame_ui_context, self._background_world, self._team_world_viewport)
 
 	local team_data = self._team_heroes
@@ -1533,7 +1440,7 @@ VersusPartyCharSelectionView._setup_team_heroes = function (self)
 
 	table.clear(team_heroes)
 
-	for i, picker in ipairs(picker_list) do
+	for _, picker in ipairs(picker_list) do
 		local hero_data = self:_get_hero_previewer_data(picker, self._party)
 
 		team_heroes[#team_heroes + 1] = hero_data or true
@@ -1559,7 +1466,6 @@ VersusPartyCharSelectionView._get_hero_previewer_data = function (self, picker, 
 		local preview_animation = career_settings.versus_preview_animation or career_settings.preview_animation
 		local preview_wield_slot = career_settings.preview_wield_slot
 		local hero_name = career_settings.profile_name
-		local weapon = slot_data["slot_" .. preview_wield_slot]
 		local hat = slot_data.slot_hat
 		local preview_items = {
 			career_settings.preview_items[1],
@@ -1620,7 +1526,6 @@ VersusPartyCharSelectionView._play_selected_hero_sound = function (self, career_
 		local profile = SPProfiles[profile_index]
 		local careers = profile.careers
 		local career_settings = careers[career_index]
-		local profile_name = profile.display_name
 		local career_name = career_settings.display_name
 		local sound_event = "menu_versus_character_selection_" .. career_name
 
@@ -1741,5 +1646,54 @@ VersusPartyCharSelectionView._update_mute_buttons = function (self)
 				content.muted = true
 			end
 		end
+	end
+end
+
+VersusPartyCharSelectionView.on_party_selection_logic_state_set = function (self, new_state, party_id, picker_id)
+	if self._party_id ~= party_id then
+		return
+	end
+
+	if new_state == "startup" then
+		-- Nothing
+	elseif new_state == "player_picking_character" then
+		if not self._initial_selection_transition_done then
+			self._initial_selection_transition_done = true
+
+			self:_start_step_transtion_animation("transition_to_selection")
+		end
+
+		self:_start_widget_animation("name_box_fade_to_black", self._player_name_box_widgets[picker_id])
+		self:_level_flow_event("chr_" .. picker_id .. "_selected")
+		self:_set_current_picker_text(picker_id)
+		self:_update_all_player_name_box_widgets()
+
+		local local_player_is_picking = self:local_player_is_picking()
+
+		if local_player_is_picking then
+			self:play_sound("menu_versus_character_selection_your_turn_indicator")
+			self:play_sound("menu_versus_character_selection_meter_start")
+		end
+	elseif new_state == "player_has_picked_character" then
+		self:play_sound("menu_versus_character_selection_locked")
+
+		local local_player_is_picking = self:local_player_is_picking()
+
+		if local_player_is_picking then
+			self:play_sound("menu_versus_character_selection_meter_stop")
+		end
+
+		self:_play_selected_hero_sound(self._data_by_pick_index[picker_id].career_index, self._data_by_pick_index[picker_id].profile_index)
+		self:_start_widget_animation("name_box_fade_to_gray", self._player_name_box_widgets[picker_id])
+		self:_level_flow_event("chr_" .. picker_id .. "_unselected")
+	elseif new_state == "parading" then
+		self:_level_flow_event("vs_team_heroes_selected")
+		self:play_sound("menu_versus_character_selection_start_game_buildup")
+
+		self._prev_timer_value = 0
+
+		self:_set_on_selection_complete_camera_animation()
+		self:_start_step_transtion_animation("transition_to_team_parading")
+		self:play_sound("Play_menu_versus_parading_start_transition")
 	end
 end

@@ -537,6 +537,8 @@ VersusPartySelectionLogic.set_player_state = function (self, new_state, party_id
 	end
 
 	picker_data.state = new_state
+
+	Managers.state.event:trigger("party_selection_logic_state_set", new_state, party_id, picker_id)
 end
 
 VersusPartySelectionLogic.set_party_current_picker = function (self, party_id, picker_id)
@@ -659,7 +661,7 @@ VersusPartySelectionLogic._is_hero_locked = function (self, profile_index, party
 	end
 
 	local party_id = party_data.party_id
-	local reserver_peer = profile_index and self._profile_synchronizer:get_profile_index_reservation(party_id, profile_index)
+	local reserver_peer = self._profile_synchronizer:get_profile_index_reservation(party_id, profile_index)
 
 	if reserver_peer and reserver_peer ~= except_peer_id then
 		return true
@@ -1117,7 +1119,7 @@ VersusPartySelectionLogic.rpc_party_select_request_pick_hero = function (self, c
 	local pick_data_per_party = self._pick_data_per_party
 	local party_data = pick_data_per_party[party_id]
 	local got_profile, got_career = self:_try_pick_hero(party_data, picker_index, profile_index, career_index)
-	local fail_context = got_profile == profile_index and "" or string.format(", but got hero %s %s", got_profile, got_career)
+	local fail_context = got_profile == profile_index and " and succeeded" or string.format(", but got hero %s %s", got_profile, got_career)
 
 	printf("[VersusPartySelectionLogic] Peer %s in party %s tried to pick hero %s %s%s", CHANNEL_TO_PEER_ID[channel_id], party_id, profile_index, career_index, fail_context)
 end

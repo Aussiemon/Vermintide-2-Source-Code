@@ -39,13 +39,12 @@ MaterialEffectSettings = {
 	},
 }
 DefaultSurfaceMaterial = "stone"
-MaterialEffectMappings = MaterialEffectMappings or {}
 
+require("scripts/settings/material_effect_mappings_utility")
 require("scripts/settings/material_effect_mappings_skaven")
 require("scripts/settings/material_effect_mappings_chaos")
 DLCUtils.require_list("material_effect_mappings_file_names")
-
-MaterialEffectMappings.melee_hit_piercing = MaterialEffectMappings.melee_hit_piercing or {
+MaterialEffectMappingsUtility.add("melee_hit_piercing", {
 	decal = {
 		material_drawer_mapping = {
 			armored = "units/projection_decals/hit_metal_hollow_pierce_1",
@@ -320,8 +319,8 @@ MaterialEffectMappings.melee_hit_piercing = MaterialEffectMappings.melee_hit_pie
 		wood_hollow = "fx/hit_wood_hollow_pierce",
 		wood_solid = "fx/hit_wood_solid_pierce",
 	},
-}
-MaterialEffectMappings.melee_hit_slashing = MaterialEffectMappings.melee_hit_slashing or {
+})
+MaterialEffectMappingsUtility.add("melee_hit_slashing", {
 	decal = {
 		material_drawer_mapping = {
 			dirt = "units/projection_decals/hit_dirt_slash_1",
@@ -612,8 +611,8 @@ MaterialEffectMappings.melee_hit_slashing = MaterialEffectMappings.melee_hit_sla
 		wood_hollow = "fx/hit_wood_hollow_slash",
 		wood_solid = "fx/hit_wood_solid_slash",
 	},
-}
-MaterialEffectMappings.melee_hit_sword_2h = MaterialEffectMappings.melee_hit_sword_2h or {
+})
+MaterialEffectMappingsUtility.add("melee_hit_sword_2h", {
 	decal = {
 		material_drawer_mapping = {
 			dirt = "units/projection_decals/hit_dirt_slash_1",
@@ -895,8 +894,8 @@ MaterialEffectMappings.melee_hit_sword_2h = MaterialEffectMappings.melee_hit_swo
 		wood_hollow = "fx/hit_wood_hollow_slash",
 		wood_solid = "fx/hit_wood_solid_slash",
 	},
-}
-MaterialEffectMappings.melee_hit_sword_1h = MaterialEffectMappings.melee_hit_sword_1h or {
+})
+MaterialEffectMappingsUtility.add("melee_hit_sword_1h", {
 	decal = {
 		material_drawer_mapping = {
 			dirt = "units/projection_decals/hit_dirt_slash_1",
@@ -1178,8 +1177,8 @@ MaterialEffectMappings.melee_hit_sword_1h = MaterialEffectMappings.melee_hit_swo
 		wood_hollow = "fx/hit_wood_hollow_slash",
 		wood_solid = "fx/hit_wood_solid_slash",
 	},
-}
-MaterialEffectMappings.melee_hit_dagger = MaterialEffectMappings.melee_hit_dagger or {
+})
+MaterialEffectMappingsUtility.add("melee_hit_dagger", {
 	decal = {
 		material_drawer_mapping = {
 			dirt = "units/projection_decals/hit_dirt_slash_1",
@@ -1461,8 +1460,8 @@ MaterialEffectMappings.melee_hit_dagger = MaterialEffectMappings.melee_hit_dagge
 		wood_hollow = "fx/hit_wood_hollow_slash",
 		wood_solid = "fx/hit_wood_solid_slash",
 	},
-}
-MaterialEffectMappings.melee_hit_axes_2h = MaterialEffectMappings.melee_hit_axes_2h or {
+})
+MaterialEffectMappingsUtility.add("melee_hit_axes_2h", {
 	decal = {
 		material_drawer_mapping = {
 			dirt = "units/projection_decals/hit_dirt_slash_1",
@@ -1744,8 +1743,8 @@ MaterialEffectMappings.melee_hit_axes_2h = MaterialEffectMappings.melee_hit_axes
 		wood_hollow = "fx/hit_wood_hollow_slash",
 		wood_solid = "fx/hit_wood_solid_slash",
 	},
-}
-MaterialEffectMappings.melee_hit_axes_1h = MaterialEffectMappings.melee_hit_axes_1h or {
+})
+MaterialEffectMappingsUtility.add("melee_hit_axes_1h", {
 	decal = {
 		material_drawer_mapping = {
 			dirt = "units/projection_decals/hit_dirt_slash_1",
@@ -2027,8 +2026,8 @@ MaterialEffectMappings.melee_hit_axes_1h = MaterialEffectMappings.melee_hit_axes
 		wood_hollow = "fx/hit_wood_hollow_slash",
 		wood_solid = "fx/hit_wood_solid_slash",
 	},
-}
-MaterialEffectMappings.melee_hit_hammers_2h = MaterialEffectMappings.melee_hit_hammers_2h or {
+})
+MaterialEffectMappingsUtility.add("melee_hit_hammers_2h", {
 	decal = {
 		material_drawer_mapping = {
 			armored = "units/projection_decals/hit_metal_hollow_pierce_1",
@@ -2294,8 +2293,8 @@ MaterialEffectMappings.melee_hit_hammers_2h = MaterialEffectMappings.melee_hit_h
 		wood_hollow = "fx/hit_wood_hollow_blunt",
 		wood_solid = "fx/hit_wood_solid_blunt",
 	},
-}
-MaterialEffectMappings.melee_hit_hammers_1h = MaterialEffectMappings.melee_hit_hammers_1h or {
+})
+MaterialEffectMappingsUtility.add("melee_hit_hammers_1h", {
 	decal = {
 		material_drawer_mapping = {
 			armored = "units/projection_decals/hit_metal_hollow_pierce_1",
@@ -2561,8 +2560,8 @@ MaterialEffectMappings.melee_hit_hammers_1h = MaterialEffectMappings.melee_hit_h
 		wood_hollow = "fx/hit_wood_hollow_blunt",
 		wood_solid = "fx/hit_wood_solid_blunt",
 	},
-}
-MaterialEffectMappings.melee_hit_torches_1h = MaterialEffectMappings.melee_hit_torches_1h or {
+})
+MaterialEffectMappingsUtility.add("melee_hit_torches_1h", {
 	decal = {
 		material_drawer_mapping = {
 			armored = "units/projection_decals/hit_metal_hollow_pierce_1",
@@ -2828,8 +2827,8 @@ MaterialEffectMappings.melee_hit_torches_1h = MaterialEffectMappings.melee_hit_t
 		wood_hollow = "fx/hit_wood_hollow_blunt",
 		wood_solid = "fx/hit_wood_solid_blunt",
 	},
-}
-MaterialEffectMappings.bullet_impact = MaterialEffectMappings.bullet_impact or {
+})
+MaterialEffectMappingsUtility.add("bullet_impact", {
 	decal = {
 		material_drawer_mapping = {
 			armored = "units/projection_decals/hit_metal_hollow_pierce_1",
@@ -3099,8 +3098,8 @@ MaterialEffectMappings.bullet_impact = MaterialEffectMappings.bullet_impact or {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.bullet_critical_impact = MaterialEffectMappings.bullet_critical_impact or {
+})
+MaterialEffectMappingsUtility.add("bullet_critical_impact", {
 	particles = {
 		armored = "fx/wpnfx_range_crit_01",
 		cloth = "fx/wpnfx_range_crit_01",
@@ -3130,8 +3129,8 @@ MaterialEffectMappings.bullet_critical_impact = MaterialEffectMappings.bullet_cr
 		wood_hollow = "fx/wpnfx_range_crit_01",
 		wood_solid = "fx/wpnfx_range_crit_01",
 	},
-}
-MaterialEffectMappings.shotgun_bullet_impact = MaterialEffectMappings.shotgun_bullet_impact or {
+})
+MaterialEffectMappingsUtility.add("shotgun_bullet_impact", {
 	decal = {
 		material_drawer_mapping = {
 			armored = "units/projection_decals/hit_metal_hollow_pierce_1",
@@ -3397,8 +3396,8 @@ MaterialEffectMappings.shotgun_bullet_impact = MaterialEffectMappings.shotgun_bu
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.nodecals = MaterialEffectMappings.nodecals or {
+})
+MaterialEffectMappingsUtility.add("nodecals", {
 	sound = {
 		cloth = {
 			event = "enemy_bullet_hit_statics",
@@ -3613,8 +3612,8 @@ MaterialEffectMappings.nodecals = MaterialEffectMappings.nodecals or {
 	flow_event = {
 		ward = "ward_impact",
 	},
-}
-MaterialEffectMappings.ratling_gunner = MaterialEffectMappings.ratling_gunner or {
+})
+MaterialEffectMappingsUtility.add("ratling_gunner", {
 	decal = {
 		material_drawer_mapping = {
 			armored = "units/projection_decals/hit_metal_hollow_pierce_1",
@@ -3885,8 +3884,8 @@ MaterialEffectMappings.ratling_gunner = MaterialEffectMappings.ratling_gunner or
 	flow_event = {
 		ward = "ward_impact",
 	},
-}
-MaterialEffectMappings.autocannon = MaterialEffectMappings.autocannon or {
+})
+MaterialEffectMappingsUtility.add("autocannon", {
 	decal = {
 		material_drawer_mapping = {
 			cloth = {
@@ -4185,8 +4184,8 @@ MaterialEffectMappings.autocannon = MaterialEffectMappings.autocannon or {
 	flow_event = {
 		ward = "ward_impact",
 	},
-}
-MaterialEffectMappings.enemy_bullet_impact = MaterialEffectMappings.enemy_bullet_impact or {
+})
+MaterialEffectMappingsUtility.add("enemy_bullet_impact", {
 	decal = {
 		material_drawer_mapping = {
 			cloth = {
@@ -4494,8 +4493,8 @@ MaterialEffectMappings.enemy_bullet_impact = MaterialEffectMappings.enemy_bullet
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.drakefire_pistol = MaterialEffectMappings.drakefire_pistol or {
+})
+MaterialEffectMappingsUtility.add("drakefire_pistol", {
 	sound = {
 		armored = {
 			event = "drakepistol_hit",
@@ -4713,8 +4712,8 @@ MaterialEffectMappings.drakefire_pistol = MaterialEffectMappings.drakefire_pisto
 	flow_event = {
 		ward = "ward_impact",
 	},
-}
-MaterialEffectMappings.sienna_scholar_career_ability = MaterialEffectMappings.sienna_scholar_career_ability or {
+})
+MaterialEffectMappingsUtility.add("sienna_scholar_career_ability", {
 	sound = {
 		armored = {
 			event = "Play_weapon_ability_pyromancer_skull_attack_hit",
@@ -4829,8 +4828,8 @@ MaterialEffectMappings.sienna_scholar_career_ability = MaterialEffectMappings.si
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.staff_spark = MaterialEffectMappings.staff_spark or {
+})
+MaterialEffectMappingsUtility.add("staff_spark", {
 	sound = {
 		armored = {
 			event = "magic_hit_statics",
@@ -5048,8 +5047,8 @@ MaterialEffectMappings.staff_spark = MaterialEffectMappings.staff_spark or {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.staff_spear = MaterialEffectMappings.staff_spear or {
+})
+MaterialEffectMappingsUtility.add("staff_spear", {
 	sound = {
 		armored = {
 			event = "magic_hit_statics",
@@ -5266,8 +5265,8 @@ MaterialEffectMappings.staff_spear = MaterialEffectMappings.staff_spear or {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.fireball_impact = MaterialEffectMappings.fireball_impact or {
+})
+MaterialEffectMappingsUtility.add("fireball_impact", {
 	sound = {
 		cloth = {
 			event = "fireball_small_hit",
@@ -5485,8 +5484,8 @@ MaterialEffectMappings.fireball_impact = MaterialEffectMappings.fireball_impact 
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.drake_impact = MaterialEffectMappings.drake_impact or {
+})
+MaterialEffectMappingsUtility.add("drake_impact", {
 	sound = {
 		cloth = {
 			event = "fireball_small_hit",
@@ -5704,8 +5703,8 @@ MaterialEffectMappings.drake_impact = MaterialEffectMappings.drake_impact or {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.flamethrower = MaterialEffectMappings.flamethrower or {
+})
+MaterialEffectMappingsUtility.add("flamethrower", {
 	sound = {
 		armored = {
 			event = "flamethrower_hit",
@@ -5894,8 +5893,8 @@ MaterialEffectMappings.flamethrower = MaterialEffectMappings.flamethrower or {
 	flow_event = {
 		ward = "ward_impact",
 	},
-}
-MaterialEffectMappings.arrow_impact = MaterialEffectMappings.arrow_impact or {
+})
+MaterialEffectMappingsUtility.add("arrow_impact", {
 	decal = {
 		material_drawer_mapping = {
 			armored = "units/projection_decals/hit_metal_hollow_pierce_1",
@@ -6165,8 +6164,8 @@ MaterialEffectMappings.arrow_impact = MaterialEffectMappings.arrow_impact or {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.kerillian_ability_trueflight_arrow_impact = MaterialEffectMappings.kerillian_ability_trueflight_arrow_impact or {
+})
+MaterialEffectMappingsUtility.add("kerillian_ability_trueflight_arrow_impact", {
 	decal = {
 		material_drawer_mapping = {
 			armored = "units/projection_decals/hit_metal_hollow_pierce_1",
@@ -6436,8 +6435,8 @@ MaterialEffectMappings.kerillian_ability_trueflight_arrow_impact = MaterialEffec
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.poison_arrow_impact = MaterialEffectMappings.poison_arrow_impact or {
+})
+MaterialEffectMappingsUtility.add("poison_arrow_impact", {
 	decal = {
 		material_drawer_mapping = {
 			armored = "units/projection_decals/hit_metal_hollow_pierce_1",
@@ -6707,279 +6706,8 @@ MaterialEffectMappings.poison_arrow_impact = MaterialEffectMappings.poison_arrow
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.poison_arrow_impact_small = MaterialEffectMappings.poison_arrow_impact_small or {
-	decal = {
-		material_drawer_mapping = {
-			armored = "units/projection_decals/hit_metal_hollow_pierce_1",
-			dirt = "units/projection_decals/hit_dirt_pierce_1",
-			flesh = "units/projection_decals/hit_flesh_pierce_1",
-			forest_grass = "units/projection_decals/hit_grass_pierce_1",
-			fruit = "units/projection_decals/hit_fruit_pierce_1",
-			glass = "units/projection_decals/hit_glass_pierce_1",
-			grass = "units/projection_decals/hit_grass_pierce_1",
-			hay = "units/projection_decals/empty",
-			ice = "units/projection_decals/hit_ice_pierce_1",
-			metal_hollow = "units/projection_decals/hit_metal_hollow_pierce_1",
-			metal_solid = "units/projection_decals/hit_metal_solid_pierce_1",
-			mud = "units/projection_decals/hit_dirt_pierce_1",
-			sand = "units/projection_decals/hit_sand_pierce_1",
-			snow = "units/projection_decals/hit_snow_pierce_1",
-			stone = "units/projection_decals/hit_stone_pierce_1",
-			stone_dirt = "units/projection_decals/hit_stone_pierce_1",
-			stone_wet = "units/projection_decals/hit_stone_pierce_1",
-			water = "units/projection_decals/empty",
-			water_deep = "units/projection_decals/empty",
-			cloth = {
-				"units/projection_decals/hit_cloth_pierce_1",
-				"units/projection_decals/hit_cloth_pierce_2",
-			},
-			plaster = {
-				"units/projection_decals/hit_plaster_pierce_1",
-				"units/projection_decals/hit_plaster_pierce_2",
-			},
-			wood_bridge = {
-				"units/projection_decals/hit_wood_pierce_1",
-				"units/projection_decals/hit_wood_pierce_2",
-				"units/projection_decals/hit_wood_pierce_3",
-			},
-			wood_solid = {
-				"units/projection_decals/hit_wood_pierce_1",
-				"units/projection_decals/hit_wood_pierce_2",
-				"units/projection_decals/hit_wood_pierce_3",
-			},
-			wood_hollow = {
-				"units/projection_decals/hit_wood_pierce_1",
-				"units/projection_decals/hit_wood_pierce_2",
-				"units/projection_decals/hit_wood_pierce_3",
-			},
-		},
-		settings = {
-			depth = 0.8,
-			depth_offset = 0.5,
-			height = 0.15,
-			width = 0.15,
-		},
-	},
-	sound = {
-		cloth = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "cloth",
-			},
-		},
-		dirt = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "dirt",
-			},
-		},
-		flesh = {
-			event = "poison_arrow_impact",
-			no_damage_event = "arrow_hit_armour",
-			parameters = {},
-		},
-		fruit = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "fruit",
-			},
-		},
-		forest_grass = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "forest_grass",
-			},
-		},
-		glass = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "glass",
-			},
-		},
-		grass = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "grass",
-			},
-		},
-		hay = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "hay",
-			},
-		},
-		ice = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "ice",
-			},
-		},
-		metal_hollow = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "metal_hollow",
-			},
-		},
-		armored = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "metal_hollow",
-			},
-		},
-		shield = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "metal_hollow",
-			},
-		},
-		shield_metal = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "metal_hollow",
-			},
-		},
-		metal_solid = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "metal_solid",
-			},
-		},
-		mud = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "mud",
-			},
-		},
-		plaster = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "plaster",
-			},
-		},
-		sand = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "grass",
-			},
-		},
-		stone = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "stone",
-			},
-		},
-		stone_dirt = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "stone_dirt",
-			},
-		},
-		stone_wet = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "stone_wet",
-			},
-		},
-		snow = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "snow",
-			},
-		},
-		water = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "water",
-			},
-		},
-		water_deep = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "water_deep",
-			},
-		},
-		wood_bridge = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "wood_bridge",
-			},
-		},
-		wood_hollow = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "wood_hollow",
-			},
-		},
-		wood_solid = {
-			event = "poison_arrow_impact",
-			parameters = {
-				damage_type = "piercing",
-				material = "wood_solid",
-			},
-		},
-	},
-	particles = {
-		armored = "fx/wpnfx_poison_arrow_impact_machinegun",
-		cloth = "fx/wpnfx_poison_arrow_impact_machinegun",
-		dirt = "fx/wpnfx_poison_arrow_impact_machinegun",
-		flesh = "fx/wpnfx_poison_arrow_impact_machinegun",
-		forest_grass = "fx/wpnfx_poison_arrow_impact_machinegun",
-		fruit = "fx/wpnfx_poison_arrow_impact_machinegun",
-		glass = "fx/wpnfx_poison_arrow_impact_machinegun",
-		grass = "fx/wpnfx_poison_arrow_impact_machinegun",
-		hay = "fx/hit_hay_pierce",
-		ice = "fx/hit_ice_pierce",
-		metal_hollow = "fx/wpnfx_poison_arrow_impact_machinegun",
-		metal_solid = "fx/wpnfx_poison_arrow_impact_machinegun",
-		mud = "fx/wpnfx_poison_arrow_impact_machinegun",
-		plaster = "fx/wpnfx_poison_arrow_impact_machinegun",
-		sand = "fx/wpnfx_poison_arrow_impact_machinegun",
-		shield = "fx/hit_enemy_shield",
-		shield_metal = "fx/hit_enemy_shield_metal",
-		snow = "fx/wpnfx_poison_arrow_impact_machinegun",
-		stone = "fx/wpnfx_poison_arrow_impact_machinegun",
-		stone_dirt = "fx/wpnfx_poison_arrow_impact_machinegun",
-		stone_wet = "fx/wpnfx_poison_arrow_impact_machinegun",
-		ward = "fx/chr_stormvermin_champion_shield_dot",
-		water = "fx/wpnfx_poison_arrow_impact_machinegun",
-		water_deep = "fx/wpnfx_poison_arrow_impact_machinegun",
-		wood_bridge = "fx/wpnfx_poison_arrow_impact_machinegun",
-		wood_hollow = "fx/wpnfx_poison_arrow_impact_machinegun",
-		wood_solid = "fx/wpnfx_poison_arrow_impact_machinegun",
-	},
-	flow_event = {
-		ward = "ward_impact",
-	},
-	world_interaction = {
-		water = {},
-	},
-}
-MaterialEffectMappings.poison_arrow_impact_small = MaterialEffectMappings.poison_arrow_impact or {
+})
+MaterialEffectMappingsUtility.add("poison_arrow_impact_small", {
 	decal = {
 		material_drawer_mapping = {
 			armored = "units/projection_decals/hit_metal_hollow_pierce_1",
@@ -7249,8 +6977,8 @@ MaterialEffectMappings.poison_arrow_impact_small = MaterialEffectMappings.poison
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.footstep_walk = MaterialEffectMappings.footstep_walk or {
+})
+MaterialEffectMappingsUtility.add("footstep_walk", {
 	sound = {
 		cloth = {
 			event = "walk",
@@ -7435,8 +7163,8 @@ MaterialEffectMappings.footstep_walk = MaterialEffectMappings.footstep_walk or {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.footstep_sneak = MaterialEffectMappings.footstep_sneak or {
+})
+MaterialEffectMappingsUtility.add("footstep_sneak", {
 	sound = {
 		cloth = {
 			event = "sneak",
@@ -7611,8 +7339,8 @@ MaterialEffectMappings.footstep_sneak = MaterialEffectMappings.footstep_sneak or
 		wood_hollow = "fx/footstep_walk_dirt",
 		wood_solid = "fx/footstep_walk_dirt",
 	},
-}
-MaterialEffectMappings.footstep_run = MaterialEffectMappings.footstep_run or {
+})
+MaterialEffectMappingsUtility.add("footstep_run", {
 	sound = {
 		cloth = {
 			event = "run",
@@ -7797,8 +7525,8 @@ MaterialEffectMappings.footstep_run = MaterialEffectMappings.footstep_run or {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.footstep_jump = MaterialEffectMappings.footstep_jump or {
+})
+MaterialEffectMappingsUtility.add("footstep_jump", {
 	sound = {
 		cloth = {
 			event = "jump",
@@ -7976,8 +7704,8 @@ MaterialEffectMappings.footstep_jump = MaterialEffectMappings.footstep_jump or {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.footstep_land = MaterialEffectMappings.footstep_land or {
+})
+MaterialEffectMappingsUtility.add("footstep_land", {
 	sound = {
 		cloth = {
 			event = "land",
@@ -8174,8 +7902,8 @@ MaterialEffectMappings.footstep_land = MaterialEffectMappings.footstep_land or {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.footstep_dodge = MaterialEffectMappings.footstep_dodge or {
+})
+MaterialEffectMappingsUtility.add("footstep_dodge", {
 	sound = {
 		cloth = {
 			event = "dodge",
@@ -8372,8 +8100,8 @@ MaterialEffectMappings.footstep_dodge = MaterialEffectMappings.footstep_dodge or
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.grenade_bounce = {
+})
+MaterialEffectMappingsUtility.add("grenade_bounce", {
 	sound = {
 		cloth = {
 			event = "grenade_hit_statics",
@@ -8517,8 +8245,8 @@ MaterialEffectMappings.grenade_bounce = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_metal_shield_drop = MaterialEffectMappings.enemy_metal_shield_drop or {
+})
+MaterialEffectMappingsUtility.add("enemy_metal_shield_drop", {
 	decal = {
 		material_drawer_mapping = {
 			armored = "units/projection_decals/hit_metal_hollow_pierce_1",
@@ -8784,8 +8512,8 @@ MaterialEffectMappings.enemy_metal_shield_drop = MaterialEffectMappings.enemy_me
 		wood_hollow = "fx/hit_wood_hollow_blunt",
 		wood_solid = "fx/hit_wood_solid_blunt",
 	},
-}
-MaterialEffectMappings.enemy_wood_shield_drop = MaterialEffectMappings.enemy_wood_shield_drop or {
+})
+MaterialEffectMappingsUtility.add("enemy_wood_shield_drop", {
 	decal = {
 		material_drawer_mapping = {
 			armored = "units/projection_decals/hit_metal_hollow_pierce_1",
@@ -9051,8 +8779,8 @@ MaterialEffectMappings.enemy_wood_shield_drop = MaterialEffectMappings.enemy_woo
 		wood_hollow = "fx/hit_wood_hollow_blunt",
 		wood_solid = "fx/hit_wood_solid_blunt",
 	},
-}
-MaterialEffectMappings.enemy_heavy_weapon_drop = MaterialEffectMappings.enemy_heavy_weapon_drop or {
+})
+MaterialEffectMappingsUtility.add("enemy_heavy_weapon_drop", {
 	decal = {
 		material_drawer_mapping = {
 			armored = "units/projection_decals/hit_metal_hollow_pierce_1",
@@ -9318,8 +9046,8 @@ MaterialEffectMappings.enemy_heavy_weapon_drop = MaterialEffectMappings.enemy_he
 		wood_hollow = "fx/hit_wood_hollow_blunt",
 		wood_solid = "fx/hit_wood_solid_blunt",
 	},
-}
-MaterialEffectMappings.enemy_medium_weapon_drop = MaterialEffectMappings.enemy_medium_weapon_drop or {
+})
+MaterialEffectMappingsUtility.add("enemy_medium_weapon_drop", {
 	decal = {
 		material_drawer_mapping = {
 			armored = "units/projection_decals/hit_metal_hollow_pierce_1",
@@ -9585,8 +9313,8 @@ MaterialEffectMappings.enemy_medium_weapon_drop = MaterialEffectMappings.enemy_m
 		wood_hollow = "fx/hit_wood_hollow_blunt",
 		wood_solid = "fx/hit_wood_solid_blunt",
 	},
-}
-MaterialEffectMappings.enemy_light_weapon_drop = MaterialEffectMappings.enemy_light_weapon_drop or {
+})
+MaterialEffectMappingsUtility.add("enemy_light_weapon_drop", {
 	decal = {
 		material_drawer_mapping = {
 			armored = "units/projection_decals/hit_metal_hollow_pierce_1",
@@ -9852,13 +9580,7 @@ MaterialEffectMappings.enemy_light_weapon_drop = MaterialEffectMappings.enemy_li
 		wood_hollow = "fx/hit_wood_hollow_blunt",
 		wood_solid = "fx/hit_wood_solid_blunt",
 	},
-}
-
-if DEDICATED_SERVER then
-	for _, effect in pairs(MaterialEffectMappings) do
-		effect.sound = nil
-	end
-end
+})
 
 MaterialIDToName = {}
 

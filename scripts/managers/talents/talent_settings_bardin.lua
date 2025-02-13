@@ -527,6 +527,7 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ironbreaker_party_power_on_blocked_attacks_add = {
 		buffs = {
 			{
+				authority = "client",
 				buff_func = "add_buff_to_all_players",
 				buff_to_add = "bardin_ironbreaker_party_power_on_blocked_attacks_buff",
 				chunk_size = 1,
@@ -542,40 +543,6 @@ TalentBuffTemplates.dwarf_ranger = {
 				icon = "bardin_ironbreaker_power_on_blocked_attacks",
 				refresh_durations = true,
 				stat_buff = "power_level_melee",
-			},
-		},
-	},
-	bardin_ironbreaker_power_on_blocked_attacks_add = {
-		buffs = {
-			{
-				buff_func = "bardin_ironbreaker_add_power_buff_on_block",
-				buff_to_add = "bardin_ironbreaker_power_on_blocked_attacks_buff",
-				event = "on_block",
-				max_stacks = 1,
-			},
-		},
-	},
-	bardin_ironbreaker_power_on_blocked_attacks_remove_damage = {
-		buffs = {
-			{
-				buff_func = "bardin_ironbreaker_remove_on_block_power_buff",
-				buff_to_remove = "bardin_ironbreaker_power_on_blocked_attacks_buff",
-				chunk_size = 1,
-				event = "on_player_damage_dealt",
-				max_stacks = 1,
-				reference_buff = "bardin_ironbreaker_power_on_blocked_attacks_add",
-			},
-		},
-	},
-	bardin_ironbreaker_power_on_blocked_attacks_remove_stagger = {
-		buffs = {
-			{
-				buff_func = "bardin_ironbreaker_remove_on_block_power_buff",
-				buff_to_remove = "bardin_ironbreaker_power_on_blocked_attacks_buff",
-				chunk_size = 1,
-				event = "on_stagger",
-				max_stacks = 1,
-				reference_buff = "bardin_ironbreaker_power_on_blocked_attacks_add",
 			},
 		},
 	},
@@ -1524,7 +1491,7 @@ Talents.dwarf_ranger = {
 		},
 	},
 	{
-		buffer = "server",
+		buffer = "client",
 		description = "bardin_ironbreaker_party_power_on_blocked_attacks_desc",
 		icon = "bardin_ironbreaker_power_on_blocked_attacks",
 		name = "bardin_ironbreaker_party_power_on_blocked_attacks",

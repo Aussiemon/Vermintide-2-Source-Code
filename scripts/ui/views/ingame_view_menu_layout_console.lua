@@ -700,7 +700,6 @@ elseif IS_XB1 then
 					fade = false,
 					transition = "exit_menu",
 				},
-				HANDBOOK_OPTION,
 				{
 					display_name = "options_menu_button_name",
 					fade = true,

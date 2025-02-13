@@ -281,6 +281,7 @@ end
 GameModeInnVs._game_mode_state_changed = function (self, new_state)
 	if self._is_server and new_state == "dedicated_server_starting_game" then
 		self:_start_hosting_server()
+		self._mechanism:server_decide_side_order()
 	end
 end
 

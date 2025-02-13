@@ -77,6 +77,7 @@ StartGameWindowVersusPlayerHostedLobby.on_enter = function (self, params, offset
 	self._focus_panel_button_idx = 1
 
 	Managers.state.event:register(self, "event_focus_versus_hosted_lobby_input", "focus_versus_hosted_lobby_input")
+	Managers.state.event:register(self, "lobby_member_game_mode_custom_settings_handler_enabled", "_lobby_member_game_mode_custom_settings_handler_enabled")
 end
 
 StartGameWindowVersusPlayerHostedLobby._play_animation = function (self, name)
@@ -132,6 +133,7 @@ StartGameWindowVersusPlayerHostedLobby.on_exit = function (self, params)
 	self._parent:play_sound("Play_vs_hud_play_menu_leave_lobby")
 	self:_remove_all_players()
 	Managers.state.event:unregister("event_focus_versus_hosted_lobby_input", self)
+	Managers.state.event:unregister("lobby_member_game_mode_custom_settings_handler_enabled", self)
 end
 
 StartGameWindowVersusPlayerHostedLobby._exit_layout = function (self)
@@ -405,7 +407,8 @@ StartGameWindowVersusPlayerHostedLobby._enable_custom_game_settings = function (
 	local game_mechanism = Managers.mechanism:game_mechanism()
 	local custom_game_settings_handler = game_mechanism:get_custom_game_settings_handler()
 
-	custom_game_settings_handler:set_enabled(enabled)
+	custom_game_settings_handler:set_enabled(enabled, true)
+	Managers.state.event:trigger("event_reset_host_settings", not enabled)
 end
 
 StartGameWindowVersusPlayerHostedLobby._create_player_slots = function (self)
@@ -816,7 +819,7 @@ StartGameWindowVersusPlayerHostedLobby._handle_gamepad_input = function (self, d
 			local custom_game_settings = parent:get_custom_game_settings(mechanism_name)
 
 			parent:set_layout_by_name(custom_game_settings.layout_name)
-		elseif self._is_server and self._game_mechanism:is_hosting_versus_custom_game() and input_service:get("confirm") and toggle_custom_settings_button_content.is_selected then
+		elseif toggle_custom_settings_button_content.is_selected and self._is_server and self._game_mechanism:is_hosting_versus_custom_game() and input_service:get("confirm") then
 			local is_selected = not self._custom_settings_toggled
 
 			toggle_custom_settings_button_content.button_hotspot.is_selected = is_selected
@@ -895,7 +898,7 @@ StartGameWindowVersusPlayerHostedLobby._update_server_name = function (self)
 			local lobby_data = lobby:get_stored_lobby_data()
 
 			if not string.find(input.text, "%S") then
-				input.text = input.default_text
+				input.text = LobbyAux.get_unique_server_name()
 			end
 
 			lobby_data.custom_server_name = input.text
@@ -962,4 +965,19 @@ StartGameWindowVersusPlayerHostedLobby._is_other_option_button_selected = functi
 	end
 
 	return nil
+end
+
+StartGameWindowVersusPlayerHostedLobby._lobby_member_game_mode_custom_settings_handler_enabled = function (self, enabled)
+	if not self._is_server and not self._game_mechanism:is_hosting_versus_custom_game() then
+		local custom_settings_toggle = self._widgets_by_name.toggle_custom_settings_button
+
+		self._custom_settings_toggled = enabled
+		custom_settings_toggle.content.button_hotspot.is_selected = enabled
+
+		local gamepad_enabled = Managers.input and Managers.input:is_device_active("gamepad")
+
+		if not gamepad_enabled then
+			Managers.state.event:trigger("event_focus_custom_game_settings_input", enabled)
+		end
+	end
 end

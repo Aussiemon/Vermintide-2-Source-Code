@@ -1,7 +1,7 @@
 ﻿-- chunkname: @scripts/settings/material_effect_mappings_skaven.lua
 
-MaterialEffectMappings = MaterialEffectMappings or {}
-MaterialEffectMappings.enemy_footstep_walk = MaterialEffectMappings.enemy_footstep_walk or {
+require("scripts/settings/material_effect_mappings_utility")
+MaterialEffectMappingsUtility.add("enemy_footstep_walk", {
 	sound = {
 		cloth = {
 			event = "enemy_walk",
@@ -186,8 +186,8 @@ MaterialEffectMappings.enemy_footstep_walk = MaterialEffectMappings.enemy_footst
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_footstep_run = MaterialEffectMappings.enemy_footstep_run or {
+})
+MaterialEffectMappingsUtility.add("enemy_footstep_run", {
 	sound = {
 		cloth = {
 			event = "enemy_run",
@@ -372,8 +372,8 @@ MaterialEffectMappings.enemy_footstep_run = MaterialEffectMappings.enemy_footste
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_stormvermin_champion_footstep_run = MaterialEffectMappings.enemy_stormvermin_champion_footstep_run or {
+})
+MaterialEffectMappingsUtility.add("enemy_stormvermin_champion_footstep_run", {
 	sound = {
 		cloth = {
 			event = "enemy_stormvermin_champion_run",
@@ -558,8 +558,8 @@ MaterialEffectMappings.enemy_stormvermin_champion_footstep_run = MaterialEffectM
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_footstep_land = MaterialEffectMappings.enemy_footstep_land or {
+})
+MaterialEffectMappingsUtility.add("enemy_footstep_land", {
 	sound = {
 		cloth = {
 			event = "enemy_land",
@@ -744,8 +744,8 @@ MaterialEffectMappings.enemy_footstep_land = MaterialEffectMappings.enemy_footst
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_ratogre_run = {
+})
+MaterialEffectMappingsUtility.add("enemy_ratogre_run", {
 	sound = {
 		cloth = {
 			event = "enemy_ratogre_run",
@@ -889,6 +889,154 @@ MaterialEffectMappings.enemy_ratogre_run = {
 			event = "enemy_ratogre_run",
 			parameters = {
 				material = "wood_hollow",
+			},
+		},
+		mechanism_overrides = {
+			versus = {
+				cloth = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "cloth",
+					},
+				},
+				dirt = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "dirt",
+					},
+				},
+				flesh = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "flesh",
+					},
+				},
+				forest_grass = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "forest_grass",
+					},
+				},
+				fruit = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "fruit",
+					},
+				},
+				grass = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "grass",
+					},
+				},
+				glass = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "glass",
+					},
+				},
+				hay = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "hay",
+					},
+				},
+				ice = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "ice",
+					},
+				},
+				metal_solid = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "metal_solid",
+					},
+				},
+				metal_hollow = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "metal_hollow",
+					},
+				},
+				armored = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "metal_hollow",
+					},
+				},
+				mud = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "mud",
+					},
+				},
+				plaster = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "stone",
+					},
+				},
+				sand = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "sand",
+					},
+				},
+				stone = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "stone",
+					},
+				},
+				stone_dirt = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "stone_dirt",
+					},
+				},
+				stone_wet = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "stone_wet",
+					},
+				},
+				snow = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "snow",
+					},
+				},
+				water = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "water",
+					},
+				},
+				water_deep = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "water_deep",
+					},
+				},
+				wood_bridge = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "wood_bridge",
+					},
+				},
+				wood_solid = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "wood_solid",
+					},
+				},
+				wood_hollow = {
+					event = "Play_vs_rat_ogre_footstep_run",
+					parameters = {
+						material = "wood_hollow",
+					},
+				},
 			},
 		},
 	},
@@ -923,8 +1071,8 @@ MaterialEffectMappings.enemy_ratogre_run = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_footstep_ratogre_land = MaterialEffectMappings.enemy_footstep_ratogre_land or {
+})
+MaterialEffectMappingsUtility.add("enemy_footstep_ratogre_land", {
 	sound = {
 		cloth = {
 			event = "enemy_ratogre_land",
@@ -1070,6 +1218,154 @@ MaterialEffectMappings.enemy_footstep_ratogre_land = MaterialEffectMappings.enem
 				material = "wood_hollow",
 			},
 		},
+		mechanism_overrides = {
+			versus = {
+				cloth = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "cloth",
+					},
+				},
+				dirt = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "dirt",
+					},
+				},
+				flesh = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "flesh",
+					},
+				},
+				forest_grass = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "forest_grass",
+					},
+				},
+				fruit = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "fruit",
+					},
+				},
+				grass = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "grass",
+					},
+				},
+				glass = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "glass",
+					},
+				},
+				hay = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "hay",
+					},
+				},
+				ice = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "ice",
+					},
+				},
+				metal_solid = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "metal_solid",
+					},
+				},
+				metal_hollow = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "metal_hollow",
+					},
+				},
+				armored = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "metal_hollow",
+					},
+				},
+				mud = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "mud",
+					},
+				},
+				plaster = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "stone",
+					},
+				},
+				sand = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "sand",
+					},
+				},
+				stone = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "stone",
+					},
+				},
+				stone_dirt = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "stone_dirt",
+					},
+				},
+				stone_wet = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "stone_wet",
+					},
+				},
+				snow = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "snow",
+					},
+				},
+				water = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "water",
+					},
+				},
+				water_deep = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "water_deep",
+					},
+				},
+				wood_bridge = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "wood_bridge",
+					},
+				},
+				wood_solid = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "wood_solid",
+					},
+				},
+				wood_hollow = {
+					event = "Play_vs_rat_ogre_land",
+					parameters = {
+						material = "wood_hollow",
+					},
+				},
+			},
+		},
 	},
 	particles = {
 		armored = "fx/footstep_walk_dirt",
@@ -1102,8 +1398,8 @@ MaterialEffectMappings.enemy_footstep_ratogre_land = MaterialEffectMappings.enem
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_ratogre_slide = {
+})
+MaterialEffectMappingsUtility.add("enemy_ratogre_slide", {
 	sound = {
 		cloth = {
 			event = "enemy_ratogre_slide",
@@ -1243,6 +1539,148 @@ MaterialEffectMappings.enemy_ratogre_slide = {
 				material = "wood_hollow",
 			},
 		},
+		mechanism_overrides = {
+			versus = {
+				cloth = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "cloth",
+					},
+				},
+				dirt = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "dirt",
+					},
+				},
+				flesh = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "flesh",
+					},
+				},
+				forest_grass = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "forest_grass",
+					},
+				},
+				fruit = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "fruit",
+					},
+				},
+				grass = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "grass",
+					},
+				},
+				glass = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "glass",
+					},
+				},
+				hay = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "hay",
+					},
+				},
+				ice = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "glass",
+					},
+				},
+				metal_solid = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "metal_solid",
+					},
+				},
+				metal_hollow = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "metal_hollow",
+					},
+				},
+				mud = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "mud",
+					},
+				},
+				plaster = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "stone",
+					},
+				},
+				sand = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "sand",
+					},
+				},
+				stone = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "stone",
+					},
+				},
+				stone_dirt = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "stone_dirt",
+					},
+				},
+				stone_wet = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "stone_wet",
+					},
+				},
+				snow = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "water",
+					},
+				},
+				water = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "water",
+					},
+				},
+				water_deep = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "water_deep",
+					},
+				},
+				wood_bridge = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "wood_bridge",
+					},
+				},
+				wood_solid = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "wood_solid",
+					},
+				},
+				wood_hollow = {
+					event = "Play_vs_rat_ogre_slide",
+					parameters = {
+						material = "wood_hollow",
+					},
+				},
+			},
+		},
 	},
 	particles = {
 		armored = "fx/footstep_walk_dirt",
@@ -1275,8 +1713,8 @@ MaterialEffectMappings.enemy_ratogre_slide = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_ratogre_footstep_single = {
+})
+MaterialEffectMappingsUtility.add("enemy_ratogre_footstep_single", {
 	sound = {
 		cloth = {
 			event = "enemy_ratogre_footstep_single",
@@ -1416,6 +1854,148 @@ MaterialEffectMappings.enemy_ratogre_footstep_single = {
 				material = "wood_hollow",
 			},
 		},
+		mechanism_overrides = {
+			versus = {
+				cloth = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "cloth",
+					},
+				},
+				dirt = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "dirt",
+					},
+				},
+				flesh = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "flesh",
+					},
+				},
+				forest_grass = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "forest_grass",
+					},
+				},
+				fruit = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "fruit",
+					},
+				},
+				grass = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "grass",
+					},
+				},
+				glass = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "glass",
+					},
+				},
+				hay = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "hay",
+					},
+				},
+				ice = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "glass",
+					},
+				},
+				metal_solid = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "metal_solid",
+					},
+				},
+				metal_hollow = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "metal_hollow",
+					},
+				},
+				mud = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "mud",
+					},
+				},
+				plaster = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "stone",
+					},
+				},
+				sand = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "sand",
+					},
+				},
+				stone = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "stone",
+					},
+				},
+				stone_dirt = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "stone_dirt",
+					},
+				},
+				stone_wet = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "stone_wet",
+					},
+				},
+				snow = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "water",
+					},
+				},
+				water = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "water",
+					},
+				},
+				water_deep = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "water_deep",
+					},
+				},
+				wood_bridge = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "wood_bridge",
+					},
+				},
+				wood_solid = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "wood_solid",
+					},
+				},
+				wood_hollow = {
+					event = "Play_vs_rat_ogre_footstep_single",
+					parameters = {
+						material = "wood_hollow",
+					},
+				},
+			},
+		},
 	},
 	particles = {
 		armored = "fx/footstep_walk_dirt",
@@ -1448,8 +2028,8 @@ MaterialEffectMappings.enemy_ratogre_footstep_single = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_stormfiend_footstep = {
+})
+MaterialEffectMappingsUtility.add("enemy_stormfiend_footstep", {
 	sound = {
 		cloth = {
 			event = "stormfiend_footstep",
@@ -1619,8 +2199,8 @@ MaterialEffectMappings.enemy_stormfiend_footstep = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_stormfiend_footstep_land = {
+})
+MaterialEffectMappingsUtility.add("enemy_stormfiend_footstep_land", {
 	sound = {
 		cloth = {
 			event = "stormfiend_footstep_land",
@@ -1790,8 +2370,8 @@ MaterialEffectMappings.enemy_stormfiend_footstep_land = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_gutterrunner_footstep_run = {
+})
+MaterialEffectMappingsUtility.add("enemy_gutterrunner_footstep_run", {
 	sound = {
 		cloth = {
 			event = "Play_enemy_gutter_runner_footstep_walk",
@@ -1976,4 +2556,4 @@ MaterialEffectMappings.enemy_gutterrunner_footstep_run = {
 	world_interaction = {
 		water = {},
 	},
-}
+})

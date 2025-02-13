@@ -15,6 +15,7 @@ ProjectilePhysicsUnitLocomotionExtension.init = function (self, extension_init_c
 	self.is_husk = not self.is_server
 	self.stopped = false
 	self.dropped = false
+	self.owner_peer_id = extension_init_data.owner_peer_id
 
 	local network_manager = Managers.state.network
 

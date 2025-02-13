@@ -40,17 +40,19 @@ local custom_game_settings_template = {
 		},
 	},
 	{
-		default = 1,
+		default = "random",
 		setting_name = "starting_as_heroes",
 		values = {
 			1,
 			2,
+			"random",
 		},
 	},
 	{
 		default = 3,
 		setting_name = "wounds_amount",
 		values = {
+			0,
 			1,
 			2,
 			3,
@@ -62,6 +64,13 @@ local custom_game_settings_template = {
 		default = 250,
 		setting_name = "knockdown_hp",
 		values = numeric_incremented_value_table(0, 500, 50),
+	},
+	{
+		default = false,
+		setting_name = "round_time_limit",
+		values = numeric_incremented_value_table(3, 20, 1, {
+			false,
+		}),
 	},
 	{
 		default = 100,
@@ -93,6 +102,14 @@ local custom_game_settings_template = {
 		default = 1,
 		setting_name = "hero_damage_taken",
 		values = numeric_incremented_value_table(0.1, 5, 0.1),
+	},
+	{
+		default = false,
+		setting_name = "hero_rescues_enabled",
+		values = {
+			true,
+			false,
+		},
 	},
 	{
 		default = 8,

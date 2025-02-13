@@ -5,7 +5,7 @@ local BASE_SOCIAL_WHEEL_SETTINGS = BASE_SOCIAL_WHEEL_SETTINGS or table.clone(Soc
 local ICON_PLACEHOLDER_TEXTURE_PATH = "gui/1080p/single_textures/generic/transparent_placeholder_texture"
 local SOCIAL_WHEEL_REFERENCE_NAME = "social_wheel_ui"
 local BASE_REFERENCE_NAME = "SocialWheelUI_"
-local BASE_MATERIAL_NAME = "weapon_pose_anim_%02d"
+local BASE_MATERIAL_NAME = "%s_weapon_pose_anim_%02d"
 local POSE_MASKED = false
 local definitions = local_require("scripts/ui/social_wheel/social_wheel_ui_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
@@ -99,8 +99,10 @@ SocialWheelUI.init = function (self, parent, ingame_ui_context)
 	self._player = ingame_ui_context.player
 	self._wwise_world = ingame_ui_context.wwise_world
 
-	if not IS_WINDOWS then
+	if IS_CONSOLE then
 		self._console_extension = ingame_ui_context.is_in_inn and "_inn" or ""
+	else
+		self._console_extension = ""
 	end
 
 	self._current_context = nil
@@ -224,8 +226,8 @@ SocialWheelUI.destroy = function (self)
 	end
 
 	if self._loaded_weapon_pose_packages then
-		for _, loaded_package_data in pairs(self._loaded_weapon_pose_packages) do
-			self:_reset_materials_for_item_type(loaded_package_data.item_type)
+		for slot_name, loaded_package_data in pairs(self._loaded_weapon_pose_packages) do
+			self:_reset_materials_for_item_type(loaded_package_data.item_type, slot_name)
 			Managers.package:unload(loaded_package_data.package_name, SOCIAL_WHEEL_REFERENCE_NAME)
 		end
 
@@ -861,7 +863,7 @@ SocialWheelUI._inject_weapon_poses = function (self)
 		wielded_item_type = string.gsub(wielded_item_data.key, "_magic_0%d$", "")
 	end
 
-	if self._wielded_item_type == wielded_item_type then
+	if self._wielded_item_type == wielded_item_type and not self:_is_dirty(wielded_item_type) then
 		return
 	end
 
@@ -871,18 +873,20 @@ SocialWheelUI._inject_weapon_poses = function (self)
 	local loaded_package_data = self._loaded_weapon_pose_packages[wielded_slot]
 
 	if loaded_package_data and loaded_package_data.item_type ~= wielded_item_type and wielded_slot == loaded_package_data.slot_type then
-		self:_reset_materials_for_item_type(loaded_package_data.item_type)
+		self:_reset_materials_for_item_type(loaded_package_data.item_type, wielded_slot)
 		Managers.package:unload(loaded_package_data.package_name, SOCIAL_WHEEL_REFERENCE_NAME)
 
 		self._loaded_weapon_pose_packages[wielded_slot] = nil
 	end
 
-	if not self._loaded_weapon_pose_packages[wielded_slot] then
+	local package_loaded = self._loaded_weapon_pose_packages[wielded_slot]
+
+	if not package_loaded then
 		local package_name = "resource_packages/pose_packages/" .. wielded_item_type
 
 		if Application.can_get("package", package_name) then
 			if not Managers.package:has_loaded(package_name, SOCIAL_WHEEL_REFERENCE_NAME) then
-				Managers.package:load(package_name, SOCIAL_WHEEL_REFERENCE_NAME, callback(self, "_weapon_pose_package_loaded_cb", wielded_item_type), true, true)
+				Managers.package:load(package_name, SOCIAL_WHEEL_REFERENCE_NAME, callback(self, "_weapon_pose_package_loaded_cb", wielded_item_type, wielded_slot), true, true)
 			end
 
 			self._loaded_weapon_pose_packages[wielded_slot] = {
@@ -895,7 +899,36 @@ SocialWheelUI._inject_weapon_poses = function (self)
 		end
 	end
 
-	self:_create_weapon_pose_wheel(wielded_item_type)
+	self:_create_weapon_pose_wheel(wielded_item_type, wielded_slot, package_loaded)
+end
+
+SocialWheelUI._is_dirty = function (self, parent_item)
+	local has_weapon_poses = self:_gather_weapon_poses_by_parent_item(parent_item) ~= nil
+	local side = Managers.state.side.side_by_unit[self._player.player_unit]
+	local side_name = side:name()
+	local side_settings = Managers.state.game_mode:setting("social_wheel_by_side")
+	local category = "general"
+
+	if side_settings then
+		category = side_settings[side_name]
+	end
+
+	category = category .. self._console_extension
+
+	local social_wheel = self._selection_widgets[category]
+	local social_wheel_gamepad = self._selection_widgets[category .. "_gamepad"]
+
+	if social_wheel then
+		local has_weapon_pose_wheel = social_wheel.weapon_poses_page_index ~= nil
+
+		return has_weapon_pose_wheel ~= has_weapon_poses
+	end
+
+	if social_wheel_gamepad then
+		local has_weapon_pose_wheel = social_wheel_gamepad.weapon_poses_page_index ~= nil
+
+		return has_weapon_pose_wheel ~= has_weapon_poses
+	end
 end
 
 SocialWheelUI._reset_social_wheel = function (self)
@@ -934,7 +967,7 @@ SocialWheelUI._reset_social_wheel = function (self)
 	self:_create_social_wheel()
 end
 
-SocialWheelUI._create_weapon_pose_wheel = function (self, parent_item)
+SocialWheelUI._create_weapon_pose_wheel = function (self, parent_item, slot_name, package_loaded)
 	self:_reset_social_wheel()
 
 	local weapon_poses = self:_gather_weapon_poses_by_parent_item(parent_item)
@@ -952,16 +985,29 @@ SocialWheelUI._create_weapon_pose_wheel = function (self, parent_item)
 	for i = 1, #weapon_poses do
 		local weapon_pose = weapon_poses[i]
 		local weapon_pose_data = weapon_pose.data
+		local pose_index = weapon_pose_data.pose_index
 		local parent = weapon_pose_data.parent
-		local reference_name = string.format(BASE_MATERIAL_NAME, weapon_pose_data.pose_index)
+		local reference_name = string.format(BASE_MATERIAL_NAME, slot_name, weapon_pose_data.pose_index)
 		local material_name = BASE_REFERENCE_NAME .. reference_name
 
 		self:_create_material_instance(material_name, template_material_name, reference_name)
 
-		local glow_reference_name = string.format(BASE_MATERIAL_NAME .. "_glow", weapon_pose_data.pose_index)
+		if package_loaded then
+			local texture_path = string.format("gui/1080p/single_textures/icons_poses_social_wheel/" .. parent_item .. "_%02d", pose_index)
+
+			self:_set_material_diffuse_by_texture_path(material_name, texture_path)
+		end
+
+		local glow_reference_name = string.format(BASE_MATERIAL_NAME .. "_glow", slot_name, weapon_pose_data.pose_index)
 		local glow_material_name = BASE_REFERENCE_NAME .. glow_reference_name
 
 		self:_create_material_instance(glow_material_name, template_material_name, glow_reference_name)
+
+		if package_loaded then
+			local glow_texture_path = string.format("gui/1080p/single_textures/icons_poses_social_wheel/" .. parent_item .. "_%02d_glow", pose_index)
+
+			self:_set_material_diffuse_by_texture_path(glow_material_name, glow_texture_path)
+		end
 
 		local name = string.format("social_wheel_weapon_pose_general_pose_%02d", weapon_pose_data.pose_index)
 		local settings = {
@@ -1044,7 +1090,7 @@ SocialWheelUI._gather_weapon_poses_by_parent_item = function (self, parent_item)
 	return weapon_poses
 end
 
-SocialWheelUI._reset_materials_for_item_type = function (self, parent_item)
+SocialWheelUI._reset_materials_for_item_type = function (self, parent_item, slot_name)
 	local weapon_poses = self:_gather_weapon_poses_by_parent_item(parent_item)
 
 	if not weapon_poses then
@@ -1054,17 +1100,17 @@ SocialWheelUI._reset_materials_for_item_type = function (self, parent_item)
 	for i = 1, #weapon_poses do
 		local weapon_pose = weapon_poses[i]
 		local weapon_pose_data = weapon_pose.data
-		local reference_name = string.format(BASE_MATERIAL_NAME, weapon_pose_data.pose_index)
+		local reference_name = string.format(BASE_MATERIAL_NAME, slot_name, weapon_pose_data.pose_index)
 
 		self:_reset_cloned_material(reference_name)
 
-		local glow_reference_name = string.format(BASE_MATERIAL_NAME .. "_glow", weapon_pose_data.pose_index)
+		local glow_reference_name = string.format(BASE_MATERIAL_NAME .. "_glow", slot_name, weapon_pose_data.pose_index)
 
 		self:_reset_cloned_material(glow_reference_name)
 	end
 end
 
-SocialWheelUI._weapon_pose_package_loaded_cb = function (self, parent_item)
+SocialWheelUI._weapon_pose_package_loaded_cb = function (self, parent_item, slot_name)
 	local weapon_poses = self:_gather_weapon_poses_by_parent_item(parent_item)
 
 	if not weapon_poses then
@@ -1074,14 +1120,14 @@ SocialWheelUI._weapon_pose_package_loaded_cb = function (self, parent_item)
 	for i = 1, #weapon_poses do
 		local weapon_pose = weapon_poses[i]
 		local weapon_pose_data = weapon_pose.data
-		local reference_name = string.format(BASE_MATERIAL_NAME, weapon_pose_data.pose_index)
+		local reference_name = string.format(BASE_MATERIAL_NAME, slot_name, weapon_pose_data.pose_index)
 		local material_name = BASE_REFERENCE_NAME .. reference_name
 		local pose_index = weapon_pose_data.pose_index
 		local texture_path = string.format("gui/1080p/single_textures/icons_poses_social_wheel/" .. parent_item .. "_%02d", pose_index)
 
 		self:_set_material_diffuse_by_texture_path(material_name, texture_path)
 
-		local glow_reference_name = string.format(BASE_MATERIAL_NAME .. "_glow", weapon_pose_data.pose_index)
+		local glow_reference_name = string.format(BASE_MATERIAL_NAME .. "_glow", slot_name, weapon_pose_data.pose_index)
 		local glow_material_name = BASE_REFERENCE_NAME .. glow_reference_name
 		local glow_texture_path = string.format("gui/1080p/single_textures/icons_poses_social_wheel/" .. parent_item .. "_%02d_glow", pose_index)
 

@@ -548,7 +548,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 		self.block_chat_activation_hack = self.block_chat_activation_hack + dt
 	end
 
-	local block_chat_activation = self.block_chat_activation_hack < 0.2 or not Managers.chat:is_chat_enabled() or self._block_keystrokes
+	local block_chat_activation = self.block_chat_activation_hack < 0.2 or not chat_enabled or self._block_keystrokes
 
 	self._block_keystrokes = false
 
@@ -629,7 +629,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 			end
 		end
 
-		local auto_close = chat_close_time and chat_close_time == 0
+		local auto_close = chat_close_time and chat_close_time == 0 or not chat_enabled
 
 		if tab_hotspot.on_release or input_service:get("deactivate_chat_input") and not block_chat_activation or menu_close_press_outside_area or auto_close then
 			if chat_focused and (tab_hotspot.on_release or input_service:get("deactivate_chat_input") and not block_chat_activation or menu_close_press_outside_area) then
@@ -656,7 +656,6 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 				end
 
 				if self.chat_message ~= "" then
-					local target_index = 1
 					local channel_id = self.channel_id
 
 					if self.chat_manager:has_channel(channel_id) then

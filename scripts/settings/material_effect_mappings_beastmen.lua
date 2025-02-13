@@ -1,7 +1,7 @@
 ﻿-- chunkname: @scripts/settings/material_effect_mappings_beastmen.lua
 
-MaterialEffectMappings = MaterialEffectMappings or {}
-MaterialEffectMappings.enemy_ungor_walk = MaterialEffectMappings.enemy_ungor_walk or {
+require("scripts/settings/material_effect_mappings_utility")
+MaterialEffectMappingsUtility.add("enemy_ungor_walk", {
 	sound = {
 		cloth = {
 			event = "play_enemy_ungor_walk",
@@ -194,8 +194,8 @@ MaterialEffectMappings.enemy_ungor_walk = MaterialEffectMappings.enemy_ungor_wal
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_ungor_scuff = MaterialEffectMappings.enemy_ungor_scuff or {
+})
+MaterialEffectMappingsUtility.add("enemy_ungor_scuff", {
 	sound = {
 		cloth = {
 			event = "Play_beastmen_small_walk_scuffs",
@@ -388,8 +388,8 @@ MaterialEffectMappings.enemy_ungor_scuff = MaterialEffectMappings.enemy_ungor_sc
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_ungor_run = {
+})
+MaterialEffectMappingsUtility.add("enemy_ungor_run", {
 	sound = {
 		cloth = {
 			event = "play_enemy_ungor_run",
@@ -575,8 +575,8 @@ MaterialEffectMappings.enemy_ungor_run = {
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_ungor_land = MaterialEffectMappings.enemy_ungor_land or {
+})
+MaterialEffectMappingsUtility.add("enemy_ungor_land", {
 	sound = {
 		cloth = {
 			event = "play_enemy_ungor_land",
@@ -762,8 +762,8 @@ MaterialEffectMappings.enemy_ungor_land = MaterialEffectMappings.enemy_ungor_lan
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_ungor_slide = {
+})
+MaterialEffectMappingsUtility.add("enemy_ungor_slide", {
 	sound = {
 		cloth = {
 			event = "play_enemy_ungor_slide",
@@ -943,8 +943,8 @@ MaterialEffectMappings.enemy_ungor_slide = {
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_ungor_footstep_single = {
+})
+MaterialEffectMappingsUtility.add("enemy_ungor_footstep_single", {
 	sound = {
 		cloth = {
 			event = "play_enemy_ungor_footstep_single",
@@ -1124,8 +1124,8 @@ MaterialEffectMappings.enemy_ungor_footstep_single = {
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_gor_pawing = {
+})
+MaterialEffectMappingsUtility.add("enemy_gor_pawing", {
 	sound = {
 		cloth = {
 			event = "play_enemy_gor_pawing_short",
@@ -1305,8 +1305,8 @@ MaterialEffectMappings.enemy_gor_pawing = {
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_gor_walk = MaterialEffectMappings.enemy_gor_walk or {
+})
+MaterialEffectMappingsUtility.add("enemy_gor_walk", {
 	sound = {
 		cloth = {
 			event = "play_enemy_gor_walk",
@@ -1499,8 +1499,8 @@ MaterialEffectMappings.enemy_gor_walk = MaterialEffectMappings.enemy_gor_walk or
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_gor_scuff = MaterialEffectMappings.enemy_gor_scuff or {
+})
+MaterialEffectMappingsUtility.add("enemy_gor_scuff", {
 	sound = {
 		cloth = {
 			event = "Play_beastmen_medium_walk_scuffs",
@@ -1693,8 +1693,8 @@ MaterialEffectMappings.enemy_gor_scuff = MaterialEffectMappings.enemy_gor_scuff 
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_gor_run = {
+})
+MaterialEffectMappingsUtility.add("enemy_gor_run", {
 	sound = {
 		cloth = {
 			event = "play_enemy_gor_run",
@@ -1880,8 +1880,8 @@ MaterialEffectMappings.enemy_gor_run = {
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_gor_land = MaterialEffectMappings.enemy_gor_land or {
+})
+MaterialEffectMappingsUtility.add("enemy_gor_land", {
 	sound = {
 		cloth = {
 			event = "play_enemy_gor_land",
@@ -2067,8 +2067,8 @@ MaterialEffectMappings.enemy_gor_land = MaterialEffectMappings.enemy_gor_land or
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_gor_slide = {
+})
+MaterialEffectMappingsUtility.add("enemy_gor_slide", {
 	sound = {
 		cloth = {
 			event = "play_enemy_gor_slide",
@@ -2248,8 +2248,8 @@ MaterialEffectMappings.enemy_gor_slide = {
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_gor_footstep_single = {
+})
+MaterialEffectMappingsUtility.add("enemy_gor_footstep_single", {
 	sound = {
 		cloth = {
 			event = "play_enemy_gor_footstep_single",
@@ -2429,8 +2429,8 @@ MaterialEffectMappings.enemy_gor_footstep_single = {
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_bestigor_walk = MaterialEffectMappings.enemy_bestigor_walk or {
+})
+MaterialEffectMappingsUtility.add("enemy_bestigor_walk", {
 	sound = {
 		cloth = {
 			event = "play_enemy_bestigor_walk",
@@ -2623,8 +2623,8 @@ MaterialEffectMappings.enemy_bestigor_walk = MaterialEffectMappings.enemy_bestig
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_bestigor_scuff = MaterialEffectMappings.enemy_bestigor_scuff or {
+})
+MaterialEffectMappingsUtility.add("enemy_bestigor_scuff", {
 	sound = {
 		cloth = {
 			event = "Play_beastmen_large_walk_scuffs",
@@ -2817,8 +2817,8 @@ MaterialEffectMappings.enemy_bestigor_scuff = MaterialEffectMappings.enemy_besti
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_bestigor_run = {
+})
+MaterialEffectMappingsUtility.add("enemy_bestigor_run", {
 	sound = {
 		cloth = {
 			event = "play_enemy_bestigor_run",
@@ -3004,8 +3004,8 @@ MaterialEffectMappings.enemy_bestigor_run = {
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_bestigor_land = MaterialEffectMappings.enemy_bestigor_land or {
+})
+MaterialEffectMappingsUtility.add("enemy_bestigor_land", {
 	sound = {
 		cloth = {
 			event = "play_enemy_bestigor_land",
@@ -3191,8 +3191,8 @@ MaterialEffectMappings.enemy_bestigor_land = MaterialEffectMappings.enemy_bestig
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_bestigor_slide = {
+})
+MaterialEffectMappingsUtility.add("enemy_bestigor_slide", {
 	sound = {
 		cloth = {
 			event = "play_enemy_bestigor_slide",
@@ -3372,8 +3372,8 @@ MaterialEffectMappings.enemy_bestigor_slide = {
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_bestigor_footstep_single = {
+})
+MaterialEffectMappingsUtility.add("enemy_bestigor_footstep_single", {
 	sound = {
 		cloth = {
 			event = "play_enemy_bestigor_footstep_single",
@@ -3553,8 +3553,8 @@ MaterialEffectMappings.enemy_bestigor_footstep_single = {
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_standard_bearer_walk = MaterialEffectMappings.enemy_standard_bearer_walk or {
+})
+MaterialEffectMappingsUtility.add("enemy_standard_bearer_walk", {
 	sound = {
 		cloth = {
 			event = "play_enemy_standard_bearer_walk",
@@ -3747,8 +3747,8 @@ MaterialEffectMappings.enemy_standard_bearer_walk = MaterialEffectMappings.enemy
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_standard_bearer_run = {
+})
+MaterialEffectMappingsUtility.add("enemy_standard_bearer_run", {
 	sound = {
 		cloth = {
 			event = "play_enemy_standard_bearer_run",
@@ -3934,8 +3934,8 @@ MaterialEffectMappings.enemy_standard_bearer_run = {
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_standard_bearer_land = MaterialEffectMappings.enemy_standard_bearer_land or {
+})
+MaterialEffectMappingsUtility.add("enemy_standard_bearer_land", {
 	sound = {
 		cloth = {
 			event = "play_enemy_standard_bearer_land",
@@ -4121,8 +4121,8 @@ MaterialEffectMappings.enemy_standard_bearer_land = MaterialEffectMappings.enemy
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_standard_bearer_slide = {
+})
+MaterialEffectMappingsUtility.add("enemy_standard_bearer_slide", {
 	sound = {
 		cloth = {
 			event = "play_enemy_standard_bearer_slide",
@@ -4302,8 +4302,8 @@ MaterialEffectMappings.enemy_standard_bearer_slide = {
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_standard_bearer_footstep_single = {
+})
+MaterialEffectMappingsUtility.add("enemy_standard_bearer_footstep_single", {
 	sound = {
 		cloth = {
 			event = "play_enemy_standard_bearer_footstep_single",
@@ -4483,8 +4483,8 @@ MaterialEffectMappings.enemy_standard_bearer_footstep_single = {
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_minotaur_walk = MaterialEffectMappings.enemy_minotaur_walk or {
+})
+MaterialEffectMappingsUtility.add("enemy_minotaur_walk", {
 	sound = {
 		cloth = {
 			event = "Play_beastmen_giant_walk",
@@ -4677,8 +4677,8 @@ MaterialEffectMappings.enemy_minotaur_walk = MaterialEffectMappings.enemy_minota
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_minotaur_run = {
+})
+MaterialEffectMappingsUtility.add("enemy_minotaur_run", {
 	sound = {
 		cloth = {
 			event = "Play_beastmen_giant_run",
@@ -4864,8 +4864,8 @@ MaterialEffectMappings.enemy_minotaur_run = {
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_minotaur_land = MaterialEffectMappings.enemy_minotaur_land or {
+})
+MaterialEffectMappingsUtility.add("enemy_minotaur_land", {
 	sound = {
 		cloth = {
 			event = "Play_beastmen_giant_land",
@@ -5051,8 +5051,8 @@ MaterialEffectMappings.enemy_minotaur_land = MaterialEffectMappings.enemy_minota
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_minotaur_slide = {
+})
+MaterialEffectMappingsUtility.add("enemy_minotaur_slide", {
 	sound = {
 		cloth = {
 			event = "Play_beastmen_giant_slide",
@@ -5232,8 +5232,8 @@ MaterialEffectMappings.enemy_minotaur_slide = {
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_minotaur_footstep_single = {
+})
+MaterialEffectMappingsUtility.add("enemy_minotaur_footstep_single", {
 	sound = {
 		cloth = {
 			event = "Play_beastmen_giant_walk",
@@ -5419,8 +5419,8 @@ MaterialEffectMappings.enemy_minotaur_footstep_single = {
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_minotaur_scuff = MaterialEffectMappings.enemy_minotaur_scuff or {
+})
+MaterialEffectMappingsUtility.add("enemy_minotaur_scuff", {
 	sound = {
 		cloth = {
 			event = "Play_beastmen_giant_scuffs",
@@ -5613,8 +5613,8 @@ MaterialEffectMappings.enemy_minotaur_scuff = MaterialEffectMappings.enemy_minot
 			character_category = "elite",
 		},
 	},
-}
-MaterialEffectMappings.enemy_minotaur_land_body = {
+})
+MaterialEffectMappingsUtility.add("enemy_minotaur_land_body", {
 	sound = {
 		cloth = {
 			event = "Play_beastmen_giant_land_body",
@@ -5764,8 +5764,8 @@ MaterialEffectMappings.enemy_minotaur_land_body = {
 	world_interaction = {
 		water = {},
 	},
-}
-MaterialEffectMappings.enemy_minotaur_attack_ground = {
+})
+MaterialEffectMappingsUtility.add("enemy_minotaur_attack_ground", {
 	sound = {
 		cloth = {
 			event = "Play_beastmen_giant_attack_ground",
@@ -5923,4 +5923,4 @@ MaterialEffectMappings.enemy_minotaur_attack_ground = {
 			character_category = "elite",
 		},
 	},
-}
+})
