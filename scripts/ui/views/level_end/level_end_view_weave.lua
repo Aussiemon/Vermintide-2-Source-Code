@@ -165,19 +165,7 @@ LevelEndViewWeave._setup_weave_data = function (self)
 		local act_key
 		local private_game = true
 		local quick_game = false
-		local eac_authorized = false
-
-		if DEDICATED_SERVER then
-			local eac_server = Managers.matchmaking.network_server:eac_server()
-
-			eac_authorized = EACServer.state(eac_server, Network.peer_id()) == "trusted"
-		else
-			local eac_state = EAC.state()
-
-			fassert(eac_state ~= nil, "EAC state wasn't set.")
-
-			eac_authorized = eac_state == "trusted"
-		end
+		local eac_authorized = Managers.eac:is_trusted()
 
 		Managers.matchmaking:set_matchmaking_data(level_key, difficulty_key, act_key, game_mode, private_game, quick_game, eac_authorized, nil, mechanism)
 	end

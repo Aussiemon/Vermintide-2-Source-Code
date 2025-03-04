@@ -557,6 +557,7 @@ StateIngame.on_enter = function (self)
 
 	Managers.music:on_enter_level(network_event_delegate, is_server)
 	Managers.chat:register_network_event_delegate(network_event_delegate)
+	Managers.eac:register_network_event_delegate(network_event_delegate)
 
 	if Managers.mod then
 		Managers.mod:register_network_event_delegate(network_event_delegate)
@@ -818,6 +819,7 @@ StateIngame.pre_update = function (self, dt)
 	UPDATE_POSITION_LOOKUP()
 	Managers.state.side:update_frame_tables()
 	network_manager:update_receive(dt)
+	self.entity_system:commit_and_remove_pending_units()
 
 	if self.network_server then
 		self.network_server:update(dt, t)
@@ -2111,6 +2113,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 	end
 
 	Managers.chat:unregister_network_event_delegate()
+	Managers.eac:unregister_network_event_delegate()
 
 	if Managers.mod then
 		Managers.mod:unregister_network_event_delegate()

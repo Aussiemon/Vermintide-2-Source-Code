@@ -11,6 +11,7 @@ require("scripts/settings/platform_specific")
 require("scripts/managers/matchmaking/matchmaking_manager")
 require("scripts/managers/network/game_server_manager")
 require("scripts/managers/input/input_manager")
+require("scripts/managers/eac/eac_manager")
 require("foundation/scripts/util/garbage_leak_detector")
 require("foundation/scripts/managers/chat/chat_manager")
 require("scripts/ui/ui_animations")
@@ -28,6 +29,7 @@ StateDedicatedServer.on_enter = function (self, params)
 	self:_setup_popup_manager()
 	self:_setup_chat_manager()
 	self:_setup_account_manager()
+	self:_setup_eac_manager()
 
 	if self.parent.loading_context.reload_packages then
 		self:_unload_packages()
@@ -76,6 +78,10 @@ end
 
 StateDedicatedServer._setup_account_manager = function (self)
 	Managers.account = Managers.account or AccountManager:new()
+end
+
+StateDedicatedServer._setup_eac_manager = function (self)
+	Managers.eac = Managers.eac or EacManager:new()
 end
 
 StateDedicatedServer._load_packages = function (self)

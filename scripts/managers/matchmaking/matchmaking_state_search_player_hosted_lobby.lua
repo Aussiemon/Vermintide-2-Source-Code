@@ -40,13 +40,7 @@ MatchmakingStateSearchPlayerHostedLobby._initialize_search = function (self)
 		end
 	end
 
-	local eac_authorized = false
-
-	if IS_WINDOWS or IS_LINUX then
-		local eac_state = EAC.state()
-
-		eac_authorized = eac_state == "trusted"
-	end
+	local eac_authorized = Managers.eac:is_trusted()
 
 	current_filters.eac_authorized = {
 		comparison = "equal",

@@ -13,7 +13,6 @@ CHANNEL_TO_PEER_ID = CHANNEL_TO_PEER_ID or {}
 
 local NUM_PROFILES = #PROFILES_BY_AFFILIATION.heroes
 local KICK_PEER_WAIT_TIMER = 5
-local EAC_MATCH_TIMER = 10
 
 local function network_printf(format, ...)
 	if script_data.network_debug_connections then
@@ -58,7 +57,6 @@ NetworkServer.init = function (self, player_manager, lobby_host, wanted_profile_
 	self.kicked_peers_disconnect_timer = {}
 	self._game_server_manager = game_server_manager
 	self._connections = {}
-	self._eac_peers = {}
 	self._joined_peers = {}
 	self._peer_initialized_mechanisms = {}
 	self._shared_states = {}
@@ -114,26 +112,24 @@ NetworkServer.init = function (self, player_manager, lobby_host, wanted_profile_
 		server_name = "lan"
 	end
 
-	if DEDICATED_SERVER or HAS_STEAM and not Development.parameter("use_lan_backend") then
-		self._eac_server = EACServer.create(server_name)
-	end
+	Managers.eac:server_create(server_name)
 
 	self._using_gamelift = DEDICATED_SERVER and rawget(_G, "GameliftServer") ~= nil
 
 	if DEDICATED_SERVER then
-		self._eac_authorized_written_to_lobby_data = ""
-
 		if self._using_gamelift then
 			print("yes, gamelift is process_ready")
 			GameliftServer.process_ready()
 		end
+
+		local lobby_data = self.lobby_host:get_stored_lobby_data()
+
+		lobby_data.eac_authorized = "trusted"
+
+		self.lobby_host:set_lobby_data(lobby_data)
 	end
 
 	self._match_handler = NetworkMatchHandler:new(self, true, my_peer_id, my_peer_id, lobby_host)
-end
-
-NetworkServer.eac_server = function (self)
-	return self._eac_server
 end
 
 NetworkServer.server_join = function (self)
@@ -405,11 +401,7 @@ NetworkServer.destroy = function (self)
 		self:close_channel(peer_id)
 	end
 
-	if self._eac_server ~= nil then
-		EACServer.destroy(self._eac_server)
-
-		self._eac_server = nil
-	end
+	Managers.eac:server_destroy()
 
 	if self._gui ~= nil then
 		World.destroy_gui(Application.debug_world(), self._gui)
@@ -794,23 +786,10 @@ NetworkServer.approve_channel = function (self, channel_id, peer_id, instance_id
 	local joined_peers = self._joined_peers
 	local connections = self._connections
 	local connection = {
-		eac_match_timer = 0,
 		channel_id = channel_id,
 		peer_id = peer_id,
 		channel_state = Network.channel_state(channel_id),
 	}
-	local add_eac_peer = true
-	local matchmaking_manager = Managers.matchmaking
-
-	if matchmaking_manager and matchmaking_manager:is_in_versus_custom_game_lobby() then
-		add_eac_peer = false
-	end
-
-	if self._eac_server and add_eac_peer then
-		EACServer.add_peer(self._eac_server, channel_id)
-
-		self._eac_peers[peer_id] = true
-	end
 
 	connections[peer_id] = connection
 	joined_peers[#joined_peers + 1] = connection
@@ -825,20 +804,15 @@ NetworkServer.close_channel = function (self, peer_id)
 
 	print("GOT close_channel", channel_id, peer_id)
 
-	if self._eac_server and channel_id and self._eac_peers[peer_id] then
-		EACServer.remove_peer(self._eac_server, channel_id)
-
-		self._eac_peers[peer_id] = nil
-	end
-
 	if channel_id then
 		self.lobby_host:close_channel(channel_id)
 
 		CHANNEL_TO_PEER_ID[channel_id] = nil
+		PEER_ID_TO_CHANNEL[peer_id] = nil
+		self._connections[peer_id] = nil
+	else
+		assert(self._connections[peer_id], "Connection was not properly cleaned up")
 	end
-
-	self._connections[peer_id] = nil
-	PEER_ID_TO_CHANNEL[peer_id] = nil
 end
 
 NetworkServer._update_connections = function (self, peer_state_machines)
@@ -995,33 +969,9 @@ NetworkServer.update = function (self, dt, t)
 	self:_update_reserve_slots(dt)
 	self:update_disconnect_kicked_peers_by_time(dt)
 	self:_update_lobby_data(dt, t)
-
-	if self._eac_server ~= nil then
-		EACServer.update(self._eac_server)
-	end
-
-	self:_update_eac_match(dt)
+	self:_update_eac_match()
 
 	if DEDICATED_SERVER then
-		local eac_state = EACServer.state(self._eac_server, Network.peer_id())
-
-		if eac_state ~= "undetermined" then
-			local eac_authorized = eac_state == "trusted"
-			local eac_authorized_string = eac_authorized and "true" or "false"
-
-			if self._eac_authorized_written_to_lobby_data ~= eac_authorized_string then
-				cprintf("[NetworkServer] Server is " .. (eac_authorized and "trusted" or "untrusted"))
-
-				local lobby_data = self.lobby_host:get_stored_lobby_data()
-
-				lobby_data.eac_authorized = eac_authorized_string
-
-				self.lobby_host:set_lobby_data(lobby_data)
-
-				self._eac_authorized_written_to_lobby_data = eac_authorized_string
-			end
-		end
-
 		local using_gamelift = DEDICATED_SERVER and rawget(_G, "GameliftServer") ~= nil
 
 		if using_gamelift then
@@ -1094,90 +1044,20 @@ NetworkServer._handle_peer_left_game = function (self, peer_id)
 	end
 end
 
-NetworkServer.set_custom_game_started_or_cancelled = function (self)
-	for peer_id in pairs(self._connections) do
-		local channel_id = PEER_ID_TO_CHANNEL[peer_id]
-
-		if channel_id and self._eac_server and not self._eac_peers[peer_id] then
-			EACServer.add_peer(self._eac_server, channel_id)
-
-			self._eac_peers[peer_id] = true
-		end
-	end
-end
-
-NetworkServer._update_eac_match = function (self, dt)
+NetworkServer._update_eac_match = function (self)
 	local peer_state_machines = self.peer_state_machines
 
 	for peer_id, peer_state_machine in pairs(peer_state_machines) do
-		local state_name = peer_state_machine.current_state.state_name
-		local bad_state = state_name == "Disconnecting" or state_name == "Disconnected"
-		local data = self._connections[peer_id]
+		if peer_state_machine.state_data.has_eac then
+			local _, can_play = Managers.eac:server_check_peer(peer_id)
 
-		if data and not bad_state then
-			data.eac_match_timer = math.max(0, data.eac_match_timer - dt)
-
-			if data.eac_match_timer == 0 then
-				local determined, can_play = self:eac_check_peer(peer_id)
-
-				if can_play then
-					-- Nothing
-				else
-					printf("[NetworkServer] Peer's EAC status doesn't match the server, disconnecting peer (%s)", peer_id)
-					self:disconnect_peer(peer_id, "eac_authorize_failed")
-					peer_state_machine.state_data:change_state(PeerStates.Disconnecting)
-				end
-
-				data.eac_match_timer = EAC_MATCH_TIMER
+			if not can_play then
+				printf("[NetworkServer] Peer's EAC status doesn't match the server, disconnecting peer (%s)", peer_id)
+				self:disconnect_peer(peer_id, "eac_authorize_failed")
+				peer_state_machine.state_data:change_state(PeerStates.Disconnecting)
 			end
 		end
 	end
-end
-
-NetworkServer.eac_check_peer = function (self, peer_id)
-	if self._eac_server and peer_id ~= Network.peer_id() and not self._eac_peers[peer_id] then
-		return false, true
-	end
-
-	local server_state, peer_state
-
-	if DEDICATED_SERVER then
-		if BUILD == "release" then
-			server_state = EACServer.state(self._eac_server, self.my_peer_id)
-			peer_state = EACServer.state(self._eac_server, peer_id)
-		else
-			server_state = EACServer.state(self._eac_server, self.my_peer_id)
-			peer_state = EACServer.state(self._eac_server, peer_id)
-		end
-	else
-		local host = self.lobby_host
-
-		server_state = EAC.state()
-
-		if peer_id == self.my_peer_id then
-			peer_state = server_state
-		else
-			peer_state = self._eac_server == nil and "untrusted" or EACServer.state(self._eac_server, peer_id)
-		end
-	end
-
-	if server_state == "undetermined" then
-		return false, true
-	end
-
-	if peer_state == "undetermined" then
-		return false, true
-	end
-
-	local match
-
-	match = (server_state ~= "banned" and peer_state ~= "banned" or false) and server_state == peer_state
-
-	if not match then
-		printf("[NetworkServer] Host EAC state is %s, peer %s's state is %s", server_state, peer_id, peer_state)
-	end
-
-	return true, match
 end
 
 NetworkServer._draw_peer_states = function (self)

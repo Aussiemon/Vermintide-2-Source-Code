@@ -31,16 +31,14 @@ function mm_printf_force(format_text, ...)
 	printf(format_text, ...)
 end
 
+local extra_timeout = Development.parameter("network_timeout_really_long") and 10000 or 0
 local ALWAYS_HOST_GAME = DEDICATED_SERVER and true or false
 
 MatchmakingSettings = {
-	JOIN_LOBBY_TIME_UNTIL_AUTO_CANCEL = 20,
 	LOBBY_FINDER_UPDATE_INTERVAL = 1,
 	MAX_NUMBER_OF_PLAYERS = 4,
 	MAX_NUM_LOBBIES = 100,
 	MIN_STATUS_MESSAGE_TIME = 2,
-	REQUEST_JOIN_LOBBY_REPLY_TIME = 30,
-	REQUEST_PROFILES_REPLY_TIME = 10,
 	START_GAME_TIME = 5,
 	TIME_BETWEEN_EACH_SEARCH = 3.4,
 	TOTAL_GAME_SEARCH_TIME = 5,
@@ -49,6 +47,9 @@ MatchmakingSettings = {
 	auto_ready = false,
 	host_games = "auto",
 	restart_search_after_host_cancel = true,
+	JOIN_LOBBY_TIME_UNTIL_AUTO_CANCEL = 20 + extra_timeout,
+	REQUEST_JOIN_LOBBY_REPLY_TIME = 30 + extra_timeout,
+	REQUEST_PROFILES_REPLY_TIME = 10 + extra_timeout,
 	max_distance_filter = GameSettingsDevelopment.network_mode == "lan" and "close" or Application.user_setting("max_quick_play_search_range") ~= "medium" and Application.user_setting("max_quick_play_search_range") or "close" or DefaultUserSettings.get("user_settings", "max_quick_play_search_range"),
 	allowed_profiles = {
 		true,
@@ -74,13 +75,13 @@ MatchmakingSettings = {
 }
 MatchmakingSettingsOverrides = {
 	versus = {
-		JOIN_LOBBY_TIME_UNTIL_AUTO_CANCEL = 20,
+		JOIN_LOBBY_TIME_UNTIL_AUTO_CANCEL = 300,
 		LOBBY_FINDER_UPDATE_INTERVAL = 1,
 		MAX_NUMBER_OF_PLAYERS = 8,
 		MAX_NUM_LOBBIES = 100,
 		MIN_STATUS_MESSAGE_TIME = 2,
-		REQUEST_JOIN_LOBBY_REPLY_TIME = 30,
-		REQUEST_PROFILES_REPLY_TIME = 10,
+		REQUEST_JOIN_LOBBY_REPLY_TIME = 300,
+		REQUEST_PROFILES_REPLY_TIME = 300,
 		START_GAME_TIME = 5,
 		TIME_BETWEEN_EACH_SEARCH = 3.4,
 		TOTAL_GAME_SEARCH_TIME = 5,
@@ -1178,10 +1179,6 @@ MatchmakingManager.cancel_matchmaking = function (self)
 
 		if mechanism.is_hosting_versus_custom_game and mechanism:is_hosting_versus_custom_game() then
 			mechanism:set_is_hosting_versus_custom_game(false)
-
-			if self.is_server and Managers.state.network then
-				Managers.state.network.network_server:set_custom_game_started_or_cancelled()
-			end
 		end
 
 		self:_change_state(MatchmakingStateIdle, self.params, self.state_context, "cancel_matchmaking")

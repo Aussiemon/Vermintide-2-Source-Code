@@ -12,6 +12,7 @@ PeerStateMachine.create = function (server, peer_id, xb1_preconnect)
 	local state_data = {
 		server = server,
 		peer_id = peer_id,
+		is_remote = peer_id ~= Network.peer_id(),
 	}
 	local function_memoize = {}
 	local state_machine = {

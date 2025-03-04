@@ -45,10 +45,6 @@ MatchmakingStatePlayerHostedGame.force_start_game = function (self)
 
 		Managers.matchmaking:set_lobby_data_match_started(true)
 
-		if Managers.state.network.is_server then
-			Managers.state.network.network_server:set_custom_game_started_or_cancelled()
-		end
-
 		local audio_event = "versus_hud_player_lobby_match_found"
 		local audio_system = Managers.state.entity:system("audio_system")
 
@@ -90,15 +86,7 @@ MatchmakingStatePlayerHostedGame._start_hosting_game = function (self)
 		game_mechanism:set_is_hosting_versus_custom_game(true)
 	end
 
-	local eac_authorized = false
-
-	if IS_WINDOWS then
-		local eac_state = EAC.state()
-
-		fassert(eac_state ~= nil, "EAC state wasn't set.")
-
-		eac_authorized = eac_state == "trusted"
-	end
+	local eac_authorized = Managers.eac:is_trusted()
 
 	self._difficulty_manager:set_difficulty(difficulty, 0)
 	Managers.party:set_leader(self._lobby:lobby_host())

@@ -3089,7 +3089,7 @@ PlayFabMirrorBase._get_eac_response = function (self, challenge)
 		i = i + 1
 	end
 
-	local eac_response = EAC.challenge_response(str)
+	local eac_response = Managers.eac:challenge_response(str)
 	local response
 
 	if eac_response then

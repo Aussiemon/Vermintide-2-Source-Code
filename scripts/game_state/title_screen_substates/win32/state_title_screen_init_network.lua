@@ -94,12 +94,11 @@ StateTitleScreenInitNetwork._connected_to_steam = function (self)
 end
 
 StateTitleScreenInitNetwork._next_state = function (self)
-	local eac_initialized = EAC.is_initialized()
-	local eac_init_error, eac_error = EAC.initialization_error()
+	local eac_initialized, eac_error = Managers.eac:is_initialized()
 	local ready_to_exit = Managers.backend:profiles_loaded() and not Managers.backend:is_waiting_for_user_input() and eac_initialized
 
 	if ready_to_exit then
-		if eac_init_error then
+		if eac_error then
 			self:_create_eac_error_popup(eac_error)
 
 			return

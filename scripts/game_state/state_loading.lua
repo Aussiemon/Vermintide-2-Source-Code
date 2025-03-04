@@ -1403,12 +1403,6 @@ StateLoading._try_next_state = function (self, dt)
 			return
 		end
 
-		local eac_allowed_to_play = true
-
-		if self._network_client then
-			eac_allowed_to_play = self._network_client:eac_allowed_to_play()
-		end
-
 		local packages_loaded = self:_packages_loaded()
 
 		if packages_loaded and not self._async_level_spawner then
@@ -1469,7 +1463,7 @@ StateLoading._try_next_state = function (self, dt)
 			end
 		end
 
-		local can_go_to_next_state = self._wanted_state and ui_done and eac_allowed_to_play and not self._popup_id
+		local can_go_to_next_state = self._wanted_state and ui_done and not self._popup_id
 
 		if can_go_to_next_state then
 			local ready_to_go_to_next_state = self._permission_to_go_to_next_state and packages_loaded and self._level_spawned
@@ -2177,6 +2171,7 @@ StateLoading.register_rpcs = function (self)
 	end
 
 	Managers.chat:register_network_event_delegate(network_event_delegate)
+	Managers.eac:register_network_event_delegate(network_event_delegate)
 
 	if Managers.mod then
 		Managers.mod:register_network_event_delegate(network_event_delegate)
@@ -2205,6 +2200,7 @@ StateLoading._unregister_rpcs = function (self)
 	end
 
 	Managers.chat:unregister_network_event_delegate()
+	Managers.eac:unregister_network_event_delegate()
 
 	if Managers.mod then
 		Managers.mod:unregister_network_event_delegate()
@@ -2637,25 +2633,18 @@ StateLoading.set_lobby_host_data = function (self, level_key)
 			stored_lobby_host_data.matchmaking_type = DEDICATED_SERVER and NetworkLookup.matchmaking_types.versus or NetworkLookup.matchmaking_types.custom
 		end
 
-		local eac_authorized = false
-
 		if IS_WINDOWS or IS_LINUX then
 			local host_type
 
 			if DEDICATED_SERVER then
-				local eac_server = Managers.matchmaking.network_server:eac_server()
-
-				eac_authorized = EACServer.state(eac_server, Network.peer_id()) == "trusted"
 				host_type = NetworkLookup.host_types.community_dedicated_server
 			else
-				local eac_state = EAC.state()
-
-				fassert(eac_state ~= nil, "EAC state wasn't set.")
-
-				eac_authorized = eac_state == "trusted"
 				host_type = NetworkLookup.host_types.player_hosted
-				stored_lobby_host_data.host_type = host_type
 			end
+
+			stored_lobby_host_data.host_type = host_type
+
+			local eac_authorized = Managers.eac:is_trusted()
 
 			stored_lobby_host_data.eac_authorized = eac_authorized and "true" or "false"
 		end

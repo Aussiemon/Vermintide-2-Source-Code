@@ -82,22 +82,20 @@ NetworkClient.init = function (self, server_peer_id, wanted_profile_index, wante
 	end
 
 	self.connecting_timeout = 0
-	self._already_connected_to_dedicated = PEER_ID_TO_CHANNEL[Managers.mechanism:dedicated_server_peer_id()]
 
-	if not self._already_connected_to_dedicated then
-		EAC.before_join()
+	local mode = "peer_to_peer"
+
+	if Managers.mechanism:dedicated_server_peer_id() then
+		mode = "client_server"
 	end
 
-	self._eac_state_determined = false
-	self._eac_can_play = false
+	Managers.eac:before_join(mode)
+
 	self._match_handler = NetworkMatchHandler:new(self, false, my_peer_id, self.server_peer_id, lobby_client)
 end
 
 NetworkClient.destroy = function (self)
-	if not self._already_connected_to_dedicated then
-		EAC.after_leave()
-	end
-
+	Managers.eac:after_leave()
 	self._match_handler:destroy()
 	Managers.mechanism:set_network_client(nil)
 	Managers.level_transition_handler:deregister_network_state()
@@ -160,15 +158,7 @@ NetworkClient.rpc_notify_connected = function (self, channel_id)
 	if not self._notification_sent then
 		local channel_id = PEER_ID_TO_CHANNEL[self.server_peer_id]
 
-		if not self._already_connected_to_dedicated then
-			EAC.set_host(channel_id)
-			EAC.validate_host()
-		end
-
-		self._eac_has_set_host = true
-
-		local channel_id = PEER_ID_TO_CHANNEL[self.server_peer_id]
-
+		Managers.eac:set_host(self.server_peer_id)
 		RPC.rpc_notify_lobby_joined(channel_id, self.wanted_profile_index, self.wanted_career_index, self.wanted_party_index or 0, Application.user_setting("clan_tag") or "0", Managers.account:account_id() or "0")
 
 		self._notification_sent = true
@@ -350,9 +340,10 @@ NetworkClient.update = function (self, dt, t)
 	self:_update_connections()
 
 	if not self.wait_for_state_loading and self.state == NetworkClientStates.loading then
+		local state_determined, can_play = Managers.eac:check_host()
 		local level_transition_handler = Managers.level_transition_handler
 
-		if Managers.level_transition_handler:all_packages_loaded() then
+		if state_determined and can_play and level_transition_handler:all_packages_loaded() then
 			network_printf("All level packages loaded!")
 
 			if self._rpc_loading_synced then
@@ -379,79 +370,24 @@ NetworkClient.update = function (self, dt, t)
 		end
 	end
 
-	local state = self.state
-	local bad_state = state == NetworkClientStates.lost_connection_to_host or state == NetworkClientStates.denied_enter_game or state == NetworkClientStates.eac_match_failed
-
-	if not bad_state then
-		self:_update_eac_match(dt)
-	end
-
+	self:_update_eac_match()
 	self.voip:update(dt, t)
 end
 
-NetworkClient.eac_allowed_to_play = function (self)
-	return self._eac_state_determined and self._eac_can_play
-end
-
-NetworkClient._update_eac_match = function (self, dt)
-	if not self._eac_has_set_host then
+NetworkClient._update_eac_match = function (self)
+	if self:has_bad_state() or not self._notification_sent then
 		return
 	end
 
-	local state_determined, can_play = self:_eac_host_check()
+	local _, can_play = Managers.eac:check_host()
 
-	self._eac_state_determined = state_determined
-	self._eac_can_play = can_play
-
-	if can_play then
-		-- Nothing
-	else
+	if not can_play then
 		printf("eac mismatch leading to eac_authorize_failed")
 
 		self.fail_reason = "eac_authorize_failed"
 
 		self:set_state(NetworkClientStates.eac_match_failed)
 	end
-end
-
-NetworkClient._eac_host_check = function (self)
-	if self.lobby_client:is_dedicated_server() then
-		if not self._switch_xxx then
-			print("EAC debug check 1", self._switch_xxx)
-		end
-
-		self._switch_xxx = true
-
-		return true, true
-	end
-
-	if self._switch_xxx or self._switch_xxx == nil then
-		print("EAC debug check 2", self._switch_xxx)
-	end
-
-	self._switch_xxx = false
-
-	if not self._eac_has_set_host then
-		return false, true
-	end
-
-	local own_id = Network.peer_id()
-	local host_state = EAC.state(self.server_peer_id)
-	local own_state = EAC.state()
-
-	if host_state == "undetermined" or own_state == "undetermined" then
-		return false, true
-	end
-
-	local match
-
-	match = (host_state ~= "banned" and own_state ~= "banned" or false) and host_state == own_state
-
-	if not match then
-		printf("Host (%s) EAC state is %s, own (%s) state is %s", self.server_peer_id, host_state, own_id, own_state)
-	end
-
-	return true, match
 end
 
 NetworkClient.can_enter_game = function (self)

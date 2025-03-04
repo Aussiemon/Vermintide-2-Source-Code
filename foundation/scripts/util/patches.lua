@@ -114,40 +114,6 @@ if not _G.FOUNDATION_patches_applied and (IS_CONSOLE or DEDICATED_SERVER) then
 	end
 end
 
-if not EAC then
-	auto_patch_missing_methods("EAC")
-
-	EAC.is_initialized = CONST(true)
-
-	EAC.initialization_error = function ()
-		return false, "No error"
-	end
-
-	EAC.before_join = NOP
-	EAC.after_leave = NOP
-
-	EAC.state = function ()
-		return "untrusted", "No Steam", "", "not_running"
-	end
-
-	EAC.set_host = NOP
-	EAC.validate_host = NOP
-end
-
-if not EACServer then
-	auto_patch_missing_methods("EACServer")
-
-	EACServer.create = NOP
-	EACServer.destroy = NOP
-	EACServer.add_peer = NOP
-	EACServer.remove_peer = NOP
-	EACServer.update = NOP
-
-	EACServer.state = function ()
-		return "untrusted", "No Steam"
-	end
-end
-
 if not Clipboard then
 	auto_patch_missing_methods("Clipboard")
 

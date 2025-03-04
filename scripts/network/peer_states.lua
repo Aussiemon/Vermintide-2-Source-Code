@@ -80,7 +80,7 @@ PeerStates.Connecting = {
 
 		local reservation_status = SlotReservationConnectStatus.SUCCEEDED
 
-		if self.peer_id ~= self.server.my_peer_id then
+		if self.is_remote then
 			local mechanism_manager = Managers.mechanism
 			local slot_reservation_handler = mechanism_manager:get_slot_reservation_handler()
 
@@ -219,12 +219,20 @@ PeerStates.Connecting = {
 PeerStates.Loading = {
 	approved_for_joining = true,
 	on_enter = function (self, previous_state)
-		Network.write_dump_tag(string.format("%s loading", self.peer_id))
+		local peer_id = self.peer_id
+
+		Network.write_dump_tag(string.format("%s loading", peer_id))
 
 		self.game_started = false
 		self.is_ingame = nil
 
-		Managers.level_transition_handler.transient_package_loader:hot_join_sync(self.peer_id)
+		if self.is_remote and not self.has_eac then
+			Managers.eac:server_add_peer(self.peer_id)
+
+			self.has_eac = true
+		end
+
+		Managers.level_transition_handler.transient_package_loader:hot_join_sync(peer_id)
 	end,
 	rpc_is_ingame = function (self)
 		print("[PSM] Got rpc_is_ingame in PeerStates.Loading, is that ok?")
@@ -256,7 +264,7 @@ PeerStates.Loading = {
 
 		if self.loaded_level == level_key then
 			local enemies_are_loaded = level_transition_handler.enemy_package_loader:load_sync_done_for_peer(self.peer_id)
-			local state_determined, can_play = server:eac_check_peer(self.peer_id)
+			local state_determined, can_play = Managers.eac:server_check_peer(self.peer_id)
 
 			if enemies_are_loaded and state_determined and can_play then
 				return PeerStates.LoadingProfilePackages
@@ -348,7 +356,7 @@ PeerStates.WaitingForEnterGame = {
 					local in_session = server.game_network_manager:in_game_session()
 
 					if game_session and in_session and all_synced then
-						if peer_id ~= Network.peer_id() then
+						if self.is_remote then
 							local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
 							GameSession.add_peer(game_session, channel_id)
@@ -402,7 +410,7 @@ PeerStates.WaitingForGameObjectSync = {
 				self.game_started = true
 			end
 
-			if self.peer_id ~= Network.peer_id() then
+			if self.is_remote then
 				local player_controlled = true
 				local local_player_id = 1
 
@@ -482,6 +490,12 @@ PeerStates.Disconnecting = {
 		printf("[PSM] Disconnecting peer %s", self.peer_id)
 		Network.write_dump_tag(string.format("%s disconnecting", self.peer_id))
 
+		if self.has_eac then
+			Managers.eac:server_remove_peer(self.peer_id)
+
+			self.has_eac = false
+		end
+
 		local match_handler = self.server:get_match_handler()
 
 		match_handler:client_disconnected(self.peer_id)
@@ -549,9 +563,8 @@ PeerStates.Disconnected = {
 
 		local peer_id = self.peer_id
 		local server = self.server
-		local is_client = peer_id ~= Network.peer_id()
 
-		if is_client then
+		if self.is_remote then
 			local enemy_package_loader = Managers.level_transition_handler.enemy_package_loader
 
 			enemy_package_loader:client_disconnected(peer_id)

@@ -95,22 +95,7 @@ MatchmakingStateHostGame._start_hosting_game = function (self)
 	fassert(private_game ~= nil, "Private status variable wasn't set.")
 
 	local quick_game = search_config.quick_game
-	local eac_authorized = false
-
-	if IS_WINDOWS or IS_LINUX then
-		if DEDICATED_SERVER then
-			local eac_server = Managers.matchmaking.network_server:eac_server()
-
-			eac_authorized = EACServer.state(eac_server, Network.peer_id()) == "trusted"
-		else
-			local eac_state = EAC.state()
-
-			fassert(eac_state ~= nil, "EAC state wasn't set.")
-
-			eac_authorized = eac_state == "trusted"
-		end
-	end
-
+	local eac_authorized = Managers.eac:is_trusted()
 	local mechanism_name = Managers.mechanism:current_mechanism_name()
 
 	if not DEDICATED_SERVER and mechanism_name == "versus" then

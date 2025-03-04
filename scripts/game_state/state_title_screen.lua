@@ -92,10 +92,10 @@ StateTitleScreen.on_enter = function (self, params)
 	self:_init_chat_manager()
 
 	if IS_WINDOWS or IS_LINUX then
-		Managers.eac = Managers.eac or EacManager:new()
-
 		self:_load_global_resources()
 	end
+
+	Managers.eac = Managers.eac or EacManager:new()
 
 	if Managers.beta_overlay then
 		Managers.beta_overlay:destroy()

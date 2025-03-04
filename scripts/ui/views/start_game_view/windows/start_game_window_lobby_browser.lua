@@ -1371,8 +1371,7 @@ StartGameWindowLobbyBrowser._create_filter_requirements = function (self)
 		end
 	end
 
-	local eac_state = EAC.state()
-	local eac_authorized = eac_state == "trusted"
+	local eac_authorized = Managers.eac:is_trusted()
 
 	requirements.filters.eac_authorized = {
 		comparison = "equal",
