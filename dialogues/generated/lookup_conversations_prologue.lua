@@ -95,7 +95,6 @@ assert(DialogueLookup[DialogueLookup_n + 92] == nil)
 assert(DialogueLookup[DialogueLookup_n + 93] == nil)
 assert(DialogueLookup[DialogueLookup_n + 94] == nil)
 assert(DialogueLookup[DialogueLookup_n + 95] == nil)
-assert(DialogueLookup[DialogueLookup_n + 96] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "ecc_prologue_dialogue_answer_bang"
 DialogueLookup[DialogueLookup_n + 2] = "ecc_prologue_dialogue_answer_lack_of_patience"
@@ -134,7 +133,7 @@ DialogueLookup[DialogueLookup_n + 34] = "pdr_prologue_bardin_revived_01"
 DialogueLookup[DialogueLookup_n + 35] = "pdr_prologue_gate_opens_01"
 DialogueLookup[DialogueLookup_n + 36] = "pdr_prologue_heal_bardin_01"
 DialogueLookup[DialogueLookup_n + 37] = "pdr_prologue_heal_bardin_take_time_02"
-DialogueLookup[DialogueLookup_n + 38] = "pdr_prologue_kerillian_fight_01"
+DialogueLookup[DialogueLookup_n + 38] = "pdr_prologue_kerillian_fight_c"
 DialogueLookup[DialogueLookup_n + 39] = "pdr_prologue_meeting_kerillian_01"
 DialogueLookup[DialogueLookup_n + 40] = "pdr_prologue_portal_bardin"
 DialogueLookup[DialogueLookup_n + 41] = "pes_level_prologue_ability"
@@ -175,7 +174,7 @@ DialogueLookup[DialogueLookup_n + 75] = "pes_prologue_heal_bardin_kruber_01"
 DialogueLookup[DialogueLookup_n + 76] = "pes_prologue_intro_b"
 DialogueLookup[DialogueLookup_n + 77] = "pes_prologue_intro_d"
 DialogueLookup[DialogueLookup_n + 78] = "pes_prologue_intro_f"
-DialogueLookup[DialogueLookup_n + 79] = "pes_prologue_kerillian_fight_01"
+DialogueLookup[DialogueLookup_n + 79] = "pes_prologue_kerillian_fight_b"
 DialogueLookup[DialogueLookup_n + 80] = "pes_prologue_meeting_kerillian_01"
 DialogueLookup[DialogueLookup_n + 81] = "pes_prologue_meeting_kerillian_02"
 DialogueLookup[DialogueLookup_n + 82] = "pes_prologue_portal_kruber"
@@ -184,13 +183,12 @@ DialogueLookup[DialogueLookup_n + 84] = "pwe_level_prologue_elevator_ride_kerill
 DialogueLookup[DialogueLookup_n + 85] = "pwe_level_prologue_reached_surface_kerillian"
 DialogueLookup[DialogueLookup_n + 86] = "pwe_level_prologue_seeing_crater_kerillian"
 DialogueLookup[DialogueLookup_n + 87] = "pwe_level_prologue_sienna_up_01"
-DialogueLookup[DialogueLookup_n + 88] = "pwe_level_prologue_skittergate_afar_01"
-DialogueLookup[DialogueLookup_n + 89] = "pwe_level_prologue_wizard_sound"
-DialogueLookup[DialogueLookup_n + 90] = "pwe_prologue_kerillian_fight_01"
-DialogueLookup[DialogueLookup_n + 91] = "pwe_prologue_meeting_kerillian_02"
-DialogueLookup[DialogueLookup_n + 92] = "pwe_prologue_meeting_kerillian_kerillian_01"
-DialogueLookup[DialogueLookup_n + 93] = "pwe_prologue_portal_kerillian"
-DialogueLookup[DialogueLookup_n + 94] = "pwh_prologue_portal"
-DialogueLookup[DialogueLookup_n + 95] = "pwh_prologue_portal_salty"
-DialogueLookup[DialogueLookup_n + 96] = "pwh_prologue_portal_salty_02"
-DialogueLookup_n = DialogueLookup_n + 96
+DialogueLookup[DialogueLookup_n + 88] = "pwe_level_prologue_wizard_sound"
+DialogueLookup[DialogueLookup_n + 89] = "pwe_prologue_kerillian_fight_a"
+DialogueLookup[DialogueLookup_n + 90] = "pwe_prologue_meeting_kerillian_02"
+DialogueLookup[DialogueLookup_n + 91] = "pwe_prologue_meeting_kerillian_kerillian_01"
+DialogueLookup[DialogueLookup_n + 92] = "pwe_prologue_portal_kerillian"
+DialogueLookup[DialogueLookup_n + 93] = "pwh_prologue_portal"
+DialogueLookup[DialogueLookup_n + 94] = "pwh_prologue_portal_salty"
+DialogueLookup[DialogueLookup_n + 95] = "pwh_prologue_portal_salty_02"
+DialogueLookup_n = DialogueLookup_n + 95

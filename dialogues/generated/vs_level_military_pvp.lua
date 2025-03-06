@@ -435,6 +435,12 @@ return function ()
 				OP.EQ,
 				"two",
 			},
+			{
+				"global_context",
+				"objective_part",
+				OP.EQ,
+				1,
+			},
 		},
 	})
 	define_rule({

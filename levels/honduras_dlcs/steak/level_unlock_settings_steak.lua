@@ -25,7 +25,7 @@ AreaSettings.scorpion = {
 		for _, level_key in pairs(MainGameLevels) do
 			local level_settings = LevelSettings[level_key]
 
-			if level_settings.game_mode == "adventure" and statistics_db:get_persistent_stat(stats_id, "completed_levels", level_key) < 1 then
+			if level_settings.mechanism == "adventure" and statistics_db:get_persistent_stat(stats_id, "completed_levels", level_key) < 1 then
 				return false
 			end
 		end

@@ -6997,7 +6997,7 @@ return function ()
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"village_21_elevator_ride_rant",
+				"village_21_elevator_ride_rant_a",
 			},
 			{
 				"query_context",

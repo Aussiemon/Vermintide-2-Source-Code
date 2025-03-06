@@ -995,9 +995,9 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pdr_prologue_kerillian_fight_01",
+		name = "pdr_prologue_kerillian_fight_c",
 		probability = 1,
-		response = "pdr_prologue_kerillian_fight_01",
+		response = "pdr_prologue_kerillian_fight_c",
 		criterias = {
 			{
 				"query_context",
@@ -1007,9 +1007,9 @@ return function ()
 			},
 			{
 				"query_context",
-				"dialogue_name_nopre",
+				"dialogue_name",
 				OP.EQ,
-				"prologue_kerillian_fight_01",
+				"pes_prologue_kerillian_fight_b",
 			},
 			{
 				"user_context",
@@ -1032,9 +1032,9 @@ return function ()
 			},
 			{
 				"query_context",
-				"dialogue_name_nopre",
+				"dialogue_name",
 				OP.EQ,
-				"prologue_meeting_kerillian_02",
+				"pwe_prologue_meeting_kerillian_02",
 			},
 			{
 				"user_context",
@@ -1728,19 +1728,19 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item",
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"prologue_sienna_up",
+				"start_revive",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
 				"empire_soldier",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"bright_wizard",
 			},
 			{
 				"user_context",
@@ -2156,9 +2156,9 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pes_prologue_kerillian_fight_01",
+		name = "pes_prologue_kerillian_fight_b",
 		probability = 1,
-		response = "pes_prologue_kerillian_fight_01",
+		response = "pes_prologue_kerillian_fight_b",
 		criterias = {
 			{
 				"query_context",
@@ -2404,38 +2404,13 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak",
+				"heard_speakDISABLED",
 			},
 			{
 				"query_context",
 				"dialogue_name_nopre",
 				OP.EQ,
 				"level_prologue_sienna_up_01",
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"wood_elf",
-			},
-		},
-	})
-	define_rule({
-		name = "pwe_level_prologue_skittergate_afar_01",
-		probability = 1,
-		response = "pwe_level_prologue_skittergate_afar_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak",
-			},
-			{
-				"query_context",
-				"dialogue_name_nopre",
-				OP.EQ,
-				"level_prologue_skittergate_afar_01",
 			},
 			{
 				"user_context",
@@ -2471,9 +2446,9 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pwe_prologue_kerillian_fight_01",
+		name = "pwe_prologue_kerillian_fight_a",
 		probability = 1,
-		response = "pwe_prologue_kerillian_fight_01",
+		response = "pwe_prologue_kerillian_fight_a",
 		criterias = {
 			{
 				"query_context",
@@ -2639,8 +2614,8 @@ return function ()
 				"prologue_portal_bardin",
 			},
 			{
-				"user_context",
-				"player_profile",
+				"query_context",
+				"source_name",
 				OP.EQ,
 				"witch_hunter",
 			},
@@ -2664,8 +2639,8 @@ return function ()
 				"prologue_portal_kruber",
 			},
 			{
-				"user_context",
-				"player_profile",
+				"query_context",
+				"source_name",
 				OP.EQ,
 				"witch_hunter",
 			},
@@ -3352,7 +3327,7 @@ return function ()
 				[1] = "pdr_level_prologue_wizard_down_b_01",
 			},
 			sound_events_duration = {
-				[1] = 3.4416666030884,
+				[1] = 3.2177834510803,
 			},
 		},
 		pdr_prologue_bardin_dazed_01 = {
@@ -3487,7 +3462,7 @@ return function ()
 				[1] = 2.5300209522247,
 			},
 		},
-		pdr_prologue_kerillian_fight_01 = {
+		pdr_prologue_kerillian_fight_c = {
 			category = "level_talk_tutorial",
 			database = "conversations_prologue",
 			dialogue_animations_n = 1,
@@ -4076,7 +4051,6 @@ return function ()
 			database = "conversations_prologue",
 			dialogue_animations_n = 1,
 			face_animations_n = 1,
-			sound_distance = 50,
 			sound_events_n = 1,
 			dialogue_animations = {
 				[1] = "dialogue_shout",
@@ -4091,7 +4065,7 @@ return function ()
 				[1] = "pes_level_prologue_sienna_up_01",
 			},
 			sound_events_duration = {
-				[1] = 2.6450834274292,
+				[1] = 3.8450834751129,
 			},
 		},
 		pes_level_prologue_skittergate_afar = {
@@ -4454,7 +4428,7 @@ return function ()
 				[1] = 4.3787322044373,
 			},
 		},
-		pes_prologue_kerillian_fight_01 = {
+		pes_prologue_kerillian_fight_b = {
 			category = "level_talk_tutorial",
 			database = "conversations_prologue",
 			dialogue_animations_n = 1,
@@ -4653,28 +4627,6 @@ return function ()
 				[1] = 5.1095311641693,
 			},
 		},
-		pwe_level_prologue_skittergate_afar_01 = {
-			category = "level_talk_tutorial",
-			database = "conversations_prologue",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
-			dialogue_animations = {
-				[1] = "dialogue_shout",
-			},
-			face_animations = {
-				[1] = "face_contempt",
-			},
-			localization_strings = {
-				[1] = "pwe_level_prologue_skittergate_afar_01",
-			},
-			sound_events = {
-				[1] = "pwe_level_prologue_skittergate_afar_01",
-			},
-			sound_events_duration = {
-				[1] = 5.0440626144409,
-			},
-		},
 		pwe_level_prologue_wizard_sound = {
 			category = "level_talk_tutorial",
 			database = "conversations_prologue",
@@ -4697,7 +4649,7 @@ return function ()
 				[1] = 1.2356250286102,
 			},
 		},
-		pwe_prologue_kerillian_fight_01 = {
+		pwe_prologue_kerillian_fight_a = {
 			category = "level_talk_tutorial",
 			database = "conversations_prologue",
 			dialogue_animations_n = 2,
