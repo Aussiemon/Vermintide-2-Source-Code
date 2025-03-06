@@ -166,7 +166,7 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 		local host_name = LobbyInternal.user_name and LobbyInternal.user_name(host) or "-"
 
 		if other_hash ~= nil then
-			if this_hash == other_hash or Development.parameter("ignore_network_hash") or Managers.mechanism:setting("ignore_network_hash") then
+			if this_hash == other_hash or Development.parameter("force_ignore_network_hash") then
 				mm_printf("Network hashes matches, waiting to connect to host with user name '%s'...", tostring(host_name))
 
 				self._state = "verify_not_blocked"

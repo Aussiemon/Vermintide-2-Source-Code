@@ -2735,6 +2735,18 @@ Cosmetics.frame_0091 = {
 }
 Cosmetics.frame_0094 = {
 	icon = "unit_frame_02",
+	texture_package_name = "resource_packages/store/item_icons/store_item_icon_frame_0094",
+	unit = "",
+	attachment_node = {
+		unit = "units/ui/ui_portrait_frame",
+		attachment_node = AttachmentNodeLinking.ui_portrait_frame,
+	},
+	material_settings = {
+		portrait_frame = {
+			texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_0094/store_item_icon_frame_0094",
+			type = "texture",
+		},
+	},
 }
 Cosmetics.frame_0095 = {
 	icon = "unit_frame_02",
@@ -2972,15 +2984,63 @@ Cosmetics.frame_mondstille_03 = {
 }
 Cosmetics.frame_celebration_01 = {
 	icon = "unit_frame_02",
+	texture_package_name = "resource_packages/store/item_icons/store_item_icon_frame_celebration_01",
+	unit = "",
+	attachment_node = {
+		unit = "units/ui/ui_portrait_frame",
+		attachment_node = AttachmentNodeLinking.ui_portrait_frame,
+	},
+	material_settings = {
+		portrait_frame = {
+			texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_celebration_01/store_item_icon_frame_celebration_01",
+			type = "texture",
+		},
+	},
 }
 Cosmetics.frame_celebration_02 = {
 	icon = "unit_frame_02",
+	texture_package_name = "resource_packages/store/item_icons/store_item_icon_frame_celebration_02",
+	unit = "",
+	attachment_node = {
+		unit = "units/ui/ui_portrait_frame",
+		attachment_node = AttachmentNodeLinking.ui_portrait_frame,
+	},
+	material_settings = {
+		portrait_frame = {
+			texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_celebration_02/store_item_icon_frame_celebration_02",
+			type = "texture",
+		},
+	},
 }
 Cosmetics.frame_celebration_03 = {
 	icon = "unit_frame_02",
+	texture_package_name = "resource_packages/store/item_icons/store_item_icon_frame_celebration_03",
+	unit = "",
+	attachment_node = {
+		unit = "units/ui/ui_portrait_frame",
+		attachment_node = AttachmentNodeLinking.ui_portrait_frame,
+	},
+	material_settings = {
+		portrait_frame = {
+			texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_celebration_03/store_item_icon_frame_celebration_03",
+			type = "texture",
+		},
+	},
 }
 Cosmetics.frame_celebration_05 = {
 	icon = "unit_frame_02",
+	texture_package_name = "resource_packages/store/item_icons/store_item_icon_frame_celebration_05",
+	unit = "",
+	attachment_node = {
+		unit = "units/ui/ui_portrait_frame",
+		attachment_node = AttachmentNodeLinking.ui_portrait_frame,
+	},
+	material_settings = {
+		portrait_frame = {
+			texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_celebration_05/store_item_icon_frame_celebration_05",
+			type = "texture",
+		},
+	},
 }
 Cosmetics.frame_beta_2024 = {
 	icon = "unit_frame_02",
@@ -3104,6 +3164,18 @@ Cosmetics.frame_skulls_2022 = {
 }
 Cosmetics.frame_celebration_06 = {
 	icon = "unit_frame_02",
+	texture_package_name = "resource_packages/store/item_icons/store_item_icon_frame_celebration_06",
+	unit = "",
+	attachment_node = {
+		unit = "units/ui/ui_portrait_frame",
+		attachment_node = AttachmentNodeLinking.ui_portrait_frame,
+	},
+	material_settings = {
+		portrait_frame = {
+			texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_celebration_06/store_item_icon_frame_celebration_06",
+			type = "texture",
+		},
+	},
 }
 Cosmetics.frame_globadier_01 = {
 	icon = "unit_frame_02",
@@ -3274,6 +3346,12 @@ Cosmetics.frame_gotwf_2024 = {
 }
 Cosmetics.pose_template = {
 	icon = "icons_placeholder",
+}
+Cosmetics.frame_celebration_07 = {
+	icon = "unit_frame_02",
+}
+Cosmetics.frame_apology_2025 = {
+	icon = "unit_frame_02",
 }
 
 DLCUtils.map_list("cosmetics_files", function (file_name)

@@ -111,7 +111,7 @@ StateTitleScreenMainMenu._setup_sound = function (self)
 end
 
 StateTitleScreenMainMenu.cb_camera_animation_complete = function (self)
-	ShowCursorStack.push()
+	ShowCursorStack.show("StateTitleScreenMainMenu")
 	self._title_start_ui:activate_career_ui(true)
 end
 
@@ -135,7 +135,7 @@ StateTitleScreenMainMenu._init_menu_views = function (self)
 		cinematics_view = CinematicsView:new(view_context),
 	}
 
-	ShowCursorStack.push()
+	ShowCursorStack.show("StateTitleScreenMainMenu")
 
 	for name, view in pairs(self._views) do
 		view.exit = function ()
@@ -225,7 +225,7 @@ StateTitleScreenMainMenu.on_exit = function (self)
 
 	self._views = nil
 
-	ShowCursorStack.pop()
+	ShowCursorStack.hide("StateTitleScreenMainMenu")
 end
 
 StateTitleScreenMainMenu.cb_fade_in_done = function (self, level_key, profile_name)

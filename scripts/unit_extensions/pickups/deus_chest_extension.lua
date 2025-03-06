@@ -537,7 +537,6 @@ DeusChestExtension.open_chest = function (self)
 
 	if self._chest_type == DEUS_CHEST_TYPES.power_up then
 		local power_up = self._stored_purchase
-		local player_unit = self._player_unit
 
 		run_controller:add_power_ups({
 			power_up,

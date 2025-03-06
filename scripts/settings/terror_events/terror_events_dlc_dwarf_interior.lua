@@ -1,58 +1,7 @@
 ﻿-- chunkname: @scripts/settings/terror_events/terror_events_dlc_dwarf_interior.lua
 
-local function count_event_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
-end
-
-local function num_spawned_enemies()
-	local spawned_enemies = Managers.state.conflict:spawned_enemies()
-
-	return #spawned_enemies
-end
-
-local NORMAL = 2
-local HARD = 3
-local HARDER = 4
-local HARDEST = 5
-local CATACLYSM = 6
-local weighted_random_terror_events = {
-	dwarf_interior_brewery_random = {
-		"dwarf_interior_brewery_a",
-		1,
-		"dwarf_interior_brewery_b",
-		1,
-		"dwarf_interior_brewery_c",
-		1,
-	},
-	dwarf_interior_brewery_hard_random = {
-		"dwarf_interior_brewery_hard_a",
-		1,
-		"dwarf_interior_brewery_hard_b",
-		1,
-		"dwarf_interior_brewery_hard_c",
-		1,
-		"dwarf_interior_brewery_hard_d",
-		1,
-	},
-	dwarf_interior_static_guards_random = {
-		"dwarf_interior_static_guards_01",
-		1,
-		"dwarf_interior_static_guards_02",
-		1,
-		"dwarf_interior_static_guards_03",
-		1,
-	},
-	dwarf_interior_bell_alert_random = {
-		"dwarf_interior_bell_alert_01",
-		1,
-		"dwarf_interior_bell_alert_02",
-		1,
-		"dwarf_interior_bell_alert_03",
-		1,
-		"dwarf_interior_bell_alert_04_dummy",
-		1,
-	},
-}
+local TerrorEventUtils = require("scripts/settings/terror_events/terror_event_utils")
+local count_event_breed = TerrorEventUtils.count_event_breed
 local terror_event_blueprints = {
 	dwarf_interior_disable_pacing = {
 		{
@@ -1304,4 +1253,6 @@ local terror_event_blueprints = {
 	},
 }
 
-return terror_event_blueprints
+return {
+	terror_event_blueprints,
+}

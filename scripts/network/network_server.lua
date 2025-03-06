@@ -248,6 +248,10 @@ NetworkServer.is_network_state_fully_synced_for_peer = function (self, peer_id)
 	return self._network_state:is_peer_fully_synced(peer_id)
 end
 
+NetworkServer.is_fully_synced = function (self)
+	return self:is_network_state_fully_synced_for_peer(self.my_peer_id)
+end
+
 NetworkServer.are_profile_packages_fully_synced_for_peer = function (self, peer_id)
 	return self.profile_synchronizer:is_peer_all_synced(peer_id)
 end
@@ -737,6 +741,20 @@ end
 
 NetworkServer.set_peer_hot_join_synced = function (self, peer_id, value)
 	self._network_state:set_peer_hot_join_synced(peer_id, value)
+end
+
+local hot_join_synced_peers_scratch = {}
+
+NetworkServer.hot_join_synced_peers = function (self)
+	table.clear(hot_join_synced_peers_scratch)
+
+	for peer_id in pairs(self.peer_state_machines) do
+		if self._network_state:is_peer_hot_join_synced(peer_id) then
+			hot_join_synced_peers_scratch[peer_id] = true
+		end
+	end
+
+	return hot_join_synced_peers_scratch
 end
 
 NetworkServer.has_peer_synced_game_objects = function (self, peer_id)
@@ -1475,4 +1493,32 @@ end
 
 NetworkServer.set_bot_profile = function (self, party_id, slot_id, profile_index, career_index)
 	self._network_state:set_bot_profile(party_id, slot_id, profile_index, career_index)
+end
+
+NetworkServer.set_session_breed_map = function (self, breed_map)
+	self._network_state:set_session_breed_map(breed_map)
+end
+
+NetworkServer.get_session_breed_map = function (self)
+	return self._network_state:get_session_breed_map()
+end
+
+NetworkServer.get_loaded_session_breeds = function (self, peer_id)
+	return self._network_state:get_loaded_session_breed_map(peer_id)
+end
+
+NetworkServer.get_own_loaded_session_breed_map = function (self)
+	return self._network_state:get_own_loaded_session_breed_map()
+end
+
+NetworkServer.set_own_loaded_session_breeds = function (self, breed_map)
+	self._network_state:set_own_loaded_session_breeds(breed_map)
+end
+
+NetworkServer.set_startup_breeds = function (self, breed_list)
+	self._network_state:set_startup_breeds(breed_list)
+end
+
+NetworkServer.get_game_mode_event_data = function (self)
+	return self._network_state:get_game_mode_event_data()
 end

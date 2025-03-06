@@ -93,6 +93,7 @@ if LEVEL_EDITOR_TEST then
 		"resource_packages/levels/ui_end_screen_victory",
 		"resource_packages/breeds",
 		"resource_packages/breeds_common_resources",
+		"resource_packages/dialogues/auto_load_files",
 	}
 elseif IS_PS4 then
 	GlobalResources = GlobalResources or {
@@ -117,6 +118,7 @@ elseif IS_PS4 then
 		"resource_packages/ingame_sounds_honduras",
 		"resource_packages/breeds",
 		"resource_packages/breeds_common_resources",
+		"resource_packages/dialogues/auto_load_files",
 	}
 elseif IS_XB1 then
 	GlobalResources = GlobalResources or {
@@ -141,6 +143,7 @@ elseif IS_XB1 then
 		"resource_packages/ingame_sounds_honduras",
 		"resource_packages/breeds",
 		"resource_packages/breeds_common_resources",
+		"resource_packages/dialogues/auto_load_files",
 	}
 else
 	GlobalResources = GlobalResources or {
@@ -166,7 +169,61 @@ else
 		"resource_packages/slug_core_materials",
 		"resource_packages/breeds",
 		"resource_packages/breeds_common_resources",
+		"resource_packages/dialogues/auto_load_files",
 	}
+end
+
+GlobalResources.unload = {}
+GlobalResources.handle_and_remove_on_load = {
+	["resource_packages/dialogues/auto_load_files"] = function (name, reference_name)
+		DialogueSettings.cached_auto_load_files = {}
+
+		local auto_load_files = DialogueSettings.auto_load_files
+
+		for _, file_name in ipairs(auto_load_files) do
+			if Application.can_get("lua", file_name) then
+				DialogueSettings.cached_auto_load_files[file_name] = require(file_name)
+			end
+
+			if Application.can_get("lua", file_name .. "_markers") then
+				DialogueSettings.cached_auto_load_files[file_name .. "_markers"] = dofile(file_name .. "_markers")
+			end
+		end
+	end,
+}
+
+GlobalResources.update_loading = function ()
+	if not GlobalResources.loaded then
+		local is_loaded = true
+		local package_manager = Managers.package
+
+		for i, name in ipairs(GlobalResources) do
+			if package_manager:is_loading(name, "global") then
+				is_loaded = false
+			elseif not package_manager:has_loaded(name, "global") then
+				package_manager:load(name, "global", nil, true)
+
+				is_loaded = false
+			elseif GlobalResources.handle_and_remove_on_load[name] then
+				GlobalResources.handle_and_remove_on_load[name](name, "global")
+				table.insert(GlobalResources.unload, {
+					reference_name = "global",
+					name = name,
+				})
+			end
+		end
+
+		GlobalResources.loaded = is_loaded
+
+		for i = 1, #GlobalResources.unload do
+			local unload_data = GlobalResources.unload[i]
+
+			Managers.package:unload(unload_data.name, unload_data.reference_name)
+			table.remove(GlobalResources, table.index_of(GlobalResources, unload_data.name))
+		end
+	end
+
+	return GlobalResources.loaded
 end
 
 if BUILD ~= "dev" and BUILD ~= "debug" and LAUNCH_MODE ~= "attract_benchmark" then

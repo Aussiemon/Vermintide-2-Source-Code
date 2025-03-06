@@ -7539,11 +7539,11 @@ UIWidgets.create_dark_pact_hud_ability_icon_widget = function (scenegraph_id, se
 					text_id = "input",
 					content_change_function = function (content, style)
 						local gamepad_active = Managers.input:is_device_active("gamepad")
+						local input = gamepad_active and content.settings.gamepad_input or content.settings.input_action
 
-						if content.gamepad_active ~= gamepad_active then
-							content.gamepad_active = gamepad_active
+						if content.current_input_action ~= input then
+							content.current_input_action = input
 
-							local input = gamepad_active and content.settings.gamepad_input or content.settings.input_action
 							local input_service = Managers.input:get_service("Player")
 							local _, input_text, keymap_binding = UISettings.get_gamepad_input_texture_data(input_service, input, gamepad_active)
 

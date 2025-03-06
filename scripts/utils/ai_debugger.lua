@@ -445,14 +445,6 @@ AIDebugger.update_mouse_input = function (self, input)
 	if not Unit.alive(self.hot_unit) then
 		return
 	end
-
-	local mouse_released = input:get("action_two")
-
-	if mouse_released then
-		local breed = Unit.get_data(self.hot_unit, "breed")
-
-		DamageUtils.debug_deal_damage(self.hot_unit, 1000)
-	end
 end
 
 AIDebugger.draw_hot_unit = function (self)

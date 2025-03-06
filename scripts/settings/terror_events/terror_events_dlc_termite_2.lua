@@ -1,23 +1,13 @@
 ﻿-- chunkname: @scripts/settings/terror_events/terror_events_dlc_termite_2.lua
 
-local function count_event_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
-end
-
-local function count_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed(breed_name)
-end
-
-local function num_spawned_enemies()
-	local spawned_enemies = Managers.state.conflict:spawned_enemies()
-
-	return #spawned_enemies
-end
+local TerrorEventUtils = require("scripts/settings/terror_events/terror_event_utils")
+local count_event_breed = TerrorEventUtils.count_event_breed
+local num_spawned_enemies = TerrorEventUtils.num_spawned_enemies
+local HARD = TerrorEventUtils.HARD
+local HARDER = TerrorEventUtils.HARDER
+local HARDEST = TerrorEventUtils.HARDEST
 
 local function setup_grudgemarked_stormfiend(optional_data, difficulty, breed_name, event, difficulty_tweak, enhancement_list)
-	local names = {
-		"crushing",
-	}
 	local base_grudgemark_name = "termite_base"
 	local list = optional_data.enhancements or {}
 
@@ -27,36 +17,6 @@ local function setup_grudgemarked_stormfiend(optional_data, difficulty, breed_na
 	return optional_data
 end
 
-local function size_skaven_stormfiend(breed, extension_init_data, optional_data, spawn_pos, spawn_rot)
-	return
-end
-
-local function setup_grudgemarked_ogre(optional_data, difficulty, breed_name, event, difficulty_tweak, enhancement_list)
-	local names = {
-		"crushing",
-	}
-	local base_grudgemark_name = "termite_small"
-	local list = optional_data.enhancements or {}
-
-	list[#list + 1] = BreedEnhancements[base_grudgemark_name]
-	optional_data.enhancements = list
-
-	return optional_data
-end
-
-local function size_skaven_ogre(breed, extension_init_data, optional_data, spawn_pos, spawn_rot)
-	optional_data.size_variation_range = {
-		0.75,
-		0.75,
-	}
-end
-
-local NORMAL = 1
-local HARD = 2
-local HARDER = 3
-local HARDEST = 4
-local CATACLYSM = 5
-local weighted_random_terror_events
 local terror_event_blueprints = {
 	termite_lvl2_disable_pacing = {
 		{
@@ -112,7 +72,7 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "skaven_storm_vermin_commander",
 			spawner_id = "guard_wheel_2_02",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 	},
 	termite_lvl2_wheelguards_2 = {
@@ -125,7 +85,7 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "skaven_storm_vermin_commander",
 			spawner_id = "guard_wheel_4_02",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
@@ -140,7 +100,7 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "skaven_clan_rat_with_shield",
 			spawner_id = "guard_wheel_4_02",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 	},
 	termite_lvl2_wheelguards_3 = {
@@ -153,7 +113,7 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "skaven_storm_vermin_commander",
 			spawner_id = "guard_wheel_1_02",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
@@ -168,7 +128,7 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "skaven_clan_rat_with_shield",
 			spawner_id = "guard_wheel_1_02",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 	},
 	termite_lvl2_wheelguards_4 = {
@@ -181,7 +141,7 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "skaven_storm_vermin_commander",
 			spawner_id = "guard_wheel_3_02",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
@@ -196,7 +156,7 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "skaven_clan_rat_with_shield",
 			spawner_id = "guard_wheel_3_02",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 	},
 	termite_lvl2_gnawguards = {
@@ -209,7 +169,7 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "skaven_storm_vermin_commander",
 			spawner_id = "gnawtooth_guardians_2",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
@@ -224,7 +184,7 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "skaven_clan_rat_with_shield",
 			spawner_id = "gnawtooth_guardians_2",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 	},
 	termite_lvl2_stormfiend_fight = {
@@ -244,7 +204,6 @@ local terror_event_blueprints = {
 			optional_data = {
 				spawn_chance = 1,
 				spawned_func = AiUtils.magic_entrance_optional_spawned_func,
-				prepare_func = size_skaven_stormfiend,
 			},
 		},
 	},
@@ -407,6 +366,16 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "skaven_storm_vermin_commander",
 			spawner_id = "termite_lvl2_end_x",
+			difficulty_requirement = HARD,
+		},
+		{
+			"delay",
+			duration = 5,
+		},
+		{
+			"spawn_at_raw",
+			breed_name = "skaven_storm_vermin_commander",
+			spawner_id = "termite_lvl2_end_x",
 			difficulty_requirement = HARDER,
 		},
 		{
@@ -421,23 +390,13 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 5,
-		},
-		{
-			"spawn_at_raw",
-			breed_name = "skaven_storm_vermin_commander",
-			spawner_id = "termite_lvl2_end_x",
-			difficulty_requirement = CATACLYSM,
-		},
-		{
-			"delay",
 			duration = 10,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_storm_vermin_commander",
 			spawner_id = "termite_lvl2_end_x",
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 	},
 	termite_lvl2_stormfiend_extra_b = {
@@ -454,7 +413,7 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "skaven_ratling_gunner",
 			spawner_id = "termite_lvl2_end_x",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
@@ -464,7 +423,7 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "skaven_gutter_runner",
 			spawner_id = "termite_lvl2_end_x",
-			difficulty_requirement = HARDEST,
+			difficulty_requirement = HARDER,
 		},
 		{
 			"delay",
@@ -474,7 +433,7 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "skaven_pack_master",
 			spawner_id = "termite_lvl2_end_x",
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"delay",
@@ -484,7 +443,7 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "skaven_ratling_gunner",
 			spawner_id = "termite_lvl2_end_x",
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 	},
 	termite_lvl2_stormfiend_extra_c = {
@@ -501,7 +460,7 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "skaven_gutter_runner",
 			spawner_id = "termite_lvl2_end_x",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
@@ -511,7 +470,7 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "skaven_gutter_runner",
 			spawner_id = "termite_lvl2_end_x",
-			difficulty_requirement = HARDEST,
+			difficulty_requirement = HARDER,
 		},
 		{
 			"delay",
@@ -521,7 +480,7 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "skaven_pack_master",
 			spawner_id = "termite_lvl2_end_x",
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"delay",
@@ -531,7 +490,7 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "skaven_poison_wind_globadier",
 			spawner_id = "termite_lvl2_end_x",
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 	},
 	termite_lvl2_ratswarm = {
@@ -604,24 +563,24 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_ratling_gunner",
 			spawner_id = "manual_e",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDEST,
+			difficulty_requirement = HARDER,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_ratling_gunner",
 			spawner_id = "manual_h",
-			difficulty_requirement = HARDEST,
+			difficulty_requirement = HARDER,
 		},
 		{
 			"continue_when",
@@ -634,7 +593,7 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "skaven_rat_ogre",
 			spawner_id = "manual_e",
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"event_horde",
@@ -653,13 +612,13 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_pack_master",
 			spawner_id = "manual_i",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"continue_when",
@@ -677,7 +636,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			composition_type = "termite_lvl2_wave_1_commanders",
 			spawner_id = "directional_e",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
@@ -741,18 +700,29 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_poison_wind_globadier",
 			spawner_id = "manual_c",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_poison_wind_globadier",
 			spawner_id = "manual_h",
+			difficulty_requirement = HARD,
+		},
+		{
+			"delay",
+			duration = 5,
+			difficulty_requirement = HARDER,
+		},
+		{
+			"spawn_at_raw",
+			breed_name = "skaven_poison_wind_globadier",
+			spawner_id = "manual_a",
 			difficulty_requirement = HARDER,
 		},
 		{
@@ -763,19 +733,8 @@ local terror_event_blueprints = {
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_poison_wind_globadier",
-			spawner_id = "manual_a",
-			difficulty_requirement = HARDEST,
-		},
-		{
-			"delay",
-			duration = 5,
-			difficulty_requirement = CATACLYSM,
-		},
-		{
-			"spawn_at_raw",
-			breed_name = "skaven_poison_wind_globadier",
 			spawner_id = "manual_i",
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"delay",
@@ -801,7 +760,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			composition_type = "termite_lvl2_wave_2_slaves_shields",
 			spawner_id = "directional_c",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
@@ -832,7 +791,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			composition_type = "termite_lvl2_wave_2_slaves_shields",
 			spawner_id = "directional_f",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
@@ -846,68 +805,68 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_pack_master",
 			spawner_id = "manual_e",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDEST,
+			difficulty_requirement = HARDER,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_pack_master",
 			spawner_id = "manual_g",
-			difficulty_requirement = HARDEST,
+			difficulty_requirement = HARDER,
 		},
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_pack_master",
 			spawner_id = "manual_j",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_pack_master",
 			spawner_id = "manual_i",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_poison_wind_globadier",
 			spawner_id = "manual_k",
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_warpfire_thrower",
 			spawner_id = "manual_f",
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"continue_when",
@@ -956,12 +915,29 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_gutter_runner",
 			spawner_id = "manual_a",
+			difficulty_requirement = HARD,
+		},
+		{
+			"delay",
+			duration = 5,
+			difficulty_requirement = HARDER,
+		},
+		{
+			"spawn_at_raw",
+			breed_name = "skaven_gutter_runner",
+			spawner_id = "manual_i",
+			difficulty_requirement = HARDER,
+		},
+		{
+			"spawn_at_raw",
+			breed_name = "skaven_gutter_runner",
+			spawner_id = "manual_j",
 			difficulty_requirement = HARDER,
 		},
 		{
@@ -972,48 +948,31 @@ local terror_event_blueprints = {
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_gutter_runner",
-			spawner_id = "manual_i",
+			spawner_id = "manual_h",
 			difficulty_requirement = HARDEST,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_gutter_runner",
-			spawner_id = "manual_j",
+			spawner_id = "manual_f",
 			difficulty_requirement = HARDEST,
 		},
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = CATACLYSM,
-		},
-		{
-			"spawn_at_raw",
-			breed_name = "skaven_gutter_runner",
-			spawner_id = "manual_h",
-			difficulty_requirement = CATACLYSM,
-		},
-		{
-			"spawn_at_raw",
-			breed_name = "skaven_gutter_runner",
-			spawner_id = "manual_f",
-			difficulty_requirement = CATACLYSM,
-		},
-		{
-			"delay",
-			duration = 5,
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_poison_wind_globadier",
 			spawner_id = "manual_h",
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_poison_wind_globadier",
 			spawner_id = "manual_f",
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"delay",
@@ -1050,12 +1009,23 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"event_horde",
 			composition_type = "termite_lvl2_wave_3_commanders",
 			spawner_id = "directional_b",
+			difficulty_requirement = HARD,
+		},
+		{
+			"delay",
+			duration = 5,
+			difficulty_requirement = HARDER,
+		},
+		{
+			"event_horde",
+			composition_type = "termite_lvl2_wave_3_commanders",
+			spawner_id = "directional_g",
 			difficulty_requirement = HARDER,
 		},
 		{
@@ -1066,19 +1036,8 @@ local terror_event_blueprints = {
 		{
 			"event_horde",
 			composition_type = "termite_lvl2_wave_3_commanders",
-			spawner_id = "directional_g",
-			difficulty_requirement = HARDEST,
-		},
-		{
-			"delay",
-			duration = 5,
-			difficulty_requirement = CATACLYSM,
-		},
-		{
-			"event_horde",
-			composition_type = "termite_lvl2_wave_3_commanders",
 			spawner_id = "directional_f",
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"delay",
@@ -1123,19 +1082,19 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "skaven_pack_master",
 			spawner_id = "manual_c",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_pack_master",
 			spawner_id = "manual_f",
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_pack_master",
 			spawner_id = "manual_k",
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"continue_when",
@@ -1205,13 +1164,13 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "skaven_ratling_gunner",
 			spawner_id = "manual_e",
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_ratling_gunner",
 			spawner_id = "manual_f",
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"event_horde",
@@ -1256,24 +1215,24 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_poison_wind_globadier",
 			spawner_id = "manual_i",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDEST,
+			difficulty_requirement = HARDER,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_poison_wind_globadier",
 			spawner_id = "manual_b",
-			difficulty_requirement = HARDEST,
+			difficulty_requirement = HARDER,
 		},
 		{
 			"continue_when",
@@ -1304,24 +1263,24 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_ratling_gunner",
 			spawner_id = "manual_i",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_ratling_gunner",
 			spawner_id = "manual_c",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
@@ -1361,24 +1320,24 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_pack_master",
 			spawner_id = "manual_i",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_warpfire_thrower",
 			spawner_id = "manual_f",
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"continue_when",
@@ -1422,12 +1381,23 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_warpfire_thrower",
 			spawner_id = "manual_f",
+			difficulty_requirement = HARD,
+		},
+		{
+			"delay",
+			duration = 5,
+			difficulty_requirement = HARDER,
+		},
+		{
+			"spawn_at_raw",
+			breed_name = "skaven_warpfire_thrower",
+			spawner_id = "manual_d",
 			difficulty_requirement = HARDER,
 		},
 		{
@@ -1438,19 +1408,8 @@ local terror_event_blueprints = {
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_warpfire_thrower",
-			spawner_id = "manual_d",
-			difficulty_requirement = HARDEST,
-		},
-		{
-			"delay",
-			duration = 5,
-			difficulty_requirement = CATACLYSM,
-		},
-		{
-			"spawn_at_raw",
-			breed_name = "skaven_warpfire_thrower",
 			spawner_id = "manual_b",
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"continue_when",
@@ -1493,13 +1452,13 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_poison_wind_globadier",
 			spawner_id = "manual_f",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"continue_when",
@@ -1528,24 +1487,24 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_pack_master",
 			spawner_id = "manual_b",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDEST,
+			difficulty_requirement = HARDER,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_pack_master",
 			spawner_id = "manual_d",
-			difficulty_requirement = HARDEST,
+			difficulty_requirement = HARDER,
 		},
 		{
 			"continue_when",
@@ -1631,13 +1590,13 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_poison_wind_globadier",
 			spawner_id = "mid_manual_g",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"continue_when",
@@ -1658,12 +1617,12 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDEST,
+			difficulty_requirement = HARDER,
 		},
 		{
 			"delay",
@@ -1677,13 +1636,13 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_gutter_runner",
 			spawner_id = "mid_manual_a",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"continue_when",
@@ -1709,24 +1668,24 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_ratling_gunner",
 			spawner_id = "mid_manual_f",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_poison_wind_globadier",
 			spawner_id = "mid_manual_j",
-			difficulty_requirement = CATACLYSM,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"continue_when",
@@ -1795,13 +1754,13 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_poison_wind_globadier",
 			spawner_id = "mid_manual_f",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
@@ -1868,24 +1827,24 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_poison_wind_globadier",
 			spawner_id = "mid_manual_h",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDEST,
+			difficulty_requirement = HARDER,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_poison_wind_globadier",
 			spawner_id = "mid_manual_f",
-			difficulty_requirement = HARDEST,
+			difficulty_requirement = HARDER,
 		},
 		{
 			"continue_when",
@@ -1956,7 +1915,7 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
@@ -1970,13 +1929,13 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_gutter_runner",
 			spawner_id = "mid_manual_e",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
@@ -2006,13 +1965,13 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_pack_master",
 			spawner_id = "mid_manual_f",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"event_horde",
@@ -2047,24 +2006,24 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_poison_wind_globadier",
 			spawner_id = "mid_manual_f",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDEST,
+			difficulty_requirement = HARDER,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_poison_wind_globadier",
 			spawner_id = "mid_manual_e",
-			difficulty_requirement = HARDEST,
+			difficulty_requirement = HARDER,
 		},
 		{
 			"delay",
@@ -2094,13 +2053,13 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_pack_master",
 			spawner_id = "mid_manual_k",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
@@ -2123,13 +2082,13 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_ratling_gunner",
 			spawner_id = "mid_manual_f",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"continue_when",
@@ -2160,13 +2119,13 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 51,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_gutter_runner",
 			spawner_id = "mid_manual_c",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
@@ -2210,13 +2169,13 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_warpfire_thrower",
 			spawner_id = "mid_manual_d",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"delay",
@@ -2239,13 +2198,13 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_warpfire_thrower",
 			spawner_id = "mid_manual_h",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"event_horde",
@@ -2325,27 +2284,29 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "skaven_storm_vermin_commander",
 			spawner_id = "end_event_guards_5",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_storm_vermin_commander",
 			spawner_id = "end_event_guards_6",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARD,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_storm_vermin_commander",
 			spawner_id = "end_event_guards_7",
-			difficulty_requirement = HARDEST,
+			difficulty_requirement = HARDER,
 		},
 		{
 			"spawn_at_raw",
 			breed_name = "skaven_storm_vermin_commander",
 			spawner_id = "end_event_guards_8",
-			difficulty_requirement = HARDEST,
+			difficulty_requirement = HARDER,
 		},
 	},
 }
 
-return terror_event_blueprints
+return {
+	terror_event_blueprints,
+}

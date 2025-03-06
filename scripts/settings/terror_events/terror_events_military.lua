@@ -1,18 +1,11 @@
 ﻿-- chunkname: @scripts/settings/terror_events/terror_events_military.lua
 
-local function count_event_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
-end
-
-local function spawned_during_event()
-	return Managers.state.conflict:enemies_spawned_during_event()
-end
-
-local NORMAL = 2
-local HARD = 3
-local HARDER = 4
-local HARDEST = 5
-local CATACLYSM = 6
+local TerrorEventUtils = require("scripts/settings/terror_events/terror_event_utils")
+local count_event_breed = TerrorEventUtils.count_event_breed
+local spawned_during_event = TerrorEventUtils.spawned_during_event
+local HARDER = TerrorEventUtils.HARDER
+local HARDEST = TerrorEventUtils.HARDEST
+local CATACLYSM = TerrorEventUtils.CATACLYSM
 local weighted_random_terror_events = {
 	military_end_event_survival_01 = {
 		"military_end_event_survival_01_back",
@@ -2260,4 +2253,7 @@ local terror_event_blueprints = {
 	},
 }
 
-return terror_event_blueprints, weighted_random_terror_events
+return {
+	terror_event_blueprints,
+	weighted_random_terror_events,
+}

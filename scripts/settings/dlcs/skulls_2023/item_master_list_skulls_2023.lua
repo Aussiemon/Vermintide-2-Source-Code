@@ -4,7 +4,6 @@ ItemMasterList.frame_skulls_2023 = {
 	description = "portrait_frame_skulls_2023_description",
 	display_name = "portrait_frame_skulls_2023_name",
 	display_unit = "units/weapons/weapon_display/display_portrait_frame",
-	event_item = true,
 	hud_icon = "unit_frame_02",
 	information_text = "information_text_frame",
 	inventory_icon = "icon_portrait_frame_skulls_2023",
@@ -13,12 +12,14 @@ ItemMasterList.frame_skulls_2023 = {
 	slot_type = "frame",
 	temporary_template = "frame_skulls_2023",
 	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"skulls",
+	},
 }
 ItemMasterList.es_2h_sword_exe_skin_05_runed_04 = {
 	description = "es_2h_sword_exe_skin_05_runed_04_description",
 	display_name = "es_2h_sword_exe_skin_05_runed_04_name",
 	display_unit = "units/weapons/weapon_display/display_2h_swords_executioner",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icon_wpn_emp_sword_exe_05_t1_runed_04",
@@ -34,12 +35,14 @@ ItemMasterList.es_2h_sword_exe_skin_05_runed_04 = {
 		"es_knight",
 		"es_mercenary",
 	},
+	events = {
+		"skulls",
+	},
 }
 ItemMasterList.bw_fireball_staff_skin_01_runed_04 = {
 	description = "bw_fireball_staff_skin_01_runed_04_description",
 	display_name = "bw_fireball_staff_skin_01_runed_04_name",
 	display_unit = "units/weapons/weapon_display/display_staff",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icon_wpn_bw_fireball_staff_01_runed_04",
@@ -56,12 +59,14 @@ ItemMasterList.bw_fireball_staff_skin_01_runed_04 = {
 		"bw_adept",
 		"bw_unchained",
 	},
+	events = {
+		"skulls",
+	},
 }
 ItemMasterList.wh_brace_of_pistols_skin_05_runed_04 = {
 	description = "wh_brace_of_pistols_skin_05_runed_04_description",
 	display_name = "wh_brace_of_pistols_skin_05_runed_04_name",
 	display_unit = "units/weapons/weapon_display/display_pistols",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_brace_of_pistol",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icon_wpn_emp_pistol_02_t2_runed_04",
@@ -78,12 +83,14 @@ ItemMasterList.wh_brace_of_pistols_skin_05_runed_04 = {
 		"wh_bountyhunter",
 		"wh_captain",
 	},
+	events = {
+		"skulls",
+	},
 }
 ItemMasterList.we_dual_dagger_skin_01_runed_04 = {
 	description = "we_dual_dagger_skin_01_runed_04_description",
 	display_name = "we_dual_dagger_skin_01_runed_04_name",
 	display_unit = "units/weapons/weapon_display/display_1h_weapon",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icon_wpn_we_dagger_01_t1_dual_runed_04",
@@ -100,12 +107,14 @@ ItemMasterList.we_dual_dagger_skin_01_runed_04 = {
 		"we_maidenguard",
 		"we_waywatcher",
 	},
+	events = {
+		"skulls",
+	},
 }
 ItemMasterList.dw_handgun_skin_02_runed_04 = {
 	description = "dw_handgun_skin_02_runed_04_description",
 	display_name = "dw_handgun_skin_02_runed_04_name",
 	display_unit = "units/weapons/weapon_display/display_rifle",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icon_wpn_dw_handgun_01_t2_runed_04",
@@ -119,6 +128,9 @@ ItemMasterList.dw_handgun_skin_02_runed_04 = {
 	can_wield = {
 		"dr_ironbreaker",
 		"dr_ranger",
+	},
+	events = {
+		"skulls",
 	},
 }
 ItemMasterList.bw_beam_staff_skin_05_runed_04 = {
@@ -140,6 +152,9 @@ ItemMasterList.bw_beam_staff_skin_05_runed_04 = {
 		"bw_adept",
 		"bw_unchained",
 	},
+	events = {
+		"skulls",
+	},
 }
 ItemMasterList.es_2h_hammer_skin_04_runed_04 = {
 	description = "es_2h_hammer_skin_04_runed_04_description",
@@ -158,6 +173,9 @@ ItemMasterList.es_2h_hammer_skin_04_runed_04 = {
 		"es_huntsman",
 		"es_knight",
 		"es_mercenary",
+	},
+	events = {
+		"skulls",
 	},
 }
 ItemMasterList.wh_1h_falchion_skin_02_runed_04 = {
@@ -178,6 +196,9 @@ ItemMasterList.wh_1h_falchion_skin_02_runed_04 = {
 		"wh_bountyhunter",
 		"wh_captain",
 	},
+	events = {
+		"skulls",
+	},
 }
 ItemMasterList.we_shortbow_skin_04_runed_04 = {
 	description = "we_shortbow_skin_04_runed_04_description",
@@ -197,6 +218,9 @@ ItemMasterList.we_shortbow_skin_04_runed_04 = {
 		"we_maidenguard",
 		"we_waywatcher",
 	},
+	events = {
+		"skulls",
+	},
 }
 ItemMasterList.dw_grudge_raker_skin_02_runed_04 = {
 	description = "dw_grudge_raker_skin_02_runed_04_description",
@@ -215,10 +239,14 @@ ItemMasterList.dw_grudge_raker_skin_02_runed_04 = {
 		"dr_ironbreaker",
 		"dr_ranger",
 	},
+	events = {
+		"skulls",
+	},
 }
 ItemMasterList.frame_skulls_2024 = {
 	description = "portrait_frame_skulls_2024_description",
 	display_name = "portrait_frame_skulls_2024_name",
+	display_unit = "units/weapons/weapon_display/display_portrait_frame",
 	hud_icon = "unit_frame_02",
 	information_text = "information_text_frame",
 	inventory_icon = "icon_portrait_frame_skulls_2024",
@@ -227,4 +255,7 @@ ItemMasterList.frame_skulls_2024 = {
 	slot_type = "frame",
 	temporary_template = "frame_skulls_2024",
 	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"skulls",
+	},
 }

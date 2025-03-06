@@ -45,12 +45,6 @@ LobbyAux.create_network_hash = function (config_file_name, project_hash, disable
 		printf("GameServerAux.create_network_hash network_hash: %s, trunk_revision/content_revision: %s, ignore_engine_revision: %s, engine_revision: %s, , concatenated_dlc_string %s, use_trunk_revision %s, combined_hash %s, lobby_data_version=%s", network_hash, trunk_revision, ignore_engine_revision, engine_revision, concatenated_dlc_string, use_trunk_revision, combined_hash, tostring(lobby_data_version))
 	end
 
-	if Managers.mechanism:setting("ignore_network_hash") or Development.parameter("ignore_network_hash") then
-		print("network hash is overridden: ignore_network_hash")
-
-		combined_hash = "ignored_network_hash"
-	end
-
 	return combined_hash
 end
 

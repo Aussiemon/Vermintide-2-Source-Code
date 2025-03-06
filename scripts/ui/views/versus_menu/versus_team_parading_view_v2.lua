@@ -42,7 +42,7 @@ VersusTeamParadingViewV2.on_enter = function (self, params)
 	self._party_selection_logic = Managers.state.game_mode:game_mode():party_selection_logic()
 
 	self._party_selection_logic:set_ingame_ui(self._ingame_ui)
-	ShowCursorStack.push()
+	ShowCursorStack.show("VersusTeamParadingViewV2")
 
 	local input_manager = self._input_manager
 	local input_service_name = self._input_service_name
@@ -62,7 +62,7 @@ end
 
 VersusTeamParadingViewV2.on_exit = function (self)
 	print("[VersusTeamParadingViewV2] Exit character selection view")
-	ShowCursorStack.pop()
+	ShowCursorStack.hide("VersusTeamParadingViewV2")
 
 	local input_manager = self._input_manager
 

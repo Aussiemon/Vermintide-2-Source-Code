@@ -520,7 +520,7 @@ EndZoneExtension._end_mission_check = function (self, dt, t)
 	if self._activated and (self._always_activated or self._closest_player <= EndZoneSettings.activate_size^2) then
 		local all_inside
 		local any_inside = false
-		local players_outside_portal = {}
+		local players_outside_portal = FrameTable.alloc_table()
 
 		if self._is_server then
 			local buff_system = Managers.state.entity:system("buff_system")

@@ -1,9 +1,9 @@
 ﻿-- chunkname: @scripts/managers/backend/statistics_definitions.lua
 
 require("scripts/settings/breeds")
+require("scripts/managers/achievements/achievement_templates")
 
 StatisticsDefinitions = {}
-StatisticsDefinitions.session = {}
 StatisticsDefinitions.player = {}
 StatisticsDefinitions.unit_test = {}
 
@@ -662,124 +662,123 @@ end
 
 LevelDifficultyDBNames = {}
 
-for level_key, level in pairs(LevelSettings) do
-	if table.contains(UnlockableLevels, level_key) then
-		local is_dlc_level = level.dlc_name ~= nil
-		local completed_levels_definition = {
-			sync_on_hot_join = true,
-			sync_to_host = true,
-			value = 0,
-			database_name = "completed_levels_" .. level_key,
-		}
+for _, level_key in pairs(UnlockableLevels) do
+	local level = LevelSettings[level_key]
+	local is_dlc_level = level.dlc_name ~= nil
+	local completed_levels_definition = {
+		sync_on_hot_join = true,
+		sync_to_host = true,
+		value = 0,
+		database_name = "completed_levels_" .. level_key,
+	}
 
-		if is_dlc_level then
-			completed_levels_definition.source = "player_data"
-		end
-
-		player.completed_levels[level_key] = completed_levels_definition
-
-		local played_levels_quickplay_definition = {
-			sync_to_host = true,
-			value = 0,
-			database_name = "played_levels_quickplay_" .. level_key,
-		}
-		local played_levels_weekly_event_definition = {
-			source = "player_data",
-			sync_to_host = true,
-			value = 0,
-			database_name = "played_levels_weekly_event_" .. level_key,
-		}
-
-		if is_dlc_level then
-			played_levels_quickplay_definition.source = "player_data"
-		end
-
-		player.played_levels_quickplay[level_key] = played_levels_quickplay_definition
-		player.played_levels_weekly_event[level_key] = played_levels_weekly_event_definition
-
-		local heroes = {
-			"bright_wizard",
-			"wood_elf",
-			"empire_soldier",
-			"witch_hunter",
-			"dwarf_ranger",
-		}
-
-		for _, hero in ipairs(heroes) do
-			local key = "completed_levels_" .. hero
-			local t = player[key]
-			local definition = {
-				value = 0,
-				database_name = key .. "_" .. level_key,
-			}
-
-			if is_dlc_level then
-				definition.source = "player_data"
-			end
-
-			t[level_key] = definition
-		end
-
-		local level_difficulty_name = level_key .. "_difficulty_completed"
-
-		LevelDifficultyDBNames[level_key] = level_difficulty_name
-
-		local completed_levels_difficulty_definition = {
-			sync_on_hot_join = true,
-			value = 0,
-			database_name = level_difficulty_name,
-		}
-
-		if is_dlc_level then
-			completed_levels_difficulty_definition.source = "player_data"
-		end
-
-		player.completed_levels_difficulty[level_difficulty_name] = completed_levels_difficulty_definition
-
-		local grimoire_name = "collected_grimoire_" .. level_key
-		local collected_grimoires_definition = {
-			value = 0,
-			database_name = grimoire_name,
-		}
-
-		if is_dlc_level then
-			collected_grimoires_definition.source = "player_data"
-		end
-
-		player.collected_grimoires[level_key] = collected_grimoires_definition
-
-		local tome_name = "collected_tome_" .. level_key
-		local tome_name_definition = {
-			value = 0,
-			database_name = tome_name,
-		}
-
-		if is_dlc_level then
-			tome_name_definition.source = "player_data"
-		end
-
-		player.collected_tomes[level_key] = tome_name_definition
-
-		local die_name = "collected_die_" .. level_key
-		local die_name_definition = {
-			value = 0,
-			database_name = die_name,
-		}
-
-		if is_dlc_level then
-			die_name_definition.source = "player_data"
-		end
-
-		player.collected_dice[level_key] = die_name_definition
-
-		local painting_name = "collected_painting_scraps_" .. level_key
-
-		player.collected_painting_scraps[level_key] = {
-			source = "player_data",
-			value = 0,
-			database_name = painting_name,
-		}
+	if is_dlc_level then
+		completed_levels_definition.source = "player_data"
 	end
+
+	player.completed_levels[level_key] = completed_levels_definition
+
+	local played_levels_quickplay_definition = {
+		sync_to_host = true,
+		value = 0,
+		database_name = "played_levels_quickplay_" .. level_key,
+	}
+	local played_levels_weekly_event_definition = {
+		source = "player_data",
+		sync_to_host = true,
+		value = 0,
+		database_name = "played_levels_weekly_event_" .. level_key,
+	}
+
+	if is_dlc_level then
+		played_levels_quickplay_definition.source = "player_data"
+	end
+
+	player.played_levels_quickplay[level_key] = played_levels_quickplay_definition
+	player.played_levels_weekly_event[level_key] = played_levels_weekly_event_definition
+
+	local heroes = {
+		"bright_wizard",
+		"wood_elf",
+		"empire_soldier",
+		"witch_hunter",
+		"dwarf_ranger",
+	}
+
+	for _, hero in ipairs(heroes) do
+		local key = "completed_levels_" .. hero
+		local t = player[key]
+		local definition = {
+			value = 0,
+			database_name = key .. "_" .. level_key,
+		}
+
+		if is_dlc_level then
+			definition.source = "player_data"
+		end
+
+		t[level_key] = definition
+	end
+
+	local level_difficulty_name = level_key .. "_difficulty_completed"
+
+	LevelDifficultyDBNames[level_key] = level_difficulty_name
+
+	local completed_levels_difficulty_definition = {
+		sync_on_hot_join = true,
+		value = 0,
+		database_name = level_difficulty_name,
+	}
+
+	if is_dlc_level then
+		completed_levels_difficulty_definition.source = "player_data"
+	end
+
+	player.completed_levels_difficulty[level_difficulty_name] = completed_levels_difficulty_definition
+
+	local grimoire_name = "collected_grimoire_" .. level_key
+	local collected_grimoires_definition = {
+		value = 0,
+		database_name = grimoire_name,
+	}
+
+	if is_dlc_level then
+		collected_grimoires_definition.source = "player_data"
+	end
+
+	player.collected_grimoires[level_key] = collected_grimoires_definition
+
+	local tome_name = "collected_tome_" .. level_key
+	local tome_name_definition = {
+		value = 0,
+		database_name = tome_name,
+	}
+
+	if is_dlc_level then
+		tome_name_definition.source = "player_data"
+	end
+
+	player.collected_tomes[level_key] = tome_name_definition
+
+	local die_name = "collected_die_" .. level_key
+	local die_name_definition = {
+		value = 0,
+		database_name = die_name,
+	}
+
+	if is_dlc_level then
+		die_name_definition.source = "player_data"
+	end
+
+	player.collected_dice[level_key] = die_name_definition
+
+	local painting_name = "collected_painting_scraps_" .. level_key
+
+	player.collected_painting_scraps[level_key] = {
+		source = "player_data",
+		value = 0,
+		database_name = painting_name,
+	}
 end
 
 DLCUtils.dofile_list("statistics_definitions")

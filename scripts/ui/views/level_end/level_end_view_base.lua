@@ -903,6 +903,8 @@ LevelEndViewBase._setup_state_machine = function (self, optional_start_state_nam
 	state_machine_params.direction = direction
 	self._current_state_name = state_name
 	self._machine = StateMachine:new(self, start_state, state_machine_params, profiling_debugging_enabled)
+
+	self:_show_object_set(state_name)
 end
 
 LevelEndViewBase._handle_state_auto_change = function (self)
@@ -1292,7 +1294,7 @@ end
 
 LevelEndViewBase._push_mouse_cursor = function (self)
 	if not self._cursor_visible then
-		ShowCursorStack.push()
+		ShowCursorStack.show("LevelEndViewBase")
 
 		self._cursor_visible = true
 	end
@@ -1300,7 +1302,7 @@ end
 
 LevelEndViewBase._pop_mouse_cursor = function (self)
 	if self._cursor_visible then
-		ShowCursorStack.pop()
+		ShowCursorStack.hide("LevelEndViewBase")
 
 		self._cursor_visible = nil
 	end
@@ -1394,9 +1396,6 @@ LevelEndViewBase.create_world = function (self, context)
 	local layer = 2
 	local flags = self:get_world_flags()
 	local world = Managers.world:create_world(world_name, shading_environment, nil, layer, unpack(flags))
-
-	World.set_data(world, "avoid_blend", true)
-
 	local top_world = Managers.world:world("top_ingame_view")
 
 	return world, top_world
@@ -1419,8 +1418,78 @@ LevelEndViewBase.spawn_level = function (self, context, world)
 	local level = ScriptWorld.spawn_level(world, level_name, object_sets, position, rotation, shading_callback, mood_setting, time_sliced_spawn)
 
 	Level.spawn_background(level)
+	Level.trigger_level_loaded(level)
+	self:_register_object_sets(level, level_name)
 
 	return level
+end
+
+LevelEndViewBase._register_object_sets = function (self, level, level_name)
+	local object_sets = {}
+	local available_level_sets = LevelResource.object_set_names(level_name)
+
+	for _, set_name in ipairs(available_level_sets) do
+		object_sets[set_name] = {
+			set_enabled = true,
+			units = LevelResource.unit_indices_in_object_set(level_name, set_name),
+		}
+	end
+
+	self._object_sets = object_sets
+
+	self:_show_object_set(nil, level)
+end
+
+LevelEndViewBase._show_object_set = function (self, object_set_name, level)
+	local level = level or self._level
+	local object_sets = self._object_sets
+	local exists = false
+
+	for set_name, object_set_data in pairs(object_sets) do
+		local set_enabled = object_set_data.set_enabled
+
+		if set_enabled and set_name ~= object_set_name then
+			local units = object_set_data.units
+
+			for _, unit_index in ipairs(units) do
+				local unit = Level.unit_by_index(level, unit_index)
+
+				if Unit.alive(unit) then
+					Unit.set_unit_visibility(unit, false)
+				end
+			end
+
+			object_set_data.set_enabled = false
+		elseif set_name == object_set_name and not set_enabled then
+			local units = object_set_data.units
+
+			for _, unit_index in ipairs(units) do
+				local unit = Level.unit_by_index(level, unit_index)
+
+				Unit.set_unit_visibility(unit, true)
+
+				if Unit.has_data(unit, "LevelEditor", "is_gizmo_unit") then
+					local is_gizmo = Unit.get_data(unit, "LevelEditor", "is_gizmo_unit")
+					local is_reflection_probe = Unit.is_a(unit, "core/stingray_renderer/helper_units/reflection_probe/reflection_probe")
+
+					if is_gizmo and not is_reflection_probe then
+						Unit.flow_event(unit, "hide_helper_mesh")
+						Unit.flow_event(unit, "unit_object_set_enabled")
+					end
+				end
+			end
+
+			object_set_data.set_enabled = true
+		end
+
+		exists = set_name == object_set_name or exists
+	end
+
+	if exists then
+		print("Showing object set:", object_set_name)
+	elseif object_set_name then
+		print(string.format("Trying to show object set %q - But it didn't exist", object_set_name))
+	end
 end
 
 LevelEndViewBase.create_ui_renderer = function (self, context, world, top_world)
@@ -1457,4 +1526,12 @@ LevelEndViewBase.create_ui_renderer = function (self, context, world, top_world)
 	local ui_top_renderer = UIRenderer.create(top_world, unpack(materials))
 
 	return ui_renderer, ui_top_renderer
+end
+
+LevelEndViewBase.show_team = function (self)
+	return
+end
+
+LevelEndViewBase.hide_team = function (self)
+	return
 end

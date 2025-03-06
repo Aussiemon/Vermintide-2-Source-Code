@@ -18,6 +18,12 @@ ImguiJIT.init = function (self)
 		end
 	end
 
+	if not self._root_path then
+		self._root_path = ""
+		self._snapshot_data = nil
+		self._memory_layout_name_max_size = 0
+	end
+
 	self._gc = {
 		{
 			d = "The garbage-collector pause controls how long the collector waits before starting a new cycle.",
@@ -207,6 +213,31 @@ local function fmtbytes(b)
 	return UIUtils.comma_value(math.ceil(1024 * b) .. " bytes")
 end
 
+local _pad_cache = {}
+
+ImguiJIT._recursive_header = function (self, tbl, children_by_ref, name_by_ref, size_by_ref, one_layer_size, depth_by_reference, name_length)
+	local depth = depth_by_reference[tbl]
+	local padding = (depth - 1) * 10
+
+	Imgui.dummy(padding, 0)
+	Imgui.same_line()
+
+	if Imgui.collapsing_header(string.format("%s%s (self: %sb)", string.pad_right(name_by_ref[tbl], name_length + 4, " ", _pad_cache), string.pad_right(string.chunk_from_right(tostring(size_by_ref[tbl]), 3, "'") .. "b", 15, " ", _pad_cache), string.chunk_from_right(tostring(one_layer_size[tbl]), 3, "'")), false) then
+		local children = children_by_ref[tbl]
+		local _, longest_name_ref = table.max_func(children, function (ref)
+			return #name_by_ref[ref]
+		end)
+
+		self._memory_layout_name_max_size = math.clamp(#name_by_ref[longest_name_ref], self._memory_layout_name_max_size, 125)
+
+		for i = 1, #children do
+			self:_recursive_header(children[i], children_by_ref, name_by_ref, size_by_ref, one_layer_size, depth_by_reference, self._memory_layout_name_max_size)
+		end
+
+		Imgui.tree_pop()
+	end
+end
+
 ImguiJIT.draw = function (self)
 	local do_close = Imgui.begin_window("JIT utilities")
 	local enabled = Imgui.checkbox("JIT enabled", self._enabled or false)
@@ -344,6 +375,42 @@ ImguiJIT.draw = function (self)
 		end
 
 		Imgui.text("Last known state: " .. self._gc_state)
+		Imgui.tree_pop()
+	end
+
+	if Imgui.collapsing_header("Memory Layout", false) then
+		self._root_path = Imgui.input_text("Path", self._root_path)
+
+		local root
+
+		if self._root_path == "" then
+			root = _G
+		else
+			root = success and val
+		end
+
+		if root then
+			Imgui.same_line()
+
+			if Imgui.button("Snapshot") and root then
+				self._snapshot_data = nil
+
+				collectgarbage("collect")
+
+				self._snapshot_data = {
+					grab_lua_memory_tree_snapshot(root),
+				}
+			end
+
+			if self._snapshot_data then
+				local children, name_by_ref, size_by_ref, one_layer_size, depth_by_reference = unpack(self._snapshot_data)
+
+				self._memory_layout_name_max_size = math.max(self._memory_layout_name_max_size, #name_by_ref[root])
+
+				self:_recursive_header(root, children, name_by_ref, size_by_ref, one_layer_size, depth_by_reference, self._memory_layout_name_max_size)
+			end
+		end
+
 		Imgui.tree_pop()
 	end
 

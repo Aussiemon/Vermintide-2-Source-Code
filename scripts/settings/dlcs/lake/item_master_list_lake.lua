@@ -225,6 +225,7 @@ ItemMasterList.es_bastard_sword_preview = {
 	has_power_level = true,
 	hud_icon = "weapon_generic_icon_sword",
 	inventory_icon = "icons_placeholder",
+	is_local = true,
 	item_type = "es_bastard_sword",
 	property_table_name = "melee",
 	rarity = "plentiful",

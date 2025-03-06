@@ -1606,11 +1606,9 @@ weapon_template.state_machine = "units/beings/player/first_person_base/state_mac
 weapon_template.attack_meta_data = {
 	tap_attack = {
 		arc = 0,
-		penetrating = false,
 	},
 	hold_attack = {
 		arc = 1,
-		penetrating = true,
 	},
 }
 weapon_template.aim_assist_settings = {

@@ -10,6 +10,9 @@ return {
 	screenspace_effect_name = "fx/screenspace_statue_veins/screenspace_statue_veins",
 	screenspace_end_effect_name = "fx/screenspace_statue_veins/screenspace_statue_veins_fade_out",
 	time_until_explosion = 10,
+	packages = {
+		"resource_packages/mutators/mutator_escort",
+	},
 	is_player_carrying_pickup = function (pickup_name, side)
 		local pickup_settings = AllPickups[pickup_name]
 		local slot_name = pickup_settings.slot_name

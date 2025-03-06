@@ -743,11 +743,9 @@ weapon_template.attack_meta_data = {
 	ignore_enemies_for_obstruction_charged = true,
 	tap_attack = {
 		arc = 2,
-		penetrating = false,
 	},
 	hold_attack = {
 		arc = 0,
-		penetrating = true,
 	},
 }
 weapon_template.right_hand_unit = "units/weapons/player/wpn_greatsword/wpn_greatsword"

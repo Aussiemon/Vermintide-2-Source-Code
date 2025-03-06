@@ -93,6 +93,14 @@ LimitedItemTrackSpawnerTemplates.sack_spawner = {
 				id = spawn_data.id,
 				spawner_unit = spawner_unit,
 			},
+			death_system = {
+				in_hand = false,
+				item_name = pickup_name,
+			},
+			health_system = {
+				in_hand = false,
+				item_name = pickup_name,
+			},
 		}
 		local modified_position = AiAnimUtils.position_network_scale(network_position)
 		local modified_rotation = AiAnimUtils.rotation_network_scale(network_rotation)

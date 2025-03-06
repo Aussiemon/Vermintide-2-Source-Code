@@ -263,8 +263,8 @@ PackmasterStateDragging.update = function (self, unit, input, dt, context, t)
 
 	local current_velocity = locomotion_extension:current_relative_velocity_3p()
 
-	Managers.state.network:anim_set_variable_float(unit, "drag_move_forward", current_velocity.y)
-	Managers.state.network:anim_set_variable_float(unit, "drag_move_right", current_velocity.x)
+	Managers.state.network:anim_set_variable_float(unit, "drag_move_forward", math.clamp(current_velocity.y, -12, 12))
+	Managers.state.network:anim_set_variable_float(unit, "drag_move_right", math.clamp(current_velocity.x, -12, 12))
 
 	self.current_movement_speed_scale = current_movement_speed_scale
 

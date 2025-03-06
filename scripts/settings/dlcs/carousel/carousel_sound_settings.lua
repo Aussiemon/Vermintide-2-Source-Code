@@ -13,6 +13,7 @@ settings.dialogue_lookup = {
 	"dialogues/generated/lookup_vs_level_farmlands_pvp",
 	"dialogues/generated/lookup_vs_level_fort_pvp",
 	"dialogues/generated/lookup_vs_level_forest_ambush_pvp",
+	"dialogues/generated/lookup_vs_level_dwarf_exterior_pvp",
 }
 settings.auto_load_files_mechanism = {
 	versus = {
@@ -45,6 +46,9 @@ settings.dialogue_settings = {
 	},
 	forest_ambush_pvp = {
 		"dialogues/generated/vs_level_forest_ambush_pvp",
+	},
+	dwarf_exterior_pvp = {
+		"dialogues/generated/vs_level_dwarf_exterior_pvp",
 	},
 }
 settings.network_sound_events = {

@@ -56,7 +56,7 @@ PlayerBotUnitFirstPerson.init = function (self, extension_init_context, unit, ex
 		name = "PlayerBotUnitFirstPerson",
 	})
 
-	if script_data.benchmark then
+	if Development.parameter("attract_mode") then
 		Unit.animation_event(self.first_person_unit, "enable_headbob")
 	end
 end

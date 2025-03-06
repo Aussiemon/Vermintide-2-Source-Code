@@ -1,14 +1,8 @@
 ﻿-- chunkname: @scripts/settings/terror_events/terror_events_skittergate.lua
 
-local function count_event_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
-end
-
-local function count_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed(breed_name)
-end
-
-local weighted_random_terror_events
+local TerrorEventUtils = require("scripts/settings/terror_events/terror_event_utils")
+local count_event_breed = TerrorEventUtils.count_event_breed
+local count_breed = TerrorEventUtils.count_breed
 local terror_event_blueprints = {
 	skittergate_pacing_off = {
 		{
@@ -224,4 +218,6 @@ local terror_event_blueprints = {
 	},
 }
 
-return terror_event_blueprints, weighted_random_terror_events
+return {
+	terror_event_blueprints,
+}

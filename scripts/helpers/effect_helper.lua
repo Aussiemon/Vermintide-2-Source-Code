@@ -1,6 +1,6 @@
 ﻿-- chunkname: @scripts/helpers/effect_helper.lua
 
-require("scripts/settings/material_effect_mappings")
+local_require("scripts/settings/material_effect_mappings")
 require("scripts/helpers/network_utils")
 
 script_data.debug_material_effects = script_data.debug_material_effects or Development.parameter("debug_material_effects")

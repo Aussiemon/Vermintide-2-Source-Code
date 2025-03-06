@@ -15,7 +15,6 @@ WarpfireThrowerStateJumping.update = function (self, unit, input, dt, context, t
 		return
 	end
 
-	local csm = self._csm
 	local ghost_mode_extension = self._ghost_mode_extension
 	local in_ghost_mode = ghost_mode_extension:is_in_ghost_mode()
 

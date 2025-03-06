@@ -28,7 +28,7 @@ BaseView.destroy = function (self)
 end
 
 BaseView.on_enter = function (self)
-	ShowCursorStack.push()
+	ShowCursorStack.show("BaseView")
 
 	local input_manager = self._input_manager
 	local input_service_name = self._input_service_name
@@ -44,7 +44,7 @@ BaseView.post_update_on_enter = function (self)
 end
 
 BaseView.on_exit = function (self)
-	ShowCursorStack.pop()
+	ShowCursorStack.hide("BaseView")
 
 	local input_manager = self._input_manager
 

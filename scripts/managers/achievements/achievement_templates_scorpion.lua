@@ -1,5 +1,7 @@
 ﻿-- chunkname: @scripts/managers/achievements/achievement_templates_scorpion.lua
 
+require("scripts/settings/weave_settings")
+
 local check_level_difficulty = AchievementTemplateHelper.check_level_difficulty
 local check_level_list_difficulty = AchievementTemplateHelper.check_level_list_difficulty
 local hero_level = AchievementTemplateHelper.hero_level

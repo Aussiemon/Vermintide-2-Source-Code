@@ -2213,12 +2213,10 @@ weapon_template.attack_meta_data = {
 	tap_attack = {
 		arc = 0,
 		max_range = 2.75,
-		penetrating = true,
 	},
 	hold_attack = {
 		arc = 2,
 		max_range = 3,
-		penetrating = true,
 	},
 }
 weapon_template.aim_assist_settings = {

@@ -32,7 +32,6 @@ settings.character_states = {
 	"scripts/unit_extensions/default_player_unit/enemy_states/rat_ogre/rat_ogre_state_standing",
 	"scripts/unit_extensions/default_player_unit/enemy_states/rat_ogre/rat_ogre_state_walking",
 	"scripts/unit_extensions/default_player_unit/enemy_states/rat_ogre/rat_ogre_state_jumping",
-	"scripts/unit_extensions/default_player_unit/enemy_states/rat_ogre/rat_ogre_state_jump_ability_priming",
 	"scripts/unit_extensions/default_player_unit/enemy_states/rat_ogre/rat_ogre_state_falling",
 	"scripts/unit_extensions/default_player_unit/enemy_states/gutter_runner/gutter_runner_state_foff",
 	"scripts/unit_extensions/default_player_unit/enemy_states/gutter_runner/gutter_runner_state_pinning",

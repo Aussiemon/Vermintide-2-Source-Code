@@ -68,7 +68,7 @@ BTBotInteractAction.run = function (self, unit, blackboard, t, dt)
 	end
 
 	if do_interaction then
-		local input = action_data and action_data.input or "interact"
+		local input = action_data and action_data.input or InteractionHelper.interaction_action_names(unit)
 
 		if bb.wait_on_previous_interaction then
 			bb.wait_on_previous_interaction = false

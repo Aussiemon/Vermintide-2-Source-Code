@@ -200,7 +200,7 @@ CareerAbilityRatOgreJump.update = function (self, unit, input, dt, context, t)
 	end
 
 	if self._is_priming then
-		local cancel_input = input_extension:get("action_one") or input_extension:get("jump") or input_extension:get("jump_only") or input_extension:get("weapon_reload") or input_extension:get("action_two_release") and not self._done_priming or not input_extension:get("action_two_hold") and not self._done_priming or self._status_extension:is_climbing()
+		local cancel_input = input_extension:get("dark_pact_action_one") or input_extension:get("jump") or input_extension:get("jump_only") or input_extension:get("dark_pact_reload") or input_extension:get("dark_pact_action_two_release") and not self._done_priming or not input_extension:get("dark_pact_action_two_hold") and not self._done_priming or self._status_extension:is_climbing()
 
 		if cancel_input then
 			self._career_extension:stop_ability("aborted")
@@ -246,7 +246,7 @@ CareerAbilityRatOgreJump.update = function (self, unit, input, dt, context, t)
 			return
 		end
 
-		local released_input = input_extension:get("action_two_release")
+		local released_input = input_extension:get("dark_pact_action_two_release")
 
 		if released_input and self._done_priming then
 			if result and self._last_valid_landing_position then

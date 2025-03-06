@@ -20,8 +20,8 @@ BuffUtils.apply_buff_tweak_data = function (buffs, tweak_data)
 	end
 end
 
-BuffUtils.copy_talent_buff_names = function (buffs)
-	for name, buff_data in pairs(buffs) do
+BuffUtils.copy_talent_buff_names = function (talent_data)
+	for name, buff_data in pairs(talent_data) do
 		local buffs = buff_data.buffs
 
 		fassert(#buffs == 1, "talent buff has more than one sub buff, add multiple buffs from the talent instead")
@@ -131,8 +131,8 @@ BuffUtils.create_attached_particles = function (world, particle_fx, unit, is_fir
 				local fx_id = ScriptWorld.create_particles_linked(world, fx.effect, link_target, node_id, fx.orphaned_policy, pose)
 
 				if fx.custom_variables then
-					for i = 1, #fx.custom_variables do
-						local data = fx.custom_variables[i]
+					for variable_i = 1, #fx.custom_variables do
+						local data = fx.custom_variables[variable_i]
 						local name = data.name
 
 						data.cached_id = data.cached_id or World.find_particles_variable(world, fx.effect, name)
@@ -146,8 +146,8 @@ BuffUtils.create_attached_particles = function (world, particle_fx, unit, is_fir
 				end
 
 				if fx.material_variables then
-					for i = 1, #fx.material_variables do
-						local data = fx.material_variables[i]
+					for variable_i = 1, #fx.material_variables do
+						local data = fx.material_variables[variable_i]
 						local cloud_name = data.cloud_name
 						local material_variable = data.material_variable
 						local value = data.value or data.dynamic_value()
@@ -269,22 +269,25 @@ BuffUtils.generate_balefire_burn_variants = function (buff_templates)
 		local balefire_i = string.find(template_name, "_balefire")
 
 		if not balefire_i then
-			local new_name = template_name .. "_balefire"
-			local new_buff_template = table.clone(template)
+			local new_name, new_buff_template
 
-			for buff_i, sub_buff in ipairs(new_buff_template.buffs) do
+			for buff_i, sub_buff in ipairs(template.buffs) do
 				local perks = sub_buff.perks
 
 				if perks and table.find(perks, buff_perk_names.burning) then
+					if not new_name then
+						new_name = template_name .. "_balefire"
+						new_buff_template = table.clone(template)
+						BalefireDots[new_name] = true
+						BalefireBurnDotLookup[template_name] = new_name
+						DotTypeLookup[new_name] = DotTypeLookup[template_name]
+						buff_templates[new_name] = new_buff_template
+					end
+
+					perks = new_buff_template.buffs[buff_i].perks
+
 					table.remove_array_value(perks, buff_perk_names.burning)
 					table.insert_unique(perks, buff_perk_names.burning_balefire)
-
-					BalefireDots[new_name] = true
-					BalefireBurnDotLookup[template_name] = new_name
-					DotTypeLookup[new_name] = DotTypeLookup[template_name]
-					buff_templates[new_name] = new_buff_template
-
-					break
 				end
 			end
 		else
@@ -301,13 +304,20 @@ InfiniteBurnDotLookup = InfiniteBurnDotLookup or {}
 BuffUtils.generate_infinite_burn_variants = function (buff_templates)
 	for template_name, template in pairs(buff_templates) do
 		if not string.find(template_name, "_infinite") then
-			local new_name = template_name .. "_infinite"
-			local new_buff_template = table.clone(template)
+			local new_name, new_buff_template
 
-			for _, sub_buff in ipairs(new_buff_template.buffs) do
+			for i, sub_buff in ipairs(template.buffs) do
 				local perks = sub_buff.perks
 
 				if perks and table.find(perks, buff_perk_names.burning) then
+					if not new_name then
+						new_name = template_name .. "_infinite"
+						new_buff_template = table.clone(template)
+						InfiniteBurnDotLookup[template_name] = new_name
+						buff_templates[new_name] = new_buff_template
+					end
+
+					sub_buff = new_buff_template.buffs[i]
 					sub_buff.name = "infinite_burning_dot"
 					sub_buff.duration = nil
 					sub_buff.on_max_stacks_overflow_func = "reapply_infinite_burn"
@@ -324,9 +334,6 @@ BuffUtils.generate_infinite_burn_variants = function (buff_templates)
 					if sub_buff.time_between_dot_damages then
 						sub_buff.time_between_dot_damages = sub_buff.time_between_dot_damages / 2
 					end
-
-					InfiniteBurnDotLookup[template_name] = new_name
-					buff_templates[new_name] = new_buff_template
 
 					break
 				end

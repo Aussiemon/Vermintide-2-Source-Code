@@ -14,6 +14,9 @@ local PRIORITY_REASONS = {
 	ping = 4,
 	proximity = 1,
 }
+local RPCS = {
+	"rpc_add_forced_boss_health_ui",
+}
 
 BossHealthUI = class(BossHealthUI)
 
@@ -32,20 +35,27 @@ BossHealthUI.init = function (self, parent, ingame_ui_context)
 	self:create_ui_elements()
 
 	self._animations = {}
+	self._forced_animations = {}
+	self._ingame_ui_context = ingame_ui_context
 	self._is_spectator = false
 	self._spectated_player = nil
 	self._spectated_player_unit = nil
 	self._prioritized_unit = nil
 	self._prioritized_reason = nil
+	self._forced_boss_data = {}
 
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "boss_health_bar_set_prioritized_unit", "event_set_prioritized_unit")
 	event_manager:register(self, "boss_health_bar_clear_prioritized_unit", "event_clear_prioritized_unit")
 	event_manager:register(self, "on_spectator_target_changed", "on_spectator_target_changed")
+	event_manager:register(self, "force_add_boss_health_ui", "on_force_add_boss_health_ui")
 
 	self._proximity_update_time = 0
 	self._look_at_boss_unit_timer = 0
+	self._network_event_delegate = ingame_ui_context.network_event_delegate
+
+	self._network_event_delegate:register(self, unpack(RPCS))
 end
 
 BossHealthUI.destroy = function (self)
@@ -56,6 +66,8 @@ BossHealthUI.destroy = function (self)
 	event_manager:unregister("on_spectator_target_changed", self)
 	event_manager:unregister("boss_health_bar_set_prioritized_unit", self)
 	event_manager:unregister("boss_health_bar_clear_prioritized_unit", self)
+	event_manager:unregister("force_add_boss_health_ui", self)
+	self._network_event_delegate:unregister(self)
 end
 
 BossHealthUI.create_ui_elements = function (self)
@@ -81,9 +93,9 @@ BossHealthUI.create_ui_elements = function (self)
 	end
 end
 
-BossHealthUI._set_portrait_and_title = function (self, marked, breed_name, title)
+BossHealthUI._set_portrait_and_title = function (self, boss_data, marked, breed_name, title)
 	local portrait_texture = breed_textures[breed_name] or "icons_placeholder"
-	local bar_widget = self._widgets_by_name.bar
+	local bar_widget = boss_data.widget or self._widgets_by_name.bar
 
 	if marked then
 		bar_widget.content.title_text = "{#grad(true);color(255,125,80,255);color2(234,77,29,255)}" .. Utf8.upper(title)
@@ -179,14 +191,14 @@ BossHealthUI._generate_attributes = function (self, attributes, widget, current_
 	return true
 end
 
-BossHealthUI._update_enemy_portrait_name_and_attributes = function (self, unit, breed_name)
+BossHealthUI._update_enemy_portrait_name_and_attributes = function (self, boss_data, unit, breed_name)
 	if not ALIVE[unit] then
 		return
 	end
 
 	local ai_system = Managers.state.entity:system("ai_system")
 	local attributes = ai_system:get_attributes(unit)
-	local widget = self._widgets_by_name.bar
+	local widget = boss_data.widget or self._widgets_by_name.bar
 
 	table.clear(widget.content.attributes)
 
@@ -206,11 +218,11 @@ BossHealthUI._update_enemy_portrait_name_and_attributes = function (self, unit, 
 		local magic_number = grudge_marked.name_index
 		local enemy_name = TerrorEventUtils.get_grudge_marked_name(breed_name, magic_number, attributes.breed_enhancements)
 
-		self:_set_portrait_and_title(true, breed_name, enemy_name)
+		self:_set_portrait_and_title(boss_data, true, breed_name, enemy_name)
 	else
 		local title = (Breeds[breed_name] or PlayerBreeds[breed_name]).display_name or breed_name
 
-		self:_set_portrait_and_title(false, breed_name, title)
+		self:_set_portrait_and_title(boss_data, false, breed_name, title)
 	end
 end
 
@@ -227,16 +239,18 @@ BossHealthUI.update = function (self, dt, t)
 	end
 
 	self:_sync_boss_health(dt, t)
+	self:_handle_forced_boss_data(dt, t)
 	self:_update_targeted_boss(dt, t)
 	self:_update_timed_prioritization(dt, t)
+	self:_update_animations(dt, t)
 
-	if self._current_progress and not script_data.hide_boss_health_ui then
-		self:_update_animations(dt, t)
+	if not script_data.hide_boss_health_ui then
 		self:_draw(dt, t)
 	end
 end
 
 BossHealthUI._update_targeted_boss = function (self, dt, t)
+	local boss_data = self
 	local local_player = self._is_spectator and self._spectated_player or self.player_manager:local_player()
 
 	if not local_player then
@@ -249,8 +263,8 @@ BossHealthUI._update_targeted_boss = function (self, dt, t)
 		return
 	end
 
-	if self._prioritized_unit then
-		if ALIVE[self._prioritized_unit] then
+	if boss_data._prioritized_unit then
+		if ALIVE[boss_data._prioritized_unit] then
 			return
 		else
 			self:event_clear_prioritized_unit()
@@ -260,8 +274,16 @@ BossHealthUI._update_targeted_boss = function (self, dt, t)
 	local proximity_system = Managers.state.entity:system("proximity_system")
 	local proximity_boss_unit = proximity_system.closest_boss_unit
 
-	if proximity_boss_unit and self._boss_unit ~= proximity_boss_unit then
-		self:_show_boss_health_bar(proximity_boss_unit)
+	if ALIVE[proximity_boss_unit] and proximity_boss_unit and boss_data._boss_unit ~= proximity_boss_unit and not self:_is_forced(proximity_boss_unit) then
+		self:_show_boss_health_bar(boss_data, proximity_boss_unit)
+	end
+end
+
+BossHealthUI._is_forced = function (self, boss_unit)
+	for _, boss_data in ipairs(self._forced_boss_data) do
+		if boss_data._boss_unit == boss_unit then
+			return true
+		end
 	end
 end
 
@@ -275,27 +297,39 @@ BossHealthUI._update_animations = function (self, dt, t)
 			animations[name] = nil
 		end
 	end
+
+	local forced_animations = self._forced_animations
+
+	for name, animation in pairs(forced_animations) do
+		if not UIAnimation.completed(animation) then
+			UIAnimation.update(animation, dt)
+		else
+			forced_animations[name] = nil
+		end
+	end
 end
 
 BossHealthUI._update_timed_prioritization = function (self, dt, t)
-	if self._start_prioritization_timer then
-		self._prioritization_timer = t
-		self._start_prioritization_timer = false
+	local boss_data = self
+
+	if boss_data._start_prioritization_timer then
+		boss_data._prioritization_timer = t
+		boss_data._start_prioritization_timer = false
 
 		return
 	end
 
-	if not self._prioritization_timer then
+	if not boss_data._prioritization_timer then
 		return
 	end
 
-	if t < self._prioritization_timer + PRIORITY_TIMER_LENGTH then
+	if t < boss_data._prioritization_timer + PRIORITY_TIMER_LENGTH then
 		return
 	end
 
-	self._prioritization_timer = nil
+	boss_data._prioritization_timer = nil
 
-	self:event_clear_prioritized_unit(self._prioritized_reason, true)
+	self:event_clear_prioritized_unit(boss_data._prioritized_reason, true)
 end
 
 BossHealthUI._draw = function (self, dt, t)
@@ -308,16 +342,31 @@ BossHealthUI._draw = function (self, dt, t)
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
-	local widgets = self._widgets
+	if self._current_progress then
+		local widgets = self._widgets
 
-	for _, widget in ipairs(widgets) do
+		for _, widget in ipairs(widgets) do
+			UIRenderer.draw_widget(ui_renderer, widget)
+		end
+	end
+
+	local saved_alpha_multiplier = render_settings.alpha_multiplier
+
+	for _, boss_data in pairs(self._forced_boss_data) do
+		local widget = boss_data.widget
+
+		boss_data.alpha_multiplier = math.min(boss_data.alpha_multiplier + dt * 5, 1)
+		render_settings.alpha_multiplier = boss_data.alpha_multiplier
+
 		UIRenderer.draw_widget(ui_renderer, widget)
 	end
+
+	render_settings.alpha_multiplier = saved_alpha_multiplier
 
 	UIRenderer.end_pass(ui_renderer)
 end
 
-BossHealthUI._show_boss_health_bar = function (self, unit)
+BossHealthUI._show_boss_health_bar = function (self, boss_data, unit)
 	if not ALIVE[unit] then
 		return
 	end
@@ -344,19 +393,20 @@ BossHealthUI._show_boss_health_bar = function (self, unit)
 	if should_show_health_bar then
 		local breed_name = breed.name
 
-		self._switch_healthbars = self._boss_unit and unit ~= self._boss_unit
-		self._breed_name = breed_name
+		boss_data._switch_healthbars = boss_data._boss_unit and unit ~= self._boss_unit
+		boss_data._breed_name = breed_name
 
-		self:_update_enemy_portrait_name_and_attributes(unit, breed_name)
+		self:_update_enemy_portrait_name_and_attributes(boss_data, unit, breed_name)
 
-		self.render_settings.alpha_multiplier = not self._boss_unit and 0 or self.render_settings.alpha_multiplier
-		self._boss_unit = unit
+		self.render_settings.alpha_multiplier = not boss_data._boss_unit and 0 or self.render_settings.alpha_multiplier
+		boss_data.alpha_multiplier = boss_data.alpha_multiplier or 0
+		boss_data._boss_unit = unit
 
-		self:_set_healing_amount(0, 0)
-		self:_set_health_effect_alpha(0)
+		self:_set_healing_amount(boss_data, 0, 0)
+		self:_set_health_effect_alpha(boss_data, 0)
 
-		self._freeze_healing = false
-		self._next_update_is_instant = true
+		boss_data._freeze_healing = false
+		boss_data._next_update_is_instant = true
 
 		return true
 	end
@@ -370,63 +420,153 @@ BossHealthUI.on_spectator_target_changed = function (self, spectated_player_unit
 	self._is_spectator = true
 end
 
+BossHealthUI.on_force_add_boss_health_ui = function (self, forced_ai_unit)
+	local bar_widget_def = definitions.widget_create_func()
+	local bar_widget = UIWidget.init(bar_widget_def)
+	local boss_data = {
+		widget = bar_widget,
+		_boss_unit = forced_ai_unit,
+	}
+
+	self._forced_boss_data[#self._forced_boss_data + 1] = boss_data
+
+	self:_show_boss_health_bar(boss_data, forced_ai_unit)
+	self:_realign_forced_boss_widgets()
+
+	if Managers.player.is_server then
+		local game = Managers.state.network:game()
+
+		if not game then
+			return
+		end
+
+		local go_id = Managers.state.unit_storage:go_id(forced_ai_unit)
+
+		Managers.state.network.network_transmit:send_rpc_clients("rpc_add_forced_boss_health_ui", go_id)
+	end
+end
+
+BossHealthUI.rpc_add_forced_boss_health_ui = function (self, sender, go_id)
+	local game = Managers.state.network:game()
+
+	if not game then
+		return
+	end
+
+	local unit = Managers.state.unit_storage:unit(go_id)
+
+	self:on_force_add_boss_health_ui(unit)
+end
+
 BossHealthUI.event_set_prioritized_unit = function (self, unit, reason)
+	local boss_data = self
 	local new_prio = PRIORITY_REASONS[reason] or -999
-	local current_prio = PRIORITY_REASONS[self._prioritized_reason] or -999
+	local current_prio = PRIORITY_REASONS[boss_data._prioritized_reason] or -999
 
 	if new_prio < current_prio then
 		return
 	end
 
-	if self:_show_boss_health_bar(unit) then
-		self._prioritized_reason = reason
-		self._prioritized_unit = unit
+	if self:_is_forced(unit) then
+		return
+	end
+
+	if self:_show_boss_health_bar(boss_data, unit) then
+		boss_data._prioritized_reason = reason
+		boss_data._prioritized_unit = unit
 
 		if reason == "damage_taken" or reason == "damage_done" then
-			self._start_prioritization_timer = true
+			boss_data._start_prioritization_timer = true
 		else
-			self._prioritization_timer = nil
-			self._start_prioritization_timer = false
+			boss_data._prioritization_timer = nil
+			boss_data._start_prioritization_timer = false
 		end
 	end
 end
 
 BossHealthUI.event_clear_prioritized_unit = function (self, reason, reset)
-	if self._prioritized_reason ~= reason then
+	local boss_data = self
+
+	if boss_data._prioritized_reason ~= reason then
 		return
 	end
 
-	self._prioritized_unit = nil
-	self._prioritized_reason = nil
+	boss_data._prioritized_unit = nil
+	boss_data._prioritized_reason = nil
 
 	if reset then
-		self:_reset()
+		self:_reset(boss_data)
 	end
 end
 
-BossHealthUI._reset = function (self)
-	self._boss_unit = nil
-	self._current_progress = nil
-	self._current_raw_progress = nil
-	self._current_max_health_fraction = nil
-	self._healing_start_progress = nil
-	self._healing_life_time = nil
-	self._healing_effect_life_time = nil
-	self._prioritized_unit = nil
-	self._prioritized_reason = nil
+BossHealthUI._reset = function (self, boss_data)
+	boss_data._boss_unit = nil
+	boss_data._current_progress = nil
+	boss_data._current_raw_progress = nil
+	boss_data._current_max_health_fraction = nil
+	boss_data._healing_start_progress = nil
+	boss_data._healing_life_time = nil
+	boss_data._healing_effect_life_time = nil
+	boss_data._prioritized_unit = nil
+	boss_data._prioritized_reason = nil
 end
 
 BossHealthUI._sync_boss_health = function (self, dt, t)
-	local unit = self._boss_unit
-
-	if not unit then
+	if not self._boss_unit then
 		return
 	end
 
-	if not HEALTH_ALIVE[unit] then
-		self:_reset()
+	self:_sync_boss_unit_health(self, dt, t)
+end
 
-		return
+BossHealthUI._handle_forced_boss_data = function (self, dt, t)
+	local do_realign = false
+
+	for i = #self._forced_boss_data, 1, -1 do
+		local boss_data = self._forced_boss_data[i]
+		local should_be_removed = self:_sync_boss_unit_health(boss_data, dt, t)
+
+		if should_be_removed then
+			table.remove(self._forced_boss_data, i)
+
+			do_realign = true
+		end
+	end
+
+	if do_realign then
+		self:_realign_forced_boss_widgets()
+	end
+end
+
+BossHealthUI._realign_forced_boss_widgets = function (self, forced)
+	table.clear(self._forced_animations)
+
+	local animation_time = forced and 0 or 0.3
+	local num_forced_boss_data = #self._forced_boss_data
+	local base_widget_offset_y = num_forced_boss_data > 0 and -100 or 0
+	local base_widget = self._widgets_by_name.bar
+
+	self._forced_animations.base_boss_ui_offset = UIAnimation.init(UIAnimation.function_by_time, base_widget.offset, 2, base_widget.offset[2], base_widget_offset_y, animation_time, math.easeOutCubic)
+
+	local spacing = 50
+	local widget_length = 500
+	local offset_x = -(num_forced_boss_data - 1) * (widget_length * 0.5 + spacing * 0.5)
+
+	for idx, boss_data in ipairs(self._forced_boss_data) do
+		local widget = boss_data.widget
+
+		self._forced_animations["boss_ui_offset_" .. idx] = UIAnimation.init(UIAnimation.function_by_time, widget.offset, 1, widget.offset[1], offset_x, animation_time, math.easeOutCubic)
+		offset_x = offset_x + widget_length + spacing
+	end
+end
+
+BossHealthUI._sync_boss_unit_health = function (self, boss_data, dt, t)
+	local unit = boss_data._boss_unit
+
+	if not HEALTH_ALIVE[unit] then
+		self:_reset(boss_data)
+
+		return true
 	end
 
 	local progress, max_health_fraction
@@ -441,40 +581,42 @@ BossHealthUI._sync_boss_health = function (self, dt, t)
 
 		progress = health_percentage * health_max_percentage
 		max_health_fraction = health_max_percentage
-		self._freeze_healing = self._breed_name == "chaos_troll" and health_extension.state == "down"
+		boss_data._freeze_healing = boss_data._breed_name == "chaos_troll" and health_extension.state == "down"
 	end
 
-	local current_raw_progress = self._current_raw_progress
+	local current_raw_progress = boss_data._current_raw_progress
 	local healing_gained = false
 
-	if progress and current_raw_progress and current_raw_progress < progress or progress and self._switch_healthbars then
-		local healing_start_progress = self._current_progress or 0
+	if progress and current_raw_progress and current_raw_progress < progress or progress and boss_data._switch_healthbars then
+		local healing_start_progress = boss_data._current_progress or 0
 
-		self:_set_healing_amount(healing_start_progress, progress, t)
+		self:_set_healing_amount(boss_data, healing_start_progress, progress, t)
 
-		self._healing_start_progress = healing_start_progress
+		boss_data._healing_start_progress = healing_start_progress
 		healing_gained = true
 	end
 
-	if progress ~= self._current_progress or max_health_fraction ~= self._current_max_health_fraction then
-		self:_set_bar_progress(progress, max_health_fraction, healing_gained, dt, t)
+	if progress ~= boss_data._current_progress or max_health_fraction ~= boss_data._current_max_health_fraction then
+		self:_set_bar_progress(boss_data, progress, max_health_fraction, healing_gained, dt, t)
 	end
 
-	self:_update_healing_bar(dt, t, self._freeze_healing)
-	self:_update_healing_effect(dt, t)
-	self:_set_health_edge_texture_position_progress(self._healing_start_progress or self._current_progress or 0)
+	self:_update_healing_bar(boss_data, dt, t, boss_data._freeze_healing)
+	self:_update_healing_effect(boss_data, dt, t)
+	self:_set_health_edge_texture_position_progress(boss_data)
 
-	if not progress or self._current_progress == 0 then
-		self:_reset()
+	if not progress or boss_data._current_progress == 0 then
+		self:_reset(boss_data)
+
+		return true
 	end
 end
 
-BossHealthUI._set_bar_progress = function (self, progress, max_health_fraction, instant, dt, t)
+BossHealthUI._set_bar_progress = function (self, boss_data, progress, max_health_fraction, instant, dt, t)
 	progress = progress or 0
 
-	local current_health_percent = self._current_progress or 1
+	local current_health_percent = boss_data._current_progress or 1
 	local health_anim_progress = current_health_percent + math.sign(progress - current_health_percent) * (dt * 0.3)
-	local instant = self._next_update_is_instant or instant
+	local instant = boss_data._next_update_is_instant or instant
 
 	if instant then
 		health_anim_progress = progress
@@ -484,7 +626,7 @@ BossHealthUI._set_bar_progress = function (self, progress, max_health_fraction, 
 		health_anim_progress = math.max(health_anim_progress, progress)
 	end
 
-	local widget = self._widgets_by_name.bar
+	local widget = boss_data.widget or self._widgets_by_name.bar
 	local content = widget.content
 	local style = widget.style
 	local bar_style = style.bar
@@ -499,7 +641,7 @@ BossHealthUI._set_bar_progress = function (self, progress, max_health_fraction, 
 	bar_uvs[2][1] = health_anim_progress
 	max_health_fraction = max_health_fraction or 1
 
-	local current_max_health_fraction = self._current_max_health_fraction or 1
+	local current_max_health_fraction = boss_data._current_max_health_fraction or 1
 	local max_health_anim_fraction = current_max_health_fraction + math.sign(max_health_fraction - current_max_health_fraction) * (dt * 0.3)
 
 	if instant then
@@ -529,14 +671,14 @@ BossHealthUI._set_bar_progress = function (self, progress, max_health_fraction, 
 	dead_space_bar_divider_offset[1] = dead_space_bar_default_size[1] - dead_space_bar_divider_default_width_offset - dead_space_bar_size[1]
 	content.max_health_fraction = max_health_anim_fraction
 	content.health_fraction = health_anim_progress
-	self._current_progress = health_anim_progress
-	self._current_raw_progress = progress
-	self._current_max_health_fraction = max_health_anim_fraction
-	self._next_update_is_instant = nil
+	boss_data._current_progress = health_anim_progress
+	boss_data._current_raw_progress = progress
+	boss_data._current_max_health_fraction = max_health_anim_fraction
+	boss_data._next_update_is_instant = nil
 end
 
-BossHealthUI._set_healing_amount = function (self, start_progress, end_progress, time)
-	local widget = self._widgets_by_name.bar
+BossHealthUI._set_healing_amount = function (self, boss_data, start_progress, end_progress, time)
+	local widget = boss_data.widget or boss_data._widgets_by_name.bar
 	local content = widget.content
 	local style = widget.style
 	local bar_style = style.healing_bar
@@ -554,14 +696,14 @@ BossHealthUI._set_healing_amount = function (self, start_progress, end_progress,
 	bar_offset[1] = bar_offset_x
 
 	if time then
-		self._healing_life_time = time + HEALING_MAX_LIFE_TIME
-		self._healing_effect_life_time = time + HEALING_EFFECT_LIFE_TIME
+		boss_data._healing_life_time = time + HEALING_MAX_LIFE_TIME
+		boss_data._healing_effect_life_time = time + HEALING_EFFECT_LIFE_TIME
 	end
 end
 
-BossHealthUI._update_healing_bar = function (self, dt, t, freeze_healing)
-	local healing_end_progress = self._current_raw_progress
-	local healing_start_progress = self._healing_start_progress
+BossHealthUI._update_healing_bar = function (self, boss_data, dt, t, freeze_healing)
+	local healing_end_progress = boss_data._current_raw_progress
+	local healing_start_progress = boss_data._healing_start_progress
 
 	if not healing_start_progress or not healing_end_progress then
 		return
@@ -571,12 +713,12 @@ BossHealthUI._update_healing_bar = function (self, dt, t, freeze_healing)
 
 	if healing_end_progress <= healing_start_progress then
 		new_healing_start_progress = healing_end_progress
-	elseif self._healing_life_time and t >= self._healing_life_time and not freeze_healing then
+	elseif boss_data._healing_life_time and t >= boss_data._healing_life_time and not freeze_healing then
 		new_healing_start_progress = math.min(healing_start_progress + dt * 0.5, healing_end_progress)
 	end
 
 	if freeze_healing then
-		local unit = self._boss_unit
+		local unit = boss_data._boss_unit
 		local action = BreedActions.chaos_troll.downed
 		local min_health_percent = action.respawn_hp_min_percent
 		local health_extension = ScriptUnit.extension(unit, "health_system")
@@ -585,18 +727,19 @@ BossHealthUI._update_healing_bar = function (self, dt, t, freeze_healing)
 		new_healing_start_progress = min_health_percent * current_max_health
 	end
 
-	self:_set_healing_amount(new_healing_start_progress, healing_end_progress)
+	self:_set_healing_amount(boss_data, new_healing_start_progress, healing_end_progress)
 
-	self._healing_start_progress = new_healing_start_progress
+	boss_data._healing_start_progress = new_healing_start_progress
 
 	if new_healing_start_progress == healing_end_progress then
-		self._healing_start_progress = nil
-		self._healing_life_time = nil
+		boss_data._healing_start_progress = nil
+		boss_data._healing_life_time = nil
 	end
 end
 
-BossHealthUI._set_health_edge_texture_position_progress = function (self, progress)
-	local widget = self._widgets_by_name.bar
+BossHealthUI._set_health_edge_texture_position_progress = function (self, boss_data)
+	local progress = boss_data._healing_start_progress or boss_data._current_progress or 0
+	local widget = boss_data.widget or self._widgets_by_name.bar
 	local content = widget.content
 	local style = widget.style
 	local bar_edge_style = style.bar_edge
@@ -607,22 +750,22 @@ BossHealthUI._set_health_edge_texture_position_progress = function (self, progre
 	content.bar_edge_fraction = progress
 end
 
-BossHealthUI._update_healing_effect = function (self, dt, t)
-	if self._healing_effect_life_time then
-		local time_progress = math.max(self._healing_effect_life_time - t, 0) / HEALING_EFFECT_LIFE_TIME
+BossHealthUI._update_healing_effect = function (self, boss_data, dt, t)
+	if boss_data._healing_effect_life_time then
+		local time_progress = math.max(boss_data._healing_effect_life_time - t, 0) / HEALING_EFFECT_LIFE_TIME
 		local healing_effect_progress = 1 - time_progress
 		local effect_alpha = 255 * math.ease_pulse(healing_effect_progress)
 
-		self:_set_health_effect_alpha(effect_alpha)
+		self:_set_health_effect_alpha(boss_data, effect_alpha)
 
 		if time_progress == 0 then
-			self._healing_effect_life_time = nil
+			boss_data._healing_effect_life_time = nil
 		end
 	end
 end
 
-BossHealthUI._set_health_effect_alpha = function (self, alpha)
-	local widget = self._widgets_by_name.bar
+BossHealthUI._set_health_effect_alpha = function (self, boss_data, alpha)
+	local widget = boss_data.widget or self._widgets_by_name.bar
 	local content = widget.content
 	local style = widget.style
 	local portrait_healing_style = style.portrait_healing

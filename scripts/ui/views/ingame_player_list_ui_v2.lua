@@ -370,7 +370,33 @@ IngamePlayerListUI._setup_chaos_wastes_info = function (self)
 	end
 
 	self._node_info_widget = widget
-	widget.offset[2] = self._num_mutators * -100 - 30
+
+	local default_offset = 30
+
+	if level_settings.description_text and self._num_mutators == 0 then
+		local description_widget = self._level_description_widget
+		local content = description_widget.content
+		local style = description_widget.style
+		local description_text_style = style.level_description_text
+		local description_text_font, description_text_scaled_font_size = UIFontByResolution(description_text_style)
+		local _, description_height = UIRenderer.text_size(self._ui_renderer, content.description_text, description_text_font[1], description_text_scaled_font_size)
+		local text_style = style.level_description_text
+		local text_font, text_scaled_font_size = UIFontByResolution(text_style)
+		local texts = UIRenderer.word_wrap(self._ui_renderer, content.text, text_font[1], text_style.font_size, text_style.area_size[1])
+		local offset = description_height
+
+		for i = 1, #texts do
+			local _, text_height = UIRenderer.text_size(self._ui_renderer, texts[i], text_font[1], text_scaled_font_size)
+
+			offset = offset + text_height
+		end
+
+		local extra_offset = 60
+
+		widget.offset[2] = -offset - extra_offset - default_offset
+	else
+		widget.offset[2] = self._num_mutators * -100 - default_offset
+	end
 end
 
 IngamePlayerListUI._setup_deed_reward_data = function (self, deed_reward_data)
@@ -656,7 +682,7 @@ end
 
 IngamePlayerListUI.destroy = function (self)
 	if self._cursor_active then
-		ShowCursorStack.pop()
+		ShowCursorStack.hide("IngamePlayerListUI")
 
 		local input_manager = self._input_manager
 
@@ -1062,7 +1088,7 @@ IngamePlayerListUI.update = function (self, dt, t)
 				self:_set_active(true)
 
 				if not self._cursor_active then
-					ShowCursorStack.push()
+					ShowCursorStack.show("IngamePlayerListUI")
 					input_manager:capture_input({
 						"keyboard",
 						"gamepad",
@@ -1083,7 +1109,7 @@ IngamePlayerListUI.update = function (self, dt, t)
 
 	if self._active then
 		if input_service:get("activate_ingame_player_list") and not self._cursor_active then
-			ShowCursorStack.push()
+			ShowCursorStack.show("IngamePlayerListUI")
 			input_manager:capture_input({
 				"keyboard",
 				"gamepad",
@@ -1209,7 +1235,7 @@ IngamePlayerListUI._set_active = function (self, active)
 	end
 
 	if self._cursor_active then
-		ShowCursorStack.pop()
+		ShowCursorStack.hide("IngamePlayerListUI")
 
 		local input_manager = self._input_manager
 

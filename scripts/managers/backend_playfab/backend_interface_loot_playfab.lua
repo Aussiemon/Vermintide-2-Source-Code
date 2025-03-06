@@ -78,7 +78,11 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 
 	if unlocked_weapon_skins then
 		for i = 1, #unlocked_weapon_skins do
-			backend_mirror:add_unlocked_weapon_skin(unlocked_weapon_skins[i])
+			local backend_ids = backend_mirror:add_unlocked_weapon_skin(unlocked_weapon_skins[i])
+
+			if backend_ids and backend_ids[1] then
+				loot[#loot + 1] = backend_ids[1]
+			end
 		end
 	end
 

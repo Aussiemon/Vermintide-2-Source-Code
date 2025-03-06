@@ -1366,7 +1366,11 @@ end
 VersusPartyCharSelectionView.set_camera_rotation = function (self, rotation)
 	local camera = ScriptViewport.camera(self._team_world_viewport)
 
-	return ScriptCamera.set_local_rotation(camera, rotation)
+	ScriptCamera.set_local_rotation(camera, rotation)
+
+	local world = self:_get_viewport_world()
+
+	ScriptCamera.force_update(world, camera)
 end
 
 VersusPartyCharSelectionView._setup_initial_camera = function (self, world, viewport)
@@ -1394,6 +1398,7 @@ VersusPartyCharSelectionView._setup_camera_nodes_data = function (self, level)
 	local parading_camera_01 = Unit.camera(parading_camera_01_unit, "camera")
 	local parading_camera_02 = Unit.camera(parading_camera_02_unit, "camera")
 
+	self._inital_camera_position = Vector3Box(Unit.local_position(init_camera_unit, 0))
 	data.initial_camera = {
 		camera_unit = init_camera_unit,
 		camera_pose = init_camera_pose,
@@ -1431,6 +1436,8 @@ VersusPartyCharSelectionView._setup_team_previewer = function (self, spawn_on_se
 	local hero_locations = self:_get_heroes_spawn_locations(self._party_id)
 
 	self._team_previewer:setup_team(team_data, hero_locations, spawn_on_setup)
+
+	self._hero_locations = hero_locations
 end
 
 VersusPartyCharSelectionView._setup_team_heroes = function (self)

@@ -37,7 +37,7 @@ LevelTransitionHandler.init = function (self)
 		mechanism = "versus"
 	end
 
-	level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages = LevelTransitionHandler.apply_defaults_to_level_data(level_key, level_seed, environment_variation_id, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages)
+	level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages = self:apply_defaults_to_level_data(level_key, level_seed, environment_variation_id, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages)
 
 	local default_level_data = {
 		level_transition_type = "load_next_level",
@@ -369,7 +369,7 @@ LevelTransitionHandler.get_next_difficulty_tweak = function (self)
 end
 
 LevelTransitionHandler.get_current_level_key = function (self)
-	return self._network_state and self._network_state:get_level_key() or self._offline_level_data.level_key
+	return self._network_state and self._network_state:get_level_key() or self._offline_level_data and self._offline_level_data.level_key
 end
 
 LevelTransitionHandler.get_current_level_seed = function (self)
@@ -433,7 +433,7 @@ LevelTransitionHandler._set_next_level = function (self, level_transition_type, 
 
 	fassert(is_server, "only the server handles next level logic")
 
-	local level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages = LevelTransitionHandler.apply_defaults_to_level_data(optional_level_key, optional_environment_variation_id, optional_level_seed, optional_mechanism, optional_game_mode, optional_conflict_director, optional_locked_director_functions, optional_difficulty, optional_difficulty_tweak, optional_extra_packages, is_server)
+	local level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages = self:apply_defaults_to_level_data(optional_level_key, optional_environment_variation_id, optional_level_seed, optional_mechanism, optional_game_mode, optional_conflict_director, optional_locked_director_functions, optional_difficulty, optional_difficulty_tweak, optional_extra_packages, is_server)
 
 	self:_append_event_packages(level_key, extra_packages)
 
@@ -624,16 +624,24 @@ LevelTransitionHandler.create_level_seed = function ()
 	return seed
 end
 
-LevelTransitionHandler.apply_defaults_to_level_data = function (level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, optional_extra_packages, is_server)
+LevelTransitionHandler.apply_defaults_to_level_data = function (self, level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, optional_extra_packages, is_server)
+	if not mechanism and level_key then
+		local level_settings = LevelSettings[level_key]
+
+		mechanism = level_settings.mechanism
+	end
+
 	if not mechanism then
-		if level_key then
-			local level_settings = LevelSettings[level_key]
+		local current_level_key = self:get_current_level_key()
+
+		if current_level_key then
+			local level_settings = LevelSettings[current_level_key]
 
 			mechanism = level_settings.mechanism
-		else
-			mechanism = SaveData.last_mechanism or "adventure"
 		end
 	end
+
+	mechanism = mechanism or SaveData.last_mechanism or "adventure"
 
 	if not level_key then
 		local mechanism_settings = MechanismSettings[mechanism]

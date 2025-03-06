@@ -5,7 +5,7 @@ require("scripts/settings/progression_unlocks")
 require("scripts/settings/equipment/loot_chest_data_1")
 require("scripts/settings/controller_settings")
 require("scripts/settings/profiles/sp_profiles")
-require("scripts/settings/material_effect_mappings")
+local_require("scripts/settings/material_effect_mappings")
 require("scripts/settings/player_data")
 require("scripts/settings/unit_gib_settings")
 require("scripts/settings/unit_variation_settings")
@@ -229,7 +229,7 @@ StateInGameRunning.on_enter = function (self, params)
 	if Development.parameter("attract_mode") then
 		local ingame_ui = Managers.ui:temporary_get_ingame_ui_called_from_state_ingame_running()
 
-		self._benchmark_handler = BenchmarkHandler:new(ingame_ui, self.world)
+		Managers.benchmark = BenchmarkHandler:new(ingame_ui, self.world)
 	end
 
 	if self.is_in_inn then
@@ -536,6 +536,11 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 
 	if Managers.twitch then
 		Managers.twitch:deactivate_twitch_game_mode()
+	end
+
+	if not self.is_in_inn then
+		DialogueSystem.stateless_global_context.last_level_played = level_key
+		DialogueSystem.stateless_global_context.last_level_won = game_won
 	end
 
 	if ingame_ui.leave_game then
@@ -895,8 +900,8 @@ StateInGameRunning.update = function (self, dt, t)
 
 	self:update_player_afk_check(dt, main_t)
 
-	if self._benchmark_handler then
-		self._benchmark_handler:update(dt, t)
+	if Managers.benchmark then
+		Managers.benchmark:update(dt, t)
 	end
 
 	if self._fps_reporter_testify then
@@ -1000,8 +1005,10 @@ StateInGameRunning.on_exit = function (self)
 
 	CLEAR_ALL_PLAYER_LISTS()
 
-	if self._benchmark_handler then
-		self._benchmark_handler:destroy()
+	if Managers.benchmark then
+		Managers.benchmark:destroy()
+
+		Managers.benchmark = nil
 	end
 
 	if self._level_end_view_wrapper then

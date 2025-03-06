@@ -1008,7 +1008,7 @@ StatisticsUtil._register_completed_level_difficulty = function (statistics_db, l
 			statistics_db:set_stat(stats_id, "completed_levels_difficulty", level_difficulty_name, difficulty)
 		end
 
-		if statistics_db:has_stat(stats_id, "mission_streak", career_name) then
+		if statistics_db:has_stat("mission_streak", career_name) then
 			local current_streak_difficulty = statistics_db:get_persistent_stat(stats_id, "mission_streak", career_name, level_id)
 
 			if current_streak_difficulty < difficulty then
@@ -1119,7 +1119,7 @@ StatisticsUtil.reset_mission_streak = function (player, statistics_db, stats_id)
 	local level_settings = LevelHelper:current_level_settings()
 	local level_id = level_settings.level_id
 
-	if statistics_db:has_stat(stats_id, "mission_streak", career_name) then
+	if statistics_db:has_stat("mission_streak", career_name) then
 		for i = 1, 3 do
 			local act_key = "act_" .. i
 			local act_levels = GameActs[act_key]

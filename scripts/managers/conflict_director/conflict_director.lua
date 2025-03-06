@@ -1735,7 +1735,7 @@ ConflictDirector.spawn_queued_unit = function (self, breed, boxed_spawn_pos, box
 
 	local enemy_package_loader = self.enemy_package_loader
 
-	if not enemy_package_loader.breed_processed[breed.name] then
+	if not enemy_package_loader:is_breed_processed(breed.name) then
 		local ignore_breed_limits = optional_data and optional_data.ignore_breed_limits
 		local success, replacement_breed_name = enemy_package_loader:request_breed(breed.name, ignore_breed_limits, spawn_category)
 
@@ -1833,10 +1833,6 @@ ConflictDirector.remove_queued_unit = function (self, queue_id)
 end
 
 ConflictDirector.update_spawn_queue = function (self, t)
-	local enemy_package_loader = self.enemy_package_loader
-
-	enemy_package_loader:update_breeds_loading_status()
-
 	if self.spawn_queue_size == 0 then
 		return
 	end
@@ -1846,8 +1842,9 @@ ConflictDirector.update_spawn_queue = function (self, t)
 	local d = spawn_queue[first_spawn_index]
 	local breed = d[1]
 	local breed_name = breed.name
+	local enemy_package_loader = self.enemy_package_loader
 
-	while not enemy_package_loader.breed_loaded_on_all_peers[breed_name] do
+	while not enemy_package_loader:is_breed_loaded_on_all_peers(breed_name) do
 		first_spawn_index = first_spawn_index + 1
 
 		if first_spawn_index == self.first_spawn_index + self.spawn_queue_size then
@@ -1859,7 +1856,7 @@ ConflictDirector.update_spawn_queue = function (self, t)
 		breed_name = breed.name
 	end
 
-	local unit = not script_data.disable_breed_freeze_opt and self.breed_freezer:try_unfreeze_breed(breed, d)
+	local unit = not script_data.disable_breed_freeze_opt and self.breed_freezer and self.breed_freezer:try_unfreeze_breed(breed, d)
 
 	if unit then
 		local breed = BLACKBOARDS[unit].breed
@@ -2116,6 +2113,10 @@ ConflictDirector._post_spawn_unit = function (self, ai_unit, go_id, breed, spawn
 		local dialogue_system = Managers.state.entity:system("dialogue_system")
 
 		dialogue_system:queue_mission_giver_event("vs_mg_new_spawn_monster")
+
+		if optional_data.force_boss_health_ui then
+			Managers.state.event:trigger("force_add_boss_health_ui", ai_unit)
+		end
 	end
 
 	Unit.flow_event(ai_unit, "lua_ai_unit_spawned")
@@ -2381,7 +2382,7 @@ ConflictDirector.register_unit_destroyed = function (self, unit, blackboard, rea
 		breed.run_on_despawn(unit, blackboard)
 	end
 
-	if script_data.disable_breed_freeze_opt or not self.breed_freezer:try_mark_unit_for_freeze(breed, unit) then
+	if script_data.disable_breed_freeze_opt or not self.breed_freezer or not self.breed_freezer:try_mark_unit_for_freeze(breed, unit) then
 		Managers.state.unit_spawner:mark_for_deletion(unit)
 	end
 

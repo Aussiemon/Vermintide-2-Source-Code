@@ -86,7 +86,7 @@ DarkPactSelectionUI._capture_input = function (self)
 	end
 
 	self._input_manager:capture_input(self._input_methods, 1, self._input_service_name, "DarkPactSelectionUI")
-	ShowCursorStack.push()
+	ShowCursorStack.show("DarkPactSelectionUI")
 
 	self._input_captured = true
 end
@@ -110,7 +110,7 @@ DarkPactSelectionUI._release_input = function (self)
 		input_service:set_input_blocked("previous_observer_target", false, "DarkPactSelectionUI")
 	end
 
-	ShowCursorStack.pop()
+	ShowCursorStack.hide("DarkPactSelectionUI")
 
 	self._input_captured = false
 end

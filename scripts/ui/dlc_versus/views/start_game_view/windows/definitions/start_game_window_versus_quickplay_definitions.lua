@@ -434,10 +434,10 @@ local quickplay_description_style = {
 		2,
 	},
 }
-local eac_untrusted_disclaimer_text_style = {
+local quickplay_disabled_disclaimer_text_style = {
 	font_size = 28,
 	font_type = "hell_shark_header",
-	horizontal_alignment = "center",
+	horizontal_alignment = "left",
 	localize = false,
 	upper_case = false,
 	use_shadow = true,
@@ -445,9 +445,17 @@ local eac_untrusted_disclaimer_text_style = {
 	word_wrap = true,
 	text_color = Colors.get_color_table_with_alpha("red", 255),
 	offset = {
-		0,
-		-50,
+		40,
+		-60,
 		2,
+	},
+	size = {
+		600,
+		30,
+	},
+	area_size = {
+		600,
+		30,
 	},
 }
 local disable_with_gamepad = true
@@ -458,7 +466,7 @@ local widget_definitions = {
 	quickplay_description = UIWidgets.create_simple_text(Localize("vs_quick_play_description"), "quickplay_description", nil, nil, quickplay_description_style),
 	quickplay_divider = UIWidgets.create_simple_texture("divider_01_top", "quickplay_divider"),
 	play_button = UIWidgets.create_icon_and_name_button("play_button", "options_button_icon_quickplay", Localize("versus_start_game_button_queue_up")),
-	eac_untrusted_disclaimer = UIWidgets.create_simple_text("*Versus quickplay disabled in modded realm", "play_button", nil, nil, eac_untrusted_disclaimer_text_style),
+	quickplay_disabled_disclaimer = UIWidgets.create_simple_text("", "play_button", nil, nil, quickplay_disabled_disclaimer_text_style),
 }
 local selector_input_definitions = {
 	{

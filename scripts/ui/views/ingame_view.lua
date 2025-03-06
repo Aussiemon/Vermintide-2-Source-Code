@@ -74,7 +74,7 @@ IngameView.on_enter = function (self, params)
 		self.input_manager:device_unblock_service("keyboard", 1, "Debug")
 	end
 
-	ShowCursorStack.push()
+	ShowCursorStack.show("IngameView")
 	self:play_sound("Play_hud_button_open")
 
 	local world = self.ui_renderer.world
@@ -94,7 +94,7 @@ IngameView.on_exit = function (self)
 		self._friends_component_ui:deactivate_friends_ui()
 	end
 
-	ShowCursorStack.pop()
+	ShowCursorStack.hide("IngameView")
 	self.input_manager:device_unblock_all_services("keyboard", 1)
 	self.input_manager:device_unblock_all_services("mouse", 1)
 	self.input_manager:device_unblock_all_services("gamepad", 1)

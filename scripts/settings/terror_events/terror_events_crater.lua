@@ -1,39 +1,11 @@
 ﻿-- chunkname: @scripts/settings/terror_events/terror_events_crater.lua
 
-local function count_event_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
-end
-
-local function count_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed(breed_name)
-end
-
-local function current_intensity()
-	return Managers.state.conflict.pacing:get_intensity()
-end
-
-local function current_difficulty()
-	return Managers.state.difficulty.difficulty
-end
-
-local function num_spawned_enemies()
-	local spawned_enemies = Managers.state.conflict:spawned_enemies()
-
-	return #spawned_enemies
-end
-
-local function num_spawned_enemies_during_event()
-	local spawned_enemies = Managers.state.conflict:enemies_spawned_during_event()
-
-	return spawned_enemies
-end
-
-local function num_alive_standards()
-	local alive_standards = Managers.state.conflict:alive_standards()
-
-	return #alive_standards
-end
-
+local TerrorEventUtils = require("scripts/settings/terror_events/terror_event_utils")
+local count_event_breed = TerrorEventUtils.count_event_breed
+local num_spawned_enemies = TerrorEventUtils.num_spawned_enemies
+local count_breed = TerrorEventUtils.count_breed
+local num_alive_standards = TerrorEventUtils.num_alive_standards
+local HARD = TerrorEventUtils.HARD
 local horde_sound_settings = {
 	skaven = {
 		stinger_sound_event = "enemy_horde_stinger",
@@ -56,7 +28,6 @@ local horde_sound_settings = {
 		},
 	},
 }
-local HARD = 3
 local terror_event_blueprints = {
 	crater_no_horde = {
 		{
@@ -556,4 +527,6 @@ local terror_event_blueprints = {
 	},
 }
 
-return terror_event_blueprints
+return {
+	terror_event_blueprints,
+}

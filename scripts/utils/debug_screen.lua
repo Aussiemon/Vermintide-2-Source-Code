@@ -13,17 +13,9 @@ end
 
 local indicator_offset = 0
 
-local function is_server()
-	return Managers.state.network and Managers.state.network.is_server
-end
-
-local function update_option(cs, option_index, dont_save)
-	if cs.propagate_to_server and not is_server() then
-		if Managers.state.debug then
-			Managers.state.debug:propagate_debug_option(DebugScreen.hash_options(), cs.setting_id, option_index, dont_save)
-		else
-			Debug.sticky_text("[DebugScreen] DebugManager not available. Can't propagate option '%s' to host", cs.title)
-		end
+local function update_option(cs, option_index, dont_save, ignore_propagation)
+	if cs.propagate_to_server and not DebugScreen._is_server and not ignore_propagation then
+		DebugScreen._propagate_option(cs.setting_id, option_index, not not dont_save)
 	end
 
 	local option = cs.options[option_index]
@@ -61,7 +53,7 @@ local function update_option(cs, option_index, dont_save)
 		cs.callback(option)
 	end
 
-	if not dont_save then
+	if not dont_save and not cs.never_save then
 		printf("DebugScreen: script_data.%-35s = %s", cs.title, tostring(cs.options[option_index]))
 		Application.save_user_settings()
 	end
@@ -70,12 +62,8 @@ local function update_option(cs, option_index, dont_save)
 end
 
 local function exec_func(cs)
-	if cs.propagate_to_server and not is_server() then
-		if Managers.state.debug then
-			Managers.state.debug:propagate_debug_option(DebugScreen.hash_options(), cs.setting_id, 0, true)
-		else
-			Debug.sticky_text("[DebugScreen] DebugManager not available. Can't propagate action '%s' to host", cs.title)
-		end
+	if cs.propagate_to_server and not DebugScreen._is_server then
+		DebugScreen._propagate_option(cs.setting_id, 0, true)
 	end
 
 	cs.func(cs.options, cs.hot_id)
@@ -118,12 +106,13 @@ local DebugScreen = DebugScreen
 DebugScreen.console_width = DebugScreen.console_width or 800 * (RESOLUTION_LOOKUP.scale or 1)
 DebugScreen.font_size = DebugScreen.font_size or 20 * (RESOLUTION_LOOKUP.scale or 1)
 
-DebugScreen.setup = function (world, settings, callbacks)
+DebugScreen.setup = function (world, settings, callbacks, is_server)
 	local DebugScreen = DebugScreen
 
 	DebugScreen.world = world
 	DebugScreen.gui = World.create_screen_gui(world, "material", "materials/fonts/gw_fonts", "material", "materials/menu/debug_screen", "immediate")
 	DebugScreen.active = false
+	DebugScreen._is_server = is_server
 
 	local script_data = script_data
 
@@ -181,6 +170,7 @@ DebugScreen.setup = function (world, settings, callbacks)
 		end
 
 		cs.propagate_to_server = setting.propagate_to_server
+		cs.never_save = setting.never_save
 		cs.item_display_func = setting.item_display_func
 
 		if setting.bitmap then
@@ -206,7 +196,7 @@ DebugScreen.setup = function (world, settings, callbacks)
 				cs.selected_id = j
 				cs.hot_id = j
 
-				update_option(cs, j, true)
+				update_option(cs, j, true, true)
 			end
 		end
 
@@ -373,7 +363,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 		return
 	end
 
-	DebugScreen.update_search(input_manager, input_service, gui, t, dt)
+	DebugScreen.update_search(input_manager, input_service, gui, t, dt, opened_this_frame)
 
 	if DebugScreen.active then
 		DebugScreen.fade_timer = math.min(1, DebugScreen.fade_timer + dt * fade_speed)
@@ -382,11 +372,6 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 	end
 
 	local filtered_console_settings = DebugScreen.console_settings
-
-	if DebugScreen.hot_id == nil then
-		-- Nothing
-	end
-
 	local current_hot_cs = DebugScreen.filtered_console_settings[DebugScreen.hot_id]
 	local setting_search_string, option_search_string = DebugScreen.search_string:match("([^.]*).?(.*)")
 
@@ -419,13 +404,20 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 		end
 	end
 
-	DebugScreen.hot_id = 1
+	if current_hot_cs ~= filtered_console_settings[DebugScreen.hot_id] then
+		DebugScreen.hot_id = DebugScreen.hot_id or 1
+		DebugScreen.active_id = nil
 
-	for i = 1, #filtered_console_settings do
-		local cs = filtered_console_settings[i]
+		for i = 0, #filtered_console_settings * 0.5 do
+			if filtered_console_settings[DebugScreen.hot_id + i] then
+				DebugScreen.hot_id = DebugScreen.hot_id + i
 
-		if cs == current_hot_cs then
-			DebugScreen.hot_id = i
+				break
+			elseif filtered_console_settings[DebugScreen.hot_id - i] then
+				DebugScreen.hot_id = DebugScreen.hot_id - i
+
+				break
+			end
 		end
 	end
 
@@ -575,27 +567,57 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 	end
 
 	if input_service:get("page up") then
-		DebugScreen.hot_id = 1
+		if DebugScreen.active_id then
+			local cs = filtered_console_settings[DebugScreen.active_id]
+
+			cs.hot_id = 1
+		else
+			DebugScreen.hot_id = 1
+		end
 	elseif input_service:get("page down") then
-		DebugScreen.hot_id = #filtered_console_settings
+		if DebugScreen.active_id then
+			local cs = filtered_console_settings[DebugScreen.active_id]
+
+			cs.hot_id = #filtered_option_ids
+		else
+			DebugScreen.hot_id = #filtered_console_settings
+		end
 	end
 
 	if not input_service:get("down_key") and not input_service:get("up_key") then
 		DebugScreen.is_holding = false
 	end
 
-	if DebugScreen.hot_id > #filtered_console_settings then
-		if #filtered_console_settings == 0 then
-			DebugScreen.hot_id = 0
-		else
-			DebugScreen.hot_id = #filtered_console_settings
-		end
-	end
+	DebugScreen.hot_id = math.clamp(DebugScreen.hot_id, math.min(1, #filtered_console_settings), #filtered_console_settings)
 
+	local start_scroll_num_el_offset = 10
+	local num_categories_until_scroll = 0
+	local num_settings_until_scroll = 0
 	local category_list_above = {}
 	local category_list_total = {}
 
 	for i = 1, DebugScreen.hot_id do
+		if start_scroll_num_el_offset > num_categories_until_scroll + num_settings_until_scroll then
+			if not category_list_above[filtered_console_settings[i].category] then
+				num_categories_until_scroll = num_categories_until_scroll + 1
+			end
+
+			if start_scroll_num_el_offset > num_categories_until_scroll + num_settings_until_scroll then
+				num_settings_until_scroll = num_settings_until_scroll + 1
+			end
+		end
+
+		if i == DebugScreen.active_id then
+			local cs = filtered_console_settings[DebugScreen.active_id]
+			local selected_option_id = table.find(filtered_option_ids, cs.hot_id) or 0
+
+			num_settings_until_scroll = math.min(num_settings_until_scroll + selected_option_id, start_scroll_num_el_offset)
+
+			if num_settings_until_scroll == start_scroll_num_el_offset then
+				break
+			end
+		end
+
 		category_list_above[filtered_console_settings[i].category] = true
 	end
 
@@ -605,16 +627,49 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 
 	local num_categories_above = table.size(category_list_above) - 1
 	local num_categories_total = table.size(category_list_total) - 1
+	local category_list_below = {}
+	local num_bottom_categories_until_scroll = 0
+	local num_bottom_settings_until_scroll = 0
+
+	for i = #filtered_console_settings, 1, -1 do
+		local category = filtered_console_settings[i].category
+
+		if not category_list_below[category] then
+			category_list_below[category] = true
+			num_bottom_categories_until_scroll = num_bottom_categories_until_scroll + 1
+
+			if num_bottom_categories_until_scroll + num_bottom_settings_until_scroll == start_scroll_num_el_offset then
+				break
+			end
+		end
+
+		num_bottom_settings_until_scroll = num_bottom_settings_until_scroll + 1
+
+		if num_bottom_categories_until_scroll + num_bottom_settings_until_scroll == start_scroll_num_el_offset then
+			break
+		end
+
+		if i == DebugScreen.active_id then
+			local cs = filtered_console_settings[DebugScreen.active_id]
+			local selected_option_id = table.find(filtered_option_ids, cs.hot_id)
+			local from_bottom = #filtered_option_ids - selected_option_id
+
+			num_bottom_settings_until_scroll = math.min(num_bottom_settings_until_scroll + from_bottom, start_scroll_num_el_offset)
+
+			if num_bottom_settings_until_scroll == start_scroll_num_el_offset then
+				break
+			end
+		end
+	end
+
+	num_bottom_categories_until_scroll = math.max(0, num_bottom_categories_until_scroll - 1)
+
 	local offset_lerp = ease_out_quad(DebugScreen.fade_timer, 0, 1, 1)
 	local offset_x = offset_lerp * console_width
-	local res_x, res_y = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
+	local _, res_y = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 	local pos_y = res_y - 100
-	local pos_x = -console_width + offset_x
-	local wanted_y_offset = 0
-
-	if DebugScreen.hot_id > 5 then
-		wanted_y_offset = (DebugScreen.hot_id - 5) * (font_size + 2) + num_categories_above * font_size * 1.4
-	end
+	local num_options = #filtered_console_settings
+	local selected_option_id = DebugScreen.hot_id
 
 	if DebugScreen.active_id ~= nil then
 		local cs = filtered_console_settings[DebugScreen.active_id]
@@ -622,11 +677,28 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 		if not cs then
 			DebugScreen.active_id = nil
 		else
-			local current_filtered_id = table.find(filtered_option_ids, cs.hot_id)
+			num_options = num_options + #filtered_option_ids
+			selected_option_id = selected_option_id + (table.find(filtered_option_ids, cs.hot_id) or 0)
 
-			if current_filtered_id and current_filtered_id > 5 then
-				wanted_y_offset = wanted_y_offset + (current_filtered_id - 5) * (font_size + 2)
-			end
+			local num_descriptions_rows = #Gui.word_wrap(gui, cs.description, font_mtrl, font_size, 500, " ", "", "\n", true)
+
+			selected_option_id = selected_option_id + num_descriptions_rows
+		end
+	end
+
+	local total_height = num_options * (font_size + 2) + num_categories_total * font_size * 1.4
+	local wanted_y_offset = 0
+
+	if res_y < total_height then
+		if num_settings_until_scroll ~= num_options - num_bottom_settings_until_scroll then
+			local spacing = 1
+
+			spacing = spacing + (1 - #filtered_option_ids / num_options)
+			wanted_y_offset = wanted_y_offset + math.remap_clamped(num_settings_until_scroll, num_options - num_bottom_settings_until_scroll, 0, num_options, selected_option_id) * (font_size + spacing)
+		end
+
+		if num_categories_until_scroll ~= num_categories_total - num_bottom_categories_until_scroll then
+			wanted_y_offset = wanted_y_offset + math.remap_clamped(num_categories_until_scroll, num_categories_total - num_bottom_categories_until_scroll, 0, num_categories_total, num_categories_above) * font_size * 1.4
 		end
 	end
 
@@ -644,13 +716,9 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 		indicator_offset_anim = 10 - indicator_offset_anim
 	end
 
-	local hacky_offset_pls_calculate_this_better = 500
-	local total_height = #DebugScreen.console_settings * (font_size + 2) + num_categories_total * font_size * 1.4 + hacky_offset_pls_calculate_this_better
-	local current_height = (DebugScreen.hot_id - 1) * (font_size + 2) + num_categories_above * font_size * 1.4
+	local current_height = (selected_option_id - 1) * (font_size + 2) + num_categories_above * font_size * 1.4
 	local scrollbar_size = res_y * res_y / total_height
-	local scrollarea_size = total_height - res_y
-	local scrollposition_ratio = current_height / scrollarea_size
-	local scrollbar_pos = res_y * current_height / total_height
+	local scrollbar_pos = res_y * math.remap(0, 1, 0, 1 - scrollbar_size / res_y, current_height / total_height)
 	local scrollbar_layer = base_layer + 1
 
 	Gui.rect(gui, Vector3(0, 0, base_layer), Vector2(offset_x, res_y), Color(offset_lerp * 220, 25, 50, 25))
@@ -957,6 +1025,12 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 		pos_y = pos_y - (font_size + 2)
 	end
 
+	if DebugScreen.hot_id == 0 and input_service:get("left_key") then
+		DebugScreen.active = false
+
+		input_manager:device_unblock_service("keyboard", 1, "Debug")
+	end
+
 	local i = 1
 	local text_effects = DebugScreen.text_effects
 	local num_effects = #text_effects
@@ -993,7 +1067,7 @@ DebugScreen.reset_settings = function ()
 			if cs.selected_id == 1 then
 				all_false = false
 
-				update_option(cs, 2, true)
+				update_option(cs, 2, true, true)
 			end
 		elseif cs.item_source then
 			-- Nothing
@@ -1011,7 +1085,7 @@ DebugScreen.reset_settings = function ()
 			if cs.is_boolean and cs.selected_id == 2 then
 				all_false = false
 
-				update_option(cs, 3, true)
+				update_option(cs, 3, true, true)
 			end
 		end
 	end
@@ -1046,12 +1120,13 @@ DebugScreen.set_texture_quality = function (value)
 	Application.save_user_settings()
 end
 
-DebugScreen.update_search = function (input_manager, input_service, gui, t, dt)
-	local exit_using_backspace = input_service:get("console_search_key") and DebugScreen.search_string == ""
+DebugScreen.update_search = function (input_manager, input_service, gui, t, dt, opened_this_frame)
+	local enter_when_opening = opened_this_frame and DebugScreen.search_string ~= ""
+	local toggle_using_backspace = input_service:get("console_search_key") and (DebugScreen.search_string == "" or not DebugScreen.search_active)
 	local exit_due_to_exiting_debugscreen = not DebugScreen.active and DebugScreen.search_active
 	local exit_with_no_search_hits_hack = DebugScreen.search_active and DebugScreen.hot_id == 0 and input_service:get("left_key")
 
-	if exit_using_backspace or exit_due_to_exiting_debugscreen or exit_with_no_search_hits_hack then
+	if enter_when_opening or toggle_using_backspace or exit_due_to_exiting_debugscreen or exit_with_no_search_hits_hack then
 		if not DebugScreen.search_active then
 			DebugScreen.unblocked_services_n = input_manager:get_unblocked_services(nil, nil, DebugScreen.unblocked_services)
 
@@ -1064,7 +1139,6 @@ DebugScreen.update_search = function (input_manager, input_service, gui, t, dt)
 			input_manager:device_unblock_services("keyboard", 1, DebugScreen.unblocked_services, DebugScreen.unblocked_services_n)
 
 			DebugScreen.search_active = false
-			DebugScreen.search_string = ""
 		end
 	end
 
@@ -1118,7 +1192,10 @@ DebugScreen.update_search = function (input_manager, input_service, gui, t, dt)
 	for i = 1, #keystrokes do
 		local stroke = keystrokes[i]
 
-		if type(stroke) == "string" then
+		if stroke == "\x7F" then
+			DebugScreen.search_string = ""
+			DebugScreen.active_id = nil
+		elseif type(stroke) == "string" then
 			if stroke:find(".", 1, true) == nil and DebugScreen.search_string:find(".", 1, true) == nil then
 				DebugScreen.active_id = nil
 			end
@@ -1151,6 +1228,10 @@ DebugScreen.hash_options = function ()
 	return DebugScreen.settings_hash or 0
 end
 
+DebugScreen._propagate_option = function (setting_id, option_index, dont_save)
+	Managers.state.network.network_transmit:send_rpc_server("rpc_propagate_debug_option", DebugScreen.hash_options(), setting_id, option_index, dont_save)
+end
+
 DebugScreen.handle_propagated_option = function (option_hash, setting_id, option_index, dont_save)
 	local own_hash = DebugScreen.hash_options()
 
@@ -1163,8 +1244,10 @@ DebugScreen.handle_propagated_option = function (option_hash, setting_id, option
 	end)
 
 	if not cs then
-		return "Missing debug option at index " .. tostring(cs_index)
+		return "Missing debug option at index " .. tostring(setting_id)
 	end
+
+	Debug.sticky_text("[DebugManager] Received propagated debug option '%s' from client", option_index == 0 and cs.title or string.format("%s = %s", cs.title, cs.options[option_index]), "delay", 5)
 
 	if cs.func then
 		exec_func(cs)

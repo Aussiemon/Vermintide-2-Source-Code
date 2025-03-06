@@ -1,6 +1,6 @@
 ﻿-- chunkname: @scripts/ui/views/store_welcome_popup.lua
 
-local function setup_ui_definitions(window_width, list_width, list_height)
+local function setup_ui_definitions(window_width, list_width, list_height, currency_code, is_welcome_popup)
 	local list_size = {
 		list_width,
 		math.min(list_height, 400),
@@ -17,6 +17,11 @@ local function setup_ui_definitions(window_width, list_width, list_height)
 		5,
 		list_size[2],
 	}
+	local currency_ui_settings = DLCSettings.store.currency_ui_settings
+	local currency_settings = currency_ui_settings[currency_code]
+
+	currency_settings = currency_settings or currency_ui_settings.SM
+
 	local animation_definitions = {
 		on_enter = {
 			{
@@ -470,6 +475,11 @@ local function setup_ui_definitions(window_width, list_width, list_height)
 		0,
 		0,
 	}
+	local currency_icon_texture = currency_settings.icon_big
+	local currency_title_string
+
+	currency_title_string = is_welcome_popup and "welcome_currency_popup_amount_summary_title" or currency_settings.name
+
 	local widget_definitions = {
 		screen_overlay = UIWidgets.create_simple_rect("screen_overlay", {
 			50,
@@ -490,8 +500,8 @@ local function setup_ui_definitions(window_width, list_width, list_height)
 		}),
 		window_button = UIWidgets.create_default_button("window_button", scenegraph_definition.window_button.size, "button_frame_02_gold", nil, Localize("welcome_currency_popup_button_claim"), 30, nil, "button_detail_01_gold", nil, disable_with_gamepad),
 		window_title = UIWidgets.create_simple_text("interact_open_store", "window_title", scenegraph_definition.window_title.size, nil, title_text_style),
-		currency_icon = UIWidgets.create_simple_texture("store_icon_currency_ingame_big", "currency_icon"),
-		currency_title = UIWidgets.create_simple_text(Localize("welcome_currency_popup_amount_summary_title"), "currency_title", nil, nil, currency_title_style),
+		currency_icon = UIWidgets.create_simple_texture(currency_icon_texture, "currency_icon"),
+		currency_title = UIWidgets.create_simple_text(Localize(currency_title_string), "currency_title", nil, nil, currency_title_style),
 		currency_text = UIWidgets.create_simple_text("-", "currency_text", nil, nil, currency_text_style),
 		currency_area = UIWidgets.create_tiled_texture("currency_area", "menu_frame_bg_07", {
 			512,
@@ -545,7 +555,7 @@ local LIST_MAX_WIDTH = 800
 
 StoreWelcomePopup = class(StoreWelcomePopup)
 
-StoreWelcomePopup.init = function (self, ingame_ui, layout, total_amount)
+StoreWelcomePopup.init = function (self, ingame_ui, layout, currency_code, total_amount, is_welcome_popup)
 	self._ingame_ui = ingame_ui
 	self._top_world = ingame_ui.top_world
 	self._render_settings = {
@@ -571,7 +581,7 @@ StoreWelcomePopup.init = function (self, ingame_ui, layout, total_amount)
 
 	self:_setup_list_widgets(layout)
 
-	self._scenegraph_definition, self._widget_definitions, self._animation_definitions = setup_ui_definitions(window_width, list_width, self._total_list_height)
+	self._scenegraph_definition, self._widget_definitions, self._animation_definitions = setup_ui_definitions(window_width, list_width, self._total_list_height, currency_code, is_welcome_popup)
 
 	self:_create_ui_elements()
 

@@ -158,7 +158,7 @@ Development.init_application_parameters = function (args, do_pretty_print_args)
 		end
 
 		for param, value in pairs(application_parameters) do
-			if type(value) == "string" then
+			if type(param) == "string" then
 				local fixedparam = string.gsub(param, "-", "_")
 
 				script_data[fixedparam] = value

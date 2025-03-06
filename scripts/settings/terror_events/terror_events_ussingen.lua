@@ -1,9 +1,10 @@
 ﻿-- chunkname: @scripts/settings/terror_events/terror_events_ussingen.lua
 
-local function count_event_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
-end
-
+local TerrorEventUtils = require("scripts/settings/terror_events/terror_event_utils")
+local count_event_breed = TerrorEventUtils.count_event_breed
+local HARDER = TerrorEventUtils.HARDER
+local HARDEST = TerrorEventUtils.HARDEST
+local CATACLYSM = TerrorEventUtils.CATACLYSM
 local weighted_random_terror_events = {
 	ussingen_payload_event_loop = {
 		"ussingen_payload_event_loop_01",
@@ -16,9 +17,6 @@ local weighted_random_terror_events = {
 		1,
 	},
 }
-local HARDER = 4
-local HARDEST = 5
-local CATACLYSM = 6
 local terror_event_blueprints = {
 	generic_disable_pacing = GenericTerrorEvents.generic_disable_pacing,
 	ussingen_gate_guards = {
@@ -500,4 +498,7 @@ local terror_event_blueprints = {
 	},
 }
 
-return terror_event_blueprints, weighted_random_terror_events
+return {
+	terror_event_blueprints,
+	weighted_random_terror_events,
+}

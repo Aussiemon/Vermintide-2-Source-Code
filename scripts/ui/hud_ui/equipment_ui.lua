@@ -73,7 +73,6 @@ EquipmentUI.init = function (self, parent, ingame_ui_context)
 	event_manager:register(self, "on_spectator_target_changed", "on_spectator_target_changed")
 	event_manager:register(self, "swap_equipment_from_storage", "event_swap_equipment_from_storage")
 	self:_create_ui_elements()
-	rawset(_G, "equipment_ui", self)
 end
 
 EquipmentUI._create_ui_elements = function (self)
@@ -1157,7 +1156,6 @@ EquipmentUI.destroy = function (self)
 	event_manager:unregister("on_spectator_target_changed", self)
 	event_manager:unregister("swap_equipment_from_storage", self)
 	self:set_visible(false)
-	rawset(_G, "equipment_ui", nil)
 
 	self._ui_animator = nil
 

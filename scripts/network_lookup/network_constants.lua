@@ -105,15 +105,13 @@ local uint_19 = Network.type_info("uint_19")
 
 fassert(uint_19.bits == 19, "uint_19 is not 19 bits.")
 
+local uint_32 = Network.type_info("uint_32")
+
+fassert(uint_32.bits == 32, "uint_32 is not 32 bits.")
+
 local int_32 = Network.type_info("int_32")
 
-fassert(int_32.bits == 32, "uint_32 is not 32 bits.")
-
-local enemy_package_loader_bitmask_array = Network.type_info("enemy_package_loader_bitmask_array")
-local num_bitmasks_bits = enemy_package_loader_bitmask_array.max_size * int_32.bits
-local num_breeds = #NetworkLookup.breeds
-
-fassert(num_breeds <= num_bitmasks_bits, "Need to update enemy_package_loader_bitmask_array so that it has enough 32-bit elements to contain number of breeds (%i).", num_breeds)
+fassert(int_32.bits == 32, "int_32 is not 32 bits.")
 
 NetworkConstants.max_breed_freezer_units_per_rpc = Network.type_info("packed_breed_go_ids").max_size
 
@@ -179,8 +177,7 @@ local function count_objectives_in_list(objective_list)
 	return count
 end
 
-local uint_31 = Network.type_info("uint_31")
-local objective_bit_field_limit = uint_31.bits
+local objective_bit_field_limit = uint_32.bits
 
 for _, lists in pairs(ObjectiveLists) do
 	for _, list in ipairs(lists) do

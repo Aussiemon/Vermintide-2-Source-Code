@@ -1,6 +1,6 @@
 ﻿-- chunkname: @scripts/settings/equipment/item_master_list_local.lua
 
-ItemMasterList = ItemMasterList or {}
+ItemMasterList = ItemMasterList or Script.new_map(4096)
 ItemMasterList.lamp_oil = {
 	gamepad_hud_icon = "consumables_icon_defence",
 	hud_icon = "consumables_icon_defence",

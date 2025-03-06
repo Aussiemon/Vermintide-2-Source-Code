@@ -590,6 +590,10 @@ ObjectiveSystem._complete_objective_server = function (self, extension, objects_
 		local dialogue_system = Managers.state.entity:system("dialogue_system")
 
 		for context_name, context_value in pairs(objective_data.vo_context_on_complete) do
+			if type(context_value) == "function" then
+				context_value = context_value(dialogue_system:get_global_context(context_name))
+			end
+
 			dialogue_system:set_global_context(context_name, context_value)
 		end
 	end
@@ -1055,6 +1059,11 @@ ObjectiveSystem._check_trigger_complete_vo = function (self, objective_data)
 		local dialogue_system = Managers.state.entity:system("dialogue_system")
 
 		dialogue_system:queue_mission_giver_event("vs_mg_heroes_reached_waystone")
+	elseif objective_data.play_dialogue_event_on_complete then
+		local dialogue_event = objective_data.dialogue_event
+		local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+		dialogue_system:queue_mission_giver_event(dialogue_event)
 	end
 end
 

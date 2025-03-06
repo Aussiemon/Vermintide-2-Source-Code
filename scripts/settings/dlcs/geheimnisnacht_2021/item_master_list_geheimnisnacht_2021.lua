@@ -2,7 +2,6 @@
 
 ItemMasterList.wpn_geheimnisnacht_2021_side_objective = {
 	description = "description_wpn_chaos_artifact",
-	event_item = true,
 	gamepad_hud_icon = "hud_icon_geheimnisnacht_2021",
 	hud_icon = "hud_inventory_icon_geheimnisnacht_2021",
 	inventory_icon = "icons_placeholder",
@@ -14,12 +13,14 @@ ItemMasterList.wpn_geheimnisnacht_2021_side_objective = {
 	slot_type = "potion",
 	temporary_template = "wpn_geheimnisnacht_2021_side_objective",
 	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.es_2h_sword_skin_02_runed_03 = {
 	description = "es_2h_sword_skin_02_runed_03_description",
 	display_name = "es_2h_sword_skin_02_runed_03_name",
 	display_unit = "units/weapons/weapon_display/display_2h_weapon",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icon_wpn_2h_sword_01_t2_runed_03",
@@ -34,12 +35,14 @@ ItemMasterList.es_2h_sword_skin_02_runed_03 = {
 		"es_knight",
 		"es_mercenary",
 	},
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.dw_2h_axe_skin_05_runed_03 = {
 	description = "dw_2h_axe_skin_05_runed_03_description",
 	display_name = "dw_2h_axe_skin_05_runed_03_name",
 	display_unit = "units/weapons/weapon_display/display_2h_weapon",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icon_wpn_dw_2h_axe_03_t1_runed_03",
@@ -54,12 +57,14 @@ ItemMasterList.dw_2h_axe_skin_05_runed_03 = {
 		"dr_slayer",
 		"dr_ranger",
 	},
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.bw_dagger_skin_04_runed_03 = {
 	description = "bw_dagger_skin_04_runed_03_description",
 	display_name = "bw_dagger_skin_04_runed_03_name",
 	display_unit = "units/weapons/weapon_display/display_1h_weapon",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_daggers",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icon_wpn_brw_dagger_04_runed_03",
@@ -74,12 +79,14 @@ ItemMasterList.bw_dagger_skin_04_runed_03 = {
 		"bw_adept",
 		"bw_unchained",
 	},
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.we_2h_axe_skin_07_runed_03 = {
 	description = "we_2h_axe_skin_07_runed_03_description",
 	display_name = "we_2h_axe_skin_07_runed_03_name",
 	display_unit = "units/weapons/weapon_display/display_2h_weapon",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icon_wpn_we_2h_axe_04_t1_runed_03",
@@ -94,12 +101,14 @@ ItemMasterList.we_2h_axe_skin_07_runed_03 = {
 		"we_maidenguard",
 		"we_waywatcher",
 	},
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.es_1h_flail_skin_02_runed_03 = {
 	description = "es_1h_flail_skin_02_runed_03_description",
 	display_name = "es_1h_flail_skin_02_runed_03_name",
 	display_unit = "units/weapons/weapon_display/display_1h_weapon",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_mace",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icon_wpn_emp_flail_02_t1_runed_03",
@@ -114,40 +123,14 @@ ItemMasterList.es_1h_flail_skin_02_runed_03 = {
 		"wh_captain",
 		"wh_bountyhunter",
 	},
-}
-ItemMasterList.frame_0105 = {
-	description = "frame_0105_description",
-	display_name = "frame_0105_name",
-	display_unit = "units/weapons/weapon_display/display_portrait_frame",
-	event_item = true,
-	hud_icon = "unit_frame_02",
-	information_text = "information_text_frame",
-	inventory_icon = "icon_portrait_frame_0105",
-	item_type = "frame",
-	rarity = "promo",
-	slot_type = "frame",
-	temporary_template = "frame_0105",
-	can_wield = CanWieldAllItemTemplates,
-}
-ItemMasterList.frame_0106 = {
-	description = "frame_0106_description",
-	display_name = "frame_0106_name",
-	display_unit = "units/weapons/weapon_display/display_portrait_frame",
-	event_item = true,
-	hud_icon = "unit_frame_02",
-	information_text = "information_text_frame",
-	inventory_icon = "icon_portrait_frame_0106",
-	item_type = "frame",
-	rarity = "promo",
-	slot_type = "frame",
-	temporary_template = "frame_0106",
-	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.dw_1h_axe_shield_skin_05_runed_03 = {
 	description = "dw_1h_axe_shield_skin_05_runed_03_description",
 	display_name = "dw_1h_axe_shield_skin_05_runed_03_name",
 	display_unit = "units/weapons/weapon_display/display_shield",
-	event_item = true,
 	event_quest_requirement = "event_geheimnisnacht_2022_disrupt_bardin",
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
@@ -163,12 +146,14 @@ ItemMasterList.dw_1h_axe_shield_skin_05_runed_03 = {
 		"dr_ironbreaker",
 		"dr_ranger",
 	},
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.bw_1h_flaming_sword_skin_01_runed_03 = {
 	description = "bw_1h_flaming_sword_skin_01_runed_03_description",
 	display_name = "bw_1h_flaming_sword_skin_01_runed_03_name",
 	display_unit = "units/weapons/weapon_display/display_1h_weapon",
-	event_item = true,
 	event_quest_requirement = "event_geheimnisnacht_2022_disrupt_sienna",
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
@@ -184,12 +169,14 @@ ItemMasterList.bw_1h_flaming_sword_skin_01_runed_03 = {
 		"bw_adept",
 		"bw_unchained",
 	},
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.we_dual_sword_dagger_skin_02_runed_03 = {
 	description = "we_dual_sword_dagger_skin_02_runed_03_description",
 	display_name = "we_dual_sword_dagger_skin_02_runed_03_name",
 	display_unit = "units/weapons/weapon_display/display_dual_weapons",
-	event_item = true,
 	event_quest_requirement = "event_geheimnisnacht_2022_disrupt_kerillian",
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
@@ -206,12 +193,14 @@ ItemMasterList.we_dual_sword_dagger_skin_02_runed_03 = {
 		"we_maidenguard",
 		"we_waywatcher",
 	},
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.wh_fencing_sword_skin_01_runed_03 = {
 	description = "wh_fencing_sword_skin_01_runed_03_description",
 	display_name = "wh_fencing_sword_skin_01_runed_03_name",
 	display_unit = "units/weapons/weapon_display/display_1h_weapon",
-	event_item = true,
 	event_quest_requirement = "event_geheimnisnacht_2022_disrupt_victor",
 	hud_icon = "weapon_generic_icon_fencing_sword",
 	information_text = "information_weapon_skin",
@@ -228,12 +217,14 @@ ItemMasterList.wh_fencing_sword_skin_01_runed_03 = {
 		"wh_captain",
 		"wh_zealot",
 	},
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.es_1h_sword_shield_skin_03_runed_03 = {
 	description = "es_1h_sword_shield_skin_03_runed_03_description",
 	display_name = "es_1h_sword_shield_skin_03_runed_03_name",
 	display_unit = "units/weapons/weapon_display/display_shield",
-	event_item = true,
 	event_quest_requirement = "event_geheimnisnacht_2022_disrupt_markus,",
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
@@ -250,12 +241,14 @@ ItemMasterList.es_1h_sword_shield_skin_03_runed_03 = {
 		"es_knight",
 		"es_mercenary",
 	},
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.we_longbow_skin_06_runed_03 = {
 	description = "we_longbow_skin_06_runed_03_description",
 	display_name = "we_longbow_skin_06_runed_03_name",
 	display_unit = "units/weapons/weapon_display/display_bow",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icon_wpn_we_bow_03_t2_runed_03",
@@ -270,12 +263,14 @@ ItemMasterList.we_longbow_skin_06_runed_03 = {
 		"we_maidenguard",
 		"we_waywatcher",
 	},
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.wh_crossbow_skin_04_runed_03 = {
 	description = "wh_crossbow_skin_04_runed_03_description",
 	display_name = "wh_crossbow_skin_04_runed_03_name",
 	display_unit = "units/weapons/weapon_display/display_rifle",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_crossbow",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icon_wpn_emp_crossbow_03_t2_runed_03",
@@ -290,12 +285,14 @@ ItemMasterList.wh_crossbow_skin_04_runed_03 = {
 		"wh_bountyhunter",
 		"wh_captain",
 	},
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.bw_spear_staff_skin_04_runed_03 = {
 	description = "bw_spear_staff_skin_04_runed_03_description",
 	display_name = "bw_spear_staff_skin_04_runed_03_name",
 	display_unit = "units/weapons/weapon_display/display_staff",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icon_wpn_brw_spear_staff_04_runed_03",
@@ -311,12 +308,14 @@ ItemMasterList.bw_spear_staff_skin_04_runed_03 = {
 		"bw_adept",
 		"bw_unchained",
 	},
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.dw_handgun_skin_02_runed_03 = {
 	description = "dw_handgun_skin_02_runed_03_description",
 	display_name = "dw_handgun_skin_02_runed_03_name",
 	display_unit = "units/weapons/weapon_display/display_rifle",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icon_wpn_dw_handgun_01_t2_runed_03",
@@ -330,12 +329,14 @@ ItemMasterList.dw_handgun_skin_02_runed_03 = {
 		"dr_ironbreaker",
 		"dr_ranger",
 	},
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.es_repeating_handgun_skin_02_runed_03 = {
 	description = "es_repeating_handgun_skin_02_runed_03_description",
 	display_name = "es_repeating_handgun_skin_02_runed_03_name",
 	display_unit = "units/weapons/weapon_display/display_rifle",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icon_wpn_emp_handgun_repeater_t2_runed_03",
@@ -350,68 +351,14 @@ ItemMasterList.es_repeating_handgun_skin_02_runed_03 = {
 		"es_knight",
 		"es_mercenary",
 	},
-}
-ItemMasterList.frame_geheimnisnacht_04 = {
-	description = "frame_0112_description",
-	display_name = "frame_0112_name",
-	display_unit = "units/weapons/weapon_display/display_portrait_frame",
-	event_item = true,
-	hud_icon = "unit_frame_02",
-	information_text = "information_text_frame",
-	inventory_icon = "icon_portrait_frame_geheimnisnacht_04",
-	item_type = "frame",
-	rarity = "promo",
-	slot_type = "frame",
-	temporary_template = "frame_geheimnisnacht_04",
-	can_wield = CanWieldAllItemTemplates,
-}
-ItemMasterList.frame_geheimnisnacht_05 = {
-	description = "frame_0113_description",
-	display_name = "frame_0113_name",
-	display_unit = "units/weapons/weapon_display/display_portrait_frame",
-	event_item = true,
-	hud_icon = "unit_frame_02",
-	information_text = "information_text_frame",
-	inventory_icon = "icon_portrait_frame_geheimnisnacht_05",
-	item_type = "frame",
-	rarity = "promo",
-	slot_type = "frame",
-	temporary_template = "frame_geheimnisnacht_05",
-	can_wield = CanWieldAllItemTemplates,
-}
-ItemMasterList.frame_0110 = {
-	description = "frame_0110_description",
-	display_name = "frame_0110_name",
-	display_unit = "units/weapons/weapon_display/display_portrait_frame",
-	event_item = true,
-	hud_icon = "unit_frame_02",
-	information_text = "information_text_frame",
-	inventory_icon = "icon_portrait_frame_0110",
-	item_type = "frame",
-	rarity = "promo",
-	slot_type = "frame",
-	temporary_template = "frame_0110",
-	can_wield = CanWieldAllItemTemplates,
-}
-ItemMasterList.frame_0111 = {
-	description = "frame_0111_description",
-	display_name = "frame_0111_name",
-	display_unit = "units/weapons/weapon_display/display_portrait_frame",
-	event_item = true,
-	hud_icon = "unit_frame_02",
-	information_text = "information_text_frame",
-	inventory_icon = "icon_portrait_frame_0111",
-	item_type = "frame",
-	rarity = "promo",
-	slot_type = "frame",
-	temporary_template = "frame_0111",
-	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.dw_grudge_raker_skin_01_runed_03 = {
 	description = "dw_grudge_raker_skin_01_runed_03_description",
 	display_name = "dw_grudge_raker_skin_01_runed_03_name",
 	display_unit = "units/weapons/weapon_display/display_rifle",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icons_placeholder",
@@ -425,12 +372,14 @@ ItemMasterList.dw_grudge_raker_skin_01_runed_03 = {
 		"dr_ironbreaker",
 		"dr_ranger",
 	},
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.es_handgun_skin_02_runed_03 = {
 	description = "es_handgun_skin_02_runed_03_description",
 	display_name = "es_handgun_skin_02_runed_03_name",
 	display_unit = "units/weapons/weapon_display/display_rifle",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icons_placeholder",
@@ -445,12 +394,14 @@ ItemMasterList.es_handgun_skin_02_runed_03 = {
 		"es_knight",
 		"es_mercenary",
 	},
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.wh_repeating_pistol_skin_02_runed_03 = {
 	description = "wh_repeating_pistol_skin_02_runed_03_description",
 	display_name = "wh_repeating_pistol_skin_02_runed_03_name",
 	display_unit = "units/weapons/weapon_display/display_pistols",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_repeating_pistol",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icons_placeholder",
@@ -465,12 +416,14 @@ ItemMasterList.wh_repeating_pistol_skin_02_runed_03 = {
 		"wh_bountyhunter",
 		"wh_captain",
 	},
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.bw_fireball_staff_skin_01_runed_03 = {
 	description = "bw_fireball_staff_skin_01_runed_03_description",
 	display_name = "bw_fireball_staff_skin_01_runed_03_name",
 	display_unit = "units/weapons/weapon_display/display_staff",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icons_placeholder",
@@ -486,12 +439,14 @@ ItemMasterList.bw_fireball_staff_skin_01_runed_03 = {
 		"bw_adept",
 		"bw_unchained",
 	},
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.we_crossbow_skin_02_runed_03 = {
 	description = "we_crossbow_skin_02_runed_03_description",
 	display_name = "we_crossbow_skin_02_runed_03_name",
 	display_unit = "units/weapons/weapon_display/display_rifle",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icons_placeholder",
@@ -504,11 +459,110 @@ ItemMasterList.we_crossbow_skin_02_runed_03 = {
 	can_wield = {
 		"we_shade",
 	},
+	events = {
+		"geheimnisnacht",
+	},
+}
+ItemMasterList.frame_0105 = {
+	description = "frame_0105_description",
+	display_name = "frame_0105_name",
+	display_unit = "units/weapons/weapon_display/display_portrait_frame",
+	hud_icon = "unit_frame_02",
+	information_text = "information_text_frame",
+	inventory_icon = "icon_portrait_frame_0105",
+	item_type = "frame",
+	rarity = "promo",
+	slot_type = "frame",
+	temporary_template = "frame_0105",
+	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"geheimnisnacht",
+	},
+}
+ItemMasterList.frame_0106 = {
+	description = "frame_0106_description",
+	display_name = "frame_0106_name",
+	display_unit = "units/weapons/weapon_display/display_portrait_frame",
+	hud_icon = "unit_frame_02",
+	information_text = "information_text_frame",
+	inventory_icon = "icon_portrait_frame_0106",
+	item_type = "frame",
+	rarity = "promo",
+	slot_type = "frame",
+	temporary_template = "frame_0106",
+	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"geheimnisnacht",
+	},
+}
+ItemMasterList.frame_0110 = {
+	description = "frame_0110_description",
+	display_name = "frame_0110_name",
+	display_unit = "units/weapons/weapon_display/display_portrait_frame",
+	hud_icon = "unit_frame_02",
+	information_text = "information_text_frame",
+	inventory_icon = "icon_portrait_frame_0110",
+	item_type = "frame",
+	rarity = "promo",
+	slot_type = "frame",
+	temporary_template = "frame_0110",
+	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"geheimnisnacht",
+	},
+}
+ItemMasterList.frame_0111 = {
+	description = "frame_0111_description",
+	display_name = "frame_0111_name",
+	display_unit = "units/weapons/weapon_display/display_portrait_frame",
+	hud_icon = "unit_frame_02",
+	information_text = "information_text_frame",
+	inventory_icon = "icon_portrait_frame_0111",
+	item_type = "frame",
+	rarity = "promo",
+	slot_type = "frame",
+	temporary_template = "frame_0111",
+	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"geheimnisnacht",
+	},
+}
+ItemMasterList.frame_geheimnisnacht_04 = {
+	description = "frame_0112_description",
+	display_name = "frame_0112_name",
+	display_unit = "units/weapons/weapon_display/display_portrait_frame",
+	hud_icon = "unit_frame_02",
+	information_text = "information_text_frame",
+	inventory_icon = "icon_portrait_frame_geheimnisnacht_04",
+	item_type = "frame",
+	rarity = "promo",
+	slot_type = "frame",
+	temporary_template = "frame_geheimnisnacht_04",
+	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"geheimnisnacht",
+	},
+}
+ItemMasterList.frame_geheimnisnacht_05 = {
+	description = "frame_0113_description",
+	display_name = "frame_0113_name",
+	display_unit = "units/weapons/weapon_display/display_portrait_frame",
+	hud_icon = "unit_frame_02",
+	information_text = "information_text_frame",
+	inventory_icon = "icon_portrait_frame_geheimnisnacht_05",
+	item_type = "frame",
+	rarity = "promo",
+	slot_type = "frame",
+	temporary_template = "frame_geheimnisnacht_05",
+	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.frame_geheimnisnacht_2024 = {
 	description = "portrait_frame_geheimnisnacht_2024_description",
 	display_name = "portrait_frame_geheimnisnacht_2024_name",
-	event_item = true,
+	display_unit = "units/weapons/weapon_display/display_portrait_frame",
 	hud_icon = "unit_frame_02",
 	information_text = "information_text_frame",
 	inventory_icon = "icon_portrait_frame_geheimnisnacht_2024",
@@ -517,4 +571,7 @@ ItemMasterList.frame_geheimnisnacht_2024 = {
 	slot_type = "frame",
 	temporary_template = "frame_geheimnisnacht_2024",
 	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"geheimnisnacht",
+	},
 }

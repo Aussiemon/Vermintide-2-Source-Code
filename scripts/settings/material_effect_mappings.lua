@@ -40,10 +40,10 @@ MaterialEffectSettings = {
 }
 DefaultSurfaceMaterial = "stone"
 
-require("scripts/settings/material_effect_mappings_utility")
+local_require("scripts/settings/material_effect_mappings_utility")
 require("scripts/settings/material_effect_mappings_skaven")
 require("scripts/settings/material_effect_mappings_chaos")
-DLCUtils.require_list("material_effect_mappings_file_names")
+DLCUtils.require_list("material_effect_mappings_file_names", true)
 MaterialEffectMappingsUtility.add("melee_hit_piercing", {
 	decal = {
 		material_drawer_mapping = {

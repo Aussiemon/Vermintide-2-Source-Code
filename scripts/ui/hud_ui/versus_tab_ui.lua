@@ -394,7 +394,7 @@ end
 
 VersusTabUI._deactivate_cursor = function (self)
 	if self.cursor_active then
-		ShowCursorStack.pop()
+		ShowCursorStack.hide("VersusSlotStatusUI")
 
 		local input_manager = self._input_manager
 
@@ -409,7 +409,7 @@ end
 
 VersusTabUI._activate_cursor = function (self)
 	if not self.cursor_active then
-		ShowCursorStack.push()
+		ShowCursorStack.show("VersusSlotStatusUI")
 
 		local input_manager = self._input_manager
 

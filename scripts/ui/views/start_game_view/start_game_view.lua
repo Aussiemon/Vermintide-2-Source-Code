@@ -292,7 +292,7 @@ StartGameView.update = function (self, dt, t)
 end
 
 StartGameView.on_enter = function (self, params)
-	ShowCursorStack.push()
+	ShowCursorStack.show("StartGameView")
 
 	local input_manager = self.input_manager
 
@@ -522,7 +522,7 @@ StartGameView.on_exit = function (self)
 	self.input_manager:device_unblock_all_services("keyboard", 1)
 	self.input_manager:device_unblock_all_services("mouse", 1)
 	self.input_manager:device_unblock_all_services("gamepad", 1)
-	ShowCursorStack.pop()
+	ShowCursorStack.hide("StartGameView")
 
 	self.exiting = nil
 

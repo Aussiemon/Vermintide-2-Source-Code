@@ -1347,7 +1347,6 @@ ItemMasterList.frame_scorpion_complete_all_helmgart_level_achievements_cataclysm
 	description = "frame_scorpion_complete_all_helmgart_level_achievements_cataclysm_description",
 	display_name = "frame_scorpion_complete_all_helmgart_level_achievements_cataclysm_name",
 	display_unit = "units/weapons/weapon_display/display_portrait_frame",
-	event_item = true,
 	hud_icon = "unit_frame_02",
 	information_text = "information_text_frame",
 	inventory_icon = "icon_portrait_frame_scorpion_complete_all_helmgart_level_achievements_cataclysm",
@@ -1357,6 +1356,9 @@ ItemMasterList.frame_scorpion_complete_all_helmgart_level_achievements_cataclysm
 	store_icon_override_key = "frame_scorpion_achieve_cata",
 	temporary_template = "frame_scorpion_complete_all_helmgart_level_achievements_cataclysm",
 	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.frame_scorpion_complete_bogenhafen_cataclysm = {
 	description = "frame_scorpion_complete_bogenhafen_cataclysm_description",

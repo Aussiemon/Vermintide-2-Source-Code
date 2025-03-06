@@ -264,21 +264,6 @@ for i = 1, #weaves_to_add do
 	templates[#templates + 1] = template
 end
 
-function generate_missing_weave_horde_compositions()
-	local added_compositions = {}
-	local missing_composition_string = "\n"
-
-	for i = 1, #weaves_to_add do
-		local name = weaves_to_add[i]
-		local path = string.format("scripts/settings/weaves/%s", name)
-		local template = local_require(path)
-
-		missing_composition_string = get_missing_horde_compositions_string(template, added_compositions, missing_composition_string)
-	end
-
-	print(missing_composition_string)
-end
-
 local num_templates = #templates
 
 WeaveSettings.difficulty_increases = {
@@ -464,12 +449,11 @@ for i = 1, num_templates * 4 do
 
 	local template = table.clone(templates[index])
 	local name = "weave_" .. i
-	local seed = template.seed
 	local objectives = template.objectives
-	local objective = objectives[1]
+	local first_objective = objectives[1]
 	local wind_name = template.wind
 
-	template.display_name = objective.base_level_id .. "_" .. wind_name .. "_name"
+	template.display_name = first_objective.base_level_id .. "_" .. wind_name .. "_name"
 	template.name = name
 	template.tier = i
 	template.dlc_name = "scorpion"
@@ -507,7 +491,6 @@ for i = 1, num_templates * 4 do
 	WeaveSettings.templates_ordered[i] = template
 end
 
-WeaveSettings.objective_names = objective_names
 WeaveSettings.weave_objective_names = weave_objective_names
 
 local max_int = math.pow(2, 32)
@@ -576,8 +559,8 @@ local function calc_spawn_enemy(difficulty_rank, event)
 	elseif type(breed_name) == "table" then
 		enemy_count = #breed_name
 
-		for _, breed_name in pairs(breed_name) do
-			TO_SPAWN[breed_name] = (TO_SPAWN[breed_name] or 0) + 1
+		for _, other_breed_name in pairs(breed_name) do
+			TO_SPAWN[other_breed_name] = (TO_SPAWN[other_breed_name] or 0) + 1
 		end
 	else
 		TO_SPAWN[breed_name] = (TO_SPAWN[breed_name] or 0) + 1
@@ -619,7 +602,6 @@ local function calc_spawn_weave_special_event(element, difficulty_key, seed)
 	local check_name = element.breed_name
 	local num_to_spawn = element.amount or 1
 	local num_to_spawn_scaled = element.difficulty_amount
-	local enemy_count = 0
 
 	if num_to_spawn_scaled then
 		local chosen_amount = num_to_spawn_scaled[difficulty_key]
@@ -650,7 +632,8 @@ local function calc_spawn_weave_special_event(element, difficulty_key, seed)
 		breed_name = check_name
 	end
 
-	enemy_count = num_to_spawn
+	local enemy_count = num_to_spawn
+
 	TO_SPAWN[breed_name] = (TO_SPAWN[breed_name] or 0) + num_to_spawn
 
 	return enemy_count, seed
@@ -666,12 +649,12 @@ local function calculate_enemy_count_from_terror_event(terror_event_name, diffic
 		local sub_event_name = sub_event[1]
 
 		if sub_event_name == "spawn_weave_special" then
-			local count = 0
+			local count
 
 			count, seed = calc_spawn_weave_special(sub_event, difficulty_rank, seed)
 			enemy_count = enemy_count + count
 		elseif sub_event_name == "spawn_weave_special_event" then
-			local count = 0
+			local count
 
 			count, seed = calc_spawn_weave_special_event(sub_event, difficulty_key, seed)
 			enemy_count = enemy_count + count

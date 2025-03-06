@@ -21,8 +21,6 @@ ActionCareerBWNecromancerCommandAttack.pre_calculate_target = function (owner_un
 
 	local own_position = fp_extension:current_position()
 	local look_direction = Quaternion.forward(fp_extension:current_rotation())
-	local own_position = fp_extension:current_position()
-	local look_direction = Quaternion.forward(fp_extension:current_rotation())
 	local broadphase_categories = Managers.state.side.side_by_unit[owner_unit].enemy_broadphase_categories
 
 	table.clear(ALL_HIT_UNITS)

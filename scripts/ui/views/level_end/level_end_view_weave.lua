@@ -424,6 +424,8 @@ LevelEndViewWeave.spawn_level = function (self, context, world)
 	local level = ScriptWorld.spawn_level(world, level_name, object_sets, position, rotation, shading_callback, mood_setting, time_sliced_spawn)
 
 	Level.spawn_background(level)
+	Level.trigger_level_loaded(level)
+	self:_register_object_sets(level, level_name)
 
 	return level
 end

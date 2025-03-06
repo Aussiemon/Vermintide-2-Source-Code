@@ -1815,11 +1815,64 @@ local keybind_settings_definition = {
 		widget_type = "title",
 	},
 	{
-		keybind_description = "ping_only_movement",
+		keybind_description = "action_dark_pact_action_one",
 		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
-			"ping_only_movement",
+			"dark_pact_action_one",
+			"dark_pact_action_one_hold",
+			"dark_pact_action_one_release",
+		},
+	},
+	{
+		keybind_description = "action_dark_pact_action_two",
+		keymappings_key = "PlayerControllerKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"dark_pact_action_two",
+			"dark_pact_action_two_hold",
+			"dark_pact_action_two_release",
+		},
+	},
+	{
+		keybind_description = "action_dark_pact_reload",
+		keymappings_key = "PlayerControllerKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"dark_pact_reload",
+			"dark_pact_reload_hold",
+		},
+	},
+	{
+		keybind_description = "action_versus_horde_ability",
+		keymappings_key = "PlayerControllerKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"versus_horde_ability",
+		},
+	},
+	{
+		keybind_description = "action_dark_pact_interact",
+		keymappings_key = "PlayerControllerKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"dark_pact_interact",
+		},
+	},
+	{
+		keybind_description = "action_dark_pact_climb_point",
+		keymappings_key = "PlayerControllerKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"dark_pact_climb_point",
+		},
+	},
+	{
+		keybind_description = "action_ghost_mode_exit",
+		keymappings_key = "PlayerControllerKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"ghost_mode_exit",
 		},
 	},
 	{
@@ -1831,11 +1884,11 @@ local keybind_settings_definition = {
 		},
 	},
 	{
-		keybind_description = "action_ghost_mode_exit",
+		keybind_description = "ping_only_movement",
 		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
-			"ghost_mode_exit",
+			"ping_only_movement",
 		},
 	},
 	{

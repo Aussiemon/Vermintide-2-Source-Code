@@ -1302,7 +1302,7 @@ MissionVotingUI._acquire_input = function (self, ignore_cursor_stack)
 	}, 1, "mission_voting", "MissionVotingUI")
 
 	if not ignore_cursor_stack then
-		ShowCursorStack.push()
+		ShowCursorStack.show("MissionVotingUI")
 	end
 end
 
@@ -1316,7 +1316,7 @@ MissionVotingUI._release_input = function (self, ignore_cursor_stack)
 	}, 1, "mission_voting", "MissionVotingUI")
 
 	if not ignore_cursor_stack then
-		ShowCursorStack.pop()
+		ShowCursorStack.hide("MissionVotingUI")
 	end
 end
 

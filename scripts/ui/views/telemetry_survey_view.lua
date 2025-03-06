@@ -183,14 +183,14 @@ TelemetrySurveyView.set_active = function (self, active)
 	local input_manager = self.input_manager
 
 	if active then
-		ShowCursorStack.push()
+		ShowCursorStack.show("TelemetrySurveyView")
 		input_manager:block_device_except_service("telemetry_survey", "keyboard")
 		input_manager:block_device_except_service("telemetry_survey", "mouse")
 		input_manager:block_device_except_service("telemetry_survey", "gamepad")
 
 		self.end_time = self.time_manager:time("game") + SURVEY_TIMEOUT
 	else
-		ShowCursorStack.pop()
+		ShowCursorStack.hide("TelemetrySurveyView")
 		input_manager:device_unblock_all_services("keyboard")
 		input_manager:device_unblock_all_services("mouse")
 		input_manager:device_unblock_all_services("gamepad")

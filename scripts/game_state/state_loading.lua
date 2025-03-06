@@ -154,6 +154,10 @@ StateLoading.on_enter = function (self, param_block)
 
 	self._ingame_world_object = nil
 	self._ingame_level_object = nil
+
+	local forced = true
+
+	Managers.music:unduck_sounds(forced)
 end
 
 StateLoading._setup_state_managers = function (self)
@@ -673,6 +677,12 @@ StateLoading.set_invitation_error = function (self)
 	self._has_invitation_error = true
 end
 
+StateLoading._matchmaking_packages_loaded = function (self)
+	local matchmaking_manager = Managers.matchmaking
+
+	return not matchmaking_manager or matchmaking_manager:all_packages_loaded()
+end
+
 StateLoading.update = function (self, dt, t)
 	if script_data.subtitle_debug then
 		self:_handle_do_reload()
@@ -683,7 +693,7 @@ StateLoading.update = function (self, dt, t)
 
 	local level_transition_handler = Managers.level_transition_handler
 
-	if IS_PS4 and not self._popup_id and not self._handled_psn_client_error and level_transition_handler:all_packages_loaded() and level_transition_handler.enemy_package_loader:loading_completed() and level_transition_handler.transient_package_loader:loading_completed() and Managers.backend:profiles_loaded() and self:global_packages_loaded() then
+	if IS_PS4 and not self._popup_id and not self._handled_psn_client_error and self:_update_loading_global_packages() and level_transition_handler:all_packages_loaded() and level_transition_handler.enemy_package_loader:loading_completed() and level_transition_handler.transient_package_loader:loading_completed() and self:_matchmaking_packages_loaded() and Managers.backend:profiles_loaded() then
 		local psn_client_error = Managers.account:psn_client_error()
 
 		if psn_client_error then
@@ -710,29 +720,27 @@ StateLoading.update = function (self, dt, t)
 	Managers.input:update(dt)
 	level_transition_handler:update(dt)
 
-	if self._should_start_breed_loading and level_transition_handler:all_packages_loaded() then
-		local loading_context = self.parent.loading_context
+	if self._should_start_breed_loading and level_transition_handler:all_packages_loaded() and (not self._lobby_host or self._lobby_host:network_initialized()) then
 		local weave_name = Managers.weave:get_next_weave() or Development.parameter("weave_name")
 		local weave_objective_index = Managers.weave:get_next_objective() or 1
 		local weave_data = WeaveSettings.templates[weave_name]
 		local level_key = level_transition_handler:get_current_level_key()
 		local is_hub_level = LevelSettings[level_key].hub_level
-		local weave_objective_data
 
 		if weave_data and not is_hub_level then
-			weave_objective_data = weave_data.objectives[weave_objective_index]
-
 			ConflictUtils.patch_terror_events_with_weaves(level_key, weave_data, weave_objective_index)
 		end
 
-		local level_seed = level_transition_handler:get_current_level_seed()
-		local locked_director_functions = level_transition_handler:get_current_locked_director_functions()
-		local conflict_director = level_transition_handler:get_current_conflict_director()
-		local difficulty = level_transition_handler:get_current_difficulty()
-		local difficulty_tweak = level_transition_handler:get_current_difficulty_tweak()
-		local use_random_directors = Managers.mechanism:uses_random_directors()
+		if self._network_server then
+			local level_seed = level_transition_handler:get_current_level_seed()
+			local locked_director_functions = level_transition_handler:get_current_locked_director_functions()
+			local conflict_director = level_transition_handler:get_current_conflict_director()
+			local difficulty = level_transition_handler:get_current_difficulty()
+			local difficulty_tweak = level_transition_handler:get_current_difficulty_tweak()
+			local use_random_directors = Managers.mechanism:uses_random_directors()
 
-		level_transition_handler.enemy_package_loader:setup_startup_enemies(level_key, level_seed, locked_director_functions, use_random_directors, conflict_director, difficulty, difficulty_tweak)
+			level_transition_handler.enemy_package_loader:setup_startup_enemies(level_key, level_seed, locked_director_functions, use_random_directors, conflict_director, difficulty, difficulty_tweak)
+		end
 
 		self._should_start_breed_loading = nil
 	end
@@ -874,7 +882,7 @@ StateLoading._get_lost_connection_text_id = function (self)
 end
 
 StateLoading._update_lobbies = function (self, dt, t)
-	if not self:global_packages_loaded() then
+	if not self:_update_loading_global_packages() then
 		return
 	end
 
@@ -904,13 +912,10 @@ StateLoading._update_lobbies = function (self, dt, t)
 
 	if self._lobby_host then
 		local lobby_host = self._lobby_host
-		local old_state = lobby_host.state
 
 		lobby_host:update(dt)
 
 		if lobby_host:is_joined() and not lobby_host:network_initialized() and self._lobby_host:lobby_host() ~= "0" then
-			local lobby_host = self._lobby_host
-
 			if not self._network_server then
 				self:host_joined()
 			end
@@ -922,7 +927,7 @@ StateLoading._update_lobbies = function (self, dt, t)
 
 			self:setup_chat_manager(lobby_host, host_peer_id, own_peer_id, is_server)
 			self:setup_deed_manager(lobby_host, host_peer_id, own_peer_id, is_server, network_server)
-			self:setup_enemy_package_loader(lobby_host, host_peer_id, own_peer_id)
+			self:setup_enemy_package_loader(lobby_host, host_peer_id, own_peer_id, network_server)
 			self:setup_global_managers(lobby_host, host_peer_id, own_peer_id, is_server, network_server)
 			lobby_host:set_network_initialized(true)
 		elseif self._lobby_host.state == LobbyState.FAILED and not self._popup_id then
@@ -1067,7 +1072,7 @@ StateLoading._verify_joined_lobby = function (self, dt, t)
 			local failure_start_join_server_difficulty_requirement_failed = "failure_start_join_server_difficulty_requirements_failed"
 
 			self:create_popup(failure_start_join_server_difficulty_requirement_failed, "popup_error_topic", "restart_as_server", "menu_accept", difficulty_error_message)
-		elseif client_network_hash == lobby_network_hash or Development.parameter("ignore_network_hash") or Managers.mechanism:setting("ignore_network_hash") then
+		elseif client_network_hash == lobby_network_hash or Development.parameter("force_ignore_network_hash") then
 			if self._handle_new_lobby_connection then
 				self:setup_network_client(self._joined_matchmaking_lobby)
 
@@ -1077,7 +1082,7 @@ StateLoading._verify_joined_lobby = function (self, dt, t)
 
 				self:setup_chat_manager(self._lobby_client, host, own_peer_id, is_server)
 				self:setup_deed_manager(self._lobby_client, host, own_peer_id, is_server, network_handler)
-				self:setup_enemy_package_loader(self._lobby_client, host, own_peer_id)
+				self:setup_enemy_package_loader(self._lobby_client, host, own_peer_id, network_handler)
 				self:setup_global_managers(self._lobby_client, host, own_peer_id, is_server, network_handler)
 			end
 		else
@@ -1820,7 +1825,7 @@ StateLoading.on_exit = function (self, application_shutdown)
 
 	local package_manager = Managers.package
 
-	if self._ui_package_name and (package_manager:has_loaded(self._ui_package_name, "global_loading_screens") or package_manager:is_loading(self._ui_package_name)) and package_manager:can_unload(self._ui_package_name) then
+	if self._ui_package_name and (package_manager:has_loaded(self._ui_package_name, "global_loading_screens") or package_manager:is_loading(self._ui_package_name)) then
 		package_manager:unload(self._ui_package_name, "global_loading_screens")
 	end
 
@@ -1845,24 +1850,8 @@ StateLoading.on_exit = function (self, application_shutdown)
 	end
 end
 
-StateLoading.global_packages_loaded = function (self)
-	local is_loaded = true
-
-	if not GlobalResources.loaded then
-		local package_manager = Managers.package
-
-		for i, name in ipairs(GlobalResources) do
-			if package_manager:is_loading(name, "global") then
-				is_loaded = false
-			elseif not package_manager:has_loaded(name, "global") then
-				package_manager:load(name, "global", nil, true)
-
-				is_loaded = false
-			end
-		end
-
-		GlobalResources.loaded = is_loaded
-	end
+StateLoading._update_loading_global_packages = function (self)
+	local is_loaded = GlobalResources.update_loading()
 
 	return is_loaded
 end
@@ -1890,11 +1879,19 @@ StateLoading._packages_loaded = function (self)
 			end
 		end
 
+		if self._should_start_breed_loading then
+			return false
+		end
+
 		if not level_transition_handler.enemy_package_loader:loading_completed() then
 			return false
 		end
 
 		if not level_transition_handler.transient_package_loader:loading_completed() then
+			return false
+		end
+
+		if not self:_matchmaking_packages_loaded() then
 			return false
 		end
 
@@ -2115,13 +2112,13 @@ StateLoading._destroy_network = function (self, application_shutdown)
 	local level_transition_handler = Managers.level_transition_handler
 	local enemy_package_loader = level_transition_handler.enemy_package_loader
 
-	enemy_package_loader:unload_enemy_packages(application_shutdown)
 	enemy_package_loader:network_context_destroyed()
+	enemy_package_loader:unload_enemy_packages(application_shutdown, "StateLoading:_destroy_network")
 
 	local transient_package_loader = level_transition_handler.transient_package_loader
 
-	transient_package_loader:unload_all_packages()
 	transient_package_loader:network_context_destroyed()
+	transient_package_loader:unload_all_packages()
 	Managers.party:network_context_destroyed()
 	Managers.mechanism:network_context_destroyed()
 
@@ -2362,7 +2359,7 @@ StateLoading.setup_lobby_host = function (self, wait_for_joined_callback, platfo
 		self:setup_menu_assets()
 	end
 
-	self:global_packages_loaded()
+	self:_update_loading_global_packages()
 
 	if not wait_for_joined_callback then
 		self:_create_network_server()
@@ -2429,8 +2426,8 @@ StateLoading.setup_deed_manager = function (self, lobby, host_peer_id, my_peer_i
 	Managers.deed:network_context_created(lobby, host_peer_id, my_peer_id, is_server, network_handler)
 end
 
-StateLoading.setup_enemy_package_loader = function (self, lobby, host_peer_id, my_peer_id)
-	Managers.level_transition_handler.enemy_package_loader:network_context_created(lobby, host_peer_id, my_peer_id)
+StateLoading.setup_enemy_package_loader = function (self, lobby, host_peer_id, my_peer_id, network_handler)
+	Managers.level_transition_handler.enemy_package_loader:network_context_created(lobby, host_peer_id, my_peer_id, network_handler)
 	Managers.level_transition_handler.transient_package_loader:network_context_created(lobby, host_peer_id, my_peer_id)
 end
 

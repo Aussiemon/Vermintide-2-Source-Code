@@ -1,6 +1,6 @@
 ﻿-- chunkname: @scripts/ui/social_wheel/social_wheel_ui.lua
 
-local social_wheel_settings_definitions = require("scripts/ui/social_wheel/social_wheel_ui_settings")
+local social_wheel_settings_definitions = local_require("scripts/ui/social_wheel/social_wheel_ui_settings")
 local BASE_SOCIAL_WHEEL_SETTINGS = BASE_SOCIAL_WHEEL_SETTINGS or table.clone(SocialWheelSettings)
 local ICON_PLACEHOLDER_TEXTURE_PATH = "gui/1080p/single_textures/generic/transparent_placeholder_texture"
 local SOCIAL_WHEEL_REFERENCE_NAME = "social_wheel_ui"
@@ -941,6 +941,8 @@ SocialWheelUI._reset_social_wheel = function (self)
 		category = side_settings[side_name]
 	end
 
+	category = category .. self._console_extension
+
 	local social_wheel = SocialWheelSettings[category]
 	local social_wheel_gamepad = SocialWheelSettings[category .. "_gamepad"]
 
@@ -1011,9 +1013,11 @@ SocialWheelUI._create_weapon_pose_wheel = function (self, parent_item, slot_name
 
 		local name = string.format("social_wheel_weapon_pose_general_pose_%02d", weapon_pose_data.pose_index)
 		local settings = {
+			disable_input_text = true,
 			localize = false,
 			name = name,
 			text = string.format(Localize(parent .. "_emote_wheel"), weapon_pose_data.pose_index),
+			event_text = string.format(Localize(parent .. "_emote_wheel"), weapon_pose_data.pose_index),
 			execute_func = functions.play_emote,
 			data = {
 				anim_event = weapon_pose_data.data.anim_event,
@@ -1037,6 +1041,8 @@ SocialWheelUI._create_weapon_pose_wheel = function (self, parent_item, slot_name
 	if side_settings then
 		category = side_settings[side_name]
 	end
+
+	category = category .. self._console_extension
 
 	local social_wheel = SocialWheelSettings[category]
 	local social_wheel_gamepad = SocialWheelSettings[category .. "_gamepad"]
@@ -1065,6 +1071,7 @@ SocialWheelUI._create_material_instance = function (self, new_material_name, tem
 end
 
 SocialWheelUI._gather_weapon_poses_by_parent_item = function (self, parent_item)
+	local weapon_poses = {}
 	local backend_items = Managers.backend:get_interface("items")
 	local unlocked_weapon_poses = backend_items:get_unlocked_weapon_poses()
 	local unlocked_weapon_poses_for_parent_item = unlocked_weapon_poses[parent_item]
@@ -1072,8 +1079,6 @@ SocialWheelUI._gather_weapon_poses_by_parent_item = function (self, parent_item)
 	if not unlocked_weapon_poses_for_parent_item then
 		return
 	end
-
-	local weapon_poses = {}
 
 	for _, backend_id in pairs(unlocked_weapon_poses_for_parent_item) do
 		local item = backend_items:get_item_from_id(backend_id)
@@ -1362,11 +1367,14 @@ SocialWheelUI._update_selection = function (self, enabled, total_angle, angle)
 				local social_wheel_event = new_widget.content.settings.name
 				local social_wheel_event_settings = SocialWheelSettingsLookup[social_wheel_event]
 				local event_text_func = social_wheel_event_settings.event_text_func
-				local event_text = event_text_func and event_text_func(target_unit, social_wheel_event_settings, true) or social_wheel_event_settings.event_text or Localize(social_wheel_event_settings.text)
-				local bg_widget = self._bg_widget
-				local bg_widget_content = bg_widget.content
 
-				bg_widget_content.text_id = event_text
+				if not social_wheel_event_settings.disable_input_text then
+					local event_text = event_text_func and event_text_func(target_unit, social_wheel_event_settings, true) or social_wheel_event_settings.event_text or Localize(social_wheel_event_settings.text)
+					local bg_widget = self._bg_widget
+					local bg_widget_content = bg_widget.content
+
+					bg_widget_content.text_id = event_text
+				end
 			end
 		end
 
@@ -1469,8 +1477,10 @@ SocialWheelUI._close_menu = function (self, dt, t, input_service, page_only)
 		return
 	end
 
-	if not IS_WINDOWS then
+	if IS_CONSOLE then
 		self._console_extension = self._ingame_ui_context.is_in_inn and "_inn" or ""
+	else
+		self._console_extension = ""
 	end
 
 	local gamepad_enabled = not IS_WINDOWS or Managers.input:is_device_active("gamepad")

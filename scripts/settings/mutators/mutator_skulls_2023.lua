@@ -13,6 +13,9 @@ return {
 	packages = {
 		"resource_packages/dlcs/skulls_2023_event",
 	},
+	dialogue_settings = {
+		"dialogues/generated/npc_dlc_event_skulls",
+	},
 	server_start_function = function (context, data)
 		local pickup_system = Managers.state.entity:system("pickup_system")
 		local pickup_units = {}

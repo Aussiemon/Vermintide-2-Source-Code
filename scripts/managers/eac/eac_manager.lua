@@ -125,7 +125,12 @@ EacManager.after_leave = function (self)
 
 	local host_peer_id = self._host_peer_id
 
-	self._peer_data[host_peer_id] = nil
+	if host_peer_id then
+		self._peer_data[host_peer_id] = nil
+	else
+		eac_printf("Left EAC session without setting the host.")
+	end
+
 	self._local_role = nil
 	self._session_mode = nil
 	self._host_peer_id = nil

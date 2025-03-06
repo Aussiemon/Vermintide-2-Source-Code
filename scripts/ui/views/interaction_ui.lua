@@ -648,6 +648,8 @@ InteractionUI.update = function (self, dt, t, my_player)
 		return
 	end
 
+	customizer_data.registry_key = InteractionHelper.interaction_action_names(my_player.player_unit)
+
 	HudCustomizer.run(self.ui_renderer, self.ui_scenegraph, customizer_data)
 
 	for name, ui_animation in pairs(self.interaction_animations) do
@@ -797,7 +799,7 @@ InteractionUI._get_interaction_text = function (self, player_unit, is_channeling
 	if active_interaction and interaction_type ~= "heal" and interaction_type ~= "give_item" then
 		if not title_text or not action_text or not interact_action then
 			if can_interact then
-				interact_action = "interact"
+				interact_action = InteractionHelper.interaction_action_names(player_unit, interactable_unit)
 			end
 
 			if can_interact or is_interacting then

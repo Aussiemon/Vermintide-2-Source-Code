@@ -593,6 +593,7 @@ ItemMasterList.dr_hammer_pistol_preview = {
 	has_power_level = true,
 	hud_icon = "weapon_generic_icon_hammer2h",
 	inventory_icon = "icon_wpn_dw_coghammer_01_t1",
+	is_local = true,
 	item_type = "dr_steam_pistol",
 	left_hand_unit = "units/weapons/player/wpn_dw_steam_pistol_01_t1/wpn_dw_steam_pistol_01_t1",
 	property_table_name = "ranged",

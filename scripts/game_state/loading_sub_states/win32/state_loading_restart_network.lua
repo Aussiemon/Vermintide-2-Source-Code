@@ -53,7 +53,7 @@ StateLoadingRestartNetwork._init_network = function (self)
 	local host_to_join
 	local lobby_is_server = lobby_to_join ~= nil
 	local loading_context = self.parent.parent.loading_context
-	local increment_lobby_port = IS_WINDOWS and true
+	local increment_lobby_port = IS_WINDOWS and not Development.parameter("use_lan_backend")
 
 	LobbySetup.setup_network_options(increment_lobby_port)
 

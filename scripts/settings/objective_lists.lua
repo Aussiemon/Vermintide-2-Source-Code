@@ -16,6 +16,10 @@ local target_points = 10
 local survive_points = 1
 local waystone_points = 10
 
+local function increment_func(existing_value)
+	return (existing_value or 0) + 1
+end
+
 ObjectiveLists.bell_pvp_set_1 = {
 	{
 		versus_volume_objective_SZ01 = {
@@ -1865,6 +1869,520 @@ ObjectiveLists.forest_ambush_pvp_set_3 = {
 			volume_type = "all_alive",
 			objective_type = ObjectiveTypes.objective_safehouse,
 			score_for_each_player_inside = waystone_points,
+		},
+	},
+}
+ObjectiveLists.dwarf_exterior_pvp_set_1 = {
+	{
+		versus_volume_objective_exterior_sz01 = {
+			description = "level_objective_description_vs_safe_zone",
+			score_for_completion = 0,
+			volume_name = "versus_exterior_reach_sz01",
+			volume_type = "any_alive",
+			objective_type = ObjectiveTypes.objective_reach,
+			vo_context_on_activate = {
+				current_objective = "start_zone",
+			},
+			vo_context_on_complete = {
+				current_objective = "one",
+			},
+		},
+	},
+	{
+		versus_volume_objective_exterior_001 = {
+			description = "level_objective_description_exterior_01",
+			volume_name = "versus_exterior_reach_001",
+			volume_type = "any_alive",
+			objective_type = ObjectiveTypes.objective_reach,
+			score_for_completion = reach_points,
+		},
+	},
+	{
+		versus_volume_objective_exterior_002 = {
+			description = "level_objective_description_exterior_02",
+			volume_name = "versus_exterior_reach_002",
+			volume_type = "any_alive",
+			objective_type = ObjectiveTypes.objective_reach,
+			score_for_completion = reach_points,
+		},
+	},
+	{
+		versus_volume_objective_exterior_003 = {
+			description = "level_objective_description_exterior_03",
+			volume_name = "versus_exterior_reach_003",
+			volume_type = "any_alive",
+			objective_type = ObjectiveTypes.objective_reach,
+			score_for_completion = reach_points,
+		},
+	},
+	{
+		versus_capture_objective_01 = {
+			capture_time = 180,
+			description = "level_objective_description_exterior_04",
+			num_sections = 25,
+			play_arrive_vo = true,
+			play_complete_vo = true,
+			objective_type = ObjectiveTypes.objective_capture_point,
+			score_per_section = capture_points,
+			vo_context_on_complete = {
+				current_objective = "two",
+			},
+			almost_done = function (self, active_objectives)
+				local objective_name = active_objectives[1]
+				local objective_extension = Managers.state.entity:system("objective_system"):extension_by_objective_name(objective_name)
+
+				if objective_extension:get_percentage_done() > 0.75 then
+					return true
+				end
+			end,
+		},
+	},
+	{
+		versus_volume_objective_exterior_005 = {
+			description = "level_objective_description_exterior_05",
+			volume_name = "versus_exterior_reach_005",
+			volume_type = "any_alive",
+			objective_type = ObjectiveTypes.objective_reach,
+			score_for_completion = reach_points,
+		},
+	},
+	{
+		versus_interact_objective_exterior_001 = {
+			description = "level_objective_description_exterior_06_A",
+			play_arrive_vo = true,
+			objective_type = ObjectiveTypes.objective_interact,
+			score_for_completion = interact_points,
+			vo_context_on_activate = {
+				objective_part = 1,
+			},
+		},
+	},
+	{
+		versus_survive_objective_01 = {
+			description = "level_objective_description_exterior_07_A",
+			dialogue_event = "vs_mg_dwarf_external_windlass_reminder",
+			num_sections = 5,
+			play_dialogue_event_on_complete = true,
+			score_for_completion = 0,
+			time_for_completion = 20,
+			objective_type = ObjectiveTypes.objective_survive,
+			score_per_section = survive_points,
+			on_last_leaf_complete_sound_event = {
+				dark_pact = "versus_hud_sub_objective_completed_pactsworn",
+				heroes = "versus_hud_sub_objective_completed_heroes",
+			},
+		},
+	},
+	{
+		versus_interact_objective_exterior_002 = {
+			description = "level_objective_description_exterior_06_B",
+			objective_type = ObjectiveTypes.objective_interact,
+			score_for_completion = interact_points,
+			vo_context_on_activate = {
+				objective_part = 2,
+			},
+		},
+	},
+	{
+		versus_survive_objective_02 = {
+			description = "level_objective_description_exterior_07_B",
+			dialogue_event = "vs_mg_dwarf_external_windlass_reminder",
+			num_sections = 5,
+			play_dialogue_event_on_complete = true,
+			score_for_completion = 0,
+			time_for_completion = 20,
+			objective_type = ObjectiveTypes.objective_survive,
+			score_per_section = survive_points,
+			on_last_leaf_complete_sound_event = {
+				dark_pact = "versus_hud_sub_objective_completed_pactsworn",
+				heroes = "versus_hud_sub_objective_completed_heroes",
+			},
+		},
+	},
+	{
+		versus_interact_objective_exterior_003 = {
+			description = "level_objective_description_exterior_06_C",
+			objective_type = ObjectiveTypes.objective_interact,
+			score_for_completion = interact_points,
+		},
+	},
+	{
+		versus_survive_objective_03 = {
+			description = "level_objective_description_exterior_07_C",
+			num_sections = 5,
+			play_complete_vo = true,
+			score_for_completion = 0,
+			time_for_completion = 20,
+			objective_type = ObjectiveTypes.objective_survive,
+			score_per_section = survive_points,
+			vo_context_on_complete = {
+				current_objective = "safe_room",
+			},
+		},
+	},
+	{
+		versus_volume_objective_exterior_006 = {
+			description = "level_objective_description_vs_reach_safe_zone",
+			play_safehouse_vo = true,
+			volume_name = "versus_exterior_reach_006",
+			volume_type = "all_alive",
+			objective_type = ObjectiveTypes.objective_safehouse,
+			score_for_each_player_inside = safe_room_points,
+		},
+	},
+}
+ObjectiveLists.dwarf_exterior_pvp_set_2 = {
+	{
+		versus_volume_objective_exterior_007 = {
+			description = "level_objective_description_vs_safe_zone",
+			score_for_completion = 0,
+			volume_name = "versus_exterior_reach_007",
+			volume_type = "any_alive",
+			objective_type = ObjectiveTypes.objective_reach,
+			vo_context_on_activate = {
+				current_objective = "start_zone",
+			},
+			vo_context_on_complete = {
+				current_objective = "one",
+			},
+		},
+	},
+	{
+		versus_volume_objective_exterior_008 = {
+			description = "level_objective_description_exterior_08",
+			volume_name = "versus_exterior_reach_008",
+			volume_type = "any_alive",
+			objective_type = ObjectiveTypes.objective_reach,
+			score_for_completion = reach_points,
+		},
+	},
+	{
+		versus_payload_objective_exterior_01 = {
+			description = "level_objective_description_exterior_09",
+			num_sections = 70,
+			play_arrive_vo = true,
+			objective_type = ObjectiveTypes.objective_payload,
+			score_per_section = payload_points,
+			vo_context_on_complete = {
+				current_objective = "two",
+			},
+			almost_done = function (self, active_objectives)
+				local objective_name = active_objectives[1]
+				local objective_extension = Managers.state.entity:system("objective_system"):extension_by_objective_name(objective_name)
+
+				if objective_extension:get_percentage_done() > 0.8 then
+					return true
+				end
+			end,
+		},
+	},
+	{
+		versus_interact_objective_black_powder = {
+			description = "level_objective_description_exterior_09_B",
+			play_complete_vo = true,
+			objective_type = ObjectiveTypes.objective_interact,
+			score_for_completion = interact_points,
+		},
+	},
+	{
+		versus_volume_objective_exterior_011 = {
+			description = "level_objective_description_exterior_11",
+			volume_name = "versus_exterior_reach_011",
+			volume_type = "any_alive",
+			objective_type = ObjectiveTypes.objective_reach,
+			score_for_completion = reach_points,
+		},
+	},
+	{
+		sub_objective_container_mad_dog = {
+			description = "level_objective_description_exterior_12",
+			play_arrive_vo = true,
+			play_complete_vo = true,
+			objective_type = ObjectiveTypes.objective_target,
+			vo_context_on_activate = {
+				objective_part = 1,
+			},
+			vo_context_on_complete = {
+				current_objective = "safe_room",
+			},
+			almost_done = function (self, active_objectives)
+				local objective_system = Managers.state.entity:system("objective_system")
+				local num_total = objective_system:num_current_sub_objectives()
+				local num_completed = objective_system:num_current_completed_sub_objectives()
+
+				if num_total - num_completed <= 1 then
+					return true
+				end
+			end,
+			sub_objectives = {
+				versus_capture_objective_mine_001 = {
+					always_show_objective_marker = true,
+					capture_time = 80,
+					description = "level_objective_description_exterior_12",
+					dialogue_event = "vs_mg_dwarf_external_capture_points_reminder",
+					num_sections = 30,
+					play_dialogue_event_on_complete = true,
+					objective_type = ObjectiveTypes.objective_capture_point,
+					score_per_section = capture_points,
+					vo_context_on_complete = {
+						objective_part = increment_func,
+					},
+				},
+				versus_capture_objective_mine_002 = {
+					always_show_objective_marker = true,
+					capture_time = 80,
+					description = "level_objective_description_exterior_12",
+					dialogue_event = "vs_mg_dwarf_external_capture_points_reminder",
+					num_sections = 30,
+					play_dialogue_event_on_complete = true,
+					objective_type = ObjectiveTypes.objective_capture_point,
+					score_per_section = capture_points,
+					vo_context_on_complete = {
+						objective_part = increment_func,
+					},
+				},
+				versus_capture_objective_mine_003 = {
+					always_show_objective_marker = true,
+					capture_time = 80,
+					description = "level_objective_description_exterior_12",
+					dialogue_event = "vs_mg_dwarf_external_capture_points_reminder",
+					num_sections = 30,
+					play_dialogue_event_on_complete = true,
+					objective_type = ObjectiveTypes.objective_capture_point,
+					score_per_section = capture_points,
+					vo_context_on_complete = {
+						objective_part = increment_func,
+					},
+				},
+			},
+		},
+	},
+	{
+		versus_volume_objective_exterior_012 = {
+			description = "level_objective_description_vs_reach_safe_zone",
+			play_safehouse_vo = true,
+			volume_name = "versus_exterior_reach_012",
+			volume_type = "all_alive",
+			objective_type = ObjectiveTypes.objective_safehouse,
+			score_for_each_player_inside = safe_room_points,
+		},
+	},
+}
+ObjectiveLists.dwarf_exterior_pvp_set_3 = {
+	{
+		versus_volume_objective_sz_03 = {
+			description = "level_objective_description_vs_safe_zone",
+			score_for_completion = 0,
+			volume_name = "versus_exterior_reach_013",
+			volume_type = "any_alive",
+			objective_type = ObjectiveTypes.objective_reach,
+			vo_context_on_activate = {
+				current_objective = "start_zone",
+			},
+			vo_context_on_complete = {
+				current_objective = "one",
+			},
+		},
+	},
+	{
+		versus_volume_objective_exterior_014 = {
+			description = "level_objective_description_exterior_14",
+			volume_name = "versus_exterior_reach_014",
+			volume_type = "any_alive",
+			objective_type = ObjectiveTypes.objective_reach,
+			score_for_completion = reach_points,
+		},
+	},
+	{
+		versus_volume_objective_exterior_015 = {
+			description = "level_objective_description_exterior_15",
+			volume_name = "versus_exterior_reach_015",
+			volume_type = "any_alive",
+			objective_type = ObjectiveTypes.objective_reach,
+			score_for_completion = reach_points,
+		},
+	},
+	{
+		versus_interact_objective_bombcart = {
+			description = "level_objective_description_exterior_20",
+			play_arrive_vo = true,
+			play_complete_vo = true,
+			objective_type = ObjectiveTypes.objective_interact,
+			score_for_completion = interact_points,
+			vo_context_on_complete = {
+				current_objective = "two",
+				objective_part = 0,
+			},
+		},
+	},
+	{
+		versus_volume_objective_exterior_016 = {
+			description = "level_objective_description_exterior_16",
+			volume_name = "versus_exterior_reach_016",
+			volume_type = "any_alive",
+			objective_type = ObjectiveTypes.objective_reach,
+			score_for_completion = reach_points,
+		},
+	},
+	{
+		versus_volume_objective_exterior_017 = {
+			description = "level_objective_description_exterior_17",
+			volume_name = "versus_exterior_reach_017",
+			volume_type = "any_alive",
+			objective_type = ObjectiveTypes.objective_reach,
+			score_for_completion = reach_points,
+			vo_context_on_complete = {
+				objective_part = 1,
+			},
+		},
+	},
+	{
+		versus_volume_objective_exterior_018 = {
+			description = "level_objective_description_exterior_18",
+			play_arrive_vo = true,
+			volume_name = "versus_exterior_reach_018",
+			volume_type = "any_alive",
+			objective_type = ObjectiveTypes.objective_reach,
+			score_for_completion = reach_points,
+		},
+	},
+	{
+		sub_objective_container_01 = {
+			description = "level_objective_description_exterior_19",
+			play_arrive_vo = true,
+			play_complete_vo = true,
+			objective_type = ObjectiveTypes.objective_target,
+			vo_context_on_activate = {
+				destroyed_chains = 0,
+				objective_part = 2,
+			},
+			vo_context_on_complete = {
+				objective_part = 3,
+			},
+			almost_done = function (self, active_objectives)
+				local objective_system = Managers.state.entity:system("objective_system")
+				local num_total = objective_system:num_current_sub_objectives()
+				local num_completed = objective_system:num_current_completed_sub_objectives()
+
+				if num_total - num_completed <= 1 then
+					return true
+				end
+			end,
+			sub_objectives = {
+				versus_target_objective_001 = {
+					description = "level_objective_description_exterior_19",
+					dialogue_event = "vs_mg_dwarf_external_chains_reminder",
+					play_dialogue_event_on_complete = true,
+					objective_type = ObjectiveTypes.objective_target,
+					score_for_completion = target_points,
+					vo_context_on_complete = {
+						destroyed_chains = increment_func,
+					},
+				},
+				versus_target_objective_002 = {
+					description = "level_objective_description_exterior_19",
+					dialogue_event = "vs_mg_dwarf_external_chains_reminder",
+					play_dialogue_event_on_complete = true,
+					score_for_completion = target_points,
+					objective_type = ObjectiveTypes.objective_target,
+					vo_context_on_complete = {
+						destroyed_chains = increment_func,
+					},
+				},
+				versus_target_objective_003 = {
+					description = "level_objective_description_exterior_19",
+					dialogue_event = "vs_mg_dwarf_external_chains_reminder",
+					play_dialogue_event_on_complete = true,
+					objective_type = ObjectiveTypes.objective_target,
+					score_for_completion = target_points,
+					vo_context_on_complete = {
+						destroyed_chains = increment_func,
+					},
+				},
+				versus_target_objective_004 = {
+					description = "level_objective_description_exterior_19",
+					dialogue_event = "vs_mg_dwarf_external_chains_reminder",
+					play_dialogue_event_on_complete = true,
+					objective_type = ObjectiveTypes.objective_target,
+					score_for_completion = target_points,
+					vo_context_on_complete = {
+						destroyed_chains = increment_func,
+					},
+				},
+				versus_target_objective_005 = {
+					description = "level_objective_description_exterior_19",
+					dialogue_event = "vs_mg_dwarf_external_chains_reminder",
+					play_dialogue_event_on_complete = true,
+					objective_type = ObjectiveTypes.objective_target,
+					score_for_completion = target_points,
+					vo_context_on_complete = {
+						destroyed_chains = increment_func,
+					},
+				},
+				versus_target_objective_006 = {
+					description = "level_objective_description_exterior_19",
+					dialogue_event = "vs_mg_dwarf_external_chains_reminder",
+					play_dialogue_event_on_complete = true,
+					objective_type = ObjectiveTypes.objective_target,
+					score_for_completion = target_points,
+					vo_context_on_complete = {
+						destroyed_chains = increment_func,
+					},
+				},
+			},
+		},
+	},
+	{
+		versus_interact_objective_bombcart_again = {
+			description = "level_objective_description_exterior_20",
+			objective_type = ObjectiveTypes.objective_interact,
+			score_for_completion = interact_points,
+			vo_context_on_complete = {
+				objective_part = 4,
+			},
+		},
+	},
+	{
+		versus_survive_objective_05 = {
+			description = "level_objective_description_exterior_20_B",
+			dialogue_event = "vs_mg_dwarf_external_ignite_bomb",
+			num_sections = 50,
+			play_dialogue_event_on_complete = true,
+			score_for_completion = 0,
+			time_for_completion = 30,
+			objective_type = ObjectiveTypes.objective_survive,
+			score_per_section = survive_points,
+		},
+	},
+	{
+		versus_interact_objective_ignite_bomb = {
+			description = "level_objective_description_exterior_21",
+			objective_type = ObjectiveTypes.objective_interact,
+			score_for_completion = interact_points,
+		},
+	},
+	{
+		versus_survive_objective_04 = {
+			description = "level_objective_description_exterior_22",
+			num_sections = 40,
+			play_complete_vo = true,
+			score_for_completion = 0,
+			time_for_completion = 20,
+			objective_type = ObjectiveTypes.objective_survive,
+			score_per_section = survive_points,
+			vo_context_on_complete = {
+				current_objective = "waystone",
+			},
+		},
+	},
+	{
+		versus_volume_objective_exterior_019 = {
+			description = "level_objective_description_exterior_23",
+			play_waystone_vo = true,
+			volume_name = "versus_exterior_reach_019",
+			volume_type = "all_alive",
+			objective_type = ObjectiveTypes.objective_safehouse,
+			score_for_each_player_inside = reach_points,
 		},
 	},
 }

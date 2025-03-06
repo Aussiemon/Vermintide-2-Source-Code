@@ -1,9 +1,8 @@
 ﻿-- chunkname: @scripts/settings/terror_events/terror_events_fort.lua
 
-local function count_event_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
-end
-
+local TerrorEventUtils = require("scripts/settings/terror_events/terror_event_utils")
+local count_event_breed = TerrorEventUtils.count_event_breed
+local HARDEST = TerrorEventUtils.HARDEST
 local weighted_random_terror_events = {
 	fort_terror_event_inner_yard = {
 		"fort_terror_event_inner_yard_skaven",
@@ -18,8 +17,6 @@ local weighted_random_terror_events = {
 		1,
 	},
 }
-local HARDER = 5
-local HARDEST = 5
 local terror_event_blueprints = {
 	fort_pacing_off = {
 		{
@@ -210,7 +207,7 @@ local terror_event_blueprints = {
 				"skaven_ratling_gunner",
 				"skaven_warpfire_thrower",
 			},
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"delay",
@@ -240,7 +237,7 @@ local terror_event_blueprints = {
 			composition_type = "event_extra_spice_medium",
 			limit_spawners = 3,
 			spawner_id = "fort_horde_cannon",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"spawn_at_raw",
@@ -257,7 +254,7 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 8,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"continue_when",
@@ -311,12 +308,12 @@ local terror_event_blueprints = {
 				"skaven_ratling_gunner",
 				"skaven_warpfire_thrower",
 			},
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"delay",
 			duration = 8,
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"event_horde",
@@ -342,7 +339,7 @@ local terror_event_blueprints = {
 			composition_type = "event_chaos_extra_spice_small",
 			limit_spawners = 3,
 			spawner_id = "fort_horde_cannon",
-			difficulty_requirement = HARDER,
+			difficulty_requirement = HARDEST,
 		},
 		{
 			"spawn_at_raw",
@@ -452,4 +449,7 @@ local terror_event_blueprints = {
 	},
 }
 
-return terror_event_blueprints, weighted_random_terror_events
+return {
+	terror_event_blueprints,
+	weighted_random_terror_events,
+}

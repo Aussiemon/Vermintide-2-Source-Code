@@ -50,7 +50,7 @@ end
 
 ServerSearchUtils.filter_game_server_search = function (servers, network_options, soft_filters, network_hash, black_listed_servers, search_time)
 	table.array_remove_if(servers, function (server)
-		local ignore_network_hash = Development.parameter("ignore_network_hash") or Managers.mechanism:setting("ignore_network_hash")
+		local ignore_network_hash = Development.parameter("force_ignore_network_hash")
 
 		if not ignore_network_hash then
 			local wrong_version = server.network_hash ~= network_hash

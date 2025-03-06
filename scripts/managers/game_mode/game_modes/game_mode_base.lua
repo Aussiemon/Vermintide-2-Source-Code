@@ -2,8 +2,8 @@
 
 GameModeBase = class(GameModeBase)
 
-GameModeBase.init = function (self, settings, world, network_server, is_server, profile_synchronizer, level_key, statistics_db, game_mode_settings)
-	self._network_server = network_server
+GameModeBase.init = function (self, settings, world, network_handler, is_server, profile_synchronizer, level_key, statistics_db, game_mode_settings)
+	self._network_server = is_server and network_handler or nil
 	self._settings = settings
 	self._world = world
 	self._is_server = is_server

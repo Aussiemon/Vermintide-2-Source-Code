@@ -1,52 +1,10 @@
 ﻿-- chunkname: @scripts/settings/terror_events/terror_events_dlc_dwarf_whaling.lua
 
-local function count_event_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
-end
-
-local function num_spawned_enemies()
-	local spawned_enemies = Managers.state.conflict:spawned_enemies()
-
-	return #spawned_enemies
-end
-
-local NORMAL = 2
-local HARD = 3
-local HARDER = 4
-local HARDEST = 5
-local CATACLYSM = 6
-local weighted_random_terror_events = {
-	whaling_end_event_loop = {
-		"whaling_end_event_loop_01",
-		1,
-		"whaling_end_event_loop_02",
-		1,
-		"whaling_end_event_loop_03",
-		1,
-		"whaling_end_event_loop_04",
-		1,
-		"whaling_end_event_loop_05",
-		1,
-		"whaling_end_event_loop_06",
-		1,
-	},
-	whaling_end_event_specials = {
-		"whaling_end_event_specials_01",
-		1,
-		"whaling_end_event_specials_02",
-		1,
-		"whaling_end_event_specials_03",
-		1,
-	},
-	whaling_mid_event_spice = {
-		"whaling_mid_event_spice_01",
-		1,
-		"whaling_mid_event_spice_02",
-		1,
-		"whaling_mid_event_spice_03",
-		1,
-	},
-}
+local TerrorEventUtils = require("scripts/settings/terror_events/terror_event_utils")
+local count_event_breed = TerrorEventUtils.count_event_breed
+local HARDER = TerrorEventUtils.HARDER
+local HARDEST = TerrorEventUtils.HARDEST
+local CATACLYSM = TerrorEventUtils.CATACLYSM
 local terror_event_blueprints = {
 	dwarf_disable_pacing = {
 		{
@@ -1344,4 +1302,6 @@ local terror_event_blueprints = {
 	},
 }
 
-return terror_event_blueprints
+return {
+	terror_event_blueprints,
+}

@@ -4,8 +4,45 @@ require("scripts/settings/grudge_mark_settings")
 
 TerrorEventUtils = {}
 
-local TerrorEventUtils = TerrorEventUtils
-local terror_seed = terror_seed or nil
+TerrorEventUtils.count_event_breed = function (breed_name)
+	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
+end
+
+TerrorEventUtils.num_spawned_enemies = function ()
+	local spawned_enemies = Managers.state.conflict:spawned_enemies()
+
+	return #spawned_enemies
+end
+
+TerrorEventUtils.count_breed = function (breed_name)
+	return Managers.state.conflict:count_units_by_breed(breed_name)
+end
+
+TerrorEventUtils.num_alive_standards = function ()
+	local alive_standards = Managers.state.conflict:alive_standards()
+
+	return #alive_standards
+end
+
+TerrorEventUtils.spawned_during_event = function ()
+	return Managers.state.conflict:enemies_spawned_during_event()
+end
+
+TerrorEventUtils.num_spawned_enemies_during_event = function ()
+	local spawned_enemies = Managers.state.conflict:enemies_spawned_during_event()
+
+	return spawned_enemies
+end
+
+TerrorEventUtils.NORMAL = 2
+TerrorEventUtils.HARD = 3
+TerrorEventUtils.HARDER = 4
+TerrorEventUtils.HARDEST = 5
+TerrorEventUtils.CATACLYSM = 6
+TerrorEventUtils.CATACLYSM2 = 7
+TerrorEventUtils.CATACLYSM3 = 8
+
+local terror_seed
 
 TerrorEventUtils.set_seed = function (seed)
 	terror_seed = seed
@@ -50,16 +87,16 @@ TerrorEventUtils.apply_breed_enhancements = function (unit, breed, optional_data
 	local enhancements = optional_data.enhancements
 	local is_illusion = table.find_by_key(enhancements, "name", "intangible_mirror") ~= nil
 
-	for i = 1, #enhancements do
-		local enhancement_data = enhancements[i]
+	for enchantment_i = 1, #enhancements do
+		local enhancement_data = enhancements[enchantment_i]
 
 		if not enhancement_data.no_attribute then
 			ai_system:set_attribute(unit, enhancement_data.name, "breed_enhancements", true)
 		end
 
 		if not is_illusion or enhancement_data.name == "mirror_base" or enhancement_data.name == "intangible_mirror" then
-			for i = 1, #enhancement_data do
-				local buff_name = enhancement_data[i]
+			for data_i = 1, #enhancement_data do
+				local buff_name = enhancement_data[data_i]
 
 				buff_system:add_buff(unit, buff_name, unit, true)
 			end
@@ -91,7 +128,7 @@ TerrorEventUtils.generate_enhanced_breed = function (num_enhancements, breed_nam
 		end
 	end
 
-	for i = 1, num_enhancements do
+	for _ = 1, num_enhancements do
 		local index = TerrorEventUtils.random(#t)
 
 		if index <= 0 then
@@ -106,11 +143,11 @@ TerrorEventUtils.generate_enhanced_breed = function (num_enhancements, breed_nam
 		local exclusion_list = BreedEnhancementExclusionList[enhancement_data.name]
 
 		if exclusion_list then
-			for i = #t, 1, -1 do
-				local enhancement_name = t[i]
+			for enhancement_i = #t, 1, -1 do
+				local enhancement_name = t[enhancement_i]
 
 				if exclusion_list[enhancement_name] then
-					table.swap_delete(t, i)
+					table.swap_delete(t, enhancement_i)
 				end
 			end
 		end
@@ -164,3 +201,5 @@ TerrorEventUtils.add_enhancements_for_difficulty = function (optional_data, diff
 
 	return optional_data
 end
+
+return TerrorEventUtils

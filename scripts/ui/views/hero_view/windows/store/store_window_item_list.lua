@@ -339,8 +339,14 @@ StoreWindowItemList._update_item_list = function (self)
 		for index, path_name in ipairs(path) do
 			local page = pages[path_name] or self._parent:get_temporary_page(path_name)
 			local page_item_filter = page.item_filter
+			local page_exclusive_filter = page.exclusive_filter
 
-			if page_item_filter then
+			if page_exclusive_filter then
+				item_filter = page_item_filter
+				added_filters = 1
+
+				break
+			elseif page_item_filter then
 				if added_filters > 0 then
 					item_filter = item_filter .. " and "
 				end

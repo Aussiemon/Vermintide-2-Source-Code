@@ -216,13 +216,10 @@ StateIngame.on_enter = function (self)
 	loading_context.network_transmit = self.network_transmit
 
 	local top_gui_world_name = "top_ingame_view"
-	local top_gui_world = Managers.world:world(top_gui_world_name)
 
-	Debug.setup(top_gui_world, top_gui_world_name)
+	self._top_gui_world = Managers.world:world(top_gui_world_name)
 
-	local debug_screen_data = require("scripts/utils/debug_screen_config")
-
-	DebugScreen.setup(top_gui_world, debug_screen_data.settings, debug_screen_data.callbacks)
+	Debug.setup(self._top_gui_world, top_gui_world_name)
 	VisualAssertLog.setup(world)
 	DebugKeyHandler.setup(world, self.input_manager)
 	FunctionCallProfiler.setup(world)
@@ -819,7 +816,6 @@ StateIngame.pre_update = function (self, dt)
 	UPDATE_POSITION_LOOKUP()
 	Managers.state.side:update_frame_tables()
 	network_manager:update_receive(dt)
-	self.entity_system:commit_and_remove_pending_units()
 
 	if self.network_server then
 		self.network_server:update(dt, t)
@@ -1958,7 +1954,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 	VisualAssertLog.cleanup()
 	self:_teardown_world()
 	ScriptUnit.check_all_units_deleted()
-	level_transition_handler.enemy_package_loader:unload_enemy_packages(application_shutdown)
+	level_transition_handler.enemy_package_loader:unload_enemy_packages(application_shutdown, "StateIngame:on_exit")
 	level_transition_handler.transient_package_loader:unload_all_packages(application_shutdown)
 	self.statistics_db:unregister_network_event_delegate()
 	Managers.time:unregister_timer("game")
@@ -2255,7 +2251,7 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 
 	Managers.weave:initiate(world, network_event_delegate, is_server, game_mode_key)
 
-	Managers.state.game_mode = GameModeManager:new(world, self._lobby_host, self._lobby_client, network_event_delegate, self.statistics_db, game_mode_key, self.network_server, self.network_transmit, self.profile_synchronizer, game_mode_settings)
+	Managers.state.game_mode = GameModeManager:new(world, self._lobby_host, self._lobby_client, network_event_delegate, self.statistics_db, game_mode_key, self.network_server or self.network_client, self.network_transmit, self.profile_synchronizer, game_mode_settings)
 
 	local level_key = level_transition_handler:get_current_level_keys()
 	local level_seed = level_transition_handler:get_current_level_seed()
@@ -2421,6 +2417,10 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 	Managers.state.network:set_unit_spawner(unit_spawner)
 
 	Managers.state.vce = VCEManager:new()
+
+	local debug_screen_data = require("scripts/utils/debug_screen_config")
+
+	DebugScreen.setup(self._top_gui_world, debug_screen_data.settings, debug_screen_data.callbacks, is_server)
 
 	local ai_system = Managers.state.entity:system("ai_system")
 	local nav_world = ai_system:nav_world()

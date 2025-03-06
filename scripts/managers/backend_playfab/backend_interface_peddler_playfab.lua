@@ -81,6 +81,7 @@ BackendInterfacePeddlerPlayFab.get_unseen_currency_rewards = function (self)
 		return nil
 	end
 
+	local currency_ui_settings = DLCSettings.store.currency_ui_settings
 	local unseen_rewards = cjson.decode(unseen_rewards_json)
 	local unseen_items
 	local index = 1
@@ -88,8 +89,9 @@ BackendInterfacePeddlerPlayFab.get_unseen_currency_rewards = function (self)
 	while index <= #unseen_rewards do
 		local reward = unseen_rewards[index]
 		local reward_type = reward.reward_type
+		local currency_type = reward.currency_type
 
-		if reward_type == "currency" and reward.currency_type == "SM" then
+		if reward_type == "currency" and currency_ui_settings[currency_type] ~= nil then
 			unseen_items = unseen_items or {}
 			unseen_items[#unseen_items + 1] = reward
 
@@ -388,7 +390,7 @@ BackendInterfacePeddlerPlayFab._refresh_steam_item_prices_cb = function (self, e
 						cloned_master_item.bundle_contains = contains
 						cloned_master_item.discount = discount
 					else
-						Crashify.print_exception("[BackendInterfacePeddlerPlayFab] _refresh_steam_item_prices_cb, bundle_contains table is empty. steam_itemdef_id: %s", tostring(steam_itemdefid))
+						Crashify.print_exception("[BackendInterfacePeddlerPlayFab]", "_refresh_steam_item_prices_cb, bundle_contains table is empty. steam_itemdef_id: %s", tostring(steam_itemdefid))
 						print(table.dump(cloned_master_item, "MISSING BUNDLE CONTAINS", 2))
 					end
 

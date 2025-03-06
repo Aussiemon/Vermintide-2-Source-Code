@@ -228,10 +228,7 @@ settings.buff_function_templates = {
 			buff_ext:add_buff(buff.template.cooldown_buff)
 		end
 
-		local pick_frag
-
-		pick_frag = true
-
+		local pick_frag = true
 		local frag_settings = AllPickups.engineer_grenade_t1
 		local fire_settings = AllPickups.fire_grenade_t1
 

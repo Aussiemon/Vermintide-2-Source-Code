@@ -5,6 +5,7 @@ local item_master_list = {
 		gamepad_hud_icon = "consumables_icon_defence",
 		hud_icon = "consumables_icon_defence",
 		inventory_icon = "icons_placeholder",
+		is_local = true,
 		item_type = "inventory_item",
 		left_hand_unit = "units/weapons/player/pup_mutator_statue_01/wpn_mutator_statue_01",
 		rarity = "plentiful",

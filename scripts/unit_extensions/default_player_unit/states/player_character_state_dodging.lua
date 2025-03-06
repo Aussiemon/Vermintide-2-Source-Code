@@ -159,7 +159,9 @@ PlayerCharacterStateDodging.update = function (self, unit, input, dt, context, t
 	local interactor_extension = self.interactor_extension
 
 	if CharacterStateHelper.is_starting_interaction(input_extension, interactor_extension) then
-		interactor_extension:start_interaction("interacting")
+		local _, hold_input = InteractionHelper.interaction_action_names(unit)
+
+		interactor_extension:start_interaction(hold_input)
 
 		if interactor_extension:allow_movement_during_interaction() then
 			return

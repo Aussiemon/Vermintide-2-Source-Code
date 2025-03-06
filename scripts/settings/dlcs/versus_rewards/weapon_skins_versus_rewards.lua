@@ -1,4 +1,4 @@
-﻿-- chunkname: @scripts/settings/equipment/weapon_skins_versus_rewards.lua
+﻿-- chunkname: @scripts/settings/dlcs/versus_rewards/weapon_skins_versus_rewards.lua
 
 local skins = {
 	{
@@ -1018,7 +1018,7 @@ local skins = {
 		data = {
 			description = "wh_hammer_book_skin_02_magic_02_description",
 			display_name = "wh_hammer_book_skin_02_magic_02_name",
-			display_unit = "units/weapons/weapon_display/display_dual_axes",
+			display_unit = "units/weapons/weapon_display/display_hammer_book",
 			hud_icon = "weapon_generic_icon_staff_3",
 			inventory_icon = "icon_wh_hammer_book_skin_02_magic_02",
 			left_hand_unit = "units/weapons/player/wpn_wh_1h_hammer_02/wpn_wh_1h_hammer_02_magic",
@@ -1245,7 +1245,7 @@ local skins = {
 			ammo_unit_3p = "units/weapons/player/wpn_dr_deus_projectile_02/wpn_dr_deus_projectile_02_3p",
 			description = "dr_deus_skin_02_magic_02_description",
 			display_name = "dr_deus_skin_02_magic_02_name",
-			display_unit = "units/weapons/weapon_display/display_drakegun",
+			display_unit = "units/weapons/weapon_display/display_trollhammer",
 			hud_icon = "weapon_generic_icon_staff_3",
 			inventory_icon = "icon_dr_deus_skin_02_magic_02",
 			left_hand_unit = "units/weapons/player/wpn_dr_deus_02/wpn_dr_deus_02_magic",

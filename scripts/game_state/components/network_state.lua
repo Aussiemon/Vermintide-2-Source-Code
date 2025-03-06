@@ -33,7 +33,7 @@ NetworkState.register_callback = function (self, cb_type, obj, func_name, ...)
 end
 
 NetworkState.unregister_callback = function (self, obj, cb_type)
-	self._shared_state:register_callback(obj, cb_type)
+	self._shared_state:unregister_callback(obj, cb_type)
 end
 
 NetworkState.full_sync = function (self)
@@ -60,6 +60,10 @@ end
 
 NetworkState.is_peer_fully_synced = function (self, peer_id)
 	return self._shared_state:is_peer_fully_synced(peer_id)
+end
+
+NetworkState.is_fully_synced = function (self)
+	return self:is_peer_fully_synced(self._own_peer_id)
 end
 
 NetworkState.is_server = function (self)
@@ -443,4 +447,58 @@ end
 
 NetworkState.has_peer_state = function (self, peer_id, local_player_id)
 	return self._shared_state:has_peer_state(peer_id, local_player_id)
+end
+
+NetworkState.set_initialized_mutator_map = function (self, mutator_map)
+	local key = self._shared_state:get_key("initialized_mutator_map")
+
+	self._shared_state:set_server(key, mutator_map)
+end
+
+NetworkState.get_initialized_mutator_map = function (self)
+	local key = self._shared_state:get_key("initialized_mutator_map")
+
+	return self._shared_state:get_server(key)
+end
+
+NetworkState.set_session_breed_map = function (self, breed_map)
+	local key = self._shared_state:get_key("session_breed_map")
+
+	self._shared_state:set_server(key, breed_map)
+end
+
+NetworkState.get_session_breed_map = function (self)
+	local key = self._shared_state:get_key("session_breed_map")
+
+	return self._shared_state:get_server(key)
+end
+
+NetworkState.get_loaded_session_breed_map = function (self, peer_id)
+	local key = self._shared_state:get_key("loaded_session_breed_map")
+
+	return self._shared_state:get_peer(peer_id, key)
+end
+
+NetworkState.get_own_loaded_session_breed_map = function (self)
+	local key = self._shared_state:get_key("loaded_session_breed_map")
+
+	return self._shared_state:get_own(key)
+end
+
+NetworkState.set_own_loaded_session_breeds = function (self, breed_map)
+	local key = self._shared_state:get_key("loaded_session_breed_map")
+
+	return self._shared_state:set_own(key, breed_map)
+end
+
+NetworkState.set_startup_breeds = function (self, breed_list)
+	local key = self._shared_state:get_key("startup_breed_map")
+
+	return self._shared_state:set_server(key, breed_list)
+end
+
+NetworkState.get_startup_breeds = function (self)
+	local key = self._shared_state:get_key("startup_breed_map")
+
+	return self._shared_state:get_server(key)
 end

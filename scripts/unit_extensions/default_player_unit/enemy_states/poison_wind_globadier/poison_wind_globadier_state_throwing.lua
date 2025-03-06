@@ -176,14 +176,14 @@ PoisonWindGlobadierStateThrowing.update = function (self, unit, input, dt, conte
 		return
 	end
 
-	local input_throw = input_extension:get("action_one_release")
+	local input_throw = input_extension:get("dark_pact_action_one_release")
 	local abort_input_throw = false
 
 	if input_throw then
 		self._throw_ready = true
 	end
 
-	local input_cancel = input_extension:get("action_two")
+	local input_cancel = input_extension:get("dark_pact_action_two")
 
 	if abort_input_throw or input_cancel and not self._throw_time then
 		self:_stop_priming()

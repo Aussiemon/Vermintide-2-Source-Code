@@ -319,7 +319,7 @@ PlayerBotBase.update = function (self, unit, input, dt, context, t)
 		self:_update_vortex_escape()
 		self:_update_pickups(dt, t)
 		self:_update_interactables(dt, t)
-		self:_update_weapon_loadout_data()
+		self:_update_weapon_loadout_data(false)
 		self:_update_best_weapon()
 		self:_update_reload()
 		self._brain:update(unit, t, dt)
@@ -642,7 +642,7 @@ PlayerBotBase._alter_target_position = function (self, nav_world, self_position,
 		wanted_position = Vector3(self_position.x, self_position.y, self_position.z)
 		should_stop = true
 	else
-		wanted_position = Vector3(target_position.x, target_position.y, target_position.z)
+		wanted_position = target_position + Vector3.normalize(self_position - target_position)
 	end
 
 	if should_stop then
@@ -2103,13 +2103,13 @@ PlayerBotBase._update_weapon_metadata = function (self, template)
 	end
 end
 
-PlayerBotBase._update_weapon_loadout_data = function (self)
+PlayerBotBase._update_weapon_loadout_data = function (self, force)
 	local blackboard = self._blackboard
 	local inventory_ext = blackboard.inventory_extension
 	local recently_acquired_melee = inventory_ext:recently_acquired("slot_melee")
 	local recently_acquired_ranged = inventory_ext:recently_acquired("slot_ranged")
 
-	if recently_acquired_melee or recently_acquired_ranged then
+	if recently_acquired_melee or recently_acquired_ranged or force then
 		local slot_data = inventory_ext:get_slot_data("slot_melee")
 		local slot_template = slot_data and inventory_ext:get_item_template(slot_data)
 		local slot_buff_type = slot_template and slot_template.buff_type

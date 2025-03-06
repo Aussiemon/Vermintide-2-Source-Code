@@ -328,6 +328,13 @@ PeerStates.LoadingProfilePackages = {
 		return
 	end,
 }
+
+local function _has_ongoing_resync(network_server, peer_id)
+	local ongoing_resync = not network_server:are_profile_packages_fully_synced_for_peer(peer_id) or not Managers.level_transition_handler.enemy_package_loader:load_sync_done_for_peer(peer_id)
+
+	return ongoing_resync
+end
+
 PeerStates.WaitingForEnterGame = {
 	approved_for_joining = true,
 	on_enter = function (self, previous_state)
@@ -349,10 +356,7 @@ PeerStates.WaitingForEnterGame = {
 					server.game_network_manager:set_peer_synchronizing(peer_id)
 
 					local game_session = server.game_session
-					local all_synced = server.profile_synchronizer:is_peer_all_synced(peer_id)
-
-					all_synced = all_synced and server:is_network_state_fully_synced_for_peer(peer_id)
-
+					local all_synced = server:is_network_state_fully_synced_for_peer(peer_id) and not _has_ongoing_resync(server, peer_id)
 					local in_session = server.game_network_manager:in_game_session()
 
 					if game_session and in_session and all_synced then
@@ -386,7 +390,9 @@ PeerStates.WaitingForGameObjectSync = {
 
 		if self.server:has_peer_synced_game_objects(peer_id) then
 			if peer_id ~= self.server.my_peer_id then
-				if not self.server:are_profile_packages_fully_synced_for_peer(peer_id) then
+				local ongoing_resync = _has_ongoing_resync(self.server, peer_id)
+
+				if ongoing_resync then
 					if not self._printed_hot_join_sync_delay then
 						printf("[PeerSM] %s :: Delaying hot join sync due to ongoing resync", peer_id)
 

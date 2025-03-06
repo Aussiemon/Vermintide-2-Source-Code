@@ -1,6 +1,6 @@
 ﻿-- chunkname: @scripts/imgui/imgui_store_rotation.lua
 
-local layout_template = "    {\n        \"pages\": {\n          \"featured\": {\n            \"rotation_timestamp\": 1669633200,\n            \"display_name\": \"menu_store_panel_title_featured\",\n            \"grid\": [\n            ],\n            \"layout\": \"featured\",\n            \"slideshow\": [\n            ],\n            \"sound_event_enter\": \"Play_hud_store_category_front\"\n          },\n          \"dlc\": {\n            \"content\": [\n              \"bless\",\n              \"bless_upgrade\",\n              \"woods\",\n              \"woods_upgrade\",\n              \"grass\",\n              \"cog\",\n              \"cog_upgrade\",\n              \"lake\",\n              \"lake_upgrade\",\n              \"scorpion\",\n              \"holly\",\n              \"bogenhafen\",\n              \"pre_order\",\n              \"premium_career_bundle\",\n              \"premium_career_bundle_upgrade\"\n            ],\n            \"type\": \"dlc\",\n            \"display_name\": \"menu_store_panel_title_dlcs\",\n            \"layout\": \"dlc_list\",\n            \"sound_event_enter\": \"Play_hud_store_category_dlc\"\n          }\n        }\n      }\n"
+local layout_template = "    {\n        \"pages\": {\n          \"featured\": {\n            \"rotation_timestamp\": 1669633200,\n            \"display_name\": \"menu_store_panel_title_featured\",\n            \"grid\": [\n            ],\n            \"layout\": \"featured\",\n            \"slideshow\": [\n            ],\n            \"sound_event_enter\": \"Play_hud_store_category_front\"\n          },\n          \"dlc\": {\n            \"content\": [\n              \"ultimate_bundle\",\n              \"legacy_bundle\",\n              \"premium_career_bundle\",\n              \"premium_career_bundle_upgrade\",\n              \"shovel\",\n              \"shovel_upgrade\",\n              \"bless\",\n              \"bless_upgrade\",\n              \"woods\",\n              \"woods_upgrade\",\n              \"grass\",\n              \"cog\",\n              \"cog_upgrade\",\n              \"lake\",\n              \"lake_upgrade\",\n              \"scorpion\",\n              \"holly\",\n              \"bogenhafen\",\n              \"pre_order\"\n            ],\n            \"type\": \"dlc\",\n            \"display_name\": \"menu_store_panel_title_dlcs\",\n            \"layout\": \"dlc_list\",\n            \"sound_event_enter\": \"Play_hud_store_category_dlc\"\n          }\n        }\n      }\n"
 local save_file_template = "    {\n        \"featured\": {\n        },\n        \"discounts\" : {\n        }\n    }\n"
 local APP_IDS = {
 	[1] = "795750",
@@ -60,16 +60,21 @@ ImguiStoreRotation.init = function (self)
 
 	self._backend_store = Managers.backend:get_interface("peddler")
 	self._itemdef_filename = ""
+	self._all_feature_items = {}
+	self._all_slideshow_items = {}
 	self._missing_file_name = nil
 	self._timestamp_error = nil
 	self._tabs = {
 		"Feature Page Rotation",
 		"Store Discounts",
-		"Create Items and Bundles",
+		"Store Item Utility",
 	}
 	self._selected_tab = self._tabs[1]
 	self._save_successful_discount = ""
 	self._save_successful_featured = ""
+	self._cosmetic_items = {}
+
+	self:_collect_cosmetic_items_data()
 end
 
 ImguiStoreRotation._cleanup_slideshow = function (self)
@@ -265,8 +270,8 @@ ImguiStoreRotation.draw = function (self, is_open)
 		self:_featured_page_tab()
 	elseif self._selected_tab == "Store Discounts" then
 		self:_store_rotation_discounts_tab()
-	elseif self._selected_tab == "Create Items and Bundles" then
-		self:_item_and_bundle_creator()
+	elseif self._selected_tab == "Store Item Utility" then
+		self:_store_item_utility_tab()
 	end
 
 	Imgui.end_child_window()
@@ -592,6 +597,7 @@ ImguiStoreRotation._draw_selcted_layout_items = function (self, items_list)
 			Imgui.text_colored(tostring(value), 0, 193, 212, 255)
 		end
 
+		self:_draw_selected_item_image(item_id)
 		Imgui.dummy(2, 5)
 	end
 end
@@ -622,7 +628,71 @@ ImguiStoreRotation._draw_selcted_slideshow_items = function (self, items_list)
 			end
 		end
 
+		local item_id = item.product_id or item.dlc_name
+
+		self:_draw_selected_item_image(item_id)
 		Imgui.dummy(2, 5)
+	end
+end
+
+ImguiStoreRotation._draw_selected_item_image = function (self, item_id)
+	local item = rawget(ItemMasterList, item_id)
+
+	if item then
+		if item.item_type ~= "bundle" then
+			local texture_name = "store_item_icon_" .. item_id
+			local texture_path = "gui/1080p/single_textures/store_item_icons/" .. texture_name .. "/" .. texture_name
+			local package_name = "resource_packages/store/item_icons/" .. texture_name
+
+			if not Application.can_get("texture", texture_path) and Application.can_get("package", package_name) then
+				local package_manager = Managers.package
+
+				local function func()
+					Debug.sticky_text("Image Loaded " .. texture_path)
+				end
+
+				local cb = callback(func)
+				local reference_name = "ImguiStoreRotation"
+
+				package_manager:load(package_name, reference_name, cb, true)
+			elseif Application.can_get("texture", texture_path) then
+				local width, height = 130, 110
+
+				Imgui.image(texture_path, width, height)
+			else
+				local texture_path = "gui/1080p/single_textures/vermintide_2_logo_for_dark_backgrounds"
+
+				if Application.can_get("texture", texture_path) then
+					local width, height = 342, 192
+
+					Imgui.image(texture_path, width, height)
+					Imgui.text_colored("Missing Texture for Item: " .. item_id, 0, 186, 112, 255)
+				end
+			end
+		elseif item.item_type == "bundle" then
+			local texture_name = "store_item_icon_" .. item_id
+			local texture_path = "gui/1080p/single_textures/store_bundle/" .. texture_name
+			local package_name = "resource_packages/store/bundle_icons/" .. texture_name
+
+			if not Application.can_get("texture", texture_path) and Application.can_get("package", package_name) then
+				local package_manager = Managers.package
+
+				local function func()
+					Debug.sticky_text("Image Loaded " .. texture_path)
+				end
+
+				local cb = callback(func)
+				local reference_name = "ImguiStoreRotation"
+
+				package_manager:load(package_name, reference_name, cb, true)
+			elseif Application.can_get("texture", texture_path) then
+				local width, height = 400, 110
+
+				Imgui.image(texture_path, width, height)
+			else
+				Imgui.text_colored("Loading Texture", 0, 186, 112, 255)
+			end
+		end
 	end
 end
 
@@ -864,7 +934,7 @@ ImguiStoreRotation._make_bundle_def = function (self, key, item, discount)
 end
 
 ImguiStoreRotation._generate_discounted_item = function (self, key, item, discount)
-	if item.item_type ~= "bundle" then
+	if item.item_type ~= "bundle" and item.item_type ~= "cosmetic_bundle" then
 		return self:_make_item_def(key, item, discount)
 	else
 		return self:_make_bundle_def(key, item, discount)
@@ -1152,11 +1222,182 @@ ImguiStoreRotation._save_discounts_to_file = function (self)
 	end
 end
 
-ImguiStoreRotation._item_and_bundle_creator = function (self)
-	Imgui.text("Item Creator Tab")
-	Imgui.text_colored("OBS! The items must first have been created in their respective ItemMasterList!", 255, 0, 0, 255)
+ImguiStoreRotation._store_item_utility_tab = function (self)
+	Imgui.text("Store Items Utility")
+	Imgui.dummy(2, 5)
+	Imgui.text_colored("Create a .CSV file containing all the items present in the game", 64, 255, 255, 255)
+	Imgui.text_colored("The item information collected will be the Hero Name, Cosmetic Type, Localized Name, Item Key and Which Career Can Wield/Equip the Item", 64, 255, 255, 255)
 
-	self._itemdef_filename = Imgui.input_text("Item Definition File Name", self._itemdef_filename)
+	if Imgui.button("Create cosmetics List file", 250, 50) then
+		self:_create_cosmetics_item_list_file()
+	end
+
+	Imgui.dummy(2, 5)
+	Imgui.text_colored("Create a .JSON file containing all the feature and slideshow items available in the game", 64, 255, 255, 255)
+
+	if Imgui.button("Create Featured and Slideshow Json file", 250, 50) then
+		self:_create_rotation_items_json_file()
+	end
+end
+
+ImguiStoreRotation._create_rotation_items_json_file = function (self)
+	local feature_items = self:_collect_all_feature_items()
+	local slideshow_items = self:_collect_all_slideshow_items()
+	local json_object = cjson.encode({
+		featured_items = feature_items,
+		slideshow_items = slideshow_items,
+	})
+
+	json_object = json_object:gsub("\\/", "/")
+
+	local project_source = script_data.source_dir
+
+	self._fp = assert(io.open(project_source .. "/.shop/collected_featured_and_slideshow_items.json", "w"))
+
+	self._fp:write(json_object)
+	self._fp:close()
+end
+
+ImguiStoreRotation._collect_all_feature_items = function (self)
+	local t = {}
+
+	for _, item_key in ipairs(self._item_keys_list) do
+		local item = self:_get_layout_item(item_key)
+
+		t[item_key] = item
+	end
+
+	self._all_feature_items = t
+
+	return t
+end
+
+ImguiStoreRotation._collect_all_slideshow_items = function (self)
+	local t = {}
+
+	for _, item_key in pairs(self._item_keys_list) do
+		local item = self:_get_slideshow_item(item_key)
+
+		if not item.error_text then
+			t[item_key] = item
+		end
+	end
+
+	self._all_slideshow_items = t
+
+	return t
+end
+
+ImguiStoreRotation._create_cosmetics_item_list_file = function (self)
+	local str = "Hero, Comsetic Type, Localized Name, Item Key, Can Wield Careers \n"
+
+	local function get_can_wield_career_names(can_wield)
+		local can_wield_string = ""
+
+		for i = 1, #can_wield do
+			if i == #can_wield then
+				can_wield_string = can_wield_string .. Localize(can_wield[i])
+			else
+				can_wield_string = can_wield_string .. Localize(can_wield[i]) .. " , "
+			end
+		end
+
+		can_wield_string = "\" " .. can_wield_string .. " \""
+
+		return can_wield_string
+	end
+
+	for profile_name, profile_cosmetics_data in pairs(self._cosmetic_items) do
+		if profile_name == "frame" then
+			for item_name, item_data in pairs(profile_cosmetics_data) do
+				local item_key = item_data.item_key
+
+				str = str .. "\" \"" .. "," .. Localize(profile_name) .. "," .. "\"" .. Localize(item_name) .. "\"" .. ", " .. item_key .. ", All" .. "\n"
+			end
+		else
+			for item_type, item_type_data in pairs(profile_cosmetics_data) do
+				for item_name, item_data in pairs(item_type_data) do
+					str = str .. Localize(profile_name) .. "," .. Localize(item_type) .. ","
+
+					local can_wield_string = ""
+
+					if item_data.can_wield then
+						can_wield_string = get_can_wield_career_names(item_data.can_wield)
+					end
+
+					local item_key = item_data.item_key
+
+					str = str .. "\"" .. Localize(item_name) .. "\"" .. ", " .. item_data.item_key .. ", " .. can_wield_string .. "\n"
+				end
+			end
+		end
+	end
+
+	local project_source = script_data.source_dir
+
+	self._fp = assert(io.open(project_source .. "/.shop/cosmetic_items_list.csv", "w"))
+
+	self._fp:write(str)
+	self._fp:close()
+end
+
+local cosmetic_items = {
+	cosmetic_bundles = true,
+	frame = true,
+	skin = true,
+	weapon_skin = true,
+}
+
+ImguiStoreRotation._collect_cosmetic_items_data = function (self)
+	local cosmetics_items = {}
+
+	for item_name, item_data in pairs(ItemMasterList) do
+		local item_type = item_data.item_type
+
+		if not item_data.base_skin_item and cosmetic_items[item_type] then
+			if item_type == "frame" then
+				if not cosmetics_items.frame then
+					cosmetics_items.frame = {}
+				end
+
+				local data = {
+					item_key = item_name,
+					icon = item_data.inventory_icon or "icons_placeholder",
+				}
+				local frame_items_data = cosmetics_items.frame
+				local display_name = item_data.display_name
+
+				frame_items_data[display_name] = data
+			else
+				local can_wield = item_data.can_wield
+				local career_name = can_wield[1]
+				local profile = PROFILES_BY_CAREER_NAMES[career_name]
+				local profile_name = profile.ingame_display_name
+
+				if not cosmetics_items[profile_name] then
+					cosmetics_items[profile_name] = {}
+				end
+
+				local data = {
+					item_key = item_name,
+					can_wield = item_data.can_wield,
+					icon = item_data.inventory_icon or "icons_placeholder",
+				}
+				local profile_data = cosmetics_items[profile_name]
+
+				if not profile_data[item_type] then
+					profile_data[item_type] = {}
+				end
+
+				local display_name = item_data.display_name
+				local item_type_data = profile_data[item_type]
+
+				item_type_data[display_name] = data
+			end
+		end
+	end
+
+	self._cosmetic_items = cosmetics_items
 end
 
 ImguiStoreRotation._handle_error_messages = function (self)

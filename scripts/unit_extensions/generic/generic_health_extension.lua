@@ -307,13 +307,13 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 			source_attacker_unit = attacker_player.player_unit
 		end
 
-		source_attacker_unit = AiUtils.get_actual_attacker_unit(source_attacker_unit or attacker_unit)
-
 		if not source_attacker_unit then
 			local last_attacker_id = self.last_damage_data.attacker_unit_id
 
 			source_attacker_unit = last_attacker_id and Managers.state.unit_storage:unit(last_attacker_id)
 		end
+
+		source_attacker_unit = AiUtils.get_actual_attacker_unit(source_attacker_unit or attacker_unit)
 	end
 
 	if attacker_player then

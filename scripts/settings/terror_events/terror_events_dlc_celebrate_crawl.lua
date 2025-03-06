@@ -1,13 +1,9 @@
 ﻿-- chunkname: @scripts/settings/terror_events/terror_events_dlc_celebrate_crawl.lua
 
-local function count_event_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
-end
-
-local NORMAL = 2
-local HARD = 3
-local HARDER = 4
-local HARDEST = 5
+local TerrorEventUtils = require("scripts/settings/terror_events/terror_event_utils")
+local count_event_breed = TerrorEventUtils.count_event_breed
+local HARDER = TerrorEventUtils.HARDER
+local HARDEST = TerrorEventUtils.HARDEST
 local weighted_random_terror_events = {
 	crawl_gauntlet = {
 		"crawl_gauntlet_01",
@@ -882,4 +878,7 @@ local terror_event_blueprints = {
 	},
 }
 
-return terror_event_blueprints, weighted_random_terror_events
+return {
+	terror_event_blueprints,
+	weighted_random_terror_events,
+}

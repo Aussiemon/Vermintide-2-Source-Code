@@ -784,7 +784,7 @@ DeusShopView._acquire_input = function (self, ignore_cursor_stack)
 	}, 1, input_service_name, "DeusShopView")
 
 	if not ignore_cursor_stack then
-		ShowCursorStack.push()
+		ShowCursorStack.show("DeusShopView")
 		input_manager:enable_gamepad_cursor()
 	end
 
@@ -813,7 +813,7 @@ DeusShopView._release_input = function (self, ignore_cursor_stack)
 	}, 1, self._input_service_name, "DeusShopView")
 
 	if not ignore_cursor_stack and self._acquiring_input then
-		ShowCursorStack.pop()
+		ShowCursorStack.hide("DeusShopView")
 		input_manager:disable_gamepad_cursor()
 	end
 

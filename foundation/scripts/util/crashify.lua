@@ -10,7 +10,7 @@ Crashify.print_property = function (key, value)
 	end
 
 	if value == nil then
-		Application.warning("[Crashify] Property value can't be nil")
+		Application.warning("[Crashify] Property value (%s) can't be nil", key)
 
 		return
 	end
@@ -63,6 +63,10 @@ Crashify.print_exception = function (system, message_format, ...)
 	local exception = string.format("<<crashify-exception>>\n\t\t\t<<system>>%s<</system>>\n\t\t\t<<message>>%s<</message>>\n\t\t\t<<callstack>>%s<</callstack>>\n\t\t<</crashify-exception>>", system, message, Script.callstack())
 
 	print(exception)
+
+	if Script.do_break then
+		Script.do_break(script_data.break_on_crashify_exceptions)
+	end
 end
 
 return Crashify

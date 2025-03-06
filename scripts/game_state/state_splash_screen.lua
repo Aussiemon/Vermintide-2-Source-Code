@@ -312,21 +312,7 @@ StateSplashScreen.packages_loaded = function (self)
 		self.splash_view:allow_console_skip()
 	end
 
-	local is_loaded = true
-
-	if not GlobalResources.loaded then
-		for i, name in ipairs(GlobalResources) do
-			if package_manager:is_loading(name, "global") then
-				is_loaded = false
-			elseif not package_manager:has_loaded(name, "global") then
-				package_manager:load(name, "global", nil, true)
-
-				is_loaded = false
-			end
-		end
-
-		GlobalResources.loaded = is_loaded
-	end
+	local is_loaded = GlobalResources.update_loading()
 
 	return is_loaded
 end

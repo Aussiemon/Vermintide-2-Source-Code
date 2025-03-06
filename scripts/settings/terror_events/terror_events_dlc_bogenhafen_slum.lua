@@ -1,9 +1,7 @@
 ﻿-- chunkname: @scripts/settings/terror_events/terror_events_dlc_bogenhafen_slum.lua
 
-local function count_event_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
-end
-
+local TerrorEventUtils = require("scripts/settings/terror_events/terror_event_utils")
+local count_event_breed = TerrorEventUtils.count_event_breed
 local weighted_random_terror_events = {
 	dlc_bogenhafen_slum_event_spice_random = {
 		"dlc_bogenhafen_slum_event_spice_left",
@@ -308,4 +306,7 @@ local terror_event_blueprints = {
 	},
 }
 
-return terror_event_blueprints, weighted_random_terror_events
+return {
+	terror_event_blueprints,
+	weighted_random_terror_events,
+}

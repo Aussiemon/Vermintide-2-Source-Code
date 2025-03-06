@@ -128,7 +128,6 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 	end
 
 	local initial_inventory = game_mode_manager:get_initial_inventory(healthkit, potion, grenade, additional_items, profile)
-	local hero_name = profile.display_name
 	local base_skin = career.base_skin
 	local base_frame = "default"
 	local career_name = career.name

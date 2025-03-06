@@ -35,7 +35,6 @@ EnemyCharacterStateLeaping.on_enter = function (self, unit, input, dt, context, 
 	local look_direction_flat = Vector3.normalize(Vector3.flat(Quaternion.forward(rotation)))
 	local start_position = POSITION_LOOKUP[unit]
 	local projected_hit_pos = leap_data.projected_hit_pos:unbox()
-	local distance = Vector3.length(projected_hit_pos - start_position)
 
 	self._percentage_done = 0
 	self.initial_jump_direction = Vector3Box(projected_hit_pos - start_position)
@@ -51,7 +50,6 @@ EnemyCharacterStateLeaping.on_enter = function (self, unit, input, dt, context, 
 end
 
 EnemyCharacterStateLeaping.on_exit = function (self, unit, input, dt, context, t, next_state, is_destroy)
-	local input_extension = self._input_extension
 	local locomotion_extension = self._locomotion_extension
 
 	locomotion_extension:set_mover_filter_property("enemy_leap_state", false)
@@ -69,7 +67,7 @@ EnemyCharacterStateLeaping.on_exit = function (self, unit, input, dt, context, t
 		locomotion_extension:set_forced_velocity(Vector3.zero())
 		locomotion_extension:set_wanted_velocity(Vector3.zero())
 
-		if next_state == "staggered" and self._leap_data.leap_events.finished then
+		if not self._leap_done and self._leap_data.leap_events.finished then
 			local final_position = POSITION_LOOKUP[unit]
 
 			self._leap_data.leap_events.finished(self, unit, false, final_position)
@@ -86,6 +84,12 @@ EnemyCharacterStateLeaping.on_exit = function (self, unit, input, dt, context, t
 			CharacterStateHelper.play_animation_event(unit, "to_onground")
 			locomotion_extension:force_on_ground(true)
 		end
+
+		if self._screenspace_effect_id then
+			self._first_person_extension:destroy_screen_particles(self._screenspace_effect_id)
+
+			self._screenspace_effect_id = nil
+		end
 	end
 end
 
@@ -97,7 +101,6 @@ EnemyCharacterStateLeaping.update = function (self, unit, input, dt, context, t)
 	local first_person_extension = self._first_person_extension
 	local locomotion_extension = self._locomotion_extension
 	local inventory_extension = self._inventory_extension
-	local health_extension = self._health_extension
 
 	if CharacterStateHelper.do_common_state_transitions(status_extension, csm) then
 		return
@@ -366,13 +369,12 @@ EnemyCharacterStateLeaping._move_in_air = function (self, unit, dt, t)
 		local prev_move_velocity = locomotion_extension:current_velocity()
 		local forward = Vector3.normalize(Vector3.flat(move_direction)) * forward_vector_multiplier
 		local towards_end = Vector3.normalize(end_position - current_position) * towards_end_vector_multiplier
-		local move_direction = forward + towards_end
-		local new_move_velocity = (Vector3.normalize(prev_move_velocity) + move_direction) * speed
+		local new_move_direction = forward + towards_end
+		local new_move_velocity = (Vector3.normalize(prev_move_velocity) + new_move_direction) * speed
 		local new_move_speed = Vector3.length(new_move_velocity)
 
 		new_move_speed = math.clamp(new_move_speed, 0, move_cap * movement_settings_table.player_speed_scale)
-
-		local new_move_direction = Vector3.normalize(new_move_velocity)
+		new_move_direction = Vector3.normalize(new_move_velocity)
 
 		locomotion_extension:set_forced_velocity(new_move_direction * new_move_speed)
 	end
@@ -402,7 +404,6 @@ EnemyCharacterStateLeaping._update_movement = function (self, unit, dt, t)
 end
 
 EnemyCharacterStateLeaping._finish = function (self, unit, t)
-	local world = self._world
 	local locomotion_extension = self._locomotion_extension
 	local first_person_extension = self._first_person_extension
 
@@ -435,7 +436,6 @@ EnemyCharacterStateLeaping._finish = function (self, unit, t)
 end
 
 EnemyCharacterStateLeaping._start_leap = function (self, unit, t)
-	local world = self._world
 	local locomotion_extension = self._locomotion_extension
 	local first_person_extension = self._first_person_extension
 
@@ -485,17 +485,11 @@ EnemyCharacterStateLeaping._camera_effects = function (self, unit, alpha)
 
 	if alpha >= 0.25 then
 		if not self._screenspace_effect_id then
-			print("particles ON")
-
 			self._screenspace_effect_id = self._first_person_extension:create_screen_particles(local_screen_space_effect)
 		end
-	elseif alpha <= 0 then
-		print("particles OFF")
+	elseif alpha <= 0 and self._screenspace_effect_id then
+		self._first_person_extension:destroy_screen_particles(self._screenspace_effect_id)
 
-		if self._screenspace_effect_id then
-			self._first_person_extension:destroy_screen_particles(self._screenspace_effect_id)
-
-			self._screenspace_effect_id = nil
-		end
+		self._screenspace_effect_id = nil
 	end
 end

@@ -6,7 +6,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local NUM_TEAMS = 2
 local TEAMS_SIZE = 4
 local TRANSPARENT_TEXTURE = "gui/1080p/single_textures/generic/transparent_placeholder_texture"
-local HAS_AVATARS = false
+local HAS_AVATARS = true
 
 StartGameWindowVersusPlayerHostedLobby = class(StartGameWindowVersusPlayerHostedLobby)
 StartGameWindowVersusPlayerHostedLobby.NAME = "StartGameWindowPlayerHostedLobby"
@@ -392,14 +392,23 @@ StartGameWindowVersusPlayerHostedLobby._update_toggle_settings_button = function
 		self._parent:play_sound("play_gui_lobby_button_01_difficulty_confirm_hover")
 	end
 
-	local changed_selection = self:_is_other_option_button_selected(custom_settings_toggle, self._custom_settings_toggled)
+	if self._game_mechanism:is_hosting_versus_custom_game() then
+		local changed_selection = self:_is_other_option_button_selected(custom_settings_toggle, self._custom_settings_toggled)
 
-	if changed_selection ~= nil then
-		self._custom_settings_toggled = changed_selection
-		custom_settings_toggle.content.button_hotspot.is_selected = changed_selection
+		if changed_selection ~= nil then
+			self._custom_settings_toggled = changed_selection
+			custom_settings_toggle.content.button_hotspot.is_selected = changed_selection
 
-		Managers.state.event:trigger("event_focus_custom_game_settings_input", changed_selection)
-		self:_enable_custom_game_settings(changed_selection)
+			Managers.state.event:trigger("event_focus_custom_game_settings_input", changed_selection)
+			self:_enable_custom_game_settings(changed_selection)
+		end
+	else
+		local active = self._game_mechanism:custom_settings_enabled()
+
+		if self._custom_settings_toggled ~= active then
+			custom_settings_toggle.content.button_hotspot.is_selected = active
+			self._custom_settings_toggled = active
+		end
 	end
 end
 

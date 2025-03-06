@@ -1,5 +1,11 @@
 ﻿-- chunkname: @scripts/settings/equipment/weapon_templates/vs_warpfire_thrower_gun.lua
 
+local action_one = "dark_pact_action_one"
+local action_one_release = "dark_pact_action_one_release"
+local action_one_hold = "dark_pact_action_one_hold"
+local action_two = "dark_pact_action_two"
+local action_reload = "dark_pact_reload"
+local action_reload_hold = "dark_pact_reload_hold"
 local push_radius = 2
 local time_mod = 0.9
 local fire_time = 0.1
@@ -23,7 +29,7 @@ end
 local weapon_template = {}
 
 weapon_template.actions = {
-	action_one = {
+	[action_one] = {
 		default = {
 			aim_assist_max_ramp_multiplier = 0.8,
 			aim_assist_ramp_decay_delay = 0.3,
@@ -32,13 +38,13 @@ weapon_template.actions = {
 			anim_event = "attack_shoot_start",
 			anim_time_scale = 1,
 			disallow_ghost_mode = true,
-			hold_input = "action_one_hold",
 			kind = "dummy",
 			minimum_hold_time = 0.1,
 			weapon_action_hand = "left",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
+			hold_input = action_one_hold,
 			fire_time = fire_time,
 			total_time = math.huge,
 			buff_data = {
@@ -50,17 +56,17 @@ weapon_template.actions = {
 			},
 			allowed_chain_actions = {
 				{
-					action = "action_one",
 					auto_chain = true,
 					sub_action = "fire",
 					start_time = fire_time,
+					action = action_one,
 				},
 				{
-					action = "weapon_reload",
 					hold_allowed = true,
-					input = "weapon_reload",
 					start_time = 0,
 					sub_action = "default",
+					input = action_reload,
+					action = action_reload,
 				},
 			},
 			enter_function = function (owner_unit, input_extension, remaining_time, weapon_extension)
@@ -103,7 +109,6 @@ weapon_template.actions = {
 			fire_time = 0,
 			fx_node = "p_fx",
 			hit_effect = "fx/wpnfx_flamethrower_hit_01",
-			hold_input = "action_one_hold",
 			husk_fire_sound_event = "husk_warpfire_thrower_shoot_start",
 			husk_stop_sound_event = "husk_warpfire_thrower_shoot_end",
 			is_spell = false,
@@ -128,6 +133,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
+			hold_input = action_one_hold,
 			total_time = math.huge,
 			buff_data = {
 				{
@@ -138,10 +144,10 @@ weapon_template.actions = {
 			},
 			allowed_chain_actions = {
 				{
-					action = "weapon_reload",
-					input = "weapon_reload",
 					start_time = 0,
 					sub_action = "default",
+					input = action_reload,
+					action = action_reload,
 				},
 			},
 			enter_function = function (owner_unit, input_extension, remaining_time, weapon_extension)
@@ -160,7 +166,7 @@ weapon_template.actions = {
 			end,
 		},
 	},
-	weapon_reload = {
+	[action_reload] = {
 		default = {
 			anim_end_event = "attack_finished",
 			anim_event = "wind_up_start",
@@ -174,7 +180,6 @@ weapon_template.actions = {
 			crosshair_style = "dot",
 			disallow_ghost_mode = true,
 			do_not_validate_with_hold = true,
-			hold_input = "weapon_reload_hold",
 			kind = "charge",
 			minimum_hold_time = 0.5,
 			particle_effect_cooling = "fx/wpnfx_warpfire_gun_cooldown_1p",
@@ -184,6 +189,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
+			hold_input = action_reload_hold,
 			total_time = math.huge,
 			buff_data = {
 				{
@@ -277,7 +283,7 @@ weapon_template.synced_states = {
 	},
 	shooting = {
 		enter = function (self, owner_unit, weapon_unit, state_data, is_local_player, world)
-			local current_action = weapon_template.actions.action_one.fire
+			local current_action = weapon_template.actions.dark_pact_action_one.fire
 			local node_name = current_action.fx_node
 			local muzzle_node = Unit.node(weapon_unit, node_name)
 			local muzzle_position = Unit.world_position(weapon_unit, muzzle_node)
@@ -358,7 +364,7 @@ weapon_template.synced_states = {
 				state_data.rumble_effect_id = nil
 			end
 
-			local fire_action = weapon_template.actions.action_one.fire
+			local fire_action = weapon_template.actions.dark_pact_action_one.fire
 			local node_id = 0
 
 			if is_local_player then
@@ -444,11 +450,9 @@ weapon_template.overcharge_data = {
 weapon_template.attack_meta_data = {
 	tap_attack = {
 		arc = 0,
-		penetrating = true,
 	},
 	hold_attack = {
 		arc = 0,
-		penetrating = true,
 	},
 }
 weapon_template.aim_assist_settings = {
@@ -486,26 +490,14 @@ weapon_template.tooltip_keywords = {
 }
 weapon_template.tooltip_compare = {
 	light = {
-		action_name = "action_one",
 		sub_action_name = "light_attack_left",
-	},
-	heavy = {
-		action_name = "action_one",
-		sub_action_name = "heavy_attack_left",
+		action_name = action_one,
 	},
 }
 weapon_template.tooltip_detail = {
 	light = {
-		action_name = "action_one",
 		sub_action_name = "default",
-	},
-	heavy = {
-		action_name = "action_one",
-		sub_action_name = "default",
-	},
-	push = {
-		action_name = "action_one",
-		sub_action_name = "push",
+		action_name = action_one,
 	},
 }
 weapon_template.wwise_dep_right_hand = {

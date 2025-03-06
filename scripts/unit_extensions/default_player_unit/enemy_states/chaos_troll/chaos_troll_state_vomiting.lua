@@ -111,7 +111,7 @@ ChaosTrollStateVomiting.update = function (self, unit, input, dt, context, t)
 
 		return
 	elseif self._state == "priming" then
-		local input_cancel_vomit = input_extension:get("action_one_release")
+		local input_cancel_vomit = input_extension:get("dark_pact_action_one_release")
 
 		if input_cancel_vomit then
 			self._state = "fail"
@@ -137,7 +137,7 @@ ChaosTrollStateVomiting.update = function (self, unit, input, dt, context, t)
 			end
 		end
 
-		local input_vomit_released = not input_extension:get("action_two_hold")
+		local input_vomit_released = not input_extension:get("dark_pact_action_two_hold")
 
 		if input_vomit_released then
 			if ALIVE[self._unit] then

@@ -452,7 +452,7 @@ ImguiManager._capture_input = function (self)
 
 	if input_stack == 0 then
 		self:_input_manager_do("capture_input")
-		ShowCursorStack.push()
+		ShowCursorStack.show("ImguiManager")
 		Imgui.enable_imgui_input_system(Imgui.KEYBOARD)
 		Imgui.enable_imgui_input_system(Imgui.MOUSE)
 		Imgui.enable_imgui_input_system(Imgui.GAMEPAD)
@@ -468,7 +468,7 @@ ImguiManager._release_input = function (self)
 
 	if input_stack == 0 then
 		self:_input_manager_do("release_input")
-		ShowCursorStack.pop()
+		ShowCursorStack.hide("ImguiManager")
 		Imgui.disable_imgui_input_system(Imgui.KEYBOARD)
 		Imgui.disable_imgui_input_system(Imgui.GAMEPAD)
 		Imgui.disable_imgui_input_system(Imgui.MOUSE)

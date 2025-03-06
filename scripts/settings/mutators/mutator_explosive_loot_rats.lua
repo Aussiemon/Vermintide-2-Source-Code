@@ -29,6 +29,28 @@ return {
 		}
 		data.spawn_frequency_per_difficulty = {
 			normal = {
+				68,
+				80,
+			},
+			hard = {
+				60,
+				72,
+			},
+			harder = {
+				56,
+				70,
+			},
+			hardest = {
+				48,
+				64,
+			},
+			cataclysm = {
+				40,
+				56,
+			},
+		}
+		data.spawn_frequency_per_difficulty_twitch_mode = {
+			normal = {
 				34,
 				40,
 			},
@@ -56,7 +78,10 @@ return {
 	end,
 	server_players_left_safe_zone = function (context, data)
 		data.has_left_safe_zone = true
-		data.spawn_loot_rats_at = Managers.time:time("game") + 5
+
+		local safe_zone_grace_time = 20
+
+		data.spawn_loot_rats_at = Managers.time:time("game") + safe_zone_grace_time
 	end,
 	server_update_function = function (context, data)
 		if not data.has_left_safe_zone then
@@ -69,6 +94,11 @@ return {
 			local difficulty = Managers.state.difficulty:get_difficulty()
 			local num_rats_range = data.amount_of_rats_per_difficulty[difficulty]
 			local spawn_frequency_range = data.spawn_frequency_per_difficulty[difficulty]
+
+			if Managers.twitch:is_activated() then
+				local spawn_frequency_range = data.spawn_frequency_per_difficulty_twitch_mode[difficulty]
+			end
+
 			local amount_of_rats = math.random(num_rats_range[1], num_rats_range[2])
 			local spawn_frequency = math.random(spawn_frequency_range[1], spawn_frequency_range[2])
 			local spawn_list = {}

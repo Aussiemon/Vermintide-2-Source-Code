@@ -1752,11 +1752,9 @@ weapon_template.state_machine_career = {
 weapon_template.attack_meta_data = {
 	tap_attack = {
 		arc = 0,
-		penetrating = false,
 	},
 	hold_attack = {
 		arc = 0,
-		penetrating = true,
 	},
 }
 weapon_template.aim_assist_settings = {

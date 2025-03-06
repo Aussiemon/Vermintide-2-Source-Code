@@ -1219,18 +1219,16 @@ local pre_defined_widgets = {
 			content.actual_cooldown = cooldown_fraction
 
 			local gamepad_active = Managers.input:is_device_active("gamepad")
+			local input_action = "versus_horde_ability"
+			local input_service = Managers.input:get_service("Player")
+			local _, input_text = UISettings.get_gamepad_input_texture_data(input_service, input_action, gamepad_active)
 
-			if gamepad_active ~= content.is_gamepad_active then
-				local input_action = "versus_horde_ability"
-				local input_manager = Managers.input
+			if content.current_input_text ~= input_text then
+				content.current_input_text = input_text
 
 				if gamepad_active then
-					input_action = "versus_horde_ability"
 					content.input_text = "$KEY;Player__" .. input_action .. ":"
 				else
-					local input_service = input_manager:get_service("Player")
-					local _, input_text = UISettings.get_gamepad_input_texture_data(input_service, input_action, gamepad_active)
-
 					content.input_text = "[" .. input_text .. "]"
 				end
 			end
@@ -1297,13 +1295,12 @@ local function create_dark_pact_hud_ability_icon_widget()
 						end
 
 						local gamepad_active = Managers.input:is_device_active("gamepad")
+						local input = gamepad_active and content.settings.gamepad_input or content.settings.input_action
+						local input_service = Managers.input:get_service("Player")
+						local _, input_text, keymap_binding = UISettings.get_gamepad_input_texture_data(input_service, input, gamepad_active)
 
-						if content.gamepad_active ~= gamepad_active then
-							content.gamepad_active = gamepad_active
-
-							local input = gamepad_active and content.settings.gamepad_input or content.settings.input_action
-							local input_service = Managers.input:get_service("Player")
-							local _, input_text, keymap_binding = UISettings.get_gamepad_input_texture_data(input_service, input, gamepad_active)
+						if content.current_input_text ~= input_text then
+							content.current_input_text = input_text
 
 							if keymap_binding and keymap_binding[1] == "mouse" or gamepad_active then
 								content.input = string.format("$KEY;Player__%s:", input)

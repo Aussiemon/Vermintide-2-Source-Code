@@ -520,10 +520,10 @@ GenericUnitInteractorExtension.can_interact = function (self, interactable_unit,
 
 		interact_type = interact_type or interaction_type
 
-		return can_interact, failure_reason, interact_type
+		return can_interact, failure_reason, interact_type, unit_to_interact_with
 	end
 
-	return true, nil, interaction_type
+	return true, nil, interaction_type, unit_to_interact_with
 end
 
 GenericUnitInteractorExtension.interaction_config = function (self)

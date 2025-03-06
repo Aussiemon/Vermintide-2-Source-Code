@@ -37,10 +37,6 @@ MatchmakingStateFriendClient.on_enter = function (self, state_context)
 	self._region_latency = {}
 	self._timeout = math.huge
 	self._is_versus = state_context.mechanism == "versus"
-
-	if self._is_versus then
-		-- Nothing
-	end
 end
 
 MatchmakingStateFriendClient.on_exit = function (self)

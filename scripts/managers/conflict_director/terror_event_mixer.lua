@@ -411,7 +411,7 @@ TerrorEventMixer.init_functions = {
 
 		print("terror_event_mixer->force_load_breed_package, breed_name=", breed_name)
 
-		if not enemy_package_loader.breed_processed[breed_name] then
+		if not enemy_package_loader:is_breed_processed(breed_name) then
 			local ignore_breed_limits = true
 
 			enemy_package_loader:request_breed(breed_name, ignore_breed_limits)
@@ -522,7 +522,7 @@ TerrorEventMixer.init_functions = {
 	run_benchmark_func = function (event, element, t)
 		local func_name = element.func_name
 
-		script_data.benchmark[func_name](script_data.benchmark, element, t)
+		Managers.benchmark[func_name](Managers.benchmark, element, t)
 	end,
 	set_time_challenge = function (event, element, t, dt)
 		local optional_data = TerrorEventMixer.optional_data

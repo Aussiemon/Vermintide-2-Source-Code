@@ -197,10 +197,14 @@ end
 AIInventoryExtension.destroy = function (self)
 	local unit_spawner = Managers.state.unit_spawner
 	local inventory_items_n = self.inventory_items_n
+	local world = self.world
 
 	for i = 1, inventory_items_n do
-		if Unit.alive(self.inventory_item_units[i]) then
-			unit_spawner:mark_for_deletion(self.inventory_item_units[i])
+		local item_unit = self.inventory_item_units[i]
+
+		if Unit.alive(item_unit) then
+			unlink_unit(item_unit, world)
+			unit_spawner:mark_for_deletion(item_unit)
 			self:destroy_dropped_items(i)
 		end
 	end
@@ -244,8 +248,11 @@ AIInventoryExtension.freeze = function (self)
 	local unit = self.unit
 
 	for i = 1, inventory_items_n do
-		if Unit.alive(self.inventory_item_units[i]) then
-			unit_spawner:mark_for_deletion(self.inventory_item_units[i])
+		local item_unit = self.inventory_item_units[i]
+
+		if Unit.alive(item_unit) then
+			unlink_unit(item_unit, self.world)
+			unit_spawner:mark_for_deletion(item_unit)
 			self:destroy_dropped_items(i)
 		end
 	end

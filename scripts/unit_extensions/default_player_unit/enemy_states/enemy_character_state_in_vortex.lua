@@ -177,7 +177,9 @@ EnemyCharacterStateInVortex.update = function (self, unit, input, dt, context, t
 	local player_actions_allowed = self.player_actions_allowed
 
 	if player_actions_allowed and CharacterStateHelper.is_starting_interaction(input_extension, interactor_extension) and interactor_extension:allow_movement_during_interaction() then
-		interactor_extension:start_interaction("interacting")
+		local _, hold_input = InteractionHelper.interaction_action_names(unit)
+
+		interactor_extension:start_interaction(hold_input)
 	end
 
 	if Unit.alive(self.vortex_unit) then

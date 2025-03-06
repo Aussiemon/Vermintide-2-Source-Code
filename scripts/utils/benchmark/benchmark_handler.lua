@@ -26,7 +26,6 @@ BenchmarkHandler.init = function (self, ingame_ui, world)
 	Managers.input:block_device_except_service("benchmark", "mouse", 1)
 	Managers.input:block_device_except_service("benchmark", "gamepad", 1)
 
-	script_data.benchmark = self
 	script_data.game_seed = BenchmarkSettings.game_seed
 
 	if BenchmarkSettings.bot_power_level_override then

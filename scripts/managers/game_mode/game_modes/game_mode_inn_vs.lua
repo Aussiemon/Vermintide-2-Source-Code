@@ -9,8 +9,8 @@ local FAIL_LEVEL_VAR = false
 
 GameModeInnVs = class(GameModeInnVs, GameModeBase)
 
-GameModeInnVs.init = function (self, settings, world, network_server, ...)
-	GameModeInnVs.super.init(self, settings, world, network_server, ...)
+GameModeInnVs.init = function (self, settings, world, network_handler, ...)
+	GameModeInnVs.super.init(self, settings, world, network_handler, ...)
 
 	self._mechanism = Managers.mechanism:game_mechanism()
 	self._adventure_profile_rules = AdventureProfileRules:new(self._profile_synchronizer, self._network_server)
@@ -28,7 +28,7 @@ GameModeInnVs.init = function (self, settings, world, network_server, ...)
 	end
 
 	if self._is_server then
-		self._lobby_host = network_server.lobby_host
+		self._lobby_host = network_handler.lobby_host
 	end
 
 	if self._mechanism:is_hosting_versus_custom_game() then

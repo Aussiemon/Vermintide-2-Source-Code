@@ -1,19 +1,9 @@
 ﻿-- chunkname: @scripts/settings/terror_events/terror_events_dlc_wizards_trail.lua
 
-local function count_event_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
-end
-
-local function spawned_during_event()
-	return Managers.state.conflict:enemies_spawned_during_event()
-end
-
-local NORMAL = 2
-local HARD = 3
-local HARDER = 4
-local HARDEST = 5
-local CATACLYSM = 6
-local weighted_random_terror_events
+local TerrorEventUtils = require("scripts/settings/terror_events/terror_event_utils")
+local count_event_breed = TerrorEventUtils.count_event_breed
+local spawned_during_event = TerrorEventUtils.spawned_during_event
+local HARDEST = TerrorEventUtils.HARDEST
 local terror_event_blueprints = {
 	trail_disable_pacing_mid = {
 		{
@@ -1066,4 +1056,6 @@ local terror_event_blueprints = {
 	},
 }
 
-return terror_event_blueprints
+return {
+	terror_event_blueprints,
+}

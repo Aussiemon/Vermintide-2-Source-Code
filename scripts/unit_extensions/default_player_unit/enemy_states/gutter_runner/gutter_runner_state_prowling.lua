@@ -110,8 +110,9 @@ GutterRunnerStateProwling.update = function (self, unit, input, dt, context, t)
 	end
 
 	local exit = false
+	local released = input_extension:get("dark_pact_action_one_release")
 
-	if input_extension:get("action_one_release") then
+	if released then
 		self:_update_priming(t, dt, true)
 
 		if self._done_priming then
@@ -127,7 +128,9 @@ GutterRunnerStateProwling.update = function (self, unit, input, dt, context, t)
 		self:_update_priming(t, dt, false)
 	end
 
-	if input_extension:get("action_two") or exit then
+	local canceled = input_extension:get("dark_pact_action_two")
+
+	if canceled or exit then
 		first_person_extension:play_hud_sound_event("Stop_versus_gutterrunner_jump_charge_loop")
 
 		self._exit_with_priming = false

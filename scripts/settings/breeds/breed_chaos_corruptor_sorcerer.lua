@@ -2,31 +2,64 @@
 
 local breed_data = {
 	animation_sync_rpc = "rpc_sync_anim_state_8",
+	aoe_height = 2.1,
+	aoe_radius = 0.7,
 	armor_category = 1,
+	awards_positive_reinforcement_message = true,
 	base_unit = "units/beings/enemies/chaos_sorcerer_corruptor/chr_chaos_sorcerer_corruptor",
 	behavior = "chaos_corruptor_sorcerer",
+	bone_lod_level = 1,
+	bot_hitbox_radius_approximation = 0.8,
 	controllable = true,
+	death_reaction = "ai_default",
 	death_sound_event = "chaos_sorcerer_corrupt_death",
 	debug_spawn_category = "Specials",
+	default_inventory_template = "chaos_sorcerer",
+	detection_radius = 9999999,
 	dialogue_source_name = "chaos_corruptor_sorcerer",
+	disable_second_hit_ragdoll = true,
+	exchange_order = 2,
+	flingable = true,
+	has_inventory = true,
+	headshot_coop_stamina_fatigue_type = "headshot_special",
 	height = 1.8,
+	hit_effect_template = "HitEffectsChaosSorcerer",
+	hit_mass_count = 8,
+	hit_reaction = "ai_default",
+	initial_is_passive = false,
 	is_always_spawnable = true,
+	is_bot_aid_threat = true,
 	is_of_interest_func = "is_of_interest_to_corruptor",
 	is_resurrectable = false,
+	minion_detection_radius = 10,
 	no_stagger_duration = true,
 	perception = "perception_pack_master",
-	perception_continuous = "SET_TO_NIL",
+	player_locomotion_constrain_radius = 0.7,
+	poison_resistance = 100,
+	proximity_system_check = true,
 	race = "chaos",
+	radius = 1,
+	run_speed = 0.65,
+	smart_object_template = "special",
+	smart_targeting_height_multiplier = 2.2,
+	smart_targeting_outer_width = 0.7,
+	smart_targeting_width = 0.3,
+	special = true,
 	stagger_resistance = 3,
 	stagger_threshold_light = 0.5,
 	target_selection = "pick_corruptor_target",
 	threat_value = 8,
 	unit_template = "ai_unit_chaos_corruptor_sorcerer",
+	vortexable = false,
+	walk_speed = 0.65,
 	weapon_reach = 15,
+	wield_inventory_on_spawn = true,
+	infighting = InfightingSettings.small,
 	max_health = BreedTweaks.max_health.corruptor_sorcerer,
 	bloodlust_health = BreedTweaks.bloodlust_health.chaos_special,
 	stagger_duration = BreedTweaks.stagger_duration.sorcerer,
 	diff_stagger_resist = BreedTweaks.diff_stagger_resist.sorcerer,
+	hit_mass_counts = BreedTweaks.hit_mass_counts.sorcerer,
 	hitzone_multiplier_types = {
 		head = "headshot",
 	},
@@ -125,7 +158,7 @@ local breed_data = {
 			},
 		},
 	},
-	run_on_spawn = AiBreedSnippets.on_chaos_plague_sorcerer_spawn,
+	run_on_spawn = AiBreedSnippets.on_chaos_sorcerer_spawn,
 	target_player_sound_events = {
 		bright_wizard = "chaos_sorcerer_plague_targeting_wizard",
 		dwarf_ranger = "chaos_sorcerer_plague_targeting_dwarf",
@@ -140,7 +173,26 @@ local breed_data = {
 			StatusEffectNames.poisoned,
 		}),
 	},
+	debug_color = {
+		255,
+		200,
+		200,
+		0,
+	},
 	disabled = Development.setting("disable_plague_sorcerer") or false,
+	allowed_layers = {
+		bot_poison_wind = 2,
+		bot_ratling_gun_fire = 10,
+		destructible_wall = 5,
+		doors = 1.5,
+		fire_grenade = 10,
+		jumps = 5,
+		ledges = 5,
+		ledges_with_fence = 5,
+		planks = 1.5,
+		teleporters = 5,
+		temporary_wall = 0,
+	},
 	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone, t)
 		local blackboard = BLACKBOARDS[unit]
 
@@ -157,18 +209,6 @@ local breed_data = {
 		QuestSettings.check_corruptor_killed_while_grabbing(blackboard, killer_unit)
 	end,
 }
-
-for key, value in pairs(Breeds.chaos_tentacle_sorcerer) do
-	local keep_value = breed_data[key]
-
-	if keep_value == "SET_TO_NIL" then
-		breed_data[key] = nil
-	elseif keep_value ~= nil then
-		breed_data[key] = keep_value
-	else
-		breed_data[key] = value
-	end
-end
 
 Breeds.chaos_corruptor_sorcerer = table.create_copy(Breeds.chaos_corruptor_sorcerer, breed_data)
 

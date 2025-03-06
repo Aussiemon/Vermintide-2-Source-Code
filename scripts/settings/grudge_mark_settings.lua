@@ -22,6 +22,12 @@ BreedEnhancements = BreedEnhancements or {
 		"grudge_mark_termite_health_small",
 		no_attribute = true,
 	},
+	termite3_rat_ogre = {
+		display_name = "display_name_termite3_rat_ogre",
+	},
+	termite3_stormfiend = {
+		display_name = "display_name_termite3_stormfiend",
+	},
 	warping = {
 		"grudge_mark_warping",
 		display_name = "display_name_warping",
@@ -290,5 +296,11 @@ GrudgeMarkedNames = {
 	},
 	termite_base = {
 		"name_grudge_termite_rat_ogre",
+	},
+	termite3_rat_ogre = {
+		"name_grudge_termite3_rat_ogre",
+	},
+	termite3_stormfiend = {
+		"name_grudge_termite3_stormfiend",
 	},
 }

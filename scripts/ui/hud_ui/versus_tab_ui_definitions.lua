@@ -900,7 +900,7 @@ local team_2_side_text_style = table.clone(team_1_side_text_style)
 
 team_2_side_text_style.horizontal_alignment = "right"
 
-function create_empty_frame_widget(scenegraph_id)
+local function create_empty_frame_widget(scenegraph_id)
 	local shadow_frame_style = "shadow_frame_02"
 	local shadow_frame_settings = UIFrameSettings[shadow_frame_style]
 	local hover_frame_style = "frame_outer_glow_04"
@@ -1044,7 +1044,7 @@ function create_empty_frame_widget(scenegraph_id)
 	}
 end
 
-function create_settings_widget(scenegraph_id, data, ui_data, start_value, start_idx, setting_id, on_setting_changed_cb)
+local function create_settings_widget(scenegraph_id, data, ui_data, start_value, start_idx, setting_id, on_setting_changed_cb)
 	local settings = data.values or {}
 	local num_settings = #settings or 0
 	local setting_name = "menu_settings_" .. data.setting_name

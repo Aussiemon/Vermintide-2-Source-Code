@@ -64,6 +64,10 @@ end
 TagQueryLoader.load_file = function (self, filename)
 	local file_function = require(filename)
 
+	self:_trigger_file_function(filename, file_function)
+end
+
+TagQueryLoader._trigger_file_function = function (self, filename, file_function)
 	setfenv(file_function, self.file_environment)
 
 	local num_rules_before = self.tagquery_database.rules_n
@@ -103,4 +107,26 @@ TagQueryLoader.unload_files = function (self)
 	self.file_environment = nil
 	self.loaded_files = nil
 	self.tagquery_database = nil
+end
+
+TagQueryLoader.load_auto_load_files = function (self, out_markers)
+	local auto_load_files = DialogueSettings.auto_load_files
+
+	for _, filename in ipairs(auto_load_files) do
+		local file_function = DialogueSettings.cached_auto_load_files[filename]
+
+		if file_function then
+			self:_trigger_file_function(filename, file_function)
+		end
+
+		local markers = DialogueSettings.cached_auto_load_files[filename .. "_markers"]
+
+		if markers then
+			for name, marker in pairs(markers) do
+				fassert(not out_markers[name], "[DialogueSystem] There is already a marker called %s registered", name)
+
+				out_markers[name] = marker
+			end
+		end
+	end
 end

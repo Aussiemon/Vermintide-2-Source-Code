@@ -40,6 +40,7 @@ VersusMissionObjectiveUI.init = function (self, parent, ingame_ui_context)
 		alpha_multiplier = 1,
 		snap_pixel_positions = true,
 	}
+	self._world_markers = {}
 	self._selected_objective_index = 0
 	self._objectives_widgets = {}
 
@@ -156,7 +157,7 @@ VersusMissionObjectiveUI._update_objectives = function (self, dt, t)
 		return
 	end
 
-	self:_update_world_marker(dt, t)
+	self:_update_world_markers(dt, t)
 
 	if not self._objectives_initialized then
 		local local_player_party_id = self:_get_local_player_party_id()
@@ -415,7 +416,10 @@ VersusMissionObjectiveUI._format_timer = function (self, time)
 	return string.format("%02d:%02d", math.floor(time / 60), time % 60)
 end
 
-VersusMissionObjectiveUI._update_world_marker = function (self, dt, t)
+local new_world_marker_targets = {}
+local handled_marker_targets_this_frame = {}
+
+VersusMissionObjectiveUI._update_world_markers = function (self, dt, t)
 	local selected_objective_index = self._selected_objective_index
 
 	if selected_objective_index < 1 then
@@ -426,27 +430,37 @@ VersusMissionObjectiveUI._update_world_marker = function (self, dt, t)
 		return
 	end
 
-	local objective_unit = self:_get_closest_objective_unit()
+	table.clear(handled_marker_targets_this_frame)
 
-	if objective_unit ~= self._world_marker_parent_unit or not objective_unit and self._world_maker_id then
-		if self._world_maker_id then
-			self:_remove_current_world_marker()
+	local current_world_markers = self._world_markers
+	local new_world_marker_n = self:_get_world_marker_targets(new_world_marker_targets)
+
+	for i = 1, new_world_marker_n do
+		local unit = new_world_marker_targets[i]
+
+		handled_marker_targets_this_frame[unit] = true
+
+		if not current_world_markers[unit] then
+			self:_request_world_marker(unit)
 		end
+	end
 
-		self._world_marker_parent_unit = objective_unit
+	for unit, marker_id in pairs(current_world_markers) do
+		if not handled_marker_targets_this_frame[unit] then
+			current_world_markers[unit] = nil
 
-		if objective_unit then
-			self:_request_world_marker_for_current_objective()
+			self:_remove_world_marker(marker_id)
 		end
 	end
 end
 
-VersusMissionObjectiveUI._get_closest_objective_unit = function (self)
+VersusMissionObjectiveUI._get_world_marker_targets = function (self, out_tbl)
 	local local_player = Managers.player:local_player()
 	local viewport_name = local_player.viewport_name
 	local viewport = ScriptWorld.viewport(self._world, viewport_name)
 	local camera = ScriptViewport.camera(viewport)
 	local camera_position = ScriptCamera.position(camera)
+	local target_n = 0
 	local closest_unit
 	local closest_dist = math.huge
 	local objective_system = self._objective_system
@@ -465,50 +479,52 @@ VersusMissionObjectiveUI._get_closest_objective_unit = function (self)
 				closest_unit = unit
 				closest_dist = distance
 			end
+
+			if extension:always_show_objective_marker() then
+				target_n = target_n + 1
+				out_tbl[target_n] = unit
+			end
 		end
 	end
 
-	return closest_unit
-end
+	local has_closest_already = false
 
-VersusMissionObjectiveUI._remove_current_world_marker = function (self)
-	local world_maker_id = self._world_maker_id
+	for i = 1, target_n do
+		if out_tbl[i] == closest_unit then
+			has_closest_already = true
 
-	if world_maker_id then
-		local event_manager = Managers.state.event
-		local event_name = "remove_world_marker"
-
-		event_manager:trigger(event_name, world_maker_id)
-
-		self._world_maker_id = nil
+			break
+		end
 	end
+
+	if closest_unit and not has_closest_already then
+		target_n = target_n + 1
+		out_tbl[target_n] = closest_unit
+	end
+
+	return target_n
 end
 
-VersusMissionObjectiveUI._request_world_marker_for_current_objective = function (self)
+VersusMissionObjectiveUI._remove_world_marker = function (self, world_maker_id)
+	Managers.state.event:trigger("remove_world_marker", world_maker_id)
+end
+
+VersusMissionObjectiveUI._request_world_marker = function (self, objective_unit)
 	local event_manager = Managers.state.event
 	local marker_type = "versus_objective"
-	local objective_unit = self._world_marker_parent_unit
+	local cb = callback(self, "cb_world_marker_spawned", objective_unit)
 
-	if objective_unit and Unit.alive(objective_unit) then
-		local node = 0
-		local cb = callback(self, "cb_world_marker_spawned")
-
-		if ScriptUnit.has_extension(objective_unit, "payload_system") then
-			event_manager:trigger("add_world_marker_unit", marker_type, objective_unit, cb)
-		else
-			local position = Unit.world_position(objective_unit, node)
-
-			event_manager:trigger("add_world_marker_position", marker_type, position, cb)
-		end
+	if ScriptUnit.has_extension(objective_unit, "payload_system") then
+		event_manager:trigger("add_world_marker_unit", marker_type, objective_unit, cb)
 	else
-		local num_main_objectives = self._objective_system:num_main_objectives()
+		local position = Unit.world_position(objective_unit, 0)
 
-		Application.warning("[VersusMissionObjectiveUI] - <request_world_marker_for_current_objective> Did not find unit for: " .. tostring(selected_objective_index) .. "of a total of: " .. tostring(num_main_objectives))
+		event_manager:trigger("add_world_marker_position", marker_type, position, cb)
 	end
 end
 
-VersusMissionObjectiveUI.cb_world_marker_spawned = function (self, marker_id)
-	self._world_maker_id = marker_id
+VersusMissionObjectiveUI.cb_world_marker_spawned = function (self, objective_unit, marker_id)
+	self._world_markers[objective_unit] = marker_id
 end
 
 VersusMissionObjectiveUI.rpc_update_start_round_countdown_timer = function (self, channel_id, time_left)

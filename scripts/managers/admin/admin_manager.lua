@@ -8,6 +8,10 @@ AdminManager.init = function (self)
 	if DEDICATED_SERVER then
 		local window_title = script_data.window_title
 
+		if type(window_title) == "table" then
+			window_title = table.concat(window_title, " ")
+		end
+
 		CommandWindow.open(window_title or "Dedicated Server")
 		cprintf("Version: content '%s', engine '%s'", script_data.settings.content_revision, script_data.build_identifier)
 

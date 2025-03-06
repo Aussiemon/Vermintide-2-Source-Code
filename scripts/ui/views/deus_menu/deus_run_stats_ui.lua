@@ -142,12 +142,12 @@ DeusRunStatsUi.lock = function (self, lock, show_fullscreen_fade)
 	local input_manager = Managers.input
 
 	if not locked and lock then
-		ShowCursorStack.push()
+		ShowCursorStack.show("DeusRunStatsUi")
 		input_manager:block_device_except_service("deus_run_stats_view", "keyboard")
 		input_manager:block_device_except_service("deus_run_stats_view", "mouse")
 		input_manager:block_device_except_service("deus_run_stats_view", "gamepad")
 	elseif locked and not lock then
-		ShowCursorStack.pop()
+		ShowCursorStack.hide("DeusRunStatsUi")
 		input_manager:device_unblock_all_services("keyboard")
 		input_manager:device_unblock_all_services("mouse")
 		input_manager:device_unblock_all_services("gamepad")

@@ -3565,24 +3565,22 @@ BuffFunctionTemplates.functions = {
 		end
 	end,
 	maidenguard_attack_speed_on_block_update = function (unit, buff, params)
-		if Unit.alive(unit) then
-			local template = buff.template
-			local buff_extension = ScriptUnit.extension(unit, "buff_system")
-			local stat_increase_buffs = template.stat_increase_buffs
-			local activation_buff = template.buff_to_add
+		local template = buff.template
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local stat_increase_buffs = template.stat_increase_buffs
+		local activation_buff = template.buff_to_add
 
-			for i = 1, #stat_increase_buffs do
-				local stat_increase_buff = stat_increase_buffs[i]
-				local has_activation_buff = buff_extension:has_buff_type(activation_buff)
-				local applied_stat_increase_buff = buff_extension:get_non_stacking_buff(stat_increase_buff)
+		for i = 1, #stat_increase_buffs do
+			local stat_increase_buff = stat_increase_buffs[i]
+			local has_activation_buff = buff_extension:has_buff_type(activation_buff)
+			local applied_stat_increase_buff = buff_extension:get_non_stacking_buff(stat_increase_buff)
 
-				if has_activation_buff then
-					if not applied_stat_increase_buff then
-						buff_extension:add_buff(stat_increase_buff)
-					end
-				elseif applied_stat_increase_buff then
-					buff_extension:remove_buff(applied_stat_increase_buff.id)
+			if has_activation_buff then
+				if not applied_stat_increase_buff then
+					buff_extension:add_buff(stat_increase_buff)
 				end
+			elseif applied_stat_increase_buff then
+				buff_extension:remove_buff(applied_stat_increase_buff.id)
 			end
 		end
 	end,
@@ -5429,6 +5427,21 @@ BuffFunctionTemplates.functions = {
 
 				buff_extension:remove_buff(last_buff.id)
 			end
+		end
+	end,
+	update_kill_timer = function (owner_unit, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local fuse_time = buff.template.fuse_time
+		local timer = math.min(params.time_into_buff, fuse_time)
+
+		if fuse_time <= timer then
+			local damage_type = "kinetic"
+			local damage_direction = Vector3(0, 0, -1)
+
+			AiUtils.kill_unit(owner_unit, nil, nil, damage_type, damage_direction)
 		end
 	end,
 }

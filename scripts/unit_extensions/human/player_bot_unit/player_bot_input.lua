@@ -188,7 +188,10 @@ PlayerBotInput._update_actions = function (self)
 
 		if not self._interact_held then
 			self._interact_held = true
-			input.interact = true
+
+			local interact_input = InteractionHelper.interaction_action_names(self.unit)
+
+			input[interact_input] = true
 		end
 
 		input.interacting = true

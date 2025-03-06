@@ -143,6 +143,9 @@ Boot.setup = function (self)
 		"resource_packages/levels/benchmark_levels",
 		"resource_packages/levels/honduras_levels",
 	}
+	Boot.temporary_network_lookup_packages = {
+		"resource_packages/dialogues/dialogues_generated_lookup",
+	}
 
 	local handles = {}
 
@@ -155,6 +158,18 @@ Boot.setup = function (self)
 	end
 
 	Boot.startup_package_handles = handles
+
+	local temp_handles = {}
+
+	for _, package_name in ipairs(Boot.temporary_network_lookup_packages) do
+		local resource_handle = Application.resource_package(package_name)
+
+		ResourcePackage.load(resource_handle)
+
+		temp_handles[package_name] = resource_handle
+	end
+
+	Boot.temp_network_lookup_package_handles = temp_handles
 	Boot.render = Boot.booting_render
 
 	create_startup_world()
@@ -306,6 +321,14 @@ Boot.booting_update = function (self, dt)
 		end
 	end
 
+	for package_name, handle in pairs(Boot.temp_network_lookup_package_handles) do
+		if not ResourcePackage.has_loaded(handle) then
+			has_loaded_packages = false
+
+			break
+		end
+	end
+
 	if has_loaded_packages and Boot.startup_state == "loading" then
 		local script_init_start_time = os.clock()
 
@@ -316,6 +339,11 @@ Boot.booting_update = function (self, dt)
 		for _, package_name in ipairs(Boot.startup_packages) do
 			local handle = handles[package_name]
 
+			ResourcePackage.flush(handle)
+			print("Flushing:", package_name, handle)
+		end
+
+		for package_name, handle in ipairs(Boot.temp_network_lookup_package_handles) do
 			ResourcePackage.flush(handle)
 			print("Flushing:", package_name, handle)
 		end
@@ -874,6 +902,7 @@ Boot.game_update = function (self, real_world_dt)
 		local function save_cb(info)
 			Boot.is_controlled_exit = true
 
+			ShowCursorStack.dump()
 			Application.quit()
 		end
 

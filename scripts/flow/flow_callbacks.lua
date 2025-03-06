@@ -1577,6 +1577,15 @@ function flow_callback_register_transport_navmesh_units(params)
 	transportation_extension:register_navmesh_units(start_unit, end_unit)
 end
 
+function flow_callback_start_transport(params)
+	local interactable_unit = params.transport_unit
+	local local_player = Managers.player:local_player()
+	local interactor_unit = local_player.player_unit
+	local transportation_extension = ScriptUnit.extension(interactable_unit, "transportation_system")
+
+	transportation_extension:interacted_with(interactor_unit)
+end
+
 function flow_callback_set_door_state_and_duration(params)
 	local unit = params.unit
 	local new_door_state = params.new_door_state
@@ -4243,6 +4252,10 @@ function flow_callback_remove_player_items(params)
 	return
 end
 
+function flow_callback_attach_weapon_display(params)
+	return
+end
+
 function flow_callback_trigger_event_on_attachments(params)
 	local unit_attachments = Unit.get_data(params.unit, "flow_unit_attachments") or {}
 
@@ -5821,13 +5834,15 @@ function flow_callbacks_flow_helper_register_check_unit_line_of_sight(params)
 
 	local owner_unit = params.owner_unit
 	local source_unit = params.raycast_from_unit
+	local source_node = params.raycast_from_node and Unit.alive(source_unit) and Unit.node(source_unit, params.raycast_from_node) or 0
 	local unit_to_check = params.unit_to_check
+	local ignore_if_invisible = params.ignore_if_invisible
 	local flow_event_enter = params.flow_event_enter
 	local flow_event_leave = params.flow_event_leave
 	local collision_filter = params.collision_filter
 	local debug_draw = params.debug_draw
 
-	Managers.state.flow_helper:register_line_of_sight_check(owner_unit, source_unit, unit_to_check, flow_event_enter, flow_event_leave, collision_filter, debug_draw)
+	Managers.state.flow_helper:register_line_of_sight_check(owner_unit, source_unit, source_node, unit_to_check, ignore_if_invisible, flow_event_enter, flow_event_leave, collision_filter, debug_draw)
 end
 
 function flow_callbacks_flow_helper_unregister_check_unit_line_of_sight(params)

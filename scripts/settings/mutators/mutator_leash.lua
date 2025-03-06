@@ -13,7 +13,7 @@ return {
 	description = "description_mutator_leash",
 	display_name = "display_name_mutator_leash",
 	icon = "mutator_icon_leash",
-	max_damage_distance = 7,
+	max_damage_distance = 12,
 	max_damage_interval = 0.15,
 	min_damage_distance = 4,
 	min_damage_interval = 1,
@@ -28,8 +28,9 @@ return {
 
 		for i = 1, #PLAYER_UNITS do
 			local player_unit = PLAYER_UNITS[i]
+			local status_extension = ScriptUnit.extension(player_unit, "status_system")
 
-			if HEALTH_ALIVE[player_unit] then
+			if HEALTH_ALIVE[player_unit] and not status_extension:is_knocked_down() then
 				local player_position = POSITION_LOOKUP[player_unit]
 
 				center_position = center_position + player_position
@@ -90,7 +91,8 @@ return {
 				player_damage_data[player_unit] = nil
 			elseif damage_data.do_damage then
 				local distance = damage_data.distance_to_center
-				local interval_lerp_value = math.auto_lerp(min_damage_distance, max_damage_distance, min_damage_interval, max_damage_interval, distance)
+				local distance_normalized = (distance - min_damage_distance) / (max_damage_distance - min_damage_distance)
+				local interval_lerp_value = math.lerp(min_damage_interval, max_damage_interval, distance_normalized)
 				local interval = math.max(max_damage_interval, interval_lerp_value)
 				local last_t = damage_data.last_t
 

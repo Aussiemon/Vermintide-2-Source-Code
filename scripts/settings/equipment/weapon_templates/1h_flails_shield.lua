@@ -1970,7 +1970,6 @@ weapon_template.attack_meta_data = {
 	},
 	hold_attack = {
 		arc = 2,
-		penetrating = true,
 		attack_chain = {
 			start_action_name = "action_one",
 			start_sub_action_name = "default",

@@ -12,24 +12,12 @@ local function fetch_terror_events(key, override_file_ending)
 
 	fassert(Application.can_get("lua", file_path), "Failed to load terror events for level %s with path %s NOTE: Make sure the terror events file is in scripts/settings/terror_events/ with the name terror_events_%s.", key, file_path, file_ending)
 
-	local terror_events, weighted_random_terror_events = dofile(file_path)
+	local terror_events, weighted_random_terror_events = unpack(local_require(file_path))
 
-	TerrorEventBlueprints[key] = {}
-
-	local level_terror_events = TerrorEventBlueprints[key]
-
-	for event_name, event in pairs(terror_events) do
-		level_terror_events[event_name] = event
-	end
+	TerrorEventBlueprints[key] = terror_events
 
 	if weighted_random_terror_events then
-		WeightedRandomTerrorEvents[key] = {}
-
-		local weighted_level_terror_events = WeightedRandomTerrorEvents[key]
-
-		for event_name, event in pairs(weighted_random_terror_events) do
-			weighted_level_terror_events[event_name] = event
-		end
+		WeightedRandomTerrorEvents[key] = weighted_random_terror_events
 	end
 end
 

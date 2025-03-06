@@ -1,9 +1,8 @@
 ﻿-- chunkname: @scripts/settings/terror_events/terror_events_nurgle.lua
 
-local function count_event_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
-end
-
+local TerrorEventUtils = require("scripts/settings/terror_events/terror_event_utils")
+local count_event_breed = TerrorEventUtils.count_event_breed
+local HARDEST = TerrorEventUtils.HARDEST
 local weighted_random_terror_events = {
 	nurgle_end_event_loop = {
 		"nurgle_end_event_loop_01",
@@ -28,8 +27,6 @@ local weighted_random_terror_events = {
 		1,
 	},
 }
-local HARDEST = 5
-local CATACLYSM = 6
 local terror_event_blueprints = {
 	nurgle_end_event_start = {
 		{
@@ -717,4 +714,7 @@ local terror_event_blueprints = {
 	},
 }
 
-return terror_event_blueprints, weighted_random_terror_events
+return {
+	terror_event_blueprints,
+	weighted_random_terror_events,
+}

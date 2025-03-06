@@ -417,23 +417,18 @@ LevelEndView._setup_camera = function (self)
 end
 
 LevelEndView.spawn_level = function (self, context, world)
+	local level = LevelEndView.super.spawn_level(self, context, world)
 	local game_won = context.game_won
 	local object_set = game_won and "flow_victory" or "flow_defeat"
-	local object_sets = {
-		object_set,
-	}
-	local position, rotation, shading_callback, mood_setting
-	local time_sliced_spawn = false
-	local level = ScriptWorld.spawn_level(world, level_name, object_sets, position, rotation, shading_callback, mood_setting, time_sliced_spawn)
 
-	Level.spawn_background(level)
+	self:_show_object_set(object_set, level)
 
 	return level
 end
 
 LevelEndView._push_mouse_cursor = function (self)
 	if not self._cursor_visible then
-		ShowCursorStack.push()
+		ShowCursorStack.show("LevelEndViewBase")
 
 		self._cursor_visible = true
 

@@ -171,9 +171,6 @@ settings.outline_settings = {
 settings.statistics_definitions = {
 	"scripts/managers/backend/statistics_definitions_vs",
 }
-settings.statistics_database = {
-	"scripts/managers/backend/statistics_database_vs",
-}
 settings.talent_settings = {
 	"scripts/managers/talents/talent_settings_empty",
 }

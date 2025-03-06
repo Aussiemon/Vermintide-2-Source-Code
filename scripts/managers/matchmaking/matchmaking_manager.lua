@@ -32,6 +32,7 @@ function mm_printf_force(format_text, ...)
 end
 
 local extra_timeout = Development.parameter("network_timeout_really_long") and 10000 or 0
+local PACKAGE_REF = "MatchmakingManager"
 local ALWAYS_HOST_GAME = DEDICATED_SERVER and true or false
 
 MatchmakingSettings = {
@@ -184,6 +185,7 @@ MatchmakingManager.init = function (self, params)
 	self._power_level_timer = 0
 	self.party_owned_dlcs = {}
 	self._level_weights = {}
+	self._loaded_mutator_packages = {}
 	self._quick_game = params.quick_game
 
 	self:set_local_quick_game(params.local_quick_game)
@@ -270,7 +272,11 @@ MatchmakingManager.have_game_mode_event_data = function (self)
 	return self._game_mode_event_data and not table.is_empty(self._game_mode_event_data)
 end
 
+local mutators_to_load_scratch = {}
+
 MatchmakingManager.set_game_mode_event_data = function (self, event_data)
+	self:_load_package_diff(event_data)
+
 	self._game_mode_event_data = event_data
 
 	if self.is_server then
@@ -281,8 +287,46 @@ MatchmakingManager.set_game_mode_event_data = function (self, event_data)
 	end
 end
 
+MatchmakingManager._load_package_diff = function (self, event_data)
+	local package_manager = Managers.package
+	local mutators = event_data and event_data.mutators
+
+	if mutators then
+		for mutator_i = 1, #mutators do
+			local mutator_name = mutators[mutator_i]
+			local mutator_packages = MutatorTemplates[mutator_name].packages
+
+			if mutator_packages then
+				for package_i = 1, #mutator_packages do
+					mutators_to_load_scratch[mutator_packages[package_i]] = true
+				end
+			end
+		end
+
+		for package_name in pairs(mutators_to_load_scratch) do
+			if not package_manager:has_loaded(package_name, PACKAGE_REF) and not package_manager:is_loading(package_name, PACKAGE_REF) then
+				package_manager:load(package_name, PACKAGE_REF, nil, true)
+
+				self._loaded_mutator_packages[package_name] = true
+			end
+		end
+	end
+
+	for package_name in pairs(self._loaded_mutator_packages) do
+		if not mutators_to_load_scratch[package_name] then
+			package_manager:unload(package_name, PACKAGE_REF)
+
+			self._loaded_mutator_packages[package_name] = nil
+		end
+	end
+
+	table.clear(mutators_to_load_scratch)
+end
+
 MatchmakingManager.clear_game_mode_event_data = function (self)
 	self._game_mode_event_data = nil
+
+	self:_load_package_diff({})
 
 	if self.is_server then
 		self.network_server:get_network_state():set_game_mode_event_data({})
@@ -295,6 +339,18 @@ MatchmakingManager.on_client_game_mode_event_data_updated = function (self, key_
 	else
 		self:clear_game_mode_event_data()
 	end
+end
+
+MatchmakingManager.all_packages_loaded = function (self)
+	local package_manager = Managers.package
+
+	for package_name in pairs(self._loaded_mutator_packages) do
+		if not package_manager:has_loaded(package_name, PACKAGE_REF) then
+			return false
+		end
+	end
+
+	return true
 end
 
 MatchmakingManager.set_statistics_db = function (self, statistics_db)
@@ -357,6 +413,8 @@ MatchmakingManager.activate_waystone_portal = function (self, waystone_type)
 	end
 end
 
+local empty_event_data = {}
+
 MatchmakingManager.destroy = function (self)
 	mm_printf("destroying")
 	self:_terminate_dangling_matchmaking_lobbies()
@@ -374,6 +432,8 @@ MatchmakingManager.destroy = function (self)
 
 		self.afk_popup_id = nil
 	end
+
+	self:_load_package_diff(empty_event_data)
 end
 
 MatchmakingManager.register_rpcs = function (self, network_event_delegate)
@@ -978,7 +1038,7 @@ MatchmakingManager.set_matchmaking_data = function (self, next_mission_id, diffi
 	lobby_data.matchmaking = is_matchmaking and "true" or "false"
 	lobby_data.selected_mission_id = next_mission_id or LevelHelper:current_level_settings().level_id
 	lobby_data.unique_server_name = LobbyAux.get_unique_server_name()
-	lobby_data.custom_server_name = LobbyAux.get_unique_server_name()
+	lobby_data.custom_server_name = "n/a"
 	lobby_data.host = Network.peer_id()
 	lobby_data.num_players = num_players
 	lobby_data.difficulty = difficulty
@@ -2654,175 +2714,6 @@ MatchmakingManager.rpc_matchmaking_queue_session_data = function (self, channel_
 	else
 		printf("Got rpc_matchmaking_queue_session_data in unexpected state: %s", self._state.NAME)
 	end
-end
-
-local lobby_slot_party_separator = ";"
-local lobby_slot_peer_separator = ","
-local lobby_slot_peer_data_separator = "="
-local peer_data_peer_id_index = 1
-local peer_data_profile_id_index = 2
-
-MatchmakingManager.sync_lobby_data = function (self)
-	fassert(self.is_server, "Should only be called on server.")
-
-	local lobby = self.lobby
-	local lobby_data = lobby:get_stored_lobby_data()
-	local members = lobby:members()
-	local lobby_data_reservations = self.profile_synchronizer:get_lobby_data_reservations(members)
-	local serialized = MatchmakingManager.serialize_lobby_reservation_data(lobby_data_reservations)
-
-	lobby_data.reserved_profiles = serialized
-
-	self.lobby:set_lobby_data(lobby_data)
-end
-
-MatchmakingManager.net_pack_lobby_profile_slots = function (self, lobby_data)
-	local peer_ids_by_party = {}
-	local profile_indices_by_party = {}
-	local peer_data_by_party = MatchmakingManager.deserialize_lobby_reservation_data(lobby_data)
-
-	for party_id, party_peers in ipairs(peer_data_by_party) do
-		local party_peer_ids = {}
-		local party_profile_ids = {}
-
-		peer_ids_by_party[party_id] = party_peer_ids
-		profile_indices_by_party[party_id] = party_profile_ids
-
-		for i = 1, #party_peers do
-			local peer_data = party_peers[i]
-			local peer_id, profile_index = peer_data.peer_id, peer_data.profile_index
-
-			party_peer_ids[i] = peer_id
-			party_profile_ids[i] = profile_index
-		end
-	end
-
-	return peer_ids_by_party, profile_indices_by_party
-end
-
-MatchmakingManager.owner_in_lobby = function (profile_index, lobby_data, optional_party_id)
-	local lobby_reservation_data = MatchmakingManager.deserialize_lobby_reservation_data(lobby_data)
-	local party_id = optional_party_id or 1
-	local party_peers = lobby_reservation_data[party_id]
-
-	if party_peers then
-		for i = 1, #party_peers do
-			local peer_data = party_peers[i]
-
-			if peer_data.profile_index == profile_index then
-				local peer_id = peer_data.peer_id
-				local human_local_player_id = 1
-
-				return peer_id, human_local_player_id
-			end
-		end
-	end
-end
-
-MatchmakingManager.is_free_in_lobby = function (profile_index, lobby_data, optional_party_id)
-	local lobby_reservation_data = MatchmakingManager.deserialize_lobby_reservation_data(lobby_data)
-	local party_id = optional_party_id or 1
-	local party_peers = lobby_reservation_data[party_id]
-
-	if party_peers then
-		for i = 1, #party_peers do
-			local peer_data = party_peers[i]
-
-			if peer_data.profile_index == profile_index then
-				return false
-			end
-		end
-	end
-
-	return true
-end
-
-MatchmakingManager.serialize_lobby_reservation_data = function (peer_data_by_party)
-	local parties = {}
-
-	for party_id = 1, #peer_data_by_party do
-		local peer_datas = peer_data_by_party[party_id]
-
-		for i = 1, #peer_datas do
-			local peer_data = peer_datas[i]
-			local peer_id = peer_data.peer_id
-			local profile_index = peer_data.profile_index
-
-			peer_datas[i] = string.format("%s%s%d", peer_id, lobby_slot_peer_data_separator, profile_index)
-		end
-
-		parties[party_id] = table.concat(peer_datas, lobby_slot_peer_separator)
-	end
-
-	local packed_reservation_data = table.concat(parties, lobby_slot_party_separator)
-
-	if packed_reservation_data == "" then
-		packed_reservation_data = rawget(_G, "LobbyInternal") and LobbyInternal.default_lobby_data and LobbyInternal.default_lobby_data.reserved_profiles or ""
-	end
-
-	return packed_reservation_data
-end
-
-MatchmakingManager.deserialize_lobby_reservation_data = function (lobby_data)
-	local reservation_data = {}
-	local reserved_profiles = lobby_data.reserved_profiles
-
-	reserved_profiles = reserved_profiles ~= "" and reserved_profiles or rawget(_G, "LobbyInternal") and LobbyInternal.default_lobby_data and LobbyInternal.default_lobby_data.reserved_profiles or ""
-
-	local by_party = string.split(reserved_profiles, lobby_slot_party_separator)
-
-	for party_id = 1, #by_party do
-		local peer_datas = {}
-
-		reservation_data[party_id] = peer_datas
-
-		local by_peer = string.split(by_party[party_id], lobby_slot_peer_separator)
-
-		for peer_i = 1, #by_peer do
-			local peer_data = string.split(by_peer[peer_i], lobby_slot_peer_data_separator)
-			local peer_id = peer_data[peer_data_peer_id_index]
-			local profile_index = tonumber(peer_data[peer_data_profile_id_index])
-
-			peer_datas[peer_i] = MatchmakingManager.pack_lobby_reservation_peer_data(peer_id, profile_index)
-		end
-	end
-
-	return reservation_data
-end
-
-MatchmakingManager.join_reservation_data_arrays = function (peer_ids_by_party, profile_indices_by_party)
-	assert(#peer_ids_by_party == #profile_indices_by_party, "Mismatch in received reservation data")
-
-	local reservation_data = {}
-
-	for party_id = 1, #peer_ids_by_party do
-		local peer_datas = {}
-
-		reservation_data[party_id] = peer_datas
-
-		local peer_ids = peer_ids_by_party[party_id]
-		local profile_indices = profile_indices_by_party[party_id]
-
-		for i = 1, #peer_ids do
-			local peer_id = peer_ids[i]
-			local profile_index = profile_indices[i]
-
-			peer_datas[i] = MatchmakingManager.pack_lobby_reservation_peer_data(peer_id, profile_index)
-		end
-	end
-
-	return reservation_data
-end
-
-MatchmakingManager.pack_lobby_reservation_peer_data = function (peer_id, profile_index)
-	return {
-		peer_id = peer_id,
-		profile_index = profile_index,
-	}
-end
-
-MatchmakingManager.unpack_lobby_reservation_peer_data = function (peer_data)
-	return peer_data.peer_id, peer_data.profile_index
 end
 
 MatchmakingManager.is_lobby_private = function (lobby_data)

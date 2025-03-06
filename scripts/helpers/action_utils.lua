@@ -903,12 +903,17 @@ ActionUtils.get_damage_profile_performance_scores = function (damage_profile_nam
 		local target_settings = damage_profile.targets and damage_profile.targets[1] or damage_profile.default_target
 		local attack_power = ActionUtils.get_power_multiplier("attack", damage_profile, target_settings, nil)
 
-		for i = 1, 6 do
+		for i = 1, 5 do
 			local armor_mod = ActionUtils.get_armor_power_modifier("attack", damage_profile, target_settings, i)
 			local performance_value = attack_power * armor_mod
 
 			results[i] = performance_value
 		end
+
+		local super_armor_mod = ActionUtils.get_armor_power_modifier("attack", damage_profile, target_settings, 2, 6)
+		local performance_value = attack_power * super_armor_mod
+
+		results[6] = performance_value
 	end
 
 	return results

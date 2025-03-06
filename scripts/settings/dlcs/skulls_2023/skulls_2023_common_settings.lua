@@ -2,15 +2,6 @@
 
 local settings = DLCSettings.skulls_2023
 
-settings.live_events_packages = {
-	skulls_2023 = {
-		dialogues = {
-			adventure = {
-				"dialogues/generated/npc_dlc_event_skulls",
-			},
-		},
-	},
-}
 settings.anim_lookup = {}
 settings.effects = {}
 settings.unlock_settings = {}

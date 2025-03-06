@@ -119,7 +119,7 @@ HintUI.acquire_input = function (self)
 	local input_manager = self._input_manager
 
 	if input_manager then
-		ShowCursorStack.push()
+		ShowCursorStack.show("HintUI")
 		input_manager:capture_input(ALL_INPUT_METHODS, 1, self._input_service_name, "HintUI")
 	end
 end
@@ -128,7 +128,7 @@ HintUI.release_input = function (self)
 	local input_manager = self._input_manager
 
 	if input_manager then
-		ShowCursorStack.pop()
+		ShowCursorStack.hide("HintUI")
 		input_manager:release_input(ALL_INPUT_METHODS, 1, self._input_service_name, "HintUI")
 	end
 end

@@ -13,12 +13,12 @@ EndViewStateParadingVS.on_enter = function (self, params)
 	self._statistics_db = context.statistics_db
 	self._profile_synchronizer = context.profile_synchronizer
 
-	ShowCursorStack.push()
+	ShowCursorStack.show("EndViewStateParadingVS")
 	self._parent:show_team()
 end
 
 EndViewStateParadingVS.on_exit = function (self)
-	ShowCursorStack.pop()
+	ShowCursorStack.hide("EndViewStateParadingVS")
 end
 
 EndViewStateParadingVS.update = function (self, dt, t)

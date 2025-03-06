@@ -22,27 +22,24 @@ if not StoreLayoutConfig then
 		dlc = 1,
 		featured = 1,
 		cosmetics = {
+			frames = "item_details",
 			bardin = {
 				ranger = {
-					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				ironbreaker = {
-					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				slayer = {
-					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				engineer = {
-					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
@@ -50,25 +47,21 @@ if not StoreLayoutConfig then
 			},
 			kruber = {
 				mercenary = {
-					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				huntsman = {
-					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				knight = {
-					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				questingknight = {
-					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
@@ -76,19 +69,16 @@ if not StoreLayoutConfig then
 			},
 			kerillian = {
 				waywatcher = {
-					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				maidenguard = {
-					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				shade = {
-					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
@@ -96,25 +86,21 @@ if not StoreLayoutConfig then
 			},
 			victor = {
 				captain = {
-					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				bountyhunter = {
-					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				zealot = {
-					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				priest = {
-					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
@@ -122,19 +108,16 @@ if not StoreLayoutConfig then
 			},
 			sienna = {
 				scholar = {
-					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				adept = {
-					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
 				},
 				unchained = {
-					frames = "item_details",
 					hats = "item_details",
 					skins = "item_details",
 					weapon_skins = "item_details",
@@ -176,7 +159,7 @@ if not StoreLayoutConfig then
 	}
 	StoreLayoutConfig.pages.cosmetics = {
 		display_name = "menu_store_panel_title_cosmetics",
-		item_filter = "item_type ~= bundle and default_selection\t",
+		item_filter = "item_type ~= bundle and default_selection",
 		layout = "category",
 		sound_event_enter = "Play_hud_store_category_cosmetics",
 		global_shader_flag_overrides = {
@@ -302,9 +285,10 @@ if not StoreLayoutConfig then
 	StoreLayoutConfig.pages.frames = {
 		category_button_texture = "store_category_icon_portrait_frames",
 		display_name = "frame",
-		item_filter = "item_type == frame",
+		exclusive_filter = true,
+		item_filter = "item_type == frame and not is_event_item",
 		layout = "item_list",
-		sort_order = 4,
+		sort_order = 99,
 		sound_event_enter = "Play_hud_store_category_button",
 		type = "item",
 	}
@@ -442,9 +426,10 @@ if not StoreLayoutConfig then
 	end
 
 	StoreLayoutConfig.pages.event = {
-		category_button_texture = "store_category_icon_portrait_frames",
+		category_button_texture = "store_category_icon_event",
 		display_name = "achv_menu_event_category_title",
-		item_filter = "is_event_item",
+		exclusive_filter = true,
+		item_filter = "is_active_event_item",
 		layout = "item_list",
 		sort_order = 100,
 		sound_event_enter = "Play_hud_store_category_button",
@@ -453,7 +438,7 @@ if not StoreLayoutConfig then
 	StoreLayoutConfig.pages.bardin = {
 		category_button_texture = "store_category_icon_bardin_ranger",
 		display_name = "inventory_name_dwarf_ranger",
-		item_filter = "can_wield_dwarf_ranger",
+		item_filter = "can_wield_dwarf_ranger and item_type ~= frame",
 		layout = "category",
 		sort_order = 2,
 		sound_event_enter = "Play_hud_store_bardin",
@@ -493,7 +478,7 @@ if not StoreLayoutConfig then
 	StoreLayoutConfig.pages.kruber = {
 		category_button_texture = "store_category_icon_kruber_mercenary",
 		display_name = "inventory_name_empire_soldier",
-		item_filter = "can_wield_empire_soldier",
+		item_filter = "can_wield_empire_soldier and item_type ~= frame",
 		layout = "category",
 		sort_order = 1,
 		sound_event_enter = "Play_hud_store_kruber",
@@ -533,7 +518,7 @@ if not StoreLayoutConfig then
 	StoreLayoutConfig.pages.kerillian = {
 		category_button_texture = "store_category_icon_kerillian_waystalker",
 		display_name = "inventory_name_wood_elf",
-		item_filter = "can_wield_wood_elf",
+		item_filter = "can_wield_wood_elf and item_type ~= frame",
 		layout = "category",
 		sort_order = 3,
 		sound_event_enter = "Play_hud_store_kerillian",
@@ -573,7 +558,7 @@ if not StoreLayoutConfig then
 	StoreLayoutConfig.pages.victor = {
 		category_button_texture = "store_category_icon_victor_captain",
 		display_name = "inventory_name_witch_hunter",
-		item_filter = "can_wield_witch_hunter",
+		item_filter = "can_wield_witch_hunter and item_type ~= frame",
 		layout = "category",
 		sort_order = 4,
 		sound_event_enter = "Play_hud_store_saltzpyre",
@@ -613,7 +598,7 @@ if not StoreLayoutConfig then
 	StoreLayoutConfig.pages.sienna = {
 		category_button_texture = "store_category_icon_sienna_scholar",
 		display_name = "inventory_name_bright_wizard",
-		item_filter = "can_wield_bright_wizard",
+		item_filter = "can_wield_bright_wizard and item_type ~= frame",
 		layout = "category",
 		sort_order = 5,
 		sound_event_enter = "Play_hud_store_sienna",

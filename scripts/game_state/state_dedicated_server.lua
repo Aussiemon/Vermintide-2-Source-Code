@@ -93,15 +93,7 @@ StateDedicatedServer._load_packages = function (self)
 		end
 	end
 
-	if not GlobalResources.loaded then
-		for i, name in ipairs(GlobalResources) do
-			if not package_manager:has_loaded(name) then
-				package_manager:load(name, "global", nil, true)
-			end
-		end
-
-		GlobalResources.loaded = true
-	end
+	GlobalResources.update_loading()
 end
 
 StateDedicatedServer._unload_packages = function (self)
@@ -248,10 +240,10 @@ StateDedicatedServer.setup_chat_manager = function (self, game_server)
 	Managers.chat:register_channel(1, member_func)
 end
 
-StateDedicatedServer.setup_enemy_package_loader = function (self, game_server)
+StateDedicatedServer.setup_enemy_package_loader = function (self, game_server, _, _, network_handler)
 	local peer_id = Network.peer_id()
 
-	Managers.level_transition_handler.enemy_package_loader:network_context_created(game_server, peer_id, peer_id)
+	Managers.level_transition_handler.enemy_package_loader:network_context_created(game_server, peer_id, peer_id, network_handler)
 	Managers.level_transition_handler.transient_package_loader:network_context_created(game_server, peer_id, peer_id)
 end
 

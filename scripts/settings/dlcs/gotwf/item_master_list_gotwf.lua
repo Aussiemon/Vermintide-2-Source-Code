@@ -1,10 +1,8 @@
 ﻿-- chunkname: @scripts/settings/dlcs/gotwf/item_master_list_gotwf.lua
 
-ItemMasterList = ItemMasterList or {}
 ItemMasterList.wh_brace_of_pistols_skin_03_runed_05 = {
 	description = "wh_brace_of_pistols_skin_03_runed_05_description",
 	display_name = "wh_brace_of_pistols_skin_03_runed_05_name",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_brace_of_pistol",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icon_wpn_emp_pistol_02_t2_runed_02",
@@ -18,11 +16,13 @@ ItemMasterList.wh_brace_of_pistols_skin_03_runed_05 = {
 		"wh_bountyhunter",
 		"wh_captain",
 	},
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.dr_steam_pistol_skin_02_runed_05 = {
 	description = "dr_steam_pistol_skin_02_runed_05_description",
 	display_name = "dr_steam_pistol_skin_02_runed_05_name",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_hammer2h",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icon_wpn_dw_steam_pistol_01_t2_runed_03",
@@ -36,11 +36,13 @@ ItemMasterList.dr_steam_pistol_skin_02_runed_05 = {
 		"dr_engineer",
 		"dr_ranger",
 	},
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.we_javelin_skin_02_runed_05 = {
 	description = "we_javelin_skin_02_runed_05_description",
 	display_name = "we_javelin_skin_02_runed_05_name",
-	event_item = true,
 	hud_icon = "icons_placeholder",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icon_wpn_we_javelin_02_runed_02_03",
@@ -53,11 +55,13 @@ ItemMasterList.we_javelin_skin_02_runed_05 = {
 	can_wield = {
 		"we_thornsister",
 	},
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.bw_deus_01_skin_02_runed_05 = {
 	description = "bw_deus_01_skin_02_runed_05_description",
 	display_name = "bw_deus_01_skin_02_runed_05_name",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_staff_5",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icon_wpn_brw_magmastaff_t2_runed_02",
@@ -72,11 +76,13 @@ ItemMasterList.bw_deus_01_skin_02_runed_05 = {
 		"bw_adept",
 		"bw_unchained",
 	},
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.es_dual_wield_hammer_sword_skin_02_runed_05 = {
 	description = "es_dual_wield_hammer_sword_skin_02_runed_05_description",
 	display_name = "es_dual_wield_hammer_sword_skin_02_runed_05_name",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_falken",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icon_es_dual_wield_hammer_sword_02_runed_02",
@@ -90,11 +96,13 @@ ItemMasterList.es_dual_wield_hammer_sword_skin_02_runed_05 = {
 		"es_knight",
 		"es_mercenary",
 	},
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.wh_deus_01_skin_03_runed_05 = {
 	description = "wh_deus_01_skin_03_runed_05_description",
 	display_name = "wh_deus_01_skin_03_runed_05_name",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_bow",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icon_wpn_emp_duckfoot_t3_runed_02",
@@ -109,11 +117,13 @@ ItemMasterList.wh_deus_01_skin_03_runed_05 = {
 		"wh_captain",
 		"wh_zealot",
 	},
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.dw_2h_hammer_skin_01_runed_05 = {
 	description = "dw_2h_hammer_skin_01_runed_05_description",
 	display_name = "dw_2h_hammer_skin_01_runed_05_name",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
 	inventory_icon = "dw_2h_hammer_01_t1_runed_02",
@@ -127,11 +137,13 @@ ItemMasterList.dw_2h_hammer_skin_01_runed_05 = {
 		"dr_slayer",
 		"dr_ranger",
 	},
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.es_handgun_skin_02_runed_05 = {
 	description = "es_handgun_skin_02_runed_05_description",
 	display_name = "es_handgun_skin_02_runed_05_name",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
 	inventory_icon = "empire_handgun_02_t2_runed_02",
@@ -145,11 +157,13 @@ ItemMasterList.es_handgun_skin_02_runed_05 = {
 		"es_knight",
 		"es_mercenary",
 	},
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.we_dual_dagger_skin_02_runed_05 = {
 	description = "we_dual_dagger_skin_02_runed_05_description",
 	display_name = "we_dual_dagger_skin_02_runed_05_name",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
 	inventory_icon = "we_dagger_01_t2_dual_runed_02",
@@ -163,11 +177,13 @@ ItemMasterList.we_dual_dagger_skin_02_runed_05 = {
 		"we_maidenguard",
 		"we_waywatcher",
 	},
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.bw_1h_flaming_sword_skin_01_runed_05 = {
 	description = "bw_1h_flaming_sword_skin_01_runed_05_description",
 	display_name = "bw_1h_flaming_sword_skin_01_runed_05_name",
-	event_item = true,
 	hud_icon = "weapon_generic_icon_staff_3",
 	information_text = "information_weapon_skin",
 	inventory_icon = "icon_wpn_brw_flaming_sword_01_t1_runed_02",
@@ -181,12 +197,14 @@ ItemMasterList.bw_1h_flaming_sword_skin_01_runed_05 = {
 		"bw_adept",
 		"bw_unchained",
 	},
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.frame_gotwf_01 = {
 	description = "frame_gotwf_description",
 	display_name = "frame_gotwf_name",
 	display_unit = "units/weapons/weapon_display/display_portrait_frame",
-	event_item = true,
 	hud_icon = "unit_frame_02",
 	information_text = "information_text_frame",
 	inventory_icon = "icon_portrait_frame_gotwf_01",
@@ -195,4 +213,7 @@ ItemMasterList.frame_gotwf_01 = {
 	slot_type = "frame",
 	temporary_template = "frame_gotwf_01",
 	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"gotwf",
+	},
 }

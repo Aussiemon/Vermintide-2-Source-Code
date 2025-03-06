@@ -1587,7 +1587,7 @@ weapon_template.right_hand_unit = "units/weapons/player/wpn_wh_book_02/wpn_wh_bo
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.book.right
 weapon_template.left_hand_unit = "units/weapons/player/wpn_empire_short_sword/wpn_empire_short_sword"
 weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.left
-weapon_template.display_unit = "units/weapons/weapon_display/display_dual_axes"
+weapon_template.display_unit = "units/weapons/weapon_display/display_hammer_book"
 weapon_template.wield_anim = "to_1h_hammer_book"
 weapon_template.state_machine = "units/beings/player/first_person_base/state_machines/melee/1h_hammer_book"
 weapon_template.buff_type = "MELEE_1H"
@@ -1613,11 +1613,9 @@ weapon_template.custom_data = {
 weapon_template.attack_meta_data = {
 	tap_attack = {
 		arc = 0,
-		penetrating = false,
 	},
 	hold_attack = {
 		arc = 1,
-		penetrating = true,
 	},
 }
 weapon_template.dominant_left = true

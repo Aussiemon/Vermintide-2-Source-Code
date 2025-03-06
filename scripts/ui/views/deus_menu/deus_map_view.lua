@@ -37,7 +37,7 @@ DeusMapView.start = function (self, params)
 	input_manager:capture_input({
 		"mouse",
 	}, 1, INPUT_SERVICE_NAME, "DeusMapView")
-	ShowCursorStack.push()
+	ShowCursorStack.show("DeusMapView")
 	input_manager:enable_gamepad_cursor()
 
 	local input_service = input_manager:get_service(INPUT_SERVICE_NAME)
@@ -53,7 +53,7 @@ DeusMapView._finish = function (self)
 	input_manager:release_input({
 		"mouse",
 	}, 1, INPUT_SERVICE_NAME, "DeusMapView")
-	ShowCursorStack.pop()
+	ShowCursorStack.hide("DeusMapView")
 	input_manager:disable_gamepad_cursor()
 
 	self._active = false

@@ -921,7 +921,7 @@ TitleLoadingUI.init = function (self, world, params, force_done)
 	if title_settings and title_settings.video_override then
 		first_time_video = title_settings.video_override
 
-		if first_time_video.subtitle_template_settings_path then
+		if first_time_video.subtitle_template_settings_path and Application.can_get("lua", first_time_video.subtitle_template_settings_path) then
 			first_time_video.subtitle_template_settings = local_require(first_time_video.subtitle_template_settings_path)
 		end
 	end
@@ -968,7 +968,7 @@ TitleLoadingUI._create_elements = function (self)
 	self._done_button = UIWidget.init(done_button)
 
 	if self._display_startup_settings then
-		ShowCursorStack.push()
+		ShowCursorStack.show("TitleLoadingUI")
 
 		self._needs_cursor_pop = true
 
@@ -1275,7 +1275,7 @@ TitleLoadingUI._update_continue_button = function (self, gamepad_active, dt)
 			self._startup_settings_done = true
 			self._needs_cursor_pop = false
 
-			ShowCursorStack.pop()
+			ShowCursorStack.hide("TitleLoadingUI")
 		else
 			self._settings_index = settings_index + 1
 		end
@@ -1815,7 +1815,7 @@ TitleLoadingUI.destroy = function (self)
 	Framerate.set_playing()
 
 	if self._needs_cursor_pop then
-		ShowCursorStack.pop()
+		ShowCursorStack.hide("TitleLoadingUI")
 
 		self._needs_cursor_pop = false
 	end

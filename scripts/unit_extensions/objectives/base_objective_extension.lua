@@ -36,6 +36,7 @@ BaseObjectiveExtension.set_objective_data = function (self, objective_data)
 	self._on_last_leaf_complete_sound_event = objective_data.on_last_leaf_complete_sound_event
 	self._on_leaf_complete_sound_event = objective_data.on_leaf_complete_sound_event
 	self._on_section_progress_sound_event = objective_data.on_section_progress_sound_event
+	self._always_show_objective_marker = objective_data.always_show_objective_marker
 
 	self:_set_objective_data(objective_data)
 end
@@ -292,4 +293,8 @@ end
 
 BaseObjectiveExtension.is_active = function (self)
 	return self._activated
+end
+
+BaseObjectiveExtension.always_show_objective_marker = function (self)
+	return self._always_show_objective_marker
 end

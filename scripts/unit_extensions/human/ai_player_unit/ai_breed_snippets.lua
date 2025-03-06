@@ -321,6 +321,15 @@ AiBreedSnippets.on_loot_rat_stagger_action_done = function (unit)
 	end
 end
 
+AiBreedSnippets.on_skaven_explosive_loot_rat_spawn = function (unit)
+	if Unit.alive(unit) then
+		local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+		local buff_name = "enemy_kill_timer"
+
+		buff_extension:add_buff(buff_name)
+	end
+end
+
 AiBreedSnippets.on_chaos_troll_spawn = function (unit, blackboard)
 	blackboard.aggro_list = {}
 	blackboard.fling_skaven_timer = 0
@@ -776,11 +785,7 @@ AiBreedSnippets.on_chaos_vortex_sorcerer_despawn = function (unit, blackboard)
 	remove_vortex_units(unit, blackboard)
 end
 
-AiBreedSnippets.on_chaos_plague_sorcerer_spawn = function (unit, blackboard)
-	blackboard.spell_count = 0
-end
-
-AiBreedSnippets.on_chaos_tentacle_sorcerer_spawn = function (unit, blackboard)
+AiBreedSnippets.on_chaos_sorcerer_spawn = function (unit, blackboard)
 	blackboard.spell_count = 0
 end
 
@@ -1338,7 +1343,7 @@ AiBreedSnippets.on_chaos_exalted_champion_norsca_spawn = function (unit, blackbo
 	local transform_action_data = BreedActions.chaos_exalted_champion.transform
 	local transform_breed_name = transform_action_data.wanted_breed_transform
 
-	if not enemy_package_loader.breed_processed[transform_breed_name] then
+	if not enemy_package_loader:is_breed_processed(transform_breed_name) then
 		enemy_package_loader:request_breed(transform_breed_name, true)
 	end
 end

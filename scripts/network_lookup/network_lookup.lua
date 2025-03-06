@@ -10,7 +10,7 @@ require("scripts/settings/equipment/cosmetics")
 require("scripts/settings/profiles/career_settings")
 require("scripts/settings/equipment/weapons")
 require("scripts/settings/equipment/pickups")
-require("scripts/settings/material_effect_mappings")
+local_require("scripts/settings/material_effect_mappings")
 require("scripts/settings/player_unit_status_settings")
 require("scripts/managers/voting/vote_templates")
 require("scripts/settings/difficulty_settings")
@@ -30,119 +30,6 @@ require("scripts/unit_extensions/weapons/area_damage/liquid/damage_wave_template
 require("scripts/unit_extensions/weapons/area_damage/liquid/liquid_area_damage_templates")
 require("scripts/settings/equipment/weapon_skins")
 
-DialogueLookup = DialogueLookup or {}
-
-setmetatable(DialogueLookup, nil)
-table.clear(DialogueLookup)
-
-DialogueLookup_n = 0
-MarkerLookup = MarkerLookup or {}
-
-setmetatable(MarkerLookup, nil)
-table.clear(MarkerLookup)
-
-MarkerLookup_n = 0
-
-local dialogue_lookup_tables = {
-	"dialogues/generated/lookup_bright_wizard_honduras",
-	"dialogues/generated/lookup_dwarf_ranger_honduras",
-	"dialogues/generated/lookup_empire_soldier_honduras",
-	"dialogues/generated/lookup_enemies",
-	"dialogues/generated/lookup_special_occasions_honduras",
-	"dialogues/generated/lookup_witch_hunter_honduras",
-	"dialogues/generated/lookup_wood_elf_honduras",
-	"dialogues/generated/lookup_bright_wizard_elven_ruins",
-	"dialogues/generated/lookup_witch_hunter_elven_ruins",
-	"dialogues/generated/lookup_empire_soldier_elven_ruins",
-	"dialogues/generated/lookup_dwarf_ranger_elven_ruins",
-	"dialogues/generated/lookup_wood_elf_elven_ruins",
-	"dialogues/generated/lookup_hero_conversations_elven_ruins",
-	"dialogues/generated/lookup_bright_wizard_catacombs",
-	"dialogues/generated/lookup_witch_hunter_catacombs",
-	"dialogues/generated/lookup_empire_soldier_catacombs",
-	"dialogues/generated/lookup_dwarf_ranger_catacombs",
-	"dialogues/generated/lookup_wood_elf_catacombs",
-	"dialogues/generated/lookup_hero_conversations_catacombs",
-	"dialogues/generated/lookup_bright_wizard_military",
-	"dialogues/generated/lookup_witch_hunter_military",
-	"dialogues/generated/lookup_dwarf_ranger_military",
-	"dialogues/generated/lookup_empire_soldier_military",
-	"dialogues/generated/lookup_wood_elf_military",
-	"dialogues/generated/lookup_hero_conversations_military",
-	"dialogues/generated/lookup_conversations_prologue",
-	"dialogues/generated/lookup_bright_wizard_mines",
-	"dialogues/generated/lookup_witch_hunter_mines",
-	"dialogues/generated/lookup_dwarf_ranger_mines",
-	"dialogues/generated/lookup_empire_soldier_mines",
-	"dialogues/generated/lookup_wood_elf_mines",
-	"dialogues/generated/lookup_hero_conversations_mines",
-	"dialogues/generated/lookup_wood_elf_ussingen",
-	"dialogues/generated/lookup_empire_soldier_ussingen",
-	"dialogues/generated/lookup_bright_wizard_ussingen",
-	"dialogues/generated/lookup_dwarf_ranger_ussingen",
-	"dialogues/generated/lookup_witch_hunter_ussingen",
-	"dialogues/generated/lookup_hero_conversations_ussingen",
-	"dialogues/generated/lookup_marker_events",
-	"dialogues/generated/lookup_bright_wizard_fort",
-	"dialogues/generated/lookup_dwarf_ranger_fort",
-	"dialogues/generated/lookup_witch_hunter_fort",
-	"dialogues/generated/lookup_wood_elf_fort",
-	"dialogues/generated/lookup_empire_soldier_fort",
-	"dialogues/generated/lookup_hero_conversations_fort",
-	"dialogues/generated/lookup_bright_wizard_skaven_stronghold",
-	"dialogues/generated/lookup_dwarf_ranger_skaven_stronghold",
-	"dialogues/generated/lookup_witch_hunter_skaven_stronghold",
-	"dialogues/generated/lookup_wood_elf_skaven_stronghold",
-	"dialogues/generated/lookup_empire_soldier_skaven_stronghold",
-	"dialogues/generated/lookup_hero_conversations_skaven_stronghold",
-	"dialogues/generated/lookup_skaven_warlord_skaven_stronghold_level",
-	"dialogues/generated/lookup_bright_wizard_nurgle",
-	"dialogues/generated/lookup_dwarf_ranger_nurgle",
-	"dialogues/generated/lookup_witch_hunter_nurgle",
-	"dialogues/generated/lookup_wood_elf_nurgle",
-	"dialogues/generated/lookup_empire_soldier_nurgle",
-	"dialogues/generated/lookup_hero_conversations_nurgle",
-	"dialogues/generated/lookup_bright_wizard_warcamp",
-	"dialogues/generated/lookup_dwarf_ranger_warcamp",
-	"dialogues/generated/lookup_witch_hunter_warcamp",
-	"dialogues/generated/lookup_wood_elf_warcamp",
-	"dialogues/generated/lookup_empire_soldier_warcamp",
-	"dialogues/generated/lookup_hero_conversations_war_camp",
-	"dialogues/generated/lookup_bright_wizard_farmland",
-	"dialogues/generated/lookup_dwarf_ranger_farmland",
-	"dialogues/generated/lookup_witch_hunter_farmland",
-	"dialogues/generated/lookup_wood_elf_farmland",
-	"dialogues/generated/lookup_empire_soldier_farmland",
-	"dialogues/generated/lookup_hero_conversations_farmlands",
-	"dialogues/generated/lookup_bright_wizard_skittergate",
-	"dialogues/generated/lookup_dwarf_ranger_skittergate",
-	"dialogues/generated/lookup_witch_hunter_skittergate",
-	"dialogues/generated/lookup_wood_elf_skittergate",
-	"dialogues/generated/lookup_empire_soldier_skittergate",
-	"dialogues/generated/lookup_grey_seer_skittergate",
-	"dialogues/generated/lookup_bright_wizard_bell",
-	"dialogues/generated/lookup_dwarf_ranger_bell",
-	"dialogues/generated/lookup_witch_hunter_bell",
-	"dialogues/generated/lookup_wood_elf_bell",
-	"dialogues/generated/lookup_empire_soldier_bell",
-	"dialogues/generated/lookup_hero_conversations_bell",
-	"dialogues/generated/lookup_bright_wizard_ground_zero",
-	"dialogues/generated/lookup_dwarf_ranger_ground_zero",
-	"dialogues/generated/lookup_witch_hunter_ground_zero",
-	"dialogues/generated/lookup_wood_elf_ground_zero",
-	"dialogues/generated/lookup_empire_soldier_ground_zero",
-	"dialogues/generated/lookup_hero_conversations_ground_zero",
-	"dialogues/generated/lookup_hub_conversations",
-	"dialogues/generated/lookup_ping_dialogues_honduras",
-	"dialogues/generated/lookup_wood_elf_generic_vo",
-	"dialogues/generated/lookup_empire_soldier_generic_vo",
-	"dialogues/generated/lookup_bright_wizard_generic_vo",
-	"dialogues/generated/lookup_dwarf_ranger_generic_vo",
-	"dialogues/generated/lookup_witch_hunter_generic_vo",
-	"dialogues/generated/lookup_weather_vo",
-	"dialogues/generated/lookup_fleur_conversations",
-}
-
 NetworkLookup = {}
 
 function create_lookup(lookup, hashtable)
@@ -155,8 +42,6 @@ function create_lookup(lookup, hashtable)
 
 	return lookup
 end
-
-DLCUtils.append("dialogue_lookup", dialogue_lookup_tables)
 
 for _, dlc in pairs(DLCSettings) do
 	local lookups = dlc.network_lookups
@@ -184,15 +69,127 @@ for _, dlc in pairs(DLCSettings) do
 	end
 end
 
-for _, dialogue_lookup_table in ipairs(dialogue_lookup_tables) do
-	if Application.can_get("lua", dialogue_lookup_table) then
-		dofile(dialogue_lookup_table)
-	end
+if not DialogueLookup then
+	DialogueLookup = {}
+	DialogueLookup_n = 0
+	MarkerLookup = {}
+	MarkerLookup_n = 0
 
-	if Application.can_get("lua", dialogue_lookup_table .. "_markers") then
-		dofile(dialogue_lookup_table .. "_markers")
+	local dialogue_lookup_tables = {
+		"dialogues/generated/lookup_bright_wizard_honduras",
+		"dialogues/generated/lookup_dwarf_ranger_honduras",
+		"dialogues/generated/lookup_empire_soldier_honduras",
+		"dialogues/generated/lookup_enemies",
+		"dialogues/generated/lookup_special_occasions_honduras",
+		"dialogues/generated/lookup_witch_hunter_honduras",
+		"dialogues/generated/lookup_wood_elf_honduras",
+		"dialogues/generated/lookup_bright_wizard_elven_ruins",
+		"dialogues/generated/lookup_witch_hunter_elven_ruins",
+		"dialogues/generated/lookup_empire_soldier_elven_ruins",
+		"dialogues/generated/lookup_dwarf_ranger_elven_ruins",
+		"dialogues/generated/lookup_wood_elf_elven_ruins",
+		"dialogues/generated/lookup_hero_conversations_elven_ruins",
+		"dialogues/generated/lookup_bright_wizard_catacombs",
+		"dialogues/generated/lookup_witch_hunter_catacombs",
+		"dialogues/generated/lookup_empire_soldier_catacombs",
+		"dialogues/generated/lookup_dwarf_ranger_catacombs",
+		"dialogues/generated/lookup_wood_elf_catacombs",
+		"dialogues/generated/lookup_hero_conversations_catacombs",
+		"dialogues/generated/lookup_bright_wizard_military",
+		"dialogues/generated/lookup_witch_hunter_military",
+		"dialogues/generated/lookup_dwarf_ranger_military",
+		"dialogues/generated/lookup_empire_soldier_military",
+		"dialogues/generated/lookup_wood_elf_military",
+		"dialogues/generated/lookup_hero_conversations_military",
+		"dialogues/generated/lookup_conversations_prologue",
+		"dialogues/generated/lookup_bright_wizard_mines",
+		"dialogues/generated/lookup_witch_hunter_mines",
+		"dialogues/generated/lookup_dwarf_ranger_mines",
+		"dialogues/generated/lookup_empire_soldier_mines",
+		"dialogues/generated/lookup_wood_elf_mines",
+		"dialogues/generated/lookup_hero_conversations_mines",
+		"dialogues/generated/lookup_wood_elf_ussingen",
+		"dialogues/generated/lookup_empire_soldier_ussingen",
+		"dialogues/generated/lookup_bright_wizard_ussingen",
+		"dialogues/generated/lookup_dwarf_ranger_ussingen",
+		"dialogues/generated/lookup_witch_hunter_ussingen",
+		"dialogues/generated/lookup_hero_conversations_ussingen",
+		"dialogues/generated/lookup_marker_events",
+		"dialogues/generated/lookup_bright_wizard_fort",
+		"dialogues/generated/lookup_dwarf_ranger_fort",
+		"dialogues/generated/lookup_witch_hunter_fort",
+		"dialogues/generated/lookup_wood_elf_fort",
+		"dialogues/generated/lookup_empire_soldier_fort",
+		"dialogues/generated/lookup_hero_conversations_fort",
+		"dialogues/generated/lookup_bright_wizard_skaven_stronghold",
+		"dialogues/generated/lookup_dwarf_ranger_skaven_stronghold",
+		"dialogues/generated/lookup_witch_hunter_skaven_stronghold",
+		"dialogues/generated/lookup_wood_elf_skaven_stronghold",
+		"dialogues/generated/lookup_empire_soldier_skaven_stronghold",
+		"dialogues/generated/lookup_hero_conversations_skaven_stronghold",
+		"dialogues/generated/lookup_skaven_warlord_skaven_stronghold_level",
+		"dialogues/generated/lookup_bright_wizard_nurgle",
+		"dialogues/generated/lookup_dwarf_ranger_nurgle",
+		"dialogues/generated/lookup_witch_hunter_nurgle",
+		"dialogues/generated/lookup_wood_elf_nurgle",
+		"dialogues/generated/lookup_empire_soldier_nurgle",
+		"dialogues/generated/lookup_hero_conversations_nurgle",
+		"dialogues/generated/lookup_bright_wizard_warcamp",
+		"dialogues/generated/lookup_dwarf_ranger_warcamp",
+		"dialogues/generated/lookup_witch_hunter_warcamp",
+		"dialogues/generated/lookup_wood_elf_warcamp",
+		"dialogues/generated/lookup_empire_soldier_warcamp",
+		"dialogues/generated/lookup_hero_conversations_war_camp",
+		"dialogues/generated/lookup_bright_wizard_farmland",
+		"dialogues/generated/lookup_dwarf_ranger_farmland",
+		"dialogues/generated/lookup_witch_hunter_farmland",
+		"dialogues/generated/lookup_wood_elf_farmland",
+		"dialogues/generated/lookup_empire_soldier_farmland",
+		"dialogues/generated/lookup_hero_conversations_farmlands",
+		"dialogues/generated/lookup_bright_wizard_skittergate",
+		"dialogues/generated/lookup_dwarf_ranger_skittergate",
+		"dialogues/generated/lookup_witch_hunter_skittergate",
+		"dialogues/generated/lookup_wood_elf_skittergate",
+		"dialogues/generated/lookup_empire_soldier_skittergate",
+		"dialogues/generated/lookup_grey_seer_skittergate",
+		"dialogues/generated/lookup_bright_wizard_bell",
+		"dialogues/generated/lookup_dwarf_ranger_bell",
+		"dialogues/generated/lookup_witch_hunter_bell",
+		"dialogues/generated/lookup_wood_elf_bell",
+		"dialogues/generated/lookup_empire_soldier_bell",
+		"dialogues/generated/lookup_hero_conversations_bell",
+		"dialogues/generated/lookup_bright_wizard_ground_zero",
+		"dialogues/generated/lookup_dwarf_ranger_ground_zero",
+		"dialogues/generated/lookup_witch_hunter_ground_zero",
+		"dialogues/generated/lookup_wood_elf_ground_zero",
+		"dialogues/generated/lookup_empire_soldier_ground_zero",
+		"dialogues/generated/lookup_hero_conversations_ground_zero",
+		"dialogues/generated/lookup_hub_conversations",
+		"dialogues/generated/lookup_ping_dialogues_honduras",
+		"dialogues/generated/lookup_wood_elf_generic_vo",
+		"dialogues/generated/lookup_empire_soldier_generic_vo",
+		"dialogues/generated/lookup_bright_wizard_generic_vo",
+		"dialogues/generated/lookup_dwarf_ranger_generic_vo",
+		"dialogues/generated/lookup_witch_hunter_generic_vo",
+		"dialogues/generated/lookup_weather_vo",
+		"dialogues/generated/lookup_fleur_conversations",
+	}
+
+	DLCUtils.append("dialogue_lookup", dialogue_lookup_tables)
+
+	for _, dialogue_lookup_table in ipairs(dialogue_lookup_tables) do
+		if Application.can_get("lua", dialogue_lookup_table) then
+			dofile(dialogue_lookup_table)
+		end
+
+		if Application.can_get("lua", dialogue_lookup_table .. "_markers") then
+			dofile(dialogue_lookup_table .. "_markers")
+		end
 	end
 end
+
+NetworkLookup.dialogues = DialogueLookup
+NetworkLookup.markers = MarkerLookup
 
 dofile("scripts/network_lookup/anims_lookup_table")
 
@@ -1938,10 +1935,6 @@ NetworkLookup.music_group_states = {
 	"ussingen",
 	"winds",
 }
-NetworkLookup.locations = {
-	"test",
-	"test2",
-}
 NetworkLookup.statistics_group_name = {
 	"season_1",
 }
@@ -2016,10 +2009,17 @@ for _, state in ipairs(music_lookups) do
 	music_group_states[state] = true
 end
 
+NetworkLookup.locations = {
+	"test",
+	"test2",
+}
+
+local locations_temp = {}
+
 for _, settings in pairs(LevelSettings) do
 	if type(settings) == "table" then
 		for i, location in ipairs(settings.locations) do
-			NetworkLookup.locations[#NetworkLookup.locations + 1] = location
+			locations_temp[location] = true
 		end
 
 		local won_state = settings.music_won_state
@@ -2031,6 +2031,7 @@ for _, settings in pairs(LevelSettings) do
 	end
 end
 
+NetworkLookup.locations = create_lookup(NetworkLookup.locations, locations_temp)
 NetworkLookup.tutorials = {
 	"skaven_loot_rat",
 	"skaven_storm_vermin",
@@ -2178,9 +2179,13 @@ NetworkLookup.performance_titles = create_lookup({
 	"n/a",
 }, PerformanceTitles.titles)
 
-local base_social_wheel_lookup_table = table.clone(SocialWheelSettingsNetworkLookupBase)
+if not SocialWheelEventLookup then
+	local base_social_wheel_lookup_table = table.clone(SocialWheelSettingsNetworkLookupBase)
 
-NetworkLookup.social_wheel_events = create_lookup(base_social_wheel_lookup_table, SocialWheelSettingsLookup)
+	SocialWheelEventLookup = create_lookup(base_social_wheel_lookup_table, SocialWheelSettingsLookup)
+end
+
+NetworkLookup.social_wheel_events = SocialWheelEventLookup
 NetworkLookup.challenges = create_lookup({}, InGameChallengeTemplates)
 NetworkLookup.challenge_rewards = create_lookup({}, InGameChallengeRewards)
 NetworkLookup.challenge_categories = {}
@@ -2235,7 +2240,6 @@ NetworkLookup.mission_names = create_lookup({}, Missions)
 NetworkLookup.projectile_gravity_settings = create_lookup({}, ProjectileGravitySettings)
 NetworkLookup.projectile_units = create_lookup({}, ProjectileUnits)
 NetworkLookup.voting_types = create_lookup({}, VoteTemplates)
-NetworkLookup.session_stats = create_lookup({}, StatisticsDefinitions.session)
 
 local attributes = {}
 
@@ -2288,18 +2292,27 @@ end
 
 DLCUtils.append("network_packages", NetworkLookup.network_packages)
 
-local NETWORK_LOOKUP_DUPLICATES_ALLOWED = {
-	locations = true,
+local INIT_ONCE = {
+	dialogues = true,
+	markers = true,
+	social_wheel_events = true,
 }
 
+NetworkLookupInitialized = NetworkLookupInitialized or {}
+
 local function init(self, name)
-	for index, str in ipairs(self) do
-		if not self[str] then
-			self[str] = index
-		elseif not NETWORK_LOOKUP_DUPLICATES_ALLOWED[name] then
-			ferror("[NetworkLookup.lua] Duplicate entry %q in %q.", str, name)
+	if not INIT_ONCE[name] or not NetworkLookupInitialized[name] then
+		for index, str in ipairs(self) do
+			if not self[str] then
+				self[str] = index
+			else
+				printf("[NetworkLookup.lua] Duplicate entry %q in %q.", str, name)
+				ferror("[NetworkLookup.lua] Duplicate entry %q in %q.", str, name)
+			end
 		end
 	end
+
+	NetworkLookupInitialized[name] = true
 
 	local index_error_print = "[NetworkLookup.lua] Table " .. name .. " does not contain key: "
 	local meta = {
@@ -2309,11 +2322,10 @@ local function init(self, name)
 	}
 
 	setmetatable(self, meta)
+
+	return meta
 end
 
-local DialogueLookup = DialogueLookup
-
-NetworkLookup.dialogues = DialogueLookup
 NetworkLookup.dialogue_profiles = {
 	"inn_keeper",
 	"vs_pactsworn_mission_giver",
@@ -2324,10 +2336,13 @@ table.append_unique(NetworkLookup.dialogue_profiles, table.values(table.select_m
 	return profile.character_vo
 end)))
 
-local MarkerLookup = MarkerLookup
-
-NetworkLookup.markers = MarkerLookup or {}
-
 for key, lookup_table in pairs(NetworkLookup) do
 	init(lookup_table, key)
+end
+
+for package_name, handle in pairs(Boot.temp_network_lookup_package_handles) do
+	ResourcePackage.unload(handle)
+	Application.release_resource_package(handle)
+
+	Boot.temp_network_lookup_package_handles[package_name] = nil
 end

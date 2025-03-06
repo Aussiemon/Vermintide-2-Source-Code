@@ -541,6 +541,18 @@ table.max = function (t)
 	return max_key, max_value
 end
 
+table.max_func = function (t, func)
+	local max_key, max_value = next(t)
+
+	for key, value in pairs(t) do
+		if func(value) > func(max_value) then
+			max_key, max_value = key, value
+		end
+	end
+
+	return max_key, max_value
+end
+
 table.min = function (t)
 	local min_key, min_value = next(t)
 
@@ -1009,18 +1021,19 @@ table.make_strict = function (tab, interface, interface_name)
 	assert(getmetatable(tab) == nil, "Cannot call make_strict on a table with a metatable")
 
 	interface_name = interface_name or "strict table"
+	interface = interface or tab
 
 	return setmetatable(tab, {
 		__class_name = interface_name,
 		__index = function (t, k)
-			if not interface[k] then
+			if interface[k] == nil then
 				ferror("Reading from key %q not in interface <%s>", k, interface_name)
 			end
 
 			return nil
 		end,
 		__newindex = function (t, k, v)
-			if not interface[k] then
+			if interface[k] == nil then
 				ferror("Writing to key %q not in interface <%s>", k, interface_name)
 			end
 
@@ -1044,6 +1057,34 @@ table.select_map = function (t, selector)
 
 	for k, v in pairs(t) do
 		new_t[k] = selector(k, v)
+	end
+
+	return new_t
+end
+
+table.array_to_map = function (t, converter)
+	local new_t = {}
+
+	for i, v in pairs(t) do
+		local new_k, new_v = converter(i, v)
+
+		new_t[new_k] = new_v
+	end
+
+	return new_t
+end
+
+table.map_to_array = function (t, converter)
+	local new_t = {}
+	local n = 0
+
+	for k, v in pairs(t) do
+		local new_v = converter(k, v)
+
+		if new_v then
+			n = n + 1
+			new_t[n] = new_v
+		end
 	end
 
 	return new_t
@@ -1199,4 +1240,20 @@ table.count_if = function (t, f)
 	end
 
 	return count
+end
+
+table.shallow_equal = function (t1, t2)
+	for k, v in pairs(t1) do
+		if t1[k] ~= t2[k] then
+			return false
+		end
+	end
+
+	for k, v in pairs(t2) do
+		if t2[k] ~= t1[k] then
+			return false
+		end
+	end
+
+	return true
 end

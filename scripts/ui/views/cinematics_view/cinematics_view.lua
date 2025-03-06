@@ -299,18 +299,15 @@ CinematicsView._enable_viewport = function (self, enable)
 
 		if enable then
 			ScriptWorld.activate_viewport(world, viewport)
-			ShowCursorStack.push()
+			ShowCursorStack.show("CinematicsView")
 		else
 			ScriptWorld.deactivate_viewport(world, viewport)
-
-			if ShowCursorStack.stack_depth > 0 then
-				ShowCursorStack.pop()
-			end
+			ShowCursorStack.hide("CinematicsView")
 		end
 	elseif enable then
-		ShowCursorStack.push()
-	elseif ShowCursorStack.stack_depth > 0 then
-		ShowCursorStack.pop()
+		ShowCursorStack.show("CinematicsView")
+	else
+		ShowCursorStack.hide("CinematicsView")
 	end
 end
 

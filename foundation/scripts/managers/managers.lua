@@ -24,7 +24,7 @@ ManagersCreationOrder = ManagersCreationOrder or {
 }
 
 local function destroy_manager_group(manager_group_name)
-	debug_print("Destroying manager group: ", manager_group_name)
+	debug_print("Destroying manager group: %s", manager_group_name)
 
 	local manager_group = manager_group_name == "global" and Managers or Managers[manager_group_name]
 	local manager_group_order = ManagersCreationOrder[manager_group_name]

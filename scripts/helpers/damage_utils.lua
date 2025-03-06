@@ -1517,25 +1517,30 @@ DamageUtils.create_explosion = function (world, attacker_unit, impact_position, 
 				end
 
 				if explosion_data.catapult_players and DamageUtils.is_player_unit(hit_unit) then
-					local force = explosion_data.catapult_force
-					local force_z = explosion_data.catapult_force_z
-					local block_multiplier = explosion_data.catapult_blocked_multiplier
+					local bot = Managers.player:owner(hit_unit) and not Managers.player:owner(hit_unit):is_player_controlled()
+					local bot_knockback_immunity = bot and explosion_data.bot_knockback_immunity or false
 
-					if block_multiplier then
-						local blocked = DamageUtils.check_block(attacker_unit, hit_unit, explosion_data.fatigue_type)
-						local multiplier = blocked and block_multiplier or 1
+					if not bot_knockback_immunity then
+						local force = explosion_data.catapult_force
+						local force_z = explosion_data.catapult_force_z
+						local block_multiplier = explosion_data.catapult_blocked_multiplier
 
-						force = force * multiplier
-						force_z = force_z * multiplier
+						if block_multiplier then
+							local blocked = DamageUtils.check_block(attacker_unit, hit_unit, explosion_data.fatigue_type)
+							local multiplier = blocked and block_multiplier or 1
+
+							force = force * multiplier
+							force_z = force_z * multiplier
+						end
+
+						local velocity = force * Vector3.normalize(hit_direction)
+
+						if force_z then
+							Vector3.set_z(velocity, force_z)
+						end
+
+						StatusUtils.set_catapulted_network(hit_unit, true, velocity)
 					end
-
-					local velocity = force * Vector3.normalize(hit_direction)
-
-					if force_z then
-						Vector3.set_z(velocity, force_z)
-					end
-
-					StatusUtils.set_catapulted_network(hit_unit, true, velocity)
 				end
 			end
 		end
@@ -3628,16 +3633,21 @@ DamageUtils.stagger_ai = function (t, damage_profile, target_index, power_level,
 			AiUtils.stagger(target_unit, blackboard, attacker_unit, attack_direction, stagger_length, stagger_type, stagger_duration, attack_template.stagger_animation_scale, t, stagger_value, attack_template.always_stagger, is_push, nil, optional_predicted_damage)
 		end
 
+		local item_data = rawget(ItemMasterList, damage_source)
+		local weapon_template_name = item_data and item_data.template
+		local weapon_template = weapon_template_name and WeaponUtils.get_weapon_template(weapon_template_name)
+		local buff_type = weapon_template and weapon_template.buff_type or nil
 		local attacker_buff_extension = attacker_unit and ScriptUnit.has_extension(attacker_unit, "buff_system")
 
 		if attacker_buff_extension and not blackboard.override_stagger then
-			local item_data = rawget(ItemMasterList, damage_source)
-			local weapon_template_name = item_data and item_data.template
-			local weapon_template = weapon_template_name and WeaponUtils.get_weapon_template(weapon_template_name)
-			local buff_type = weapon_template and weapon_template.buff_type or nil
-
 			Managers.state.achievement:trigger_event("register_ai_stagger", target_unit, attacker_unit, damage_profile, is_push, stagger_type)
 			attacker_buff_extension:trigger_procs("on_stagger", target_unit, damage_profile, attacker_unit, stagger_type, stagger_duration, stagger_value, buff_type, target_index)
+		end
+
+		local attacked_buff_extension = ScriptUnit.has_extension(target_unit, "buff_system")
+
+		if attacked_buff_extension then
+			attacked_buff_extension:trigger_procs("on_staggered", target_unit, damage_profile, attacker_unit, stagger_type, stagger_duration, stagger_value, buff_type, target_index)
 		end
 	end
 end

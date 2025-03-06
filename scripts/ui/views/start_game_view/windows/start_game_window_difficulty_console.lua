@@ -109,7 +109,6 @@ StartGameWindowDifficultyConsole._setup_difficulties = function (self)
 	local difficulties = self:_get_difficulty_options()
 	local widgets = self._widgets
 	local widgets_by_name = self._widgets_by_name
-	local rewards_root = widgets_by_name.difficulty_rewards_root
 	local widget_index_counter = 1
 	local widget_prefix = "difficulty_option_"
 	local spacing = 10

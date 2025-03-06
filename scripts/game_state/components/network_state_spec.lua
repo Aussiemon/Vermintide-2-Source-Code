@@ -252,6 +252,75 @@ local function decode_level_transition_type(level_transition_type_number)
 	end
 end
 
+local function encode_mutator_map(mutator_map)
+	local id_array = table.map_to_array(mutator_map, function (mutator_name)
+		return NetworkLookup.mutator_templates[mutator_name]
+	end)
+	local id_string = encode_comma_separated_string_array(id_array)
+
+	return id_string
+end
+
+local function decode_mutator_map(id_string)
+	local id_array = decode_comma_separated_string_array(id_string)
+	local mutator_map = table.array_to_map(id_array, function (_, mutator_id)
+		return NetworkLookup.mutator_templates[tonumber(mutator_id)], true
+	end)
+
+	return mutator_map
+end
+
+local function encode_breed_map(breed_map)
+	local num_masks = math.ceil(#NetworkLookup.breeds / 8)
+	local byte_array = {}
+
+	for i = 1, num_masks do
+		byte_array[i] = 0
+	end
+
+	for breed_name in pairs(breed_map) do
+		local breed_index = NetworkLookup.breeds[breed_name]
+		local bit_index = (breed_index - 1) % 8
+		local bitmask_index = math.ceil(breed_index / 8)
+		local bitmask = byte_array[bitmask_index]
+
+		byte_array[bitmask_index] = bit.bor(bitmask, 2^bit_index)
+	end
+
+	local byte_array_string = ByteArray.read_string(byte_array)
+	local compressed_byte_array_string = LibDeflate:CompressDeflate(byte_array_string)
+
+	return compressed_byte_array_string
+end
+
+local function decode_breed_map(compressed_byte_array_string)
+	local byte_array_string = LibDeflate:DecompressDeflate(compressed_byte_array_string)
+	local byte_array = {}
+
+	ByteArray.write_string(byte_array, byte_array_string)
+
+	local breed_map = {}
+
+	for i = 1, #byte_array do
+		local bitmask = tonumber(byte_array[i])
+
+		if bitmask ~= 0 then
+			for j = 0, 7 do
+				local is_set = bit.band(bitmask, 2^j) ~= 0
+
+				if is_set then
+					local breed_index = j + 1 + 8 * (i - 1)
+					local breed_name = NetworkLookup.breeds[breed_index]
+
+					breed_map[breed_name] = true
+				end
+			end
+		end
+	end
+
+	return breed_map
+end
+
 local spec = {
 	server = {
 		peer_ingame = {
@@ -400,6 +469,28 @@ local spec = {
 			encode = encode_game_mode_event_data,
 			decode = decode_game_mode_event_data,
 		},
+		initialized_mutator_map = {
+			type = "table",
+			default_value = {},
+			composite_keys = {},
+			encode = encode_mutator_map,
+			decode = decode_mutator_map,
+		},
+		session_breed_map = {
+			mute_print = true,
+			type = "table",
+			default_value = {},
+			composite_keys = {},
+			encode = encode_breed_map,
+			decode = decode_breed_map,
+		},
+		startup_breed_map = {
+			type = "table",
+			default_value = {},
+			composite_keys = {},
+			encode = encode_breed_map,
+			decode = decode_breed_map,
+		},
 	},
 	peer = {
 		inventory_list = {
@@ -432,6 +523,14 @@ local spec = {
 			composite_keys = {
 				peer_id = true,
 			},
+		},
+		loaded_session_breed_map = {
+			mute_print = true,
+			type = "table",
+			default_value = {},
+			composite_keys = {},
+			encode = encode_breed_map,
+			decode = decode_breed_map,
 		},
 	},
 }

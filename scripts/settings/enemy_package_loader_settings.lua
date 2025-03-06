@@ -3,7 +3,7 @@
 EnemyPackageLoaderSettings = EnemyPackageLoaderSettings or {}
 EnemyPackageLoaderSettings.policy = "default"
 EnemyPackageLoaderSettings.max_loaded_breed_cap = 35
-EnemyPackageLoaderSettings.unload_startup_packages_between_levels = true
+EnemyPackageLoaderSettings.unload_startup_packages_between_levels = false
 EnemyPackageLoaderSettings.breed_path = "resource_packages/breeds/"
 EnemyPackageLoaderSettings.categories = {
 	{
@@ -22,7 +22,6 @@ EnemyPackageLoaderSettings.categories = {
 		id = "specials",
 		limit = math.huge,
 		breeds = {
-			"chaos_plague_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"skaven_gutter_runner",
 			"skaven_pack_master",
@@ -63,7 +62,6 @@ EnemyPackageLoaderSettings.categories = {
 			"chaos_zombie",
 			"chaos_skeleton",
 			"chaos_tentacle",
-			"chaos_tentacle_sorcerer",
 			"skaven_stormfiend_demo",
 		},
 	},
@@ -133,7 +131,7 @@ local category_changes
 
 if IS_CONSOLE or script_data.enemy_package_loader_policy == "console" then
 	EnemyPackageLoaderSettings.policy = "console"
-	EnemyPackageLoaderSettings.unload_startup_packages_between_levels = true
+	EnemyPackageLoaderSettings.unload_startup_packages_between_levels = false
 	EnemyPackageLoaderSettings.max_loaded_breed_cap = 35
 	category_changes = {
 		bosses = {
@@ -144,7 +142,7 @@ if IS_CONSOLE or script_data.enemy_package_loader_policy == "console" then
 			dynamic_loading = true,
 			limit = 3,
 			replacement_breed_override_funcs = {
-				patrol = "_find_patrol_replacement",
+				patrol = "find_patrol_replacement",
 			},
 		},
 		level_specific = {

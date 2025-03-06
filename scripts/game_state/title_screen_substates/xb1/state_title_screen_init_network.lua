@@ -429,15 +429,9 @@ StateTitleScreenInitNetwork._packages_loaded = function (self)
 			self._network_server.network_transmit:send_rpc("rpc_level_loaded", Network.peer_id(), level_index)
 		end
 
-		local package_manager = Managers.package
+		local global_resources_loaded = GlobalResources.update_loading()
 
-		for i, name in ipairs(GlobalResources) do
-			if not package_manager:has_loaded(name) then
-				return false
-			end
-		end
-
-		return true
+		return global_resources_loaded
 	end
 
 	return true

@@ -779,7 +779,7 @@ achievements.cog_hammer_cliff_push = {
 				local recent_damages = target_health_extension:recent_damages()
 				local damage_source = recent_damages[DamageDataIndex.DAMAGE_SOURCE_NAME]
 				local item = rawget(ItemMasterList, damage_source)
-				local is_cog_hammer = item and item.item_type == "dr_2h_cog_hammer"
+				local is_cog_hammer = item and item.item_type == "dr_cog_hammer"
 
 				if not is_cog_hammer then
 					return
@@ -963,12 +963,13 @@ for breed_name, breed in pairs(Breeds) do
 	end
 end
 
-local kill_register_weapons = table.mirror_array_inplace({
-	"bardin_engineer_career_skill_weapon_heavy",
-	"bardin_engineer_career_skill_weapon",
-	"dr_steam_pistol",
-	"dr_2h_cog_hammer",
-})
+local COG_ITEM_TYPE_TO_TRACKED_WEAPON = {
+	bardin_engineer_career_skill_weapon = "bardin_engineer_career_skill_weapon",
+	bardin_engineer_career_skill_weapon_heavy = "bardin_engineer_career_skill_weapon_heavy",
+	dr_cog_hammer = "dr_2h_cog_hammer",
+	dr_steam_pistol = "dr_steam_pistol",
+}
+local kill_register_weapons = table.set(table.keys(COG_ITEM_TYPE_TO_TRACKED_WEAPON), nil)
 
 achievements.cog_kill_register = {
 	display_completion_ui = false,
@@ -1041,7 +1042,9 @@ achievements.cog_kill_register = {
 		end
 
 		if killed_breed and killed_breed.name then
-			statistics_db:increment_stat(stats_id, "weapon_kills_per_breed", item_type, killed_breed.name)
+			local stat_source_name = COG_ITEM_TYPE_TO_TRACKED_WEAPON[item_type]
+
+			statistics_db:increment_stat(stats_id, "weapon_kills_per_breed", stat_source_name, killed_breed.name)
 		end
 	end,
 }
@@ -1070,28 +1073,31 @@ add_multi_stat_count_challenge(achievements, "cog_crank_kill", {
 	"cog_kills_bardin_engineer_career_skill_weapon_heavy",
 }, 3000, "achievement_trophy_cog_crank_kill", "cog_upgrade")
 add_stat_count_challenge(achievements, "cog_hammer_axe_kills", "cog_kills_dr_2h_cog_hammer", 1000, nil, "achievement_trophy_cog_hammer_axe_kills", "cog_upgrade")
-add_weapon_kills_per_breeds_challenge(achievements, "cog_crank_kill_ratling", {
-	"bardin_engineer_career_skill_weapon_heavy",
-	"bardin_engineer_career_skill_weapon",
-}, {
+
+local weapons = {
+	dr_2h_cog_hammer = {
+		"dr_2h_cog_hammer",
+	},
+	dr_steam_pistol = {
+		"dr_steam_pistol",
+	},
+	bardin_engineer_career_skill_weapon = {
+		"bardin_engineer_career_skill_weapon",
+		"bardin_engineer_career_skill_weapon_heavy",
+	},
+}
+
+add_weapon_kills_per_breeds_challenge(achievements, "cog_crank_kill_ratling", weapons.bardin_engineer_career_skill_weapon, {
 	"skaven_ratling_gunner",
 }, 15, "achievement_trophy_cog_crank_kill_ratling", "cog", true, nil, nil)
-add_weapon_kills_per_breeds_challenge(achievements, "cog_steam_elite_kill", {
-	"dr_steam_pistol",
-}, elite_special_breeds, 150, "achievement_trophy_cog_steam_elite_kill", "cog_upgrade", true, nil, nil)
-add_weapon_kills_per_breeds_challenge(achievements, "cog_hammer_kill_storm", {
-	"dr_2h_cog_hammer",
-}, {
+add_weapon_kills_per_breeds_challenge(achievements, "cog_steam_elite_kill", weapons.dr_steam_pistol, elite_special_breeds, 150, "achievement_trophy_cog_steam_elite_kill", "cog_upgrade", true, nil, nil)
+add_weapon_kills_per_breeds_challenge(achievements, "cog_hammer_kill_storm", weapons.dr_2h_cog_hammer, {
 	"chaos_vortex_sorcerer",
 }, 1, nil, "cog_upgrade", false, nil, nil)
-add_weapon_kills_per_breeds_challenge(achievements, "cog_hammer_kill_leech", {
-	"dr_2h_cog_hammer",
-}, {
+add_weapon_kills_per_breeds_challenge(achievements, "cog_hammer_kill_leech", weapons.dr_2h_cog_hammer, {
 	"chaos_corruptor_sorcerer",
 }, 1, nil, "cog_upgrade", false, nil, nil)
-add_weapon_kills_per_breeds_challenge(achievements, "cog_hammer_kill_hale", {
-	"dr_2h_cog_hammer",
-}, {
+add_weapon_kills_per_breeds_challenge(achievements, "cog_hammer_kill_hale", weapons.dr_2h_cog_hammer, {
 	"chaos_exalted_sorcerer",
 }, 1, nil, "cog_upgrade", false, nil, nil)
 

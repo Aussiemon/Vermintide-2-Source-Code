@@ -10,7 +10,6 @@ settings.dialogue_settings = {
 	inn_level = {
 		"dialogues/generated/dlc_woods",
 	},
-	inn_level_celebrate = {},
 	inn_level_halloween = {
 		"dialogues/generated/dlc_woods",
 	},

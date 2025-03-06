@@ -9,9 +9,12 @@ local font_height = 22
 local COLUMN_SPACING = 10
 local max_display_items = 20
 
-DebugListPicker.init = function (self, list, save_data_name, max_cols_seen)
+DebugListPicker.init = function (self, list, save_data_name, item_validation_func)
 	self.pick_list = list
 	self.save_data_name = save_data_name
+	self._item_validation_func = item_validation_func or function ()
+		return true
+	end
 	self.column_index, self.row_index = 1, 1
 	self.move_cursor_timer = 0
 	self.gui = Debug.gui
@@ -23,7 +26,10 @@ DebugListPicker.init = function (self, list, save_data_name, max_cols_seen)
 
 	self.column = self.pick_list[self.column_index]
 	self.item = self.column[self.row_index] or "?"
-	self.max_cols_seen = max_cols_seen or 3
+	self.max_cols_seen = 3
+	self._original_list_orders = table.select_map(list, function (_, v)
+		return table.mirror_array(v)
+	end)
 end
 
 DebugListPicker.destroy = function (self)
@@ -67,7 +73,7 @@ DebugListPicker.setup = function (self)
 
 		for j = 1, num_rows do
 			local item = column[j]
-			local text = item[1]
+			local text = item[1] .. "(Enables Autoload)"
 			local min, max = Gui.text_extents(self.gui, text:upper(), self.font_mtrl, self.font_size)
 			local width = max.x - min.x
 			local height = max.y - min.y
@@ -119,6 +125,24 @@ end
 
 DebugListPicker.current_item_name = function (self)
 	return self.item[1]
+end
+
+DebugListPicker._sort_column = function (self, column)
+	local column_index = table.index_of(self.pick_list, column)
+	local original_order = self._original_list_orders[column_index]
+	local valid = self._item_validation_func
+
+	table.sort(column, function (a, b)
+		local a_valid, b_valid = valid(a[1]), valid(b[1])
+
+		if a_valid == b_valid then
+			return original_order[a] < original_order[b]
+		elseif a_valid then
+			return true
+		end
+
+		return false
+	end)
 end
 
 DebugListPicker.update = function (self, t, dt)
@@ -213,6 +237,8 @@ DebugListPicker.update = function (self, t, dt)
 			curr_column.column_run_func(self, item, text_position)
 		end
 
+		self:_sort_column(column)
+
 		local start_idx = math.clamp(self.row_index - max_display_items + 1, 1, #column)
 		local end_idx = math.min(#column, max_display_items) + (start_idx - 1)
 
@@ -224,10 +250,16 @@ DebugListPicker.update = function (self, t, dt)
 				item_text = item_text .. curr_column.row_func(self, column[i])
 			end
 
+			local loaded = self._item_validation_func(item_text)
+
+			if not loaded then
+				item_text = item_text .. " (Enables Autoload)"
+			end
+
 			if i == self.row_index then
-				Gui.text(self.gui, " > " .. item_text:upper(), self.font_mtrl, self.font_size, self.font, item_pos, Color(200, 200, 200))
+				Gui.text(self.gui, " > " .. item_text:upper(), self.font_mtrl, self.font_size, self.font, item_pos, loaded and Color(200, 200, 200) or Color(100, 50, 200, 0))
 			else
-				Gui.text(self.gui, "     " .. item_text, self.font_mtrl, self.font_size, self.font, item_pos, Color(50, 200, 0))
+				Gui.text(self.gui, "     " .. item_text, self.font_mtrl, self.font_size, self.font, item_pos, loaded and Color(50, 200, 0) or Color(100, 50, 200, 0))
 			end
 		end
 

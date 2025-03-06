@@ -125,14 +125,22 @@ StartGameWindowVersusQuickplay._handle_gamepad_activity = function (self)
 end
 
 StartGameWindowVersusQuickplay._update_can_play = function (self)
-	local can_play = self:_can_play()
+	local can_play, reason = self:_can_play()
 	local play_button = self._widgets_by_name.play_button
 
 	play_button.content.button_hotspot.disable_button = not can_play
 
-	local eac_untrusted_disclaimer = self._widgets_by_name.eac_untrusted_disclaimer
+	local quickplay_disabled_disclaimer = self._widgets_by_name.quickplay_disabled_disclaimer
 
-	eac_untrusted_disclaimer.content.visible = not not script_data["eac-untrusted"]
+	quickplay_disabled_disclaimer.content.visible = not can_play
+	quickplay_disabled_disclaimer.content.text = reason
+
+	if reason then
+		local localize = Managers.localizer:exists(reason)
+
+		quickplay_disabled_disclaimer.style.text.localize = localize
+		quickplay_disabled_disclaimer.style.text_shadow.localize = localize
+	end
 
 	local input_desc = "versus_quickplay_default"
 
@@ -214,7 +222,15 @@ end
 
 StartGameWindowVersusQuickplay._can_play = function (self)
 	if script_data["eac-untrusted"] then
-		return false
+		return false, "versus_disabled_in_modded_realm_disclaimer"
+	end
+
+	local quickplay_enabled, disabled_reason = Managers.backend:get_interface("versus"):matchmaking_enabled("quickplay")
+
+	if not quickplay_enabled then
+		disabled_reason = disabled_reason or "Temporarily disabled"
+
+		return false, disabled_reason
 	end
 
 	return true

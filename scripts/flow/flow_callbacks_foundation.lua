@@ -511,6 +511,130 @@ function flow_callback_attach_unit(params)
 	}
 end
 
+function flow_callback_attach_weapon_display(params)
+	if params.item == nil then
+		return {}
+	end
+
+	local parent_unit = params.unit
+	local display_unit, item_unit
+	local world = Unit.world(parent_unit)
+	local node_link_type = "display"
+	local show_right = params.show_right_hand
+	local show_left = params.show_left_hand
+	local show_ammo = params.show_ammo
+
+	if ItemMasterList ~= nil then
+		local item_table = ItemMasterList
+		local item = item_table[params.item]
+
+		if item ~= nil and (item.slot_type == "melee" or item.slot_type == "ranged" or item.slot_type == "weapon_skin" or item.slot_type == "potion") then
+			pcall(require, "scripts/settings/equipment/weapons")
+			pcall(require, "scripts/settings/equipment/weapon_skins")
+
+			if Weapons ~= nil then
+				local template_name = item.template
+				local weapon_template = rawget(Weapons, template_name)
+				local weapon_skin = rawget(WeaponSkins.skins, params.item)
+				local display_unit_type = item.display_unit or nil
+				local right_unit_type = item.right_hand_unit or nil
+				local left_unit_type = item.left_hand_unit or nil
+				local ammo_unit = item.ammo_unit or nil
+
+				if weapon_skin ~= nil then
+					if weapon_skin.right_hand_unit ~= nil then
+						right_unit_type = weapon_skin.right_hand_unit
+					end
+
+					if weapon_skin.left_hand_unit ~= nil then
+						left_unit_type = weapon_skin.left_hand_unit
+					end
+
+					if weapon_skin.ammo_unit ~= nil then
+						ammo_unit_type = weapon_skin.ammo_unit
+					end
+
+					if weapon_skin.display_unit ~= nil then
+						display_unit_type = weapon_skin.display_unit
+					end
+				end
+
+				if display_unit_type ~= nil then
+					local index_offset = Script.index_offset()
+					local item_position = Unit.world_position(parent_unit, 0 + index_offset)
+					local item_rotation = Unit.world_rotation(parent_unit, 0 + index_offset)
+					local display_unit = World.spawn_unit(world, display_unit_type, item_position, item_rotation)
+
+					World.link_unit(world, display_unit, 0 + index_offset, parent_unit, 0 + index_offset)
+
+					local item_attachments = Unit.get_data(parent_unit, "flow_item_attachments") or {}
+
+					if show_right and right_unit_type ~= nil then
+						item_unit = attach_player_item(display_unit, right_unit_type, weapon_template.right_hand_attachment_node_linking.third_person, "display", false)
+
+						if weapon_skin ~= nil and weapon_skin.material_settings ~= nil then
+							apply_material_settings(item_unit, weapon_skin.material_settings)
+						end
+
+						Unit.flow_event(item_unit, "spawn_display")
+						table.insert(item_attachments, item_unit)
+						Unit.set_data(parent_unit, "flow_item_attachments", item_attachments)
+					end
+
+					if show_left and left_unit_type ~= nil then
+						local node_link
+
+						if left_unit_type == ammo_unit_type then
+							node_link = weapon_template.right_hand_attachment_node_linking.third_person
+						elseif weapon_template.left_hand_attachment_node_linking ~= nil then
+							node_link = weapon_template.left_hand_attachment_node_linking.third_person
+						end
+
+						if node_link ~= nil then
+							item_unit = attach_player_item(display_unit, left_unit_type, node_link, "display", false)
+
+							if weapon_skin ~= nil and weapon_skin.material_settings ~= nil then
+								apply_material_settings(item_unit, weapon_skin.material_settings)
+							end
+
+							Unit.flow_event(item_unit, "spawn_display")
+							table.insert(item_attachments, item_unit)
+							Unit.set_data(parent_unit, "flow_item_attachments", item_attachments)
+						end
+					end
+
+					if show_ammo and weapon_template.ammo_data ~= nil and weapon_template.actions.action_one.default.projectile_info ~= nil then
+						local projectile_units = ProjectileUnits
+
+						if projectile_units[weapon_template.actions.action_one.default.projectile_info.projectile_units_template].dummy_linker_unit_name ~= nil then
+							item_unit = attach_player_item(display_unit, projectile_units[weapon_template.actions.action_one.default.projectile_info.projectile_units_template].dummy_linker_unit_name, weapon_template.ammo_data.ammo_unit_attachment_node_linking.third_person, "display", false)
+
+							if weapon_skin ~= nil and weapon_skin.material_settings ~= nil then
+								apply_material_settings(item_unit, weapon_skin.material_settings)
+							end
+
+							Unit.flow_event(item_unit, "spawn_display")
+							table.insert(item_attachments, item_unit)
+							Unit.set_data(parent_unit, "flow_item_attachments", item_attachments)
+						end
+					end
+
+					Unit.set_data(parent_unit, "flow_item_attachments", item_attachments)
+				else
+					print("SKIPPED PLAYER WEAPON: Missing Display definition")
+				end
+			else
+				print("SKIPPED PLAYER WEAPON: Missing Weapons table")
+			end
+		end
+	end
+
+	return {
+		display_unit = display_unit,
+		item_unit = item_unit,
+	}
+end
+
 function flow_callback_attach_player_item(params)
 	if params.item == nil then
 		return {}
@@ -549,6 +673,7 @@ function flow_callback_attach_player_item(params)
 					local weapon_skin = rawget(WeaponSkins.skins, params.item)
 					local right_unit = item.right_hand_unit
 					local left_unit = item.left_hand_unit
+					local ammo_unit = item.ammo_unit
 
 					if weapon_skin ~= nil then
 						if right_unit == nil then
@@ -557,6 +682,10 @@ function flow_callback_attach_player_item(params)
 
 						if left_unit == nil then
 							left_unit = weapon_skin.left_hand_unit or nil
+						end
+
+						if ammo_unit == nil then
+							ammo_unit = weapon_skin.ammo_unit or nil
 						end
 					end
 
@@ -569,16 +698,20 @@ function flow_callback_attach_player_item(params)
 					end
 
 					if left_unit ~= nil then
-						local node_link = weapon_template.left_hand_attachment_node_linking.third_person
+						local node_link
 
-						if left_unit == item.ammo_unit then
+						if left_unit == ammo_unit then
 							node_link = weapon_template.right_hand_attachment_node_linking.third_person
+						elseif weapon_template.left_hand_attachment_node_linking ~= nil then
+							node_link = weapon_template.left_hand_attachment_node_linking.third_person
 						end
 
-						item_unit = attach_player_item(parent_unit, left_unit .. unit_suffix, node_link, node_link_type, false)
+						if node_link ~= nil then
+							item_unit = attach_player_item(parent_unit, left_unit .. unit_suffix, node_link, node_link_type, false)
 
-						if weapon_skin ~= nil and weapon_skin.material_settings ~= nil then
-							apply_material_settings(item_unit, weapon_skin.material_settings)
+							if weapon_skin ~= nil and weapon_skin.material_settings ~= nil then
+								apply_material_settings(item_unit, weapon_skin.material_settings)
+							end
 						end
 					end
 

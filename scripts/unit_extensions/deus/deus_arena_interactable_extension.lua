@@ -15,6 +15,7 @@ DeusArenaInteractableExtension.init = function (self, extension_init_context, un
 	self._is_server = extension_init_context.is_server
 	self._world = extension_init_context.world
 	self._state = STATES.WAITING
+	self._override_interactable_action = Unit.get_data(unit, "override_interactable_action")
 	self._level_unit_id = Level.unit_index(LevelHelper:current_level(self._world), unit)
 
 	self:register_rpcs(extension_init_context.network_transmit.network_event_delegate)
@@ -159,4 +160,8 @@ DeusArenaInteractableExtension._set_state = function (self, state)
 	Managers.state.network.network_transmit:send_rpc_clients("rpc_deus_set_arena_interactable_state", self._level_unit_id, state)
 
 	self._state = state
+end
+
+DeusArenaInteractableExtension.override_interactable_action = function (self)
+	return self._override_interactable_action
 end

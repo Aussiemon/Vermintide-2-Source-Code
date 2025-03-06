@@ -1,5 +1,8 @@
 ﻿-- chunkname: @scripts/settings/equipment/weapon_templates/vs_1h_chaos_troll_axe.lua
 
+local action_one = "dark_pact_action_one"
+local action_one_release = "dark_pact_action_one_release"
+local action_one_hold = "dark_pact_action_one_hold"
 local time_mod = 0.9
 local extra_range_add = 1.1
 local weapon_template = {}
@@ -132,12 +135,11 @@ local knockback_tables = {
 }
 
 weapon_template.actions = {
-	action_one = {
+	[action_one] = {
 		default = {
 			additional_critical_strike_chance = 0.1,
 			anim_end_event = "attack_finished",
 			anim_event = "attack_cleave_charge",
-			attack_hold_input = "action_one_hold",
 			dedicated_target_range = 2,
 			disallow_ghost_mode = true,
 			first_person_hit_anim = "shake_hit",
@@ -159,32 +161,33 @@ weapon_template.actions = {
 				return not is_in_ghost_mode
 			end,
 			total_time = math.huge,
+			attack_hold_input = action_one_hold,
 			buff_data = planted_decrease_movement_settings.charge,
 			allowed_chain_actions = {
 				{
-					action = "action_one",
 					end_time = 0.4,
-					input = "action_one_release",
 					start_time = 0,
 					sub_action = "attack_sweep_1",
+					input = action_one_release,
+					action = action_one,
 				},
 				{
-					action = "action_one",
-					input = "action_one_release",
 					start_time = 1.2,
 					sub_action = "attack_cleave",
+					input = action_one_release,
+					action = action_one,
 				},
 				{
 					blocker = true,
 					end_time = 1.5,
-					input = "action_one_hold",
 					start_time = 0.6,
+					input = action_one_hold,
 				},
 				{
-					action = "action_one",
 					auto_chain = true,
 					start_time = 1,
 					sub_action = "attack_cleave",
+					action = action_one,
 				},
 				{
 					action = "action_wield",
@@ -198,7 +201,6 @@ weapon_template.actions = {
 			additional_critical_strike_chance = 0.1,
 			anim_end_event = "attack_finished",
 			anim_event = "attack_cleave_charge",
-			attack_hold_input = "action_one_hold",
 			dedicated_target_range = 2,
 			disallow_ghost_mode = true,
 			first_person_hit_anim = "shake_hit",
@@ -214,32 +216,33 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			total_time = math.huge,
+			attack_hold_input = action_one_hold,
 			buff_data = planted_decrease_movement_settings.charge,
 			allowed_chain_actions = {
 				{
-					action = "action_one",
 					end_time = 0.4,
-					input = "action_one_release",
 					start_time = 0,
 					sub_action = "attack_shove",
+					input = action_one_release,
+					action = action_one,
 				},
 				{
-					action = "action_one",
-					input = "action_one_release",
 					start_time = 1.2,
 					sub_action = "attack_cleave",
+					input = action_one_release,
+					action = action_one,
 				},
 				{
 					blocker = true,
 					end_time = 1.5,
-					input = "action_one_hold",
 					start_time = 0.6,
+					input = action_one_hold,
 				},
 				{
-					action = "action_one",
 					auto_chain = true,
 					start_time = 1,
 					sub_action = "attack_cleave",
+					action = action_one,
 				},
 				{
 					action = "action_wield",
@@ -280,17 +283,17 @@ weapon_template.actions = {
 			buff_data = planted_decrease_movement_settings.light_attack_1,
 			allowed_chain_actions = {
 				{
-					action = "action_one",
 					end_time = 1.4,
-					input = "action_one",
 					start_time = 1,
 					sub_action = "default_2",
+					input = action_one,
+					action = action_one,
 				},
 				{
-					action = "action_one",
-					input = "action_one",
 					start_time = 1.4,
 					sub_action = "default",
+					input = action_one,
+					action = action_one,
 				},
 			},
 			baked_sweep = {
@@ -400,10 +403,10 @@ weapon_template.actions = {
 			buff_data = planted_decrease_movement_settings.light_attack_2,
 			allowed_chain_actions = {
 				{
-					action = "action_one",
-					input = "action_one_hold",
 					start_time = 1.5,
 					sub_action = "default",
+					input = action_one_hold,
+					action = action_one,
 				},
 			},
 			baked_sweep = {
@@ -508,19 +511,19 @@ weapon_template.actions = {
 			buff_data = planted_decrease_movement_settings.heavy_attack,
 			allowed_chain_actions = {
 				{
-					action = "action_one",
 					end_time = 1.6,
-					input = "action_one",
-					release_required = "action_one_hold",
 					start_time = 1.1,
 					sub_action = "default_2",
+					input = action_one,
+					action = action_one,
+					release_required = action_one_hold,
 				},
 				{
-					action = "action_one",
-					input = "action_one_hold",
-					release_required = "action_one_hold",
 					start_time = 1.6,
 					sub_action = "default",
+					input = action_one_hold,
+					action = action_one,
+					release_required = action_one_hold,
 				},
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -625,11 +628,9 @@ weapon_template.buffs = {}
 weapon_template.attack_meta_data = {
 	tap_attack = {
 		arc = 0,
-		penetrating = true,
 	},
 	hold_attack = {
 		arc = 0,
-		penetrating = true,
 	},
 }
 weapon_template.aim_assist_settings = {
@@ -667,22 +668,22 @@ weapon_template.tooltip_keywords = {
 }
 weapon_template.tooltip_compare = {
 	light = {
-		action_name = "action_one",
 		sub_action_name = "light_attack_left",
+		action_name = action_one,
 	},
 	heavy = {
-		action_name = "action_one",
 		sub_action_name = "heavy_attack_left",
+		action_name = action_one,
 	},
 }
 weapon_template.tooltip_detail = {
 	light = {
-		action_name = "action_one",
 		sub_action_name = "default",
+		action_name = action_one,
 	},
 	heavy = {
-		action_name = "action_one",
 		sub_action_name = "default",
+		action_name = action_one,
 	},
 }
 weapon_template.wwise_dep_right_hand = {

@@ -86,10 +86,7 @@ end
 
 DarkPactAbilityUI._update_abilities = function (self, dt, t)
 	local career_extension = self:_get_extension("career_system")
-	local horde_ability_extension
-
-	horde_ability_extension = self:_get_extension("versus_horde_ability_system")
-
+	local horde_ability_extension = self:_get_extension("versus_horde_ability_system")
 	local career_name = career_extension and career_extension:career_name()
 	local ui_renderer = self._ui_renderer
 
@@ -449,12 +446,14 @@ DarkPactAbilityUI._handle_career_abilities = function (self, dt, t, career_name,
 			for widget_name, widget_definition in pairs(widget_definitions) do
 				local widget = UIWidget.init(widget_definition)
 
-				if widget_name == "ability_icon" then
-					widget.content.settings = career_info_settings[i]
-					widget.offset[1] = base_offset + 80 * (i - 1)
-				end
-
 				widgets[widget_name] = widget
+			end
+
+			local ability_widget = widgets.ability_icon
+
+			if ability_widget then
+				ability_widget.content.settings = career_info_settings[i]
+				ability_widget.offset[1] = base_offset + 80 * (i - 1)
 			end
 
 			if ability_ui_data.events then

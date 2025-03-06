@@ -2258,6 +2258,8 @@ local painting_order = {
 	"hor_wood_elves_page_006",
 	"hor_high_elves_page_030",
 	"ver_wood_elves_page_025",
+	"hor_dark_elves_page_06",
+	"ver_high_elves_page_099",
 }
 
 PaintingOrder = PaintingOrder or {}

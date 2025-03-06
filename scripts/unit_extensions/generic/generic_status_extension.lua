@@ -1930,7 +1930,8 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 			local breed = ALIVE[grabber_unit] and Unit.get_data(grabber_unit, "breed")
 
 			if breed and breed.is_player then
-				local new_pos = PactswornUtils.get_hoist_position(unit, grabber_unit)
+				local physics_world = World.get_data(self.world, "physics_world")
+				local new_pos = PactswornUtils.get_hoist_position(physics_world, unit, grabber_unit)
 
 				locomotion:teleport_to(new_pos, nil)
 			end

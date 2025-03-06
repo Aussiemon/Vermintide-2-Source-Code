@@ -1,13 +1,11 @@
 ﻿-- chunkname: @scripts/settings/terror_events/terror_events_dlc_castle.lua
 
-local function count_event_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
-end
-
-local function count_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed(breed_name)
-end
-
+local TerrorEventUtils = require("scripts/settings/terror_events/terror_event_utils")
+local count_event_breed = TerrorEventUtils.count_event_breed
+local HARD = TerrorEventUtils.HARD
+local HARDER = TerrorEventUtils.HARDER
+local HARDEST = TerrorEventUtils.HARDEST
+local CATACLYSM = TerrorEventUtils.CATACLYSM
 local weighted_random_terror_events = {
 	end_event_statuette_guards = {
 		"end_event_statuette_guards_01",
@@ -20,11 +18,6 @@ local weighted_random_terror_events = {
 		1,
 	},
 }
-local NORMAL = 2
-local HARD = 3
-local HARDER = 4
-local HARDEST = 5
-local CATACLYSM = 6
 local terror_event_blueprints = {
 	dlc_castle_control_pacing_disabled = {
 		{
@@ -82,7 +75,6 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "chaos_warrior",
 			spawner_id = "dining_hall_spawner_recruit",
-			difficulty_requirement = NORMAL,
 		},
 		{
 			"delay",
@@ -523,4 +515,7 @@ local terror_event_blueprints = {
 	},
 }
 
-return terror_event_blueprints, weighted_random_terror_events
+return {
+	terror_event_blueprints,
+	weighted_random_terror_events,
+}

@@ -68,6 +68,10 @@ math.remap = function (imin, imax, omin, omax, v)
 	return (v - imin) / (imax - imin) * (omax - omin) + omin
 end
 
+math.remap_clamped = function (imin, imax, omin, omax, v)
+	return math.clamp01((v - imin) / (imax - imin)) * (omax - omin) + omin
+end
+
 math.radian_lerp = function (a, b, p)
 	local two_pi = pi * 2
 
@@ -737,6 +741,10 @@ math.ease_out_elastic = function (t)
 	end
 
 	return a * 2^(-10 * t) * math_sin((t * 1 - s) * (2 * math.pi) / p) + 1
+end
+
+math.easeInOutCubic = function (t)
+	return t < 0.5 and 4 * t * t * t or 1 - math.pow(-2 * t + 2, 3) / 2
 end
 
 math.rand_utf8_string = function (string_length, ignore_chars)

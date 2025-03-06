@@ -24,8 +24,9 @@ local RPCS = {
 	"rpc_deactivate_mutator_client",
 }
 
-MutatorHandler.init = function (self, mutators, is_server, has_local_client, world, network_event_delegate, network_transmit)
+MutatorHandler.init = function (self, mutators, is_server, network_handler, has_local_client, world, network_event_delegate, network_transmit)
 	self._is_server = is_server
+	self._network_handler = network_handler
 	self._has_local_client = has_local_client
 	self._network_transmit = network_transmit
 	self.network_event_delegate = network_event_delegate
@@ -38,14 +39,19 @@ MutatorHandler.init = function (self, mutators, is_server, has_local_client, wor
 
 	mutator_context.is_server = is_server
 	self._mutator_context = mutator_context
-
-	local active_mutators = {}
-
-	self._active_mutators = active_mutators
+	self._active_mutators = {}
 	self._mutators = {}
 
 	if is_server and mutators then
+		self._initialized_mutator_map = {}
+
 		self:initialize_mutators(mutators)
+	else
+		local network_state = network_handler:get_network_state()
+
+		self._initialized_mutator_map = network_state:get_initialized_mutator_map()
+
+		network_state:register_callback("client_data_updated", self, "on_client_mutator_list_updated", "initialized_mutator_map")
 	end
 
 	Managers.state.event:register(self, "on_player_disabled", "player_disabled")
@@ -53,6 +59,12 @@ end
 
 MutatorHandler.destroy = function (self)
 	Managers.state.event:unregister(self)
+
+	if not self._is_server then
+		local network_state = self._network_handler:get_network_state()
+
+		network_state:unregister_callback(self, "client_data_updated")
+	end
 
 	local active_mutators = self._active_mutators
 	local mutator_context = self._mutator_context
@@ -78,6 +90,12 @@ MutatorHandler.initialize_mutators = function (self, mutators)
 		local name = mutators[i]
 
 		self:_server_initialize_mutator(name, active_mutators, mutator_context)
+	end
+
+	if self._is_server then
+		local network_state = self._network_handler:get_network_state()
+
+		network_state:set_initialized_mutator_map(table.shallow_copy(self._initialized_mutator_map))
 	end
 end
 
@@ -213,6 +231,10 @@ end
 
 MutatorHandler.mutators = function (self)
 	return self._mutators
+end
+
+MutatorHandler.initialized_mutator_map = function (self)
+	return self._initialized_mutator_map
 end
 
 MutatorHandler.player_disabled = function (self, disabling_event, target_unit, attacker_unit)
@@ -493,6 +515,10 @@ MutatorHandler.post_process_terror_event = function (self, elements)
 end
 
 MutatorHandler.pickup_settings_updated_settings = function (self, pickup_settings)
+	if not self._is_server then
+		return
+	end
+
 	if not pickup_settings then
 		return nil
 	end
@@ -539,6 +565,10 @@ MutatorHandler.pickup_settings_updated_settings = function (self, pickup_setting
 end
 
 MutatorHandler.conflict_director_updated_settings = function (self)
+	if not self._is_server then
+		return
+	end
+
 	local mutator_context = self._mutator_context
 	local mutators = self._mutators
 
@@ -570,7 +600,9 @@ MutatorHandler.get_terror_event_tags = function (self)
 end
 
 MutatorHandler.tweak_zones = function (self, conflict_director_name, zones, num_zones)
-	fassert(self._is_server, "conflict_director_updated_settings only runs on server")
+	if not self._is_server then
+		return
+	end
 
 	local mutator_context = self._mutator_context
 	local mutators = self._mutators
@@ -614,6 +646,7 @@ MutatorHandler._server_initialize_mutator = function (self, name, active_mutator
 	end
 
 	self._mutators[name] = mutator_data
+	self._initialized_mutator_map[name] = true
 end
 
 MutatorHandler._activate_mutator = function (self, name, active_mutators, mutator_context, mutator_data, optional_duration)
@@ -689,6 +722,12 @@ MutatorHandler._deactivate_mutator = function (self, name, active_mutators, muta
 		if server_template.stop_function then
 			server_template.stop_function(mutator_context, mutator_data, is_destroy)
 		end
+
+		self._initialized_mutator_map[name] = nil
+
+		local network_state = self._network_handler:get_network_state()
+
+		network_state:set_initialized_mutator_map(table.shallow_copy(self._initialized_mutator_map))
 	end
 
 	if self._has_local_client then
@@ -751,4 +790,8 @@ MutatorHandler.rpc_deactivate_mutator_client = function (self, channel_id, mutat
 	local mutator_context = self._mutator_context
 
 	self:_deactivate_mutator(mutator_name, active_mutators, mutator_context)
+end
+
+MutatorHandler.on_client_mutator_list_updated = function (self, key_type, peer_id, local_player_id, profile_index, career_index, party_id, value)
+	self._initialized_mutator_map = value
 end

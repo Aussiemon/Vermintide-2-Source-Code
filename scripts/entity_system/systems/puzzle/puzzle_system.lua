@@ -244,9 +244,6 @@ PuzzleSystem._on_puzzle_complete = function (self, group_name, puzzle_id)
 end
 
 PuzzleSystem.rpc_on_puzzle_completed = function (self, channel_id, group_id_hash, puzzle_id_hash)
-	group_id_hash = tonumber(group_id_hash)
-	puzzle_id_hash = tonumber(puzzle_id_hash)
-
 	local group_name = self._group_id_hash_lookup[group_id_hash]
 	local puzzle_id = self._puzzle_id_hash_lookup[puzzle_id_hash]
 

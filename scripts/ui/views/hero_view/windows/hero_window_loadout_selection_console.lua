@@ -673,7 +673,6 @@ HeroWindowLoadoutSelectionConsole._save_bot_equipment = function (self)
 	local career_index = self._career_index
 	local profile = SPProfiles[profile_index]
 	local career_settings = profile.careers[career_index]
-	local profile_name = profile.display_name
 	local career_name = career_settings.name
 
 	PlayerData.loadout_selection.bot_equipment[career_name] = self._context_menu_loadout_index

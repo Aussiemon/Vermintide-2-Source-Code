@@ -1202,12 +1202,10 @@ weapon_template.attack_meta_data = {
 	tap_attack = {
 		arc = 1,
 		max_range = 2.25,
-		penetrating = true,
 	},
 	hold_attack = {
 		arc = 1,
 		max_range = 2.25,
-		penetrating = true,
 	},
 }
 weapon_template.weapon_diagram = {

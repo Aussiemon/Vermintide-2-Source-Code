@@ -43,11 +43,10 @@ PassiveAbilityNecromancerCharges.warm_up_skeletons = function (self, breeds)
 	print("Necromancer - Warm up skeletons:")
 
 	local enemy_package_loader = Managers.level_transition_handler.enemy_package_loader
-	local breed_processed = enemy_package_loader.breed_processed
 	local ignore_breed_limits = true
 
 	for k, breed_name in ipairs(breeds) do
-		if not breed_processed[breed_name] then
+		if not enemy_package_loader:is_breed_processed(breed_name) then
 			printf("\t -> %s", breed_name)
 			enemy_package_loader:request_breed(breed_name, ignore_breed_limits)
 		end

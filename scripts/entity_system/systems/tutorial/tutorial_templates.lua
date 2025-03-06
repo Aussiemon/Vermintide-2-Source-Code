@@ -583,15 +583,18 @@ TutorialTemplates.objective_unit = {
 			end
 		end
 
-		if best_unit then
+		if best_unit and not units[best_unit].always_show then
+			objective_units_n = objective_units_n + 1
+			objective_units[objective_units_n] = best_unit
+		end
+
+		if objective_units_n > 0 then
 			local unit_get_data = Unit.get_data
 
 			data.objective_text = unit_get_data(best_unit, "tutorial_text_id") or "tutorial_no_text"
 			data.alerts_horde = unit_get_data(best_unit, "alerts_horde") or false
 			data.objective_icon = unit_get_data(best_unit, "icon") or "hud_tutorial_icon_mission"
 			data.objective_wave = unit_get_data(best_unit, "tutorial_wave") or false
-			objective_units_n = objective_units_n + 1
-			objective_units[objective_units_n] = best_unit
 
 			return true, objective_units, objective_units_n
 		end

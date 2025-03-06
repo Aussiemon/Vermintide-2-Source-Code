@@ -26,29 +26,35 @@ FlowHelperManager._update_line_of_sight_checks = function (self, t)
 				if not Unit.alive(source_unit) or not Unit.alive(check_unit) then
 					self:unregister_line_of_sight_check(source_unit, check_unit)
 				else
-					local from = Unit.local_position(source_unit, 0)
-					local to = Unit.world_position(check_unit, data.node)
+					local from = Unit.world_position(source_unit, data.source_node)
+					local to = Unit.world_position(check_unit, data.target_node)
 					local direction = to - from
 					local length = Vector3.length(direction)
 
 					direction = Vector3.normalize(direction)
 
-					local is_in_los = data.is_in_los
-					local hits = PhysicsWorld.immediate_raycast(self._physics_world, from, direction, length, "all", "collision_filter", data.collision_filter)
 					local hit_pos = to
 					local result = true
+					local is_in_los = data.is_in_los
+					local status_extension = data.ignore_if_invisible and ScriptUnit.has_extension(check_unit, "status_system")
 
-					if hits then
-						for i = 1, #hits do
-							local hit = hits[i]
-							local hit_actor = hit[INDEX_ACTOR]
-							local hit_unit = Actor.unit(hit_actor)
+					if status_extension and status_extension:is_invisible() then
+						result = false
+					else
+						local hits = PhysicsWorld.immediate_raycast(self._physics_world, from, direction, length, "all", "collision_filter", data.collision_filter)
 
-							if hit_unit ~= source_unit then
-								result = hit_unit == check_unit
-								hit_pos = hit[INDEX_POSITION]
+						if hits then
+							for i = 1, #hits do
+								local hit = hits[i]
+								local hit_actor = hit[INDEX_ACTOR]
+								local hit_unit = Actor.unit(hit_actor)
 
-								break
+								if hit_unit ~= source_unit then
+									result = hit_unit == check_unit
+									hit_pos = hit[INDEX_POSITION]
+
+									break
+								end
 							end
 						end
 					end
@@ -64,7 +70,7 @@ FlowHelperManager._update_line_of_sight_checks = function (self, t)
 	end
 end
 
-FlowHelperManager.register_line_of_sight_check = function (self, owner_unit, source_unit, unit_to_check, flow_cb_enter, flow_cb_leave, collision_filter, debug_draw)
+FlowHelperManager.register_line_of_sight_check = function (self, owner_unit, source_unit, source_node, unit_to_check, ignore_if_invisible, flow_cb_enter, flow_cb_leave, collision_filter, debug_draw)
 	local los_checks = self._line_of_sight_checks
 	local source_checks = los_checks[owner_unit] or {}
 
@@ -78,9 +84,11 @@ FlowHelperManager.register_line_of_sight_check = function (self, owner_unit, sou
 		time_between_checks = 0.3,
 		flow_cb_enter = flow_cb_enter,
 		flow_cb_leave = flow_cb_leave,
+		ignore_if_invisible = ignore_if_invisible,
 		source_unit = source_unit,
+		source_node = source_node,
 		collision_filter = collision_filter,
-		node = Unit.has_node(unit_to_check, "j_spine") and Unit.node(unit_to_check, "j_spine") or 0,
+		target_node = Unit.has_node(unit_to_check, "j_spine") and Unit.node(unit_to_check, "j_spine") or 0,
 		debug_draw = debug_draw and {
 			from = Vector3Box(),
 			to = Vector3Box(),

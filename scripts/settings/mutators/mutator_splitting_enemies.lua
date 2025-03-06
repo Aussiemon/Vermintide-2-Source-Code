@@ -199,7 +199,7 @@ return {
 			local unit_spawner = Managers.state.unit_spawner
 
 			if not unit_spawner:is_marked_for_deletion(killed_unit) then
-				local froze_unit_successfully = conflict_director.breed_freezer:try_mark_unit_for_freeze(breed, killed_unit)
+				local froze_unit_successfully = conflict_director.breed_freezer and conflict_director.breed_freezer:try_mark_unit_for_freeze(breed, killed_unit)
 
 				if not froze_unit_successfully then
 					unit_spawner:mark_for_deletion(killed_unit)

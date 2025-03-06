@@ -38,13 +38,13 @@ function UpdateItemMasterList(item_names, career_name)
 	})
 end
 
-dofile("scripts/settings/equipment/item_master_list_local")
-dofile("scripts/settings/equipment/item_master_list_exported")
-dofile("scripts/settings/equipment/item_master_list_weapon_skins")
-dofile("scripts/settings/equipment/item_master_list_test_items")
-dofile("scripts/settings/equipment/item_master_list_steam_items")
-dofile("scripts/settings/equipment/item_master_list_weapon_poses")
-DLCUtils.dofile_list("item_master_list_file_names")
+local_require("scripts/settings/equipment/item_master_list_local")
+local_require("scripts/settings/equipment/item_master_list_exported")
+local_require("scripts/settings/equipment/item_master_list_weapon_skins")
+local_require("scripts/settings/equipment/item_master_list_test_items")
+local_require("scripts/settings/equipment/item_master_list_steam_items")
+local_require("scripts/settings/equipment/item_master_list_weapon_poses")
+DLCUtils.require_list("item_master_list_file_names", true)
 
 for i = 1, #ItemMasertListUpdateQueue do
 	local item_names = ItemMasertListUpdateQueue[i][1]
@@ -101,22 +101,6 @@ for item_name, item_data in pairs(ItemMasterList) do
 end
 
 all_item_types = {}
-
-local function aggregate(list)
-	for _, item in pairs(list) do
-		if type(item) == "table" then
-			aggregate(item)
-		elseif type(item) == "string" then
-			local data = rawget(ItemMasterList, item)
-
-			if not data then
-				print("item", item)
-			end
-		else
-			error("unknown type " .. type(item))
-		end
-	end
-end
 
 function parse_item_master_list()
 	for key, item in pairs(ItemMasterList) do

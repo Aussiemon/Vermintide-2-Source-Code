@@ -1531,7 +1531,7 @@ local unit_templates = {
 			"PingTargetExtension",
 		},
 	},
-	ai_unit_chaos_tentacle_sorcerer = {
+	ai_unit_chaos_sorcerer = {
 		base_template = "ai_unit_base",
 		go_type = "ai_unit_with_inventory",
 		self_owned_extensions = {

@@ -1378,17 +1378,16 @@ PlayFabMirrorBase.additional_data_setup_request_cb = function (self, result)
 	end
 
 	if new_currencies then
-		if new_currencies.ES then
-			self:set_essence(self._essence + new_currencies.ES)
-		end
+		local currency_ui_settings = DLCSettings.store.currency_ui_settings
+		local peddler_interface = Managers.backend:get_interface("peddler")
 
-		if new_currencies.SM then
-			local peddler_interface = Managers.backend:get_interface("peddler")
+		for currency_code, amount in pairs(new_currencies) do
+			if currency_code == "ES" then
+				self:set_essence(self._essence + amount)
+			elseif currency_ui_settings[currency_code] ~= nil and peddler_interface then
+				local current_amount = peddler_interface:get_chips(currency_code)
 
-			if peddler_interface then
-				local current_chips = peddler_interface:get_chips("SM")
-
-				peddler_interface:set_chips("SM", current_chips + new_currencies.SM)
+				peddler_interface:set_chips(currency_code, current_amount + amount)
 			end
 		end
 	end
@@ -1909,6 +1908,13 @@ PlayFabMirrorBase.get_character_data = function (self, career_name, key, optiona
 	end
 
 	return nil
+end
+
+PlayFabMirrorBase.has_loadout = function (self, career_name, loadout_index)
+	local career_data = self._career_data
+	local loadout_career_data = career_data[career_name] and career_data[career_name][loadout_index]
+
+	return loadout_career_data ~= nil
 end
 
 PlayFabMirrorBase.set_character_data = function (self, career_name, key, value, set_mirror, optional_loadout_index)
@@ -3607,7 +3613,9 @@ end
 
 PlayFabMirrorBase.set_career_read_only_data = function (self, character, key, value, career, set_mirror, loadout_index)
 	local characters_data = self._characters_data
-	local loadout_index = career and (loadout_index or self._career_loadouts[career])
+
+	loadout_index = career and (loadout_index or self._career_loadouts[career])
+
 	local data = career and characters_data[character].careers[career][loadout_index] or characters_data[character]
 
 	data[key] = value

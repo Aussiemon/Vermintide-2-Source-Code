@@ -40,8 +40,6 @@ WarpfireThrowerStateWalking.update = function (self, unit, input, dt, context, t
 		return
 	end
 
-	local csm = self._csm
-
 	self:_update_taunt_dialogue(t)
 
 	local ghost_mode_extension = self._ghost_mode_extension

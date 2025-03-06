@@ -2193,9 +2193,9 @@ ChatView.set_active = function (self, active)
 		self._input_manager:block_device_except_service("chat_view", "keyboard", 1, "irc_chat")
 		self._input_manager:block_device_except_service("chat_view", "mouse", 1, "irc_chat")
 		self._input_manager:block_device_except_service("chat_view", "gamepad", 1, "irc_chat")
-		ShowCursorStack.push()
+		ShowCursorStack.show("ChatView")
 	else
-		ShowCursorStack.pop()
+		ShowCursorStack.hide("ChatView")
 		Managers.save:auto_save(SaveFileName, SaveData, nil)
 	end
 end

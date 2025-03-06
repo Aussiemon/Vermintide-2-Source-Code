@@ -1,6 +1,5 @@
 ﻿-- chunkname: @scripts/settings/dlcs/gotwf/item_master_list_gotwf_2024.lua
 
-ItemMasterList = ItemMasterList or {}
 ItemMasterList.bw_necromancy_staff_skin_02_runed_05 = {
 	description = "bw_necromancy_staff_skin_02_runed_05_description",
 	display_name = "bw_necromancy_staff_skin_02_runed_05_name",
@@ -15,6 +14,9 @@ ItemMasterList.bw_necromancy_staff_skin_02_runed_05 = {
 	template = "staff_death",
 	can_wield = {
 		"bw_necromancer",
+	},
+	events = {
+		"gotwf",
 	},
 }
 ItemMasterList.bw_1h_sword_skin_01_runed_05 = {
@@ -32,6 +34,9 @@ ItemMasterList.bw_1h_sword_skin_01_runed_05 = {
 		"bw_scholar",
 		"bw_adept",
 		"bw_unchained",
+	},
+	events = {
+		"gotwf",
 	},
 }
 ItemMasterList.dr_2h_cog_hammer_skin_02_runed_05 = {
@@ -52,6 +57,9 @@ ItemMasterList.dr_2h_cog_hammer_skin_02_runed_05 = {
 		"dr_ironbreaker",
 		"dr_slayer",
 	},
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.dw_drakegun_skin_03_runed_05 = {
 	description = "dw_drakegun_skin_03_runed_05_description",
@@ -66,6 +74,9 @@ ItemMasterList.dw_drakegun_skin_03_runed_05 = {
 	template = "drakegun_template_1",
 	can_wield = {
 		"dr_ironbreaker",
+	},
+	events = {
+		"gotwf",
 	},
 }
 ItemMasterList.es_bastard_sword_skin_03_runed_05 = {
@@ -86,6 +97,9 @@ ItemMasterList.es_bastard_sword_skin_03_runed_05 = {
 		"es_mercenary",
 		"es_questingknight",
 	},
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.es_blunderbuss_skin_02_runed_05 = {
 	description = "es_blunderbuss_skin_02_runed_05_description",
@@ -103,6 +117,9 @@ ItemMasterList.es_blunderbuss_skin_02_runed_05 = {
 		"es_knight",
 		"es_mercenary",
 	},
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.we_life_staff_skin_02_runed_05 = {
 	description = "we_life_staff_skin_02_runed_05_description",
@@ -118,6 +135,9 @@ ItemMasterList.we_life_staff_skin_02_runed_05 = {
 	template = "staff_life",
 	can_wield = {
 		"we_thornsister",
+	},
+	events = {
+		"gotwf",
 	},
 }
 ItemMasterList.we_dual_sword_skin_02_runed_05 = {
@@ -136,6 +156,9 @@ ItemMasterList.we_dual_sword_skin_02_runed_05 = {
 		"we_maidenguard",
 		"we_waywatcher",
 	},
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.wh_2h_hammer_skin_02_runed_05 = {
 	description = "wh_2h_hammer_skin_02_runed_05_description",
@@ -153,6 +176,9 @@ ItemMasterList.wh_2h_hammer_skin_02_runed_05 = {
 		"wh_priest",
 		"wh_zealot",
 	},
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.wh_crossbow_skin_02_runed_05 = {
 	description = "wh_crossbow_skin_02_runed_05_description",
@@ -169,6 +195,25 @@ ItemMasterList.wh_crossbow_skin_02_runed_05 = {
 		"wh_zealot",
 		"wh_bountyhunter",
 		"wh_captain",
+	},
+	events = {
+		"gotwf",
+	},
+}
+ItemMasterList.frame_gotwf_2024 = {
+	description = "frame_gotwf_2024_description",
+	display_name = "frame_gotwf_2024_name",
+	display_unit = "units/weapons/weapon_display/display_portrait_frame",
+	hud_icon = "unit_frame_02",
+	information_text = "information_text_frame",
+	inventory_icon = "icon_portrait_frame_gotwf_2024",
+	item_type = "frame",
+	rarity = "promo",
+	slot_type = "frame",
+	temporary_template = "frame_gotwf_2024",
+	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"gotwf",
 	},
 }
 ItemMasterList.cosmetic_bundle_hat_1010 = {
@@ -197,16 +242,4 @@ ItemMasterList.cosmetic_bundle_hat_1010 = {
 			"bw_necromancer_hat_1010",
 		},
 	},
-}
-ItemMasterList.frame_gotwf_2024 = {
-	description = "frame_gotwf_2024_description",
-	display_name = "frame_gotwf_2024_name",
-	hud_icon = "unit_frame_02",
-	information_text = "information_text_frame",
-	inventory_icon = "icon_portrait_frame_gotwf_2024",
-	item_type = "frame",
-	rarity = "promo",
-	slot_type = "frame",
-	temporary_template = "frame_gotwf_2024",
-	can_wield = CanWieldAllItemTemplates,
 }

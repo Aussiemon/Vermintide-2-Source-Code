@@ -2,6 +2,8 @@
 
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
+local stagger_types = require("scripts/utils/stagger_types")
+
 BTBotMeleeAction = class(BTBotMeleeAction, BTNode)
 
 BTBotMeleeAction.init = function (self, ...)
@@ -196,12 +198,10 @@ end
 local DEFAULT_ATTACK_META_DATA = {
 	tap_attack = {
 		arc = 0,
-		penetrating = false,
 		max_range = DEFAULT_MAXIMAL_MELEE_RANGE,
 	},
 	hold_attack = {
 		arc = 2,
-		penetrating = true,
 		max_range = DEFAULT_MAXIMAL_MELEE_RANGE,
 	},
 }
@@ -291,23 +291,53 @@ BTBotMeleeAction._target_unit_position = function (self, self_position, target_u
 	return target_unit_position
 end
 
-BTBotMeleeAction._is_attacking_me = function (self, self_unit, enemy_unit)
-	local bb = BLACKBOARDS[enemy_unit]
+BTBotMeleeAction._is_being_attacked = function (self, self_unit, blackboard, t)
+	local proximite_enemies = blackboard.proximite_enemies
+	local attack_margin = 0.1
 
-	if not bb then
-		return false
+	for i = 1, #proximite_enemies do
+		repeat
+			local enemy_unit = proximite_enemies[i]
+			local bb = BLACKBOARDS[enemy_unit]
+
+			if not bb then
+				break
+			end
+
+			local enemy_buff_extension = ScriptUnit.has_extension(enemy_unit, "buff_system")
+
+			if enemy_buff_extension and enemy_buff_extension:has_buff_perk("ai_unblockable") then
+				break
+			end
+
+			local bot_threat_at_t = bb.bot_threat_at_t or bb.create_bot_threat_at_t
+
+			if bot_threat_at_t and t < bot_threat_at_t - attack_margin then
+				break
+			end
+
+			local dodge_window_start = bb.attack_dodge_window_start
+
+			if dodge_window_start and t < dodge_window_start - attack_margin then
+				break
+			end
+
+			local attack_finished_t = bb.attack_finished_t
+
+			if attack_finished_t and attack_finished_t < t then
+				break
+			end
+
+			local action = bb.action
+			local unblockable = action and action.unblockable
+
+			if not unblockable and bb.attacking_target == self_unit and not bb.past_damage_in_attack then
+				return true
+			end
+		until true
 	end
 
-	local enemy_buff_extension = ScriptUnit.has_extension(enemy_unit, "buff_system")
-
-	if enemy_buff_extension and enemy_buff_extension:has_buff_perk("ai_unblockable") then
-		return false
-	end
-
-	local action = bb.action
-	local unblockable = action and action.unblockable
-
-	return not unblockable and bb.attacking_target == self_unit and not bb.past_damage_in_attack
+	return false
 end
 
 BTBotMeleeAction._is_targeting_me = function (self, self_unit, enemy_unit)
@@ -442,8 +472,8 @@ BTBotMeleeAction._update_melee = function (self, unit, blackboard, dt, t)
 	local already_engaged = melee_bb.engaging
 
 	if self:_is_in_melee_range(current_position, aim_position, melee_range, attack_input, t, blackboard, target_unit) then
-		if not self:_defend(unit, blackboard, target_unit, input_ext, t, true) then
-			self:_attack(attack_input, blackboard)
+		if not self:_defend(unit, blackboard, target_unit, input_ext, t, true, dt) then
+			self:_attack(attack_input, blackboard, dt)
 
 			attack_performed = true
 		end
@@ -451,12 +481,12 @@ BTBotMeleeAction._update_melee = function (self, unit, blackboard, dt, t)
 		wants_engage = blackboard.aggressive_mode or melee_bb.engaging and t - melee_bb.engage_change_time < 5
 		eval_timer = 2
 	elseif self:_is_in_engage_range(unit, target_unit, blackboard.nav_world, action_data, follow_pos) then
-		self:_defend(unit, blackboard, target_unit, input_ext, t, false)
+		self:_defend(unit, blackboard, target_unit, input_ext, t, false, dt)
 
 		wants_engage = true
 		eval_timer = 1
 	else
-		self:_defend(unit, blackboard, target_unit, input_ext, t, false)
+		self:_defend(unit, blackboard, target_unit, input_ext, t, false, dt)
 
 		wants_engage = melee_bb.engaging and t - melee_bb.engage_change_time <= 0
 		eval_timer = 3
@@ -491,28 +521,86 @@ local DEFAULT_DEFENSE_META_DATA = {
 	push = "medium",
 }
 
-BTBotMeleeAction._defend = function (self, unit, blackboard, target_unit, input_ext, t, in_melee_range)
-	if self:_is_attacking_me(unit, target_unit) then
+BTBotMeleeAction._defend = function (self, unit, blackboard, target_unit, input_ext, t, in_melee_range, dt)
+	local defense_meta_data = blackboard.wielded_item_template.defense_meta_data or DEFAULT_DEFENSE_META_DATA
+	local current_fatigue, max_fatigue = ScriptUnit.extension(unit, "status_system"):current_fatigue_points()
+	local stamina_left = max_fatigue - current_fatigue
+	local push_type = defense_meta_data.push
+	local low_stamina = push_type == "light" and stamina_left <= 2 or stamina_left <= 3
+	local is_being_attacked = self:_is_being_attacked(unit, blackboard, t)
+	local is_pushable_shield_wearer = not low_stamina and push_type ~= "light" and self:_is_pushable_shield_wearer(target_unit)
+	local can_push = (is_being_attacked or is_pushable_shield_wearer) and self:_can_stagger_target(unit, target_unit, blackboard.wielded_item_template)
+
+	if is_being_attacked or is_pushable_shield_wearer and can_push then
 		self:_clear_pending_attack(blackboard)
 
-		local defense_meta_data = blackboard.wielded_item_template.defense_meta_data or DEFAULT_DEFENSE_META_DATA
 		local num_enemies = #blackboard.proximite_enemies
-		local current_fatigue, max_fatigue = ScriptUnit.extension(unit, "status_system"):current_fatigue_points()
-		local stamina_left = max_fatigue - current_fatigue
-		local push_type = defense_meta_data.push
-		local low_stamina = push_type == "light" and stamina_left <= 2 or stamina_left <= 3
-		local breed = Unit.get_data(target_unit, "breed")
 
-		if not in_melee_range or not breed or breed.boss or breed.armor_category == 2 and push_type ~= "heavy" or push_type == "light" and num_enemies > 2 or low_stamina then
+		if not can_push or not in_melee_range or push_type == "light" and num_enemies > 2 or low_stamina then
 			input_ext:defend()
 		else
 			input_ext:melee_push()
+		end
+
+		if script_data.ai_bots_debug_behavior then
+			local data = script_data.ai_bots_debug_behavior_data
+
+			data.time_spent_defending = data.time_spent_defending + dt
 		end
 
 		return true
 	else
 		return false
 	end
+end
+
+BTBotMeleeAction._is_pushable_shield_wearer = function (self, target_unit)
+	local breed = Unit.get_data(target_unit, "breed")
+
+	if not breed then
+		return false
+	end
+
+	if breed.name == "chaos_bulwark" then
+		return false
+	end
+
+	local shield_extension = ScriptUnit.has_extension(target_unit, "ai_shield_system")
+
+	return shield_extension and shield_extension.is_blocking
+end
+
+BTBotMeleeAction._can_stagger_target = function (self, attacker_unit, target_unit, wielded_item_template)
+	local bb = BLACKBOARDS[target_unit]
+
+	if not bb then
+		return
+	end
+
+	local wielded_slot = ScriptUnit.extension(attacker_unit, "inventory_system"):get_wielded_slot_name()
+	local damage_source = ScriptUnit.extension(attacker_unit, "inventory_system"):get_item_name(wielded_slot)
+
+	if not damage_source then
+		return false
+	end
+
+	local is_critical_strike = false
+	local actions = wielded_item_template.actions
+	local push = actions and actions.action_one and actions.action_one.push
+	local damage_profile = push and DamageProfileTemplates[push.damage_profile_inner]
+
+	if not damage_profile then
+		return false
+	end
+
+	local target_index = 1
+	local blocked = AiUtils.attack_is_shield_blocked(target_unit, attacker_unit)
+	local career_ext = ScriptUnit.extension(attacker_unit, "career_system")
+	local power_level = career_ext:get_career_power_level()
+	local boost_curve_multiplier
+	local stagger_type = DamageUtils.calculate_stagger_player(ImpactTypeOutput, target_unit, attacker_unit, "torso", power_level, boost_curve_multiplier, is_critical_strike, damage_profile, target_index, blocked, damage_source)
+
+	return stagger_type ~= stagger_types.none
 end
 
 BTBotMeleeAction._time_to_next_attack = function (self, attack_input, blackboard, t)
@@ -527,7 +615,7 @@ BTBotMeleeAction._time_to_next_attack = function (self, attack_input, blackboard
 	end
 end
 
-BTBotMeleeAction._attack = function (self, attack_input, blackboard)
+BTBotMeleeAction._attack = function (self, attack_input, blackboard, dt)
 	local weapon_extension = AiUtils.get_bot_weapon_extension(blackboard)
 
 	if weapon_extension then
@@ -536,6 +624,18 @@ BTBotMeleeAction._attack = function (self, attack_input, blackboard)
 		local attack_meta_data = weapon_meta_data[attack_input]
 
 		weapon_extension:request_bot_attack_action(attack_input, wielded_item_template.actions, wielded_item_template.name, attack_meta_data.attack_chain)
+
+		if script_data.ai_bots_debug_behavior then
+			local data = script_data.ai_bots_debug_behavior_data
+
+			if attack_input == "tap_attack" then
+				data.time_in_light_attack = data.time_in_light_attack + dt
+			elseif attack_input == "hold_attack" then
+				data.time_in_heavy_attack = data.time_in_heavy_attack + dt
+			end
+
+			data.time_spent_attacking = data.time_spent_attacking + dt
+		end
 	end
 end
 

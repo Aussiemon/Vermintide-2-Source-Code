@@ -1,4 +1,4 @@
-﻿-- chunkname: @scripts/settings/equipment/cosmetics_versus_rewards.lua
+﻿-- chunkname: @scripts/settings/dlcs/versus_rewards/cosmetics_versus_rewards.lua
 
 return {
 	skaven_gutter_runner_skin_0000_ektrik_01 = {

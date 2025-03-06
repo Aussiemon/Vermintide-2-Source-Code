@@ -300,6 +300,7 @@ GameModeVersus.evaluate_end_conditions = function (self, round_started, dt, t)
 
 	if script_data.disable_gamemode_end_hero_check then
 		heroes_dead_or_disabled = false
+		no_pactsworn_players = false
 	end
 
 	local game_should_end_early = not self._lose_condition_disabled and (heroes_dead_or_disabled or no_pactsworn_players or self._level_failed) or round_timer_over or all_objectives_completed or party_won_early_data or script_data.auto_complete_rounds or false
@@ -2210,32 +2211,38 @@ GameModeVersus._register_disabled_as_eliminiations = function (self)
 	local statistics_db = Managers.player:statistics_db()
 
 	for _, player in pairs(players) do
-		local credit_elim_to, breed_name
-		local status_extension = ScriptUnit.has_extension(player.player_unit, "status_system")
+		repeat
+			local credit_elim_to, breed_name
+			local status_extension = ScriptUnit.has_extension(player.player_unit, "status_system")
 
-		if status_extension then
-			if status_extension:is_grabbed_by_pack_master() or status_extension:is_hanging_from_hook() then
-				credit_elim_to = status_extension:query_pack_master_player()
-				breed_name = "vs_packmaster"
-			elseif status_extension:is_pounced_down() then
-				credit_elim_to = Managers.player:owner(status_extension:get_pouncer_unit())
-				breed_name = "vs_gutter_runner"
-			elseif status_extension:is_disabled_by_pact_sworn() then
-				-- Nothing
+			if status_extension then
+				if status_extension:is_grabbed_by_pack_master() or status_extension:is_hanging_from_hook() then
+					credit_elim_to = status_extension:query_pack_master_player()
+					breed_name = "vs_packmaster"
+				elseif status_extension:is_pounced_down() then
+					credit_elim_to = Managers.player:owner(status_extension:get_pouncer_unit())
+					breed_name = "vs_gutter_runner"
+				elseif status_extension:is_disabled_by_pact_sworn() then
+					-- Nothing
+				end
 			end
-		end
 
-		if credit_elim_to then
-			local stats_id = credit_elim_to:stats_id()
+			if credit_elim_to then
+				local stats_id = credit_elim_to:stats_id()
 
-			if status_extension:is_knocked_down() then
-				statistics_db:increment_stat(stats_id, "kills_per_breed", breed_name)
-			else
-				local killed_breed_name = Unit.get_data(player.player_unit, "breed").name
+				if statistics_db:is_registered(stats_id) then
+					if status_extension:is_knocked_down() then
+						statistics_db:increment_stat(stats_id, "kills_per_breed", breed_name)
 
-				statistics_db:increment_stat(stats_id, "vs_knockdowns_per_breed", killed_breed_name)
-				statistics_db:increment_stat(stats_id, "eliminations_as_breed", breed_name)
+						break
+					end
+
+					local killed_breed_name = Unit.get_data(player.player_unit, "breed").name
+
+					statistics_db:increment_stat(stats_id, "vs_knockdowns_per_breed", killed_breed_name)
+					statistics_db:increment_stat(stats_id, "eliminations_as_breed", breed_name)
+				end
 			end
-		end
+		until true
 	end
 end

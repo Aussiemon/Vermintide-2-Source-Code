@@ -139,6 +139,11 @@ BackendInterfaceItemPlayfab.refresh_bot_loadouts = function (self)
 			local bot_loadout_index = bot_equipment[career_name]
 
 			if bot_loadout_index then
+				if not backend_mirror:has_loadout(career_name, bot_loadout_index) then
+					bot_equipment[career_name] = nil
+					bot_loadout_index = nil
+				end
+
 				for i = 1, #loadout_slots do
 					local slot_name = loadout_slots[i]
 					local item_id = backend_mirror:get_character_data(career_name, slot_name, bot_loadout_index)
@@ -525,7 +530,7 @@ BackendInterfaceItemPlayfab.get_loadout_item_id = function (self, career_name, s
 	local default_loadout = default_loadouts_allowed and default_loadouts and default_loadouts[1]
 	local base_loadouts = self:get_loadout()
 	local base_loadout = base_loadouts[career_name]
-	local loadout = bot_loadout_allowed and is_bot and bot_loadout or is_bot and default_loadouts_allowed and default_loadout or base_loadout
+	local loadout = bot_loadout_allowed and is_bot and not table.is_empty(bot_loadout) and bot_loadout or is_bot and default_loadouts_allowed and default_loadout or base_loadout
 	local item_id = loadout and loadout[slot_name]
 
 	if CosmeticUtils.is_cosmetic_slot(slot_name) and item_id then
@@ -680,6 +685,14 @@ BackendInterfaceItemPlayfab.add_steam_items = function (self, item_list)
 	self:_refresh_items()
 end
 
+local unseen_item_reward_types = {
+	item = true,
+	keep_decoration_painting = true,
+	loot_chest = true,
+	weapon_pose = true,
+	weapon_skin = true,
+}
+
 BackendInterfaceItemPlayfab.get_unseen_item_rewards = function (self)
 	local unseen_rewards_json = self._backend_mirror:get_user_data("unseen_rewards")
 
@@ -695,7 +708,7 @@ BackendInterfaceItemPlayfab.get_unseen_item_rewards = function (self)
 		local reward = unseen_rewards[index]
 		local reward_type = reward.reward_type
 
-		if reward_type == "item" or reward_type == "loot_chest" or reward_type == "keep_decoration_painting" or reward_type == "weapon_skin" or CosmeticUtils.is_cosmetic_item(reward_type) then
+		if unseen_item_reward_types[reward_type] or CosmeticUtils.is_cosmetic_item(reward_type) then
 			unseen_items = unseen_items or {}
 			unseen_items[#unseen_items + 1] = reward
 
@@ -844,20 +857,24 @@ end
 BackendInterfaceItemPlayfab.get_item_template = function (self, item_data, backend_id)
 	local template_name = item_data.temporary_template or item_data.template
 	local item_template = WeaponUtils.get_weapon_template(template_name)
-	local modified_item_templates = self._modified_templates
-	local modified_item_template
+	local modified_templates = self._modified_templates
 
 	if item_template then
 		if backend_id then
-			if not modified_item_templates[backend_id] then
-				modified_item_template = GearUtils.apply_properties_to_item_template(item_template, backend_id)
-				self._modified_templates[backend_id] = modified_item_template
-			else
-				return modified_item_templates[backend_id]
+			if not modified_templates[backend_id] then
+				modified_templates[backend_id] = {}
 			end
+
+			if not modified_templates[backend_id][template_name] then
+				table.clear(modified_templates[backend_id])
+
+				modified_templates[backend_id][template_name] = GearUtils.apply_properties_to_item_template(item_template, backend_id)
+			end
+
+			return modified_templates[backend_id][template_name]
 		end
 
-		return modified_item_template or item_template
+		return item_template
 	end
 
 	item_template = Attachments[template_name]

@@ -279,7 +279,7 @@ HeroView.on_enter = function (self, params)
 		self:_setup_hdr_gui()
 	end
 
-	ShowCursorStack.push()
+	ShowCursorStack.show("HeroView")
 
 	local input_manager = self.input_manager
 
@@ -531,7 +531,7 @@ HeroView.on_exit = function (self)
 	self.input_manager:device_unblock_all_services("keyboard", 1)
 	self.input_manager:device_unblock_all_services("mouse", 1)
 	self.input_manager:device_unblock_all_services("gamepad", 1)
-	ShowCursorStack.pop()
+	ShowCursorStack.hide("HeroView")
 
 	self.exiting = nil
 

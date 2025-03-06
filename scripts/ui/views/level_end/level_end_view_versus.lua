@@ -1076,74 +1076,16 @@ LevelEndViewVersus.spawn_level = function (self, context, world)
 
 	Level.spawn_background(level)
 	Level.trigger_level_loaded(level)
-	self:_register_object_sets(level)
+	self:_register_object_sets(level, level_name)
 	Level.trigger_event(level, "ceremoni_enabled")
 
 	return level
-end
-
-LevelEndViewVersus._register_object_sets = function (self, level)
-	local object_sets = {}
-	local level_name = "levels/carousel_podium/world"
-	local available_level_sets = LevelResource.object_set_names(level_name)
-
-	for _, set_name in ipairs(available_level_sets) do
-		object_sets[set_name] = {
-			set_enabled = true,
-			units = LevelResource.unit_indices_in_object_set(level_name, set_name),
-		}
-	end
-
-	self._object_sets = object_sets
-
-	self:_show_object_set(nil, false, level)
 end
 
 LevelEndViewVersus.event_show_flow_object_set = function (self, object_set_name, enable)
 	local object_set_name = "flow_" .. object_set_name
 
 	self:_show_object_set(object_set_name, enable)
-end
-
-LevelEndViewVersus._show_object_set = function (self, object_set_name, enable, level)
-	local level = self._level or level
-	local object_sets = self._object_sets
-
-	for set_name, object_set_data in pairs(object_sets) do
-		if not enable and set_name == object_set_name then
-			local units = object_set_data.units
-
-			for _, unit_index in ipairs(units) do
-				local unit = Level.unit_by_index(level, unit_index)
-
-				Unit.set_unit_visibility(unit, false)
-			end
-
-			object_set_data.set_enabled = false
-		elseif enable and set_name == object_set_name then
-			local units = object_set_data.units
-
-			for _, unit_index in ipairs(units) do
-				local unit = Level.unit_by_index(level, unit_index)
-
-				Unit.set_unit_visibility(unit, true)
-
-				if Unit.has_data(unit, "LevelEditor", "is_gizmo_unit") then
-					local is_gizmo = Unit.get_data(unit, "LevelEditor", "is_gizmo_unit")
-					local is_reflection_probe = Unit.is_a(unit, "core/stingray_renderer/helper_units/reflection_probe/reflection_probe")
-
-					if is_gizmo and not is_reflection_probe then
-						Unit.flow_event(unit, "hide_helper_mesh")
-						Unit.flow_event(unit, "unit_object_set_enabled")
-					end
-				end
-			end
-
-			object_set_data.set_enabled = true
-		end
-	end
-
-	print(enable and "Showing object set:" or "Hiding object set:", object_set_name)
 end
 
 LevelEndViewVersus.exit_to_game = function (self)

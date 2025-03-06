@@ -1,13 +1,10 @@
 ﻿-- chunkname: @scripts/settings/terror_events/terror_events_bell.lua
 
-local function count_event_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
-end
-
-local weighted_random_terror_events
-local HARDER = 4
-local HARDEST = 5
-local CATACLYSM = 6
+local TerrorEventUtils = require("scripts/settings/terror_events/terror_event_utils")
+local count_event_breed = TerrorEventUtils.count_event_breed
+local HARDER = TerrorEventUtils.HARDER
+local HARDEST = TerrorEventUtils.HARDEST
+local CATACLYSM = TerrorEventUtils.CATACLYSM
 local terror_event_blueprints = {
 	canyon_bell_event = {
 		{
@@ -171,4 +168,6 @@ local terror_event_blueprints = {
 	},
 }
 
-return terror_event_blueprints, weighted_random_terror_events
+return {
+	terror_event_blueprints,
+}

@@ -1527,11 +1527,9 @@ weapon_template.tooltip_detail = {
 weapon_template.attack_meta_data = {
 	tap_attack = {
 		arc = 1,
-		penetrating = false,
 	},
 	hold_attack = {
 		arc = 0,
-		penetrating = true,
 	},
 }
 weapon_template.aim_assist_settings = {

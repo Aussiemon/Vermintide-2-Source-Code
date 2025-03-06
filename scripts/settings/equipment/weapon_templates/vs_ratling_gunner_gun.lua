@@ -1,5 +1,10 @@
 ﻿-- chunkname: @scripts/settings/equipment/weapon_templates/vs_ratling_gunner_gun.lua
 
+local action_one = "dark_pact_action_one"
+local action_one_release = "dark_pact_action_one_release"
+local action_one_hold = "dark_pact_action_one_hold"
+local action_two = "dark_pact_action_two"
+local action_reload = "dark_pact_reload"
 local spinup_time = 1
 local windup_decay = 0.2
 local initial_rps = 15
@@ -48,7 +53,7 @@ end
 local weapon_template = {}
 
 weapon_template.actions = {
-	action_one = {
+	[action_one] = {
 		default = {
 			anim_event = "attack_shoot_start",
 			charge_sound_husk_name = "Play_player_engineer_engine_charge_husk",
@@ -56,7 +61,6 @@ weapon_template.actions = {
 			charge_sound_name = "Play_player_engineer_engine_charge",
 			charge_sound_stop_event = "Stop_player_engineer_engine_loop",
 			disallow_ghost_mode = true,
-			hold_input = "action_one_hold",
 			initial_windup = 0,
 			kind = "minigun_spin",
 			reload_when_out_of_ammo = true,
@@ -75,6 +79,7 @@ weapon_template.actions = {
 				end
 			end,
 			total_time = spinup_time * SPINUP_ANIMATION_SCALE,
+			hold_input = action_one_hold,
 			buff_data = {
 				{
 					buff_name = "planted_fast_decrease_movement",
@@ -85,17 +90,17 @@ weapon_template.actions = {
 			},
 			allowed_chain_actions = {
 				{
-					action = "action_one",
 					auto_chain = true,
 					sub_action = "fire",
 					start_time = spinup_time * SPINUP_ANIMATION_SCALE,
+					action = action_one,
 				},
 				{
-					action = "weapon_reload",
 					hold_allowed = true,
-					input = "weapon_reload",
 					start_time = 0,
 					sub_action = "default",
+					input = action_reload,
+					action = action_reload,
 				},
 			},
 			condition_func = shoot_condition_func,
@@ -107,7 +112,6 @@ weapon_template.actions = {
 			disallow_ghost_mode = true,
 			dont_shoot_near_wall = true,
 			hit_effect = "bullet_impact",
-			hold_input = "action_one_hold",
 			kind = "minigun",
 			looping_anim = true,
 			near_wall_anim = "",
@@ -116,6 +120,7 @@ weapon_template.actions = {
 			shot_count = 1,
 			spread_template_override = "vs_ratling_gunner_gun_shooting",
 			weapon_action_hand = "left",
+			hold_input = action_one_hold,
 			chain_condition_func = shoot_condition_func,
 			enter_function = function (owner_unit, input_extension, remaining_time, weapon_extension)
 				input_extension:reset_release_input()
@@ -139,10 +144,10 @@ weapon_template.actions = {
 			},
 			allowed_chain_actions = {
 				{
-					action = "weapon_reload",
-					input = "weapon_reload",
 					start_time = 0,
 					sub_action = "default",
+					input = action_reload,
+					action = action_reload,
 				},
 			},
 			lightweight_projectile_info = {
@@ -151,7 +156,7 @@ weapon_template.actions = {
 			},
 		},
 	},
-	weapon_reload = {
+	[action_reload] = {
 		default = {
 			anim_end_event = "cooldown_ready",
 			anim_event = "wind_up_start",
@@ -192,15 +197,15 @@ weapon_template.actions = {
 			},
 			allowed_chain_actions = {
 				{
-					action = "action_two",
-					input = "action_two",
 					start_time = 0,
 					sub_action = "default",
+					input = action_two,
+					action = action_two,
 				},
 			},
 		},
 	},
-	action_two = {
+	[action_two] = {
 		default = {
 			kind = "dummy",
 			total_time = 0,
@@ -257,11 +262,9 @@ end
 weapon_template.attack_meta_data = {
 	tap_attack = {
 		arc = 0,
-		penetrating = true,
 	},
 	hold_attack = {
 		arc = 0,
-		penetrating = true,
 	},
 }
 weapon_template.aim_assist_settings = {
@@ -299,26 +302,14 @@ weapon_template.tooltip_keywords = {
 }
 weapon_template.tooltip_compare = {
 	light = {
-		action_name = "action_one",
 		sub_action_name = "light_attack_left",
-	},
-	heavy = {
-		action_name = "action_one",
-		sub_action_name = "heavy_attack_left",
+		action_name = action_one,
 	},
 }
 weapon_template.tooltip_detail = {
 	light = {
-		action_name = "action_one",
 		sub_action_name = "default",
-	},
-	heavy = {
-		action_name = "action_one",
-		sub_action_name = "default",
-	},
-	push = {
-		action_name = "action_one",
-		sub_action_name = "push",
+		action_name = action_one,
 	},
 }
 
@@ -394,7 +385,6 @@ weapon_template.synced_states = {
 			if is_local_player then
 				Managers.state.vce:trigger_vce(owner_unit, wwise_world, "Play_player_enemy_vce_ratling_gunner_shoot_start", use_occlusion, wwise_source_id)
 				WwiseWorld.trigger_event(wwise_world, "Play_player_ratling_gunner_shooting_loop", use_occlusion, wwise_source_id)
-				Managers.state.vce:trigger_vce(owner_unit, wwise_world, "Play_player_enemy_vce_ratling_gunner_shoot_start", use_occlusion, wwise_source_id)
 			else
 				Managers.state.vce:trigger_vce(owner_unit, wwise_world, "Play_player_enemy_vce_ratling_gunner_shoot_start_husk", use_occlusion, wwise_source_id)
 				WwiseWorld.trigger_event(wwise_world, "Play_ratling_gunner_shooting_loop", use_occlusion, wwise_source_id)

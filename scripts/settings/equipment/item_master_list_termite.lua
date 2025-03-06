@@ -24,3 +24,15 @@ ItemMasterList.frame_termite_02 = {
 	temporary_template = "frame_termite_02",
 	can_wield = CanWieldAllItemTemplates,
 }
+ItemMasterList.frame_termite_03 = {
+	description = "frame_termite_03_description",
+	display_name = "frame_termite_03_name",
+	hud_icon = "unit_frame_02",
+	information_text = "information_text_frame",
+	inventory_icon = "icon_placeholder",
+	item_type = "frame",
+	rarity = "promo",
+	slot_type = "frame",
+	temporary_template = "frame_termite_03",
+	can_wield = CanWieldAllItemTemplates,
+}

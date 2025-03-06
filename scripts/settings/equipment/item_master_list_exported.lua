@@ -1,6 +1,6 @@
 ﻿-- chunkname: @scripts/settings/equipment/item_master_list_exported.lua
 
-ItemMasterList = ItemMasterList or {}
+ItemMasterList = ItemMasterList or Script.new_map(4096)
 ItemMasterList.skin_dr_default = {
 	description = "description_skin_dr_ranger",
 	display_name = "skin_dr_ranger",
@@ -1727,7 +1727,6 @@ ItemMasterList.frame_geheimnisnacht_01 = {
 	description = "frame_geheimnisnacht_01_description",
 	display_name = "frame_geheimnisnacht_01_name",
 	display_unit = "units/weapons/weapon_display/display_portrait_frame",
-	event_item = true,
 	hud_icon = "unit_frame_02",
 	information_text = "information_text_frame",
 	inventory_icon = "icon_portrait_frame_geheimnisnacht_01",
@@ -1736,12 +1735,14 @@ ItemMasterList.frame_geheimnisnacht_01 = {
 	slot_type = "frame",
 	temporary_template = "frame_geheimnisnacht_01",
 	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.frame_geheimnisnacht_02 = {
 	description = "frame_geheimnisnacht_02_description",
 	display_name = "frame_geheimnisnacht_02_name",
 	display_unit = "units/weapons/weapon_display/display_portrait_frame",
-	event_item = true,
 	hud_icon = "unit_frame_02",
 	information_text = "information_text_frame",
 	inventory_icon = "icon_portrait_frame_geheimnisnacht_02",
@@ -1755,7 +1756,6 @@ ItemMasterList.frame_geheimnisnacht_03 = {
 	description = "frame_geheimnisnacht_03_description",
 	display_name = "frame_geheimnisnacht_03_name",
 	display_unit = "units/weapons/weapon_display/display_portrait_frame",
-	event_item = true,
 	hud_icon = "unit_frame_02",
 	information_text = "information_text_frame",
 	inventory_icon = "icon_portrait_frame_geheimnisnacht_03",
@@ -1764,6 +1764,9 @@ ItemMasterList.frame_geheimnisnacht_03 = {
 	slot_type = "frame",
 	temporary_template = "frame_geheimnisnacht_03",
 	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.frame_summer = {
 	description = "frame_summer_description",
@@ -1781,7 +1784,6 @@ ItemMasterList.frame_mondstille_01 = {
 	description = "frame_mondstille_01_description",
 	display_name = "frame_mondstille_01_name",
 	display_unit = "units/weapons/weapon_display/display_portrait_frame",
-	event_item = true,
 	hud_icon = "unit_frame_02",
 	information_text = "information_text_frame",
 	inventory_icon = "icon_portrait_frame_mondstille_01",
@@ -1790,12 +1792,14 @@ ItemMasterList.frame_mondstille_01 = {
 	slot_type = "frame",
 	temporary_template = "frame_mondstille_01",
 	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.frame_mondstille_02 = {
 	description = "frame_mondstille_02_description",
 	display_name = "frame_mondstille_02_name",
 	display_unit = "units/weapons/weapon_display/display_portrait_frame",
-	event_item = true,
 	hud_icon = "unit_frame_02",
 	information_text = "information_text_frame",
 	inventory_icon = "icon_portrait_frame_mondstille_02",
@@ -1804,6 +1808,9 @@ ItemMasterList.frame_mondstille_02 = {
 	slot_type = "frame",
 	temporary_template = "frame_mondstille_02",
 	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.frame_mondstille_03 = {
 	description = "frame_mondstille_03_description",
@@ -3080,6 +3087,7 @@ ItemMasterList.frame_0091 = {
 ItemMasterList.frame_0094 = {
 	description = "frame_0094_description",
 	display_name = "frame_0094_name",
+	display_unit = "units/weapons/weapon_display/display_portrait_frame",
 	hud_icon = "unit_frame_02",
 	information_text = "information_text_frame",
 	inventory_icon = "icon_portrait_frame_0094",
@@ -3088,6 +3096,9 @@ ItemMasterList.frame_0094 = {
 	slot_type = "frame",
 	temporary_template = "frame_0094",
 	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"anniversary",
+	},
 }
 ItemMasterList.frame_0095 = {
 	description = "frame_0095_description",
@@ -3316,6 +3327,7 @@ ItemMasterList.crafting_material_act_1 = {
 	display_name = "crafting_material_act_1_title",
 	hud_icon = "rune_slot_square_large",
 	inventory_icon = "icon_crafting_act_01",
+	is_local = true,
 	item_type = "crafting_material",
 	rarity = "plentiful",
 	slot_type = "crafting_material",
@@ -3328,6 +3340,7 @@ ItemMasterList.crafting_material_act_2 = {
 	display_name = "crafting_material_act_2_title",
 	hud_icon = "rune_slot_circle_large",
 	inventory_icon = "icon_crafting_act_02",
+	is_local = true,
 	item_type = "crafting_material",
 	rarity = "plentiful",
 	slot_type = "crafting_material",
@@ -3340,6 +3353,7 @@ ItemMasterList.crafting_material_act_3 = {
 	display_name = "crafting_material_act_3_title",
 	hud_icon = "rune_slot_triangle_large",
 	inventory_icon = "icon_crafting_act_03",
+	is_local = true,
 	item_type = "crafting_material",
 	rarity = "plentiful",
 	slot_type = "crafting_material",
@@ -3378,6 +3392,7 @@ ItemMasterList.crafting_material_weapon_skin_tool = {
 	display_name = "crafting_material_weapon_skin_tool_title",
 	hud_icon = "forge_icon_trinket",
 	inventory_icon = "icon_crafting_weapon_skin_tool",
+	is_local = true,
 	item_type = "crafting_material",
 	rarity = "exotic",
 	slot_type = "crafting_material",
@@ -8059,6 +8074,7 @@ ItemMasterList.trinket_11 = {
 	has_power_level = true,
 	hud_icon = "icon_trophy_fish_t3_01",
 	inventory_icon = "icon_trinket_11",
+	is_local = true,
 	item_type = "trinket",
 	property_table_name = "utility_accessory",
 	rarity = "plentiful",
@@ -8073,6 +8089,7 @@ ItemMasterList.trinket_12 = {
 	has_power_level = true,
 	hud_icon = "icon_trophy_fish_t3_01",
 	inventory_icon = "icon_trinket_01",
+	is_local = true,
 	item_type = "trinket",
 	property_table_name = "utility_accessory",
 	rarity = "plentiful",
@@ -12284,6 +12301,7 @@ ItemMasterList.bogenhafen_chest = {
 	info_text_box_text_id = "loot_opening_screen_non_specific_description",
 	inventory_icon = "icon_loot_chest_bgh",
 	item_type = "loot_chest",
+	power_level_key = "category_24",
 	rarity = "plentiful",
 	rarity_key = "level_up",
 	slot_type = "loot_chest",
@@ -12302,6 +12320,7 @@ ItemMasterList.deed_chest = {
 	display_name = "display_name_deed_chest_02",
 	display_unit = "chest_1",
 	inventory_icon = "icons_placeholder",
+	is_local = true,
 	item_type = "loot_chest",
 	power_level_key = "category_24",
 	rarity = "plentiful",

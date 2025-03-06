@@ -438,10 +438,27 @@ UnlockManager._add_reward = function (self, items, presentation_text)
 		end
 	end)
 
-	self._reward_queue[#self._reward_queue + 1] = {
-		items = items,
-		presentation_text = presentation_text,
-	}
+	local num_items = #items
+	local max_num_items_per_page = 45
+
+	if max_num_items_per_page <= num_items then
+		local num_splices = math.ceil(num_items / max_num_items_per_page)
+
+		for i = 1, num_splices do
+			local start_index = (i - 1) * max_num_items_per_page + 1
+			local slice = table.slice(items, start_index, max_num_items_per_page)
+
+			self._reward_queue[#self._reward_queue + 1] = {
+				items = slice,
+				presentation_text = presentation_text,
+			}
+		end
+	else
+		self._reward_queue[#self._reward_queue + 1] = {
+			items = items,
+			presentation_text = presentation_text,
+		}
+	end
 end
 
 UnlockManager.poll_rewards = function (self)
@@ -728,17 +745,18 @@ UnlockManager._update_backend_unlocks = function (self, t)
 				local owned_dlcs = dlcs_interface:get_owned_dlcs()
 				local platform_dlcs = dlcs_interface:get_platform_dlcs()
 				local new_dlc_installed = false
+				local debug_overridden
 
 				for i = 1, #platform_dlcs do
 					local unlock_name = platform_dlcs[i]
 
-					if not self._excluded_dlcs[unlock_name] and not table.find(owned_dlcs, unlock_name) then
+					if not self._excluded_dlcs[unlock_name] then
 						local unlock = self._unlocks[unlock_name]
 
 						if unlock and unlock.update_is_installed then
-							local new_value, changed = unlock:update_is_installed()
+							local _, changed = unlock:update_is_installed()
 
-							if new_value then
+							if changed then
 								printf("INSTALLED: %q", unlock_name)
 
 								new_dlc_installed = true
@@ -852,6 +870,8 @@ UnlockManager._handle_unseen_rewards = function (self)
 					rarity = rarity,
 				},
 			}
+		elseif reward.reward_type == "weapon_pose" then
+			item = item_interface:get_item_from_key(reward.item_id)
 		elseif reward.reward_type == "keep_decoration_painting" then
 			local decoration_name = reward.keep_decoration_name
 			local painting_data = Paintings[decoration_name]

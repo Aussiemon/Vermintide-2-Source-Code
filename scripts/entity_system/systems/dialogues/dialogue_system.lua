@@ -27,6 +27,10 @@ local enabled = true
 local debug_vo_by_file
 
 DialogueSystem = class(DialogueSystem, ExtensionSystemBase)
+DialogueSystem.stateless_global_context = table.make_strict({
+	last_level_played = "none",
+	last_level_won = false,
+})
 
 local function update_switch_group(wwise_world, wwise_source_id, extension)
 	if wwise_source_id ~= extension.wwise_source_id then
@@ -110,7 +114,6 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 
 	local level_name = entity_system_creation_context.startup_data.level_key
 	local dialogue_filename = "dialogues/generated/" .. level_name
-	local auto_load_files = DialogueSettings.auto_load_files
 	local blocked_auto_load = DialogueSettings.blocked_auto_load_files[level_name]
 	local mechanism_name = Managers.mechanism:current_mechanism_name()
 	local auto_load_files_mechanism = DialogueSettings.auto_load_files_mechanism[mechanism_name] or {}
@@ -134,21 +137,7 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 	end
 
 	if not blocked_auto_load then
-		for _, file_name in ipairs(auto_load_files) do
-			if Application.can_get("lua", file_name) then
-				self._tagquery_loader:load_file(file_name)
-			end
-
-			if Application.can_get("lua", file_name .. "_markers") then
-				local markers = dofile(file_name .. "_markers")
-
-				for name, marker in pairs(markers) do
-					fassert(not self._markers[name], "[DialogueSystem] There is already a marker called %s registered", name)
-
-					self._markers[name] = marker
-				end
-			end
-		end
+		self._tagquery_loader:load_auto_load_files(self._markers)
 
 		for _, file_name in ipairs(auto_load_files_mechanism) do
 			if Application.can_get("lua", file_name) then
@@ -187,6 +176,14 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 		end
 	end
 
+	local environment_variation_name = entity_system_creation_context.startup_data.environment_variation_name
+
+	self._global_context = {
+		game_about_to_end = 0,
+		current_level = level_name,
+		weather = environment_variation_name,
+	}
+
 	if not level_settings.tutorial_level then
 		local live_event_interface = Managers.backend:get_interface("live_events")
 		local special_events = live_event_interface and live_event_interface:get_special_events()
@@ -200,6 +197,8 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 				local event_data = special_events[event_idx]
 				local event_name = event_data.name
 
+				self._global_context[event_name] = true
+
 				self:_load_special_event_dialogues(event_name, mechanism_name)
 
 				local mutators = event_data.mutators
@@ -209,6 +208,35 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 						local mutator = mutators[i]
 
 						self:_load_special_event_dialogues(mutator, mechanism_name)
+					end
+				end
+			end
+		end
+	end
+
+	table.merge(self._global_context, DialogueSystem.stateless_global_context)
+
+	local initialized_mutator_names = Managers.state.game_mode:initialized_mutator_map()
+
+	for mutator_name in pairs(initialized_mutator_names) do
+		local mutator_settings = MutatorTemplates[mutator_name]
+		local dialogue_settings = mutator_settings.dialogue_settings
+
+		if dialogue_settings then
+			for i = 1, #dialogue_settings do
+				local file_name = dialogue_settings[i]
+
+				if Application.can_get("lua", file_name) then
+					self._tagquery_loader:load_file(file_name)
+				end
+
+				if Application.can_get("lua", file_name .. "_markers") then
+					local markers = dofile(file_name .. "_markers")
+
+					for name, marker in pairs(markers) do
+						fassert(not self._markers[name], "[DialogueSystem] There is already a marker called %s registered", name)
+
+						self._markers[name] = marker
 					end
 				end
 			end
@@ -248,15 +276,7 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 	end
 
 	self._wwise_voice_switch_value_indices = wwise_voice_switch_value_indices
-
-	local environment_variation_name = entity_system_creation_context.startup_data.environment_variation_name
-
 	self.statistics_db = entity_system_creation_context.statistics_db
-	self._global_context = {
-		game_about_to_end = 0,
-		current_level = level_name,
-		weather = environment_variation_name,
-	}
 
 	for _, profile in ipairs(SPProfiles) do
 		self._global_context[profile.display_name] = false
@@ -639,6 +659,10 @@ end
 
 DialogueSystem.set_global_context = function (self, key, value)
 	self._global_context[key] = value
+end
+
+DialogueSystem.get_global_context = function (self, key)
+	return self._global_context[key]
 end
 
 DialogueSystem._cleanup_extension = function (self, unit, extension_name)

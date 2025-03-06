@@ -182,6 +182,7 @@ DebugManager.update = function (self, dt, t)
 		Managers.level_transition_handler.enemy_package_loader:debug_loaded_breeds()
 	end
 
+	self:_update_bot_behavior_debug()
 	self:_update_actor_draw(dt)
 
 	for drawer_name, drawer in pairs(self._drawers) do
@@ -204,7 +205,7 @@ DebugManager.update = function (self, dt, t)
 
 	self:_update_unit_spawning(dt, t)
 
-	if script_data.debug_unit and self._is_server and script_data.debug_behaviour_trees then
+	if script_data.debug_unit and self.is_server and script_data.debug_behaviour_trees then
 		local debug_unit = script_data.debug_unit
 
 		if Unit.alive(debug_unit) then
@@ -690,17 +691,21 @@ DebugManager.destroy = function (self)
 	self.network_event_delegate:unregister(self)
 end
 
-DebugManager.set_time_scale = function (self, time_scale_index)
+DebugManager.set_time_scale = function (self, time_scale_index, skip_sync)
 	local time_scale = time_scale_list[time_scale_index] * 0.01
 
 	Application.set_time_step_policy("external_multiplier", time_scale)
 
 	GLOBAL_TIME_SCALE = time_scale
 
-	if self.is_server then
+	if not skip_sync then
 		local debug_command_lookup = NetworkLookup.debug_commands.set_time_scale
 
-		Managers.state.network.network_transmit:send_rpc_clients("rpc_debug_command", debug_command_lookup, time_scale_index)
+		if self.is_server then
+			Managers.state.network.network_transmit:send_rpc_clients("rpc_debug_command", debug_command_lookup, time_scale_index)
+		else
+			Managers.state.network.network_transmit:send_rpc_server("rpc_debug_command", debug_command_lookup, time_scale_index)
+		end
 	end
 
 	self.time_scale_index = time_scale_index
@@ -822,14 +827,14 @@ DebugManager.rpc_debug_command = function (self, channel_id, debug_command_looku
 	elseif debug_command == "set_time_scale" then
 		local time_scale_index = optional_parameter
 
-		self:set_time_scale(time_scale_index)
+		self:set_time_scale(time_scale_index, true)
+
+		if self.is_server then
+			Managers.state.network.network_transmit:send_rpc_clients_except("rpc_debug_command", CHANNEL_TO_PEER_ID[channel_id], debug_command_lookup, optional_parameter)
+		end
 	elseif debug_command == "set_time_paused" then
 		self:set_time_paused()
 	end
-end
-
-DebugManager.propagate_debug_option = function (self, option_hash, setting_id, option_index, dont_save)
-	Managers.state.network.network_transmit:send_rpc_server("rpc_propagate_debug_option", option_hash, setting_id, option_index, not not dont_save)
 end
 
 DebugManager.rpc_propagate_debug_option = function (self, channel_id, option_hash_string, setting_id, option_index, dont_save)
@@ -848,7 +853,7 @@ DebugManager.rpc_propagate_debug_option = function (self, channel_id, option_has
 end
 
 DebugManager.rpc_debug_option_propagation_response = function (self, channel_id, error_msg)
-	Debug.sticky_text("[DebugManager] Propagated debug option failed: %s", error_msg)
+	Debug.sticky_text("[DebugManager] Propagated debug option failed: %s", error_msg, "delay", 10)
 end
 
 DebugManager._load_patched_items_into_backend = function (self)
@@ -1007,5 +1012,172 @@ DebugManager._update_unit_spawning = function (self, dt, t)
 
 	if DebugKeyHandler.key_pressed("m", "unspawn all AI specials", "ai") then
 		self:send_conflict_director_command("destroy_specials")
+	end
+end
+
+DebugManager._update_bot_behavior_debug = function (self)
+	if not script_data.ai_bots_debug_behavior then
+		script_data.ai_bots_debug_behavior_data = nil
+
+		return
+	end
+
+	script_data.ai_bots_debug_behavior_data = script_data.ai_bots_debug_behavior_data or {
+		failed_ranged_attacks = 0,
+		ranged_attacks = 0,
+		time_in_heavy_attack = 0,
+		time_in_light_attack = 0,
+		time_spent_attacking = 0,
+		time_spent_defending = 0,
+	}
+
+	local font_size = 15
+	local row_height = 20
+	local start_pos_y = 250
+	local start_pos = Vector3(10, start_pos_y, 10)
+	local color = Color(255, 130, 10)
+
+	Debug.draw_rect(start_pos, Vector3(340, start_pos_y + row_height * 20, 0), Color(200, 0, 0, 0))
+
+	local text_pos = start_pos
+
+	for name, value in pairs(script_data.ai_bots_debug_behavior_data) do
+		local text = string.format("%s: %s", name, value)
+
+		Debug.draw_text(text, text_pos, font_size, color)
+
+		text_pos[2] = text_pos[2] + row_height
+	end
+end
+
+DebugManager.start_bot_behavior_scenario = function ()
+	if Managers.state.game_mode:level_key() ~= "military" then
+		Debug.sticky_text("ERROR: The bot behavior scenario is set up for 'military' level only.")
+
+		return
+	end
+
+	local current_difficulty = Managers.state.difficulty:get_difficulty()
+
+	if current_difficulty ~= "hardest" then
+		Debug.sticky_text("WARNING: The bot behavior scneario is designed for Legend difficulty. The following run targets are recommended: '-set-difficulty hardest -current-difficulty-setting hardest'")
+
+		return
+	end
+
+	script_data.ai_bots_disabled = false
+	script_data.ai_pacing_disabled = true
+	script_data.disable_ai_perception = true
+	script_data.disable_debug_draw = false
+	POSITION_LOOKUP[player_unit()] = Vector3(122.148, 87.8162, -12.8631)
+
+	local rot = Quaternion.identity()
+
+	Quaternion.set_xyzw(rot, 0, 0, 1, -0.000214087)
+	ScriptUnit.extension(player_unit(), "locomotion_system"):teleport_to(Vector3(122.148, 87.8162, -13.6631) + Quaternion.forward(rot) * 2, rot)
+
+	local FreeFlight = Managers.input:get_service("FreeFlight")
+	local delay_start_t = Managers.time:time("main") + 0.5
+	local SCENARIO_STEP = 1
+	local rot_boxed = QuaternionBox(rot)
+	local update_orig = update
+
+	function update(...)
+		local ret_val = update_orig(...)
+
+		rot = rot_boxed:unbox()
+
+		local t = Managers.time:time("main")
+
+		if SCENARIO_STEP == 1 then
+			if t > delay_start_t then
+				Managers.state.conflict:destroy_all_units()
+
+				local pos = Unit.local_position(player_unit(), 0)
+				local fwd = Quaternion.forward(rot)
+				local right = Quaternion.right(rot)
+
+				for i = -4, 4 do
+					local spawn_pos = pos + fwd * 4 + right * i
+
+					Managers.state.conflict:debug_spawn_breed("skaven_slave", false, spawn_pos, {})
+				end
+
+				for i = -1.5, 1.5 do
+					local spawn_pos = pos + fwd * 5.5 + right * i
+
+					Managers.state.conflict:debug_spawn_breed("skaven_slave", false, spawn_pos, {})
+				end
+
+				for i = -1.5, 1.5 do
+					local spawn_pos = pos + fwd * 7 + right * i
+
+					Managers.state.conflict:debug_spawn_breed("skaven_storm_vermin_with_shield", false, spawn_pos, {})
+				end
+
+				for i = 0, 0 do
+					local spawn_pos = pos + fwd * 8.5 + right * i
+
+					Managers.state.conflict:debug_spawn_breed("chaos_warrior", false, spawn_pos, {})
+				end
+
+				local orig_get = FreeFlight.get
+
+				FreeFlight.get = function (self, name, ...)
+					if name == "global_free_flight_toggle" then
+						FreeFlight.get = orig_get
+						SCENARIO_STEP = 2
+
+						return true
+					end
+
+					return orig_get(self, name, ...)
+				end
+			end
+		elseif SCENARIO_STEP == 2 then
+			local world = Managers.world:world(Managers.free_flight.data.global.viewport_world_name)
+			local viewport = ScriptWorld.global_free_flight_viewport(world)
+			local cam = ScriptViewport.camera(viewport)
+
+			ScriptCamera.set_local_position(cam, Vector3(126.374, 80.3227, -8.77923))
+
+			local cam_rot = Quaternion.identity()
+
+			Quaternion.set_xyzw(cam_rot, 0.281551, 0.111096, -0.349516, -0.886694)
+			ScriptCamera.set_local_rotation(cam, cam_rot)
+
+			delay_start_t = t + 2
+			SCENARIO_STEP = 3
+		elseif SCENARIO_STEP == 3 then
+			if t > delay_start_t then
+				SCENARIO_STEP = 4
+				script_data.disable_ai_perception = false
+				delay_start_t = t + 45
+			end
+		elseif SCENARIO_STEP == 4 then
+			local right = Quaternion.right(rot)
+
+			rot = Quaternion.multiply(Quaternion.axis_angle(right, math.pi * -0.4), rot)
+
+			if t > delay_start_t then
+				SCENARIO_STEP = 5
+			end
+		else
+			local orig_get = FreeFlight.get
+
+			FreeFlight.get = function (self, name, ...)
+				if name == "global_free_flight_toggle" then
+					FreeFlight.get = orig_get
+
+					return true
+				end
+
+				return orig_get(self, name, ...)
+			end
+
+			update = update_orig
+		end
+
+		return ret_val
 	end
 end

@@ -65,37 +65,27 @@ for i = 1, #database_names do
 	}
 end
 
-player.weapon_kills_per_breed.dr_2h_cog_hammer = {}
-player.weapon_kills_per_breed.dr_steam_pistol = {}
-player.weapon_kills_per_breed.bardin_engineer_career_skill_weapon = {}
-player.weapon_kills_per_breed.bardin_engineer_career_skill_weapon_heavy = {}
+local tracked_weapons = {
+	"dr_2h_cog_hammer",
+	"dr_steam_pistol",
+	"bardin_engineer_career_skill_weapon",
+	"bardin_engineer_career_skill_weapon_heavy",
+}
+
+for _, v in pairs(tracked_weapons) do
+	player.weapon_kills_per_breed[v] = {}
+end
 
 for breed_name, breed in pairs(Breeds) do
-	local database_name = "dr_2h_cog_hammer_" .. breed_name
+	for _, v in pairs(tracked_weapons) do
+		local database_name = v .. "_" .. breed_name
 
-	player.weapon_kills_per_breed.dr_2h_cog_hammer[breed_name] = {
-		source = "player_data",
-		value = 0,
-		database_name = database_name,
-	}
-	database_name = "dr_steam_pistol_" .. breed_name
-	player.weapon_kills_per_breed.dr_steam_pistol[breed_name] = {
-		source = "player_data",
-		value = 0,
-		database_name = database_name,
-	}
-	database_name = "bardin_engineer_career_skill_weapon_" .. breed_name
-	player.weapon_kills_per_breed.bardin_engineer_career_skill_weapon[breed_name] = {
-		source = "player_data",
-		value = 0,
-		database_name = database_name,
-	}
-	database_name = "bardin_engineer_career_skill_weapon_heavy_" .. breed_name
-	player.weapon_kills_per_breed.bardin_engineer_career_skill_weapon_heavy[breed_name] = {
-		source = "player_data",
-		value = 0,
-		database_name = database_name,
-	}
+		player.weapon_kills_per_breed[v][breed_name] = {
+			source = "player_data",
+			value = 0,
+			database_name = database_name,
+		}
+	end
 end
 
 local relevant_careers = {

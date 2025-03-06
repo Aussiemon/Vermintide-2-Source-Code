@@ -372,7 +372,9 @@ HandbookSettings.pages = {
 			type = "video",
 		},
 		{
-			condition = not_gamepad_active,
+			text = "tutorial_movement_text_01",
+			type = "text",
+			condition_func = not_gamepad_active,
 			inputs = {
 				"move_forward",
 				"move_left",
@@ -381,21 +383,19 @@ HandbookSettings.pages = {
 				"jump_1",
 				"crouch",
 			},
-			{
-				text = "tutorial_movement_text_01",
-				type = "text",
-				condition = gamepad_active,
-				inputs = {
-					"move_controller",
-					"move_controller",
-					"move_controller",
-					"move_controller",
-					"jump_1",
-					"crouch",
-				},
-			},
+		},
+		{
 			text = "tutorial_movement_text_01",
 			type = "text",
+			condition_func = gamepad_active,
+			inputs = {
+				"move_controller",
+				"move_controller",
+				"move_controller",
+				"move_controller",
+				"jump_1",
+				"crouch",
+			},
 		},
 		display_name = "tutorial_movement_header",
 	},

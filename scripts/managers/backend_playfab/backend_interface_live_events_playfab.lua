@@ -131,6 +131,14 @@ BackendInterfaceLiveEventsPlayfab.get_special_events = function (self)
 	return self._live_events.special_events
 end
 
+BackendInterfaceLiveEventsPlayfab.get_active_events = function (self)
+	if self._dirty then
+		self:_refresh()
+	end
+
+	return self._live_events.active_events
+end
+
 BackendInterfaceLiveEventsPlayfab.get_weekly_events_game_mode_data = function (self)
 	if self._dirty then
 		self:_refresh()

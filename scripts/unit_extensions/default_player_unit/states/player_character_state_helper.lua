@@ -1184,12 +1184,6 @@ local weapon_action_interrupt_damage_types = {
 local interupting_action_data = {}
 
 CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension, inventory_extension, health_extension)
-	local breed = Unit.get_data(unit, "breed")
-
-	if not breed.name == "vs_warpfire_thrower" and not breed.boss and not breed.is_hero and not breed.is_player then
-		return
-	end
-
 	local item_data, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper.get_item_data_and_weapon_extensions(inventory_extension)
 
 	table.clear(interupting_action_data)
@@ -1216,8 +1210,9 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 	local player = Managers.player:owner(unit)
 	local is_bot_player = player and player.bot_player
 	local ammo_extension = left_hand_weapon_extension and left_hand_weapon_extension.ammo_extension or right_hand_weapon_extension and right_hand_weapon_extension.ammo_extension
+	local breed = Unit.get_data(unit, "breed")
 
-	if recent_damage_type and weapon_action_interrupt_damage_types[recent_damage_type] then
+	if recent_damage_type and weapon_action_interrupt_damage_types[recent_damage_type] and not breed.boss then
 		if ammo_extension then
 			if left_hand_weapon_extension and left_hand_weapon_extension.ammo_extension then
 				reloading = left_hand_weapon_extension.ammo_extension:is_reloading()
@@ -1670,13 +1665,15 @@ CharacterStateHelper.is_crouching = function (status_extension)
 end
 
 CharacterStateHelper.is_starting_interaction = function (input_extension, interactor_extension)
-	local can_interact, fail_reason, interaction_type = interactor_extension:can_interact()
+	local can_interact, fail_reason, interaction_type, unit_to_interact_with = interactor_extension:can_interact()
 
 	if GameSettingsDevelopment.disabled_interactions[interaction_type] then
 		return false
 	end
 
-	return can_interact and interaction_type ~= "heal" and interaction_type ~= "give_item" and input_extension:get("interact", true)
+	local interact_input = InteractionHelper.interaction_action_names(input_extension.unit, unit_to_interact_with)
+
+	return can_interact and interaction_type ~= "heal" and interaction_type ~= "give_item" and input_extension:get(interact_input, true)
 end
 
 CharacterStateHelper.is_interacting = function (interactor_extension)

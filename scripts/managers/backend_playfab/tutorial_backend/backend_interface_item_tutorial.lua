@@ -414,20 +414,24 @@ end
 BackendInterfaceItemTutorial.get_item_template = function (self, item_data, backend_id)
 	local template_name = item_data.temporary_template or item_data.template
 	local item_template = WeaponUtils.get_weapon_template(template_name)
-	local modified_item_templates = self._modified_templates
-	local modified_item_template
+	local modified_templates = self._modified_templates
 
 	if item_template then
 		if backend_id then
-			if not modified_item_templates[backend_id] then
-				modified_item_template = GearUtils.apply_properties_to_item_template(item_template, backend_id)
-				self._modified_templates[backend_id] = modified_item_template
-			else
-				return modified_item_templates[backend_id]
+			if not modified_templates[backend_id] then
+				modified_templates[backend_id] = {}
 			end
+
+			if not modified_templates[backend_id][template_name] then
+				table.clear(modified_templates[backend_id])
+
+				modified_templates[backend_id][template_name] = GearUtils.apply_properties_to_item_template(item_template, backend_id)
+			end
+
+			return modified_templates[backend_id][template_name]
 		end
 
-		return modified_item_template or item_template
+		return item_template
 	end
 
 	item_template = Attachments[template_name]

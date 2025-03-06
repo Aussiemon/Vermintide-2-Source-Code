@@ -118,7 +118,7 @@ PopupProfilePicker.show = function (self, current_profile_index, current_career_
 	self._reserved_party_id = reserved_party_id
 
 	self._ingame_ui:handle_transition(join_by_lobby_browser and "exit_menu" or "close_active")
-	ShowCursorStack.push()
+	ShowCursorStack.show("PopupProfilePicker")
 
 	local profile_index = current_profile_index or 1
 	local career_index = current_career_index or 1
@@ -138,7 +138,7 @@ PopupProfilePicker.hide = function (self)
 	local input_manager = self._input_manager
 
 	input_manager:release_input(self._INPUT_DEVICES, 1, "popup_profile_picker", "PopupProfilePicker")
-	ShowCursorStack.pop()
+	ShowCursorStack.hide("PopupProfilePicker")
 
 	self._selected_hero_name = nil
 	self._selected_career_name = nil

@@ -367,7 +367,7 @@ WeaveTutorialPopupUI._acquire_input = function (self)
 		"gamepad",
 		"mouse",
 	}, 1, "weave_tutorial", "WeaveTutorialPopupUI")
-	ShowCursorStack.push()
+	ShowCursorStack.show("WeaveTutorialPopupUI")
 end
 
 WeaveTutorialPopupUI._release_input = function (self)
@@ -378,5 +378,5 @@ WeaveTutorialPopupUI._release_input = function (self)
 		"gamepad",
 		"mouse",
 	}, 1, "weave_tutorial", "WeaveTutorialPopupUI")
-	ShowCursorStack.pop()
+	ShowCursorStack.hide("WeaveTutorialPopupUI")
 end

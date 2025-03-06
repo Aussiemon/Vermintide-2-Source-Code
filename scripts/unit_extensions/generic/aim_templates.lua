@@ -245,6 +245,9 @@ AimTemplates.player = {
 AimTemplates.enemy_character = {
 	owner = {
 		init = function (unit, data)
+			local breed = Unit.get_data(unit, "breed")
+
+			data.breed = breed
 			data.aim_constraint_anim_var = Unit.animation_find_constraint_target(unit, "aim_constraint_target")
 			data.look_direction_anim_var = Unit.animation_find_variable(unit, "aim_direction")
 			data.aim_direction_pitch_var = Unit.animation_find_variable(unit, "aim_direction_pitch")
@@ -299,16 +302,16 @@ AimTemplates.enemy_character = {
 	},
 	husk = {
 		init = function (unit, data)
+			local breed = Unit.get_data(unit, "breed")
+
 			data.aim_constraint_anim_var = Unit.animation_find_constraint_target(unit, "aim_constraint_target")
 			data.look_direction_anim_var = Unit.animation_find_variable(unit, "aim_direction")
 			data.aim_direction_pitch_var = Unit.animation_find_variable(unit, "aim_direction_pitch")
-
-			local breed = Unit.get_data(unit, "breed")
-
 			data.boss = breed.boss or false
 			data.aim_constraint_forward_multiplier = breed.aim_constraint_forward_multiplier or 1
 			data.camera_attach_node = Unit.node(unit, "camera_attach")
 			data.status_extension = ScriptUnit.extension(unit, "status_system")
+			data.husk_locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 		end,
 		update = function (unit, t, dt, data)
 			local game = Managers.state.network:game()

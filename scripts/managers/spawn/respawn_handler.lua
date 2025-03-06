@@ -2,7 +2,8 @@
 
 RespawnHandler = class(RespawnHandler)
 
-local RESPAWN_DISTANCE = 70
+local DEFAULT_RESPAWN_DISTANCE = 70
+local VERSUS_RESPAWN_DISTANCE = 20
 local RESPAWN_TIME = 30
 local RESPAWN_MOVE_TIME = 10
 local FAST_RESPAWN_TIME = 2
@@ -26,12 +27,14 @@ RespawnHandler.init = function (self, profile_synchronizer, is_server)
 	self._path_break_points = {}
 	self._boss_door_dist_lookup = {}
 	self._next_move_players_t = 0
+	self._respawn_distance = DEFAULT_RESPAWN_DISTANCE
 	self._is_server = is_server
 
 	local mechanism_ok, hero_rescues_enabled, custom_settings_enabled = Managers.mechanism:mechanism_try_call("get_custom_game_setting", "hero_rescues_enabled")
 
 	if mechanism_ok and custom_settings_enabled and hero_rescues_enabled then
 		self._custom_game_respawn_time_override = RESPAWN_TIME
+		self._respawn_distance = VERSUS_RESPAWN_DISTANCE
 	end
 end
 
@@ -305,10 +308,10 @@ RespawnHandler.server_update = function (self, dt, t, slots)
 				local local_player_id = status.local_player_id
 				local respawn_time
 
-				if self._custom_game_respawn_time_override then
-					respawn_time = self._custom_game_respawn_time_override
-				elseif Development.parameter("fast_respawns") then
+				if Development.parameter("fast_respawns") then
 					respawn_time = FAST_RESPAWN_TIME
+				elseif self._custom_game_respawn_time_override then
+					respawn_time = self._custom_game_respawn_time_override
 				elseif Managers.mechanism:setting("hero_respawn_time") then
 					respawn_time = Managers.mechanism:setting("hero_respawn_time")
 				else
@@ -666,7 +669,7 @@ end
 RespawnHandler.find_best_respawn_point = function (self, reserve_best, evaluate_all)
 	local main_path_info = Managers.state.conflict.main_path_info
 	local ahead_unit_travel_dist = main_path_info.ahead_travel_dist
-	local preferred_spawn_travel_dist = ahead_unit_travel_dist + RESPAWN_DISTANCE
+	local preferred_spawn_travel_dist = ahead_unit_travel_dist + self._respawn_distance
 	local min_dist, max_dist = self:get_respawn_dist_range(main_path_info, ahead_unit_travel_dist)
 	local respawn_units = self._respawn_units
 	local override_respawn_units = self._active_overridden_units

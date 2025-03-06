@@ -105,8 +105,6 @@ StartGameWindowWeaveList.update = function (self, dt, t)
 		self:_create_ui_elements()
 	end
 
-	script_data.weave_list = self
-
 	self:_update_can_play(dt, t)
 	self:_update_animations(dt)
 

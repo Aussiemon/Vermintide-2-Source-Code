@@ -1,5 +1,15 @@
 ﻿-- chunkname: @scripts/settings/terror_events/terror_events_weaves.lua
 
+local TerrorEventUtils = require("scripts/settings/terror_events/terror_event_utils")
+local count_event_breed = TerrorEventUtils.count_event_breed
+local num_spawned_enemies = TerrorEventUtils.num_spawned_enemies
+local num_spawned_enemies_during_event = TerrorEventUtils.num_spawned_enemies_during_event
+local HARD = TerrorEventUtils.HARD
+local HARDER = TerrorEventUtils.HARDER
+local HARDEST = TerrorEventUtils.HARDEST
+local CATACLYSM = TerrorEventUtils.CATACLYSM
+local CATACLYSM2 = TerrorEventUtils.CATACLYSM2
+local CATACLYSM3 = TerrorEventUtils.CATACLYSM3
 local horde_sound_settings = {
 	skaven = {
 		stinger_sound_event = "enemy_horde_stinger",
@@ -22,44 +32,6 @@ local horde_sound_settings = {
 		},
 	},
 }
-local NORMAL = 2
-local HARD = 3
-local HARDER = 4
-local HARDEST = 5
-local CATACLYSM = 6
-local CATACLYSM2 = 7
-local CATACLYSM3 = 8
-
-local function count_event_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
-end
-
-local function count_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed(breed_name)
-end
-
-local function current_difficulty()
-	return Managers.state.difficulty.difficulty
-end
-
-local function num_spawned_enemies()
-	local spawned_enemies = Managers.state.conflict:spawned_enemies()
-
-	return #spawned_enemies
-end
-
-local function num_spawned_enemies_during_event()
-	local spawned_enemies = Managers.state.conflict:enemies_spawned_during_event()
-
-	return spawned_enemies
-end
-
-local function num_aggroed_enemies()
-	local num_aggroed_enemies = Managers.state.conflict:get_num_aggroed_enemies()
-
-	return num_aggroed_enemies
-end
-
 local terror_event_blueprints = {
 	boss_01 = {
 		{
@@ -13523,4 +13495,6 @@ local terror_event_blueprints = {
 	},
 }
 
-return terror_event_blueprints
+return {
+	terror_event_blueprints,
+}

@@ -1194,10 +1194,9 @@ TwitchGameMode._check_breed_package_loading = function (self, wanted_template, p
 	end
 
 	local package_loader = Managers.level_transition_handler.enemy_package_loader
-	local breed_processed = package_loader.breed_processed
 	local request_success, replacement_breed_name = true
 
-	if not breed_processed[wanted_breed_name] then
+	if not package_loader:is_breed_processed(wanted_breed_name) then
 		request_success = package_loader:request_breed(wanted_breed_name)
 	end
 
@@ -1210,7 +1209,7 @@ TwitchGameMode._check_breed_package_loading = function (self, wanted_template, p
 	else
 		local replacement_breeds = {}
 
-		for breed_name, _ in pairs(breed_processed) do
+		for breed_name, _ in pairs(package_loader:processed_breeds()) do
 			replacement_breeds[#replacement_breeds + 1] = breed_name
 		end
 

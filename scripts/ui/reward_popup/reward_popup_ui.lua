@@ -791,7 +791,7 @@ RewardPopupUI._acquire_input = function (self)
 			input_manager:capture_input(ALL_INPUT_METHODS, 1, INPUT_SERVICE_NAME, "RewardPopupUI")
 
 			if self._animation_presentation_data.claim_button then
-				ShowCursorStack.push()
+				ShowCursorStack.show("RewardPopupUI")
 
 				self._cursor_shown = true
 
@@ -821,7 +821,7 @@ RewardPopupUI._release_input = function (self)
 	end
 
 	if self._cursor_shown then
-		ShowCursorStack.pop()
+		ShowCursorStack.hide("RewardPopupUI")
 
 		self._cursor_shown = false
 	end

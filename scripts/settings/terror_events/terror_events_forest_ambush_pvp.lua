@@ -1,25 +1,7 @@
 ﻿-- chunkname: @scripts/settings/terror_events/terror_events_forest_ambush_pvp.lua
 
-local function count_event_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
-end
-
-local function count_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed(breed_name)
-end
-
-local function num_spawned_enemies()
-	local spawned_enemies = Managers.state.conflict:spawned_enemies()
-
-	return #spawned_enemies
-end
-
-local function num_alive_standards()
-	local alive_standards = Managers.state.conflict:alive_standards()
-
-	return #alive_standards
-end
-
+local TerrorEventUtils = require("scripts/settings/terror_events/terror_event_utils")
+local count_event_breed = TerrorEventUtils.count_event_breed
 local weighted_random_terror_events = {
 	forest_end = {
 		"forest_end_event_a",
@@ -38,8 +20,6 @@ local weighted_random_terror_events = {
 		1,
 	},
 }
-local HARDER = 4
-local HARDEST = 5
 local terror_event_blueprints = {
 	forest_ambush_pvp_pacing_off = {
 		{
@@ -1067,4 +1047,7 @@ local terror_event_blueprints = {
 	},
 }
 
-return terror_event_blueprints, weighted_random_terror_events
+return {
+	terror_event_blueprints,
+	weighted_random_terror_events,
+}

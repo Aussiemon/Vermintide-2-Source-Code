@@ -433,6 +433,14 @@ BTBotShootAction._aim = function (self, unit, blackboard, dt, t)
 	local evaluate = done_firing and (shoot_bb.fired and t > shoot_bb.next_evaluate or t > shoot_bb.next_evaluate_without_firing)
 
 	if evaluate then
+		if script_data.ai_bots_debug_behavior then
+			if shoot_bb.fired then
+				script_data.ai_bots_debug_behavior_data.ranged_attacks = script_data.ai_bots_debug_behavior_data.ranged_attacks + 1
+			else
+				script_data.ai_bots_debug_behavior_data.failed_ranged_attacks = script_data.ai_bots_debug_behavior_data.failed_ranged_attacks + 1
+			end
+		end
+
 		shoot_bb.next_evaluate = t + action_data.evaluation_duration
 		shoot_bb.next_evaluate_without_firing = t + action_data.evaluation_duration_without_firing
 		shoot_bb.fired = false

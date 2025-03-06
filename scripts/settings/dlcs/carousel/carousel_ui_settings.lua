@@ -599,19 +599,9 @@ settings.start_game_window_layout_console = {
 settings.controller_settings = {
 	PlayerControllerKeymaps = {
 		win32 = {
-			ping_only_enemy = {
-				"keyboard",
-				UNASSIGNED_KEY,
-				"pressed",
-			},
 			ping_only_movement = {
-				"keyboard",
-				UNASSIGNED_KEY,
-				"pressed",
-			},
-			ping_only_item = {
-				"keyboard",
-				UNASSIGNED_KEY,
+				"mouse",
+				"middle",
 				"pressed",
 			},
 		},

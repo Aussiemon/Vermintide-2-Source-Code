@@ -195,6 +195,7 @@ BTStormVerminAttackAction.leave = function (self, unit, blackboard, t, reason, d
 	blackboard.reset_attack_animation_locked = nil
 	blackboard.reset_attack_delay = nil
 	blackboard.past_damage_in_attack = nil
+	blackboard.bot_threat_at_t = nil
 
 	local action = blackboard.action
 	local reset_stagger_count = action.reset_stagger_count

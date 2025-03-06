@@ -1,9 +1,5 @@
 ﻿-- chunkname: @scripts/settings/terror_events/terror_events_generic.lua
 
-local function count_bosses_alive()
-	return #Managers.state.conflict:alive_bosses()
-end
-
 GenericTerrorEvents = {
 	encampment = {
 		{

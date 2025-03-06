@@ -32,7 +32,7 @@ string.split_deprecated = function (str, sep, dest)
 	return _fields
 end
 
-string.split = function (str, sep, dest)
+string.split = function (str, sep, dest, pattern)
 	sep = sep or " "
 	dest = dest or {}
 
@@ -53,13 +53,13 @@ string.split = function (str, sep, dest)
 	end
 
 	local offset = 1
-	local from, to = string.find(str, sep, offset, true)
+	local from, to = string.find(str, sep, offset, not pattern)
 
 	while from do
 		count = count + 1
 		dest[count] = string.sub(str, offset, from - 1)
 		offset = to + 1
-		from, to = string.find(str, sep, offset, true)
+		from, to = string.find(str, sep, offset, not pattern)
 	end
 
 	count = count + 1
@@ -217,19 +217,78 @@ string.pad_left = function (str, target_length, pad_str)
 	return str
 end
 
-string.pad_right = function (str, target_length, pad_str)
+string.pad_right = function (str, target_length, pad_str, cache)
 	local str_size = #str
 	local pad_size = #pad_str
 
+	if cache then
+		local slack = math.max(0, target_length - str_size)
+		local cached = cache[slack]
+
+		if cached then
+			return str .. cached
+		end
+
+		cache[slack] = string.pad_right("", slack, pad_str)
+
+		return str .. cache[slack]
+	end
+
+	local padding = ""
+
 	for i = str_size + pad_size, target_length, pad_size do
-		str = str .. pad_str
+		padding = padding .. pad_str
 	end
 
 	local rest = (target_length - str_size) % pad_size
 
 	if rest ~= 0 then
-		str = str .. string.sub(pad_str, 1, rest)
+		padding = padding .. string.sub(pad_str, 1, rest)
+	end
+
+	return str .. padding
+end
+
+string.rep = function (rep, n)
+	local str = ""
+
+	for i = 1, n do
+		str = str .. rep
 	end
 
 	return str
+end
+
+local chunk_scratch = {}
+
+string.chunk_from_right = function (str, step_n, sep)
+	sep = sep or " "
+
+	local str_len = #str
+	local chunk_part_n = math.floor(str_len / step_n)
+	local offset = 0
+	local rest = str_len % step_n
+
+	if rest > 0 then
+		chunk_scratch[1] = string.sub(str, 1, rest)
+		offset = 1
+	end
+
+	for i = 1, chunk_part_n do
+		chunk_scratch[chunk_part_n - i + 1 + offset] = string.sub(str, -i * step_n, -(i - 1) * step_n - 1)
+	end
+
+	local res = table.concat(chunk_scratch, sep)
+
+	table.clear(chunk_scratch)
+
+	return res
+end
+
+local function hexchar(c)
+	return format("%02x", string.byte(c))
+end
+
+string.tohex = function (str)
+	return gsub(str, ".", hexchar)
 end

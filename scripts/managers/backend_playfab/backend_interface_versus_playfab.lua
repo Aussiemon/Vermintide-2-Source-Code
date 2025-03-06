@@ -379,3 +379,29 @@ end
 BackendInterfaceVersusPlayFab.is_player_in_backfilling_data = function (self, player_id)
 	return table.contains(self._backfilling_player_ids, player_id)
 end
+
+BackendInterfaceVersusPlayFab.matchmaking_enabled = function (self, matchmaking_type)
+	local backend_manager = Managers.backend
+	local title_settings = backend_manager:get_title_settings()
+	local matchmaking_settings = title_settings.versus.matchmaking_settings
+
+	if not matchmaking_settings then
+		return true
+	end
+
+	local type_settings = matchmaking_settings[matchmaking_type]
+
+	if not type_settings then
+		return true
+	end
+
+	local enabled = type_settings.enabled
+
+	if enabled == nil then
+		return true
+	end
+
+	local reason = type_settings.disabled_reason
+
+	return enabled, reason
+end

@@ -73,6 +73,7 @@ local breed_data = {
 			StatusEffectNames.burning_warpfire,
 		}),
 	},
+	run_on_spawn = AiBreedSnippets.on_skaven_explosive_loot_rat_spawn,
 	debug_color = {
 		255,
 		100,

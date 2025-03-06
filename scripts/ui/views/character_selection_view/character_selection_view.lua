@@ -285,7 +285,7 @@ CharacterSelectionView._has_active_level_vote = function (self)
 end
 
 CharacterSelectionView.on_enter = function (self, params)
-	ShowCursorStack.push()
+	ShowCursorStack.show("CharacterSelectionView")
 
 	local input_manager = self.input_manager
 
@@ -553,7 +553,7 @@ CharacterSelectionView.on_exit = function (self, params)
 	self.input_manager:device_unblock_all_services("keyboard", 1)
 	self.input_manager:device_unblock_all_services("mouse", 1)
 	self.input_manager:device_unblock_all_services("gamepad", 1)
-	ShowCursorStack.pop()
+	ShowCursorStack.hide("CharacterSelectionView")
 
 	self.exiting = nil
 

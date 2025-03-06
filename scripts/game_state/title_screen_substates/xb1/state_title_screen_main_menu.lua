@@ -242,7 +242,7 @@ StateTitleScreenMainMenu._setup_sound = function (self)
 end
 
 StateTitleScreenMainMenu.cb_camera_animation_complete = function (self)
-	ShowCursorStack.push()
+	ShowCursorStack.show("StateTitleScreenMainMenu")
 	self._title_start_ui:activate_career_ui(true)
 end
 

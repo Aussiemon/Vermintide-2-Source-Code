@@ -124,21 +124,11 @@ StateTitleScreen.on_enter = function (self, params)
 		Managers.backend:stop_tutorial()
 	end
 
-	ShowCursorStack.push()
+	ShowCursorStack.show("StateTitleScreen")
 end
 
 StateTitleScreen._load_global_resources = function (self)
-	if not GlobalResources.loaded then
-		local package_manager = Managers.package
-
-		for i, name in ipairs(GlobalResources) do
-			if not package_manager:has_loaded(name, "global") then
-				package_manager:load(name, "global", nil, true)
-			end
-		end
-
-		GlobalResources.loaded = true
-	end
+	GlobalResources.update_loading()
 end
 
 StateTitleScreen._demo_hack_state_managers = function (self)
@@ -460,5 +450,5 @@ StateTitleScreen.on_exit = function (self, application_shutdown)
 		Managers.music:trigger_event("Stop_menu_screen_music")
 	end
 
-	ShowCursorStack.pop()
+	ShowCursorStack.hide("StateTitleScreen")
 end

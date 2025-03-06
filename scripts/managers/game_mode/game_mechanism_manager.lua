@@ -536,20 +536,6 @@ GameMechanismManager.mechanism_try_call = function (self, method_name, ...)
 	return false
 end
 
-GameMechanismManager.mechanism_try_call = function (self, method_name, ...)
-	local mechanism = self._game_mechanism
-
-	if mechanism then
-		local method = mechanism[method_name]
-
-		if method then
-			return true, method(mechanism, ...)
-		end
-	end
-
-	return false
-end
-
 GameMechanismManager.rpc_level_load_started = function (self, channel_id, session_id)
 	local level_transition_handler = Managers.level_transition_handler
 	local current_session_id = level_transition_handler:get_current_level_session_id()

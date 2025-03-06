@@ -72,7 +72,7 @@ TextPopupUI.show = function (self, header_localization_key, text_localization_ke
 	self._draw_widgets = true
 	self.is_visible = true
 
-	ShowCursorStack.push()
+	ShowCursorStack.show("TextPopupUI")
 	self._input_manager:capture_input({
 		"keyboard",
 		"gamepad",
@@ -88,7 +88,7 @@ TextPopupUI.hide = function (self)
 	self._draw_widgets = false
 	self.is_visible = false
 
-	ShowCursorStack.pop()
+	ShowCursorStack.hide("TextPopupUI")
 	self._input_manager:release_input({
 		"keyboard",
 		"gamepad",

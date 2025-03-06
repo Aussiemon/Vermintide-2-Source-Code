@@ -1371,7 +1371,6 @@ end
 
 local URGENT_TARGET_REVIVE_MIN_DISTANCE_SQ = {
 	chaos_corruptor_sorcerer = 100,
-	chaos_plague_sorcerer = 25,
 	skaven_pack_master = 49,
 	skaven_poison_wind_globadier = 25,
 	skaven_ratling_gunner = 25,

@@ -1,5 +1,7 @@
 ﻿-- chunkname: @scripts/settings/breeds/breed_tweaks.lua
 
+require("foundation/scripts/util/math")
+
 BreedTweaks = {}
 
 local health_step_multipliers = {

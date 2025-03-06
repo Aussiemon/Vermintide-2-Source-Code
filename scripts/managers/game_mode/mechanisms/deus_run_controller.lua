@@ -775,12 +775,12 @@ DeusRunController.record_cursed_chest_purified = function (self)
 	end
 end
 
-DeusRunController.save_persisted_score = function (self, statistics_db, peer_id, local_player_id)
-	local stats_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
+DeusRunController.save_persisted_score = function (self, statistics_db, stats_id)
+	local peer_id, local_player_id = PlayerUtils.split_unique_player_id(stats_id)
 	local saved_data = {}
 
 	for index, stat_type in ipairs(stats_to_save) do
-		if statistics_db:has_stat(stats_id, unpack(stat_type)) then
+		if statistics_db:has_stat(unpack(stat_type)) then
 			saved_data[index] = statistics_db:get_stat(stats_id, unpack(stat_type))
 		else
 			saved_data[index] = 0

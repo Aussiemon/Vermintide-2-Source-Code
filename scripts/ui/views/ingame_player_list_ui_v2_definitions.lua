@@ -3369,7 +3369,7 @@ local function player_widget_definition(index)
 					0,
 				},
 				offset = {
-					-170,
+					-165,
 					10,
 					1,
 				},
@@ -3388,7 +3388,7 @@ local function player_widget_definition(index)
 					128,
 				},
 				offset = {
-					-170,
+					-165,
 					10,
 					3,
 				},
@@ -3411,7 +3411,7 @@ local function player_widget_definition(index)
 					255,
 				},
 				offset = {
-					-170,
+					-165,
 					10,
 					2,
 				},
@@ -3430,7 +3430,7 @@ local function player_widget_definition(index)
 					0,
 				},
 				offset = {
-					-120,
+					-115,
 					10,
 					3,
 				},
@@ -3449,7 +3449,7 @@ local function player_widget_definition(index)
 					128,
 				},
 				offset = {
-					-120,
+					-115,
 					10,
 					6,
 				},
@@ -3472,7 +3472,7 @@ local function player_widget_definition(index)
 					255,
 				},
 				offset = {
-					-120,
+					-115,
 					10,
 					4,
 				},
@@ -3491,7 +3491,7 @@ local function player_widget_definition(index)
 					0,
 				},
 				offset = {
-					-120,
+					-115,
 					10,
 					5,
 				},
@@ -3510,7 +3510,7 @@ local function player_widget_definition(index)
 					0,
 				},
 				offset = {
-					-70,
+					-65,
 					10,
 					1,
 				},
@@ -3529,7 +3529,7 @@ local function player_widget_definition(index)
 					128,
 				},
 				offset = {
-					-70,
+					-65,
 					10,
 					6,
 				},
@@ -3552,7 +3552,7 @@ local function player_widget_definition(index)
 					255,
 				},
 				offset = {
-					-70,
+					-65,
 					10,
 					4,
 				},
@@ -3571,7 +3571,7 @@ local function player_widget_definition(index)
 					0,
 				},
 				offset = {
-					-70,
+					-65,
 					10,
 					5,
 				},
@@ -3590,7 +3590,7 @@ local function player_widget_definition(index)
 					0,
 				},
 				offset = {
-					-20 + 0 * -50,
+					-15 + 0 * -50,
 					10,
 					3,
 				},
@@ -3609,7 +3609,7 @@ local function player_widget_definition(index)
 					128,
 				},
 				offset = {
-					-20 + 0 * -50,
+					-15 + 0 * -50,
 					10,
 					6,
 				},
@@ -3632,7 +3632,7 @@ local function player_widget_definition(index)
 					255,
 				},
 				offset = {
-					-20 + 0 * -50,
+					-15 + 0 * -50,
 					10,
 					4,
 				},

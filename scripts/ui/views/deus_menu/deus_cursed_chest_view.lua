@@ -369,7 +369,7 @@ DeusCursedChestView._acquire_input = function (self, ignore_cursor_stack)
 	input_manager:block_device_except_service(input_service_name, "gamepad")
 
 	if not ignore_cursor_stack then
-		ShowCursorStack.push()
+		ShowCursorStack.show("DeusCursedChestView")
 		input_manager:enable_gamepad_cursor()
 	end
 end
@@ -384,7 +384,7 @@ DeusCursedChestView._release_input = function (self, ignore_cursor_stack)
 	}, 1, self._input_service_name, "DeusCursedChestView")
 
 	if not ignore_cursor_stack then
-		ShowCursorStack.pop()
+		ShowCursorStack.hide("DeusCursedChestView")
 		input_manager:disable_gamepad_cursor()
 	end
 end

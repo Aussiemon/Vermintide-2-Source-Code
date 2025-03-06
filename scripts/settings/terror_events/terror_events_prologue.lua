@@ -1,10 +1,7 @@
 ﻿-- chunkname: @scripts/settings/terror_events/terror_events_prologue.lua
 
-local function count_event_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
-end
-
-local weighted_random_terror_events
+local TerrorEventUtils = require("scripts/settings/terror_events/terror_event_utils")
+local count_event_breed = TerrorEventUtils.count_event_breed
 local terror_event_blueprints = {
 	prologue_well_02 = {
 		{
@@ -575,4 +572,6 @@ local terror_event_blueprints = {
 	},
 }
 
-return terror_event_blueprints, weighted_random_terror_events
+return {
+	terror_event_blueprints,
+}

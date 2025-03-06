@@ -1,10 +1,7 @@
 ﻿-- chunkname: @scripts/settings/terror_events/terror_events_dlc_morris_arena_belakor.lua
 
-local RECRUIT = 2
-local VETERAN = 3
-local CHAMPION = 4
-local LEGENDARY = 5
-local CATACLYSM = 6
+local TerrorEventUtils = require("scripts/settings/terror_events/terror_event_utils")
+local HARDEST = TerrorEventUtils.HARDEST
 local SHORT = 8
 local LONG = 16
 local AROUND_STATUE_SPAWNS_DELAY_WAVE_1 = 2
@@ -15,7 +12,6 @@ local AROUND_STATUE_SPAWNS_SPAWN_SPAWN_DISTANCE_MED = 9
 local AROUND_STATUE_SPAWNS_SPAWN_DISTANCE_LONG = 9
 local AROUND_STATUE_SPAWNS_SPREAD_TIGHT = 4
 local AROUND_STATUE_SPAWNS_SPREAD_MED = 4
-local AROUND_STATUE_SPAWNS_SPREAD_WIDE = 4
 local DECAL_RADIUS_MAP = {
 	boss = 2,
 	default = 1,
@@ -490,7 +486,7 @@ terror_event_blueprints.arena_belakor_terror_skaven_specials = {
 			hardest = 1,
 			normal = 1,
 		},
-		difficulty_requirement = LEGENDARY,
+		difficulty_requirement = HARDEST,
 	},
 	{
 		"delay",
@@ -544,7 +540,7 @@ terror_event_blueprints.arena_belakor_terror_chaos_specials = {
 			hardest = 1,
 			normal = 1,
 		},
-		difficulty_requirement = LEGENDARY,
+		difficulty_requirement = HARDEST,
 	},
 	{
 		"delay",
@@ -3557,4 +3553,6 @@ terror_event_blueprints.arena_belakor_around_statue_spawns_beastmen_minotaur = {
 	},
 }
 
-return terror_event_blueprints
+return {
+	terror_event_blueprints,
+}

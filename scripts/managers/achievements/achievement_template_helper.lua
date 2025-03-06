@@ -56,7 +56,7 @@ AchievementTemplateHelper.rpc_modify_stat = function (unit, stat_name, amount)
 	end
 end
 
-AchievementTemplateHelper.check_level_difficulty = function (statistics_db, stats_id, level_id, difficulty_rank, career, streak)
+AchievementTemplateHelper.check_level_difficulty = function (statistics_db, stats_id, level_id, difficulty_rank, career)
 	local difficulty_manager = Managers.state.difficulty
 
 	if not difficulty_manager then
@@ -68,7 +68,7 @@ AchievementTemplateHelper.check_level_difficulty = function (statistics_db, stat
 
 	if not career then
 		difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_id)
-	elseif not streak then
+	else
 		for i = #difficulties, 1, -1 do
 			local wins = statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career, level_id, difficulties[i])
 
@@ -78,8 +78,6 @@ AchievementTemplateHelper.check_level_difficulty = function (statistics_db, stat
 				break
 			end
 		end
-	else
-		difficulty_index = statistics_db:get_persistent_stat(stats_id, "mission_streak", career, level_id)
 	end
 
 	local difficulty_key = difficulties[difficulty_index]

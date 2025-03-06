@@ -748,7 +748,6 @@ HeroViewStateOverview._handle_input = function (self, dt, t)
 	local input_blocked = self._input_blocked
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local input_paused = self._input_paused and gamepad_active
-	local window_focused = self._window_focused
 
 	if input_blocked or input_paused then
 		return

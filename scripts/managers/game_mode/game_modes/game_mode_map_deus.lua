@@ -67,8 +67,8 @@ SharedState.validate_spec(shared_state_spec)
 
 GameModeMapDeus = class(GameModeMapDeus, GameModeBase)
 
-GameModeMapDeus.init = function (self, settings, world, network_server, is_server, profile_synchronizer, level_key, statistics_db, game_mode_settings)
-	GameModeMapDeus.super.init(self, settings, world, network_server, is_server, profile_synchronizer, level_key, statistics_db, game_mode_settings)
+GameModeMapDeus.init = function (self, settings, world, network_handler, is_server, profile_synchronizer, level_key, statistics_db, game_mode_settings)
+	GameModeMapDeus.super.init(self, settings, world, network_handler, is_server, profile_synchronizer, level_key, statistics_db, game_mode_settings)
 	fassert(game_mode_settings.deus_run_controller, "GameModeMapDeus is missing initialization data, see DeusMechanism.")
 
 	self._deus_run_controller = game_mode_settings.deus_run_controller
@@ -76,7 +76,7 @@ GameModeMapDeus.init = function (self, settings, world, network_server, is_serve
 
 	local server_peer_id = self._deus_run_controller:get_server_peer_id()
 
-	self._shared_state = SharedState:new("deus_game_mode_map_" .. self._deus_run_controller:get_run_id(), shared_state_spec, is_server, network_server, server_peer_id, self._own_peer_id)
+	self._shared_state = SharedState:new("deus_game_mode_map_" .. self._deus_run_controller:get_run_id(), shared_state_spec, is_server, is_server and network_handler or nil, server_peer_id, self._own_peer_id)
 	self._is_server = is_server
 	self._ui_done = true
 	self._adventure_profile_rules = AdventureProfileRules:new(self._profile_synchronizer, self._network_server)
@@ -92,7 +92,7 @@ GameModeMapDeus.init = function (self, settings, world, network_server, is_serve
 		input_manager = Managers.input,
 		deus_run_controller = self._deus_run_controller,
 		wwise_world = Managers.world:wwise_world(world),
-		network_server = network_server,
+		network_server = is_server and network_handler or nil,
 		own_peer_id = self._own_peer_id,
 		world = world,
 	}
@@ -163,8 +163,6 @@ GameModeMapDeus.profile_changed = function (self, peer_id, local_player_id, prof
 		CosmeticUtils.sync_local_player_cosmetics(player, profile_index, career_index)
 	end
 end
-
-local EMPTY_TABLE = {}
 
 GameModeMapDeus.mutators = function (self)
 	local mutators_list = {}

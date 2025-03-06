@@ -619,9 +619,37 @@ local filter_macros = {
 	end,
 	is_event_item = function (item, backend_id)
 		local item_data = item.data
-		local event_bound = item_data.event_item
+		local is_event_item = not not item_data.events
 
-		return event_bound
+		return is_event_item
+	end,
+	is_active_event_item = function (item, backend_id)
+		local is_part_of_active_event = false
+		local item_data = item.data
+		local events = item_data.events
+
+		if events then
+			local live_events_interface = Managers.backend:get_interface("live_events")
+			local live_events = live_events_interface and live_events_interface:get_active_events()
+
+			if live_events then
+				local is_event_item = false
+
+				for i = 1, #events do
+					local event = events[i]
+
+					is_event_item = not not table.find(live_events, event)
+
+					if is_event_item == true then
+						is_part_of_active_event = true
+
+						break
+					end
+				end
+			end
+		end
+
+		return is_part_of_active_event
 	end,
 }
 

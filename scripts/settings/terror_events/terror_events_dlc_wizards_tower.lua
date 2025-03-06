@@ -1,66 +1,12 @@
 ﻿-- chunkname: @scripts/settings/terror_events/terror_events_dlc_wizards_tower.lua
 
-local function count_event_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
-end
-
-local function count_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed(breed_name)
-end
-
-local function current_intensity()
-	return Managers.state.conflict.pacing:get_intensity()
-end
-
-local function current_difficulty()
-	return Managers.state.difficulty.difficulty
-end
-
-local function num_spawned_enemies()
-	local spawned_enemies = Managers.state.conflict:spawned_enemies()
-
-	return #spawned_enemies
-end
-
-local function num_spawned_enemies_during_event()
-	local spawned_enemies = Managers.state.conflict:enemies_spawned_during_event()
-
-	return spawned_enemies
-end
-
-local function num_alive_standards()
-	local alive_standards = Managers.state.conflict:alive_standards()
-
-	return #alive_standards
-end
-
-local horde_sound_settings = {
-	skaven = {
-		stinger_sound_event = "enemy_horde_stinger",
-		music_states = {
-			horde = "horde",
-		},
-	},
-	chaos = {
-		stinger_sound_event = "enemy_horde_chaos_stinger",
-		music_states = {
-			horde = "horde_chaos",
-			pre_ambush = "pre_ambush_chaos",
-		},
-	},
-	beastmen = {
-		stinger_sound_event = "enemy_horde_beastmen_stinger",
-		music_states = {
-			horde = "horde_beastmen",
-			pre_ambush = "pre_ambush_beastmen",
-		},
-	},
-}
-local NORMAL = 2
-local HARD = 3
-local HARDER = 4
-local HARDEST = 5
-local CATACLYSM = 6
+local TerrorEventUtils = require("scripts/settings/terror_events/terror_event_utils")
+local count_event_breed = TerrorEventUtils.count_event_breed
+local num_spawned_enemies = TerrorEventUtils.num_spawned_enemies
+local HARD = TerrorEventUtils.HARD
+local HARDER = TerrorEventUtils.HARDER
+local HARDEST = TerrorEventUtils.HARDEST
+local CATACLYSM = TerrorEventUtils.CATACLYSM
 local weighted_random_terror_events = {
 	wt_end_event_intro_wave = {
 		"wt_end_event_intro_wave_a",
@@ -1367,7 +1313,6 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "chaos_warrior",
 			spawner_id = "end_event_warriors_recruit",
-			difficulty_requirement = NORMAL,
 		},
 		{
 			"delay",
@@ -1784,4 +1729,7 @@ local terror_event_blueprints = {
 	},
 }
 
-return terror_event_blueprints, weighted_random_terror_events
+return {
+	terror_event_blueprints,
+	weighted_random_terror_events,
+}

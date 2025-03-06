@@ -132,7 +132,7 @@ CommonPopup.acquire_input = function (self)
 	local input_manager = self._input_manager
 
 	if input_manager then
-		ShowCursorStack.push()
+		ShowCursorStack.show("CommonPopup")
 		input_manager:capture_input(ALL_INPUT_METHODS, 1, self._input_service_name, "CommonPopup")
 	end
 end
@@ -141,7 +141,7 @@ CommonPopup.release_input = function (self)
 	local input_manager = self._input_manager
 
 	if input_manager then
-		ShowCursorStack.pop()
+		ShowCursorStack.hide("CommonPopup")
 		input_manager:release_input(ALL_INPUT_METHODS, 1, self._input_service_name, "CommonPopup")
 	end
 end

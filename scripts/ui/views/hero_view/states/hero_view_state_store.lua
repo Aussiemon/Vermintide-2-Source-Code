@@ -182,7 +182,39 @@ HeroViewStateStore.on_enter = function (self, params)
 	local unseen_currency_rewards = backend_store:get_unseen_currency_rewards()
 
 	if unseen_currency_rewards then
-		self:_trigger_welcome_popup(unseen_currency_rewards)
+		self._rewards_data = {}
+
+		local includes_base_game_reward = false
+
+		for i = 1, #unseen_currency_rewards do
+			local reward = unseen_currency_rewards[i]
+			local currency_type = reward.currency_type
+			local rewarded_from = reward.rewarded_from
+			local currency_amount = reward.currency_amount
+			local currency_data = self._rewards_data[currency_type] or {}
+			local current_amount = currency_data[rewarded_from] or 0
+
+			currency_data[rewarded_from] = current_amount + currency_amount
+			self._rewards_data[currency_type] = currency_data
+
+			if currency_type == "SM" and currency_amount == 750 and rewarded_from == "base_game" then
+				includes_base_game_reward = true
+			end
+		end
+
+		if includes_base_game_reward then
+			self:_trigger_welcome_popup(self._rewards_data.SM)
+
+			self._rewards_data.SM = nil
+		else
+			local code, rewards = next(self._rewards_data)
+
+			if rewards then
+				self:_trigger_generic_rewards_popup(code, rewards)
+
+				self._rewards_data[code] = nil
+			end
+		end
 	end
 
 	self:_apply_global_shader_flag_overrides()
@@ -212,75 +244,22 @@ HeroViewStateStore._remove_global_shader_flag_overrides = function (self)
 	end
 end
 
-HeroViewStateStore._trigger_welcome_popup = function (self, unseen_currency_rewards)
+HeroViewStateStore._collect_unseen_rewards_entries = function (self, unseen_currency_rewards)
 	local reward_data = {}
 	local includes_dlc_rewards = false
-	local includes_base_game_reward = false
 
-	for i = 1, #unseen_currency_rewards do
-		local reward = unseen_currency_rewards[i]
-
+	for rewarded_from, amount in pairs(unseen_currency_rewards) do
+		includes_dlc_rewards = includes_dlc_rewards or rewarded_from ~= "base_game"
 		reward_data[#reward_data + 1] = {
-			value = reward.currency_amount,
-			rewarded_from = reward.rewarded_from,
-		}
-		includes_dlc_rewards = includes_dlc_rewards or reward.rewarded_from ~= "base_game"
-		includes_base_game_reward = includes_base_game_reward or reward.rewarded_from == "base_game"
-	end
-
-	local layout = {
-		{
-			type = "body",
-			settings = {
-				localize = true,
-				text = "welcome_currency_popup_intro_description_1",
-			},
-		},
-	}
-
-	if includes_base_game_reward then
-		layout[#layout + 1] = {
-			type = "body",
-			settings = {
-				localize = true,
-				text = "welcome_currency_popup_intro_description_2_no_dlc",
-			},
-		}
-
-		if includes_dlc_rewards then
-			layout[#layout + 1] = {
-				type = "body",
-				settings = {
-					localize = true,
-					text = "welcome_currency_popup_intro_description_2",
-				},
-			}
-		end
-	elseif includes_dlc_rewards then
-		layout[#layout + 1] = {
-			type = "body",
-			settings = {
-				localize = true,
-				text = "welcome_currency_popup_intro_description_2",
-			},
-		}
-		layout[#layout + 1] = {
-			type = "body",
-			settings = {
-				text = "",
-			},
+			value = amount,
+			rewarded_from = rewarded_from,
 		}
 	end
 
-	layout[#layout + 1] = {
-		type = "summary_title",
-		settings = {
-			localize = true,
-			text = "welcome_currency_popup_rewards_title",
-			text2 = "welcome_currency_popup_currency_name",
-		},
-	}
+	return reward_data, includes_dlc_rewards
+end
 
+HeroViewStateStore._build_popup = function (self, currency_code, reward_data, layout, is_welcome_popup)
 	local starting_line_count = #layout
 	local total_amount = 0
 
@@ -322,9 +301,94 @@ HeroViewStateStore._trigger_welcome_popup = function (self, unseen_currency_rewa
 		total_amount = total_amount + value
 	end
 
-	self._welcome_popup = StoreWelcomePopup:new(self._ingame_ui, layout, total_amount)
+	self._welcome_popup = StoreWelcomePopup:new(self._ingame_ui, layout, currency_code, total_amount, is_welcome_popup)
 
 	self:block_input()
+end
+
+HeroViewStateStore._trigger_generic_rewards_popup = function (self, currency_code, unseen_currency_rewards, includes_base_game_reward)
+	local reward_data, includes_dlc_rewards = self:_collect_unseen_rewards_entries(unseen_currency_rewards)
+	local layout = {
+		{
+			type = "body",
+			settings = {
+				localize = true,
+				text = "generic_currency_popup_description_1",
+			},
+		},
+	}
+
+	if includes_dlc_rewards then
+		layout[#layout + 1] = {
+			type = "body",
+			settings = {
+				localize = true,
+				text = "welcome_currency_popup_intro_description_2",
+			},
+		}
+		layout[#layout + 1] = {
+			type = "body",
+			settings = {
+				text = "",
+			},
+		}
+	end
+
+	local currency_ui_settings = DLCSettings.store.currency_ui_settings
+	local currency_settings = currency_ui_settings[currency_code]
+
+	currency_settings = currency_settings or currency_ui_settings.SM
+	layout[#layout + 1] = {
+		type = "summary_title",
+		settings = {
+			localize = true,
+			text = "welcome_currency_popup_rewards_title",
+			text2 = currency_settings.name,
+		},
+	}
+
+	self:_build_popup(currency_code, reward_data, layout, false)
+end
+
+HeroViewStateStore._trigger_welcome_popup = function (self, unseen_currency_rewards)
+	local reward_data, includes_dlc_rewards = self:_collect_unseen_rewards_entries(unseen_currency_rewards)
+	local layout = {
+		{
+			type = "body",
+			settings = {
+				localize = true,
+				text = "welcome_currency_popup_intro_description_1",
+			},
+		},
+		{
+			type = "body",
+			settings = {
+				localize = true,
+				text = "welcome_currency_popup_intro_description_2_no_dlc",
+			},
+		},
+	}
+
+	if includes_dlc_rewards then
+		layout[#layout + 1] = {
+			type = "body",
+			settings = {
+				localize = true,
+				text = "welcome_currency_popup_intro_description_2",
+			},
+		}
+	end
+
+	layout[#layout + 1] = {
+		type = "summary_title",
+		settings = {
+			localize = true,
+			text = "welcome_currency_popup_rewards_title",
+			text2 = "welcome_currency_popup_currency_name",
+		},
+	}
+
+	self:_build_popup("SM", reward_data, layout, true)
 end
 
 HeroViewStateStore._has_unseen_items_tab_cat = function (self)
@@ -1048,6 +1112,16 @@ HeroViewStateStore._delayed_update = function (self, dt, t)
 			self._welcome_popup = nil
 
 			self:unblock_input()
+
+			if self._rewards_data then
+				local code, rewards = next(self._rewards_data)
+
+				if rewards then
+					self:_trigger_generic_rewards_popup(code, rewards)
+
+					self._rewards_data[code] = nil
+				end
+			end
 		end
 	end
 

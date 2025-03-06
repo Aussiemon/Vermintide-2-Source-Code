@@ -523,11 +523,16 @@ SharedState.set_peer = function (self, owner, key, value)
 	end
 
 	fassert(value ~= nil, "value can't be nil")
-	fassert(type(value) == self._spec.peer[key.key_type].type, "value type is not the same as the spec defines.")
+
+	local spec = self._spec.peer[key.key_type]
+
+	fassert(type(value) == spec.type, "value type is not the same as the spec defines.")
 	set(self._peer_state, owner, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, key.party_id, value)
 
 	if owner == self._peer_id then
-		dprintf("%s: <set %s> %s:%s:%d:%d:%d:%d = %s", self._original_context, owner, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, key.party_id, printable_value(value))
+		if not spec.mute_print then
+			dprintf("%s: <set %s> %s:%s:%d:%d:%d:%d = %s", self._original_context, owner, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, key.party_id, printable_value(value))
+		end
 
 		local encoder = self._spec.peer[key.key_type].encode
 		local encoded_value = encoder and encoder(value) or value
@@ -549,7 +554,7 @@ SharedState.set_peer = function (self, owner, key, value)
 
 			send_set_peer_rpc(channel_id, self._context, self._peer_id, self._key_type_lookup[key.key_type], key.peer_id, key.local_player_id, key.profile_index, key.career_index, key.party_id, encoded_value)
 		end
-	else
+	elseif not spec.mute_print then
 		dprintf("%s: <set prediction %s> %s:%s:%d:%d:%d:%d = %s", self._original_context, owner, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, key.party_id, printable_value(value))
 	end
 
@@ -610,11 +615,16 @@ SharedState.set_server = function (self, key, value)
 	end
 
 	fassert(value ~= nil, "value can't be nil")
-	fassert(type(value) == self._spec.server[key.key_type].type, "value type is not the same as the spec defines.")
+
+	local spec = self._spec.server[key.key_type]
+
+	fassert(type(value) == spec.type, "value type is not the same as the spec defines.")
 	set_server(self._server_state, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, key.party_id, value)
 
 	if self._is_server then
-		dprintf("%s: <set server> %s:%s:%d:%d:%d:%d = %s", self._original_context, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, key.party_id, printable_value(value))
+		if not spec.mute_print then
+			dprintf("%s: <set server> %s:%s:%d:%d:%d:%d = %s", self._original_context, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, key.party_id, printable_value(value))
+		end
 
 		local encoder = self._spec.server[key.key_type].encode
 		local encoded_value = encoder and encoder(value) or value
@@ -630,7 +640,7 @@ SharedState.set_server = function (self, key, value)
 				end
 			end
 		end
-	else
+	elseif not spec.mute_print then
 		dprintf("%s: <set server prediction> %s:%s:%d:%d:%d:%d = %s", self._original_context, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, key.party_id, printable_value(value))
 	end
 
@@ -858,10 +868,14 @@ end
 
 SharedState._set_rpc = function (self, sender_channel_id, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value)
 	local key_type = self._key_type_lookup[key_type_lookup]
-	local decoder = self._spec.peer[key_type].decode
+	local spec = self._spec.peer[key_type]
+	local decoder = spec.decode
 	local value = decoder and decoder(encoded_value) or encoded_value
 
-	dprintf("%s: <rpc set %s> %s:%s:%d:%d:%d:%d = %s", self._original_context, owner, key_type, peer_id, local_player_id, profile_index, career_index, party_id, printable_value(value))
+	if not spec.mute_print then
+		dprintf("%s: <rpc set %s> %s:%s:%d:%d:%d:%d = %s", self._original_context, owner, key_type, peer_id, local_player_id, profile_index, career_index, party_id, printable_value(value))
+	end
+
 	set(self._peer_state, owner, key_type, peer_id, local_player_id, profile_index, career_index, party_id, value)
 
 	if self._is_server then
@@ -910,10 +924,14 @@ SharedState._set_server_rpc = function (self, sender_channel_id, key_type_lookup
 	end
 
 	local key_type = self._key_type_lookup[key_type_lookup]
-	local decoder = self._spec.server[key_type].decode
+	local spec = self._spec.server[key_type]
+	local decoder = spec.decode
 	local value = decoder and decoder(encoded_value) or encoded_value
 
-	dprintf("%s: <rpc set server> %s:%s:%d:%d:%d:%d = %s", self._original_context, key_type, peer_id, local_player_id, profile_index, career_index, party_id, printable_value(value))
+	if not spec.mute_print then
+		dprintf("%s: <rpc set server> %s:%s:%d:%d:%d:%d = %s", self._original_context, key_type, peer_id, local_player_id, profile_index, career_index, party_id, printable_value(value))
+	end
+
 	set_server(self._server_state, key_type, peer_id, local_player_id, profile_index, career_index, party_id, value)
 	self:_increment_revision()
 
@@ -1050,7 +1068,7 @@ local function check_spec_part(spec_part)
 			fassert(key_param == "peer_id" or key_param == "local_player_id" or key_param == "profile_index" or key_param == "career_index" or key_param == "party_id", "spec %s invalid, invalid key_param %s, must be one of peer_id, local_player_id, profile_index, career_index, party_id", key_type)
 		end
 
-		fassert(not elem_spec.clear_when_peer_id_leaves or elem_spec.clear_when_peer_id_leaves and elem_spec.composite_keys.peer_id, "--")
+		fassert(not elem_spec.clear_when_peer_id_leaves or elem_spec.clear_when_peer_id_leaves and elem_spec.composite_keys.peer_id, "Faulty use of 'clear_when_peer_id_leaves'. Can not deduce when to clear value if peer_id is not part of composite keys.")
 	end
 end
 

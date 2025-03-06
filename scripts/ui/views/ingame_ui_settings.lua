@@ -435,8 +435,6 @@ local transitions = {
 		self.current_view = "chat_view"
 	end,
 	chat_view_force = function (self)
-		ShowCursorStack.push()
-
 		self.current_view = "chat_view"
 		self.views[self.current_view].exit_to_game = true
 	end,
@@ -800,6 +798,7 @@ local view_settings = {
 				if Managers.matchmaking:is_in_versus_custom_game_lobby() then
 					params.menu_sub_state_name = "versus_player_hosted_lobby"
 					params.panel_title_buttons_hidden = true
+					params.ignore_sub_state_on_exit = true
 				end
 			end,
 		},

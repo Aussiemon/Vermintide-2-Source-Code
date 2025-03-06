@@ -1,11 +1,8 @@
 ﻿-- chunkname: @scripts/settings/terror_events/terror_events_elven_ruins.lua
 
-local function count_event_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
-end
-
-local weighted_random_terror_events
-local HARDEST = 5
+local TerrorEventUtils = require("scripts/settings/terror_events/terror_event_utils")
+local count_event_breed = TerrorEventUtils.count_event_breed
+local HARDEST = TerrorEventUtils.HARDEST
 local terror_event_blueprints = {
 	generic_disable_specials = GenericTerrorEvents.generic_disable_specials,
 	generic_enable_specials = GenericTerrorEvents.generic_enable_specials,
@@ -762,4 +759,6 @@ local terror_event_blueprints = {
 	},
 }
 
-return terror_event_blueprints, weighted_random_terror_events
+return {
+	terror_event_blueprints,
+}

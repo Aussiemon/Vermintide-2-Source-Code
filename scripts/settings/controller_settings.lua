@@ -417,16 +417,6 @@ PlayerControllerKeymaps.win32 = InputUtils.keymaps_key_approved("win32") and {
 		"k",
 		"pressed",
 	},
-	ghost_mode_enter = {
-		"keyboard",
-		"q",
-		"pressed",
-	},
-	ghost_mode_exit = {
-		"mouse",
-		"right",
-		"pressed",
-	},
 	emote_camera_zoom = {
 		"mouse",
 		"wheel",
@@ -437,9 +427,74 @@ PlayerControllerKeymaps.win32 = InputUtils.keymaps_key_approved("win32") and {
 		"h",
 		"pressed",
 	},
+	ghost_mode_enter = {
+		"keyboard",
+		"q",
+		"pressed",
+	},
+	ghost_mode_exit = {
+		"mouse",
+		"right",
+		"pressed",
+	},
 	versus_horde_ability = {
 		"keyboard",
 		"f",
+		"pressed",
+	},
+	dark_pact_action_one = {
+		"mouse",
+		"left",
+		"pressed",
+	},
+	dark_pact_action_one_hold = {
+		"mouse",
+		"left",
+		"held",
+	},
+	dark_pact_action_one_release = {
+		"mouse",
+		"left",
+		"released",
+	},
+	dark_pact_action_two = {
+		"mouse",
+		"right",
+		"pressed",
+	},
+	dark_pact_action_two_hold = {
+		"mouse",
+		"right",
+		"held",
+	},
+	dark_pact_action_two_release = {
+		"mouse",
+		"right",
+		"released",
+	},
+	dark_pact_reload = {
+		"keyboard",
+		"r",
+		"pressed",
+	},
+	dark_pact_reload_hold = {
+		"keyboard",
+		"r",
+		"held",
+	},
+	dark_pact_interact = {
+		"keyboard",
+		"e",
+		"pressed",
+	},
+	dark_pact_interacting = {
+		"keyboard",
+		"e",
+		"held",
+	},
+	dark_pact_climb_point = {
+		"keyboard",
+		"e",
 		"pressed",
 	},
 }
@@ -707,16 +762,6 @@ PlayerControllerKeymaps.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 		"b",
 		"pressed",
 	},
-	ghost_mode_enter = {
-		"gamepad",
-		"y",
-		"pressed",
-	},
-	ghost_mode_exit = {
-		"gamepad",
-		"x",
-		"pressed",
-	},
 	emote_camera_zoom_in = {
 		"gamepad",
 		"right_trigger",
@@ -732,9 +777,74 @@ PlayerControllerKeymaps.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 		"x",
 		"pressed",
 	},
+	ghost_mode_enter = {
+		"gamepad",
+		"y",
+		"pressed",
+	},
+	ghost_mode_exit = {
+		"gamepad",
+		"x",
+		"pressed",
+	},
 	versus_horde_ability = {
 		"gamepad",
 		"d_up",
+		"pressed",
+	},
+	dark_pact_action_one = {
+		"gamepad",
+		"right_trigger",
+		"pressed",
+	},
+	dark_pact_action_one_hold = {
+		"gamepad",
+		"right_trigger",
+		"held",
+	},
+	dark_pact_action_one_release = {
+		"gamepad",
+		"right_trigger",
+		"released",
+	},
+	dark_pact_action_two = {
+		"gamepad",
+		"left_trigger",
+		"pressed",
+	},
+	dark_pact_action_two_hold = {
+		"gamepad",
+		"left_trigger",
+		"held",
+	},
+	dark_pact_action_two_release = {
+		"gamepad",
+		"left_trigger",
+		"released",
+	},
+	dark_pact_reload = {
+		"gamepad",
+		"x",
+		"pressed",
+	},
+	dark_pact_reload_hold = {
+		"gamepad",
+		"x",
+		"held",
+	},
+	dark_pact_interact = {
+		"gamepad",
+		"x",
+		"pressed",
+	},
+	dark_pact_interacting = {
+		"gamepad",
+		"x",
+		"held",
+	},
+	dark_pact_climb_point = {
+		"gamepad",
+		"x",
 		"pressed",
 	},
 }
@@ -1015,16 +1125,6 @@ PlayerControllerKeymaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		"circle",
 		"pressed",
 	},
-	ghost_mode_enter = {
-		"gamepad",
-		"triangle",
-		"pressed",
-	},
-	ghost_mode_exit = {
-		"gamepad",
-		"square",
-		"pressed",
-	},
 	emote_camera_zoom_in = {
 		"gamepad",
 		"r2",
@@ -1040,9 +1140,74 @@ PlayerControllerKeymaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		"square",
 		"pressed",
 	},
+	ghost_mode_enter = {
+		"gamepad",
+		"triangle",
+		"pressed",
+	},
+	ghost_mode_exit = {
+		"gamepad",
+		"square",
+		"pressed",
+	},
 	versus_horde_ability = {
 		"gamepad",
 		"up",
+		"pressed",
+	},
+	dark_pact_action_one = {
+		"gamepad",
+		"r2",
+		"pressed",
+	},
+	dark_pact_action_one_hold = {
+		"gamepad",
+		"r2",
+		"held",
+	},
+	dark_pact_action_one_release = {
+		"gamepad",
+		"r2",
+		"released",
+	},
+	dark_pact_action_two = {
+		"gamepad",
+		"l2",
+		"pressed",
+	},
+	dark_pact_action_two_hold = {
+		"gamepad",
+		"l2",
+		"held",
+	},
+	dark_pact_action_two_release = {
+		"gamepad",
+		"l2",
+		"released",
+	},
+	dark_pact_reload = {
+		"gamepad",
+		"square",
+		"pressed",
+	},
+	dark_pact_reload_hold = {
+		"gamepad",
+		"square",
+		"held",
+	},
+	dark_pact_interact = {
+		"gamepad",
+		"square",
+		"pressed",
+	},
+	dark_pact_interacting = {
+		"gamepad",
+		"square",
+		"held",
+	},
+	dark_pact_climb_point = {
+		"gamepad",
+		"square",
 		"pressed",
 	},
 }
@@ -1323,16 +1488,6 @@ PlayerControllerKeymaps.ps_pad = InputUtils.keymaps_key_approved("ps_pad") and {
 		"circle",
 		"pressed",
 	},
-	ghost_mode_enter = {
-		"ps_pad",
-		"triangle",
-		"pressed",
-	},
-	ghost_mode_exit = {
-		"ps_pad",
-		"square",
-		"pressed",
-	},
 	emote_camera_zoom_in = {
 		"ps_pad",
 		"r2",
@@ -1348,9 +1503,74 @@ PlayerControllerKeymaps.ps_pad = InputUtils.keymaps_key_approved("ps_pad") and {
 		"square",
 		"pressed",
 	},
+	ghost_mode_enter = {
+		"ps_pad",
+		"triangle",
+		"pressed",
+	},
+	ghost_mode_exit = {
+		"ps_pad",
+		"square",
+		"pressed",
+	},
 	versus_horde_ability = {
 		"ps_pad",
 		"up",
+		"pressed",
+	},
+	dark_pact_action_one = {
+		"ps_pad",
+		"r2",
+		"pressed",
+	},
+	dark_pact_action_one_hold = {
+		"ps_pad",
+		"r2",
+		"held",
+	},
+	dark_pact_action_one_release = {
+		"ps_pad",
+		"r2",
+		"released",
+	},
+	dark_pact_action_two = {
+		"ps_pad",
+		"l2",
+		"pressed",
+	},
+	dark_pact_action_two_hold = {
+		"ps_pad",
+		"l2",
+		"held",
+	},
+	dark_pact_action_two_release = {
+		"ps_pad",
+		"l2",
+		"released",
+	},
+	dark_pact_reload = {
+		"ps_pad",
+		"square",
+		"pressed",
+	},
+	dark_pact_reload_hold = {
+		"ps_pad",
+		"square",
+		"held",
+	},
+	dark_pact_interact = {
+		"ps_pad",
+		"square",
+		"pressed",
+	},
+	dark_pact_interacting = {
+		"ps_pad",
+		"square",
+		"held",
+	},
+	dark_pact_climb_point = {
+		"ps_pad",
+		"square",
 		"pressed",
 	},
 }

@@ -421,8 +421,9 @@ IngameUI.handle_menu_hotkeys = function (self, dt, input_service, hotkeys_enable
 					local menu_sub_state_name = transition_params and transition_params.menu_sub_state_name
 					local matching_state = menu_state_name == mapping_data.transition_state
 					local matching_sub_state = menu_sub_state_name == mapping_data.transition_sub_state
+					local ignore_sub_state_on_exit = transition_params and transition_params.ignore_sub_state_on_exit
 
-					if matching_state and matching_sub_state then
+					if matching_state and matching_sub_state or matching_state and ignore_sub_state_on_exit then
 						local hotkey_allowed = active_view.hotkey_allowed and active_view:hotkey_allowed(input, mapping_data)
 
 						hotkey_allowed = hotkey_allowed ~= false
@@ -448,7 +449,6 @@ IngameUI.handle_menu_hotkeys = function (self, dt, input_service, hotkeys_enable
 				disable_not_matchmaking = disable_for_mechanism.not_matchmaking
 			end
 
-			local is_matchmaking_versus = Managers.matchmaking:is_matchmaking_versus()
 			local vote_blocked = table.contains(hotkeys_blocked_during_vote, input)
 			local transition_not_allowed = player_ready_for_game and disable_when_matchmaking_ready or is_game_matchmaking and disable_when_matchmaking or vote_blocked and currently_voting
 

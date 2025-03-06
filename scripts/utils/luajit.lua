@@ -184,3 +184,7 @@ end
 LuaJIT.bytes = function (object, exclusive)
 	return sizeof(not exclusive and {}, object)
 end
+
+LuaJIT.bytes_ex = function (object, lut)
+	return sizeof(lut, object)
+end

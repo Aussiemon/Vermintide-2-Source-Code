@@ -2,24 +2,49 @@
 
 local breed_data = {
 	animation_sync_rpc = "rpc_sync_anim_state_7",
+	aoe_height = 2.1,
+	aoe_radius = 0.7,
 	armor_category = 1,
+	awards_positive_reinforcement_message = true,
 	base_unit = "units/beings/enemies/chaos_vortex_sorcerer/chr_chaos_vortex_sorcerer",
 	behavior = "chaos_vortex_sorcerer",
+	bone_lod_level = 1,
+	bot_hitbox_radius_approximation = 0.8,
 	controllable = true,
+	death_reaction = "ai_default",
 	death_sound_event = "chaos_sorcerer_vortex_death",
 	debug_spawn_category = "Specials",
 	default_inventory_template = "chaos_sorcerer_vortex",
 	dialogue_source_name = "chaos_vortex_sorcerer",
+	disable_second_hit_ragdoll = true,
+	exchange_order = 2,
+	flingable = true,
 	has_inventory = true,
+	headshot_coop_stamina_fatigue_type = "headshot_special",
 	height = 1.8,
+	hit_effect_template = "HitEffectsChaosSorcerer",
+	hit_mass_count = 8,
+	hit_reaction = "ai_default",
+	initial_is_passive = false,
 	is_always_spawnable = true,
+	is_bot_aid_threat = true,
 	is_of_interest_func = "is_of_interest_to_vortex",
 	max_vortex_units = 1,
 	minion_detection_radius = 20,
 	no_stagger_duration = true,
 	perception = "perception_all_seeing",
 	perception_continuous = "perception_continuous_keep_target",
+	player_locomotion_constrain_radius = 0.7,
+	poison_resistance = 100,
+	proximity_system_check = true,
 	race = "chaos",
+	radius = 1,
+	run_speed = 0.65,
+	smart_object_template = "special",
+	smart_targeting_height_multiplier = 2.2,
+	smart_targeting_outer_width = 0.7,
+	smart_targeting_width = 0.3,
+	special = true,
 	stagger_resistance = 3,
 	stagger_threshold_explosion = 5,
 	stagger_threshold_heavy = 3,
@@ -28,16 +53,27 @@ local breed_data = {
 	summon_sound_event = "chaos_sorcerer_vortex_summoning",
 	target_selection = "pick_closest_vortex_target",
 	threat_value = 10,
+	unit_template = "ai_unit_chaos_sorcerer",
+	vortexable = false,
+	walk_speed = 0.65,
 	wield_inventory_on_spawn = true,
 	detection_radius = math.huge,
+	infighting = InfightingSettings.small,
 	max_health = BreedTweaks.max_health.vortex_sorcerer,
 	bloodlust_health = BreedTweaks.bloodlust_health.chaos_special,
 	stagger_duration = BreedTweaks.stagger_duration.sorcerer,
+	hit_mass_counts = BreedTweaks.hit_mass_counts.sorcerer,
 	stagger_reduction = BreedTweaks.stagger_reduction.sorcerer,
 	diff_stagger_resist = BreedTweaks.diff_stagger_resist.sorcerer,
 	run_on_spawn = AiBreedSnippets.on_chaos_vortex_sorcerer_spawn,
 	run_on_death = AiBreedSnippets.on_chaos_vortex_sorcerer_death,
 	run_on_despawn = AiBreedSnippets.on_chaos_vortex_sorcerer_despawn,
+	debug_color = {
+		255,
+		200,
+		200,
+		0,
+	},
 	disabled = Development.setting("disable_vortex_sorcerer") or false,
 	hitzone_multiplier_types = {
 		head = "headshot",
@@ -137,6 +173,19 @@ local breed_data = {
 			},
 		},
 	},
+	allowed_layers = {
+		bot_poison_wind = 2,
+		bot_ratling_gun_fire = 10,
+		destructible_wall = 5,
+		doors = 1.5,
+		fire_grenade = 10,
+		jumps = 5,
+		ledges = 5,
+		ledges_with_fence = 5,
+		planks = 1.5,
+		teleporters = 5,
+		temporary_wall = 0,
+	},
 	status_effect_settings = {
 		category = "medium",
 		ignored_statuses = table.set({
@@ -156,18 +205,6 @@ local breed_data = {
 		QuestSettings.check_vortex_sorcerer_killed_by_melee(killer_unit, damage_source)
 	end,
 }
-
-for key, value in pairs(Breeds.chaos_tentacle_sorcerer) do
-	local keep_value = breed_data[key]
-
-	if keep_value == "SET_TO_NIL" then
-		breed_data[key] = nil
-	elseif keep_value ~= nil then
-		breed_data[key] = keep_value
-	else
-		breed_data[key] = value
-	end
-end
 
 Breeds.chaos_vortex_sorcerer = table.create_copy(Breeds.chaos_vortex_sorcerer, breed_data)
 

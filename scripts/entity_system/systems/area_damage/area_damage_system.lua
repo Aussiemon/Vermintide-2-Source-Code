@@ -347,7 +347,10 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 	local explosion_template = ExplosionUtils.get_template(explosion_template_name)
 	local explosion_data = explosion_template.explosion
 	local breed = AiUtils.unit_breed(hit_unit)
-	local is_immune = breed and explosion_data.immune_breeds and (explosion_data.immune_breeds[breed.name] or explosion_data.immune_breeds.all)
+	local breed_immunity = breed and explosion_data.immune_breeds and (explosion_data.immune_breeds[breed.name] or explosion_data.immune_breeds.all)
+	local bot = Managers.player:owner(hit_unit) and not Managers.player:owner(hit_unit):is_player_controlled()
+	local bot_damage_immunity = bot and explosion_data.bot_damage_immunity or false
+	local is_immune = breed_immunity or bot_damage_immunity
 
 	if shield_blocked then
 		hit_distance = math.lerp(hit_distance, radius, 0.5)

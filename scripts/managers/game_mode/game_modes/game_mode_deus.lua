@@ -22,8 +22,8 @@ end
 
 GameModeDeus = class(GameModeDeus, GameModeBase)
 
-GameModeDeus.init = function (self, settings, world, network_server, is_server, profile_synchronizer, level_key, statistics_db, game_mode_settings)
-	GameModeDeus.super.init(self, settings, world, network_server, is_server, profile_synchronizer, level_key, statistics_db)
+GameModeDeus.init = function (self, settings, world, network_handler, is_server, profile_synchronizer, level_key, statistics_db, game_mode_settings)
+	GameModeDeus.super.init(self, settings, world, network_handler, is_server, profile_synchronizer, level_key, statistics_db)
 	fassert(game_mode_settings, "game mode settings can not be nil")
 	fassert(game_mode_settings.deus_run_controller, "game mode settings must provide a deus run controller")
 
@@ -47,6 +47,7 @@ GameModeDeus.init = function (self, settings, world, network_server, is_server, 
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "level_start_local_player_spawned", "event_local_player_spawned")
+	event_manager:register(self, "statistics_database_unregister_player", "event_statistics_database_unregister_player")
 
 	self._local_player_spawned = false
 end
@@ -62,7 +63,12 @@ GameModeDeus.on_round_end = function (self)
 end
 
 GameModeDeus.destroy = function (self)
-	return
+	local event_manager = Managers.state.event
+
+	if event_manager then
+		event_manager:unregister("level_start_local_player_spawned", self)
+		event_manager:unregister("statistics_database_unregister_player", self)
+	end
 end
 
 GameModeDeus.cleanup_game_mode_units = function (self)
@@ -178,7 +184,7 @@ GameModeDeus.gm_event_end_conditions_met = function (self, reason, checkpoint_av
 		local peer_id = player:network_id()
 		local local_player_id = player:local_player_id()
 
-		deus_run_controller:save_persisted_score(statistics_db, peer_id, local_player_id)
+		deus_run_controller:save_persisted_score(statistics_db, PlayerUtils.unique_player_id(peer_id, local_player_id))
 	end
 
 	local scoreboard = ScoreboardHelper.get_grouped_topic_statistics(self._statistics_db, self._profile_synchronizer, {})
@@ -205,7 +211,12 @@ end
 GameModeDeus.player_left_game_session = function (self, peer_id, local_player_id)
 	GameModeDeus.super.player_left_game_session(self, peer_id, local_player_id)
 	self._deus_spawning:remove_delayed_client(peer_id, local_player_id)
-	self._deus_run_controller:save_persisted_score(self._statistics_db, peer_id, local_player_id)
+end
+
+GameModeDeus.event_statistics_database_unregister_player = function (self, stat_id)
+	if self._is_server then
+		self._deus_run_controller:save_persisted_score(self._statistics_db, stat_id)
+	end
 end
 
 GameModeDeus.remove_bot = function (self, party_id, peer_id, local_player_id, update_safe)
@@ -578,7 +589,7 @@ GameModeDeus._remove_bot = function (self, bot_player, update_safe)
 	local peer_id = bot_player:network_id()
 	local local_player_id = bot_player:local_player_id()
 
-	self._deus_run_controller:save_persisted_score(self._statistics_db, peer_id, local_player_id)
+	self._deus_run_controller:save_persisted_score(self._statistics_db, PlayerUtils.unique_player_id(peer_id, local_player_id))
 
 	local bot_players = self._bot_players
 	local index = table.index_of(bot_players, bot_player)

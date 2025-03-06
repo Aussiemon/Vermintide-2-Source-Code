@@ -102,8 +102,6 @@ end
 BackendInterfaceDeusBase.get_loadout_item_id = function (self, career_name, slot_name, is_bot)
 	fassert(self._valid_loadout_slots[slot_name], "[BackendInterfaceDeusBase] Loadout in slot %q shouldn't be fetched from the deus interface", tostring(slot_name))
 
-	local game_mode_key = Managers.state.game_mode and Managers.state.game_mode:game_mode_key()
-	local bot_loadout_allowed = InventorySettings.bot_loadout_allowed_game_modes[game_mode_key]
 	local loadouts = is_bot and self._bot_loadouts or self._loadouts
 	local loadout = loadouts[career_name]
 	local item_backend_id = loadout[slot_name]

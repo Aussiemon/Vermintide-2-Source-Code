@@ -132,17 +132,16 @@ ByteArray = {
 	read_hash = function (array, index)
 		return string.format("%02x%02x%02x%02x%02x%02x%02x%02x", array[index], array[index + 1], array[index + 2], array[index + 3], array[index + 4], array[index + 5], array[index + 6], array[index + 7]), index + 8
 	end,
-	read_string = function (array, start_index, end_index)
+	read_string = function (array, start_index, end_index, out_array)
 		start_index = start_index or 1
 		end_index = end_index or #array
-
-		local char_array = {}
+		out_array = out_array or {}
 
 		for i = start_index, end_index do
-			char_array[#char_array + 1] = string.char(array[i])
+			out_array[i] = string.char(array[i])
 		end
 
-		return table.concat(char_array), end_index + 1
+		return table.concat(out_array, "", 1, end_index), end_index + 1
 	end,
 	write_string = function (array, str, start_index, str_start_index, str_end_index)
 		start_index = start_index or 1

@@ -22,8 +22,13 @@ return {
 		data.has_left_safe_zone = true
 
 		local t = Managers.time:time("game")
+		local safe_zone_grace_time = 20
 
-		data.apply_bomb_buff_at_t = t + 5
+		if Managers.twitch:is_activated() then
+			safe_zone_grace_time = 5
+		end
+
+		data.apply_bomb_buff_at_t = t + safe_zone_grace_time
 	end,
 	server_update_function = function (context, data, dt, t)
 		if not data.has_left_safe_zone then
@@ -37,7 +42,7 @@ return {
 			table.clear(player_bomb_data)
 
 			local hero_side = data.hero_side
-			local current_player_units = hero_side.PLAYER_AND_BOT_UNITS
+			local current_player_units = hero_side.PLAYER_UNITS
 			local num_current_player_units = #current_player_units
 			local random_num_affected_players = math.random(1, #current_player_units)
 
@@ -60,9 +65,15 @@ return {
 				end
 			end
 
-			local random_bomb_delay = math.random(12, 20) + random_num_affected_players
+			local random_bomb_delay = math.random(24, 40) + random_num_affected_players
 
-			data.apply_bomb_buff_at_t = t + random_bomb_delay
+			if Managers.twitch:is_activated() then
+				random_bomb_delay = math.random(12, 20) + random_num_affected_players
+			end
+
+			local player_num_grace = 5 * (4 - num_current_player_units)
+
+			data.apply_bomb_buff_at_t = t + random_bomb_delay + player_num_grace
 		end
 
 		for i = 1, #player_bomb_data do

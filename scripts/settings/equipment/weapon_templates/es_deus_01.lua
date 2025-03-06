@@ -1768,11 +1768,9 @@ weapon_template.buffs = {
 weapon_template.attack_meta_data = {
 	tap_attack = {
 		arc = 1,
-		penetrating = false,
 	},
 	hold_attack = {
 		arc = 2,
-		penetrating = true,
 	},
 }
 weapon_template.defense_meta_data = {

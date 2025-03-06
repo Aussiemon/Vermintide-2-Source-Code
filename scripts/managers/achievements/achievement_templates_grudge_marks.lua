@@ -4,7 +4,6 @@ local achievements = AchievementTemplates.achievements
 local achievement_settings = DLCSettings.grudge_marks
 local add_weapon_kill_challenge = AchievementTemplateHelper.add_weapon_kill_challenge
 local add_meta_challenge = AchievementTemplateHelper.add_meta_challenge
-local add_weapon_kills_per_breeds_challenge = AchievementTemplateHelper.add_weapon_kills_per_breeds_challenge
 local add_multi_stat_count_challenge = AchievementTemplateHelper.add_multi_stat_count_challenge
 local add_event_challenge = AchievementTemplateHelper.add_event_challenge
 local add_stat_count_challenge = AchievementTemplateHelper.add_stat_count_challenge

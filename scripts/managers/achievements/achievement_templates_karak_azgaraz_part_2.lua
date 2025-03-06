@@ -178,7 +178,6 @@ achievements.dwarf_push = {
 		local target_health_extension = ScriptUnit.has_extension(victim_unit, "health_system")
 
 		if target_health_extension then
-			local recent_damages = target_health_extension:recent_damages()
 			local attacker_unit = damage_data[DamageDataIndex.SOURCE_ATTACKER_UNIT]
 			local local_player_unit = Managers.player:local_player().player_unit
 

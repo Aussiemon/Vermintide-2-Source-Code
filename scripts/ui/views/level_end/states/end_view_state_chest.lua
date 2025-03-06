@@ -219,6 +219,15 @@ EndViewStateChest._update_transition_timer = function (self, dt)
 	else
 		self._transition_timer = math.max(self._transition_timer - dt, 0)
 	end
+
+	local units = self._units
+	local world = self:_get_viewport_world()
+
+	for _, unit in pairs(units) do
+		World.destroy_unit(world, unit)
+	end
+
+	table.clear(units)
 end
 
 EndViewStateChest.update = function (self, dt, t)

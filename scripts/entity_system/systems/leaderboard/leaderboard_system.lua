@@ -248,16 +248,6 @@ LeaderboardSystem.round_completed = function (self)
 		0,
 		0,
 	}
-	local network_data = {
-		"",
-		0,
-		"",
-		0,
-		"",
-		0,
-		"",
-		0,
-	}
 	local player_index = 1
 	local player_manager = Managers.player
 	local human_players = player_manager:human_players()
@@ -267,10 +257,6 @@ LeaderboardSystem.round_completed = function (self)
 	for _, player in pairs(human_players) do
 		local network_id_64_bit = player:network_id()
 		local profile_index = profile_synchronizer:profile_by_peer(network_id_64_bit, player:local_player_id())
-
-		network_data[player_index] = network_id_64_bit
-		network_data[player_index + 1] = profile_index
-
 		local network_id_32_bit = Steam.id_to_id_32bit(network_id_64_bit)
 
 		player_data[player_index] = network_id_32_bit
@@ -287,7 +273,7 @@ LeaderboardSystem.round_completed = function (self)
 	end
 
 	if score then
-		self.network_transmit:send_rpc_clients("rpc_client_leaderboard_register_score", level_key_id, difficulty_id, score, unpack(network_data))
+		self.network_transmit:send_rpc_clients("rpc_client_leaderboard_register_score", level_key_id, difficulty_id, score, unpack(player_data))
 		self:register_score(level_key, difficulty_name, score, player_data)
 	end
 
@@ -390,10 +376,6 @@ LeaderboardSystem.rpc_client_leaderboard_register_score = function (self, channe
 	local human_players = {
 		...,
 	}
-
-	for i = 1, #human_players, 2 do
-		human_players[i] = Steam.id_to_id_32bit(human_players[i])
-	end
 
 	self:register_score(level_key, difficulty_name, score, human_players)
 end

@@ -88,12 +88,12 @@ MusicManager.duck_sounds = function (self)
 	self._duck_sounds_stack = self._duck_sounds_stack + 1
 end
 
-MusicManager.unduck_sounds = function (self)
-	if self._duck_sounds_stack == 1 then
+MusicManager.unduck_sounds = function (self, forced)
+	if self._duck_sounds_stack == 1 or forced then
 		self:trigger_event("hud_in_inventory_state_off")
 	end
 
-	self._duck_sounds_stack = math.max(0, self._duck_sounds_stack - 1)
+	self._duck_sounds_stack = forced and 0 or math.max(0, self._duck_sounds_stack - 1)
 end
 
 MusicManager._update_window_focus = function (self)

@@ -1,13 +1,8 @@
 ﻿-- chunkname: @scripts/settings/terror_events/terror_events_dlc_portals.lua
 
-local function count_event_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
-end
-
-local function count_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed(breed_name)
-end
-
+local TerrorEventUtils = require("scripts/settings/terror_events/terror_event_utils")
+local count_event_breed = TerrorEventUtils.count_event_breed
+local HARDER = TerrorEventUtils.HARDER
 local weighted_random_terror_events = {
 	dlc_portals_end_event = {
 		"dlc_portals_end_event_a",
@@ -16,8 +11,6 @@ local weighted_random_terror_events = {
 		1,
 	},
 }
-local HARDER = 4
-local HARDEST = 5
 local terror_event_blueprints = {
 	dlc_portals_control_pacing_disabled = {
 		{
@@ -2107,4 +2100,7 @@ local terror_event_blueprints = {
 	},
 }
 
-return terror_event_blueprints, weighted_random_terror_events
+return {
+	terror_event_blueprints,
+	weighted_random_terror_events,
+}

@@ -56,6 +56,7 @@ DLCSettings = DLCSettings or {
 		},
 	},
 	celebrate = {
+		localization = "localization/carousel",
 		package_name = "resource_packages/dlcs/celebrate",
 		additional_settings = {
 			buff = "scripts/settings/dlcs/celebrate/celebrate_buff_settings",
@@ -148,7 +149,6 @@ DLCSettings = DLCSettings or {
 		},
 	},
 	belladonna = {
-		ingame_package_name = "resource_packages/dlcs/belladonna_ingame",
 		package_name = "resource_packages/dlcs/belladonna",
 		additional_settings = {
 			achievements = "scripts/settings/dlcs/belladonna/belladonna_achievements_settings",
@@ -447,18 +447,6 @@ DLCSettings = DLCSettings or {
 			common = "scripts/settings/dlcs/premium_career_bundle/premium_career_bundle_common_settings",
 		},
 	},
-	legacy_bundle = {
-		package_name = "resource_packages/dlcs/legacy_bundle",
-		additional_settings = {
-			common = "scripts/settings/dlcs/legacy_bundle/legacy_bundle_common_settings",
-		},
-	},
-	ultimate_bundle = {
-		package_name = "resource_packages/dlcs/ultimate_bundle",
-		additional_settings = {
-			common = "scripts/settings/dlcs/ultimate_bundle/ultimate_bundle_common_settings",
-		},
-	},
 	carousel = {
 		level_settings = "levels/honduras_dlcs/carousel/level_settings_carousel",
 		level_unlock_settings = "levels/honduras_dlcs/carousel/level_unlock_settings_carousel",
@@ -479,8 +467,29 @@ DLCSettings = DLCSettings or {
 			ui = "scripts/settings/dlcs/carousel/carousel_ui_settings",
 		},
 	},
+	versus_rewards = {
+		localization = "localization/carousel",
+		package_name = "resource_packages/dlcs/versus_rewards",
+		additional_settings = {
+			common = "scripts/settings/dlcs/versus_rewards/versus_rewards_common_settings",
+			equipment = "scripts/settings/dlcs/versus_rewards/versus_rewards_equipment_settings",
+			ui = "scripts/settings/dlcs/versus_rewards/versus_rewards_ui_settings",
+		},
+	},
 	pose_cosmetics = {
 		package_name = "resource_packages/pose_cosmetics",
+	},
+	legacy_bundle = {
+		package_name = "resource_packages/dlcs/legacy_bundle",
+		additional_settings = {
+			common = "scripts/settings/dlcs/legacy_bundle/legacy_bundle_common_settings",
+		},
+	},
+	ultimate_bundle = {
+		package_name = "resource_packages/dlcs/ultimate_bundle",
+		additional_settings = {
+			common = "scripts/settings/dlcs/ultimate_bundle/ultimate_bundle_common_settings",
+		},
 	},
 	cosmetics_2024_q2 = {
 		localization = "localization/cosmetics_2024_q2",
@@ -520,5 +529,12 @@ DLCSettings = DLCSettings or {
 	},
 	handbook = {
 		localization = "localization/handbook_tutorials",
+	},
+	anniversary_2025 = {
+		localization = "localization/anniversary_2025",
+		package_name = "resource_packages/dlcs/anniversary_2025",
+		additional_settings = {
+			common = "scripts/settings/dlcs/anniversary_2025/anniversary_2025_common_settings",
+		},
 	},
 }

@@ -1318,7 +1318,7 @@ end
 SimpleInventoryExtension.get_item_template = function (self, slot_data)
 	if slot_data then
 		local item_data = slot_data.item_data
-		local item_template = WeaponUtils.get_weapon_template(slot_data.item_template_name) or BackendUtils.get_item_template(item_data)
+		local item_template = BackendUtils.get_item_template(item_data)
 
 		return item_template
 	end

@@ -6,7 +6,6 @@ local achievement_settings = DLCSettings.belakor
 local rpc_increment_stat = AchievementTemplateHelper.rpc_increment_stat
 local rpc_modify_stat = AchievementTemplateHelper.rpc_modify_stat
 local add_levels_complete_per_hero_challenge = AchievementTemplateHelper.add_levels_complete_per_hero_challenge
-local add_career_mission_count_challenge = AchievementTemplateHelper.add_career_mission_count_challenge
 local add_meta_challenge = AchievementTemplateHelper.add_meta_challenge
 local XB1_ACHIEVEMENT_ID = {}
 local PS4_ACHIEVEMENT_ID = {}

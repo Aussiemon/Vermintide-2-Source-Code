@@ -247,3 +247,27 @@ InteractionHelper.player_modify_interaction_type = function (interactor_unit, in
 
 	return interaction_type
 end
+
+InteractionHelper.interaction_action_names = function (interactor_unit, optional_interactable_unit)
+	local interactable_extension = ScriptUnit.has_extension(optional_interactable_unit, "interactable_system")
+
+	if interactable_extension then
+		local interact_action = interactable_extension:override_interactable_action()
+
+		if interact_action then
+			return interact_action
+		end
+	end
+
+	local career_extension = ScriptUnit.has_extension(interactor_unit, "career_system")
+
+	if career_extension then
+		local profile = SPProfiles[career_extension:profile_index()]
+
+		if profile and profile.affiliation == "dark_pact" then
+			return "dark_pact_interact", "dark_pact_interacting"
+		end
+	end
+
+	return "interact", "interacting"
+end

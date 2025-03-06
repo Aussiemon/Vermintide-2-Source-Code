@@ -75,17 +75,25 @@ settings.buff_function_templates = {
 				local damage_source_id = NetworkLookup.damage_sources[damage_source]
 
 				Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false, attacker_unit_id)
-
-				local catapult_force = 12
-				local catapult_force_z = 6
-				local rand_deg = math.random(0, 360)
-				local radians = rand_deg * math.pi / 180
-				local catapult_direction = Vector3(math.sin(radians), math.cos(radians), 0)
-				local velocity = Vector3.normalize(catapult_direction) * catapult_force
-
-				Vector3.set_z(velocity, catapult_force_z)
-				StatusUtils.set_catapulted_network(unit, true, velocity)
 			end
+		end
+
+		local player = Managers.player:owner(unit)
+
+		if not player.remote then
+			local unit_rotation = ScriptUnit.extension(unit, "first_person_system"):current_rotation()
+
+			unit_rotation = Quaternion.flat_no_roll(unit_rotation)
+			unit_rotation = Quaternion.multiply(Quaternion.axis_angle(Vector3.up(), math.pi), unit_rotation)
+			unit_rotation = Quaternion.multiply(Quaternion.axis_angle(Vector3.up(), math.random(-45, 45) * math.pi / 180), unit_rotation)
+
+			local catapult_direction = Quaternion.forward(unit_rotation)
+			local catapult_force = 12
+			local catapult_force_z = 6
+			local velocity = Vector3.normalize(catapult_direction) * catapult_force
+
+			Vector3.set_z(velocity, catapult_force_z)
+			StatusUtils.set_catapulted_network(unit, true, velocity)
 		end
 
 		WwiseUtils.trigger_unit_event(world, "Stop_mutator_ticking_bomb_tick", unit, 0)

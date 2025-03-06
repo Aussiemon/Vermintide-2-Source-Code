@@ -890,8 +890,6 @@ TestCases.equip_deus_power_ups = function (case_settings)
 	end)
 end
 
-local LevelSettingsMorris = require("levels/honduras_dlcs/morris/level_settings_morris")
-
 TestCases.write_morris_levels_to_file = function ()
 	Testify:run_case(function (dt, t)
 		local filename = "C:\\deus_erb_variables.yaml"
@@ -902,6 +900,7 @@ TestCases.write_morris_levels_to_file = function ()
 		file:write("  deus_levels:", "\n")
 
 		local levels = {}
+		local LevelSettingsMorris = require("levels/honduras_dlcs/morris/level_settings_morris")
 
 		for level_name, level_settings in pairs(LevelSettingsMorris) do
 			local level_key = level_settings.level_key

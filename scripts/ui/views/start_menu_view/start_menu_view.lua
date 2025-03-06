@@ -261,7 +261,7 @@ StartMenuView.update = function (self, dt, t)
 end
 
 StartMenuView.on_enter = function (self, params)
-	ShowCursorStack.push()
+	ShowCursorStack.show("StartMenuView")
 
 	local input_manager = self.input_manager
 
@@ -500,7 +500,7 @@ StartMenuView.on_exit = function (self)
 		self._machine = nil
 	end
 
-	ShowCursorStack.pop()
+	ShowCursorStack.hide("StartMenuView")
 	self:hide_hero_world()
 	Managers.music:unduck_sounds()
 	self:play_sound("play_gui_amb_hero_screen_loop_end")

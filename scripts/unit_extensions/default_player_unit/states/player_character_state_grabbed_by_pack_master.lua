@@ -285,7 +285,12 @@ PlayerCharacterStateGrabbedByPackMaster.states = {
 
 			local function safe_navigation_callback()
 				if ALIVE[unit] and ALIVE[packmaster_unit] then
-					local new_pos = PactswornUtils.get_hoist_position(unit, packmaster_unit)
+					local physics_world = World.get_data(parent.world, "physics_world")
+					local new_pos = PactswornUtils.get_hoist_position(physics_world, unit, packmaster_unit)
+
+					if script_data.vs_debug_hoist then
+						QuickDrawerStay:sphere(new_pos, 0.5, Colors.get("magenta"))
+					end
 
 					parent.locomotion_extension:teleport_to(new_pos, nil)
 				end

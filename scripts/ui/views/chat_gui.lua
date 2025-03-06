@@ -516,7 +516,7 @@ ChatGui._show_cursor = function (self)
 	if not self._cursor_visible then
 		self._cursor_visible = true
 
-		ShowCursorStack.push()
+		ShowCursorStack.show("ChatGui")
 	end
 end
 
@@ -524,7 +524,7 @@ ChatGui._hide_cursor = function (self)
 	if self._cursor_visible then
 		self._cursor_visible = false
 
-		ShowCursorStack.pop()
+		ShowCursorStack.hide("ChatGui")
 	end
 end
 
