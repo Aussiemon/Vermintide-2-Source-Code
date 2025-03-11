@@ -28,7 +28,6 @@ StartGameWindowDeusQuickplay.on_enter = function (self, params, offset)
 	self._animations = {}
 
 	self:_create_ui_elements(params, offset)
-	self:_set_expedition_text_highlight_offset(self._ui_renderer)
 
 	self._input_index = params.input_index or 1
 
@@ -100,11 +99,6 @@ StartGameWindowDeusQuickplay.update = function (self, dt, t)
 	self:_update_animations(dt)
 	self:_handle_gamepad_activity()
 	self:_handle_input(dt, t)
-
-	if RESOLUTION_LOOKUP.modified then
-		self:_set_expedition_text_highlight_offset(self._ui_renderer)
-	end
-
 	self:_draw(dt)
 end
 
@@ -612,24 +606,5 @@ StartGameWindowDeusQuickplay._handle_difficulty_stepper_gamepad = function (self
 		local anim_id = self._ui_animator:start_animation("right_arrow_flick", widget, scenegraph_definition, anim_params)
 
 		self._arrow_anim_id = anim_id
-	end
-end
-
-StartGameWindowDeusQuickplay._set_expedition_text_highlight_offset = function (self, ui_renderer)
-	local game_mode_info_box = self._widgets_by_name.quickplay_gamemode_info_box
-	local text = game_mode_info_box.content.game_mode_text
-	local expedition_text_style = game_mode_info_box.style.expedition_highlight_text
-	local expedition_word = Utf8.lower(Localize("expedition_highlight_text"))
-	local index_start = string.find(text, expedition_word, 1, true)
-
-	if index_start then
-		local prefix = string.sub(text, 1, index_start - 1)
-		local split_text_length = UIUtils.get_text_width(ui_renderer, game_mode_info_box.style.game_mode_text, prefix)
-		local new_offset = 25 + split_text_length
-
-		game_mode_info_box.content.expedition_highlight_text = expedition_word
-		expedition_text_style.offset[1] = new_offset
-	else
-		game_mode_info_box.content.expedition_highlight_text = ""
 	end
 end

@@ -43,7 +43,6 @@ StartGameWindowDeusCustomGame.on_enter = function (self, params, offset)
 	self._backend_deus = Managers.backend:get_interface("deus")
 
 	self:_create_ui_elements(params, offset)
-	self:_set_expedition_text_highlight_offset(self._ui_renderer)
 	self:_gamepad_selector_input_func(params.input_index or 1)
 	self:_update_expedition_option()
 	self:_update_difficulty_option(self._current_difficulty)
@@ -343,10 +342,6 @@ StartGameWindowDeusCustomGame.update = function (self, dt, t)
 
 	if self._is_focused then
 		self:_handle_input(dt, t)
-	end
-
-	if RESOLUTION_LOOKUP.modified then
-		self:_set_expedition_text_highlight_offset(self._ui_renderer)
 	end
 
 	self:_draw(dt)
@@ -791,23 +786,4 @@ StartGameWindowDeusCustomGame._resize_difficulty_info = function (self, new_size
 	difficulty_info_widget.content.resize_offset = new_offset
 	difficulty_info_widget.style.widget_hotspot.size = new_size
 	difficulty_info_widget.style.widget_hotspot.offset = new_offset
-end
-
-StartGameWindowDeusCustomGame._set_expedition_text_highlight_offset = function (self, ui_renderer)
-	local game_mode_info_box = self._widgets_by_name.custom_gamemode_info_box
-	local text = game_mode_info_box.content.game_mode_text
-	local expedition_text_style = game_mode_info_box.style.expedition_highlight_text
-	local expedition_word = Utf8.lower(Localize("expedition_highlight_text"))
-	local index_start = string.find(text, expedition_word, 1, true)
-
-	if index_start then
-		local prefix = string.sub(text, 1, index_start - 1)
-		local split_text_length = UIUtils.get_text_width(ui_renderer, game_mode_info_box.style.game_mode_text, prefix)
-		local new_offset = 25 + split_text_length
-
-		game_mode_info_box.content.expedition_highlight_text = expedition_word
-		expedition_text_style.offset[1] = new_offset
-	else
-		game_mode_info_box.content.expedition_highlight_text = ""
-	end
 end

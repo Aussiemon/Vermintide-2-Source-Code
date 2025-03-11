@@ -100,13 +100,9 @@ InteractionHelper.request = function (self, interaction_type, interactor_unit, i
 end
 
 InteractionHelper.abort_authoritative = function (self, interactor_unit)
-	if not ALIVE[interactor_unit] then
-		return
-	end
+	local interactor_extension = ScriptUnit.has_extension(interactor_unit, "interactor_system")
 
-	local interactor_extension = ScriptUnit.extension(interactor_unit, "interactor_system")
-
-	if not interactor_extension:is_interacting() or interactor_extension:is_stopping() then
+	if interactor_extension and (not interactor_extension:is_interacting() or interactor_extension:is_stopping()) then
 		InteractionHelper.printf("Got abort when interaction had already finished, ignore request")
 
 		return
@@ -130,7 +126,15 @@ InteractionHelper.abort = function (self, interactor_unit, is_server)
 		return
 	end
 
+	if not Managers.state.network:game() then
+		return
+	end
+
 	local interactor_go_id = Managers.state.unit_storage:go_id(interactor_unit)
+
+	if not interactor_go_id then
+		return
+	end
 
 	if is_server or LEVEL_EDITOR_TEST then
 		Managers.state.network._event_delegate.event_table:rpc_interaction_abort(Network.peer_id(), interactor_go_id)
@@ -200,16 +204,20 @@ InteractionHelper.complete_interaction = function (self, interactor_unit, intera
 	if not interactable_extension:local_only() then
 		local interactor_go_id = Managers.state.unit_storage:go_id(interactor_unit)
 
-		Managers.state.network.network_transmit:send_rpc_clients("rpc_interaction_completed", interactor_go_id, result)
+		if interactor_go_id then
+			Managers.state.network.network_transmit:send_rpc_clients("rpc_interaction_completed", interactor_go_id, result)
+		end
 	end
 end
 
 InteractionHelper.interaction_completed = function (self, interactor_unit, interactable_unit, result)
 	InteractionHelper.printf("InteractionHelper:interaction_completed(%s, %s, %s)", tostring(interactor_unit), tostring(interactable_unit), InteractionResult[result])
 
-	local interactor_extension = ScriptUnit.extension(interactor_unit, "interactor_system")
+	local interactor_extension = ScriptUnit.has_extension(interactor_unit, "interactor_system")
 
-	interactor_extension:interaction_completed(result)
+	if interactor_extension then
+		interactor_extension:interaction_completed(result)
+	end
 
 	if Unit.alive(interactable_unit) then
 		local interactable_extension = ScriptUnit.extension(interactable_unit, "interactable_system")

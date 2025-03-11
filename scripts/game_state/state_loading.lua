@@ -720,7 +720,7 @@ StateLoading.update = function (self, dt, t)
 	Managers.input:update(dt)
 	level_transition_handler:update(dt)
 
-	if self._should_start_breed_loading and level_transition_handler:all_packages_loaded() and (not self._lobby_host or self._lobby_host:network_initialized()) then
+	if self._should_start_breed_loading and level_transition_handler:all_packages_loaded() and level_transition_handler.enemy_package_loader:matching_session(self._network_server or self._network_client) and (not self._lobby_host or self._lobby_host:network_initialized()) then
 		local weave_name = Managers.weave:get_next_weave() or Development.parameter("weave_name")
 		local weave_objective_index = Managers.weave:get_next_objective() or 1
 		local weave_data = WeaveSettings.templates[weave_name]
@@ -821,10 +821,7 @@ StateLoading._update_network = function (self, dt, t)
 			local text_id = self:_get_lost_connection_text_id()
 
 			self:create_popup(text_id, "popup_error_topic", "restart_as_server", "menu_accept")
-			self._network_server:destroy()
-
-			self._network_server = nil
-
+			self:_destroy_network_handler(false)
 			self:_destroy_lobby_host()
 		end
 	elseif self._network_client then
@@ -858,12 +855,7 @@ StateLoading._update_network = function (self, dt, t)
 
 			local fail_reason = self._network_client.fail_reason or "broken_connection"
 
-			self._network_client:destroy()
-
-			self._network_client = nil
-
-			Managers.level_transition_handler.enemy_package_loader:network_context_destroyed()
-			Managers.level_transition_handler.transient_package_loader:network_context_destroyed()
+			self:_destroy_network_handler(false)
 
 			if self._lobby_client then
 				self:create_popup(fail_reason, "popup_error_topic", "restart_as_server", "menu_accept")
@@ -937,9 +929,7 @@ StateLoading._update_lobbies = function (self, dt, t)
 
 			if self._network_server then
 				self._network_server:disconnect_all_peers("unknown_error")
-				self._network_server:destroy()
-
-				self._network_server = nil
+				self:_destroy_network_handler(false)
 			end
 
 			self:_destroy_lobby_host()
@@ -2040,6 +2030,33 @@ StateLoading._update_loadout_resync = function (self)
 	return state
 end
 
+StateLoading._destroy_network_handler = function (self, application_shutdown)
+	if self._network_server or self._network_client then
+		local level_transition_handler = Managers.level_transition_handler
+		local enemy_package_loader = level_transition_handler.enemy_package_loader
+
+		enemy_package_loader:network_context_destroyed()
+		enemy_package_loader:unload_enemy_packages(application_shutdown, "StateLoading:_destroy_network")
+
+		local transient_package_loader = level_transition_handler.transient_package_loader
+
+		transient_package_loader:network_context_destroyed()
+		transient_package_loader:unload_all_packages()
+		Managers.party:network_context_destroyed()
+		Managers.mechanism:network_context_destroyed()
+	end
+
+	if self._network_server then
+		self._network_server:destroy()
+
+		self._network_server = nil
+	elseif self._network_client then
+		self._network_client:destroy()
+
+		self._network_client = nil
+	end
+end
+
 StateLoading._destroy_network = function (self, application_shutdown)
 	PartyManager.reset()
 
@@ -2069,16 +2086,6 @@ StateLoading._destroy_network = function (self, application_shutdown)
 		Managers.account:set_current_lobby(nil)
 	end
 
-	if self._network_server then
-		self._network_server:destroy()
-
-		self._network_server = nil
-	elseif self._network_client then
-		self._network_client:destroy()
-
-		self._network_client = nil
-	end
-
 	if self._lobby_host then
 		self._lobby_host:destroy()
 
@@ -2101,6 +2108,7 @@ StateLoading._destroy_network = function (self, application_shutdown)
 
 	Managers.chat:unregister_channel(1)
 	Managers.mechanism:mechanism_try_call("unregister_chats")
+	self:_destroy_network_handler(true)
 
 	self.parent.loading_context = {}
 
@@ -2108,19 +2116,6 @@ StateLoading._destroy_network = function (self, application_shutdown)
 		self.offline_invite = nil
 		self.parent.loading_context.offline_invite = true
 	end
-
-	local level_transition_handler = Managers.level_transition_handler
-	local enemy_package_loader = level_transition_handler.enemy_package_loader
-
-	enemy_package_loader:network_context_destroyed()
-	enemy_package_loader:unload_enemy_packages(application_shutdown, "StateLoading:_destroy_network")
-
-	local transient_package_loader = level_transition_handler.transient_package_loader
-
-	transient_package_loader:network_context_destroyed()
-	transient_package_loader:unload_all_packages()
-	Managers.party:network_context_destroyed()
-	Managers.mechanism:network_context_destroyed()
 
 	if self._network_transmit then
 		self._network_transmit:destroy()

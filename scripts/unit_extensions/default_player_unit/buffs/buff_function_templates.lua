@@ -1165,6 +1165,18 @@ BuffFunctionTemplates.functions = {
 			first_person_extension:play_hud_sound_event("Play_player_hit_puke")
 		end
 
+		if Managers.state.network.is_server then
+			local career_extension = ScriptUnit.has_extension(unit, "career_system")
+
+			if career_extension then
+				local profile_index = career_extension:profile_index()
+				local profile = SPProfiles[profile_index]
+				local target_name = profile.display_name
+
+				Managers.state.entity:system("surrounding_aware_system"):add_system_event(unit, "hit_by_vomit", DialogueSettings.default_view_distance, "target_name", target_name)
+			end
+		end
+
 		local pushed_direction
 		local attacker_unit = params.attacker_unit
 

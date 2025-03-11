@@ -547,7 +547,7 @@ StateTitleScreenMainMenu._update_input = function (self, dt, t)
 			self._popup_id = Managers.popup:queue_popup(Localize("popup_update_offline_data"), Localize("popup_update_offline_data_header"), "update_offline_data", Localize("popup_choice_yes"), "do_nothing", Localize("popup_choice_no"))
 			self._state = "check_popup"
 		end
-	elseif not active_menu_selection and input_service:get("back") then
+	elseif not active_menu_selection and not self._input_disabled and input_service:get("back") then
 		self:_close_menu()
 	end
 end

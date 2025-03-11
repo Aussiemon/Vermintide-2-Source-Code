@@ -90,13 +90,14 @@ return {
 			if not HEALTH_ALIVE[player_unit] then
 				player_damage_data[player_unit] = nil
 			elseif damage_data.do_damage then
+				local status_extension = ScriptUnit.extension(player_unit, "status_system")
 				local distance = damage_data.distance_to_center
 				local distance_normalized = (distance - min_damage_distance) / (max_damage_distance - min_damage_distance)
 				local interval_lerp_value = math.lerp(min_damage_interval, max_damage_interval, distance_normalized)
 				local interval = math.max(max_damage_interval, interval_lerp_value)
 				local last_t = damage_data.last_t
 
-				if t > last_t + interval then
+				if t > last_t + interval and not status_extension:is_knocked_down() then
 					local player_health_extension = ScriptUnit.extension(player_unit, "health_system")
 					local max_health = player_health_extension:get_max_health()
 					local damage = max_health * damage_percentage

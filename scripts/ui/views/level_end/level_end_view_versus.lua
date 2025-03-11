@@ -335,6 +335,8 @@ LevelEndViewVersus.create_ui_renderer = function (self, context, world, top_worl
 		"material",
 		"materials/ui/ui_1080p_versus_available_common",
 		"material",
+		"materials/ui/ui_1080p_versus_rewards_atlas",
+		"material",
 		"materials/fonts/gw_fonts",
 	}
 	local extra_materials = self.get_extra_materials

@@ -768,6 +768,31 @@ BackendInterfaceItemPlayfab.equipped_by = function (self, backend_id)
 	return equipped_careers
 end
 
+local EQUIPPED_BY_LOADOUT = {}
+
+BackendInterfaceItemPlayfab.equipped_by_loadout = function (self, backend_id)
+	local career_loadouts = self._career_loadouts
+
+	table.clear(EQUIPPED_BY_LOADOUT)
+
+	for career_name, loadouts in pairs(career_loadouts) do
+		for index, loadout in ipairs(loadouts) do
+			for slot_name, item_id in pairs(loadout) do
+				if backend_id == item_id then
+					EQUIPPED_BY_LOADOUT[career_name] = EQUIPPED_BY_LOADOUT[career_name] or {}
+					EQUIPPED_BY_LOADOUT[career_name][#EQUIPPED_BY_LOADOUT[career_name] + 1] = index
+				end
+			end
+		end
+
+		if EQUIPPED_BY_LOADOUT[career_name] then
+			EQUIPPED_BY_LOADOUT[career_name].num_loadouts = #loadouts
+		end
+	end
+
+	return EQUIPPED_BY_LOADOUT
+end
+
 BackendInterfaceItemPlayfab.is_equipped_by_any_loadout = function (self, backend_id)
 	local career_loadouts = self._career_loadouts
 	local equipped_loadouts = {}

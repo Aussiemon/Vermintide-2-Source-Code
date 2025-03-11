@@ -307,6 +307,12 @@ VersusWinConditions.on_objective_completed = function (self, objective_extension
 	self:add_time(objective_extension:get_time_for_completion())
 	self:add_score(objective_extension:get_score_for_completion(), objective_extension)
 
+	local parent_objective = self:_get_current_objective_data()
+
+	if parent_objective and parent_objective.close_to_win_on_sub_objective then
+		self._num_sections_completed = self._num_sections_completed + 1
+	end
+
 	if not self._heroes_close_to_winning then
 		self:_check_heroes_close_to_win_conditions_met()
 	end
@@ -403,13 +409,18 @@ VersusWinConditions._check_heroes_close_to_win_conditions_met = function (self, 
 		Debug.text("Heroes about to win: %s", close_to_win)
 	end
 
+	local current_objective = self:_get_current_objective_data()
+	local close_to_win_on_sub_objective = current_objective and current_objective.close_to_win_on_sub_objective
+
 	if not close_to_win and not self._heroes_close_to_safe_zone then
-		if objective_data.objective_type and objective_data.objective_type == ObjectiveTypes.objective_safehouse then
+		if objective_data.close_to_win_on_completion then
 			self._heroes_close_to_safe_zone = true
-		elseif objective_data.close_to_win_on_completion then
-			self._heroes_close_to_safe_zone = true
+		elseif close_to_win_on_sub_objective then
+			self._heroes_close_to_safe_zone = (self._num_sections_completed or 0) >= current_objective.close_to_win_on_sub_objective
 		elseif objective_data.close_to_win_on_section then
 			self._heroes_close_to_safe_zone = self._num_sections_completed >= objective_data.close_to_win_on_section
+		elseif objective_data.objective_type and objective_data.objective_type == ObjectiveTypes.objective_safehouse then
+			self._heroes_close_to_safe_zone = true
 		end
 	end
 

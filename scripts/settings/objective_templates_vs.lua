@@ -63,6 +63,7 @@ local allowed_objective_terms = {
 	capture_time = true,
 	close_to_win_on_completion = true,
 	close_to_win_on_section = true,
+	close_to_win_on_sub_objective = true,
 	description = true,
 	dialogue_event = true,
 	mission_name = true,

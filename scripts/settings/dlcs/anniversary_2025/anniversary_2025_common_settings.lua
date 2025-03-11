@@ -29,8 +29,13 @@ settings.ui_portrait_frame_settings = {
 				255,
 			},
 			size = {
-				126,
-				136,
+				119.69999999999999,
+				129.2,
+			},
+			offset = {
+				-4,
+				-63,
+				1,
 			},
 		},
 	},

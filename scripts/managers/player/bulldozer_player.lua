@@ -551,12 +551,7 @@ BulldozerPlayer.destroy = function (self)
 end
 
 BulldozerPlayer.best_aquired_power_level = function (self)
-	local sum = Managers.backend:get_interface("items"):sum_best_power_levels()
-	local level = ExperienceSettings.get_highest_character_level()
-	local character_power_level = PowerLevelFromLevelSettings.starting_power_level + PowerLevelFromLevelSettings.power_level_per_level * level
-	local best_aquired_power_level = character_power_level + sum / 5
-
-	return best_aquired_power_level
+	return BackendUtils.best_aquired_power_level()
 end
 
 BulldozerPlayer.get_party = function (self)

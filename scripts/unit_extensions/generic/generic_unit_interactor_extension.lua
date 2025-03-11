@@ -58,9 +58,7 @@ GenericUnitInteractorExtension.set_exclusive_interaction_unit = function (self, 
 end
 
 GenericUnitInteractorExtension.destroy = function (self)
-	if Managers.state.network:game() and Managers.state.unit_storage:go_id(self.unit) then
-		self:abort_interaction()
-	end
+	self:abort_interaction()
 
 	local interactable_unit = self.interaction_context.interactable_unit
 

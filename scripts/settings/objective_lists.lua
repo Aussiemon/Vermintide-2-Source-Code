@@ -2095,6 +2095,7 @@ ObjectiveLists.dwarf_exterior_pvp_set_2 = {
 	},
 	{
 		sub_objective_container_mad_dog = {
+			close_to_win_on_sub_objective = 2,
 			description = "level_objective_description_exterior_12",
 			play_arrive_vo = true,
 			play_complete_vo = true,

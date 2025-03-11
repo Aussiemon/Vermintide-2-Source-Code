@@ -80,7 +80,7 @@ settings.buff_function_templates = {
 
 		local player = Managers.player:owner(unit)
 
-		if not player.remote then
+		if player and not player.remote then
 			local unit_rotation = ScriptUnit.extension(unit, "first_person_system"):current_rotation()
 
 			unit_rotation = Quaternion.flat_no_roll(unit_rotation)

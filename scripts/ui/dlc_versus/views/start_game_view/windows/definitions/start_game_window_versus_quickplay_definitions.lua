@@ -61,7 +61,6 @@ local animation_definitions = {
 
 				widgets.style.game_mode_text.text_color[1] = 255 * (1 - anim_progress)
 				widgets.style.press_key_text.text_color[1] = 255 * (1 - anim_progress)
-				widgets.style.expedition_highlight_text.text_color[1] = 255 * (1 - anim_progress)
 
 				if widgets.content.show_note then
 					widgets.style.note_text.text_color[1] = 255 * (1 - anim_progress)
@@ -83,13 +82,12 @@ local animation_definitions = {
 					widgets.content.game_mode_text = Localize("expedition_info")
 					widgets.content.show_note = true
 				else
-					widgets.content.game_mode_text = Localize("start_game_window_deus_quickplay_desc")
+					widgets.content.game_mode_text = string.gsub(Localize("start_game_window_deus_quickplay_desc"), Localize("expedition_highlight_text"), "{#color(255,168,0)}" .. Localize("expedition_highlight_text") .. "{#reset()}")
 					widgets.content.show_note = false
 				end
 
 				widgets.style.game_mode_text.text_color[1] = 255 * math.easeOutCubic(progress)
 				widgets.style.press_key_text.text_color[1] = 255 * math.easeOutCubic(progress)
-				widgets.style.expedition_highlight_text.text_color[1] = 255 * math.easeOutCubic(progress)
 
 				if widgets.content.show_note then
 					widgets.style.note_text.text_color[1] = 255 * math.easeOutCubic(progress)

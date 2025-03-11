@@ -110,6 +110,10 @@ EnemyPackageLoader.network_context_created = function (self, lobby, server_peer_
 	self._network_handler = network_handler
 end
 
+EnemyPackageLoader.matching_session = function (self, network_handler)
+	return self._network_handler == network_handler
+end
+
 EnemyPackageLoader.network_context_destroyed = function (self)
 	print("[EnemyPackageLoader] network_context_destroyed")
 

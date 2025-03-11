@@ -55,8 +55,6 @@ StartGameWindowDeusTwitch.on_enter = function (self, params, offset)
 		self:_update_difficulty_option(self._current_difficulty)
 	end
 
-	self:_set_expedition_text_highlight_offset(self._ui_renderer)
-
 	local connected = Managers.twitch and Managers.twitch:is_connected()
 
 	self:_set_input_description(connected)
@@ -401,11 +399,6 @@ StartGameWindowDeusTwitch.update = function (self, dt, t)
 	self:_handle_virtual_keyboard(dt, t)
 	self:_handle_gamepad_activity(dt, t)
 	self:_handle_input(dt, t)
-
-	if RESOLUTION_LOOKUP.modified then
-		self:_set_expedition_text_highlight_offset(self._ui_renderer)
-	end
-
 	self:_draw(dt, t)
 end
 
@@ -1093,25 +1086,6 @@ StartGameWindowDeusTwitch._update_gamemode_info_text = function (self, input_ser
 
 			gamemode_infobox_widget.content.is_showing_info = false
 		end
-	end
-end
-
-StartGameWindowDeusTwitch._set_expedition_text_highlight_offset = function (self, ui_renderer)
-	local game_mode_info_box = self._widgets_by_name.twitch_gamemode_info_box
-	local text = game_mode_info_box.content.game_mode_text
-	local expedition_text_style = game_mode_info_box.style.expedition_highlight_text
-	local expedition_word = Utf8.lower(Localize("expedition_highlight_text"))
-	local index_start = string.find(text, expedition_word, 1, true)
-
-	if index_start then
-		local prefix = string.sub(text, 1, index_start - 1)
-		local split_text_length = UIUtils.get_text_width(ui_renderer, game_mode_info_box.style.game_mode_text, prefix)
-		local new_offset = 25 + split_text_length
-
-		game_mode_info_box.content.expedition_highlight_text = expedition_word
-		expedition_text_style.offset[1] = new_offset
-	else
-		game_mode_info_box.content.expedition_highlight_text = ""
 	end
 end
 

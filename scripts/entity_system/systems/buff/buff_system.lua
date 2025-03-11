@@ -294,6 +294,11 @@ BuffSystem.add_buff = function (self, unit, template_name, attacker_unit, is_ser
 	local network_manager = self.network_manager
 	local unit_object_id = network_manager:game_object_or_level_id(unit)
 	local attacker_unit_object_id = network_manager:game_object_or_level_id(attacker_unit)
+
+	if not unit_object_id or not attacker_unit_object_id then
+		return server_buff_id
+	end
+
 	local buff_template_name_id = NetworkLookup.buff_templates[template_name]
 
 	if self.is_server then

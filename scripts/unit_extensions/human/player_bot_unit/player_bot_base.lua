@@ -913,6 +913,13 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 					in_need_type = "hook"
 					utility = 200
 				else
+					local target_career_ext = player_unit and ScriptUnit.extension(player_unit, "career_system")
+					local career_allowed_healing = true
+
+					if target_career_ext and target_career_ext:career_name() == "wh_zealot" then
+						career_allowed_healing = false
+					end
+
 					local health_percent = ScriptUnit.extension(player_unit, "health_system"):current_permanent_health_percent()
 					local has_no_permanent_health_from_item_buff = ScriptUnit.extension(player_unit, "buff_system"):has_buff_type("trait_necklace_no_healing_health_regen")
 					local player_inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
@@ -922,7 +929,7 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 					local heal_other_allowed = self_health_utiliy < health_utility
 					local need_attention_type, extra_utility = self:_player_needs_attention(unit, player_unit, blackboard, player_inventory_extension, player_locomotion_extension, t)
 
-					if can_heal_other and (health_percent < WANTS_TO_HEAL_THRESHOLD or is_wounded) and heal_other_allowed then
+					if can_heal_other and (health_percent < WANTS_TO_HEAL_THRESHOLD or is_wounded) and heal_other_allowed and career_allowed_healing then
 						in_need_type = "in_need_of_heal"
 						utility = 70 + health_utility * 15
 					elseif can_give_healing_to_other and (not has_no_permanent_health_from_item_buff or is_wounded) and (health_percent < WANTS_TO_GIVE_HEAL_TO_OTHER or is_wounded) and not player_inventory_extension:get_slot_data("slot_healthkit") and heal_other_allowed then

@@ -9929,17 +9929,25 @@ UITooltipPasses = {
 			end
 
 			local backend_interface = Managers.backend:get_interface("items")
-			local career_names = backend_interface:equipped_by(item_id)
+			local all_career_loadouts = backend_interface:equipped_by_loadout(item_id)
 
-			if #career_names == 0 then
+			if table.is_empty(all_career_loadouts) then
 				return 0
 			end
 
-			for i = 1, #career_names do
-				career_names[i] = Localize(career_names[i])
+			local career_names_string = ""
+
+			for career_name, loadouts in pairs(all_career_loadouts) do
+				local localized_career_name = Localize(career_name)
+				local num_loadouts = loadouts.num_loadouts
+
+				for i = 1, #loadouts do
+					local loadout_index = loadouts[i]
+
+					career_names_string = career_names_string .. localized_career_name .. (num_loadouts > 1 and string.format("{#color(193,91,36)}(%d){#reset()}, ", loadout_index) or ", ")
+				end
 			end
 
-			local career_names_string = table.concat(career_names, ", ")
 			local alpha = 255 * pass_data.alpha_multiplier
 			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin
@@ -10079,17 +10087,25 @@ UITooltipPasses = {
 			end
 
 			local backend_interface = Managers.backend:get_interface("items")
-			local career_names = backend_interface:equipped_by(item_id)
+			local all_career_loadouts = backend_interface:equipped_by_loadout(item_id)
 
-			if #career_names == 0 then
+			if table.is_empty(all_career_loadouts) then
 				return 0
 			end
 
-			for i = 1, #career_names do
-				career_names[i] = Localize(career_names[i])
+			local career_names_string = ""
+
+			for career_name, loadouts in pairs(all_career_loadouts) do
+				local localized_career_name = Localize(career_name)
+				local num_loadouts = loadouts.num_loadouts
+
+				for i = 1, #loadouts do
+					local loadout_index = loadouts[i]
+
+					career_names_string = career_names_string .. localized_career_name .. (num_loadouts > 1 and string.format("{#color(193,91,36)}(%d){#reset()}, ", loadout_index) or ", ")
+				end
 			end
 
-			local career_names_string = table.concat(career_names, ", ")
 			local alpha = 255 * pass_data.alpha_multiplier
 			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin

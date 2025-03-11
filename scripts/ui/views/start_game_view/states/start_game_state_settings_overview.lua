@@ -1021,6 +1021,9 @@ StartGameStateSettingsOverview.play = function (self, t, vote_type, force_close_
 		local network_lobby = self._network_lobby
 		local num_members = network_lobby:members():get_member_count()
 		local is_private = self:is_private_option_enabled()
+
+		is_private = IS_CONSOLE and is_offline or is_private
+
 		local is_alone = num_members == 1
 		local always_host = is_private or self:is_always_host_option_enabled()
 		local params = {

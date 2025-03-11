@@ -1066,7 +1066,7 @@ local function disconnected_content_check_function(content)
 	return not Managers.twitch:is_connecting() and Managers.twitch:is_connected() and not Managers.input:is_device_active("gamepad")
 end
 
-local streaming_desc_str = Localize("start_game_window_deus_twitch_desc")
+local streaming_desc_str = string.gsub(Localize("start_game_window_deus_twitch_desc"), Localize("expedition_highlight_text"), "{#color(255,168,0)}" .. Localize("expedition_highlight_text") .. "{#reset()}")
 local client_disclaimer_desc_str = "start_game_window_twitch_client_disclaimer_description"
 local disable_with_gamepad = true
 local selection_widgets = {
@@ -1369,7 +1369,6 @@ local animation_definitions = {
 
 				widgets.style.game_mode_text.text_color[1] = 255 * (1 - anim_progress)
 				widgets.style.press_key_text.text_color[1] = 255 * (1 - anim_progress)
-				widgets.style.expedition_highlight_text.text_color[1] = 255 * (1 - anim_progress)
 
 				if widgets.content.show_note then
 					widgets.style.note_text.text_color[1] = 255 * (1 - anim_progress)
@@ -1391,13 +1390,12 @@ local animation_definitions = {
 					widgets.content.game_mode_text = Localize("expedition_info")
 					widgets.content.show_note = true
 				else
-					widgets.content.game_mode_text = Localize("start_game_window_deus_twitch_desc")
+					widgets.content.game_mode_text = string.gsub(Localize("start_game_window_deus_twitch_desc"), Localize("expedition_highlight_text"), "{#color(255,168,0)}" .. Localize("expedition_highlight_text") .. "{#reset()}")
 					widgets.content.show_note = false
 				end
 
 				widgets.style.game_mode_text.text_color[1] = 255 * math.easeOutCubic(progress)
 				widgets.style.press_key_text.text_color[1] = 255 * math.easeOutCubic(progress)
-				widgets.style.expedition_highlight_text.text_color[1] = 255 * math.easeOutCubic(progress)
 
 				if widgets.content.show_note then
 					widgets.style.note_text.text_color[1] = 255 * math.easeOutCubic(progress)

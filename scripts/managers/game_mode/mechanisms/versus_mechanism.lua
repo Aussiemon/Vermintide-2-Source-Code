@@ -1105,6 +1105,11 @@ end
 
 local function is_player_hosting()
 	local network_handler = Managers.mechanism:network_handler()
+
+	if not network_handler then
+		return false
+	end
+
 	local server_peer_id = network_handler.server_peer_id
 	local server_has_player = Managers.player:player_from_peer_id(server_peer_id)
 
@@ -1664,7 +1669,9 @@ VersusMechanism.load_end_screen_resources = function (self)
 end
 
 VersusMechanism.unload_end_screen_resources = function (self)
-	Managers.package:unload("resource_packages/levels/dlcs/carousel/versus_dependencies", "end_screen_resource")
+	if Managers.package:is_loading("resource_packages/levels/dlcs/carousel/versus_dependencies", "end_screen_resource") or Managers.package:has_loaded("resource_packages/levels/dlcs/carousel/versus_dependencies", "end_screen_resource") then
+		Managers.package:unload("resource_packages/levels/dlcs/carousel/versus_dependencies", "end_screen_resource")
+	end
 end
 
 VersusMechanism._setup_match = function (self)
@@ -1732,8 +1739,8 @@ VersusMechanism.is_peer_fully_synced = function (self, peer_id)
 	return true
 end
 
-VersusMechanism.set_hero_cosmetics = function (self, peer_id, local_player_id, weapon_slot_name, weapon, weapon_pose, weapon_pose_skin, hero_skin, hat, pactsworn_cosmetics)
-	self._shared_state:set_hero_cosmetics(peer_id, local_player_id, weapon_slot_name, weapon, weapon_pose, weapon_pose_skin, hero_skin, hat, pactsworn_cosmetics)
+VersusMechanism.set_hero_cosmetics = function (self, peer_id, local_player_id, weapon_slot_name, weapon, weapon_pose, weapon_pose_skin, hero_skin, hat, frame, pactsworn_cosmetics)
+	self._shared_state:set_hero_cosmetics(peer_id, local_player_id, weapon_slot_name, weapon, weapon_pose, weapon_pose_skin, hero_skin, hat, frame, pactsworn_cosmetics)
 end
 
 VersusMechanism.get_hero_cosmetics = function (self, peer_id, local_player_id)
@@ -1742,9 +1749,10 @@ VersusMechanism.get_hero_cosmetics = function (self, peer_id, local_player_id)
 	local weapon_pose, weapon_pose_skin = existing_cosmetics_data.weapon_pose, existing_cosmetics_data.weapon_pose_skin
 	local hero_skin = existing_cosmetics_data.hero_skin
 	local hat = existing_cosmetics_data.hat
+	local frame = existing_cosmetics_data.frame
 	local pactsworn_cosmetics = existing_cosmetics_data.pactsworn_cosmetics
 
-	return weapon, weapon_pose, weapon_pose_skin, hero_skin, hat, pactsworn_cosmetics
+	return weapon, weapon_pose, weapon_pose_skin, hero_skin, hat, frame, pactsworn_cosmetics
 end
 
 VersusMechanism.player_joined_party = function (self, peer_id, local_player_id, party_id, slot_id, is_bot)

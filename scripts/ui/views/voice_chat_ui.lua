@@ -324,8 +324,10 @@ VoiceChatUI._update_safe_rect = function (self)
 	end
 end
 
+local EMPTY_TABLE = {}
+
 VoiceChatUI._update_talking_state = function (self)
-	local members = self._voip:members_in_own_room()
+	local members = self._voip:members_in_own_room() or EMPTY_TABLE
 	local members_table = members.get_members and members:get_members() or members
 
 	for _, peer_id in pairs(members_table) do

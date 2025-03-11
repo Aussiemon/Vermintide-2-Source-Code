@@ -972,6 +972,18 @@ CharacterStateHelper._check_chain_action = function (wield_input, action_data, i
 		end
 	end
 
+	local softbutton_required = action_data.softbutton_required
+
+	if softbutton_required then
+		for index, softbutton_data in pairs(softbutton_required) do
+			if input_extension:released_softbutton_input(softbutton_data.input, softbutton_data.softbutton_threshold or action_data.softbutton_threshold) then
+				input_extra_requirement = false
+
+				break
+			end
+		end
+	end
+
 	local input_id = action_data.input
 	local softbutton_threshold = action_data.softbutton_threshold
 	local input, buffered

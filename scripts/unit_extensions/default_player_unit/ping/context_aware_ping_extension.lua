@@ -424,10 +424,15 @@ ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, uni
 		local input_extension = self._input_extension
 		local ping = input_extension:get("ping")
 		local tag_only = input_extension:get("ping_only")
-		local world_marker_only = input_extension:get("ping_only_movement")
 		local social_wheel_only = input_extension:get("social_wheel_only")
 		local weapon_poses_only = input_extension:get("weapon_poses_only")
 		local photomode_only = input_extension:get("photomode_only")
+		local world_marker_only
+
+		if Managers.mechanism:current_mechanism_name() == "versus" then
+			world_marker_only = input_extension:get("ping_only_movement")
+			ping = ping or input_extension:get("ping_hold")
+		end
 
 		if ping or tag_only or world_marker_only or social_wheel_only or weapon_poses_only or photomode_only then
 			local ping_unit, social_wheel_unit, ping_unit_distance, social_wheel_unit_distance, position = self:_check_raycast(unit)

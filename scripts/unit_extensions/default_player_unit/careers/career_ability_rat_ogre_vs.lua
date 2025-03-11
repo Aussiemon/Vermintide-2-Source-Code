@@ -332,7 +332,7 @@ CareerAbilityRatOgreJump._calculate_leap_position = function (self)
 	local initial_jump_vector = Vector3.up() * 0.3
 	local velocity = (initial_jump_vector + raycast_direction) * speed
 	local gravity = Vector3(0, 0, -11)
-	local collision_filter = "filter_slayer_leap"
+	local collision_filter = "filter_player_enemy_leap_state_noclip_mover"
 	local result, new_landing_position = self:get_landing_position(physics_world, self._owner_unit, player_position, velocity, gravity, collision_filter)
 	local leap_distance
 

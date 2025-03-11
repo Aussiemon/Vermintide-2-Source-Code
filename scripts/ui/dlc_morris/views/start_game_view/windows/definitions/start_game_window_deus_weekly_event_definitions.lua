@@ -788,7 +788,7 @@ end
 
 local disable_with_gamepad = true
 local widget_definitions = {
-	quickplay_gamemode_info_box = UIWidgets.create_start_game_deus_gamemode_info_box("adventure_background", scenegraph_definition.adventure_background.size, Localize("cw_weekly_expedition_name_long"), Localize("cw_weekly_expedition_description"), false, true),
+	quickplay_gamemode_info_box = UIWidgets.create_start_game_deus_gamemode_info_box("adventure_background", scenegraph_definition.adventure_background.size, Localize("cw_weekly_expedition_name_long"), string.gsub(Localize("cw_weekly_expedition_description"), Localize("expedition_highlight_text"), "{#color(255,168,0)}" .. Localize("expedition_highlight_text") .. "{#reset()}"), false, true),
 	difficulty_stepper = UIWidgets.create_start_game_difficulty_stepper("difficulty_stepper", Localize("start_game_window_difficulty"), "difficulty_option_1"),
 	difficulty_info = UIWidgets.create_start_game_deus_difficulty_info_box("difficulty_info", scenegraph_definition.difficulty_info.size),
 	upsell_button = UIWidgets.create_simple_two_state_button("upsell_button", "icon_redirect", "icon_redirect_hover"),
@@ -856,7 +856,6 @@ local animation_definitions = {
 
 				widgets.style.game_mode_text.text_color[1] = 255 * (1 - anim_progress)
 				widgets.style.press_key_text.text_color[1] = 255 * (1 - anim_progress)
-				widgets.style.expedition_highlight_text.text_color[1] = 255 * (1 - anim_progress)
 
 				if widgets.content.show_note then
 					widgets.style.note_text.text_color[1] = 255 * (1 - anim_progress)
@@ -878,13 +877,12 @@ local animation_definitions = {
 					widgets.content.game_mode_text = Localize("expedition_info")
 					widgets.content.show_note = true
 				else
-					widgets.content.game_mode_text = Localize("start_game_window_deus_quickplay_desc")
+					widgets.content.game_mode_text = string.gsub(Localize("cw_weekly_expedition_description"), Localize("expedition_highlight_text"), "{#color(255,168,0)}" .. Localize("expedition_highlight_text") .. "{#reset()}")
 					widgets.content.show_note = false
 				end
 
 				widgets.style.game_mode_text.text_color[1] = 255 * math.easeOutCubic(progress)
 				widgets.style.press_key_text.text_color[1] = 255 * math.easeOutCubic(progress)
-				widgets.style.expedition_highlight_text.text_color[1] = 255 * math.easeOutCubic(progress)
 
 				if widgets.content.show_note then
 					widgets.style.note_text.text_color[1] = 255 * math.easeOutCubic(progress)

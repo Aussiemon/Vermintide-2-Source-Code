@@ -10,6 +10,7 @@ local function encode_hero_cosmetics(cosmetics_data)
 	local weapon_pose_skin_id = CosmeticUtils.get_cosmetic_id("slot_pose_skin", cosmetics_data.weapon_pose_skin)
 	local hero_skin_id = CosmeticUtils.get_cosmetic_id("slot_skin", cosmetics_data.hero_skin)
 	local hat_id = CosmeticUtils.get_cosmetic_id("slot_hat", cosmetics_data.hat)
+	local frame_id = CosmeticUtils.get_cosmetic_id("slot_frame", cosmetics_data.frame)
 	local byte_array, index = FrameTable.alloc_table(), 1
 
 	byte_array, index = ByteArray.write_uint8(byte_array, weapon_slot_id, index)
@@ -18,6 +19,7 @@ local function encode_hero_cosmetics(cosmetics_data)
 	byte_array, index = ByteArray.write_uint16(byte_array, weapon_pose_skin_id, index)
 	byte_array, index = ByteArray.write_uint16(byte_array, hero_skin_id, index)
 	byte_array, index = ByteArray.write_uint16(byte_array, hat_id, index)
+	byte_array, index = ByteArray.write_uint16(byte_array, frame_id, index)
 
 	local pactsworn_cosmetics = cosmetics_data.pactsworn_cosmetics
 	local num_cosmetics = table.size(pactsworn_cosmetics)
@@ -48,7 +50,7 @@ local function decode_hero_cosmetics(compressed_byte_array_string)
 
 	ByteArray.write_string(byte_array, byte_array_string)
 
-	local weapon_slot_id, weapon_id, weapon_pose_id, weapon_pose_skin_id, hero_skin_id, hat_id, num_cosmetics
+	local weapon_slot_id, weapon_id, weapon_pose_id, weapon_pose_skin_id, hero_skin_id, hat_id, frame_id, num_cosmetics
 	local pactsworn_cosmetics = {}
 	local index = 1
 
@@ -58,6 +60,7 @@ local function decode_hero_cosmetics(compressed_byte_array_string)
 	weapon_pose_skin_id, index = ByteArray.read_uint16(byte_array, index)
 	hero_skin_id, index = ByteArray.read_uint16(byte_array, index)
 	hat_id, index = ByteArray.read_uint16(byte_array, index)
+	frame_id, index = ByteArray.read_uint16(byte_array, index)
 	num_cosmetics, index = ByteArray.read_uint8(byte_array, index)
 
 	for i = 1, num_cosmetics do
@@ -89,6 +92,7 @@ local function decode_hero_cosmetics(compressed_byte_array_string)
 		weapon_pose_skin = CosmeticUtils.get_cosmetic_name("slot_pose_skin", weapon_pose_skin_id),
 		hero_skin = CosmeticUtils.get_cosmetic_name("slot_skin", hero_skin_id),
 		hat = CosmeticUtils.get_cosmetic_name("slot_hat", hat_id),
+		frame = CosmeticUtils.get_cosmetic_name("slot_frame", frame_id),
 		pactsworn_cosmetics = pactsworn_cosmetics,
 	}
 end

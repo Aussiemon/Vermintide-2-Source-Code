@@ -761,6 +761,11 @@ end
 
 BTConditions.can_heal_player = function (blackboard)
 	local target_ally_unit = blackboard.target_ally_unit
+	local target_career_ext = target_ally_unit and ScriptUnit.extension(target_ally_unit, "career_system")
+
+	if target_career_ext and target_career_ext:career_name() == "wh_zealot" then
+		return false
+	end
 
 	if blackboard.interaction_unit == target_ally_unit and blackboard.target_ally_need_type == "in_need_of_heal" then
 		local interaction_extension = blackboard.interaction_extension

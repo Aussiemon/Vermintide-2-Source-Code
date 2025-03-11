@@ -1508,18 +1508,20 @@ GameModeVersus.update_local_hero_cosmetics = function (self)
 	local weapon_pose_skin = weapon_pose and CosmeticUtils.get_weapon_pose_skin(weapon_pose.key)
 	local hero_skin = BackendUtils.get_loadout_item(career_name, "slot_skin")
 	local hat = BackendUtils.get_loadout_item(career_name, "slot_hat")
+	local frame = BackendUtils.get_loadout_item(career_name, "slot_frame")
 
 	weapon = weapon and weapon.data.name or CosmeticUtils.get_default_cosmetic_slot(career_settings, weapon_slot).item_name
 	weapon_pose = weapon_pose and weapon_pose.data.name or CosmeticUtils.get_default_cosmetic_slot(career_settings, "slot_pose").item_name
 	weapon_pose_skin = weapon_pose_skin and weapon_pose_skin.skin or "n/a"
 	hero_skin = hero_skin and hero_skin.data.name or CosmeticUtils.get_default_cosmetic_slot(career_settings, "slot_skin").item_name
 	hat = hat and hat.data.name or CosmeticUtils.get_default_cosmetic_slot(career_settings, "slot_hat").item_name
+	frame = frame and frame.data.name or CosmeticUtils.get_default_cosmetic_slot(career_settings, "slot_frame").item_name
 
 	local pactsworn_cosmetics = self:_pack_pactsworn_cosmetics()
-	local existing_weapon, existing_pose, exisiting_weapon_pose_skin, existing_hero_skin, existing_hat, exisiting_pactsworn_cosmetics = self._mechanism:get_hero_cosmetics(peer_id, local_player_id)
+	local existing_weapon, existing_pose, exisiting_weapon_pose_skin, existing_hero_skin, existing_hat, existing_frame, exisiting_pactsworn_cosmetics = self._mechanism:get_hero_cosmetics(peer_id, local_player_id)
 
-	if weapon ~= existing_weapon or weapon_pose ~= existing_pose or exisiting_weapon_pose_skin ~= weapon_pose_skin or hero_skin ~= existing_hero_skin or hat ~= existing_hat or table.recursive_compare(exisiting_pactsworn_cosmetics, pactsworn_cosmetics) then
-		self._mechanism:set_hero_cosmetics(peer_id, local_player_id, weapon_slot, weapon, weapon_pose, weapon_pose_skin, hero_skin, hat, pactsworn_cosmetics)
+	if weapon ~= existing_weapon or weapon_pose ~= existing_pose or exisiting_weapon_pose_skin ~= weapon_pose_skin or hero_skin ~= existing_hero_skin or hat ~= existing_hat or frame ~= existing_frame or table.recursive_compare(exisiting_pactsworn_cosmetics, pactsworn_cosmetics) then
+		self._mechanism:set_hero_cosmetics(peer_id, local_player_id, weapon_slot, weapon, weapon_pose, weapon_pose_skin, hero_skin, hat, frame, pactsworn_cosmetics)
 	end
 end
 
