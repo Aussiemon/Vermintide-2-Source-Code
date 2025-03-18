@@ -233,6 +233,20 @@ PlayerInputTutorialExtension.released_input = function (self, input)
 	return self.has_released_input
 end
 
+PlayerInputTutorialExtension.released_softbutton_input = function (self, input, softbutton_threshold)
+	if self.has_released_input then
+		return true
+	end
+
+	local get_input_release = self.input_service:get(input)
+
+	if not get_input_release or get_input_release < softbutton_threshold then
+		self.has_released_input = true
+	end
+
+	return self.has_released_input
+end
+
 PlayerInputTutorialExtension.reset_release_input = function (self)
 	self.has_released_input = false
 

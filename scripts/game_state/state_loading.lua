@@ -2086,6 +2086,8 @@ StateLoading._destroy_network = function (self, application_shutdown)
 		Managers.account:set_current_lobby(nil)
 	end
 
+	self:_destroy_network_handler(true)
+
 	if self._lobby_host then
 		self._lobby_host:destroy()
 
@@ -2108,7 +2110,6 @@ StateLoading._destroy_network = function (self, application_shutdown)
 
 	Managers.chat:unregister_channel(1)
 	Managers.mechanism:mechanism_try_call("unregister_chats")
-	self:_destroy_network_handler(true)
 
 	self.parent.loading_context = {}
 

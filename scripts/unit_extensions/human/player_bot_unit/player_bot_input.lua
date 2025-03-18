@@ -669,6 +669,10 @@ PlayerBotInput.released_input = function (self, input)
 	return not self._input[input]
 end
 
+PlayerBotInput.released_softbutton_input = function (self, input, softbutton_threshold)
+	return not self._input[input]
+end
+
 PlayerBotInput.add_stun_buffer = function (self, input_key)
 	return
 end
