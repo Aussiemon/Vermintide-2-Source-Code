@@ -4,9 +4,10 @@ require("scripts/settings/outline_settings")
 
 OutlineExtension = class(OutlineExtension)
 
-OutlineExtension.init = function (self)
+OutlineExtension.init = function (self, outline_system, unit)
 	self._unique_id = 0
 	self._default_settings = nil
+	self._unit = unit
 	self.outlined = false
 	self.reapply = false
 	self.flag = nil
@@ -15,6 +16,7 @@ OutlineExtension.init = function (self)
 	self.distance = nil
 	self.method = nil
 	self.outline_settings = {}
+	self._outline_system = outline_system
 end
 
 OutlineExtension.add_outline = function (self, settings)
@@ -118,6 +120,8 @@ end
 
 OutlineExtension.reapply_outline = function (self)
 	self.reapply = true
+
+	self._outline_system:mark_outline_dirty(self._unit)
 end
 
 OutlineExtension._refresh_current_outline = function (self, reapply)
@@ -131,6 +135,10 @@ OutlineExtension._refresh_current_outline = function (self, reapply)
 	self.prev_flag = self.flag
 	self.flag = current_settings.flag and current_settings.flag or default.flag
 	self.reapply = reapply or self.outlined and new_color
+
+	if self.reapply or new_color then
+		self._outline_system:mark_outline_dirty(self._unit)
+	end
 end
 
 OutlineExtension.on_freeze = function (self)

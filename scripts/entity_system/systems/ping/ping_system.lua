@@ -203,7 +203,13 @@ PingSystem._handle_ping = function (self, ping_type, social_wheel_event_id, send
 		end
 	end
 
-	if not ping_type or ping_type == PingTypes.CANCEL or ping_type == PingTypes.CHAT_ONLY then
+	if ping_type == PingTypes.CANCEL then
+		self:_remove_ping(pinger_unit)
+
+		return
+	end
+
+	if not ping_type or ping_type == PingTypes.CHAT_ONLY then
 		return
 	end
 
@@ -245,7 +251,7 @@ PingSystem._handle_ping = function (self, ping_type, social_wheel_event_id, send
 		social_wheel_event_id = social_wheel_event_id,
 	}
 
-	Managers.telemetry_events:ping_used(sender_player, table.find(PingTypes, ping_type), pinged_unit, POSITION_LOOKUP[pinger_unit])
+	Managers.telemetry_events:ping_used(sender_player, PingTypes[ping_type], pinged_unit, POSITION_LOOKUP[pinger_unit])
 
 	if self.is_server then
 		if pinged_unit then

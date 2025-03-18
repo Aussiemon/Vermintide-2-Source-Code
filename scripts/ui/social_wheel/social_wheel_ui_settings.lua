@@ -874,7 +874,7 @@ SocialWheelSettings = {
 		end,
 		{
 			{
-				event_text = "vs_social_wheel_dark_pact_player_ambush",
+				event_text = "vs_social_wheel_dark_pact_general_ambush",
 				icon = "radial_chat_icon_ambush",
 				name = "vs_social_wheel_dark_pact_player_ambush",
 				ping_sound_effect = "versus_ping_marker_imminent",
@@ -896,7 +896,7 @@ SocialWheelSettings = {
 				ping_type = PingTypes.PLAYER_COVER_ME,
 			},
 			{
-				event_text = "vs_social_wheel_dark_pact_player_attack",
+				event_text = "vs_social_wheel_dark_pact_general_attack",
 				icon = "radial_chat_icon_attack",
 				name = "vs_social_wheel_dark_pact_player_attack",
 				ping_sound_effect = "versus_ping_marker_imminent",

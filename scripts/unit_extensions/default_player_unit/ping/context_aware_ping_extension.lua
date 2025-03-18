@@ -386,20 +386,21 @@ ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, uni
 		local ping_released = self._input_extension:get("ping_release")
 		local ping_held = self._input_extension:get("ping_hold")
 
-		if not self._listen_for_double_press and self._can_ping and ping_held and t >= ping_context.max_t then
-			self._can_ping = false
-			self._ping_context = nil
-		elseif ping_released or not ping_held then
+		if ping_released or not ping_held then
 			local unit_to_ping = ping_context.unit
 			local ping_type = ping_context.ping_type
 
 			if t <= ping_context.max_t then
 				if Unit.alive(unit_to_ping) then
 					self:ping_attempt(unit, unit_to_ping, t, ping_type)
-				elseif ping_context.position then
+				elseif ping_context.fallback_to_world_marker then
 					local social_wheel_event_id
 
-					self:ping_world_position_attempt(unit, ping_context.position:unbox(), t, ping_type, social_wheel_event_id, ping_context.is_double_press)
+					self:ping_world_position_attempt(unit, ping_context.position:unbox(), t, ping_type or PingTypes.CONTEXT, social_wheel_event_id, ping_context.is_double_press)
+
+					if Managers.state.game_mode:setting("allow_double_ping") then
+						self:_start_listen_for_double_press(t)
+					end
 				end
 			end
 
@@ -407,7 +408,7 @@ ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, uni
 			self._social_wheel_context = nil
 			self._can_ping = false
 		end
-	elseif self._social_wheel_context and not self._listen_for_double_press then
+	elseif self._social_wheel_context then
 		local social_wheel_only_released = self._input_extension:get("social_wheel_only_release")
 		local social_wheel_only_held = self._input_extension:get("social_wheel_only_hold")
 		local weapon_poses_only_released = self._input_extension:get("weapon_poses_only_release")
@@ -431,7 +432,6 @@ ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, uni
 
 		if Managers.mechanism:current_mechanism_name() == "versus" then
 			world_marker_only = input_extension:get("ping_only_movement")
-			ping = ping or input_extension:get("ping_hold")
 		end
 
 		if ping or tag_only or world_marker_only or social_wheel_only or weapon_poses_only or photomode_only then
@@ -439,11 +439,6 @@ ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, uni
 
 			if tag_only then
 				position = nil
-			elseif world_marker_only then
-				ping_unit = nil
-				ping_unit_distance = nil
-				social_wheel_unit = nil
-				social_wheel_unit_distance = nil
 			end
 
 			local stored_ping_position
@@ -473,31 +468,11 @@ ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, uni
 				ping_type = PingTypes.CANCEL
 			end
 
-			if tag_only then
-				if ping_unit then
-					self:ping_attempt(unit, ping_unit, t, ping_type or PingTypes.CONTEXT)
-				end
-			elseif world_marker_only and position then
-				local social_wheel_event_id
+			if tag_only and ping_unit then
+				self:ping_attempt(unit, ping_unit, t, ping_type or PingTypes.CONTEXT)
+			end
 
-				self:ping_world_position_attempt(unit, position, t, ping_type or PingTypes.CONTEXT, social_wheel_event_id, is_double_press)
-
-				if Managers.state.game_mode:setting("allow_double_ping") then
-					self:_start_listen_for_double_press(t)
-				end
-			elseif social_wheel_only then
-				self._social_wheel_context = {
-					min_t = 0,
-					unit = social_wheel_unit,
-					distance = social_wheel_unit_distance,
-					position = stored_ping_position,
-				}
-			elseif weapon_poses_only then
-				self._social_wheel_context = {
-					min_t = 0,
-					show_poses = true,
-				}
-			elseif ping then
+			if ping then
 				local social_wheel_delay = Application.user_setting("social_wheel_delay") or DefaultUserSettings.get("user_settings", "social_wheel_delay")
 
 				self._ping_context = {
@@ -507,6 +482,7 @@ ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, uni
 					position = stored_ping_position,
 					ping_type = ping_type,
 					is_double_press = is_double_press,
+					fallback_to_world_marker = world_marker_only,
 				}
 				self._social_wheel_context = {
 					unit = social_wheel_unit,
@@ -521,7 +497,33 @@ ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, uni
 				end
 
 				self._can_ping = true
-			elseif photomode_only then
+			elseif world_marker_only and position then
+				local social_wheel_event_id
+
+				self:ping_world_position_attempt(unit, position, t, ping_type or PingTypes.CONTEXT, social_wheel_event_id, is_double_press)
+
+				if Managers.state.game_mode:setting("allow_double_ping") then
+					self:_start_listen_for_double_press(t)
+				end
+			end
+
+			if social_wheel_only then
+				self._social_wheel_context = {
+					min_t = 0,
+					unit = social_wheel_unit,
+					distance = social_wheel_unit_distance,
+					position = stored_ping_position,
+				}
+			end
+
+			if weapon_poses_only then
+				self._social_wheel_context = {
+					min_t = 0,
+					show_poses = true,
+				}
+			end
+
+			if photomode_only then
 				self._social_wheel_context = {
 					min_t = 0,
 					show_emotes = true,

@@ -47,6 +47,8 @@ OutlineSystem.init = function (self, context, system_name)
 	self._event_manager = Managers.state.event
 
 	self._event_manager:register(self, "on_player_joined_party", "on_player_joined_party")
+
+	self._dirty_units = {}
 end
 
 OutlineSystem.add_ext_functions = {
@@ -328,7 +330,7 @@ OutlineSystem.add_ext_functions = {
 }
 
 OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
-	local extension = OutlineExtension:new()
+	local extension = OutlineExtension:new(self, unit)
 	local setup_func = OutlineSystem.add_ext_functions[extension_name]
 	local id = setup_func(extension)
 
@@ -379,6 +381,10 @@ OutlineSystem._reinitialize_outlines = function (self, peer_id, party_id)
 			extension.update_override_method_minion_setting()
 		end
 	end
+end
+
+OutlineSystem.mark_outline_dirty = function (self, unit)
+	self._dirty_units[unit] = true
 end
 
 OutlineSystem.on_freeze_extension = function (self, unit, extension_name)
@@ -508,62 +514,78 @@ OutlineSystem.update = function (self, context, t)
 		return
 	end
 
+	local active_cutscene = self:_is_cutscene_active() or self:_is_photomode_active()
+	local dirty_units = self._dirty_units
+
+	for unit in pairs(dirty_units) do
+		self:_update_unit_outline(unit, active_cutscene)
+
+		dirty_units[unit] = nil
+	end
+
 	local dt = context.dt
 	local num_to_check_per_frame = math.min(num_units, 20)
-	local max_slow_checks_per_frame = 3
-	local slow_checks_done = 0
 	local current_index = self.current_index
 	local units = self.units
-	local extensions = self.unit_extension_data
-	local active_cutscene = self:_is_cutscene_active() or self:_is_photomode_active()
 
 	for i = 1, num_to_check_per_frame do
 		current_index = current_index % num_units + 1
 
 		local unit = units[current_index]
-		local extension = extensions[unit]
 
-		if extension then
-			local outline_settings = extension.outline_color
-			local method = extension.method
-			local flag_swiched = extension.prev_flag and extension.prev_flag ~= extension.flag
-
-			if flag_swiched then
-				self:outline_unit(unit, extension.prev_flag, Color(0, 0, 0, 0), false, extension.apply_method, outline_settings)
-
-				extension.prev_flag = nil
-			end
-
-			local do_outline, slow_check = false, false
-
-			if not active_cutscene then
-				do_outline, slow_check = self[method](self, unit, extension)
-			end
-
-			if extension.outlined ~= do_outline or extension.reapply then
-				local c = outline_settings.color
-				local color = Color(255, c[2], c[3], c[4])
-
-				self:outline_unit(unit, extension.flag, color, do_outline, extension.apply_method, outline_settings)
-
-				extension.outlined = do_outline
-			end
-
-			extension.reapply = false
-
-			if slow_check then
-				slow_checks_done = slow_checks_done + 1
-
-				if max_slow_checks_per_frame <= slow_checks_done then
-					break
-				end
-			end
+		if not self:_update_unit_outline(unit, active_cutscene) then
+			break
 		end
 	end
 
 	self.current_index = current_index
 
 	self:_update_pulsing(dt, t)
+end
+
+OutlineSystem._update_unit_outline = function (self, unit, active_cutscene)
+	local extension = self.unit_extension_data[unit]
+
+	if extension then
+		local max_slow_checks_per_frame = 3
+		local slow_checks_done = 0
+		local outline_settings = extension.outline_color
+		local method = extension.method
+		local flag_swiched = extension.prev_flag and extension.prev_flag ~= extension.flag
+
+		if flag_swiched then
+			self:outline_unit(unit, extension.prev_flag, Color(0, 0, 0, 0), false, extension.apply_method, outline_settings)
+
+			extension.prev_flag = nil
+		end
+
+		local do_outline, slow_check = false, false
+
+		if not active_cutscene then
+			do_outline, slow_check = self[method](self, unit, extension)
+		end
+
+		if extension.outlined ~= do_outline or extension.reapply then
+			local c = outline_settings.color
+			local color = Color(255, c[2], c[3], c[4])
+
+			self:outline_unit(unit, extension.flag, color, do_outline, extension.apply_method, outline_settings)
+
+			extension.outlined = do_outline
+		end
+
+		extension.reapply = false
+
+		if slow_check then
+			slow_checks_done = slow_checks_done + 1
+
+			if max_slow_checks_per_frame <= slow_checks_done then
+				return false
+			end
+		end
+	end
+
+	return true
 end
 
 local PULSE_METHODS = {
