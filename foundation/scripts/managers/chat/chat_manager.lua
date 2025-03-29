@@ -467,9 +467,9 @@ ChatManager.set_chat_enabled = function (self, chat_enabled)
 end
 
 ChatManager.is_chat_enabled = function (self)
-	local network_handler_available = Managers.mechanism:network_handler()
+	local network_handler = Managers.mechanism:network_handler()
 
-	if not network_handler_available then
+	if not network_handler or not network_handler:get_match_handler() then
 		return false
 	end
 
@@ -510,7 +510,7 @@ end
 
 ChatManager.update = function (self, dt, t, menu_active, menu_input_service, no_unblock)
 	if self.gui_enabled and not DEDICATED_SERVER then
-		self.chat_gui:update(dt, menu_active, menu_input_service, no_unblock, self._chat_enabled)
+		self.chat_gui:update(dt, menu_active, menu_input_service, no_unblock, self:is_chat_enabled())
 	end
 end
 
@@ -578,14 +578,24 @@ ChatManager.send_chat_message = function (self, channel_id, local_player_id, mes
 			peer_id = sender_peer_id and sender_peer_id or peer_id
 
 			local network_handler = Managers.mechanism:network_handler()
-			local match_handler = network_handler:get_match_handler()
 
-			match_handler:send_rpc_others("rpc_chat_message", channel_id, peer_id, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev, message_type)
+			if network_handler then
+				local match_handler = network_handler:get_match_handler()
+
+				match_handler:send_rpc_others("rpc_chat_message", channel_id, peer_id, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev, message_type)
+			else
+				return
+			end
 		else
 			local network_handler = Managers.mechanism:network_handler()
-			local match_handler = network_handler:get_match_handler()
 
-			match_handler:send_rpc_up("rpc_chat_message", channel_id, peer_id, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev, message_type)
+			if network_handler then
+				local match_handler = network_handler:get_match_handler()
+
+				match_handler:send_rpc_up("rpc_chat_message", channel_id, peer_id, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev, message_type)
+			else
+				return
+			end
 		end
 
 		if not localize then
@@ -797,7 +807,7 @@ ChatManager._profanity_check = function (self, message)
 end
 
 ChatManager._add_message_to_list = function (self, channel_id, message_sender, local_player_id, message, is_system_message, pop_chat, is_dev, message_type, link, data)
-	if not IS_WINDOWS and not self._chat_enabled then
+	if not IS_WINDOWS and not self:is_chat_enabled() then
 		return
 	end
 
@@ -852,10 +862,10 @@ ChatManager._add_message_to_list = function (self, channel_id, message_sender, l
 	}
 
 	if not IS_WINDOWS then
-		if not self._chat_enabled then
+		if not self:is_chat_enabled() then
 			return
 		end
-	elseif not self._chat_enabled and not is_system_message then
+	elseif not self:is_chat_enabled() and not is_system_message then
 		return
 	end
 

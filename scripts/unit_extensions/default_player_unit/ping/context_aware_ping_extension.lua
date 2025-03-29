@@ -482,7 +482,7 @@ ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, uni
 					position = stored_ping_position,
 					ping_type = ping_type,
 					is_double_press = is_double_press,
-					fallback_to_world_marker = world_marker_only,
+					fallback_to_world_marker = world_marker_only and stored_ping_position,
 				}
 				self._social_wheel_context = {
 					unit = social_wheel_unit,
