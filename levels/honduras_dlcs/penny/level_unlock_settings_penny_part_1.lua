@@ -5,6 +5,7 @@ AreaSettings.penny = {
 	display_name = "area_selection_penny_name",
 	dlc_name = "penny",
 	level_image = "area_icon_drachenfels",
+	long_description_text = "area_selection_penny_description_long",
 	menu_sound_event = "Play_hud_menu_area_drachenfels",
 	name = "penny",
 	sort_order = 2,

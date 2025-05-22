@@ -38,6 +38,8 @@ assert(DialogueLookup[DialogueLookup_n + 35] == nil)
 assert(DialogueLookup[DialogueLookup_n + 36] == nil)
 assert(DialogueLookup[DialogueLookup_n + 37] == nil)
 assert(DialogueLookup[DialogueLookup_n + 38] == nil)
+assert(DialogueLookup[DialogueLookup_n + 39] == nil)
+assert(DialogueLookup[DialogueLookup_n + 40] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pwh_gateway_accidental_bell_ring_a"
 DialogueLookup[DialogueLookup_n + 2] = "pwh_gateway_bell_silenced_a"
@@ -67,14 +69,16 @@ DialogueLookup[DialogueLookup_n + 25] = "pwh_gateway_event_start_b"
 DialogueLookup[DialogueLookup_n + 26] = "pwh_gateway_event_start_c"
 DialogueLookup[DialogueLookup_n + 27] = "pwh_gateway_event_start_d"
 DialogueLookup[DialogueLookup_n + 28] = "pwh_gateway_gate_a"
-DialogueLookup[DialogueLookup_n + 29] = "pwh_gateway_loot_elevator_b"
-DialogueLookup[DialogueLookup_n + 30] = "pwh_gateway_spotlight_triggered_b"
-DialogueLookup[DialogueLookup_n + 31] = "pwh_gateway_start_banter_b"
-DialogueLookup[DialogueLookup_n + 32] = "pwh_gateway_traversal_one_a"
-DialogueLookup[DialogueLookup_n + 33] = "pwh_gateway_traversal_one_b"
-DialogueLookup[DialogueLookup_n + 34] = "pwh_gateway_working_spotlight_one_b"
-DialogueLookup[DialogueLookup_n + 35] = "pwh_gateway_working_spotlight_three_b"
-DialogueLookup[DialogueLookup_n + 36] = "pwh_gateway_working_spotlight_two_b"
-DialogueLookup[DialogueLookup_n + 37] = "pwh_gateway_wrecked_spotlight_a"
-DialogueLookup[DialogueLookup_n + 38] = "pwh_gateway_wrecked_spotlight_b"
-DialogueLookup_n = DialogueLookup_n + 38
+DialogueLookup[DialogueLookup_n + 29] = "pwh_gateway_gate_lever_a"
+DialogueLookup[DialogueLookup_n + 30] = "pwh_gateway_gate_lever_b"
+DialogueLookup[DialogueLookup_n + 31] = "pwh_gateway_loot_elevator_b"
+DialogueLookup[DialogueLookup_n + 32] = "pwh_gateway_spotlight_triggered_b"
+DialogueLookup[DialogueLookup_n + 33] = "pwh_gateway_start_banter_b"
+DialogueLookup[DialogueLookup_n + 34] = "pwh_gateway_traversal_one_a"
+DialogueLookup[DialogueLookup_n + 35] = "pwh_gateway_traversal_one_b"
+DialogueLookup[DialogueLookup_n + 36] = "pwh_gateway_working_spotlight_one_b"
+DialogueLookup[DialogueLookup_n + 37] = "pwh_gateway_working_spotlight_three_b"
+DialogueLookup[DialogueLookup_n + 38] = "pwh_gateway_working_spotlight_two_b"
+DialogueLookup[DialogueLookup_n + 39] = "pwh_gateway_wrecked_spotlight_a"
+DialogueLookup[DialogueLookup_n + 40] = "pwh_gateway_wrecked_spotlight_b"
+DialogueLookup_n = DialogueLookup_n + 40

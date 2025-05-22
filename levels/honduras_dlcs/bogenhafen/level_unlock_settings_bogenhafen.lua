@@ -5,6 +5,7 @@ AreaSettings.bogenhafen = {
 	display_name = "area_selection_bogenhafen_name",
 	dlc_name = "bogenhafen",
 	level_image = "area_icon_bogenhafen",
+	long_description_text = "area_selection_bogenhafen_description_long",
 	menu_sound_event = "Play_hud_menu_area_bogenhafen",
 	name = "bogenhafen",
 	sort_order = 9004,

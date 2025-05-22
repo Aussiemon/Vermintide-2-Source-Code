@@ -38,6 +38,8 @@ assert(DialogueLookup[DialogueLookup_n + 35] == nil)
 assert(DialogueLookup[DialogueLookup_n + 36] == nil)
 assert(DialogueLookup[DialogueLookup_n + 37] == nil)
 assert(DialogueLookup[DialogueLookup_n + 38] == nil)
+assert(DialogueLookup[DialogueLookup_n + 39] == nil)
+assert(DialogueLookup[DialogueLookup_n + 40] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pes_gateway_accidental_bell_ring_a"
 DialogueLookup[DialogueLookup_n + 2] = "pes_gateway_bell_silenced_a"
@@ -67,14 +69,16 @@ DialogueLookup[DialogueLookup_n + 25] = "pes_gateway_event_start_b"
 DialogueLookup[DialogueLookup_n + 26] = "pes_gateway_event_start_c"
 DialogueLookup[DialogueLookup_n + 27] = "pes_gateway_event_start_d"
 DialogueLookup[DialogueLookup_n + 28] = "pes_gateway_gate_a"
-DialogueLookup[DialogueLookup_n + 29] = "pes_gateway_loot_elevator_b"
-DialogueLookup[DialogueLookup_n + 30] = "pes_gateway_spotlight_triggered_b"
-DialogueLookup[DialogueLookup_n + 31] = "pes_gateway_start_banter_b"
-DialogueLookup[DialogueLookup_n + 32] = "pes_gateway_traversal_one_a"
-DialogueLookup[DialogueLookup_n + 33] = "pes_gateway_traversal_one_b"
-DialogueLookup[DialogueLookup_n + 34] = "pes_gateway_working_spotlight_one_b"
-DialogueLookup[DialogueLookup_n + 35] = "pes_gateway_working_spotlight_three_b"
-DialogueLookup[DialogueLookup_n + 36] = "pes_gateway_working_spotlight_two_b"
-DialogueLookup[DialogueLookup_n + 37] = "pes_gateway_wrecked_spotlight_a"
-DialogueLookup[DialogueLookup_n + 38] = "pes_gateway_wrecked_spotlight_b"
-DialogueLookup_n = DialogueLookup_n + 38
+DialogueLookup[DialogueLookup_n + 29] = "pes_gateway_gate_lever_a"
+DialogueLookup[DialogueLookup_n + 30] = "pes_gateway_gate_lever_b"
+DialogueLookup[DialogueLookup_n + 31] = "pes_gateway_loot_elevator_b"
+DialogueLookup[DialogueLookup_n + 32] = "pes_gateway_spotlight_triggered_b"
+DialogueLookup[DialogueLookup_n + 33] = "pes_gateway_start_banter_b"
+DialogueLookup[DialogueLookup_n + 34] = "pes_gateway_traversal_one_a"
+DialogueLookup[DialogueLookup_n + 35] = "pes_gateway_traversal_one_b"
+DialogueLookup[DialogueLookup_n + 36] = "pes_gateway_working_spotlight_one_b"
+DialogueLookup[DialogueLookup_n + 37] = "pes_gateway_working_spotlight_three_b"
+DialogueLookup[DialogueLookup_n + 38] = "pes_gateway_working_spotlight_two_b"
+DialogueLookup[DialogueLookup_n + 39] = "pes_gateway_wrecked_spotlight_a"
+DialogueLookup[DialogueLookup_n + 40] = "pes_gateway_wrecked_spotlight_b"
+DialogueLookup_n = DialogueLookup_n + 40

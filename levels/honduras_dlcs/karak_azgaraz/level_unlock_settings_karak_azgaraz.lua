@@ -5,6 +5,7 @@ AreaSettings.karak_azgaraz = {
 	display_name = "area_selection_karak_azgaraz_name",
 	dlc_name = "karak_azgaraz_part_1",
 	level_image = "area_icon_karak_azgaraz",
+	long_description_text = "area_selection_karak_azgaraz_description_long",
 	menu_sound_event = "Play_hud_menu_area_dwarf",
 	name = "karak_azgaraz",
 	sort_order = 4,

@@ -5,6 +5,7 @@ AreaSettings.scorpion = {
 	display_name = "area_selection_scorpion_name",
 	dlc_name = "scorpion",
 	level_image = "area_icon_wom",
+	long_description_text = "area_selection_scorpion_description_long",
 	menu_sound_event = "Play_hud_menu_area_crater",
 	name = "scorpion",
 	sort_order = 9006,

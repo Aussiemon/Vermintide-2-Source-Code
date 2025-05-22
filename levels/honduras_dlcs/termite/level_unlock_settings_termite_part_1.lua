@@ -5,6 +5,7 @@ AreaSettings.termite = {
 	display_name = "area_selection_termite_name",
 	dlc_name = "termite",
 	level_image = "area_icon_termite",
+	long_description_text = "area_selection_termite_description_long",
 	menu_sound_event = "Play_hud_menu_area_termite",
 	name = "termite",
 	sort_order = 7,

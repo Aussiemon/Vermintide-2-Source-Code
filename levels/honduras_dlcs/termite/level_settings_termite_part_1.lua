@@ -112,4 +112,10 @@ LevelSettings.dlc_termite_1 = {
 		0,
 		0,
 	},
+	mission_givers = {
+		{
+			dialogue_profile = "inn_keeper",
+			faction = "player",
+		},
+	},
 }

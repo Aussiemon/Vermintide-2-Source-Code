@@ -816,139 +816,6 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "nik_greeting",
-		probability = 1,
-		response = "nik_greeting",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item",
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"nik_greeting",
-			},
-		},
-	})
-	define_rule({
-		name = "nik_greeting_evening",
-		probability = 1,
-		response = "nik_greeting_evening",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item",
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"nik_greeting_evening",
-			},
-		},
-	})
-	define_rule({
-		name = "nik_greeting_first_time",
-		probability = 1,
-		response = "nik_greeting_first_time",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item",
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"nik_greeting_first_time",
-			},
-		},
-	})
-	define_rule({
-		name = "nik_greeting_halloween",
-		probability = 1,
-		response = "nik_greeting_halloween",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"nik_greeting_halloween",
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"inn_keeper",
-			},
-		},
-	})
-	define_rule({
-		name = "nik_greeting_night",
-		probability = 1,
-		response = "nik_greeting_night",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item",
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"nik_greeting_night",
-			},
-		},
-	})
-	define_rule({
-		name = "nik_greeting_rainy",
-		probability = 1,
-		response = "nik_greeting_rainy",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item",
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"nik_greeting_rainy",
-			},
-		},
-	})
-	define_rule({
-		name = "nik_greeting_sunny",
-		probability = 1,
-		response = "nik_greeting_sunny",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item",
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"nik_greeting_sunny",
-			},
-		},
-	})
-	define_rule({
 		name = "nik_hub_backstory_interaction",
 		probability = 1,
 		response = "nik_hub_backstory_interaction",
@@ -964,6 +831,12 @@ return function ()
 				"item_tag",
 				OP.EQ,
 				"nik_backstory_interacting",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"inn_keeper",
 			},
 		},
 	})
@@ -5882,6 +5755,230 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pbw_journal_conversation_four_b",
+		probability = 1,
+		response = "pbw_journal_conversation_four_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_journal_conversation_four_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_journal_conversation_four_d",
+		probability = 1,
+		response = "pbw_journal_conversation_four_d",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_journal_conversation_four_02",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_journal_conversation_one_d",
+		probability = 1,
+		response = "pbw_journal_conversation_one_d",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_journal_conversation_one_02",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_journal_conversation_one_f",
+		probability = 1,
+		response = "pbw_journal_conversation_one_f",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_journal_conversation_one_02",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_journal_conversation_three_e",
+		probability = 1,
+		response = "pbw_journal_conversation_three_e",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_journal_conversation_three_02",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_journal_conversation_two_b",
+		probability = 1,
+		response = "pbw_journal_conversation_two_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_journal_conversation_two_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_journal_conversation_two_d",
+		probability = 1,
+		response = "pbw_journal_conversation_two_d",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_journal_conversation_two_02",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
 		name = "pbw_nm_hub_shovel_conversation_five_01",
 		probability = 1,
 		response = "pbw_nm_hub_shovel_conversation_five_01",
@@ -8485,7 +8582,7 @@ return function ()
 	})
 	define_rule({
 		name = "pdr_hub_songbook_one",
-		probability = 1,
+		probability = 0.2,
 		response = "pdr_hub_songbook_one",
 		criterias = {
 			{
@@ -8539,6 +8636,209 @@ return function ()
 				OP.ADD,
 				1,
 			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_journal_conversation_one_a",
+		probability = 0.7,
+		response = "pdr_journal_conversation_one_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"story_trigger",
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GT,
+				1,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"global_context",
+				"empire_soldier",
+				OP.EQ,
+				1,
+			},
+			{
+				"global_context",
+				"bright_wizard",
+				OP.EQ,
+				1,
+			},
+			{
+				"global_context",
+				"wood_elf",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMEDIFF,
+				OP.GT,
+				60,
+			},
+			{
+				"faction_memory",
+				"journal_conversation_one",
+				OP.EQ,
+				0,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"journal_conversation_one",
+				OP.ADD,
+				1,
+			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_journal_conversation_one_c",
+		probability = 1,
+		response = "pdr_journal_conversation_one_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_journal_conversation_one_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_journal_conversation_three_b",
+		probability = 1,
+		response = "pdr_journal_conversation_three_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_journal_conversation_three_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_journal_conversation_three_d",
+		probability = 1,
+		response = "pdr_journal_conversation_three_d",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_journal_conversation_three_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_journal_conversation_three_f",
+		probability = 1,
+		response = "pdr_journal_conversation_three_f",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_journal_conversation_three_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+		},
+		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
@@ -11332,6 +11632,241 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"empire_soldier",
+			},
+		},
+	})
+	define_rule({
+		name = "pes_journal_conversation_four_a",
+		probability = 1,
+		response = "pes_journal_conversation_four_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"story_trigger",
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GT,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"global_context",
+				"bright_wizard",
+				OP.EQ,
+				1,
+			},
+			{
+				"global_context",
+				"wood_elf",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMEDIFF,
+				OP.GT,
+				60,
+			},
+			{
+				"faction_memory",
+				"journal_conversation_one",
+				OP.EQ,
+				1,
+			},
+			{
+				"faction_memory",
+				"journal_conversation_four",
+				OP.EQ,
+				0,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"journal_conversation_four",
+				OP.ADD,
+				1,
+			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pes_journal_conversation_four_c",
+		probability = 1,
+		response = "pes_journal_conversation_four_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_journal_conversation_four_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pes_journal_conversation_four_e",
+		probability = 1,
+		response = "pes_journal_conversation_four_e",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_journal_conversation_four_02",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pes_journal_conversation_one_b",
+		probability = 1,
+		response = "pes_journal_conversation_one_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_journal_conversation_one_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pes_journal_conversation_one_e",
+		probability = 1,
+		response = "pes_journal_conversation_one_e",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_journal_conversation_one_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pes_journal_conversation_three_c",
+		probability = 1,
+		response = "pes_journal_conversation_three_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_journal_conversation_three_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET,
 			},
 		},
 	})
@@ -15839,6 +16374,176 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pwh_journal_conversation_three_a",
+		probability = 0.7,
+		response = "pwh_journal_conversation_three_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"story_trigger",
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GT,
+				2,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"global_context",
+				"dwarf_ranger",
+				OP.EQ,
+				1,
+			},
+			{
+				"global_context",
+				"empire_soldier",
+				OP.EQ,
+				1,
+			},
+			{
+				"global_context",
+				"bright_wizard",
+				OP.EQ,
+				1,
+			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMEDIFF,
+				OP.GT,
+				60,
+			},
+			{
+				"faction_memory",
+				"journal_conversation_three",
+				OP.EQ,
+				0,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"journal_conversation_three",
+				OP.ADD,
+				1,
+			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_journal_conversation_two_a",
+		probability = 0.7,
+		response = "pwh_journal_conversation_two_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"story_trigger",
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GT,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"global_context",
+				"bright_wizard",
+				OP.EQ,
+				1,
+			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMEDIFF,
+				OP.GT,
+				60,
+			},
+			{
+				"faction_memory",
+				"journal_conversation_two",
+				OP.EQ,
+				0,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"journal_conversation_two",
+				OP.ADD,
+				1,
+			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_journal_conversation_two_c",
+		probability = 1,
+		response = "pwh_journal_conversation_two_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_journal_conversation_two_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
 		name = "pwh_we_backstory_four_01",
 		probability = 1,
 		response = "pwh_we_backstory_four_01",
@@ -17999,370 +18704,6 @@ return function ()
 				3.7555415630341,
 			},
 		},
-		nik_greeting = {
-			category = "npc_talk",
-			database = "hub_conversations",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
-			dialogue_animations = {
-				[1] = "dialogue_talk",
-			},
-			face_animations = {
-				[1] = "face_neutral",
-			},
-			localization_strings = {
-				[1] = "nik_greeting",
-			},
-			sound_events = {
-				[1] = "nik_greeting",
-			},
-			sound_events_duration = {
-				[1] = 3.4567,
-			},
-		},
-		nik_greeting_evening = {
-			category = "npc_talk",
-			database = "hub_conversations",
-			dialogue_animations_n = 10,
-			face_animations_n = 10,
-			randomize_indexes_n = 0,
-			sound_events_n = 10,
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-			},
-			localization_strings = {
-				"nik_hub_greeting_evening_01",
-				"nik_hub_greeting_evening_02",
-				"nik_hub_greeting_evening_03",
-				"nik_hub_greeting_evening_04",
-				"nik_hub_greeting_evening_05",
-				"nik_hub_greeting_evening_06",
-				"nik_hub_greeting_evening_07",
-				"nik_hub_greeting_evening_30",
-				"nik_hub_greeting_evening_31",
-				"nik_hub_greeting_evening_32",
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"nik_hub_greeting_evening_01",
-				"nik_hub_greeting_evening_02",
-				"nik_hub_greeting_evening_03",
-				"nik_hub_greeting_evening_04",
-				"nik_hub_greeting_evening_05",
-				"nik_hub_greeting_evening_06",
-				"nik_hub_greeting_evening_07",
-				"nik_hub_greeting_evening_30",
-				"nik_hub_greeting_evening_31",
-				"nik_hub_greeting_evening_32",
-			},
-			sound_events_duration = {
-				3.8401458263397,
-				3.8842084407806,
-				4.4930210113525,
-				2.8158540725708,
-				4.2388334274292,
-				2.3246250152588,
-				5.6368541717529,
-				4.4648542404175,
-				3.3333749771118,
-				1.0735000371933,
-			},
-		},
-		nik_greeting_first_time = {
-			category = "npc_talk",
-			database = "hub_conversations",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
-			dialogue_animations = {
-				[1] = "dialogue_talk",
-			},
-			face_animations = {
-				[1] = "face_neutral",
-			},
-			localization_strings = {
-				[1] = "nik_hub_welcome_01",
-			},
-			sound_events = {
-				[1] = "nik_hub_welcome_01",
-			},
-			sound_events_duration = {
-				[1] = 38.688293457031,
-			},
-		},
-		nik_greeting_halloween = {
-			category = "npc_talk",
-			database = "hub_conversations",
-			dialogue_animations_n = 4,
-			face_animations_n = 4,
-			randomize_indexes_n = 0,
-			sound_events_n = 4,
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-			},
-			localization_strings = {
-				"nik_hub_event_geheimnisnacht_01",
-				"nik_hub_event_geheimnisnacht_02",
-				"nik_hub_event_geheimnisnacht_03",
-				"nik_hub_event_geheimnisnacht_04",
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"nik_hub_event_geheimnisnacht_01",
-				"nik_hub_event_geheimnisnacht_02",
-				"nik_hub_event_geheimnisnacht_03",
-				"nik_hub_event_geheimnisnacht_04",
-			},
-			sound_events_duration = {
-				6.9875416755676,
-				4.6539373397827,
-				6.7383127212524,
-				10.055396080017,
-			},
-		},
-		nik_greeting_night = {
-			category = "npc_talk",
-			database = "hub_conversations",
-			dialogue_animations_n = 10,
-			face_animations_n = 10,
-			randomize_indexes_n = 0,
-			sound_events_n = 10,
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-			},
-			localization_strings = {
-				"nik_hub_greeting_good_night_01",
-				"nik_hub_greeting_good_night_02",
-				"nik_hub_greeting_good_night_03",
-				"nik_hub_greeting_good_night_04",
-				"nik_hub_greeting_good_night_05",
-				"nik_hub_greeting_good_night_06",
-				"nik_hub_greeting_good_night_07",
-				"nik_hub_greeting_night_27",
-				"nik_hub_greeting_night_28",
-				"nik_hub_greeting_night_29",
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"nik_hub_greeting_good_night_01",
-				"nik_hub_greeting_good_night_02",
-				"nik_hub_greeting_good_night_03",
-				"nik_hub_greeting_good_night_04",
-				"nik_hub_greeting_good_night_05",
-				"nik_hub_greeting_good_night_06",
-				"nik_hub_greeting_good_night_07",
-				"nik_hub_greeting_night_27",
-				"nik_hub_greeting_night_28",
-				"nik_hub_greeting_night_29",
-			},
-			sound_events_duration = {
-				2.7527084350586,
-				1.8072708845139,
-				2.7666666507721,
-				1.6047916412354,
-				3.2974998950958,
-				3.5403542518616,
-				3.9356875419617,
-				4.1783747673035,
-				5.6291251182556,
-				6.9817290306091,
-			},
-		},
-		nik_greeting_rainy = {
-			category = "npc_talk",
-			database = "hub_conversations",
-			dialogue_animations_n = 10,
-			face_animations_n = 10,
-			randomize_indexes_n = 0,
-			sound_events_n = 10,
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-			},
-			localization_strings = {
-				"nik_hub_greeting_raining_01",
-				"nik_hub_greeting_raining_02",
-				"nik_hub_greeting_raining_03",
-				"nik_hub_greeting_raining_04",
-				"nik_hub_greeting_raining_05",
-				"nik_hub_greeting_raining_06",
-				"nik_hub_greeting_raining_07",
-				"nik_hub_greeting_rainy_24",
-				"nik_hub_greeting_rainy_25",
-				"nik_hub_greeting_rainy_26",
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"nik_hub_greeting_raining_01",
-				"nik_hub_greeting_raining_02",
-				"nik_hub_greeting_raining_03",
-				"nik_hub_greeting_raining_04",
-				"nik_hub_greeting_raining_05",
-				"nik_hub_greeting_raining_06",
-				"nik_hub_greeting_raining_07",
-				"nik_hub_greeting_rainy_24",
-				"nik_hub_greeting_rainy_25",
-				"nik_hub_greeting_rainy_26",
-			},
-			sound_events_duration = {
-				3.8818957805634,
-				2.301374912262,
-				2.6662707328796,
-				3.8906042575836,
-				5.6693959236145,
-				3.4787292480469,
-				3.4308333396912,
-				2.4394583702087,
-				6.7035417556763,
-				5.4216456413269,
-			},
-		},
-		nik_greeting_sunny = {
-			category = "npc_talk",
-			database = "hub_conversations",
-			dialogue_animations_n = 11,
-			face_animations_n = 11,
-			randomize_indexes_n = 0,
-			sound_events_n = 11,
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-			},
-			localization_strings = {
-				"nik_hub_greeting_14",
-				"nik_hub_greeting_sunny_01",
-				"nik_hub_greeting_sunny_02",
-				"nik_hub_greeting_sunny_03",
-				"nik_hub_greeting_sunny_04",
-				"nik_hub_greeting_sunny_05",
-				"nik_hub_greeting_sunny_23",
-				"nik_hub_greeting_sunny_22",
-				"nik_hub_greeting_sunny_25",
-				"nik_hub_greeting_sunny_21",
-				"nik_hub_greeting_sunny_24",
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"nik_hub_greeting_14",
-				"nik_hub_greeting_sunny_01",
-				"nik_hub_greeting_sunny_02",
-				"nik_hub_greeting_sunny_03",
-				"nik_hub_greeting_sunny_04",
-				"nik_hub_greeting_sunny_05",
-				"nik_hub_greeting_sunny_23",
-				"nik_hub_greeting_sunny_22",
-				"nik_hub_greeting_sunny_25",
-				"nik_hub_greeting_sunny_21",
-				"nik_hub_greeting_sunny_24",
-			},
-			sound_events_duration = {
-				3.323979139328,
-				2.727020740509,
-				4.9666457176208,
-				5.3645415306091,
-				5.6548542976379,
-				4.7416667938232,
-				1.5245000123978,
-				4.8956665992737,
-				3.4472498893738,
-				2.7051458358765,
-				3.112104177475,
-			},
-		},
 		nik_hub_backstory_interaction = {
 			category = "npc_talk",
 			database = "hub_conversations",
@@ -20267,7 +20608,7 @@ return function ()
 				6.4083333015442,
 				6.2114582061768,
 				6.561999797821,
-				4.4263124465942,
+				4.4262914657593,
 				16.537937164307,
 				3.4701249599457,
 				3.4403123855591,
@@ -20277,7 +20618,7 @@ return function ()
 				9.9232292175293,
 				5.2719373703003,
 				10.569812774658,
-				15.338541984558,
+				14.731812477112,
 				5.0747709274292,
 				23.178459167481,
 			},
@@ -22006,6 +22347,160 @@ return function ()
 				[1] = 5.4828333854675,
 			},
 		},
+		pbw_journal_conversation_four_b = {
+			category = "story_talk_keep",
+			database = "hub_conversations",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_happy",
+			},
+			localization_strings = {
+				[1] = "pbw_journal_conversation_four_01",
+			},
+			sound_events = {
+				[1] = "pbw_journal_conversation_four_01",
+			},
+			sound_events_duration = {
+				[1] = 3.3858332633972,
+			},
+		},
+		pbw_journal_conversation_four_d = {
+			category = "story_talk_keep",
+			database = "hub_conversations",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_happy",
+			},
+			localization_strings = {
+				[1] = "pbw_journal_conversation_four_02",
+			},
+			sound_events = {
+				[1] = "pbw_journal_conversation_four_02",
+			},
+			sound_events_duration = {
+				[1] = 2.3703541755676,
+			},
+		},
+		pbw_journal_conversation_one_d = {
+			category = "story_talk_keep",
+			database = "hub_conversations",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_happy",
+			},
+			localization_strings = {
+				[1] = "pbw_journal_conversation_one_01",
+			},
+			sound_events = {
+				[1] = "pbw_journal_conversation_one_01",
+			},
+			sound_events_duration = {
+				[1] = 3.0032498836517,
+			},
+		},
+		pbw_journal_conversation_one_f = {
+			category = "story_talk_keep",
+			database = "hub_conversations",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_happy",
+			},
+			localization_strings = {
+				[1] = "pbw_journal_conversation_one_02",
+			},
+			sound_events = {
+				[1] = "pbw_journal_conversation_one_02",
+			},
+			sound_events_duration = {
+				[1] = 2.4509375095367,
+			},
+		},
+		pbw_journal_conversation_three_e = {
+			category = "story_talk_keep",
+			database = "hub_conversations",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_happy",
+			},
+			localization_strings = {
+				[1] = "pbw_journal_conversation_three_01",
+			},
+			sound_events = {
+				[1] = "pbw_journal_conversation_three_01",
+			},
+			sound_events_duration = {
+				[1] = 4.4151458740234,
+			},
+		},
+		pbw_journal_conversation_two_b = {
+			category = "story_talk_keep",
+			database = "hub_conversations",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_happy",
+			},
+			localization_strings = {
+				[1] = "pbw_journal_conversation_two_01",
+			},
+			sound_events = {
+				[1] = "pbw_journal_conversation_two_01",
+			},
+			sound_events_duration = {
+				[1] = 7.3498125076294,
+			},
+		},
+		pbw_journal_conversation_two_d = {
+			category = "story_talk_keep",
+			database = "hub_conversations",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_happy",
+			},
+			localization_strings = {
+				[1] = "pbw_journal_conversation_two_02",
+			},
+			sound_events = {
+				[1] = "pbw_journal_conversation_two_02",
+			},
+			sound_events_duration = {
+				[1] = 4.4144582748413,
+			},
+		},
 		pbw_nm_hub_shovel_conversation_five_01 = {
 			category = "story_talk_keep",
 			database = "hub_conversations",
@@ -23666,6 +24161,116 @@ return function ()
 				19.375228881836,
 				14.301208496094,
 				14.353520393372,
+			},
+		},
+		pdr_journal_conversation_one_a = {
+			category = "story_talk_keep",
+			database = "hub_conversations",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pdr_journal_conversation_one_01",
+			},
+			sound_events = {
+				[1] = "pdr_journal_conversation_one_01",
+			},
+			sound_events_duration = {
+				[1] = 15.958853721619,
+			},
+		},
+		pdr_journal_conversation_one_c = {
+			category = "story_talk_keep",
+			database = "hub_conversations",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_happy",
+			},
+			localization_strings = {
+				[1] = "pdr_journal_conversation_one_02",
+			},
+			sound_events = {
+				[1] = "pdr_journal_conversation_one_02",
+			},
+			sound_events_duration = {
+				[1] = 3.884124994278,
+			},
+		},
+		pdr_journal_conversation_three_b = {
+			category = "story_talk_keep",
+			database = "hub_conversations",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_happy",
+			},
+			localization_strings = {
+				[1] = "pdr_journal_conversation_three_01",
+			},
+			sound_events = {
+				[1] = "pdr_journal_conversation_three_01",
+			},
+			sound_events_duration = {
+				[1] = 3.4910833835602,
+			},
+		},
+		pdr_journal_conversation_three_d = {
+			category = "story_talk_keep",
+			database = "hub_conversations",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_happy",
+			},
+			localization_strings = {
+				[1] = "pdr_journal_conversation_three_02",
+			},
+			sound_events = {
+				[1] = "pdr_journal_conversation_three_02",
+			},
+			sound_events_duration = {
+				[1] = 2.5012083053589,
+			},
+		},
+		pdr_journal_conversation_three_f = {
+			category = "story_talk_keep",
+			database = "hub_conversations",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_happy",
+			},
+			localization_strings = {
+				[1] = "pdr_journal_conversation_three_03",
+			},
+			sound_events = {
+				[1] = "pdr_journal_conversation_three_03",
+			},
+			sound_events_duration = {
+				[1] = 1.5318125486374,
 			},
 		},
 		pdr_we_backstory_five_01 = {
@@ -25360,6 +25965,138 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 3.2580416202545,
+			},
+		},
+		pes_journal_conversation_four_a = {
+			category = "story_talk_keep",
+			database = "hub_conversations",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pes_journal_conversation_four_01",
+			},
+			sound_events = {
+				[1] = "pes_journal_conversation_four_01",
+			},
+			sound_events_duration = {
+				[1] = 7.7759165763855,
+			},
+		},
+		pes_journal_conversation_four_c = {
+			category = "story_talk_keep",
+			database = "hub_conversations",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_happy",
+			},
+			localization_strings = {
+				[1] = "pes_journal_conversation_four_02",
+			},
+			sound_events = {
+				[1] = "pes_journal_conversation_four_02",
+			},
+			sound_events_duration = {
+				[1] = 4.4539790153503,
+			},
+		},
+		pes_journal_conversation_four_e = {
+			category = "story_talk_keep",
+			database = "hub_conversations",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_happy",
+			},
+			localization_strings = {
+				[1] = "pes_journal_conversation_two_03",
+			},
+			sound_events = {
+				[1] = "pes_journal_conversation_two_03",
+			},
+			sound_events_duration = {
+				[1] = 3.2885415554047,
+			},
+		},
+		pes_journal_conversation_one_b = {
+			category = "story_talk_keep",
+			database = "hub_conversations",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_happy",
+			},
+			localization_strings = {
+				[1] = "pes_journal_conversation_one_01",
+			},
+			sound_events = {
+				[1] = "pes_journal_conversation_one_01",
+			},
+			sound_events_duration = {
+				[1] = 3.1351666450501,
+			},
+		},
+		pes_journal_conversation_one_e = {
+			category = "story_talk_keep",
+			database = "hub_conversations",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_happy",
+			},
+			localization_strings = {
+				[1] = "pes_journal_conversation_one_02",
+			},
+			sound_events = {
+				[1] = "pes_journal_conversation_one_02",
+			},
+			sound_events_duration = {
+				[1] = 2.8004791736603,
+			},
+		},
+		pes_journal_conversation_three_c = {
+			category = "story_talk_keep",
+			database = "hub_conversations",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_happy",
+			},
+			localization_strings = {
+				[1] = "pes_journal_conversation_three_01",
+			},
+			sound_events = {
+				[1] = "pes_journal_conversation_three_01",
+			},
+			sound_events_duration = {
+				[1] = 2.0296249389648,
 			},
 		},
 		pes_we_backstory_five_01 = {
@@ -28127,6 +28864,72 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 6.4116044044495,
+			},
+		},
+		pwh_journal_conversation_three_a = {
+			category = "story_talk_keep",
+			database = "hub_conversations",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pwh_journal_conversation_three_01",
+			},
+			sound_events = {
+				[1] = "pwh_journal_conversation_three_01",
+			},
+			sound_events_duration = {
+				[1] = 5.5704374313355,
+			},
+		},
+		pwh_journal_conversation_two_a = {
+			category = "story_talk_keep",
+			database = "hub_conversations",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pwh_journal_conversation_two_01",
+			},
+			sound_events = {
+				[1] = "pwh_journal_conversation_two_01",
+			},
+			sound_events_duration = {
+				[1] = 7.0455207824707,
+			},
+		},
+		pwh_journal_conversation_two_c = {
+			category = "story_talk_keep",
+			database = "hub_conversations",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_happy",
+			},
+			localization_strings = {
+				[1] = "pwh_journal_conversation_two_02",
+			},
+			sound_events = {
+				[1] = "pwh_journal_conversation_two_02",
+			},
+			sound_events_duration = {
+				[1] = 6.8972499370575,
 			},
 		},
 		pwh_we_backstory_four_01 = {

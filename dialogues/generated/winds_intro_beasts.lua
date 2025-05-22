@@ -143,7 +143,7 @@ return function ()
 				"query_context",
 				"dialogue_name_nopre",
 				OP.EQ,
-				"wind_beasts_intro_banter_a",
+				"wind_beast_intro_banter_a",
 			},
 			{
 				"query_context",
@@ -239,7 +239,7 @@ return function ()
 				"query_context",
 				"dialogue_name_nopre",
 				OP.EQ,
-				"wind_beasts_intro_banter_a",
+				"wind_beast_intro_banter_a",
 			},
 			{
 				"query_context",
@@ -335,7 +335,7 @@ return function ()
 				"query_context",
 				"dialogue_name_nopre",
 				OP.EQ,
-				"wind_beasts_intro_banter_a",
+				"wind_beast_intro_banter_a",
 			},
 			{
 				"query_context",
@@ -544,7 +544,7 @@ return function ()
 				"query_context",
 				"dialogue_name_nopre",
 				OP.EQ,
-				"wind_beasts_intro_banter_a",
+				"wind_beast_intro_banter_a",
 			},
 			{
 				"query_context",
@@ -872,7 +872,7 @@ return function ()
 				"query_context",
 				"dialogue_name_nopre",
 				OP.EQ,
-				"wind_beasts_intro_banter_a",
+				"wind_beast_intro_banter_a",
 			},
 			{
 				"query_context",

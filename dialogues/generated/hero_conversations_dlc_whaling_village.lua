@@ -5039,38 +5039,6 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "pes_village_17_team_02_b",
-		probability = 1,
-		response = "pes_village_17_team_02_b",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak",
-			},
-			{
-				"query_context",
-				"dialogue_name_nopre",
-				OP.EQ,
-				"village_17_team_02_a",
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier",
-			},
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET,
-			},
-		},
-	})
-	define_rule({
 		name = "pes_village_17_team_03_b",
 		probability = 1,
 		response = "pes_village_17_team_03_b",
@@ -12045,28 +12013,6 @@ return function ()
 			sound_events_duration = {
 				[1] = 7.6866874694824,
 				[2] = 7.5016250610352,
-			},
-		},
-		pes_village_17_team_02_b = {
-			category = "story_talk",
-			database = "hero_conversations_dlc_whaling_village",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
-			dialogue_animations = {
-				[1] = "dialogue_talk",
-			},
-			face_animations = {
-				[1] = "face_angry",
-			},
-			localization_strings = {
-				[1] = "pes_village_17_team_02_b_01",
-			},
-			sound_events = {
-				[1] = "pes_village_17_team_02_b_01",
-			},
-			sound_events_duration = {
-				[1] = 2.8234167098999,
 			},
 		},
 		pes_village_17_team_03_b = {

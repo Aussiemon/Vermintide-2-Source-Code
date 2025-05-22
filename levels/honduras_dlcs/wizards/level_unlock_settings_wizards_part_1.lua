@@ -5,6 +5,7 @@ AreaSettings.wizards = {
 	display_name = "area_selection_onions_name",
 	dlc_name = "wizards_part_1",
 	level_image = "area_icon_wizards",
+	long_description_text = "area_selection_onions_description_long",
 	menu_sound_event = "Play_hud_menu_area_wizards",
 	name = "wizards",
 	sort_order = 3,
