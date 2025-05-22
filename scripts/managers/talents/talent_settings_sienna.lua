@@ -1033,9 +1033,9 @@ TalentTrees = TalentTrees or {}
 TalentTrees.bright_wizard = {
 	{
 		{
-			"sienna_scholar_reaper",
-			"sienna_scholar_bloodlust_2",
-			"sienna_scholar_heal_share",
+			"sienna_scholar_thp_linesman",
+			"sienna_scholar_thp_smiter",
+			"sienna_scholar_thp_ninjafencer",
 		},
 		{
 			"sienna_scholar_ranged_power_ascending_descending",
@@ -1065,9 +1065,9 @@ TalentTrees.bright_wizard = {
 	},
 	{
 		{
-			"sienna_adept_vanguard",
-			"sienna_adept_bloodlust_2",
-			"sienna_adept_heal_share",
+			"sienna_adept_thp_tank",
+			"sienna_adept_thp_smiter",
+			"sienna_adept_thp_linesman",
 		},
 		{
 			"sienna_adept_power_level_on_full_charge",
@@ -1097,9 +1097,9 @@ TalentTrees.bright_wizard = {
 	},
 	{
 		{
-			"sienna_unchained_vanguard",
-			"sienna_unchained_reaper",
-			"sienna_unchained_heal_share",
+			"sienna_unchained_thp_tank",
+			"sienna_unchained_thp_linesman",
+			"sienna_unchained_thp_smiter",
 		},
 		{
 			"sienna_unchained_attack_speed_on_high_overcharge",
@@ -1174,6 +1174,42 @@ Talents.bright_wizard = {
 		},
 		buffs = {
 			"sienna_scholar_conqueror",
+		},
+	},
+	{
+		buffer = "server",
+		icon = "sienna_scholar_regrowth",
+		name = "sienna_scholar_thp_linesman",
+		num_ranks = 1,
+		display_name = BuffUtils.get_buff_template("thp_linesman", "adventure").buffs[1].display_name,
+		description = BuffUtils.get_buff_template("thp_linesman", "adventure").buffs[1].description,
+		description_values = BuffUtils.get_buff_template("thp_linesman", "adventure").buffs[1].description_values,
+		buffs = {
+			"thp_linesman",
+		},
+	},
+	{
+		buffer = "server",
+		icon = "sienna_scholar_bloodlust",
+		name = "sienna_scholar_thp_smiter",
+		num_ranks = 1,
+		display_name = BuffUtils.get_buff_template("thp_smiter", "adventure").buffs[1].display_name,
+		description = BuffUtils.get_buff_template("thp_smiter", "adventure").buffs[1].description,
+		description_values = BuffUtils.get_buff_template("thp_smiter", "adventure").buffs[1].description_values,
+		buffs = {
+			"thp_smiter",
+		},
+	},
+	{
+		buffer = "server",
+		icon = "sienna_scholar_conqueror",
+		name = "sienna_scholar_thp_ninjafencer",
+		num_ranks = 1,
+		display_name = BuffUtils.get_buff_template("thp_ninjafencer", "adventure").buffs[1].display_name,
+		description = BuffUtils.get_buff_template("thp_ninjafencer", "adventure").buffs[1].description,
+		description_values = BuffUtils.get_buff_template("thp_ninjafencer", "adventure").buffs[1].description_values,
+		buffs = {
+			"thp_ninjafencer",
 		},
 	},
 	{
@@ -1480,6 +1516,42 @@ Talents.bright_wizard = {
 		},
 	},
 	{
+		buffer = "server",
+		icon = "sienna_adept_regrowth",
+		name = "sienna_adept_thp_tank",
+		num_ranks = 1,
+		display_name = BuffUtils.get_buff_template("thp_tank", "adventure").buffs[1].display_name,
+		description = BuffUtils.get_buff_template("thp_tank", "adventure").buffs[1].description,
+		description_values = BuffUtils.get_buff_template("thp_tank", "adventure").buffs[1].description_values,
+		buffs = {
+			"thp_tank",
+		},
+	},
+	{
+		buffer = "server",
+		icon = "sienna_adept_bloodlust",
+		name = "sienna_adept_thp_smiter",
+		num_ranks = 1,
+		display_name = BuffUtils.get_buff_template("thp_smiter", "adventure").buffs[1].display_name,
+		description = BuffUtils.get_buff_template("thp_smiter", "adventure").buffs[1].description,
+		description_values = BuffUtils.get_buff_template("thp_smiter", "adventure").buffs[1].description_values,
+		buffs = {
+			"thp_smiter",
+		},
+	},
+	{
+		buffer = "server",
+		icon = "sienna_adept_conqueror",
+		name = "sienna_adept_thp_linesman",
+		num_ranks = 1,
+		display_name = BuffUtils.get_buff_template("thp_linesman", "adventure").buffs[1].display_name,
+		description = BuffUtils.get_buff_template("thp_linesman", "adventure").buffs[1].description,
+		description_values = BuffUtils.get_buff_template("thp_linesman", "adventure").buffs[1].description_values,
+		buffs = {
+			"thp_linesman",
+		},
+	},
+	{
 		description = "sienna_adept_infinite_burn_desc",
 		icon = "sienna_adept_stun_resistance",
 		name = "sienna_adept_infinite_burn",
@@ -1774,6 +1846,42 @@ Talents.bright_wizard = {
 		},
 		buffs = {
 			"sienna_unchained_conqueror",
+		},
+	},
+	{
+		buffer = "server",
+		icon = "sienna_unchained_regrowth",
+		name = "sienna_unchained_thp_tank",
+		num_ranks = 1,
+		display_name = BuffUtils.get_buff_template("thp_tank", "adventure").buffs[1].display_name,
+		description = BuffUtils.get_buff_template("thp_tank", "adventure").buffs[1].description,
+		description_values = BuffUtils.get_buff_template("thp_tank", "adventure").buffs[1].description_values,
+		buffs = {
+			"thp_tank",
+		},
+	},
+	{
+		buffer = "server",
+		icon = "sienna_unchained_bloodlust",
+		name = "sienna_unchained_thp_linesman",
+		num_ranks = 1,
+		display_name = BuffUtils.get_buff_template("thp_linesman", "adventure").buffs[1].display_name,
+		description = BuffUtils.get_buff_template("thp_linesman", "adventure").buffs[1].description,
+		description_values = BuffUtils.get_buff_template("thp_linesman", "adventure").buffs[1].description_values,
+		buffs = {
+			"thp_linesman",
+		},
+	},
+	{
+		buffer = "server",
+		icon = "sienna_unchained_conqueror",
+		name = "sienna_unchained_thp_smiter",
+		num_ranks = 1,
+		display_name = BuffUtils.get_buff_template("thp_smiter", "adventure").buffs[1].display_name,
+		description = BuffUtils.get_buff_template("thp_smiter", "adventure").buffs[1].description,
+		description_values = BuffUtils.get_buff_template("thp_smiter", "adventure").buffs[1].description_values,
+		buffs = {
+			"thp_smiter",
 		},
 	},
 	{

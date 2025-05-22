@@ -62,7 +62,7 @@ GutterRunnerStatePinning.pounce_down = function (self, unit, target_unit, t)
 	local impact_damage = math.clamp(impact_damage_scaler * breed.max_pounce_damage, breed.min_pounce_damage, breed.max_pounce_damage)
 	local hit_react_type
 
-	DamageUtils.add_damage_network(target_unit, unit, impact_damage, "torso", "cutting", nil, Vector3(1, 0, 0), breed_name, nil, nil, nil, hit_react_type)
+	DamageUtils.add_damage_network(target_unit, unit, impact_damage, "torso", "cutting", nil, Vector3(1, 0, 0), breed_name, nil, nil, nil, hit_react_type, nil, nil, nil, nil, nil, nil, 1)
 
 	local action = BreedActions.skaven_gutter_runner.target_pounced
 

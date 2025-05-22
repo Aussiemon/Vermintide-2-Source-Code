@@ -221,6 +221,10 @@ ModShim.wedges = {
 			{
 				name = "MoodHandler.set_mood",
 				func = function (vmf_mod, mod_name, hooked_function, self, mood_name, ...)
+					if not vmf_mod.SETTING_NAMES then
+						return hooked_function(self, mood_name, ...)
+					end
+
 					local mood_to_name = {
 						skill_ranger = "RANGER",
 						skill_shade = "SHADE",

@@ -7,6 +7,7 @@ local ignored_damage_types = {
 	buff = true,
 	buff_shared_medpack = true,
 	buff_shared_medpack_temp_health = true,
+	curse_empathy = true,
 	heal = true,
 	health_degen = true,
 	kinetic = true,
@@ -96,8 +97,11 @@ HitReactions.templates = {
 		end,
 		husk = function (unit, dt, context, t, hit)
 			local attacker = hit[DamageDataIndex.ATTACKER]
+			local damage_type = hit[DamageDataIndex.DAMAGE_TYPE]
 
-			trigger_player_friendly_fire_dialogue(unit, attacker)
+			if not ignored_damage_types[damage_type] then
+				trigger_player_friendly_fire_dialogue(unit, attacker)
+			end
 		end,
 	},
 	level_object = {

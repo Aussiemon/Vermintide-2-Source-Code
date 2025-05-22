@@ -462,7 +462,7 @@ HeroWindowTalentsConsole._populate_talents_by_hero = function (self, initialize)
 				end
 
 				content[icon_name] = talent_data and talent_data.icon or "icons_placeholder"
-				content[title_text_name] = talent_data and Localize(talent_data.name) or "Undefined"
+				content[title_text_name] = talent_data and Localize(talent_data.display_name or talent_data.name) or "Undefined"
 				hotspot.is_selected = is_selected
 				hotspot.talent = talent_data
 				hotspot.talent_id = id
@@ -686,10 +686,15 @@ HeroWindowTalentsConsole._populate_career_info = function (self, initialize)
 		content.visible = data ~= nil
 	end
 
-	self:_setup_additional_career_info(career_settings, total_perks_height)
+	local PERK_TEXT_AREA = 260
+	local base_excess = math.max(total_perks_height - PERK_TEXT_AREA, 0)
+
+	self:_setup_additional_career_info(career_settings, base_excess)
 end
 
-HeroWindowTalentsConsole._setup_additional_career_info = function (self, career_settings)
+HeroWindowTalentsConsole._setup_additional_career_info = function (self, career_settings, optional_base_excess)
+	local base_excess = optional_base_excess or 0
+
 	if career_settings.additional_ui_info_file then
 		local additional_info_definitions = local_require(career_settings.additional_ui_info_file)
 		local scroll_area_scenegraph_id = "scrollbar_window"
@@ -712,11 +717,18 @@ HeroWindowTalentsConsole._setup_additional_career_info = function (self, career_
 		table.clear(self._additional_widgets)
 		table.clear(self._additional_widgets_by_name)
 
-		if self._scrollbar then
-			self._scrollbar:destroy(self._ui_scenegraph)
-		end
+		if base_excess > 0 then
+			local scroll_area_scenegraph_id = "scrollbar_window"
+			local scroll_area_anchor_scenegraph_id = "scrollbar_anchor"
+			local enable_auto_scroll = true
+			local optional_scroll_area_hotspot
 
-		self._scrollbar = nil
+			self._scrollbar = ScrollbarUI:new(self._ui_scenegraph, scroll_area_scenegraph_id, scroll_area_anchor_scenegraph_id, base_excess, enable_auto_scroll, optional_scroll_area_hotspot)
+		elseif self._scrollbar then
+			self._scrollbar:destroy(self._ui_scenegraph)
+
+			self._scrollbar = nil
+		end
 	end
 end
 
@@ -731,7 +743,7 @@ HeroWindowTalentsConsole._set_talent_tooltip = function (self, talent, selected,
 	local title_widget = widgets_by_name.tooltip_title
 	local description_widget = widgets_by_name.tooltip_description
 	local info_widget = widgets_by_name.tooltip_info
-	local display_name = Localize(talent.name)
+	local display_name = Localize(talent.display_name or talent.name)
 	local description = UIUtils.get_talent_description(talent)
 	local requirement_text, information_text
 

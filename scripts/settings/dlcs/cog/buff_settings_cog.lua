@@ -286,6 +286,6 @@ settings.buff_function_templates = {
 		local num_overclock_stacks = buff_extension:num_buff_stacks(buff_type)
 		local damage = math.clamp(num_overclock_stacks * buff.template.health_to_lose_per_stack, 0, buff.template.max_health_loss)
 
-		DamageUtils.add_damage_network(unit, unit, damage, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, unit)
+		DamageUtils.add_damage_network(unit, unit, damage, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, unit, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 	end,
 }

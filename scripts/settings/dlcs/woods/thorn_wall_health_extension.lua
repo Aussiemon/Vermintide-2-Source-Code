@@ -28,7 +28,7 @@ local allowed_damage_sources = {
 	skaven_storm_vermin_warlord = true,
 }
 
-ThornWallHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type)
+ThornWallHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type, backstab_multiplier, target_index)
 	local unit = self.unit
 	local is_attacker_enemy = DamageUtils.is_enemy(attacker_unit, unit)
 	local damage_override = 0
@@ -40,7 +40,7 @@ ThornWallHealthExtension.add_damage = function (self, attacker_unit, damage_amou
 	Managers.state.achievement:trigger_event("register_thorn_wall_damage", self.unit, attacker_unit, damage_override, attack_type)
 
 	if is_attacker_enemy or attack_type == "heavy_attack" or attack_type == "light_attack" then
-		ThornWallHealthExtension.super.add_damage(self, attacker_unit, damage_override, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type)
+		ThornWallHealthExtension.super.add_damage(self, attacker_unit, damage_override, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type, backstab_multiplier, target_index)
 
 		if unit and unit_alive(unit) then
 			unit_set_flow_variable(unit, "hit_direction", damage_direction)

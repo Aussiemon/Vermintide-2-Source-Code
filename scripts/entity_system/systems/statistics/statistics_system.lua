@@ -109,6 +109,7 @@ StatisticsSystem.rpc_register_kill = function (self, channel_id, victim_unit_go_
 	TEMP_ARGS[DamageDataIndex.CRITICAL_HIT] = false
 	TEMP_ARGS[DamageDataIndex.FIRST_HIT] = true
 	TEMP_ARGS[DamageDataIndex.TOTAL_HITS] = 0
+	TEMP_ARGS[DamageDataIndex.TARGET_INDEX] = 1
 
 	local statistics_db = self.statistics_db
 

@@ -59,6 +59,20 @@ BelakorBalancing = {
 		120,
 		120,
 	},
+	spawn_crystal_func = function (position)
+		local pickup_system = Managers.state.entity:system("pickup_system")
+		local with_physics = true
+		local rotation = Quaternion.identity()
+		local spawn_type = "dropped"
+		local pickup_name = "belakor_crystal"
+		local override_unit_template_name = "belakor_crystal_throw"
+
+		for i = 1, BelakorBalancing.totem_crystal_count do
+			local velocity = Vector3(2 * math.random() - 1, 2 * math.random() - 1, 1)
+
+			pickup_system:spawn_pickup(pickup_name, position + Vector3.up() * 2, rotation, with_physics, spawn_type, velocity, override_unit_template_name)
+		end
+	end,
 	homing_skulls_min_pitch = math.pi * 0.1,
 	homing_skulls_max_pitch = math.pi * 0.25,
 	homing_skulls_pitch_delta = math.pi * 0.05,

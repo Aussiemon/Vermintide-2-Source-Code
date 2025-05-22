@@ -15,19 +15,27 @@ local MIN_BUFF_DURATION = 30
 local BUFF_DURATION_PER_STACK = 15
 local DEBUFF_DURATION = 20
 
-local function buff_duration_func(current_stacks)
-	return MIN_BUFF_DURATION + BUFF_DURATION_PER_STACK * MAX_STACKS - BUFF_DURATION_PER_STACK * current_stacks
+local function buff_duration_func(current_stacks, owner_unit)
+	local duration = MIN_BUFF_DURATION + BUFF_DURATION_PER_STACK * MAX_STACKS - BUFF_DURATION_PER_STACK * current_stacks
+	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+	local has_full_set = buff_extension:num_buff_stacks("power_up_boon_skulls_set_bonus_02_event") > 0
+
+	if has_full_set then
+		duration = duration * (1 + MorrisBuffTweakData.boon_skulls_set_bonus_02.duration_amplify_amount)
+	end
+
+	return duration
 end
 
 local function buff_duration_modifier_func(owner_unit, sub_buff_template, duration, buff_extension)
 	local buff_stacks = buff_extension:num_buff_stacks("skulls_2023_buff")
 
-	return buff_duration_func(math.min(buff_stacks, MAX_STACKS))
+	return buff_duration_func(math.min(buff_stacks, MAX_STACKS), owner_unit)
 end
 
 local function apply_buffs_from_stacks(target_unit, stack_count)
 	local params = {
-		external_optional_duration = buff_duration_func(stack_count),
+		external_optional_duration = buff_duration_func(stack_count, target_unit),
 	}
 	local buff_system = Managers.state.entity:system("buff_system")
 
@@ -389,7 +397,7 @@ settings.buff_function_templates = {
 			if modified_damage_amount > 0 then
 				local damage_direction = -Vector3.up()
 
-				DamageUtils.add_damage_network(unit, unit, modified_damage_amount, "torso", "wounded_dot", nil, damage_direction)
+				DamageUtils.add_damage_network(unit, unit, modified_damage_amount, "torso", "wounded_dot", nil, damage_direction, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 			end
 		end
 	end,

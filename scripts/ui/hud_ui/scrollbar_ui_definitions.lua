@@ -1,6 +1,6 @@
 ﻿-- chunkname: @scripts/ui/hud_ui/scrollbar_ui_definitions.lua
 
-local function create_scrollbar(scenegraph_id, area_size, scroll_size, horizontal_scrollbar)
+local function create_scrollbar(scenegraph_id, area_size, scroll_size, horizontal_scrollbar, left_aligned)
 	return {
 		element = {
 			passes = {
@@ -56,7 +56,7 @@ local function create_scrollbar(scenegraph_id, area_size, scroll_size, horizonta
 
 						use_ps4_input_icons = is_ps_pad or use_ps4_input_icons
 
-						return gamepad_active and not use_ps4_input_icons
+						return gamepad_active and not use_ps4_input_icons and not content.gamepad_input_disabled
 					end,
 					content_change_function = function (content, style)
 						if content.horizontal_scrollbar then
@@ -87,7 +87,7 @@ local function create_scrollbar(scenegraph_id, area_size, scroll_size, horizonta
 
 						use_ps4_input_icons = is_ps_pad or use_ps4_input_icons
 
-						return gamepad_active and use_ps4_input_icons
+						return gamepad_active and use_ps4_input_icons and not content.gamepad_input_disabled
 					end,
 					content_change_function = function (content, style)
 						if content.horizontal_scrollbar then
@@ -108,6 +108,7 @@ local function create_scrollbar(scenegraph_id, area_size, scroll_size, horizonta
 			},
 		},
 		content = {
+			gamepad_input_disabled = false,
 			ps_input = "ps4_button_icon_right_stick",
 			xbox_input = "xbone_button_icon_right_stick",
 			scroller_hotspot = {},
@@ -120,14 +121,14 @@ local function create_scrollbar(scenegraph_id, area_size, scroll_size, horizonta
 					32,
 					33,
 				},
-				horizontal_alignment = horizontal_scrollbar and "left" or "right",
+				horizontal_alignment = horizontal_scrollbar and "left" or left_aligned or "right",
 				vertical_alignment = horizontal_scrollbar and "bottom" or "top",
 				offset = horizontal_scrollbar and {
 					0,
 					16.5,
 					103,
 				} or {
-					16,
+					(left_aligned and -1 or 1) * 16,
 					0,
 					103,
 				},
@@ -141,13 +142,13 @@ local function create_scrollbar(scenegraph_id, area_size, scroll_size, horizonta
 					math.max((1 - scroll_size / (scroll_size + area_size[2])) * area_size[2], 40),
 				},
 				vertical_alignment = horizontal_scrollbar and "bottom" or "top",
-				horizontal_alignment = horizontal_scrollbar and "left" or "right",
+				horizontal_alignment = horizontal_scrollbar and "left" or left_aligned or "right",
 				offset = horizontal_scrollbar and {
 					0,
 					-1,
 					102,
 				} or {
-					9,
+					(left_aligned and -1 or 1) * 9,
 					0,
 					102,
 				},
@@ -161,13 +162,13 @@ local function create_scrollbar(scenegraph_id, area_size, scroll_size, horizonta
 					22,
 					area_size[2] + 2,
 				},
-				horizontal_alignment = horizontal_scrollbar and "left" or "right",
+				horizontal_alignment = horizontal_scrollbar and "left" or left_aligned or "right",
 				offset = horizontal_scrollbar and {
 					-1,
 					1,
 					101,
 				} or {
-					11,
+					(left_aligned and -1 or 1) * 11,
 					-1,
 					101,
 				},
@@ -182,7 +183,7 @@ local function create_scrollbar(scenegraph_id, area_size, scroll_size, horizonta
 					math.max((1 - scroll_size / (scroll_size + area_size[2])) * area_size[2], 40),
 				},
 				vertical_alignment = horizontal_scrollbar and "bottom" or "top",
-				horizontal_alignment = horizontal_scrollbar and "left" or "right",
+				horizontal_alignment = horizontal_scrollbar and "left" or left_aligned or "right",
 				color = {
 					128,
 					255,
@@ -194,7 +195,7 @@ local function create_scrollbar(scenegraph_id, area_size, scroll_size, horizonta
 					6,
 					102,
 				} or {
-					4,
+					(left_aligned and -1 or 1) * 4,
 					0,
 					102,
 				},
@@ -209,7 +210,7 @@ local function create_scrollbar(scenegraph_id, area_size, scroll_size, horizonta
 					10,
 					area_size[2],
 				},
-				horizontal_alignment = horizontal_scrollbar and "left" or "right",
+				horizontal_alignment = horizontal_scrollbar and "left" or left_aligned or "right",
 				color = {
 					255,
 					0,
@@ -221,7 +222,7 @@ local function create_scrollbar(scenegraph_id, area_size, scroll_size, horizonta
 					5,
 					101,
 				} or {
-					5,
+					(left_aligned and -1 or 1) * 5,
 					0,
 					101,
 				},
@@ -236,7 +237,7 @@ local function create_scrollbar(scenegraph_id, area_size, scroll_size, horizonta
 					12,
 					area_size[2] + 2,
 				},
-				horizontal_alignment = horizontal_scrollbar and "left" or "right",
+				horizontal_alignment = horizontal_scrollbar and "left" or left_aligned or "right",
 				color = {
 					128,
 					255,
@@ -248,7 +249,7 @@ local function create_scrollbar(scenegraph_id, area_size, scroll_size, horizonta
 					4,
 					100,
 				} or {
-					6,
+					(left_aligned and -1 or 1) * 6,
 					-1,
 					100,
 				},
@@ -267,13 +268,13 @@ local widget_func_definitions = {
 	scrollbar = create_scrollbar,
 }
 
-local function setup_func(ui_scenegraph, scenegraph_id, scroll_height, horizontal_scrollbar)
+local function setup_func(ui_scenegraph, scenegraph_id, scroll_height, horizontal_scrollbar, left_aligned)
 	local widgets = {}
 	local widgets_by_name = {}
 	local size = ui_scenegraph[scenegraph_id].size
 
 	for name, widget_func_definition in pairs(widget_func_definitions) do
-		local widget_definition = widget_func_definition(scenegraph_id, size, scroll_height, horizontal_scrollbar)
+		local widget_definition = widget_func_definition(scenegraph_id, size, scroll_height, horizontal_scrollbar, left_aligned)
 		local widget = UIWidget.init(widget_definition)
 
 		widgets[#widgets + 1] = widget

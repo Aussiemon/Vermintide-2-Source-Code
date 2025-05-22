@@ -637,12 +637,12 @@ PlayerBotBase._alter_target_position = function (self, nav_world, self_position,
 			wanted_position = target_position + Vector3.normalize(self_position - target_position)
 		end
 	elseif reason == "knocked_down" and self._blackboard.aggressive_mode then
-		wanted_position = target_position + Vector3.normalize(self_position - target_position)
+		wanted_position = target_position + Vector3.normalize(self_position - target_position) * INTERACT_RAY_DISTANCE
 	elseif reason == "in_need_of_attention_stop" then
 		wanted_position = Vector3(self_position.x, self_position.y, self_position.z)
 		should_stop = true
 	else
-		wanted_position = target_position + Vector3.normalize(self_position - target_position)
+		wanted_position = Vector3(target_position.x, target_position.y, target_position.z) + Vector3.normalize(self_position - target_position) * INTERACT_RAY_DISTANCE
 	end
 
 	if should_stop then
@@ -916,7 +916,7 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 					local target_career_ext = player_unit and ScriptUnit.extension(player_unit, "career_system")
 					local career_allowed_healing = true
 
-					if target_career_ext and target_career_ext:career_name() == "wh_zealot" then
+					if target_career_ext and target_career_ext:career_name() == "wh_zealot" and status_ext:num_wounds_remaining() > 1 then
 						career_allowed_healing = false
 					end
 

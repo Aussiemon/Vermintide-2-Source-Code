@@ -10,6 +10,7 @@ VersusHordeAbilitySystem = class(VersusHordeAbilitySystem, ExtensionSystemBase)
 local RPCS = {
 	"rpc_activate_dark_pact_horde_ability",
 	"rpc_client_outline_own_horde_units",
+	"rpc_horde_ability_activated",
 }
 local EXTENSIONS = {
 	"VersusHordeAbilityExtension",
@@ -201,7 +202,7 @@ VersusHordeAbilitySystem.server_spawn_horde = function (self, peer_id)
 			dialogue_input:trigger_dialogue_event("vs_ability_horde")
 		end
 
-		self:_activation_chat_box_message(player:name())
+		Managers.state.network.network_transmit:send_rpc_all("rpc_horde_ability_activated", peer_id)
 	end
 end
 
@@ -362,21 +363,17 @@ VersusHordeAbilitySystem._recharge_modifier = function (self)
 	return recharge_modifier or 1
 end
 
-VersusHordeAbilitySystem._activation_chat_box_message = function (self, player_name)
-	if not player_name then
-		return
-	end
-
-	local chat = Managers.chat
-
-	if chat ~= nil and chat:has_channel(1) then
-		local localize_parameters = false
-		local pop_chat = true
-
-		chat:send_system_chat_message(1, "vs_chat_message_horde_ability", player_name, localize_parameters, pop_chat)
-	end
-end
-
 VersusHordeAbilitySystem.settings = function (self)
 	return settings
+end
+
+VersusHordeAbilitySystem.rpc_horde_ability_activated = function (self, channel_id, activator_peer_id)
+	if Managers.chat and Managers.chat:has_channel(1) then
+		local player = Managers.player:player(activator_peer_id, 1)
+		local player_name = player and player:name()
+
+		if player_name then
+			Managers.chat:add_local_system_message(1, string.format(Localize("vs_chat_message_horde_ability"), player_name), true)
+		end
+	end
 end

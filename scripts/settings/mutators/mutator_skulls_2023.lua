@@ -45,11 +45,10 @@ return {
 
 		data.pickup_units = pickup_units
 		data.num_skulls_picked = 0
-		data.mission_giver_unit = Managers.state.unit_spawner:spawn_network_unit("units/hub_elements/empty", "dialogue_node", {
-			dialogue_system = {
-				dialogue_profile = "inn_keeper",
-			},
-		})
+
+		local surrounding_aware_system = Managers.state.entity:system("surrounding_aware_system")
+
+		data.mission_giver_unit = surrounding_aware_system:request_global_listener("inn_keeper", "player")
 
 		local function register_skulls_pickup_cb()
 			data.num_skulls_picked = data.num_skulls_picked + 1

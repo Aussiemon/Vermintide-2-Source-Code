@@ -440,7 +440,7 @@ BackendManagerPlayFab._update_error_handling = function (self, dt)
 	if #self._errors > 0 and not self._error_dialog and not self._is_disconnected and not DEDICATED_SERVER then
 		local error_data = table.remove(self._errors, 1)
 
-		self:_show_error_dialog(error_data.reason, error_data.details, error_data.optional_error_topic, error_data.optional_url_button)
+		self:_show_error_dialog(error_data.reason, error_data.details, error_data.optional_error_topic, error_data.optional_url_button, error_data.errorDetails)
 	end
 
 	if self._error_dialog ~= nil and not Managers.popup:has_popup_with_id(self._error_dialog) then
@@ -549,6 +549,7 @@ BackendManagerPlayFab.playfab_api_error = function (self, result, error_code)
 	local error_data = {
 		reason = BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR,
 		details = error_code,
+		errorDetails = result.errorDetails,
 	}
 
 	self:_post_error(error_data)
@@ -667,89 +668,144 @@ BackendManagerPlayFab._is_fatal = function (self, reason)
 	return not harmless
 end
 
-BackendManagerPlayFab._reason_localize_key = function (self, reason, error_code)
+BackendManagerPlayFab._format_ban_message = function (self, error_code, error_details)
+	local reason, durationStrings = next(error_details)
+
+	if not durationStrings or #durationStrings == 0 then
+		return ERROR_CODES[error_code], error_code
+	end
+
+	local key = ERROR_CODES[error_code]
+	local description = ""
+	local args = {}
+	local duration = durationStrings[1]
+
+	if duration == "Indefinite" then
+		key = "backend_err_account_banned_permanent"
+	else
+		local year, month, day, hour, min, sec = duration:match("(%d+)-(%d+)-(%d+)T(%d+):(%d+):(%d+)")
+		local utcBanTimestamp = os.time({
+			year = tonumber(year),
+			month = tonumber(month),
+			day = tonumber(day),
+			hour = tonumber(hour),
+			min = tonumber(min),
+			sec = tonumber(sec),
+		})
+		local localCurrTimetable = os.date("*t")
+		local localCurrTimestamp = os.time(localCurrTimetable)
+		local utcCurrTimetable = os.date("!*t")
+		local utcCurrTimestamp = os.time(utcCurrTimetable)
+
+		if localCurrTimetable.isdst then
+			utcCurrTimestamp = utcCurrTimestamp - 3600
+		end
+
+		local localBanTimestamp = utcBanTimestamp + localCurrTimestamp - utcCurrTimestamp
+
+		description = string.format("\n%s\n", Localize("backend_err_account_banned_duration"))
+		args[#args + 1] = os.date("%x", localBanTimestamp)
+		args[#args + 1] = os.date("%X", localBanTimestamp)
+	end
+
+	if reason ~= "Unspecified reason" then
+		description = string.format("%s\n%s", description, Localize("backend_err_account_banned_reason"))
+		args[#args + 1] = reason
+	end
+
+	return key, string.format(description, unpack(args))
+end
+
+BackendManagerPlayFab._reason_localize_key = function (self, reason, error_code, optional_error_details)
 	local error_code = error_code and tonumber(error_code) or -1
 
 	if IS_CONSOLE then
 		if not self:profiles_loaded() then
 			if rawget(_G, "Backend") and reason == Backend.ERR_AUTH then
 				if IS_XB1 then
-					return "backend_err_auth_xb1"
+					return "backend_err_auth_xb1", error_code
 				else
-					return "backend_err_auth_ps4"
+					return "backend_err_auth_ps4", error_code
 				end
 			elseif reason == BACKEND_LUA_ERRORS.ERR_SIGNIN_TIMEOUT then
-				return "backend_err_signin_timeout"
+				return "backend_err_signin_timeout", error_code
 			elseif reason == BACKEND_LUA_ERRORS.ERR_REQUEST_TIMEOUT then
-				return "connection_timeout"
+				return "connection_timeout", error_code
 			elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR then
 				if error_code == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_THIRD_PARTY_PROBLEM then
 					return ERROR_CODES[error_code]
 				end
 
-				return "backend_err_network"
+				return "backend_err_network", error_code
 			else
-				return "backend_err_connecting"
+				return "backend_err_connecting", error_code
 			end
 		elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR then
 			if error_code == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_THIRD_PARTY_PROBLEM then
-				return ERROR_CODES[error_code]
+				return ERROR_CODES[error_code], error_code
 			end
 
-			return "backend_err_network"
+			return "backend_err_network", error_code
 		end
 	elseif not self:profiles_loaded() then
 		if rawget(_G, "Backend") and reason == Backend.ERR_AUTH then
-			return "backend_err_auth_steam"
+			return "backend_err_auth_steam", error_code
 		elseif reason == BACKEND_LUA_ERRORS.ERR_SIGNIN_TIMEOUT then
-			return "backend_err_signin_timeout"
+			return "backend_err_signin_timeout", error_code
 		elseif reason == BACKEND_LUA_ERRORS.ERR_PLATFORM_SPECIFIC_INTERFACE_MISSING then
-			return "backend_err_steam_not_running"
+			return "backend_err_steam_not_running", error_code
 		elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR then
 			if error_code == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_THIRD_PARTY_PROBLEM then
-				return ERROR_CODES[error_code]
+				return ERROR_CODES[error_code], error_code
 			elseif error_code == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ACCOUNT_BANNED then
-				return ERROR_CODES[error_code]
+				if optional_error_details then
+					local key, msg = self:_format_ban_message(error_code, optional_error_details)
+
+					return key, msg
+				end
+
+				return ERROR_CODES[error_code], error_code
 			end
 
-			return "backend_err_playfab"
+			return "backend_err_playfab", error_code
 		elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR then
-			return "backend_err_playfab_eac"
+			return "backend_err_playfab_eac", error_code
 		elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_COMMIT_TIMEOUT then
-			return "backend_err_request_timeout"
+			return "backend_err_request_timeout", error_code
 		elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_UNSUPPORTED_VERSION_ERROR then
-			return "backend_err_unsupported_version"
+			return "backend_err_unsupported_version", error_code
 		elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_MISSING_REQUIRED_DLC then
-			return nil
+			return nil, error_code
 		else
-			return "backend_err_connecting"
+			return "backend_err_connecting", error_code
 		end
 	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR then
 		if error_code == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_THIRD_PARTY_PROBLEM then
-			return ERROR_CODES[error_code]
+			return ERROR_CODES[error_code], error_code
 		end
 
-		return ERROR_CODES[reason]
+		return ERROR_CODES[reason], error_code
 	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_COMMIT_TIMEOUT then
-		return ERROR_CODES[reason]
+		return ERROR_CODES[reason], error_code
 	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ACHIEVEMENT_REWARD_CLAIMED or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_QUEST_REFRESH_UNAVAILABLE or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_NON_FATAL_STORE_ERROR then
-		return ERROR_CODES[reason]
+		return ERROR_CODES[reason], error_code
 	else
-		return "backend_err_network"
+		return "backend_err_network", error_code
 	end
 end
 
-BackendManagerPlayFab._format_error_message_console = function (self, reason, error_code)
+BackendManagerPlayFab._format_error_message_console = function (self, reason, error_code, optional_error_details)
 	local button = {
 		result = self._button_retry,
 		text = Localize("button_ok"),
 	}
+	local text, code = self:_reason_localize_key(reason, error_code, optional_error_details)
 
-	return self:_reason_localize_key(reason, error_code), button
+	return text, code, button
 end
 
-BackendManagerPlayFab._format_error_message_windows = function (self, reason, error_code, optional_url_button)
-	local error_text = self:_reason_localize_key(reason, error_code)
+BackendManagerPlayFab._format_error_message_windows = function (self, reason, error_code, optional_url_button, optional_error_details)
+	local error_text, details_message = self:_reason_localize_key(reason, error_code, optional_error_details)
 	local button_1, button_2, button_3
 
 	if not self:profiles_loaded() then
@@ -794,26 +850,26 @@ BackendManagerPlayFab._format_error_message_windows = function (self, reason, er
 		end
 	end
 
-	return error_text, button_1, button_2, button_3
+	return error_text, details_message, button_1, button_2, button_3
 end
 
-BackendManagerPlayFab._show_error_dialog = function (self, reason, details_message, optional_error_topic, optional_url_button)
+BackendManagerPlayFab._show_error_dialog = function (self, reason, details_message, optional_error_topic, optional_url_button, optional_error_details)
 	print(string.format("[BackendManagerPlayFab] Showing error dialog: %q, %q", reason or "nil", details_message or "nil"))
 
 	local error_topic = optional_error_topic or Localize("backend_error_topic")
 	local error_text, button_1, button_2, button_3
 
 	if IS_CONSOLE then
-		error_text, button_1 = self:_format_error_message_console(reason, details_message)
+		error_text, details_message, button_1 = self:_format_error_message_console(reason, details_message, optional_error_details)
 	else
-		error_text, button_1, button_2, button_3 = self:_format_error_message_windows(reason, details_message, optional_url_button)
+		error_text, details_message, button_1, button_2, button_3 = self:_format_error_message_windows(reason, details_message, optional_url_button, optional_error_details)
 	end
 
 	local localized_error_text = error_text and Localize(error_text) or Localize("backend_err_playfab")
 
 	if IS_WINDOWS then
 		if localized_error_text and details_message then
-			localized_error_text = localized_error_text .. " : " .. details_message
+			localized_error_text = localized_error_text .. "\n" .. details_message
 		elseif details_message then
 			localized_error_text = details_message
 		end

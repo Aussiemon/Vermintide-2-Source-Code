@@ -494,14 +494,26 @@ UnitFrameUI.set_versus_level = function (self, versus_level)
 	end
 
 	local mechanism_name = Managers.mechanism:current_mechanism_name()
+	local insignia_visible_setting = Application.user_setting("toggle_versus_level_in_all_game_modes")
+	local insignia_visible = mechanism_name == "versus" or insignia_visible_setting
 	local widget_content = widget.content
 
 	widget_content.insignia_main.uvs = insignia_main_uvs
 	widget_content.insignia_addon.uvs = insignia_addon_uvs
 	widget_content.level = versus_level
-	widget_content.visible = (mechanism_name == "versus" or Application.user_setting("toggle_versus_level_in_all_game_modes")) and versus_level > 0
+	widget_content.visible = insignia_visible and versus_level > 0
 
-	self:_set_widget_dirty(widget)
+	if mechanism_name ~= "versus" then
+		local scenegraph_definition = self.definitions.scenegraph_definition
+
+		self.ui_scenegraph.player_status.position[1] = scenegraph_definition.player_status.position[1] - (insignia_visible_setting and 0 or UISettings.INSIGNIA_OFFSET)
+		self.ui_scenegraph.portrait_pivot_parent.position[1] = scenegraph_definition.portrait_pivot_parent.position[1] - (insignia_visible_setting and 0 or UISettings.INSIGNIA_OFFSET)
+	end
+
+	for _, widget in pairs(self._widgets) do
+		self:_set_widget_dirty(widget)
+	end
+
 	self:set_dirty()
 end
 
@@ -1380,6 +1392,10 @@ UnitFrameUI._update_player_bar_animation = function (self, content, style, time,
 	end
 
 	content.bar_value = anim_end_value
+
+	if style.gradient_threshold then
+		style.gradient_threshold = anim_end_value
+	end
 
 	return nil
 end

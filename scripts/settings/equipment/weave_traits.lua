@@ -84,6 +84,9 @@ local buff_tweak_data = {
 	weave_trait_necklace_heal_self_on_heal_other = {
 		multiplier = 0.5,
 	},
+	weave_trait_necklace_heal_share = {
+		multiplier = 0.2,
+	},
 	weave_trait_necklace_increased_healing_received = {
 		multiplier = 0.3,
 	},
@@ -365,6 +368,17 @@ WeaveTraits.buff_templates = {
 		buffs = {
 			{
 				stat_buff = "heal_self_on_heal_other",
+			},
+		},
+	},
+	weave_trait_necklace_heal_share = {
+		buffs = {
+			{
+				buff_func = "heal_other_players_percent_at_range",
+				event = "on_healed_consumeable",
+				multiplier = 0.2,
+				name = "necklace_heal_share",
+				range = 10,
 			},
 		},
 	},
@@ -674,15 +688,15 @@ WeaveTraits.traits = {
 		},
 	},
 	weave_necklace_heal_self_on_heal_other = {
-		advanced_description = "description_trait_necklace_heal_self_on_heal_other",
-		buff_name = "weave_trait_necklace_heal_self_on_heal_other",
+		advanced_description = "conqueror_desc_3",
+		buff_name = "weave_trait_necklace_heal_share",
 		buffer = "server",
 		display_name = "trait_necklace_heal_self_on_heal_other",
 		icon = "necklace_heal_self_on_heal_other",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.weave_trait_necklace_heal_self_on_heal_other.multiplier,
+				value = buff_tweak_data.weave_trait_necklace_heal_share.multiplier,
 			},
 		},
 	},

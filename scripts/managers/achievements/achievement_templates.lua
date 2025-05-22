@@ -3220,11 +3220,9 @@ AchievementTemplates.achievements.skaven_ratling_gunner_3 = {
 		local attacker_unit = event_data[2]
 		local breed = Unit.alive(attacker_unit) and Unit.get_data(attacker_unit, "breed")
 
-		if not breed or breed.name ~= "ratling_gunner" then
-			return
+		if breed and breed.name == "skaven_ratling_gunner" then
+			statistics_db:increment_stat(stats_id, "ratling_gunner_blocked_shot")
 		end
-
-		statistics_db:increment_stat(stats_id, "ratling_gunner_blocked_shot")
 	end,
 }
 AchievementTemplates.achievements.chaos_corruptor_sorcerer_1 = {

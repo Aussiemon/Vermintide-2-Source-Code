@@ -42,7 +42,11 @@ EndViewStateSummary.on_enter = function (self, params)
 		params.initial_state = nil
 	end
 
-	self:_start_transition_animation("on_enter", "transition_enter")
+	if self.game_won then
+		self:_start_transition_animation("on_enter", "transition_enter_fast")
+	else
+		self:_start_transition_animation("on_enter", "transition_enter")
+	end
 
 	self._exit_timer = nil
 
@@ -84,6 +88,16 @@ EndViewStateSummary.exit = function (self, direction)
 
 	self:_start_transition_animation("on_enter", "transition_exit")
 	self:_play_sound("play_gui_mission_summary_end")
+
+	if self.game_won and Managers.package:has_loaded("resource_packages/levels/ui_end_screen") then
+		local transition_data = {
+			animation_name = "transition",
+			camera_name = "end_screen_camera",
+			level_name = "levels/end_screen_victory/parading_screen",
+		}
+
+		self.parent:trigger_transition(transition_data)
+	end
 end
 
 EndViewStateSummary.exit_done = function (self)

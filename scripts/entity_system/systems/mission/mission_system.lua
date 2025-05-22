@@ -24,6 +24,7 @@ MissionSystem.init = function (self, entity_system_creation_context, system_name
 	self.active_missions = {}
 	self.level_end_missions = {}
 	self.completed_missions = {}
+	self._only_once_missions = {}
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
 
@@ -128,7 +129,9 @@ MissionSystem.update = function (self, context, t)
 	end
 end
 
-MissionSystem.request_mission = function (self, mission_name, unit)
+MissionSystem.request_mission = function (self, mission_name, unit, only_once)
+	only_once = only_once or false
+
 	local mission_name_id = NetworkLookup.mission_names[mission_name]
 	local level_unit_id
 
@@ -137,6 +140,12 @@ MissionSystem.request_mission = function (self, mission_name, unit)
 	end
 
 	if self.is_server then
+		if self._only_once_missions[mission_name] then
+			Debug.sticky_text("Request to start mission %q denied, only allowed once", mission_name)
+
+			return
+		end
+
 		if self.active_missions[mission_name] then
 			Debug.sticky_text("Request to start mission %q denied, already started", mission_name)
 
@@ -144,9 +153,9 @@ MissionSystem.request_mission = function (self, mission_name, unit)
 		end
 
 		if level_unit_id then
-			self:start_mission(mission_name, unit)
+			self:start_mission(mission_name, unit, nil, only_once)
 		else
-			self:start_mission(mission_name)
+			self:start_mission(mission_name, nil, nil, only_once)
 		end
 
 		local data = self.active_missions[mission_name]
@@ -161,13 +170,13 @@ MissionSystem.request_mission = function (self, mission_name, unit)
 			self.network_transmit:send_rpc_clients("rpc_start_mission", mission_name_id, sync_data)
 		end
 	elseif level_unit_id then
-		self.network_transmit:send_rpc_server("rpc_request_mission_with_unit", mission_name_id, level_unit_id)
+		self.network_transmit:send_rpc_server("rpc_request_mission_with_unit", mission_name_id, level_unit_id, only_once)
 	else
-		self.network_transmit:send_rpc_server("rpc_request_mission", mission_name_id)
+		self.network_transmit:send_rpc_server("rpc_request_mission", mission_name_id, only_once)
 	end
 end
 
-MissionSystem.start_mission = function (self, mission_name, unit, sync_data)
+MissionSystem.start_mission = function (self, mission_name, unit, sync_data, only_once)
 	local mission_data = Missions[mission_name]
 	local mission_template_name = mission_data.mission_template_name
 	local template = MissionTemplates[mission_template_name]
@@ -193,6 +202,10 @@ MissionSystem.start_mission = function (self, mission_name, unit, sync_data)
 
 	if data.evaluate_at_level_end then
 		self.level_end_missions[mission_name] = data
+	end
+
+	if only_once then
+		self._only_once_missions[mission_name] = true
 	end
 end
 
@@ -328,12 +341,12 @@ MissionSystem.hot_join_sync = function (self, sender)
 	end
 end
 
-MissionSystem.flow_callback_start_mission = function (self, mission_name, unit)
-	if not self.is_server then
+MissionSystem.flow_callback_start_mission = function (self, mission_name, unit, client_may_start, only_once)
+	if not client_may_start and not self.is_server then
 		return
 	end
 
-	self:request_mission(mission_name, unit)
+	self:request_mission(mission_name, unit, only_once)
 end
 
 MissionSystem.flow_callback_reset_mission = function (self, mission_name)
@@ -387,21 +400,21 @@ MissionSystem.rpc_start_mission_with_unit = function (self, channel_id, mission_
 	self:start_mission(mission_name, unit, sync_data)
 end
 
-MissionSystem.rpc_request_mission = function (self, channel_id, mission_name_id)
+MissionSystem.rpc_request_mission = function (self, channel_id, mission_name_id, only_once)
 	fassert(self.is_server, "[MissionSystem] Request mission ended up on a client")
 
 	local mission_name = NetworkLookup.mission_names[mission_name_id]
 
-	self:request_mission(mission_name)
+	self:request_mission(mission_name, nil, only_once)
 end
 
-MissionSystem.rpc_request_mission_with_unit = function (self, channel_id, mission_name_id, level_unit_id)
+MissionSystem.rpc_request_mission_with_unit = function (self, channel_id, mission_name_id, level_unit_id, only_once)
 	fassert(self.is_server, "[MissionSystem] Request mission ended up on a client")
 
 	local mission_name = NetworkLookup.mission_names[mission_name_id]
 	local unit = Level.unit_by_index(LevelHelper:current_level(self.world), level_unit_id)
 
-	self:request_mission(mission_name, unit)
+	self:request_mission(mission_name, unit, only_once)
 end
 
 MissionSystem.rpc_request_mission_update = function (self, channel_id, mission_name_id, positive)

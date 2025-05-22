@@ -122,9 +122,24 @@ HeroViewStateAchievements.on_enter = function (self, params)
 
 	self:_update_buttons_new_status()
 
+	local start_layout = "summary"
+	local optional_tab_widget_index
+
+	if params.start_state then
+		if type(params.start_state) == "table" then
+			start_layout = params.start_state[1].layout_name
+
+			if params.start_state[2] then
+				optional_tab_widget_index = params.start_state[2].tab_index
+			end
+		else
+			start_layout = params.start_state
+		end
+	end
+
 	local summary_button = self._widgets_by_name.summary_button
 
-	self:_on_layout_button_pressed(summary_button, nil, "summary")
+	self:_on_layout_button_pressed(summary_button, nil, start_layout, optional_tab_widget_index)
 	self:play_sound("Play_gui_achivements_menu_open")
 	Managers.input:enable_gamepad_cursor()
 	self:_create_filter_input_service()

@@ -63,7 +63,6 @@ VoteTemplates = {
 			local mechanism = Managers.mechanism:game_mechanism()
 			local inn_level_name = mechanism:get_hub_level_key()
 
-			Managers.matchmaking:set_quick_game(false)
 			Managers.state.game_mode:start_specific_level(inn_level_name, 0)
 		end,
 		pack_sync_data = function (data)
@@ -380,7 +379,6 @@ VoteTemplates = {
 					Managers.twitch:disconnect()
 				end
 
-				Managers.matchmaking:set_local_quick_game(quick_game)
 				Managers.mechanism:reset_choose_next_state()
 
 				local matchmaking_manager = Managers.matchmaking
@@ -1164,7 +1162,7 @@ VoteTemplates = {
 				local network_manager = Managers.state.network
 				local network_server = network_manager.network_server
 
-				success = network_server:are_all_peers_ingame()
+				success = network_server:are_all_peers_ingame(nil, true)
 			end
 
 			if not success then

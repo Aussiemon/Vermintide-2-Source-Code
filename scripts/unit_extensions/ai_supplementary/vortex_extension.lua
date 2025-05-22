@@ -566,7 +566,7 @@ VortexExtension._update_attract_players = function (self, unit, blackboard, vort
 						local breed_name = blackboard.breed.name
 						local impact_damage = DamageUtils.calculate_damage(vortex_template.damage, player_unit, unit)
 
-						DamageUtils.add_damage_network(player_unit, unit, impact_damage, "torso", "cutting", nil, -player_velocity_normalized, breed_name, nil, nil, nil, vortex_template.hit_react_type)
+						DamageUtils.add_damage_network(player_unit, unit, impact_damage, "torso", "cutting", nil, -player_velocity_normalized, breed_name, nil, nil, nil, vortex_template.hit_react_type, nil, nil, nil, nil, nil, nil, 1)
 					end
 				elseif target_status_extension.smacked_into_wall and t > target_status_extension.smacked_into_wall then
 					target_status_extension.smacked_into_wall = false

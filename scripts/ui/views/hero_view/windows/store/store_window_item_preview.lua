@@ -1870,7 +1870,7 @@ StoreWindowItemPreview._setup_xb1_price_data = function (self, widget, price_dat
 end
 
 StoreWindowItemPreview._set_unlock_button_states = function (self, already_owned, can_afford, dlc_unlocked, acquire_disabled, acquire_hidden, owns_required_dlc)
-	local enabled = not already_owned and can_afford and dlc_unlocked and not acquire_disabled and owns_required_dlc
+	local enabled = not script_data["eac-untrusted"] and not already_owned and can_afford and dlc_unlocked and not acquire_disabled and owns_required_dlc
 	local widget = self._top_widgets_by_name.unlock_button
 
 	widget.content.button_hotspot.disable_button = not enabled

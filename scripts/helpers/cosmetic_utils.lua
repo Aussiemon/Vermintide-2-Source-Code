@@ -113,6 +113,36 @@ CosmeticUtils.is_weapon_pose = function (item)
 	return slot_type == "weapon_pose"
 end
 
+local generic_frame_template = {
+	icon = "unit_frame_02",
+	name = "",
+	unit = "",
+	attachment_node = {
+		unit = "units/ui/ui_portrait_frame",
+		attachment_node = AttachmentNodeLinking.ui_portrait_frame,
+	},
+	material_settings = {
+		portrait_frame = {
+			texture = "gui/1080p/single_textures/generic/transparent_placeholder_texture",
+			type = "texture",
+		},
+	},
+}
+
+CosmeticUtils.generate_frame_template = function (name)
+	local template = generic_frame_template
+	local texture_package_name = string.format("resource_packages/store/item_icons/store_item_icon_%s", name)
+
+	if Application.can_get("package", texture_package_name) then
+		template.texture_package_name = texture_package_name
+		template.material_settings.portrait_frame.texture = string.format("gui/1080p/single_textures/store_item_icons/store_item_icon_%s/store_item_icon_%s", name, name)
+	end
+
+	template.name = name
+
+	return template
+end
+
 CosmeticUtils.get_cosmetic_name = function (slot, optional_item_id)
 	local item_name
 

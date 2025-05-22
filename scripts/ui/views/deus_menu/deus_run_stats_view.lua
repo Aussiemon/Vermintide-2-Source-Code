@@ -64,6 +64,10 @@ DeusRunStatsView._handle_input = function (self, dt, t)
 		if input_service:get("right_press") then
 			self._ui:lock(true)
 		end
+
+		if self._ui:force_update_power_ups() then
+			self:_update_dynamic_values()
+		end
 	elseif ui_active ~= new_active and new_active == true then
 		self:_update_dynamic_values()
 		self:_update_inventory()

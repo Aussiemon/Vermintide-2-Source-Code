@@ -368,6 +368,18 @@ function flow_query_leader_achievement_completed(params)
 
 	fassert(achievement_data, "Achievement [\"%s\"] not found in AchievementTemplates!", achievement_name)
 
+	local backend_interface_loot = Managers.backend:get_interface("loot")
+
+	if backend_interface_loot then
+		local claimed = backend_interface_loot:achievement_rewards_claimed(achievement_data.id)
+
+		if claimed then
+			flow_return_table.value = claimed
+
+			return flow_return_table
+		end
+	end
+
 	local player_manager = Managers.player
 	local statistics_db = player_manager:statistics_db()
 	local player = player_manager:player(leader_peer_id, 1)
@@ -396,6 +408,18 @@ function flow_query_local_player_achievement_completed(params)
 	local achievement_data = AchievementTemplates.achievements[achievement_name]
 
 	fassert(achievement_data, "Achievement [\"%s\"] not found in AchievementTemplates!", achievement_name)
+
+	local backend_interface_loot = Managers.backend:get_interface("loot")
+
+	if backend_interface_loot then
+		local claimed = backend_interface_loot:achievement_rewards_claimed(achievement_data.id)
+
+		if claimed then
+			flow_return_table.value = claimed
+
+			return flow_return_table
+		end
+	end
 
 	local player_manager = Managers.player
 	local statistics_db = player_manager:statistics_db()

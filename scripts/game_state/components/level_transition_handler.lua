@@ -2,6 +2,7 @@
 
 require("scripts/game_state/components/enemy_package_loader")
 require("scripts/game_state/components/transient_package_loader")
+require("scripts/game_state/components/pickup_package_loader")
 
 local global_print = print
 
@@ -27,8 +28,10 @@ LevelTransitionHandler.init = function (self)
 	self.loading_packages = {}
 	self._has_loaded_all_packages = nil
 	self.loaded_levels = {}
+	self._queued_network_flow_states = {}
 	self.enemy_package_loader = EnemyPackageLoader:new()
 	self.transient_package_loader = TransientPackageLoader:new()
+	self.pickup_package_loader = PickupPackageLoader:new()
 	self._network_state = nil
 
 	local level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages
@@ -149,6 +152,7 @@ LevelTransitionHandler.update = function (self)
 	end
 
 	self.enemy_package_loader:update()
+	self.pickup_package_loader:update()
 	self.transient_package_loader:update()
 end
 
@@ -705,4 +709,26 @@ LevelTransitionHandler.in_hub_level = function (self)
 
 		return level_settings.hub_level
 	end
+end
+
+LevelTransitionHandler.queue_create_networked_flow_state = function (self, unit, ...)
+	local level = Unit.level(unit)
+	local flow_state_units = self._queued_network_flow_states[level] or {}
+
+	self._queued_network_flow_states[level] = flow_state_units
+	flow_state_units[#flow_state_units + 1] = unit
+end
+
+LevelTransitionHandler.create_queued_networked_flow_states = function (self, ingame_level)
+	local flow_state_units = self._queued_network_flow_states[ingame_level]
+
+	if flow_state_units then
+		for i = 1, #flow_state_units do
+			if Unit.alive(flow_state_units[i]) then
+				Unit.flow_event(flow_state_units[i], "Create")
+			end
+		end
+	end
+
+	table.clear(self._queued_network_flow_states)
 end

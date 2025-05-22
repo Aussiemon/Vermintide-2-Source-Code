@@ -322,13 +322,16 @@ BuffSystem.remove_server_controlled_buff = function (self, unit, server_buff_id)
 
 		if unit_server_buffs then
 			local unit_server_buff_table = unit_server_buffs[server_buff_id]
-			local id = unit_server_buff_table and unit_server_buff_table.local_buff_id
 
-			num_buffs_removed = id and buff_extension:remove_buff(id)
-			unit_server_buffs[server_buff_id] = nil
+			if unit_server_buff_table then
+				unit_server_buffs[server_buff_id] = nil
+
+				local id = unit_server_buff_table and unit_server_buff_table.local_buff_id
+
+				num_buffs_removed = buff_extension:remove_buff(id) or 0
+				self.free_server_buff_ids[#self.free_server_buff_ids + 1] = server_buff_id
+			end
 		end
-
-		self.free_server_buff_ids[#self.free_server_buff_ids + 1] = server_buff_id
 
 		local network_manager = self.network_manager
 		local unit_object_id = network_manager:game_object_or_level_id(unit)

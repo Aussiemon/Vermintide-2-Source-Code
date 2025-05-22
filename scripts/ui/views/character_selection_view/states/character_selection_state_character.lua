@@ -15,6 +15,7 @@ local generic_input_actions = definitions.generic_input_actions
 local animation_definitions = definitions.animation_definitions
 local scenegraph_definition = definitions.scenegraph_definition
 local DO_RELOAD = false
+local PERK_TEXT_AREA = 240
 local VIDEO_REFERENCE_NAME = "CharacterSelectionStateCharacter"
 
 CharacterSelectionStateCharacter = class(CharacterSelectionStateCharacter)
@@ -1403,7 +1404,9 @@ CharacterSelectionStateCharacter._populate_career_info = function (self, profile
 		content.visible = data ~= nil
 	end
 
-	self:_setup_additional_career_info(career_settings)
+	local base_excess = math.max(total_perks_height - PERK_TEXT_AREA, 0)
+
+	self:_setup_additional_career_info(career_settings, base_excess)
 
 	local video = career_settings.video
 	local material_name = video.material_name
@@ -1418,7 +1421,9 @@ CharacterSelectionStateCharacter._populate_career_info = function (self, profile
 	self:_destroy_video_player()
 end
 
-CharacterSelectionStateCharacter._setup_additional_career_info = function (self, career_settings)
+CharacterSelectionStateCharacter._setup_additional_career_info = function (self, career_settings, optional_base_excess)
+	local base_excess = optional_base_excess or 0
+
 	if career_settings.additional_ui_info_file then
 		local additional_info_definitions = local_require(career_settings.additional_ui_info_file)
 		local scroll_area_scenegraph_id = "scrollbar_window"
@@ -1429,23 +1434,30 @@ CharacterSelectionStateCharacter._setup_additional_career_info = function (self,
 			-height,
 			0,
 		}
-		local scroll_height = 0
+		local scroll_height
 
 		self._additional_widgets, self._additional_widgets_by_name, scroll_height = additional_info_definitions.setup(scroll_area_scenegraph_id, base_offset)
 
 		local optional_scroll_area_hotspot
 		local enable_auto_scroll = true
 
-		self._scrollbar = ScrollbarUI:new(self._ui_scenegraph, scroll_area_scenegraph_id, scroll_area_anchor_scenegraph_id, scroll_height, enable_auto_scroll, optional_scroll_area_hotspot)
+		self._scrollbar = ScrollbarUI:new(self._ui_scenegraph, scroll_area_scenegraph_id, scroll_area_anchor_scenegraph_id, scroll_height + base_excess, enable_auto_scroll, optional_scroll_area_hotspot)
 	else
 		table.clear(self._additional_widgets)
 		table.clear(self._additional_widgets_by_name)
 
-		if self._scrollbar then
-			self._scrollbar:destroy(self._ui_scenegraph)
-		end
+		if base_excess > 0 then
+			local scroll_area_scenegraph_id = "scrollbar_window"
+			local scroll_area_anchor_scenegraph_id = "scrollbar_anchor"
+			local enable_auto_scroll = true
+			local optional_scroll_area_hotspot
 
-		self._scrollbar = nil
+			self._scrollbar = ScrollbarUI:new(self._ui_scenegraph, scroll_area_scenegraph_id, scroll_area_anchor_scenegraph_id, base_excess, enable_auto_scroll, optional_scroll_area_hotspot)
+		elseif self._scrollbar then
+			self._scrollbar:destroy(self._ui_scenegraph)
+
+			self._scrollbar = nil
+		end
 	end
 end
 

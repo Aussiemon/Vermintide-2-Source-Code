@@ -40,6 +40,30 @@ BuffUI.init = function (self, parent, ingame_ui_context)
 
 	self:_create_ui_elements()
 	Managers.state.event:register(self, "on_spectator_target_changed", "on_spectator_target_changed")
+	Managers.state.event:register(self, "on_spectator_target_changed", "on_spectator_target_changed")
+	Managers.state.event:register(self, "on_game_options_changed", "on_game_options_changed")
+end
+
+BuffUI._set_widget_dirty = function (self, widget)
+	widget.element.dirty = true
+end
+
+BuffUI.on_game_options_changed = function (self)
+	local old_insignia_visibility = self._insignia_visibility
+	local insignia_visibility = Application.user_setting("toggle_versus_level_in_all_game_modes")
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+	local show_insignia = mechanism_name == "versus" or insignia_visibility
+
+	if old_insignia_visibility ~= show_insignia then
+		self._ui_scenegraph.pivot_parent.position[1] = show_insignia and UISettings.INSIGNIA_OFFSET or 0
+
+		for i = 1, #self._active_buff_widgets do
+			self:_set_widget_dirty(self._active_buff_widgets[i])
+		end
+
+		self._dirty = true
+		self._insignia_visibility = show_insignia
+	end
 end
 
 BuffUI._create_ui_elements = function (self)
@@ -60,6 +84,8 @@ BuffUI._create_ui_elements = function (self)
 
 	self._dirty = true
 	self._current_career_index = -1
+
+	self:on_game_options_changed()
 end
 
 BuffUI.on_spectator_target_changed = function (self, spectated_player_unit)
@@ -259,6 +285,7 @@ end
 BuffUI.destroy = function (self)
 	self:set_visible(false)
 	Managers.state.event:unregister("on_spectator_target_changed", self)
+	Managers.state.event:unregister("on_game_options_changed", self)
 end
 
 BuffUI.set_visible = function (self, visible)

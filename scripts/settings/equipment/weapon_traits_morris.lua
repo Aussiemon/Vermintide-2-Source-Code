@@ -10,6 +10,7 @@ local buff_tweak_data = {
 		trigger_on_breed = {
 			beastmen_bestigor = true,
 			beastmen_standard_bearer = true,
+			chaos_bulwark = true,
 			chaos_warrior = true,
 			skaven_ratling_gunner = true,
 			skaven_storm_vermin = true,

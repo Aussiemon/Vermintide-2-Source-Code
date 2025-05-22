@@ -1135,7 +1135,7 @@ settings.proc_functions = {
 			if target_unit ~= hit_unit then
 				local damage_direction = Vector3.normalize(POSITION_LOOKUP[target_unit] - hit_pos)
 
-				DamageUtils.add_damage_network(target_unit, owner_unit, propagated_damage, "torso", "buff", nil, damage_direction, "buff", nil, owner_unit, nil, nil, false, nil, nil, nil, nil, true)
+				DamageUtils.add_damage_network(target_unit, owner_unit, propagated_damage, "torso", "buff", nil, damage_direction, "buff", nil, owner_unit, nil, nil, false, nil, nil, nil, nil, true, i)
 				DamageUtils.stagger_ai(t, DamageProfileTemplates.necromancer_crit_burst_stagger, i + 1, power_level, target_unit, owner_unit, "torso", damage_direction, nil, nil, false, "buff", owner_unit)
 			end
 		end
@@ -1221,7 +1221,7 @@ settings.buff_function_templates = {
 					if health_extension and devour_health_percent > health_extension:current_health_percent() then
 						local damage_amount = health_extension:current_health()
 
-						DamageUtils.add_damage_network(enemy_unit, player_unit, damage_amount, "full", "buff", nil, Vector3(1, 0, 0), "buff")
+						DamageUtils.add_damage_network(enemy_unit, player_unit, damage_amount, "full", "buff", nil, Vector3(1, 0, 0), "buff", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, i)
 					end
 				end
 			end
@@ -1402,7 +1402,7 @@ settings.buff_function_templates = {
 				damage_to_deal = health_ext:current_health() / 2
 			end
 
-			DamageUtils.add_damage_network(unit, attacker_unit, damage_to_deal, "torso", "buff", nil, Vector3(0, 0, 0), "career_ability", nil, attacker_unit)
+			DamageUtils.add_damage_network(unit, attacker_unit, damage_to_deal, "torso", "buff", nil, Vector3(0, 0, 0), "career_ability", nil, attacker_unit, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 		end
 	end,
 	delayed_health_damage = function (unit, buff, params)

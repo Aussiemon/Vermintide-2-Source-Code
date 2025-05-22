@@ -262,13 +262,16 @@ end
 SimpleHuskInventoryExtension.evaluate_limited_item_state = function (self, slot_data)
 	local limited_item_data = slot_data.limited_item_data
 	local spawner_unit = limited_item_data.spawner_unit
-	local limited_item_spawner_extension = ScriptUnit.extension(spawner_unit, "limited_item_track_system")
-	local limited_item_id = limited_item_data.id
 
-	if limited_item_spawner_extension:is_transformed(limited_item_id) then
-		local limited_item_track_system = Managers.state.entity:system("limited_item_track_system")
+	if spawner_unit then
+		local limited_item_spawner_extension = ScriptUnit.extension(spawner_unit, "limited_item_track_system")
+		local limited_item_id = limited_item_data.id
 
-		limited_item_track_system:held_limited_item_destroyed(spawner_unit, limited_item_id)
+		if limited_item_spawner_extension:is_transformed(limited_item_id) then
+			local limited_item_track_system = Managers.state.entity:system("limited_item_track_system")
+
+			limited_item_track_system:held_limited_item_destroyed(spawner_unit, limited_item_id)
+		end
 	end
 end
 

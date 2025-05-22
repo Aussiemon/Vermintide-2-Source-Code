@@ -52,13 +52,21 @@ AreaDamageTemplates.templates = {
 
 				return true, damage_buffer
 			end,
-			do_damage = function (data, extension_unit, source_attacker_unit)
+			do_damage = function (data, extension_unit, source_attacker_unit, custom_data_table)
 				local hit_unit = data.unit
 				local damage = data.damage
 				local damage_source = data.damage_source
 				local hit_ragdoll_actor
 
-				DamageUtils.add_damage_network(hit_unit, extension_unit, damage, "torso", "damage_over_time", nil, Vector3(1, 0, 0), damage_source, hit_ragdoll_actor, source_attacker_unit)
+				DamageUtils.add_damage_network(hit_unit, extension_unit, damage, "torso", "damage_over_time", nil, Vector3(1, 0, 0), damage_source, hit_ragdoll_actor, source_attacker_unit, nil, nil, nil, nil, nil, nil, nil, nil, 1)
+
+				local status_extension = ScriptUnit.has_extension(hit_unit, "status_system")
+
+				if status_extension and damage > 0 then
+					local parent = custom_data_table.parent
+
+					status_extension:hit_by_globadier_poison(parent)
+				end
 			end,
 		},
 		client = {
@@ -84,12 +92,6 @@ AreaDamageTemplates.templates = {
 								particle_id = particle_id,
 								start_time = t,
 							}
-
-							local status_extension = ScriptUnit.has_extension(player_unit, "status_system")
-
-							if status_extension then
-								status_extension:hit_by_globadier_poison()
-							end
 						elseif is_inside_radius and t >= player_unit_particles[player_unit].start_time + 5 then
 							local particle_id = player_unit_particles[player_unit].particle_id
 
@@ -187,7 +189,7 @@ AreaDamageTemplates.templates = {
 				local damage_source = data.damage_source
 				local hit_ragdoll_actor
 
-				DamageUtils.add_damage_network(hit_unit, unit, damage, "torso", "damage_over_time", nil, Vector3(1, 0, 0), damage_source, hit_ragdoll_actor, source_attacker_unit)
+				DamageUtils.add_damage_network(hit_unit, unit, damage, "torso", "damage_over_time", nil, Vector3(1, 0, 0), damage_source, hit_ragdoll_actor, source_attacker_unit, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 			end,
 		},
 		client = {
@@ -496,7 +498,7 @@ AreaDamageTemplates.templates = {
 				local damage = data.damage
 				local damage_source = data.damage_source
 
-				DamageUtils.add_damage_network(hit_unit, extension_unit, damage, "torso", "damage_over_time", nil, Vector3(1, 0, 0), damage_source)
+				DamageUtils.add_damage_network(hit_unit, extension_unit, damage, "torso", "damage_over_time", nil, Vector3(1, 0, 0), damage_source, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 			end,
 		},
 		client = {

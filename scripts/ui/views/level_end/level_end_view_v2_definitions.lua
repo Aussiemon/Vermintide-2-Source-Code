@@ -1,4 +1,4 @@
-﻿-- chunkname: @scripts/ui/views/level_end/level_end_view_definitions.lua
+﻿-- chunkname: @scripts/ui/views/level_end/level_end_view_v2_definitions.lua
 
 local_require("scripts/ui/ui_widgets")
 
@@ -868,6 +868,23 @@ local animations = {
 
 				ui_scenegraph.ready_button_alone.local_position[2] = scenegraph_definition.ready_button_alone.position[2] - 100 * anim_progress
 				params.render_settings.alpha_multiplier = alpha_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+		},
+	},
+	ready_button_exit_alone = {
+		{
+			end_progress = 0,
+			name = "entry",
+			start_progress = 0,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				ui_scenegraph.ready_button_alone.local_position[2] = scenegraph_definition.ready_button_alone.position[2]
+				params.render_settings.alpha_multiplier = 0
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return

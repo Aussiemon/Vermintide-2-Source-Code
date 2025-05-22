@@ -237,8 +237,19 @@ StartGameWindowDeusWeeklyEvent._evaluate_rewards = function (self, data, difficu
 		local desc = Localize("cw_weekly_expedition_xp_reward")
 
 		reward_data.desc = string.format(desc, amount)
-	elseif reward_type == "item" or reward_type == "loot_chest" or reward_type == "weapon_skin" then
+	elseif reward_type == "item" or reward_type == "loot_chest" then
 		local item_name = first_reward.item_name or first_reward.weapon_skin_name
+		local item = item_name and ItemMasterList[item_name]
+
+		reward_data.desc = Localize(item and item.display_name or "lb_unkown")
+		reward_data.icon = item and item.inventory_icon or "icons_placeholder"
+	elseif reward_type == "weapon_skin" then
+		local item_name = first_reward.item_name or first_reward.weapon_skin_name
+		local backend_crafting = Managers.backend:get_interface("crafting")
+		local unlocked_weapon_skins = backend_crafting:get_unlocked_weapon_skins()
+
+		reward_data.collected = claimed or unlocked_weapon_skins[item_name] ~= nil
+
 		local item = item_name and ItemMasterList[item_name]
 
 		reward_data.desc = Localize(item and item.display_name or "lb_unkown")

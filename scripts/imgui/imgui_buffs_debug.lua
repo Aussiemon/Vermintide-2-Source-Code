@@ -369,7 +369,7 @@ ImguiBuffsDebug._display_stat_buffs = function (self, stat_buffs)
 
 					for index, buff in pairs(data) do
 						local bonus = buff.bonus or 0
-						local multiplier = buff.multiplier or 0
+						local multiplier = type(buff.multiplier) == "function" and buff.multiplier(self._current_unit, self._buff_extension) or buff.multiplier or 0
 						local proc_chance = buff.proc_chance or 0
 						local value = buff.value
 						local display_value = value or 0

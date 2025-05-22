@@ -6,8 +6,15 @@ local add_meta_challenge = AchievementTemplateHelper.add_meta_challenge
 local PLACEHOLDER_ICON = AchievementTemplateHelper.PLACEHOLDER_ICON
 local achievements = AchievementTemplates.achievements
 local add_console_achievements = AchievementTemplateHelper.add_console_achievements
-local XB1_ACHIEVEMENT_ID = {}
-local PS4_ACHIEVEMENT_ID = {}
+local XB1_ACHIEVEMENT_ID = {
+	termite1_bell_challenge = 124,
+	termite1_complete_legend = 122,
+	termite1_towers_challenge = 123,
+	termite1_waystone_timer_challenge_easy = 131,
+}
+local PS4_ACHIEVEMENT_ID = {
+	termite1_bell_challenge = "093",
+}
 local portals = {
 	LevelSettings.dlc_termite_1,
 }
@@ -130,3 +137,4 @@ termite1_all_challenges[#termite1_all_challenges + 1] = "termite1_towers_challen
 termite1_all_challenges[#termite1_all_challenges + 1] = "termite1_waystone_timer_challenge_easy"
 
 add_meta_challenge(achievements, "termite1_all_challenges", termite1_all_challenges, "achv_termite1_complete_all_icon", nil, nil, nil)
+add_console_achievements(XB1_ACHIEVEMENT_ID, PS4_ACHIEVEMENT_ID)

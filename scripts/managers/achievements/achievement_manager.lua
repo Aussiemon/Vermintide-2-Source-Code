@@ -363,15 +363,16 @@ AchievementManager.update = function (self, dt, t)
 
 	if should_process then
 		local token, error_msg, achievement_completed
+		local claimed = self._backend_interface_loot:achievement_rewards_claimed(template.id)
 
 		if platform_functions.set_progress and template.progress then
-			local progress_table = template.progress(statistics_db, stats_id, template_event_data[template.id])
+			local progress_table = self:_achievement_progress(template.id, claimed)
 			local progress = progress_table[1]
 			local max_progress = progress_table[2]
 
 			token, error_msg, achievement_completed = platform_functions.set_progress(template, progress, max_progress)
 		else
-			achievement_completed = template.completed(statistics_db, stats_id, template_event_data[template.id])
+			achievement_completed = self:_achievement_completed(template.id, claimed)
 
 			if achievement_completed then
 				token, error_msg = platform_functions.unlock(template)
@@ -717,7 +718,11 @@ AchievementManager._check_for_completed_achievements = function (self)
 	end
 end
 
-AchievementManager._achievement_completed = function (self, achievement_id)
+AchievementManager._achievement_completed = function (self, achievement_id, claimed)
+	if claimed then
+		return true
+	end
+
 	local achievement_data = AchievementTemplates.achievements[achievement_id]
 
 	if type(achievement_data.completed) == "boolean" then
@@ -729,15 +734,45 @@ AchievementManager._achievement_completed = function (self, achievement_id)
 	end
 end
 
+AchievementManager._achievement_progress = function (self, achievement_id, claimed)
+	local progress
+	local achievement_data = AchievementTemplates.achievements[achievement_id]
+
+	if type(achievement_data.progress) == "table" then
+		progress = achievement_data.progress
+	elseif type(achievement_data.progress) == "function" then
+		local player = Managers.player:local_player()
+		local stats_id = player:stats_id()
+
+		progress = achievement_data.progress(self._statistics_db, stats_id, achievement_data)
+	end
+
+	if not progress then
+		return
+	end
+
+	if claimed then
+		return {
+			progress[2],
+			progress[2],
+		}
+	end
+
+	return progress
+end
+
 AchievementManager.setup_incompleted_achievements = function (self)
 	if not self._enabled then
 		return
 	end
 
 	local template_count = 0
+	local backend_interface_loot = self._backend_interface_loot
 
 	for id, template in pairs(AchievementTemplates.achievements) do
-		if not self:_achievement_completed(id) and template.display_completion_ui then
+		local claimed = backend_interface_loot:achievement_rewards_claimed(id)
+
+		if not self:_achievement_completed(id, claimed) and template.display_completion_ui then
 			local idx = template_count + 1
 
 			self._incompleted_achievements[idx] = template
@@ -792,17 +827,11 @@ AchievementManager._setup_achievement_data = function (self, achievement_id, ach
 		desc = Localize(achievement_data.desc)
 	end
 
-	if type(achievement_data.completed) == "boolean" then
-		completed = achievement_data.completed
-	elseif type(achievement_data.completed) == "function" then
-		completed = achievement_data.completed(self._statistics_db, stats_id, achievement_data)
-	end
+	local backend_interface_loot = self._backend_interface_loot
 
-	if type(achievement_data.progress) == "table" then
-		progress = achievement_data.progress
-	elseif type(achievement_data.progress) == "function" then
-		progress = achievement_data.progress(self._statistics_db, stats_id, achievement_data)
-	end
+	claimed = backend_interface_loot:achievement_rewards_claimed(achievement_id)
+	completed = self:_achievement_completed(achievement_id, claimed)
+	progress = self:_achievement_progress(achievement_id, claimed)
 
 	if completed or progress == 100 then
 		local platform_functions = self._platform_functions
@@ -833,12 +862,12 @@ AchievementManager._setup_achievement_data = function (self, achievement_id, ach
 					requirement.name = "<Error>"
 				end
 			end
+
+			if claimed then
+				requirements[i].completed = true
+			end
 		end
 	end
-
-	local backend_interface_loot = self._backend_interface_loot
-
-	claimed = backend_interface_loot:achievement_rewards_claimed(achievement_id)
 
 	if AchievementManager.STORE_COMPLETED_LEVEL and completed and not claimed and (not achievement_reward_levels or not achievement_reward_levels[achievement_id]) then
 		self._state_completed_achievements[#self._state_completed_achievements + 1] = achievement_id

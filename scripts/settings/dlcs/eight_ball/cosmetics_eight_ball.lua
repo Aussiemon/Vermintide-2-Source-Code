@@ -471,9 +471,12 @@ return {
 			third_person = {
 				mtr_outfit = "units/beings/player/way_watcher_upgraded/skins/white/mtr_outfit_white",
 				mtr_outfit_ds = "units/beings/player/way_watcher_upgraded/skins/white/mtr_outfit_white_ds",
+				mtr_skin = "units/beings/player/way_watcher_upgraded/skins/white/mtr_outfit_white_skin",
 			},
 			first_person = {
+				mtr_fur = "units/beings/player/way_watcher_upgraded/skins/white/mtr_outfit_white_1p_fur",
 				mtr_outfit = "units/beings/player/way_watcher_upgraded/skins/white/mtr_outfit_white_1p",
+				mtr_skin = "units/beings/player/way_watcher_upgraded/skins/white/mtr_outfit_white_1p_skin",
 			},
 		},
 	},

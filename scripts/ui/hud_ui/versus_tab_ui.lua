@@ -562,6 +562,8 @@ end
 VersusTabUI._update_party_slots_data = function (self, party_id, team_slots, team, party_manager, player_manager, pre_game_logic, players)
 	local party = party_manager:get_party(party_id)
 	local game_session = Managers.state.network:game()
+	local network_handler = Managers.mechanism:network_handler()
+	local match_handler = network_handler:get_match_handler()
 
 	if party then
 		local side = Managers.state.side.side_by_party[party]
@@ -623,7 +625,7 @@ VersusTabUI._update_party_slots_data = function (self, party_id, team_slots, tea
 					local is_player_controlled = player:is_player_controlled()
 					local player_portrait_frame = CosmeticUtils.get_cosmetic_slot(player, "slot_frame")
 					local player_portrait_frame_name = player_portrait_frame and player_portrait_frame.item_name or "default"
-					local level_text = player and (is_player_controlled and ExperienceSettings.get_player_level(player) or UISettings.bots_level_display_text)
+					local level_text = player and (is_player_controlled and match_handler:query_peer_data(peer_id, "versus_level", true) or UISettings.bots_level_display_text)
 					local portrait_texture = self:_get_hero_portrait(profile_index, career_index)
 					local player_frame_scenegraph_id = "team_" .. team .. "_player_frame_" .. j
 					local portrait_widget = self:_create_portrait_frame(player_frame_scenegraph_id, player_portrait_frame_name, level_text, portrait_texture)
@@ -645,6 +647,9 @@ VersusTabUI._update_party_slots_data = function (self, party_id, team_slots, tea
 
 				local player_name = player:name()
 				local career_name = (not is_dark_pact or is_in_local_player_party) and player:career_name() or "vs_lobby_dark_pact_team_name"
+				local network_handler = Managers.mechanism:network_handler()
+
+				panel_content.show_host = peer_id == network_handler.server_peer_id and not is_bot
 
 				if player_slot.player_name ~= player_name then
 					player_slot.player_name = player_name

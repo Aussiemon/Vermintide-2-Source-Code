@@ -1197,7 +1197,7 @@ StartGameWindowLobbyBrowser._valid_lobby = function (self, lobby_data)
 			end
 		end
 
-		local quick_game = lobby_data.quick_game == "true"
+		local weave_quick_game = lobby_data.weave_quick_game == "true"
 		local mechanism = lobby_data.mechanism
 		local mechanism_settings = MechanismSettings[mechanism]
 
@@ -1218,7 +1218,7 @@ StartGameWindowLobbyBrowser._valid_lobby = function (self, lobby_data)
 		if mechanism == "weave" then
 			local weave_name = mission_id
 
-			if weave_name ~= "false" and not quick_game then
+			if weave_name ~= "false" and not weave_quick_game then
 				local ignore_dlc_check = false
 				local weave_unlocked = LevelUnlockUtils.weave_unlocked(statistics_db, player_stats_id, weave_name, ignore_dlc_check) or weave_name == self._current_weave
 

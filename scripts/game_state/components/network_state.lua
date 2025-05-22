@@ -502,3 +502,39 @@ NetworkState.get_startup_breeds = function (self)
 
 	return self._shared_state:get_server(key)
 end
+
+NetworkState.get_session_pickup_map = function (self)
+	local key = self._shared_state:get_key("session_pickup_map")
+
+	return self._shared_state:get_server(key)
+end
+
+NetworkState.set_session_pickup_map = function (self, pickup_map)
+	local key = self._shared_state:get_key("session_pickup_map")
+
+	self._shared_state:set_server(key, pickup_map)
+end
+
+NetworkState.get_own_loaded_session_pickup_map = function (self)
+	local key = self._shared_state:get_key("loaded_session_pickup_map")
+
+	return self._shared_state:get_own(key)
+end
+
+NetworkState.set_own_loaded_session_pickups = function (self, pickup_map)
+	local key = self._shared_state:get_key("loaded_session_pickup_map")
+
+	return self._shared_state:set_own(key, pickup_map)
+end
+
+NetworkState.get_loaded_session_pickup_map = function (self, peer_id)
+	local key = self._shared_state:get_key("loaded_session_pickup_map")
+
+	return self._shared_state:get_peer(peer_id, key)
+end
+
+NetworkState.get_unlocked_dlcs_set = function (self, peer_id)
+	local key = self._shared_state:get_key("unlocked_dlcs")
+
+	return self._shared_state:get_peer(peer_id, key)
+end

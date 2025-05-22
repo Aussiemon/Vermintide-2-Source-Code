@@ -4,7 +4,7 @@ require("scripts/ui/views/level_end/level_end_view_base")
 require("scripts/ui/views/level_end/states/end_view_state_summary")
 require("scripts/ui/views/team_previewer")
 
-local definitions = local_require("scripts/ui/views/level_end/level_end_view_definitions")
+local definitions = local_require("scripts/ui/views/level_end/level_end_view_v2_definitions")
 local widget_definitions = definitions.widgets_definitions
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animations
@@ -164,10 +164,10 @@ LevelEndViewWeave._setup_weave_data = function (self)
 		local difficulty_key = current_weave_template.difficulty_key
 		local act_key
 		local private_game = true
-		local quick_game = false
+		local weave_quick_game = false
 		local eac_authorized = Managers.eac:is_trusted()
 
-		Managers.matchmaking:set_matchmaking_data(level_key, difficulty_key, act_key, game_mode, private_game, quick_game, eac_authorized, nil, mechanism)
+		Managers.matchmaking:set_matchmaking_data(level_key, difficulty_key, act_key, game_mode, private_game, weave_quick_game, eac_authorized, nil, mechanism)
 	end
 
 	Managers.weave:set_next_weave(current_weave)

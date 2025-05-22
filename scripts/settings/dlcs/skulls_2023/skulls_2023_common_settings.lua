@@ -61,6 +61,14 @@ settings.pickups = {
 
 				Managers.state.achievement:trigger_event("register_skulls_2023_pickup")
 				Managers.state.event:trigger("register_skulls_2023_pickup")
+
+				for _, player in pairs(Managers.player:human_and_bot_players()) do
+					local local_buff_extension = ScriptUnit.has_extension(player.player_unit, "buff_system")
+
+					if local_buff_extension then
+						local_buff_extension:trigger_procs("on_mutator_skull_picked_up", interactor_unit, interactable_unit)
+					end
+				end
 			end,
 		},
 	},

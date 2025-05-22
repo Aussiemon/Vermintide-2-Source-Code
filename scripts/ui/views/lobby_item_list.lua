@@ -465,12 +465,12 @@ local function lobby_level_display_name(lobby_data)
 	local matchmaking_type_name = matchmaking_type_index and matchmaking_type_names[matchmaking_type_index]
 
 	if mechanism == "weave" then
-		if mission_id ~= "false" and lobby_data.quick_game == "false" then
+		if mission_id ~= "false" and lobby_data.weave_quick_game == "false" then
 			local weave_name_data = string.split_deprecated(mission_id, "_")
 			local weave_name = "Weave " .. weave_name_data[2]
 
 			return weave_name
-		elseif lobby_data.quick_game == "true" then
+		elseif lobby_data.weave_quick_game == "true" then
 			return Localize("start_game_window_weave_quickplay_title")
 		else
 			return Localize("lb_unknown")
@@ -532,7 +532,7 @@ local function level_is_locked(lobby_data)
 	local player = player_manager:local_player()
 	local statistics_db = player_manager:statistics_db()
 	local player_stats_id = player:stats_id()
-	local quick_game = lobby_data.quick_game == "true"
+	local weave_quick_game = lobby_data.weave_quick_game == "true"
 	local private_game = MatchmakingManager.is_lobby_private(lobby_data)
 	local mechanism = lobby_data.mechanism
 	local mechanism_settings = mechanism and MechanismSettings[mechanism]
@@ -568,7 +568,7 @@ local function level_is_locked(lobby_data)
 	end
 
 	if mechanism == "weave" then
-		if not quick_game then
+		if not weave_quick_game then
 			local ignore_dlc_check = false
 			local weave_name = mission_id
 			local weave_unlocked = LevelUnlockUtils.weave_unlocked(statistics_db, player_stats_id, weave_name, ignore_dlc_check)

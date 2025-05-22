@@ -321,6 +321,108 @@ local function decode_breed_map(compressed_byte_array_string)
 	return breed_map
 end
 
+local function encode_pickup_map(pickup_map)
+	local num_masks = math.ceil(#NetworkLookup.pickup_names / 8)
+	local byte_array = {}
+
+	for i = 1, num_masks do
+		byte_array[i] = 0
+	end
+
+	for pickup_name in pairs(pickup_map) do
+		local pickup_index = NetworkLookup.pickup_names[pickup_name]
+		local bit_index = (pickup_index - 1) % 8
+		local bitmask_index = math.ceil(pickup_index / 8)
+		local bitmask = byte_array[bitmask_index]
+
+		byte_array[bitmask_index] = bit.bor(bitmask, 2^bit_index)
+	end
+
+	local byte_array_string = ByteArray.read_string(byte_array)
+	local compressed_byte_array_string = LibDeflate:CompressDeflate(byte_array_string)
+
+	return compressed_byte_array_string
+end
+
+local function decode_pickup_map(compressed_byte_array_string)
+	local byte_array_string = LibDeflate:DecompressDeflate(compressed_byte_array_string)
+	local byte_array = {}
+
+	ByteArray.write_string(byte_array, byte_array_string)
+
+	local pickup_map = {}
+
+	for i = 1, #byte_array do
+		local bitmask = tonumber(byte_array[i])
+
+		if bitmask ~= 0 then
+			for j = 0, 7 do
+				local is_set = bit.band(bitmask, 2^j) ~= 0
+
+				if is_set then
+					local pickup_index = j + 1 + 8 * (i - 1)
+					local pickup_name = NetworkLookup.pickup_names[pickup_index]
+
+					pickup_map[pickup_name] = true
+				end
+			end
+		end
+	end
+
+	return pickup_map
+end
+
+local function encode_dlc_set(dlc_map)
+	local num_masks = math.ceil(#NetworkLookup.dlcs / 8)
+	local byte_array = {}
+
+	for i = 1, num_masks do
+		byte_array[i] = 0
+	end
+
+	for dlc_name in pairs(dlc_map) do
+		local dlc_index = NetworkLookup.dlcs[dlc_name]
+		local bit_index = (dlc_index - 1) % 8
+		local bitmask_index = math.ceil(dlc_index / 8)
+		local bitmask = byte_array[bitmask_index]
+
+		byte_array[bitmask_index] = bit.bor(bitmask, 2^bit_index)
+	end
+
+	local byte_array_string = ByteArray.read_string(byte_array)
+	local compressed_byte_array_string = LibDeflate:CompressDeflate(byte_array_string)
+
+	return compressed_byte_array_string
+end
+
+local function decode_dlc_set(compressed_byte_array_string)
+	local byte_array_string = LibDeflate:DecompressDeflate(compressed_byte_array_string)
+	local byte_array = {}
+
+	ByteArray.write_string(byte_array, byte_array_string)
+
+	local dlc_map = {}
+
+	for i = 1, #byte_array do
+		local bitmask = tonumber(byte_array[i])
+
+		if bitmask ~= 0 then
+			for j = 0, 7 do
+				local is_set = bit.band(bitmask, 2^j) ~= 0
+
+				if is_set then
+					local dlc_index = j + 1 + 8 * (i - 1)
+					local dlc_name = NetworkLookup.dlcs[dlc_index]
+
+					dlc_map[dlc_name] = true
+				end
+			end
+		end
+	end
+
+	return dlc_map
+end
+
 local spec = {
 	server = {
 		peer_ingame = {
@@ -491,6 +593,14 @@ local spec = {
 			encode = encode_breed_map,
 			decode = decode_breed_map,
 		},
+		session_pickup_map = {
+			mute_print = true,
+			type = "table",
+			default_value = {},
+			composite_keys = {},
+			encode = encode_pickup_map,
+			decode = decode_pickup_map,
+		},
 	},
 	peer = {
 		inventory_list = {
@@ -531,6 +641,35 @@ local spec = {
 			composite_keys = {},
 			encode = encode_breed_map,
 			decode = decode_breed_map,
+		},
+		loaded_session_pickup_map = {
+			mute_print = true,
+			type = "table",
+			default_value = {},
+			composite_keys = {},
+			encode = encode_pickup_map,
+			decode = decode_pickup_map,
+		},
+		unlocked_dlcs = {
+			mute_print = true,
+			type = "table",
+			default_value = {},
+			composite_keys = {},
+			encode = encode_dlc_set,
+			decode = decode_dlc_set,
+			immediate_initialization = function (shared_state, peer_id)
+				local unlock_manager = Managers.unlock
+				local dlcs = NetworkLookup.dlcs
+				local dlc_set = {}
+
+				for i = 1, #dlcs do
+					local dlc_name = dlcs[i]
+
+					dlc_set[dlc_name] = unlock_manager:is_dlc_unlocked(dlc_name)
+				end
+
+				return shared_state:get_key("unlocked_dlcs"), dlc_set
+			end,
 		},
 	},
 }

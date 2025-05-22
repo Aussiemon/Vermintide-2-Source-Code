@@ -4130,6 +4130,9 @@ local function belakor_shadow_lieutenant_spawn(locus_type_id, add_base_enhanceme
 					end
 				end,
 			},
+			spawn_failed_func = function (position)
+				BelakorBalancing.spawn_crystal_func(position)
+			end,
 			min_distance = BELAKOR_ALTAR_MIN_DISTANCE_CULTIST_SPAWN,
 			max_distance = BELAKOR_ALTAR_MAX_DISTANCE_CULTIST_SPAWN,
 			row_distance = BELAKOR_ALTAR_ROW_DISTANCE,

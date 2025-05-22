@@ -721,6 +721,12 @@ DeusMechanism.get_level_end_view = function (self)
 	return "LevelEndViewDeus"
 end
 
+DeusMechanism.get_level_end_view_packages = function (self)
+	return {
+		"resource_packages/levels/ui_end_screen",
+	}
+end
+
 DeusMechanism._get_next_game_mode_key = function (self)
 	local game_mode_key
 	local state = self._state

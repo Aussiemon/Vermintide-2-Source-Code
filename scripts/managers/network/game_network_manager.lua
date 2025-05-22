@@ -859,6 +859,10 @@ GameNetworkManager.hot_join_sync = function (self, peer_id)
 		Managers.venture.challenge:hot_join_sync(peer_id)
 	end
 
+	if Managers.venture.quickplay then
+		Managers.venture.quickplay:hot_join_sync(peer_id)
+	end
+
 	if Managers.state.conflict then
 		Managers.state.conflict:hot_join_sync(peer_id)
 	end

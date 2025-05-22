@@ -4,6 +4,7 @@ local definitions = local_require("scripts/ui/views/deus_menu/deus_run_stats_ui_
 local animations_definitions = definitions.animations_definitions
 local reminder_widgets_definitions = definitions.reminder_widgets
 local generic_input_actions = definitions.generic_input_actions
+local ALLOW_BOON_REMOVAL = definitions.allow_boon_removal
 
 DeusRunStatsUi = class(DeusRunStatsUi)
 
@@ -24,6 +25,8 @@ DeusRunStatsUi.init = function (self, ingame_ui_context, parent)
 	self._power_up_widgets = {}
 	self._reminders = {}
 	self._animations = {}
+	self._ui_animations = {}
+	self._force_update_power_ups = false
 
 	self:_create_ui_elements()
 	Managers.state.event:register(self, "present_rewards", "show_info_message")
@@ -131,6 +134,20 @@ DeusRunStatsUi._update_animations = function (self, dt, t)
 			animations[animation_name] = nil
 		end
 	end
+
+	local ui_animations = self._ui_animations
+
+	for name, animation in pairs(ui_animations) do
+		UIAnimation.update(animation, dt)
+
+		if UIAnimation.completed(animation) then
+			self._ui_animations[name] = nil
+		end
+	end
+
+	if self._ui_animations.move_scrollbar and self._scrollbar_ui then
+		self._scrollbar_ui:force_update_progress(2)
+	end
 end
 
 DeusRunStatsUi.lock = function (self, lock, show_fullscreen_fade)
@@ -189,22 +206,93 @@ DeusRunStatsUi._handle_input = function (self, dt, t)
 	local power_up_widgets = self._power_up_widgets
 	local power_up_description_widget = self._widgets_by_name.power_up_description
 	local current_power_up_name, power_up_rarity
-	local extend_left = false
-	local gamepad_selection_index = gamepad_active and self._gamepad_row_index + definitions.max_power_up_amount * 0.5 * (self._gamepad_column_index - 1)
+	local extend_left = true
 
 	for i = 1, #power_up_widgets do
 		local widget = self._power_up_widgets[i]
+		local row_index = math.ceil(i / 2)
+		local column_index = i % 2 == 0 and 2 or 1
 
-		if UIUtils.is_button_hover(widget) or gamepad_selection_index == i then
+		if UIUtils.is_button_hover(widget) or gamepad_active and self._gamepad_row_index == row_index and self._gamepad_column_index == column_index then
 			local scenegraph_id = widget.scenegraph_id
 			local world_position = UISceneGraph.get_world_position(ui_scenegraph, scenegraph_id)
+			local offset = widget.offset
 
-			ui_scenegraph.power_up_description_root.local_position[1] = world_position[1]
-			ui_scenegraph.power_up_description_root.local_position[2] = world_position[2]
-			power_up_description_widget.content.visible = true
+			ui_scenegraph.power_up_description_root.local_position[1] = world_position[1] + offset[1]
+			ui_scenegraph.power_up_description_root.local_position[2] = world_position[2] + offset[2]
 			current_power_up_name = widget.content.power_up_name
 			power_up_rarity = widget.content.power_up_rarity
-			extend_left = i > definitions.max_power_up_amount * 0.5
+
+			local locked = widget.content.locked
+			local locked_text_id = widget.content.locked_text_id
+			local content = power_up_description_widget.content
+			local style = power_up_description_widget.style
+
+			content.visible = true
+			content.locked = locked
+			content.locked_text_id = locked_text_id or content.locked_text_id
+
+			if locked then
+				content.end_time = nil
+				content.progress = nil
+				content.input_made = false
+				style.remove_frame.color[1] = 0
+
+				break
+			end
+
+			if ALLOW_BOON_REMOVAL then
+				if input_service:get("mouse_middle_press") or input_service:get("special_1_press") then
+					content.input_made = true
+					style.remove_frame.color[1] = 0
+
+					self:_play_sound("Play_gui_boon_removal_start")
+
+					break
+				end
+
+				if content.input_made and (input_service:get("mouse_middle_held") or input_service:get("special_1_hold")) then
+					do
+						local end_time = content.end_time or t + content.remove_interaction_duration
+						local progress = (end_time - t) / content.remove_interaction_duration
+
+						style.remove_frame.color[1] = 255 * (1 - progress)
+
+						local done = progress <= 0
+
+						if done then
+							content.end_time = nil
+							content.progress = nil
+							content.input_made = false
+
+							local mechanism = Managers.mechanism:game_mechanism()
+							local deus_run_controller = mechanism:get_deus_run_controller()
+							local player = Managers.player:local_player()
+							local local_player_id = player:local_player_id()
+
+							self._force_update_power_ups = deus_run_controller:remove_power_ups(current_power_up_name, local_player_id)
+
+							self:_play_sound("Play_gui_boon_removal_end")
+
+							break
+						end
+
+						content.end_time = end_time
+						content.progress = progress
+					end
+
+					break
+				end
+
+				if content.input_made then
+					self:_play_sound("Stop_gui_boon_removal_start")
+				end
+
+				content.end_time = nil
+				content.progress = nil
+				content.input_made = false
+				style.remove_frame.color[1] = 0
+			end
 
 			break
 		end
@@ -217,8 +305,13 @@ DeusRunStatsUi._handle_input = function (self, dt, t)
 	self._current_power_up_name = current_power_up_name
 end
 
+local POWER_UP_SLOTS = {}
+
 DeusRunStatsUi._handle_gamepad_input = function (self, dt, t)
+	local gamepad_was_active = self._gamepad_active
 	local gamepad_active = Managers.input:is_device_active("gamepad")
+
+	self._gamepad_active = gamepad_active
 
 	if not gamepad_active or not self._active then
 		return
@@ -226,21 +319,36 @@ DeusRunStatsUi._handle_gamepad_input = function (self, dt, t)
 
 	local input_service = self._parent:input_service()
 	local num_power_ups = #self._power_up_widgets
-	local items_in_a_column = definitions.max_power_up_amount * 0.5
-	local num_columns = math.ceil(num_power_ups / items_in_a_column)
+	local num_columns = 2
 
-	if input_service:get("move_down") then
-		local items_in_this_column = math.min(num_power_ups - items_in_a_column * (self._gamepad_column_index - 1), items_in_a_column)
+	table.clear(POWER_UP_SLOTS)
 
-		self._gamepad_row_index = math.min(self._gamepad_row_index + 1, items_in_this_column)
-	elseif input_service:get("move_up") then
+	POWER_UP_SLOTS[1] = math.ceil(num_power_ups / num_columns)
+	POWER_UP_SLOTS[2] = math.floor(num_power_ups / num_columns)
+
+	local old_gamepad_row_index = self._gamepad_row_index
+	local old_gamepad_column_index = self._gamepad_column_index
+
+	if input_service:get("move_down_hold_continuous") then
+		self._gamepad_row_index = math.min(self._gamepad_row_index + 1, POWER_UP_SLOTS[self._gamepad_column_index])
+	elseif input_service:get("move_up_hold_continuous") then
 		self._gamepad_row_index = math.max(self._gamepad_row_index - 1, 1)
 	elseif input_service:get("move_right") then
-		self._gamepad_column_index = math.min(self._gamepad_column_index + 1, num_columns)
-		self._gamepad_row_index = math.min(self._gamepad_row_index, num_power_ups - items_in_a_column * (self._gamepad_column_index - 1))
+		local column_index = math.min(self._gamepad_column_index + 1, num_columns)
+
+		if POWER_UP_SLOTS[column_index] >= self._gamepad_row_index then
+			self._gamepad_column_index = column_index
+		end
 	elseif input_service:get("move_left") then
 		self._gamepad_column_index = math.max(self._gamepad_column_index - 1, 1)
-		self._gamepad_row_index = math.min(self._gamepad_row_index, num_power_ups - items_in_a_column * (self._gamepad_column_index - 1))
+	end
+
+	if old_gamepad_column_index ~= self._gamepad_column_index or old_gamepad_row_index ~= self._gamepad_row_index or gamepad_was_active ~= gamepad_active then
+		local window_height = self._ui_scenegraph.power_up_window.size[2]
+		local offset = math.min(self._gamepad_row_index + 3, POWER_UP_SLOTS[1]) * (definitions.power_up_widget_size[2] + definitions.power_up_widget_spacing[2])
+		local excess = math.max(offset - window_height, 0)
+
+		self._ui_animations.move_scrollbar = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.power_up_anchor.local_position, 2, self._ui_scenegraph.power_up_anchor.local_position[2], excess, 0.5, math.easeOutCubic)
 	end
 end
 
@@ -270,7 +378,7 @@ DeusRunStatsUi._populate_power_up = function (self, power_up_name, power_up_rari
 	local style = power_up_description_widget.style
 	local rarity_color = Colors.get_table(rarity)
 
-	style.rarity_text.text_color = rarity_color
+	style.rarity_text_left.text_color = rarity_color
 	power_up_description_widget.content.visible = true
 
 	local power_up_sets = DeusPowerUpSetLookup[rarity] and DeusPowerUpSetLookup[rarity][power_up.name]
@@ -296,7 +404,7 @@ DeusRunStatsUi._populate_power_up = function (self, power_up_name, power_up_rari
 
 		local num_required_pieces = set.num_required_pieces or #pieces
 
-		content.set_progression = string.format(Localize("set_counter_boons"), piece_count, num_required_pieces)
+		content.set_progression = Localize("set_bonus_boons") .. " " .. string.format(Localize("set_counter_boons"), piece_count, num_required_pieces)
 
 		if #pieces == piece_count then
 			style.set_progression.text_color = style.set_progression.progression_colors.complete
@@ -405,6 +513,10 @@ DeusRunStatsUi._draw = function (self, dt, t)
 	if gamepad_active then
 		self._menu_input_description:draw(self._ui_top_renderer, dt)
 	end
+
+	if self._scrollbar_ui then
+		self._scrollbar_ui:update(dt, t, ui_renderer, input_service, render_settings)
+	end
 end
 
 DeusRunStatsUi._play_sound = function (self, event)
@@ -418,6 +530,12 @@ end
 DeusRunStatsUi.update_dynamic_values = function (self, data)
 	self:_update_blessings(data.blessings)
 	self:_update_power_ups(data.party_power_ups, data.power_ups, data.profile_index, data.career_index)
+
+	self._force_update_power_ups = false
+end
+
+DeusRunStatsUi.force_update_power_ups = function (self)
+	return self._force_update_power_ups
 end
 
 DeusRunStatsUi._update_blessings = function (self, blessings)
@@ -463,6 +581,24 @@ DeusRunStatsUi._update_power_ups = function (self, party_power_ups, power_ups, p
 	local power_up_widgets = {}
 
 	if has_power_ups then
+		local mechanism = Managers.mechanism:game_mechanism()
+		local deus_run_controller = mechanism:get_deus_run_controller()
+		local initial_talents = deus_run_controller:get_own_initial_talents()
+		local profile = SPProfiles[profile_index]
+		local career_name = profile.careers[career_index].name
+		local initial_talents_for_career = initial_talents[career_name]
+		local talent_power_ups = {}
+
+		for tier = 1, #initial_talents_for_career do
+			local column = initial_talents_for_career[tier]
+
+			if column ~= 0 then
+				local power_up, _ = DeusPowerUpUtils.get_talent_power_up_from_tier_and_column(tier, column)
+
+				talent_power_ups[power_up.name] = true
+			end
+		end
+
 		local rarity_settings = RaritySettings
 
 		table.sort(power_ups, function (a, b)
@@ -477,15 +613,17 @@ DeusRunStatsUi._update_power_ups = function (self, party_power_ups, power_ups, p
 		end)
 
 		local power_up_templates = DeusPowerUpTemplates
-		local num_power_ups = math.min(#power_ups + #party_power_ups, definitions.max_power_up_amount)
+		local num_power_ups = #power_ups + #party_power_ups
 
 		for i = 1, num_power_ups do
 			local power_up_instance
+			local is_party_power_up = false
 
 			if i <= #power_ups then
 				power_up_instance = power_ups[i]
 			else
 				power_up_instance = party_power_ups[i - #power_ups]
+				is_party_power_up = true
 			end
 
 			local power_up = DeusPowerUps[power_up_instance.rarity][power_up_instance.name]
@@ -496,15 +634,66 @@ DeusRunStatsUi._update_power_ups = function (self, party_power_ups, power_ups, p
 			local is_rectangular_icon = power_up_template.rectangular_icon
 			local widget_data = is_rectangular_icon and definitions.rectangular_power_up_widget_data or definitions.round_power_up_widget_data
 			local hide_text = true
-			local idx = #power_up_widgets + 1
-			local scenegraph_id = "power_up_" .. idx
-			local widget_definition = UIWidgets.create_icon_info_box(scenegraph_id, icon, widget_data.icon_size, widget_data.icon_offset, widget_data.background_icon, widget_data.background_icon_size, widget_data.background_icon_offset, sub_text, title_text, text_color, widget_data.width, is_rectangular_icon, hide_text)
+			local masked = true
+			local icon_hotspot = {
+				color = {
+					255,
+					138,
+					172,
+					235,
+				},
+				offset = definitions.rectangular_power_up_widget_data.icon_offset,
+				texture_size = definitions.rectangular_power_up_widget_data.icon_size,
+			}
+			local scenegraph_id = "power_up_anchor"
+			local widget_definition = UIWidgets.create_icon_info_box(scenegraph_id, icon, widget_data.icon_size, widget_data.icon_offset, widget_data.background_icon, widget_data.background_icon_size, widget_data.background_icon_offset, sub_text, title_text, text_color, widget_data.width, is_rectangular_icon, hide_text, masked, icon_hotspot)
 			local widget = UIWidget.init(widget_definition)
 
 			widget.content.power_up_name = power_up.name
 			widget.content.power_up_rarity = power_up.rarity
+			widget.content.locked = is_party_power_up or talent_power_ups[power_up.name]
+			widget.content.locked_text_id = is_party_power_up and "party_locked" or talent_power_ups[power_up.name] and "talent_locked" or "search_filter_locked"
+
+			local column = (i - 1) % 2
+
+			widget.offset[1] = column * (definitions.power_up_widget_size[1] + definitions.power_up_widget_spacing[1])
+			widget.offset[2] = -math.floor((i - 1) / 2) * (definitions.power_up_widget_size[2] + definitions.power_up_widget_spacing[2])
 			power_up_widgets[#power_up_widgets + 1] = widget
 			self._widgets_by_name[scenegraph_id] = widget
+		end
+
+		local num_columns = 2
+		local gamepad_index = (self._gamepad_row_index - 1) * num_columns + self._gamepad_column_index
+
+		if num_power_ups < gamepad_index then
+			self._gamepad_row_index = math.ceil(num_power_ups / num_columns)
+			self._gamepad_column_index = num_columns - num_power_ups % num_columns
+		end
+
+		if Managers.input:is_device_active("gamepad") then
+			local window_height = self._ui_scenegraph.power_up_window.size[2]
+			local offset = self._gamepad_row_index * (definitions.power_up_widget_size[2] + definitions.power_up_widget_spacing[2])
+			local excess = math.max(offset - window_height, 0)
+
+			self._ui_animations.move_scrollbar = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.power_up_anchor.local_position, 2, self._ui_scenegraph.power_up_anchor.local_position[2], excess, 0.5, math.easeOutCubic)
+		end
+
+		local excess = math.ceil(num_power_ups / 2) * (definitions.power_up_widget_size[2] + definitions.power_up_widget_spacing[2]) - self._ui_scenegraph.power_up_window.size[2]
+
+		if excess > 0 then
+			local ui_scenegraph = self._ui_scenegraph
+			local scroll_area_scenegraph_id = "power_up_anchor"
+			local scroll_area_anchor_scenegraph_id = "power_up_window"
+			local excess_area = excess
+			local enable_auto_scroll = false
+			local optional_scroll_area_hotspot_widget, horizontal_scrollbar
+			local left_aligned = false
+
+			self._scrollbar_ui = ScrollbarUI:new(ui_scenegraph, scroll_area_scenegraph_id, scroll_area_anchor_scenegraph_id, excess_area, enable_auto_scroll, optional_scroll_area_hotspot_widget, horizontal_scrollbar, left_aligned)
+
+			self._scrollbar_ui:disable_gamepad_input(true)
+		else
+			self._scrollbar_ui = nil
 		end
 	end
 

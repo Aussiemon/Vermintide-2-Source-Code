@@ -1,5 +1,7 @@
 ﻿-- chunkname: @scripts/managers/matchmaking/matchmaking_state_player_hosted_game.lua
 
+local ReservationHandlerTypes = require("scripts/managers/game_mode/mechanisms/reservation_handler_types")
+
 MatchmakingStatePlayerHostedGame = class(MatchmakingStatePlayerHostedGame)
 MatchmakingStatePlayerHostedGame.NAME = "MatchmakingStatePlayerHostedGame"
 
@@ -36,7 +38,7 @@ end
 
 MatchmakingStatePlayerHostedGame.force_start_game = function (self)
 	local game_mechanism = Managers.mechanism:game_mechanism()
-	local slot_reservation_handler = game_mechanism:get_slot_reservation_handler()
+	local slot_reservation_handler = game_mechanism:get_slot_reservation_handler(Network.peer_id(), ReservationHandlerTypes.pending_custom_game)
 
 	if slot_reservation_handler:all_teams_have_members() or Development.parameter("allow_versus_force_start_single_player") then
 		self._state_context.clients_not_in_game_session = true
@@ -44,6 +46,7 @@ MatchmakingStatePlayerHostedGame.force_start_game = function (self)
 		self._new_state = MatchmakingStateStartGame
 
 		Managers.matchmaking:set_lobby_data_match_started(true)
+		game_mechanism:move_slot_reservation_handler(Network.peer_id(), ReservationHandlerTypes.pending_custom_game, ReservationHandlerTypes.session)
 
 		local audio_event = "versus_hud_player_lobby_match_found"
 		local audio_system = Managers.state.entity:system("audio_system")
@@ -76,11 +79,6 @@ MatchmakingStatePlayerHostedGame._start_hosting_game = function (self)
 	local private_game = search_config.private_game
 	local mechanism = search_config.mechanism
 	local game_mechanism = Managers.mechanism:game_mechanism()
-	local slot_reservation_handler = game_mechanism:get_slot_reservation_handler()
-
-	slot_reservation_handler:update_slot_settings(Managers.party:parties())
-
-	local party_id = Managers.mechanism:reserved_party_id_by_peer(Network.peer_id())
 
 	if game_mechanism.set_is_hosting_versus_custom_game then
 		game_mechanism:set_is_hosting_versus_custom_game(true)

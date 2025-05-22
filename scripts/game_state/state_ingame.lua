@@ -58,6 +58,7 @@ require("scripts/managers/performance_title/performance_title_manager")
 require("scripts/managers/achievements/achievement_manager")
 require("scripts/managers/quest/quest_manager")
 require("scripts/managers/challenges/challenge_manager")
+require("scripts/managers/quickplay/quickplay_manager")
 require("scripts/managers/status_effect/status_effect_manager")
 require("scripts/utils/fps_reporter")
 require("scripts/utils/ping_reporter")
@@ -102,7 +103,7 @@ StateIngame.on_enter = function (self)
 	NetworkUnit.reset_unit_data()
 	Managers.time:register_timer("game", "main")
 	CLEAR_POSITION_LOOKUP()
-	Managers.mechanism:check_venture_start()
+	Managers.mechanism:check_venture_start(self.parent.loading_context)
 
 	local input_manager = InputManager:new()
 
@@ -263,8 +264,6 @@ StateIngame.on_enter = function (self)
 			is_server = is_server,
 			profile_synchronizer = self.profile_synchronizer,
 			statistics_db = self.statistics_db,
-			quick_game = loading_context.quickplay_bonus,
-			local_quick_game = loading_context.local_quickplay_bonus,
 		}
 
 		if loading_context.host_migration_info then
@@ -282,12 +281,6 @@ StateIngame.on_enter = function (self)
 	level_transition_handler:register_rpcs(network_event_delegate)
 	Managers.mechanism:register_rpcs(network_event_delegate)
 	Managers.party:register_rpcs(network_event_delegate)
-
-	if is_server then
-		local is_quick_game = self._lobby_host:lobby_data("quick_game") == "true"
-
-		Managers.matchmaking:set_quick_game(is_quick_game)
-	end
 
 	if rawget(_G, "ControllerFeaturesManager") then
 		Managers.state.controller_features = ControllerFeaturesManager:new(self.is_in_inn)
@@ -384,14 +377,13 @@ StateIngame.on_enter = function (self)
 			network_client = self.network_client,
 			network_transmit = self.network_transmit,
 			voip = self.network_server and self.network_server.voip or self.network_client.voip,
-			quickplay_bonus = loading_context.quickplay_bonus,
 		}
 
 		if level_end_view_wrappers and level_end_view_wrappers[i] then
 			params.level_end_view_wrapper = level_end_view_wrappers[i]
 		end
 
-		if loading_context.quickplay_bonus or loading_context.local_quickplay_bonus then
+		if Managers.venture.quickplay:is_quick_game() then
 			local player = Managers.player:player(peer_id, i)
 
 			StatisticsUtil.register_played_quickplay_level(self.statistics_db, player, level_key)
@@ -566,11 +558,10 @@ StateIngame.on_enter = function (self)
 		Managers.state.game_mode:apply_environment_variation()
 	end
 
-	local player_id = Managers.backend:player_id()
 	local difficulty, difficulty_tweak = Managers.state.difficulty:get_difficulty()
 	local mutators = Managers.state.game_mode:activated_mutators()
 	local game_mode = Managers.state.game_mode:settings().key
-	local quick_game = Managers.matchmaking:is_quick_game()
+	local quick_game = Managers.venture.quickplay:is_quick_game()
 	local realm = "official"
 
 	if HAS_STEAM and script_data["eac-untrusted"] then
@@ -642,7 +633,7 @@ StateIngame.on_enter = function (self)
 
 	Managers.state.entity:system("objective_system"):on_game_entered()
 	Managers.state.event:trigger("start_game_time", Managers.state.network:network_time())
-	Managers:on_round_start(network_event_delegate, event_manager)
+	Managers:on_round_start(network_event_delegate, event_manager, self.network_transmit)
 	Managers.mechanism:handle_ingame_enter(game_mode)
 end
 
@@ -816,6 +807,7 @@ StateIngame.pre_update = function (self, dt)
 	UPDATE_POSITION_LOOKUP()
 	Managers.state.side:update_frame_tables()
 	network_manager:update_receive(dt)
+	self.entity_system:commit_and_remove_pending_units()
 
 	if self.network_server then
 		self.network_server:update(dt, t)
@@ -1507,10 +1499,6 @@ StateIngame._check_exit = function (self, t)
 		end
 
 		if self.exit_type then
-			if self.is_server and not self.is_in_inn and self.exit_type ~= "reload_level" and Managers.matchmaking and Managers.matchmaking:have_game_mode_event_data() and Managers.mechanism:game_mechanism():is_venture_over() then
-				Managers.matchmaking:clear_game_mode_event_data()
-			end
-
 			local exit_time = 2
 
 			self.exit_time = t + exit_time
@@ -1567,6 +1555,10 @@ StateIngame._check_exit = function (self, t)
 			return
 		elseif not game_session_is_closed then
 			return
+		end
+
+		if self.is_server and not self.is_in_inn and exit_type ~= "reload_level" and Managers.matchmaking and Managers.matchmaking:have_game_mode_event_data() and Managers.mechanism:game_mechanism():is_venture_over() then
+			Managers.matchmaking:clear_game_mode_event_data()
 		end
 
 		if Managers.backend:is_tutorial_backend() then
@@ -1744,8 +1736,7 @@ StateIngame._check_exit = function (self, t)
 			self.parent.loading_context.matchmaking_loading_context = Managers.matchmaking:loading_context()
 			self.parent.loading_context.wanted_profile_index = self:wanted_profile_index()
 			self.parent.loading_context.wanted_party_index = self:wanted_party_index()
-			self.parent.loading_context.quickplay_bonus = Managers.matchmaking:is_quick_game()
-			self.parent.loading_context.local_quickplay_bonus = Managers.matchmaking:is_local_quick_game()
+			self.parent.loading_context.quickplay_bonus = Managers.venture.quickplay:has_pending_quick_game() or nil
 			self.parent.loading_context.previous_session_error = Managers.twitch and Managers.twitch:get_twitch_popup_message()
 			self.parent.loading_context.time_spent_in_level = math.floor(Managers.time and Managers.time:time("game") or -1)
 			self.parent.loading_context.end_reason = Managers.state.game_mode:get_end_reason()
@@ -1756,8 +1747,7 @@ StateIngame._check_exit = function (self, t)
 			self.parent.loading_context.matchmaking_loading_context = Managers.matchmaking:loading_context()
 			self.parent.loading_context.wanted_profile_index = self:wanted_profile_index()
 			self.parent.loading_context.wanted_party_index = self:wanted_party_index()
-			self.parent.loading_context.quickplay_bonus = Managers.matchmaking:is_quick_game()
-			self.parent.loading_context.local_quickplay_bonus = Managers.matchmaking:is_local_quick_game()
+			self.parent.loading_context.quickplay_bonus = self.is_server and Managers.venture.quickplay:has_pending_quick_game() or nil
 			self.parent.loading_context.time_spent_in_level = math.floor(Managers.time and Managers.time:time("game") or -1)
 			self.parent.loading_context.end_reason = "join_game"
 
@@ -1954,7 +1944,12 @@ StateIngame.on_exit = function (self, application_shutdown)
 	VisualAssertLog.cleanup()
 	self:_teardown_world()
 	ScriptUnit.check_all_units_deleted()
-	level_transition_handler.enemy_package_loader:unload_enemy_packages(application_shutdown, "StateIngame:on_exit")
+
+	if application_shutdown then
+		level_transition_handler.enemy_package_loader:on_application_shutdown()
+		level_transition_handler.pickup_package_loader:on_application_shutdown()
+	end
+
 	level_transition_handler.transient_package_loader:unload_all_packages(application_shutdown)
 	self.statistics_db:unregister_network_event_delegate()
 	Managers.time:unregister_timer("game")
@@ -2004,6 +1999,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 		Managers.mechanism:mechanism_try_call("unregister_chats")
 		Managers.deed:network_context_destroyed()
 		level_transition_handler.enemy_package_loader:network_context_destroyed()
+		level_transition_handler.pickup_package_loader:network_context_destroyed()
 		level_transition_handler.transient_package_loader:network_context_destroyed()
 		Managers.party:network_context_destroyed()
 
@@ -2260,6 +2256,7 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 	Managers.state.conflict = ConflictDirector:new(world, level_key, network_event_delegate, level_seed, is_server, conflict_settings)
 	Managers.state.networked_flow_state = NetworkedFlowStateManager:new(world, is_server, network_event_delegate)
 
+	Managers.level_transition_handler:create_queued_networked_flow_states(self.level)
 	GarbageLeakDetector.register_object(Managers.state.game_mode, "GameModeManager")
 	GarbageLeakDetector.register_object(Managers.state.conflict, "ConflictDirector")
 

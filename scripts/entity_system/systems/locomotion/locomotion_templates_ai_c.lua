@@ -29,6 +29,7 @@ LocomotionTemplates.AILocomotionExtensionC.update = function (data, t, dt)
 		killing_blow[DamageDataIndex.FIRST_HIT] = true
 		killing_blow[DamageDataIndex.TOTAL_HITS] = 1
 		killing_blow[DamageDataIndex.BACKSTAB_MULTIPLIER] = 1
+		killing_blow[DamageDataIndex.TARGET_INDEX] = 1
 
 		for i = 1, #units_to_kill do
 			print("Destroying unit since outside mesh or world")

@@ -168,6 +168,12 @@ GameServer.get_max_members = function (self)
 	return self._max_members
 end
 
+GameServer.set_max_members = function (self, new_max_members)
+	self._max_members = new_max_members
+
+	GameServerInternal.set_max_members(self._game_server, new_max_members)
+end
+
 GameServer.is_joined = function (self)
 	return self._state == "connected"
 end

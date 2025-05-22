@@ -576,7 +576,7 @@ end
 IngamePlayerListUI._setup_weave_display_info = function (self)
 	if Managers.state.game_mode:game_mode_key() == "weave" then
 		local lobby = Managers.state.network:lobby()
-		local quick_game = lobby and lobby:lobby_data("quick_game")
+		local weave_quick_game = lobby and lobby:lobby_data("weave_quick_game")
 		local weave_manager = Managers.weave
 
 		if weave_manager then
@@ -585,7 +585,7 @@ IngamePlayerListUI._setup_weave_display_info = function (self)
 			if weave_template then
 				local weave_display_name
 
-				if quick_game == "true" then
+				if weave_quick_game == "true" then
 					weave_display_name = Localize(weave_template.display_name)
 				else
 					weave_display_name = weave_template.tier .. ". " .. Localize(weave_template.display_name)
@@ -1199,12 +1199,14 @@ IngamePlayerListUI._set_active = function (self, active)
 		}
 		local mechanism_name = Managers.mechanism:current_mechanism_name()
 		local matchmaking_type = Managers.matchmaking:active_game_mode()
-		local quick_game = Managers.matchmaking:is_quick_game()
+		local lobby = Managers.state.network:lobby()
+		local weave_quick_game = lobby and lobby:lobby_data("weave_quick_game") == "true"
+		local is_quick_game = weave_quick_game or Managers.venture.quickplay:is_quick_game()
 		local mechanism_type_widget = self._static_widgets_by_name.mechanism_type_name
 		local mission_type_widget = self._static_widgets_by_name.mission_type_name
 
 		if mechanism_name == "weave" then
-			matchmaking_type = quick_game == "true" and "lb_game_type_weave_quick_play" or "lb_game_type_custom"
+			matchmaking_type = is_quick_game and "lb_game_type_weave_quick_play" or "lb_game_type_custom"
 			mechanism_type_widget.content.text = Utf8.upper(Localize("lb_game_type_weave"))
 			mission_type_widget.content.text = Localize(matchmaking_type)
 		else
@@ -1212,7 +1214,7 @@ IngamePlayerListUI._set_active = function (self, active)
 
 			mechanism_type_widget.content.text = Utf8.upper(Localize(mechanism_settings.display_name))
 
-			if quick_game == "true" then
+			if is_quick_game then
 				mission_type_widget.content.text = Localize("lb_game_type_quick_play")
 			else
 				mission_type_widget.content.text = Localize(matchmaking_type_lookup[matchmaking_type] or matchmaking_type_lookup["n/a"])

@@ -52,9 +52,13 @@ achievements.grudge_marks_on_kill_util = {
 		"register_kill",
 	},
 	completed = function (statistics_db, stats_id, template_data)
+		local backend_interface_loot = Managers.backend:get_interface("loot")
+
 		for i = 1, #achievement_to_check do
 			local achievement_id = achievement_to_check[i]
 			local completed = achievements[achievement_id].completed(statistics_db, stats_id)
+
+			completed = completed or backend_interface_loot:achievement_rewards_claimed(achievement_id)
 
 			if not completed then
 				return false

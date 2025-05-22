@@ -9,7 +9,14 @@ local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/se
 DeusPowerUpSettings = DeusPowerUpSettings or {
 	cursed_chest_choice_amount = 3,
 	cursed_chest_max_picks = 1,
+	num_set_boons_weight_multiplier = 1.75,
 	weapon_chest_choice_amount = 1,
+	weight_by_rarity = {
+		event = 6,
+		exotic = 3,
+		rare = 6,
+		unique = 1,
+	},
 }
 
 local skulls_buffs_to_refresh = {
@@ -438,7 +445,7 @@ DeusPowerUpBuffTemplates = {
 	boon_skulls_01_stack = {
 		buffs = {
 			{
-				icon = "grudge_mark_frenzy_debuff",
+				icon = "boon_skulls_01",
 				ignore_if_not_local = true,
 				is_cooldown = true,
 				name = "boon_skulls_01_stack",
@@ -449,7 +456,17 @@ DeusPowerUpBuffTemplates = {
 				sync_type = "LocalAndServer",
 				synced_buff_to_add = "boon_skulls_01_surge",
 				duration = MorrisBuffTweakData.boon_skulls_01_data.duration,
-				multiplier = MorrisBuffTweakData.boon_skulls_01_data.attack_speed_per_stack,
+				duration_modifier_func = MorrisBuffTweakData.boon_skulls_set_01_data.duration_modifier_func,
+				multiplier = function (unit, buff_extension)
+					local multiplier = MorrisBuffTweakData.boon_skulls_01_data.attack_speed_per_stack
+					local has_full_set = buff_extension:num_buff_stacks("power_up_boon_skulls_set_bonus_01_event") > 0
+
+					if has_full_set then
+						multiplier = multiplier * (1 + MorrisBuffTweakData.boon_skulls_set_bonus_01.effect_amplify_amount)
+					end
+
+					return multiplier
+				end,
 				max_stacks = MorrisBuffTweakData.boon_skulls_01_data.max_stacks,
 			},
 		},
@@ -458,13 +475,23 @@ DeusPowerUpBuffTemplates = {
 		buffs = {
 			{
 				apply_buff_func = "skulls_event_boon_surge_applied",
-				icon = "grudge_mark_frenzy_debuff",
+				icon = "boon_skulls_01",
 				max_stacks = 1,
 				name = "boon_skulls_01_surge",
 				remove_buff_func = "skulls_event_boon_surge_removed",
 				stat_buff = "attack_speed",
 				duration = MorrisBuffTweakData.boon_skulls_01_data.duration,
-				multiplier = MorrisBuffTweakData.boon_skulls_01_data.attack_speed_on_proc,
+				duration_modifier_func = MorrisBuffTweakData.boon_skulls_set_01_data.duration_modifier_func,
+				multiplier = function (unit, buff_extension)
+					local multiplier = MorrisBuffTweakData.boon_skulls_01_data.attack_speed_on_proc
+					local has_full_set = buff_extension:num_buff_stacks("power_up_boon_skulls_set_bonus_01_event") > 0
+
+					if has_full_set then
+						multiplier = multiplier * (1 + MorrisBuffTweakData.boon_skulls_set_bonus_01.effect_amplify_amount)
+					end
+
+					return multiplier
+				end,
 				refresh_duration_of_buffs_on_apply = skulls_buffs_to_refresh,
 			},
 		},
@@ -472,7 +499,7 @@ DeusPowerUpBuffTemplates = {
 	boon_skulls_02_stack = {
 		buffs = {
 			{
-				icon = "potion_liquid_bravado",
+				icon = "boon_skulls_02",
 				ignore_if_not_local = true,
 				is_cooldown = true,
 				name = "boon_skulls_02_stack",
@@ -483,7 +510,17 @@ DeusPowerUpBuffTemplates = {
 				sync_type = "LocalAndServer",
 				synced_buff_to_add = "boon_skulls_02_surge",
 				duration = MorrisBuffTweakData.boon_skulls_02_data.duration,
-				multiplier = MorrisBuffTweakData.boon_skulls_02_data.power_per_stack,
+				duration_modifier_func = MorrisBuffTweakData.boon_skulls_set_01_data.duration_modifier_func,
+				multiplier = function (unit, buff_extension)
+					local multiplier = MorrisBuffTweakData.boon_skulls_02_data.power_per_stack
+					local has_full_set = buff_extension:num_buff_stacks("power_up_boon_skulls_set_bonus_01_event") > 0
+
+					if has_full_set then
+						multiplier = multiplier * (1 + MorrisBuffTweakData.boon_skulls_set_bonus_01.effect_amplify_amount)
+					end
+
+					return multiplier
+				end,
 				max_stacks = MorrisBuffTweakData.boon_skulls_02_data.max_stacks,
 			},
 		},
@@ -492,12 +529,13 @@ DeusPowerUpBuffTemplates = {
 		buffs = {
 			{
 				apply_buff_func = "skulls_event_boon_surge_applied",
-				icon = "potion_liquid_bravado",
+				icon = "boon_skulls_02",
 				max_stacks = 1,
 				name = "boon_skulls_02_surge",
 				remove_buff_func = "skulls_event_boon_surge_removed",
 				stat_buff = "power_level",
 				duration = MorrisBuffTweakData.boon_skulls_02_data.duration,
+				duration_modifier_func = MorrisBuffTweakData.boon_skulls_set_01_data.duration_modifier_func,
 				multiplier = MorrisBuffTweakData.boon_skulls_02_data.power_on_proc,
 				refresh_duration_of_buffs_on_apply = skulls_buffs_to_refresh,
 			},
@@ -507,14 +545,24 @@ DeusPowerUpBuffTemplates = {
 		buffs = {
 			{
 				apply_buff_func = "skulls_event_boon_surge_applied",
-				icon = "mutator_skulls_cooldown_reduction",
+				icon = "boon_skulls_04",
 				name = "boon_skulls_04_regen",
 				remove_buff_func = "boon_skulls_04_regen_remove",
 				stat_buff = "cooldown_regen",
 				update_frequency = 1,
 				update_func = "boon_skulls_04_regen_update",
-				multiplier = MorrisBuffTweakData.boon_skulls_04_data.proc_cooldown_regen,
 				duration = MorrisBuffTweakData.boon_skulls_04_data.proc_duration,
+				duration_modifier_func = MorrisBuffTweakData.boon_skulls_set_01_data.duration_modifier_func,
+				multiplier = function (unit, buff_extension)
+					local multiplier = MorrisBuffTweakData.boon_skulls_04_data.proc_cooldown_regen
+					local has_full_set = buff_extension:num_buff_stacks("power_up_boon_skulls_set_bonus_01_event") > 0
+
+					if has_full_set then
+						multiplier = multiplier * (1 + MorrisBuffTweakData.boon_skulls_set_bonus_01.effect_amplify_amount)
+					end
+
+					return multiplier
+				end,
 				refresh_duration_of_buffs_on_apply = skulls_buffs_to_refresh,
 			},
 		},
@@ -522,7 +570,7 @@ DeusPowerUpBuffTemplates = {
 	boon_skulls_04_stack = {
 		buffs = {
 			{
-				icon = "mutator_skulls_cooldown_reduction",
+				icon = "boon_skulls_04",
 				is_cooldown = true,
 				name = "boon_skulls_04_stack",
 				max_stacks = MorrisBuffTweakData.boon_skulls_04_data.total_thp_to_consume,
@@ -532,7 +580,7 @@ DeusPowerUpBuffTemplates = {
 	boon_skulls_05_stack = {
 		buffs = {
 			{
-				icon = "bardin_slayer_crit_chance",
+				icon = "boon_skulls_05",
 				ignore_if_not_local = true,
 				is_cooldown = true,
 				name = "boon_skulls_05_stack",
@@ -542,8 +590,18 @@ DeusPowerUpBuffTemplates = {
 				stat_buff = "power_level",
 				sync_type = "LocalAndServer",
 				synced_buff_to_add = "boon_skulls_05_surge",
-				multiplier = MorrisBuffTweakData.boon_skulls_05_data.power_per_stack,
 				duration = MorrisBuffTweakData.boon_skulls_05_data.duration,
+				duration_modifier_func = MorrisBuffTweakData.boon_skulls_set_01_data.duration_modifier_func,
+				multiplier = function (unit, buff_extension)
+					local multiplier = MorrisBuffTweakData.boon_skulls_05_data.power_per_stack
+					local has_full_set = buff_extension:num_buff_stacks("power_up_boon_skulls_set_bonus_01_event") > 0
+
+					if has_full_set then
+						multiplier = multiplier * (1 + MorrisBuffTweakData.boon_skulls_set_bonus_01.effect_amplify_amount)
+					end
+
+					return multiplier
+				end,
 				max_stacks = MorrisBuffTweakData.boon_skulls_05_data.max_stacks,
 			},
 		},
@@ -552,14 +610,24 @@ DeusPowerUpBuffTemplates = {
 		buffs = {
 			{
 				apply_buff_func = "skulls_event_boon_surge_applied",
-				icon = "bardin_slayer_crit_chance",
+				icon = "boon_skulls_05",
 				max_stacks = 1,
 				name = "boon_skulls_05_surge",
 				refresh_durations = true,
 				remove_buff_func = "skulls_event_boon_surge_removed",
 				stat_buff = "power_level",
-				multiplier = MorrisBuffTweakData.boon_skulls_05_data.power_on_proc,
 				duration = MorrisBuffTweakData.boon_skulls_05_data.duration,
+				duration_modifier_func = MorrisBuffTweakData.boon_skulls_set_01_data.duration_modifier_func,
+				multiplier = function (unit, buff_extension)
+					local multiplier = MorrisBuffTweakData.boon_skulls_05_data.power_on_proc
+					local has_full_set = buff_extension:num_buff_stacks("power_up_boon_skulls_set_bonus_01_event") > 0
+
+					if has_full_set then
+						multiplier = multiplier * (1 + MorrisBuffTweakData.boon_skulls_set_bonus_01.effect_amplify_amount)
+					end
+
+					return multiplier
+				end,
 				refresh_duration_of_buffs_on_apply = skulls_buffs_to_refresh,
 			},
 		},
@@ -567,11 +635,20 @@ DeusPowerUpBuffTemplates = {
 	boon_skulls_03_cooldown = {
 		buffs = {
 			{
-				icon = "bardin_slayer_passive_increased_max_stacks",
+				icon = "boon_skulls_03",
 				is_cooldown = true,
 				max_stacks = 1,
 				name = "boon_skulls_03_cooldown",
 				duration = MorrisBuffTweakData.boon_skulls_03_data.cooldown,
+				duration_modifier_func = function (unit, sub_buff_template, duration, buff_extension, params)
+					local has_full_set = buff_extension:num_buff_stacks("power_up_boon_skulls_set_bonus_01_event") > 0
+
+					if has_full_set then
+						duration = duration / (1 + MorrisBuffTweakData.boon_skulls_set_bonus_01.duration_amplify_amount)
+					end
+
+					return duration
+				end,
 				refresh_duration_of_buffs_on_apply = skulls_buffs_to_refresh,
 			},
 		},
@@ -1610,15 +1687,19 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		},
 	},
 	hand_of_shallya = {
-		advanced_description = "description_trait_necklace_heal_self_on_heal_other",
+		advanced_description = "conqueror_desc_3",
 		display_name = "trait_necklace_heal_self_on_heal_other",
 		icon = "necklace_heal_self_on_heal_other",
 		max_amount = 1,
 		buff_template = {
 			buffs = {
 				{
+					buff_func = "heal_other_players_percent_at_range",
 					dormant = true,
-					stat_buff = "heal_self_on_heal_other",
+					event = "on_healed_consumeable",
+					multiplier = 0.2,
+					name = "necklace_heal_share",
+					range = 10,
 				},
 			},
 		},
@@ -2988,7 +3069,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 	boon_skulls_01 = {
 		advanced_description = "description_boon_skulls_01",
 		display_name = "display_name_boon_skulls_01",
-		icon = "grudge_mark_frenzy_debuff",
+		icon = "boon_skulls_01",
 		max_amount = 1,
 		rectangular_icon = true,
 		buff_template = {
@@ -3025,7 +3106,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 	boon_skulls_02 = {
 		advanced_description = "description_boon_skulls_02",
 		display_name = "display_name_boon_skulls_02",
-		icon = "potion_liquid_bravado",
+		icon = "boon_skulls_02",
 		max_amount = 1,
 		rectangular_icon = true,
 		buff_template = {
@@ -3059,7 +3140,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 	boon_skulls_03 = {
 		advanced_description = "description_boon_skulls_03",
 		display_name = "display_name_boon_skulls_03",
-		icon = "bardin_slayer_passive_increased_max_stacks",
+		icon = "boon_skulls_03",
 		max_amount = 1,
 		rectangular_icon = true,
 		buff_template = {
@@ -3083,7 +3164,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 	boon_skulls_04 = {
 		advanced_description = "description_boon_skulls_04",
 		display_name = "display_name_boon_skulls_04",
-		icon = "mutator_skulls_cooldown_reduction",
+		icon = "boon_skulls_04",
 		max_amount = 1,
 		rectangular_icon = true,
 		buff_template = {
@@ -3119,7 +3200,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 	boon_skulls_05 = {
 		advanced_description = "description_boon_skulls_05",
 		display_name = "display_name_boon_skulls_05",
-		icon = "bardin_slayer_crit_chance",
+		icon = "boon_skulls_05",
 		max_amount = 1,
 		rectangular_icon = true,
 		buff_template = {
@@ -3150,6 +3231,132 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			},
 			{
 				value = MorrisBuffTweakData.boon_skulls_05_data.duration,
+			},
+		},
+	},
+	boon_skulls_set_bonus_01 = {
+		advanced_description = "description_boon_skulls_set_bonus_01",
+		display_name = "display_name_boon_skulls_set_bonus_01",
+		icon = "boon_skulls_set_bonus_01",
+		max_amount = 1,
+		rectangular_icon = true,
+		buff_template = {
+			buffs = {
+				{
+					max_stacks = 1,
+					name = "boon_skulls_set_bonus_01",
+				},
+			},
+		},
+		description_values = {
+			{
+				value_type = "percent",
+				value = MorrisBuffTweakData.boon_skulls_set_bonus_01.effect_amplify_amount,
+			},
+			{
+				value_type = "percent",
+				value = MorrisBuffTweakData.boon_skulls_set_bonus_01.duration_amplify_amount,
+			},
+		},
+	},
+	boon_skulls_06 = {
+		advanced_description = "description_boon_skulls_06",
+		display_name = "display_name_boon_skulls_06",
+		icon = "boon_skulls_06",
+		max_amount = 1,
+		rectangular_icon = true,
+		buff_template = {
+			buffs = {
+				{
+					name = "boon_skulls_06",
+					stat_buff = "power_level",
+					multiplier = function (unit, buff_extension)
+						local num_stacks = buff_extension:num_buff_stacks("skulls_2023_buff")
+						local multiplier = MorrisBuffTweakData.boon_skulls_06_data.power_per_stack * num_stacks
+						local has_full_set = buff_extension:num_buff_stacks("power_up_boon_skulls_set_bonus_02_event") > 0
+
+						if has_full_set then
+							multiplier = multiplier * (1 + MorrisBuffTweakData.boon_skulls_set_bonus_02.effect_amplify_amount)
+						end
+
+						return multiplier
+					end,
+				},
+			},
+		},
+		description_values = {
+			{
+				value_type = "percent",
+				value = MorrisBuffTweakData.boon_skulls_06_data.power_per_stack,
+			},
+		},
+	},
+	boon_skulls_07 = {
+		advanced_description = "description_boon_skulls_07",
+		display_name = "display_name_boon_skulls_07",
+		icon = "boon_skulls_07",
+		max_amount = 1,
+		rectangular_icon = true,
+		buff_template = {
+			buffs = {
+				{
+					buff_func = "boon_skulls_07_on_skull_picked_up",
+					event = "on_mutator_skull_picked_up",
+					name = "boon_skulls_07",
+				},
+			},
+		},
+		description_values = {
+			{
+				value = MorrisBuffTweakData.boon_skulls_07.coins_to_gain,
+			},
+		},
+	},
+	boon_skulls_08 = {
+		advanced_description = "description_boon_skulls_08",
+		display_name = "display_name_boon_skulls_08",
+		icon = "boon_skulls_08",
+		max_amount = 1,
+		rectangular_icon = true,
+		buff_template = {
+			buffs = {
+				{
+					authority = "client",
+					buff_func = "boon_skulls_08_on_skull_picked_up",
+					event = "on_mutator_skull_picked_up",
+					name = "boon_skulls_08",
+				},
+			},
+		},
+		description_values = {
+			{
+				value_type = "percent",
+				value = MorrisBuffTweakData.boon_skulls_08.cooldown_to_reduce,
+			},
+		},
+	},
+	boon_skulls_set_bonus_02 = {
+		advanced_description = "description_boon_skulls_set_bonus_02",
+		display_name = "display_name_boon_skulls_set_bonus_02",
+		icon = "boon_skulls_set_bonus_02",
+		max_amount = 1,
+		rectangular_icon = true,
+		buff_template = {
+			buffs = {
+				{
+					max_stacks = 1,
+					name = "boon_skulls_set_bonus_02",
+				},
+			},
+		},
+		description_values = {
+			{
+				value_type = "percent",
+				value = MorrisBuffTweakData.boon_skulls_set_bonus_02.effect_amplify_amount,
+			},
+			{
+				value_type = "percent",
+				value = MorrisBuffTweakData.boon_skulls_set_bonus_02.duration_amplify_amount,
 			},
 		},
 	},
@@ -6663,6 +6870,53 @@ DeusPowerUpRarityPool = DeusPowerUpRarityPool or {
 				"skulls_2023",
 			},
 		},
+		{
+			"boon_skulls_set_bonus_01",
+			{},
+			{
+				"skulls_2023",
+			},
+		},
+		{
+			"boon_skulls_06",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine,
+			},
+			{
+				"skulls_2023",
+			},
+		},
+		{
+			"boon_skulls_07",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine,
+			},
+			{
+				"skulls_2023",
+			},
+		},
+		{
+			"boon_skulls_08",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine,
+			},
+			{
+				"skulls_2023",
+			},
+		},
+		{
+			"boon_skulls_set_bonus_02",
+			{},
+			{
+				"skulls_2023",
+			},
+		},
 	},
 }
 DeusPowerUpSets = {
@@ -6692,8 +6946,7 @@ DeusPowerUpSets = {
 	},
 	{
 		completed_sfx = "hud_morris_boon_set_completed",
-		num_required_pieces = 3,
-		progress_sfx = "hud_morris_boon_set_drone_layer",
+		progress_sfx = "hud_morris_boon_set_crit_layer",
 		pieces = {
 			{
 				name = "boonset_drone_part1",
@@ -6719,36 +6972,68 @@ DeusPowerUpSets = {
 			},
 		},
 	},
+	{
+		completed_sfx = "hud_morris_boon_set_completed",
+		progress_sfx = "hud_morris_boon_set_skulls2025_01_layer",
+		pieces = {
+			{
+				name = "boon_skulls_01",
+				rarity = "event",
+			},
+			{
+				name = "boon_skulls_02",
+				rarity = "event",
+			},
+			{
+				name = "boon_skulls_03",
+				rarity = "event",
+			},
+			{
+				name = "boon_skulls_04",
+				rarity = "event",
+			},
+			{
+				name = "boon_skulls_05",
+				rarity = "event",
+			},
+		},
+		rewards = {
+			{
+				name = "boon_skulls_set_bonus_01",
+				rarity = "event",
+			},
+		},
+	},
+	{
+		completed_sfx = "hud_morris_boon_set_completed",
+		progress_sfx = "hud_morris_boon_set_skulls2025_02_layer",
+		pieces = {
+			{
+				name = "boon_skulls_06",
+				rarity = "event",
+			},
+			{
+				name = "boon_skulls_07",
+				rarity = "event",
+			},
+			{
+				name = "boon_skulls_08",
+				rarity = "event",
+			},
+		},
+		rewards = {
+			{
+				name = "boon_skulls_set_bonus_02",
+				rarity = "event",
+			},
+		},
+	},
 }
 DeusPowerUpRarities = DeusPowerUpRarities or {
 	"event",
 	"rare",
 	"exotic",
 	"unique",
-}
-DeusPowerUpRarityWeights = DeusPowerUpRarityWeights or {
-	default = {
-		event = {
-			60,
-			60,
-			60,
-		},
-		rare = {
-			60,
-			60,
-			60,
-		},
-		exotic = {
-			30,
-			30,
-			30,
-		},
-		unique = {
-			10,
-			10,
-			10,
-		},
-	},
 }
 DeusPowerUpTalentLookup = {}
 
@@ -6799,33 +7084,15 @@ end
 
 assert(is_valid, error_message)
 
-DeusPowerUpRarityChance = DeusPowerUpRarityChance or {}
 DeusPowerUps = DeusPowerUps or {}
 DeusPowerUpsArray = DeusPowerUpsArray or {}
+DeusPowerUpsArrayByRarity = table.select_map(table.set(DeusPowerUpRarities), function (_, rarity)
+	return {}
+end)
 DeusPowerUpSetLookup = table.select_map(table.set(DeusPowerUpRarities), function (_, rarity)
 	return {}
 end)
 DeusPowerUpsLookup = {}
-
-for difficulty, config in pairs(DeusPowerUpRarityWeights) do
-	local normalized_config = {}
-	local count = #config.rare
-
-	for i = 1, count do
-		local weight_sum = 0
-
-		for _, weights in pairs(config) do
-			weight_sum = weight_sum + weights[i]
-		end
-
-		for rarity, weights in pairs(config) do
-			normalized_config[rarity] = normalized_config[rarity] or {}
-			normalized_config[rarity][i] = weights[i] / weight_sum
-		end
-	end
-
-	DeusPowerUpRarityChance[difficulty] = normalized_config
-end
 
 for career_name, incompatibility_list in pairs(DeusPowerUpIncompatibilityPairs) do
 	for _, pair in ipairs(incompatibility_list) do
@@ -6853,42 +7120,33 @@ end
 
 for rarity, power_up_configs in pairs(DeusPowerUpRarityPool) do
 	DeusPowerUps[rarity] = {}
-	DeusPowerUpsArray[rarity] = {}
 
 	for _, power_up_config in ipairs(power_up_configs) do
 		local power_up_name = power_up_config[1]
 		local availability = power_up_config[2]
 		local mutators = power_up_config[3]
 		local template = DeusPowerUpTemplates[power_up_name]
-		local new_power_up
+		local new_power_up = Script.new_map(13)
+
+		new_power_up.name = power_up_name
+		new_power_up.rarity = rarity
+		new_power_up.mutators = mutators
+		new_power_up.availability = availability
+		new_power_up.max_amount = template.max_amount or 1
+		new_power_up.incompatibility = template.incompatibility
+		new_power_up.weight = template.weight or DeusPowerUpSettings.weight_by_rarity[rarity]
 
 		if template.talent then
-			new_power_up = {
-				talent = true,
-				name = power_up_name,
-				talent_tier = template.talent_tier,
-				talent_index = template.talent_index,
-				rarity = rarity,
-				max_amount = template.max_amount or 1,
-				availability = availability,
-				mutators = mutators,
-				incompatibility = template.incompatibility,
-			}
+			new_power_up.talent = true
+			new_power_up.talent_tier = template.talent_tier
+			new_power_up.talent_index = template.talent_index
 		else
-			new_power_up = {
-				display_name = template.display_name,
-				plain_display_name = template.plain_display_name,
-				name = power_up_name,
-				rarity = rarity,
-				buff_name = "power_up_" .. power_up_name .. "_" .. rarity,
-				max_amount = template.max_amount or 1,
-				advanced_description = template.advanced_description,
-				description_values = template.description_values,
-				icon = template.icon,
-				availability = availability,
-				mutators = mutators,
-				incompatibility = template.incompatibility,
-			}
+			new_power_up.display_name = template.display_name
+			new_power_up.plain_display_name = template.plain_display_name
+			new_power_up.buff_name = "power_up_" .. power_up_name .. "_" .. rarity
+			new_power_up.advanced_description = template.advanced_description
+			new_power_up.description_values = template.description_values
+			new_power_up.icon = template.icon
 
 			local buff_template = table.clone(template.buff_template)
 			local tweak_data = MorrisBuffTweakData[power_up_name]
@@ -6905,9 +7163,12 @@ for rarity, power_up_configs in pairs(DeusPowerUpRarityPool) do
 
 		DeusPowerUps[rarity][power_up_name] = new_power_up
 
-		table.insert(DeusPowerUpsArray[rarity], new_power_up)
+		table.insert(DeusPowerUpsArray, new_power_up)
 
-		DeusPowerUps[rarity][power_up_name].id = #DeusPowerUpsArray[rarity]
+		DeusPowerUps[rarity][power_up_name].id = #DeusPowerUpsArray
+
+		table.insert(DeusPowerUpsArrayByRarity[rarity], new_power_up)
+
 		DeusPowerUps[rarity][power_up_name].lookup_id = #DeusPowerUpsLookup + 1
 		DeusPowerUpsLookup[#DeusPowerUpsLookup + 1] = new_power_up
 		DeusPowerUpsLookup[power_up_name] = new_power_up

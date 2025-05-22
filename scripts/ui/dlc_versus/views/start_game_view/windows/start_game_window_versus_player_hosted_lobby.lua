@@ -3,6 +3,7 @@
 local definitions = local_require("scripts/ui/dlc_versus/views/start_game_view/windows/definitions/start_game_window_versus_player_hosted_lobby_definitions")
 local animation_definitions = definitions.animation_definitions
 local scenegraph_definition = definitions.scenegraph_definition
+local ReservationHandlerTypes = require("scripts/managers/game_mode/mechanisms/reservation_handler_types")
 local NUM_TEAMS = 2
 local TEAMS_SIZE = 4
 local TRANSPARENT_TEXTURE = "gui/1080p/single_textures/generic/transparent_placeholder_texture"
@@ -184,7 +185,8 @@ StartGameWindowVersusPlayerHostedLobby.update = function (self, dt, t)
 
 	self:_draw(dt)
 
-	local has_slot_reservation_handler = Managers.mechanism:mechanism_try_call("get_slot_reservation_handler")
+	local match_owner = Managers.mechanism:network_handler():get_match_handler():get_match_owner()
+	local has_slot_reservation_handler = Managers.mechanism:mechanism_try_call("get_all_reservation_handlers_by_owner", match_owner)
 
 	self._is_loading = not has_slot_reservation_handler or not self._matchmaking_manager:is_in_versus_custom_game_lobby()
 end
@@ -220,8 +222,10 @@ StartGameWindowVersusPlayerHostedLobby._update_can_play = function (self)
 	local is_player_hosting = self._matchmaking_manager:is_player_hosting()
 
 	if is_player_hosting then
+		local match_handler = self._match_handler
+		local match_owner = match_handler:get_match_owner()
 		local game_mechanism = Managers.mechanism:game_mechanism()
-		local slot_reservation_handler = game_mechanism:get_slot_reservation_handler()
+		local slot_reservation_handler = game_mechanism:get_slot_reservation_handler(match_owner, ReservationHandlerTypes.pending_custom_game) or game_mechanism:get_slot_reservation_handler(match_owner, ReservationHandlerTypes.session)
 		local all_teams_have_members = slot_reservation_handler:all_teams_have_members()
 
 		if not all_teams_have_members then
@@ -301,8 +305,10 @@ end
 StartGameWindowVersusPlayerHostedLobby._handle_input = function (self, t)
 	local input_service = self._parent:window_input_service()
 	local matchmaking_manager = self._matchmaking_manager
+	local match_handler = self._match_handler
+	local match_owner = match_handler:get_match_owner()
 	local game_mechanism = Managers.mechanism:game_mechanism()
-	local slot_reservation_handler = game_mechanism:get_slot_reservation_handler()
+	local slot_reservation_handler = game_mechanism:get_slot_reservation_handler(match_owner, ReservationHandlerTypes.pending_custom_game) or game_mechanism:get_slot_reservation_handler(match_owner, ReservationHandlerTypes.session)
 	local all_teams_have_members = slot_reservation_handler:all_teams_have_members() or Development.parameter("allow_versus_force_start_single_player")
 	local widget = self._widgets_by_name.force_start_button
 
@@ -508,7 +514,9 @@ end
 StartGameWindowVersusPlayerHostedLobby._update_custom_lobby_slots = function (self)
 	local has_changes = false
 	local match_handler = self._match_handler
-	local slot_reservation_handler = Managers.mechanism:get_slot_reservation_handler()
+	local match_owner = match_handler:get_match_owner()
+	local game_mechanism = Managers.mechanism:game_mechanism()
+	local slot_reservation_handler = game_mechanism:get_slot_reservation_handler(match_owner, ReservationHandlerTypes.pending_custom_game) or game_mechanism:get_slot_reservation_handler(match_owner, ReservationHandlerTypes.session)
 	local no_join_sound = false
 
 	for peer_id, slot_data in pairs(self._player_slots_by_peer_id) do
@@ -709,9 +717,10 @@ StartGameWindowVersusPlayerHostedLobby._handle_gamepad_input = function (self, d
 
 	local parent = self._parent
 	local input_service = parent:window_input_service()
-	local matchmaking_manager = self._matchmaking_manager
 	local game_mechanism = Managers.mechanism:game_mechanism()
-	local slot_reservation_handler = game_mechanism:get_slot_reservation_handler()
+	local match_handler = self._match_handler
+	local match_owner = match_handler:get_match_owner()
+	local slot_reservation_handler = game_mechanism:get_slot_reservation_handler(match_owner, ReservationHandlerTypes.pending_custom_game) or game_mechanism:get_slot_reservation_handler(match_owner, ReservationHandlerTypes.session)
 	local selected_row = self._selected_row or 1
 	local selected_column = self._selected_column or 1
 	local mission_selection_widget = self._widgets_by_name.mission_setting
@@ -892,6 +901,10 @@ StartGameWindowVersusPlayerHostedLobby._update_server_name = function (self)
 	if not is_match_host then
 		local custom_server_name = lobby and lobby:lobby_data("custom_server_name") or ""
 
+		if custom_server_name == "n/a" then
+			custom_server_name = Localize("lb_game_type_versus_custom_game")
+		end
+
 		input.text = custom_server_name
 		input.default_text = ""
 
@@ -906,8 +919,10 @@ StartGameWindowVersusPlayerHostedLobby._update_server_name = function (self)
 		if escape_pressed or enter_pressed then
 			local lobby_data = lobby:get_stored_lobby_data()
 
+			input.text = cjson.decode(cjson.encode(input.text))
+
 			if not string.find(input.text, "%S") then
-				input.text = LobbyAux.get_unique_server_name()
+				input.text = ""
 			end
 
 			lobby_data.custom_server_name = input.text

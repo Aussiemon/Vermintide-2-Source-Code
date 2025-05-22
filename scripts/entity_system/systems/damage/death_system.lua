@@ -274,6 +274,7 @@ DeathSystem._create_dummy_killing_blow = function (self, unit, damage_type)
 	killing_blow[DamageDataIndex.TOTAL_HITS] = 1
 	killing_blow[DamageDataIndex.ATTACK_TYPE] = "n/a"
 	killing_blow[DamageDataIndex.BACKSTAB_MULTIPLIER] = 1
+	killing_blow[DamageDataIndex.TARGET_INDEX] = 1
 
 	return killing_blow
 end

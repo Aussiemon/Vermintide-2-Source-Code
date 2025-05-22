@@ -204,6 +204,10 @@ AnimationSystem._init_networked_variables = function (self, unit, event_name)
 
 	local networked_anim_vars = self._networked_animation_variables
 
+	if networked_anim_vars[unit] then
+		table.clear(networked_anim_vars[unit].updates)
+	end
+
 	for variable_name, data in pairs(variable_datas) do
 		local scratchpad = {
 			variable_name = variable_name,

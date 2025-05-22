@@ -680,3 +680,7 @@ EacManager.draw_panel = function (self, gui, dt)
 		line_pos.y = line_pos.y + line_height
 	end
 end
+
+EacManager.eac_ready_locally = function (self)
+	return not not self._local_role
+end

@@ -24,6 +24,7 @@ local RPCS = {
 	"rpc_deus_chest_unlocked",
 	"rpc_deus_soft_currency_picked_up",
 	"rpc_deus_grant_end_of_level_power_ups",
+	"rpc_deus_remove_power_up",
 }
 local REAL_PLAYER_LOCAL_ID = 1
 local DISCOUNT_CONVERSION_EPSILON = 10000
@@ -425,7 +426,7 @@ DeusRunController.rpc_deus_grant_end_of_level_power_ups = function (self, sender
 
 	table.append(existing_power_ups, new_power_ups)
 
-	local new_power_ups_string = DeusPowerUpUtils.power_ups_to_string(new_power_ups)
+	local new_power_ups_string = DeusPowerUpUtils.power_ups_to_encoded_string(new_power_ups)
 	local server_peer_id = self._run_state:get_server_peer_id()
 	local server_channel_id = PEER_ID_TO_CHANNEL[server_peer_id]
 	local granted_by_end_of_level_node_key = node_key
@@ -820,6 +821,10 @@ DeusRunController.get_server_peer_id = function (self)
 	return self._run_state:get_server_peer_id()
 end
 
+DeusRunController.get_own_initial_talents = function (self)
+	return self._run_state:get_own_initial_talents()
+end
+
 DeusRunController.get_peers = function (self)
 	return self._network_handler:get_peers()
 end
@@ -939,6 +944,10 @@ DeusRunController._add_soft_currency_to_peer = function (self, peer_id, amount)
 
 	self._run_state:set_player_soft_currency(peer_id, REAL_PLAYER_LOCAL_ID, new_coins)
 	self:_add_coin_tracking_entry(peer_id, REAL_PLAYER_LOCAL_ID, amount, "add coins")
+end
+
+DeusRunController.grant_soft_currency = function (self, peer_id, amount)
+	self:_add_soft_currency_to_peer(peer_id, amount)
 end
 
 DeusRunController.get_shop_heal_data = function (self)
@@ -1132,7 +1141,7 @@ DeusRunController.add_power_ups = function (self, new_power_ups, local_player_id
 	self._run_state:set_player_power_ups(local_peer_id, local_player_id, profile_index, career_index, power_ups)
 
 	if not self._run_state:is_server() then
-		local new_power_ups_string = DeusPowerUpUtils.power_ups_to_string(new_power_ups)
+		local new_power_ups_string = DeusPowerUpUtils.power_ups_to_encoded_string(new_power_ups)
 		local server_peer_id = self._run_state:get_server_peer_id()
 		local server_channel_id = PEER_ID_TO_CHANNEL[server_peer_id]
 		local granted_by_end_of_level_node_key = ""
@@ -1183,6 +1192,70 @@ DeusRunController.add_power_ups = function (self, new_power_ups, local_player_id
 	end
 end
 
+DeusRunController.remove_power_ups = function (self, power_up_name, local_player_id)
+	fassert(local_player_id, "[DeusRunController:remove_power_ups] Invalid local_player_id")
+
+	local local_peer_id = self._run_state:get_own_peer_id()
+	local profile_index, career_index = self._run_state:get_player_profile(local_peer_id, local_player_id)
+	local power_ups = self._run_state:get_player_power_ups(local_peer_id, local_player_id, profile_index, career_index)
+	local power_up_id = NetworkLookup.deus_power_up_templates[power_up_name]
+	local skip_metatable = true
+
+	power_ups = table.clone(power_ups, skip_metatable)
+
+	local to_remove_idx = -1
+
+	for i = 1, #power_ups do
+		local power_up = power_ups[i]
+		local name = power_up.name
+
+		if name == power_up_name then
+			to_remove_idx = i
+
+			break
+		end
+	end
+
+	if to_remove_idx ~= -1 then
+		local player = Managers.player:player(local_peer_id, local_player_id)
+
+		if player then
+			local buff_extension = ScriptUnit.has_extension(player.player_unit, "buff_system")
+
+			if buff_extension then
+				local power_up_instance = power_ups[to_remove_idx]
+
+				if power_up_instance then
+					local power_up = DeusPowerUps[power_up_instance.rarity][power_up_instance.name]
+
+					if power_up then
+						local buff = buff_extension:get_buff_type(power_up.buff_name)
+						local id = buff and buff.id
+
+						if id then
+							buff_extension:remove_buff(id)
+						end
+					end
+				end
+			end
+		end
+
+		if self._run_state:is_server() then
+			table.swap_delete(power_ups, to_remove_idx)
+			self._run_state:set_player_power_ups(local_peer_id, local_player_id, profile_index, career_index, power_ups)
+		else
+			local server_peer_id = self._run_state:get_server_peer_id()
+			local server_channel_id = PEER_ID_TO_CHANNEL[server_peer_id]
+
+			RPC.rpc_deus_remove_power_up(server_channel_id, power_up_id)
+		end
+
+		return true
+	else
+		return false
+	end
+end
+
 DeusRunController._check_set_completed = function (self, added_power_up, present, local_peer_id, local_player_id)
 	local related_sets = DeusPowerUpSetLookup[added_power_up.rarity] and DeusPowerUpSetLookup[added_power_up.rarity][added_power_up.name]
 
@@ -1212,10 +1285,14 @@ DeusRunController._check_set_completed = function (self, added_power_up, present
 
 			if num_set_pieces == num_required_pieces then
 				local reward_power_ups = table.select_array(set.rewards, function (_, reward)
-					return DeusPowerUpUtils.generate_specific_power_up(reward.name, reward.rarity)
+					if not self:has_power_up_by_name(local_peer_id, reward.name, reward.rarity) then
+						return DeusPowerUpUtils.generate_specific_power_up(reward.name, reward.rarity)
+					end
 				end)
 
-				self:add_power_ups(reward_power_ups, local_player_id, present)
+				if not table.is_empty(reward_power_ups) then
+					self:add_power_ups(reward_power_ups, local_player_id, present)
+				end
 			end
 		until true
 	end
@@ -1253,7 +1330,7 @@ DeusRunController.try_grant_end_of_level_deus_power_ups = function (self)
 		self._run_state:set_granted_non_party_end_of_level_power_ups(local_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, granted_non_party_end_of_level_power_ups)
 
 		if not self._run_state:is_server() then
-			local new_power_ups_string = DeusPowerUpUtils.power_ups_to_string(new_power_ups)
+			local new_power_ups_string = DeusPowerUpUtils.power_ups_to_encoded_string(new_power_ups)
 			local server_peer_id = self._run_state:get_server_peer_id()
 			local server_channel_id = PEER_ID_TO_CHANNEL[server_peer_id]
 			local granted_by_end_of_level_node_key = current_node_key
@@ -1298,9 +1375,9 @@ DeusRunController.has_own_seen_arena_belakor_node = function (self)
 	return self._run_state:get_seen_arena_belakor_node(local_peer_id)
 end
 
-DeusRunController.rpc_deus_add_power_ups = function (self, sender_channel_id, power_ups_string, granted_by_end_of_level_node_key)
+DeusRunController.rpc_deus_add_power_ups = function (self, sender_channel_id, encoded_power_ups_string, granted_by_end_of_level_node_key)
 	local sender = CHANNEL_TO_PEER_ID[sender_channel_id]
-	local new_power_ups = DeusPowerUpUtils.string_to_power_ups(power_ups_string)
+	local new_power_ups = DeusPowerUpUtils.encoded_string_to_power_ups(encoded_power_ups_string)
 	local profile_index, career_index = self._run_state:get_player_profile(sender, REAL_PLAYER_LOCAL_ID)
 	local power_ups = self._run_state:get_player_power_ups(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index)
 	local skip_metatable = true
@@ -1328,6 +1405,55 @@ DeusRunController.rpc_deus_add_power_ups = function (self, sender_channel_id, po
 			buff_extension:trigger_procs("on_boon_granted")
 		end
 	end
+end
+
+DeusRunController.rpc_deus_remove_power_up = function (self, sender_channel_id, power_up_id)
+	local sender = CHANNEL_TO_PEER_ID[sender_channel_id]
+	local profile_index, career_index = self._run_state:get_player_profile(sender, REAL_PLAYER_LOCAL_ID)
+	local power_ups = self._run_state:get_player_power_ups(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index)
+	local power_up_name = NetworkLookup.deus_power_up_templates[power_up_id]
+	local skip_metatable = true
+
+	power_ups = table.clone(power_ups, skip_metatable)
+
+	local to_remove_idx = -1
+
+	for i = 1, #power_ups do
+		local power_up = power_ups[i]
+		local name = power_up.name
+
+		if name == power_up_name then
+			to_remove_idx = i
+
+			break
+		end
+	end
+
+	local player = Managers.player:player(sender, REAL_PLAYER_LOCAL_ID)
+
+	if player then
+		local buff_extension = ScriptUnit.has_extension(player.player_unit, "buff_system")
+
+		if buff_extension then
+			local power_up_instance = power_ups[to_remove_idx]
+
+			if power_up_instance then
+				local power_up = DeusPowerUps[power_up_instance.rarity][power_up_instance.name]
+
+				if power_up then
+					local buff = buff_extension:get_buff_type(power_up.buff_name)
+					local id = buff and buff.id
+
+					if id then
+						buff_extension:remove_buff(id)
+					end
+				end
+			end
+		end
+	end
+
+	table.swap_delete(power_ups, to_remove_idx)
+	self._run_state:set_player_power_ups(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index, power_ups)
 end
 
 DeusRunController.get_blessings = function (self)

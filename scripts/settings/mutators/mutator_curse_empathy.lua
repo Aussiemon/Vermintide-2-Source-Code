@@ -350,7 +350,7 @@ return {
 				local hit_position = Vector3.up()
 				local damage_dir = Vector3.up()
 
-				DamageUtils.add_damage_network(unit, damaging_unit, damage_data.damage, hit_zone_name, CURSE_DAMAGE_TYPE, hit_position, damage_dir)
+				DamageUtils.add_damage_network(unit, damaging_unit, damage_data.damage, hit_zone_name, CURSE_DAMAGE_TYPE, hit_position, damage_dir, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 			end
 
 			data.damage_buffer[unit] = nil

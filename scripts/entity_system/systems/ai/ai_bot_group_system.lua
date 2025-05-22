@@ -106,6 +106,7 @@ AIBotGroupSystem.init = function (self, context, system_name)
 
 		self._urgent_targets = {}
 		self._ally_needs_aid_priority = {}
+		self._timestamped_positions = {}
 		self._disallowed_tag_layers = {
 			barrel_explosion = true,
 			bot_poison_wind = true,
@@ -590,6 +591,35 @@ AIBotGroupSystem._update_existence_checks = function (self, dt, t)
 	end
 end
 
+local POSITION_TIMESTAMP_UPDATE_RADIUS = 1
+local AFK_TIME_LIMIT = 20
+
+AIBotGroupSystem._update_player_timestamped_positions = function (self, t, player_units)
+	for i = 1, #player_units do
+		local player_unit = player_units[i]
+		local timestamp_data = self._timestamped_positions[player_unit]
+		local unit_pos = POSITION_LOOKUP[player_unit]
+
+		if timestamp_data and unit_pos then
+			if Vector3.distance_squared(timestamp_data.position:unbox(), unit_pos) > POSITION_TIMESTAMP_UPDATE_RADIUS^2 then
+				timestamp_data.position = Vector3Box(unit_pos)
+				timestamp_data.timestamp = t
+				timestamp_data.afk = false
+			elseif t > timestamp_data.timestamp + AFK_TIME_LIMIT then
+				timestamp_data.afk = true
+			end
+
+			self._timestamped_positions[player_unit] = timestamp_data
+		elseif unit_pos then
+			self._timestamped_positions[player_unit] = {
+				afk = false,
+				position = Vector3Box(unit_pos),
+				timestamp = t,
+			}
+		end
+	end
+end
+
 AIBotGroupSystem._update_move_targets = function (self, dt, t)
 	local side_manager = Managers.state.side
 	local nav_world = Managers.state.entity:system("ai_system"):nav_world()
@@ -630,6 +660,8 @@ AIBotGroupSystem._update_move_targets = function (self, dt, t)
 				TEMP_DISABLED_PLAYER_UNITS = tmp
 				num_units = num_disabled_units
 			end
+
+			self:_update_player_timestamped_positions(t, TEMP_PLAYER_UNITS)
 
 			local selected_unit
 			local side_num_bots = num_bots[side_id]
@@ -749,10 +781,22 @@ local CLOSEST_TARGET_PREVIOUS_TARGET_STICKINESS = 9
 AIBotGroupSystem._find_closest_move_target = function (self, targets, last_target, position)
 	local closest_index
 	local closest_value = math.huge
-	local num_targets = #targets
+	local active_targets = {}
 
-	for i = 1, num_targets do
+	for i = 1, #targets do
 		local unit = targets[i]
+
+		if self._timestamped_positions[unit] and not self._timestamped_positions[unit].afk then
+			active_targets[#active_targets + 1] = unit
+		end
+	end
+
+	if #active_targets == 0 then
+		active_targets = targets
+	end
+
+	for i = 1, #active_targets do
+		local unit = active_targets[i]
 		local dist_sq = Vector3.distance_squared(position, POSITION_LOOKUP[unit])
 
 		if unit == last_target then
@@ -765,7 +809,7 @@ AIBotGroupSystem._find_closest_move_target = function (self, targets, last_targe
 		end
 	end
 
-	return targets[closest_index]
+	return active_targets[closest_index]
 end
 
 local LONELINESS_PREVIOUS_TARGET_STICKINESS = 25

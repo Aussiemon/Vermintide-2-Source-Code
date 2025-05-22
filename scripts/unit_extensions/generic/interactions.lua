@@ -1153,7 +1153,7 @@ InteractionDefinitions.pickup_object = {
 						local mission_name_id = NetworkLookup.mission_names[mission_name]
 						local network_transmit = network_manager.network_transmit
 
-						network_transmit:send_rpc_server("rpc_request_mission", mission_name_id)
+						network_transmit:send_rpc_server("rpc_request_mission", mission_name_id, false)
 						network_transmit:send_rpc_server("rpc_request_mission_update", mission_name_id, true)
 					end
 
@@ -1248,7 +1248,7 @@ InteractionDefinitions.pickup_object = {
 								local limited_item_extension = ScriptUnit.extension(interactable_unit, "limited_item_track_system")
 								local id = limited_item_extension.id
 								local spawner_unit = limited_item_extension.spawner_unit
-								local spawner_unit_id = Managers.state.network:level_object_id(spawner_unit)
+								local spawner_unit_id = spawner_unit and Managers.state.network:level_object_id(spawner_unit) or NetworkConstants.invalid_game_object_id
 
 								if data.is_server then
 									network_manager.network_transmit:send_rpc_clients("rpc_add_equipment_limited_item", unit_object_id, slot_id, item_id, spawner_unit_id, id)
@@ -1289,6 +1289,7 @@ InteractionDefinitions.pickup_object = {
 									heal = true,
 									health_degen = true,
 									kinetic = true,
+									life_tap = true,
 									temporary_health_degen = true,
 									vomit_face = true,
 									vomit_ground = true,
@@ -1336,7 +1337,7 @@ InteractionDefinitions.pickup_object = {
 									local limited_item_extension = ScriptUnit.extension(interactable_unit, "limited_item_track_system")
 									local id = limited_item_extension.id
 									local spawner_unit = limited_item_extension.spawner_unit
-									local spawner_unit_id = Managers.state.network:level_object_id(spawner_unit)
+									local spawner_unit_id = spawner_unit and Managers.state.network:level_object_id(spawner_unit) or NetworkConstants.invalid_game_object_id
 
 									network_manager.network_transmit:send_rpc_clients("rpc_add_equipment_limited_item", unit_object_id, slot_id, item_id, spawner_unit_id, id)
 								else
@@ -1346,7 +1347,7 @@ InteractionDefinitions.pickup_object = {
 								local limited_item_extension = ScriptUnit.extension(interactable_unit, "limited_item_track_system")
 								local id = limited_item_extension.id
 								local spawner_unit = limited_item_extension.spawner_unit
-								local spawner_unit_id = Managers.state.network:level_object_id(spawner_unit)
+								local spawner_unit_id = spawner_unit and Managers.state.network:level_object_id(spawner_unit) or NetworkConstants.invalid_game_object_id
 
 								network_manager.network_transmit:send_rpc_server("rpc_add_equipment_limited_item", unit_object_id, slot_id, item_id, spawner_unit_id, id)
 							else
@@ -2755,6 +2756,44 @@ InteractionDefinitions.deus_door_transition.client.can_interact = function (inte
 	local is_vote_in_progress = Managers.state.voting:vote_in_progress()
 
 	return not is_game_matchmaking and not is_vote_in_progress
+end
+
+InteractionDefinitions.active_event = InteractionDefinitions.active_event or table.clone(InteractionDefinitions.smartobject)
+InteractionDefinitions.active_event.config.swap_to_3p = false
+
+InteractionDefinitions.active_event.client.stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
+	data.start_time = nil
+
+	if result == InteractionResult.SUCCESS and not data.is_husk then
+		local live_events_interface = Managers.backend:get_interface("live_events")
+		local live_events = live_events_interface and live_events_interface:get_active_events()
+		local event_name = "default_event"
+
+		if live_events then
+			for i = 1, #live_events do
+				local live_event = live_events[i]
+
+				if CommonPopupSettings[live_event] then
+					event_name = live_event
+
+					break
+				end
+			end
+		end
+
+		Managers.state.event:trigger("ui_show_popup", event_name, "active_event")
+	end
+end
+
+InteractionDefinitions.active_event.client.can_interact = function (interactor_unit, interactable_unit, data, config)
+	local live_events_interface = Managers.backend:get_interface("live_events")
+	local live_events = live_events_interface and live_events_interface:get_active_events()
+
+	return live_events and #live_events ~= 0
+end
+
+InteractionDefinitions.active_event.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
+	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), "interaction_action_open"
 end
 
 DLCUtils.require_list("interactions_filenames")

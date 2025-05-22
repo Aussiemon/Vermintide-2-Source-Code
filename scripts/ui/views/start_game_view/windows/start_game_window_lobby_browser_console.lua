@@ -615,12 +615,12 @@ StartGameWindowLobbyBrowserConsole.is_lobby_joinable = function (self, lobby_dat
 	local profile_name = self._profile_name
 	local career_name = self._career_name
 	local required_dlcs = {}
-	local quick_game = lobby_data.quick_game == "true"
+	local weave_quick_game = lobby_data.weave_quick_game == "true"
 	local mechanism_settings = MechanismSettings[mechanism]
 	local difficulty_lock_reason
 
 	if mechanism == "weave" then
-		if mission_id ~= "false" and not quick_game then
+		if mission_id ~= "false" and not weave_quick_game then
 			local weave_name = mission_id
 			local ignore_dlc_check = false
 			local weave_unlocked = LevelUnlockUtils.weave_unlocked(statistics_db, player_stats_id, weave_name, ignore_dlc_check) or weave_name == self._current_weave
@@ -653,7 +653,7 @@ StartGameWindowLobbyBrowserConsole.is_lobby_joinable = function (self, lobby_dat
 			end
 		end
 	elseif mechanism == "versus" then
-		if not quick_game and Managers.mechanism:current_mechanism_name() ~= "versus" then
+		if Managers.mechanism:current_mechanism_name() ~= "versus" then
 			return false, "vs_player_hosted_lobby_wrong_mechanism_error"
 		end
 	else

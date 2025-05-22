@@ -1515,7 +1515,10 @@ CharacterSelectionStateVersusLoadouts._populate_career_info = function (self)
 		content.visible = data ~= nil
 	end
 
-	self:_setup_additional_career_info(career_settings)
+	local PERK_TEXT_AREA = 240
+	local base_excess = math.max(total_perks_height - PERK_TEXT_AREA, 0)
+
+	self:_setup_additional_career_info(career_settings, base_excess)
 
 	local video = career_settings.video
 	local material_name = video.material_name

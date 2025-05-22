@@ -3690,7 +3690,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 	local host_name = IS_WINDOWS and (lobby_data.unique_server_name or lobby_data.host) or lobby_data.name or "UNKNOWN"
 	local lobby_name = host_name
 
-	if lobby_data.custom_server_name and lobby_data.custom_server_name ~= "n/a" then
+	if lobby_data.custom_server_name and lobby_data.custom_server_name ~= "n/a" and lobby_data.custom_server_name ~= "" then
 		lobby_name = string.format("%s: %s", host_name, lobby_data.custom_server_name)
 	end
 
@@ -3721,7 +3721,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 			local level_settings = LevelSettings[selected_mission_id]
 
 			selected_level_name = Localize(level_settings.display_name or "UNKNOWN")
-		elseif lobby_data.quick_game == "true" then
+		elseif lobby_data.weave_quick_game == "true" then
 			selected_level_name = weave_template and Localize(weave_template.display_name) or Localize("start_game_window_weave_quickplay_title")
 		else
 			selected_level_name = weave_index .. ". " .. Localize(weave_template.display_name)

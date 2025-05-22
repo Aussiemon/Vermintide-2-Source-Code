@@ -682,9 +682,16 @@ GameModeDeus.mutators = function (self)
 	return mutators_list
 end
 
-GameModeDeus.on_picked_up_soft_currency = function (self, interactable_unit, interactor_unit)
+GameModeDeus.on_picked_up_soft_currency = function (self, interactable_unit, interactor_unit, override_amount, override_type)
 	local deus_run_controller = self._deus_run_controller
-	local granted_coins_amount, type = self:_get_coins_amount_and_type(interactable_unit)
+	local granted_coins_amount, type
+
+	if override_amount then
+		granted_coins_amount, type = override_amount, override_type or DeusSoftCurrencySettings.types.GROUND
+	else
+		granted_coins_amount, type = self:_get_coins_amount_and_type(interactable_unit)
+	end
+
 	local player_manager = Managers.player
 	local interactor_player = player_manager:unit_owner(interactor_unit)
 

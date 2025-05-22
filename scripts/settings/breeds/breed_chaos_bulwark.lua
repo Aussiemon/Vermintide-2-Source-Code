@@ -189,6 +189,12 @@ local breed_data = {
 	stagger_reduction = BreedTweaks.stagger_reduction.warrior,
 	diff_stagger_resist = BreedTweaks.diff_stagger_resist.warrior,
 	stagger_duration = BreedTweaks.stagger_duration.warrior,
+	status_effect_settings = {
+		category = "medium",
+		ignored_statuses = table.set({
+			StatusEffectNames.burning_warpfire,
+		}),
+	},
 	debug_color = {
 		255,
 		200,

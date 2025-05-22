@@ -852,6 +852,35 @@ PickupSystem._spawn_specified_pickups = function (self)
 	end
 end
 
+PickupSystem._safe_to_spawn_pickup = function (self, pickup_name)
+	local pickup_setting = AllPickups[pickup_name]
+	local unit_name = pickup_setting.unit_name
+
+	if not Application.can_get("unit", unit_name) then
+		return false
+	end
+
+	local item = rawget(ItemMasterList, pickup_setting.item_name)
+
+	if item then
+		local weapon_template_name = item.temporary_template
+		local weapon_template = WeaponUtils.get_weapon_template(weapon_template_name)
+		local left_hand_unit = weapon_template.left_hand_unit
+
+		if left_hand_unit and (not Application.can_get("unit", left_hand_unit) or not Application.can_get("unit", left_hand_unit .. "_3p")) then
+			return false
+		end
+
+		local right_hand_unit = weapon_template.right_hand_unit
+
+		if right_hand_unit and (not Application.can_get("unit", right_hand_unit) or not Application.can_get("unit", right_hand_unit .. "_3p")) then
+			return false
+		end
+	end
+
+	return true
+end
+
 PickupSystem.update = function (self, context, t)
 	local dt = context.dt
 
@@ -1106,6 +1135,22 @@ PickupSystem.spawn_pickup = function (self, pickup_name, position, rotation, wit
 	local pickup_unit, _ = self:_spawn_pickup(pickup_settings, pickup_name, position, rotation, with_physics, spawn_type, owner_peer_id, spawn_limit, velocity, override_unit_template_name)
 
 	return pickup_unit
+end
+
+PickupSystem.spawn_pickup_async = function (self, pickup_name, position, rotation, with_physics, spawn_type, velocity, override_unit_template_name, optional_callback)
+	local pickup_package_loader = Managers.level_transition_handler.pickup_package_loader
+
+	position = Vector3Box(position)
+	rotation = QuaternionBox(rotation)
+	velocity = velocity and Vector3Box(velocity) or nil
+
+	pickup_package_loader:request_pickup(pickup_name, function ()
+		local pickup_unit = self:spawn_pickup(pickup_name, position:unbox(), rotation:unbox(), with_physics, spawn_type, velocity and velocity:unbox() or nil, override_unit_template_name, optional_callback)
+
+		if optional_callback then
+			optional_callback(pickup_unit)
+		end
+	end)
 end
 
 PickupSystem.buff_spawn_pickup = function (self, pickup_name, position, raycast_down)

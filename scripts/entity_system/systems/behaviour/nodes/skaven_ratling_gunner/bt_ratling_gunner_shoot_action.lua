@@ -293,6 +293,10 @@ BTRatlingGunnerShootAction._start_shooting = function (self, blackboard, unit, d
 	data.shots_fired = 0
 	data.state = "shoot"
 
+	local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+	dialogue_system:trigger_targeted_by_ratling(data.target_unit)
+
 	if self._use_obstacle then
 		local fire_obstacle = data.line_of_fire_nav_obstacle
 
@@ -316,10 +320,6 @@ BTRatlingGunnerShootAction._start_shooting = function (self, blackboard, unit, d
 		GwNavBoxObstacle.set_transform(sight_obstacle, sight_pose)
 		GwNavBoxObstacle.set_does_trigger_tagvolume(fire_obstacle, true)
 		GwNavBoxObstacle.set_does_trigger_tagvolume(sight_obstacle, true)
-
-		local dialogue_system = Managers.state.entity:system("dialogue_system")
-
-		dialogue_system:trigger_targeted_by_ratling(data.target_unit)
 	end
 
 	if CLIENT_CONTROLLED_RATLING_GUN then

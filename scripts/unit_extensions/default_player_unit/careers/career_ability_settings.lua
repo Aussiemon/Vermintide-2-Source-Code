@@ -228,6 +228,12 @@ ActivatedAbilitySettings = {
 		},
 	},
 }
+
+local vs_core_buffs = {
+	"vs_core_attack_speed_melee",
+	"vs_core_reduced_overcharge",
+}
+
 PassiveAbilitySettings = {
 	dr_1 = {
 		description = "career_passive_desc_dr_1a",
@@ -242,6 +248,9 @@ PassiveAbilitySettings = {
 			"bardin_ironbreaker_refresh_gromril_armour",
 			"bardin_ironbreaker_ability_cooldown_on_hit",
 			"bardin_ironbreaker_ability_cooldown_on_damage_taken",
+			mechanism_overrides = {
+				versus = vs_core_buffs,
+			},
 		},
 		perks = {
 			{
@@ -268,6 +277,9 @@ PassiveAbilitySettings = {
 			"bardin_slayer_ability_cooldown_on_damage_taken",
 			"bardin_slayer_ability_cooldown_on_hit",
 			"bardin_slayer_passive_uninterruptible_heavy",
+			mechanism_overrides = {
+				versus = vs_core_buffs,
+			},
 		},
 		perks = {
 			{
@@ -293,6 +305,9 @@ PassiveAbilitySettings = {
 			"bardin_ranger_passive_consumeable_dupe_grenade",
 			"bardin_ranger_ability_cooldown_on_hit",
 			"bardin_ranger_ability_cooldown_on_damage_taken",
+			mechanism_overrides = {
+				versus = vs_core_buffs,
+			},
 		},
 		perks = {
 			{
@@ -320,6 +335,9 @@ PassiveAbilitySettings = {
 			"markus_huntsman_passive_crit_aura",
 			"markus_huntsman_ability_cooldown_on_hit",
 			"markus_huntsman_ability_cooldown_on_damage_taken",
+			mechanism_overrides = {
+				versus = vs_core_buffs,
+			},
 		},
 		perks = {
 			{
@@ -346,6 +364,9 @@ PassiveAbilitySettings = {
 			"markus_knight_passive_increased_stamina",
 			"markus_knight_ability_cooldown_on_hit",
 			"markus_knight_ability_cooldown_on_damage_taken",
+			mechanism_overrides = {
+				versus = vs_core_buffs,
+			},
 		},
 		perks = {
 			{
@@ -368,6 +389,9 @@ PassiveAbilitySettings = {
 			"markus_mercenary_ability_cooldown_on_damage_taken",
 			"markus_mercenary_passive_hit_mass_reduction",
 			"markus_mercenary_passive_crit_chance",
+			mechanism_overrides = {
+				versus = vs_core_buffs,
+			},
 		},
 		perks = {
 			{
@@ -393,6 +417,9 @@ PassiveAbilitySettings = {
 			"kerillian_shade_stealth_crits_remover",
 			"kerillian_shade_ability_cooldown_on_hit",
 			"kerillian_shade_ability_cooldown_on_damage_taken",
+			mechanism_overrides = {
+				versus = vs_core_buffs,
+			},
 		},
 		perks = {
 			{
@@ -421,6 +448,9 @@ PassiveAbilitySettings = {
 			"kerillian_maidenguard_ress_time",
 			"kerillian_maidenguard_ability_cooldown_on_hit",
 			"kerillian_maidenguard_ability_cooldown_on_damage_taken",
+			mechanism_overrides = {
+				versus = vs_core_buffs,
+			},
 		},
 		perks = {
 			{
@@ -444,6 +474,9 @@ PassiveAbilitySettings = {
 			"kerillian_waywatcher_passive_increased_zoom",
 			"kerillian_waywatcher_ability_cooldown_on_hit",
 			"kerillian_waywatcher_ability_cooldown_on_damage_taken",
+			mechanism_overrides = {
+				versus = vs_core_buffs,
+			},
 		},
 		perks = {
 			{
@@ -470,6 +503,9 @@ PassiveAbilitySettings = {
 			"victor_zealot_gain_invulnerability_on_lethal_damage_taken",
 			"victor_zealot_ability_cooldown_on_hit",
 			"victor_zealot_ability_cooldown_on_damage_taken",
+			mechanism_overrides = {
+				versus = vs_core_buffs,
+			},
 		},
 		perks = {
 			{
@@ -493,6 +529,9 @@ PassiveAbilitySettings = {
 			"victor_bountyhunter_passive_increased_ammunition",
 			"victor_bountyhunter_ability_cooldown_on_hit",
 			"victor_bountyhunter_ability_cooldown_on_damage_taken",
+			mechanism_overrides = {
+				versus = vs_core_buffs,
+			},
 		},
 		perks = {
 			{
@@ -516,6 +555,9 @@ PassiveAbilitySettings = {
 			"victor_witchhunter_headshot_multiplier_increase",
 			"victor_witchhunter_ability_cooldown_on_hit",
 			"victor_witchhunter_ability_cooldown_on_damage_taken",
+			mechanism_overrides = {
+				versus = vs_core_buffs,
+			},
 		},
 		perks = {
 			{
@@ -539,6 +581,9 @@ PassiveAbilitySettings = {
 			"sienna_scholar_ability_cooldown_on_hit",
 			"sienna_scholar_ability_cooldown_on_damage_taken",
 			"sienna_scholar_overcharge_no_slow",
+			mechanism_overrides = {
+				versus = vs_core_buffs,
+			},
 		},
 		perks = {
 			{
@@ -572,6 +617,9 @@ PassiveAbilitySettings = {
 			"sienna_adept_passive_ranged_damage",
 			"sienna_adept_ability_cooldown_on_hit",
 			"sienna_adept_ability_cooldown_on_damage_taken",
+			mechanism_overrides = {
+				versus = vs_core_buffs,
+			},
 		},
 		perks = {
 			{
@@ -593,6 +641,9 @@ PassiveAbilitySettings = {
 			"sienna_unchained_passive_increased_melee_power_on_overcharge",
 			"sienna_unchained_ability_cooldown_on_hit",
 			"sienna_unchained_ability_cooldown_on_damage_taken",
+			mechanism_overrides = {
+				versus = vs_core_buffs,
+			},
 		},
 		perks = {
 			{

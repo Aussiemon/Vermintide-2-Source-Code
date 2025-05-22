@@ -530,11 +530,30 @@ DLCSettings = DLCSettings or {
 	handbook = {
 		localization = "localization/handbook_tutorials",
 	},
+	termite_part_3 = {
+		localization = "localization/termite_3",
+		package_name = "resource_packages/dlcs/termite_part_3",
+		additional_settings = {
+			achievements = "scripts/settings/dlcs/termite/termite_achievements_settings_part_3",
+			common = "scripts/settings/dlcs/termite/termite_common_settings_part_3",
+			level = "scripts/settings/dlcs/termite/termite_level_settings_part_3",
+			sound = "scripts/settings/dlcs/termite/termite_sound_settings_part_3",
+		},
+	},
 	anniversary_2025 = {
 		localization = "localization/anniversary_2025",
 		package_name = "resource_packages/dlcs/anniversary_2025",
 		additional_settings = {
 			common = "scripts/settings/dlcs/anniversary_2025/anniversary_2025_common_settings",
+		},
+	},
+	skulls_2025 = {
+		localization = "localization/skulls_2025",
+		package_name = "resource_packages/dlcs/skulls_2025",
+		additional_settings = {
+			buff = "scripts/settings/dlcs/skulls_2023/buff_settings_skulls_2023",
+			common = "scripts/settings/dlcs/skulls_2025/skulls_2025_common_settings",
+			quest = "scripts/settings/dlcs/skulls_2025/skulls_2025_quest_settings",
 		},
 	},
 }

@@ -18,68 +18,6 @@ local spawn_lists = {
 	},
 }
 local spawn_categories = table.keys(spawn_lists)
-local event_settings = {
-	whitebox = {
-		ritual_locations = {
-			{
-				0,
-				0,
-				0,
-				0,
-			},
-		},
-	},
-	dlc_dwarf_whaling = {
-		ritual_locations = {
-			{
-				86.355,
-				156.871,
-				2.727,
-				0,
-			},
-		},
-	},
-	catacombs = {
-		ritual_locations = {
-			{
-				178.8,
-				109,
-				32,
-				50,
-			},
-		},
-	},
-	ground_zero = {
-		ritual_locations = {
-			{
-				-171.5,
-				102.7,
-				42.094002,
-				20,
-			},
-		},
-	},
-	elven_ruins = {
-		ritual_locations = {
-			{
-				37.891605,
-				-109,
-				19.562,
-				0,
-			},
-		},
-	},
-	farmlands = {
-		ritual_locations = {
-			{
-				223.965363,
-				-253.689133,
-				7.712,
-				0,
-			},
-		},
-	},
-}
 local hard_mode_mutators = {
 	"geheimnisnacht_2021_hard_mode",
 }
@@ -115,25 +53,51 @@ return {
 		"resource_packages/dlcs/geheimnisnacht_2021_event",
 	},
 	server_start_function = function (context, data)
-		local level_key = Managers.state.game_mode:level_key()
-		local settings = event_settings[level_key]
+		local live_events_interface = Managers.backend:get_interface("live_events")
+		local live_events = live_events_interface and live_events_interface:get_active_events()
+		local event_levels, fallback_event_name
 
-		if settings then
-			local ritual_locations = settings.ritual_locations
-			local up = Vector3.up()
+		if live_events then
+			for i = 1, #live_events do
+				local live_event = live_events[i]
 
-			for i = 1, #ritual_locations do
-				local location = ritual_locations[i]
-				local pos = Vector3(location[1], location[2], location[3])
-				local rot = Quaternion.axis_angle(up, math.rad(location[4]))
+				event_levels = GeheimnisnachtUtils.maps_by_event(live_event)
 
-				data.template.spawn_ritual_ring(pos, rot)
+				if not fallback_event_name and string.find(live_event, "geheimnisnacht_%d+") then
+					fallback_event_name = live_event
+				end
 			end
-
-			local inventory_system = Managers.state.entity:system("inventory_system")
-
-			inventory_system:register_event_objective("wpn_geheimnisnacht_2021_side_objective", side_objective_picked_up, side_objective_picked_dropped)
 		end
+
+		if not event_levels and fallback_event_name then
+			event_levels = GeheimnisnachtUtils.maps_by_event(fallback_event_name, true)
+		end
+
+		if not event_levels then
+			return
+		end
+
+		local level_key = Managers.state.game_mode:level_key()
+
+		if not table.contains(event_levels, level_key) then
+			return
+		end
+
+		local settings = map_settings[level_key]
+		local ritual_locations = settings.ritual_locations
+		local up = Vector3.up()
+
+		for i = 1, #ritual_locations do
+			local location = ritual_locations[i]
+			local pos = Vector3(location[1], location[2], location[3])
+			local rot = Quaternion.axis_angle(up, math.rad(location[4]))
+
+			data.template.spawn_ritual_ring(pos, rot)
+		end
+
+		local inventory_system = Managers.state.entity:system("inventory_system")
+
+		inventory_system:register_event_objective("wpn_geheimnisnacht_2021_side_objective", side_objective_picked_up, side_objective_picked_dropped)
 	end,
 	spawn_ritual_ring = function (position, rotation)
 		local unit_name = "units/gameplay/ritual_site_01"

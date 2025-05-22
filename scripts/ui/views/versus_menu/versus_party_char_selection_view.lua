@@ -1321,6 +1321,7 @@ VersusPartyCharSelectionView._setup_background_world = function (self)
 
 	self:_setup_camera_nodes_data(level)
 	self:_setup_initial_camera(world, viewport)
+	Level.trigger_event(level, "disable_character_select_lights")
 end
 
 VersusPartyCharSelectionView._get_heroes_spawn_locations = function (self, party_id)

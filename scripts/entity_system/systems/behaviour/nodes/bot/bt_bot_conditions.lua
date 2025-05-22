@@ -671,8 +671,14 @@ local function is_safe_to_block_interact(status_extension, interaction_extension
 	end
 end
 
+local ATTEMPT_REVIVE_THREAT_THRESHOLD = 4
+
 local function is_there_threat_to_aid(self_unit, proximite_enemies, force_aid)
 	local num_proximite_enemies = #proximite_enemies
+	local buff_extension = ScriptUnit.extension(self_unit, "buff_system")
+	local revive_t = buff_extension:apply_buffs_to_value(1, "faster_revive")
+	local threat_threshold = ATTEMPT_REVIVE_THREAT_THRESHOLD + ATTEMPT_REVIVE_THREAT_THRESHOLD * (1 - revive_t)
+	local accumulative_threat = 0
 
 	for i = 1, num_proximite_enemies do
 		local enemy_unit = proximite_enemies[i]
@@ -680,9 +686,14 @@ local function is_there_threat_to_aid(self_unit, proximite_enemies, force_aid)
 		if ALIVE[enemy_unit] then
 			local enemy_blackboard = BLACKBOARDS[enemy_unit]
 			local enemy_breed = enemy_blackboard.breed
+			local enemy_threat_value = enemy_breed.threat_value
 
 			if enemy_blackboard.target_unit == self_unit and (not force_aid or enemy_breed.is_bot_aid_threat) then
-				return true
+				accumulative_threat = accumulative_threat + enemy_threat_value
+
+				if threat_threshold < accumulative_threat then
+					return true
+				end
 			end
 		end
 	end
@@ -762,8 +773,9 @@ end
 BTConditions.can_heal_player = function (blackboard)
 	local target_ally_unit = blackboard.target_ally_unit
 	local target_career_ext = target_ally_unit and ScriptUnit.extension(target_ally_unit, "career_system")
+	local target_status_ext = target_ally_unit and ScriptUnit.extension(target_ally_unit, "status_system")
 
-	if target_career_ext and target_career_ext:career_name() == "wh_zealot" then
+	if target_career_ext and target_career_ext:career_name() == "wh_zealot" and target_status_ext and target_status_ext:num_wounds_remaining() > 1 then
 		return false
 	end
 

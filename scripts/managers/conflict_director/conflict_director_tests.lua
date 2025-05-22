@@ -780,7 +780,7 @@ ConflictDirectorTests.update_kill_tester = function (self)
 			local damage_type = "forced"
 			local damage_direction = Vector3(0, 0, 1)
 
-			DamageUtils.add_damage_network(kill_unit, kill_unit, damage_amount, hit_zone_name, damage_type, nil, damage_direction, "debug")
+			DamageUtils.add_damage_network(kill_unit, kill_unit, damage_amount, hit_zone_name, damage_type, nil, damage_direction, "debug", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 		end
 	end
 end

@@ -2717,7 +2717,7 @@ ConflictDirector.rpc_debug_conflict_director_command = function (self, channel_i
 	elseif command_name == "debug_spawn_breed_at_hidden_spawner" then
 		self:debug_spawn_breed_at_hidden_spawner(breed_name)
 	elseif command_name == "destroy_close_units" then
-		self:destroy_close_units(position, nil, 144)
+		self:destroy_close_units(position, nil, (tonumber(extra_data[1]) or 12)^2)
 	elseif command_name == "destroy_all_units" then
 		self:destroy_all_units(true)
 	elseif command_name == "destroy_specials" then

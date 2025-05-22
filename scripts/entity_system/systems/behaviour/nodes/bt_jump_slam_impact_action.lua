@@ -131,7 +131,7 @@ BTJumpSlamImpactAction.impact_damage = function (attacking_unit, t, radius, stag
 						damage_done = damage
 					end
 
-					DamageUtils.add_damage_network(ai_unit, attacking_unit, damage_done, "full", damage_type, nil, Vector3(0, 0, -1), nil, nil, nil, nil, hit_react_type)
+					DamageUtils.add_damage_network(ai_unit, attacking_unit, damage_done, "full", damage_type, nil, Vector3(0, 0, -1), nil, nil, nil, nil, hit_react_type, nil, nil, nil, nil, nil, nil, i)
 				end
 			end
 		end

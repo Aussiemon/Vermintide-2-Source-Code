@@ -596,14 +596,14 @@ BreedTweaks.bloodlust_health = {
 	beastmen_roamer = 3,
 	chaos_bulwark = 35,
 	chaos_elite = 15,
-	chaos_horde = 1,
+	chaos_horde = 1.5,
 	chaos_roamer = 3,
 	chaos_special = 10,
 	chaos_warrior = 30,
 	monster = 50,
 	skaven_elite = 8,
-	skaven_horde = 0.5,
-	skaven_roamer = 1,
+	skaven_horde = 1,
+	skaven_roamer = 2,
 	skaven_special = 8,
 }
 BreedTweaks.blocked_duration = {

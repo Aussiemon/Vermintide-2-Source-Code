@@ -312,7 +312,7 @@ InputService.set_disabled_input_group = function (self, disabled_input_group)
 	self.disabled_input_group = disabled_input_group
 end
 
-InputService.set_input_blocked = function (self, input_data_name, blocked, optional_reason)
+InputService.set_input_blocked = function (self, input_data_name, blocked, optional_reason, optional_debug_reason)
 	local blocked_input = self.blocked_input
 	local reasons = blocked_input[input_data_name]
 
@@ -329,6 +329,10 @@ InputService.set_input_blocked = function (self, input_data_name, blocked, optio
 
 	if not next(reasons) then
 		blocked_input[input_data_name] = nil
+	end
+
+	if Application.user_setting("debug_blocked_input") then
+		printf("[InputService] Blocked input changed (%s): %s", optional_debug_reason, cjson.encode(self.blocked_input))
 	end
 end
 

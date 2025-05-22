@@ -47,6 +47,10 @@ Updator.remove = function (self, id)
 	self._updators[id] = nil
 end
 
+Updator.has = function (self, id)
+	return not not self._updators[id]
+end
+
 Updator.clear = function (self)
 	table.clear(self._updators)
 end

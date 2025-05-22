@@ -5861,6 +5861,11 @@ IngameMenuKeymaps.win32 = InputUtils.keymaps_key_approved("win32") and {
 		"middle",
 		"pressed",
 	},
+	mouse_middle_held = {
+		"mouse",
+		"middle",
+		"held",
+	},
 	confirm = {
 		"keyboard",
 		"space",
@@ -6266,6 +6271,11 @@ IngameMenuKeymaps.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 		"right_shoulder",
 		"pressed",
 	},
+	cycle_next_raw = {
+		"gamepad",
+		"right_shoulder",
+		"pressed",
+	},
 	cycle_next_alt_raw = {
 		"gamepad",
 		"right_shoulder",
@@ -6277,6 +6287,11 @@ IngameMenuKeymaps.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 		"held",
 	},
 	cycle_previous = {
+		"gamepad",
+		"left_shoulder",
+		"pressed",
+	},
+	cycle_previous_raw = {
 		"gamepad",
 		"left_shoulder",
 		"pressed",
@@ -6566,6 +6581,11 @@ IngameMenuKeymaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		"r1",
 		"pressed",
 	},
+	cycle_next_raw = {
+		"gamepad",
+		"r1",
+		"pressed",
+	},
 	cycle_next_alt_raw = {
 		"gamepad",
 		"r1",
@@ -6577,6 +6597,11 @@ IngameMenuKeymaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		"held",
 	},
 	cycle_previous = {
+		"gamepad",
+		"l1",
+		"pressed",
+	},
+	cycle_previous_raw = {
 		"gamepad",
 		"l1",
 		"pressed",
@@ -6866,6 +6891,11 @@ IngameMenuKeymaps.ps_pad = InputUtils.keymaps_key_approved("ps_pad") and {
 		"r1",
 		"pressed",
 	},
+	cycle_next_raw = {
+		"ps_pad",
+		"r1",
+		"pressed",
+	},
 	cycle_next_alt_raw = {
 		"ps_pad",
 		"r1",
@@ -6877,6 +6907,11 @@ IngameMenuKeymaps.ps_pad = InputUtils.keymaps_key_approved("ps_pad") and {
 		"held",
 	},
 	cycle_previous = {
+		"ps_pad",
+		"l1",
+		"pressed",
+	},
+	cycle_previous_raw = {
 		"ps_pad",
 		"l1",
 		"pressed",

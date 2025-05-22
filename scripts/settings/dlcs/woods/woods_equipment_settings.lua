@@ -397,6 +397,7 @@ settings.vortex_templates = {
 			2,
 		},
 		reduce_duration_per_breed = {
+			chaos_bulwark = 0.5,
 			chaos_warrior = 0.5,
 		},
 	},

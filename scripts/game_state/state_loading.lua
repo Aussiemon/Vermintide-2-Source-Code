@@ -9,6 +9,8 @@ require("scripts/settings/level_settings")
 require("scripts/utils/async_level_spawner")
 require("scripts/game_state/loading_sub_states/win32/state_loading_versus_migration")
 
+local ReservationHandlerTypes = require("scripts/managers/game_mode/mechanisms/reservation_handler_types")
+
 StateLoading = class(StateLoading)
 StateLoading.NAME = "StateLoading"
 
@@ -207,7 +209,6 @@ StateLoading._parse_loading_context = function (self)
 		self._lobby_client = loading_context.lobby_client
 		self._checkpoint_data = loading_context.checkpoint_data
 		self._quickplay_bonus = loading_context.quickplay_bonus
-		self._local_quickplay_bonus = loading_context.local_quickplay_bonus
 		self._level_end_view_context = loading_context.level_end_view_context
 		self._switch_to_tutorial_backend = loading_context.switch_to_tutorial_backend
 		self._wanted_tutorial_state = loading_context.wanted_tutorial_state
@@ -693,7 +694,7 @@ StateLoading.update = function (self, dt, t)
 
 	local level_transition_handler = Managers.level_transition_handler
 
-	if IS_PS4 and not self._popup_id and not self._handled_psn_client_error and self:_update_loading_global_packages() and level_transition_handler:all_packages_loaded() and level_transition_handler.enemy_package_loader:loading_completed() and level_transition_handler.transient_package_loader:loading_completed() and self:_matchmaking_packages_loaded() and Managers.backend:profiles_loaded() then
+	if IS_PS4 and not self._popup_id and not self._handled_psn_client_error and self:_update_loading_global_packages() and level_transition_handler:all_packages_loaded() and level_transition_handler.enemy_package_loader:loading_completed() and level_transition_handler.pickup_package_loader:loading_completed() and level_transition_handler.transient_package_loader:loading_completed() and self:_matchmaking_packages_loaded() and Managers.backend:profiles_loaded() then
 		local psn_client_error = Managers.account:psn_client_error()
 
 		if psn_client_error then
@@ -797,7 +798,7 @@ StateLoading.update = function (self, dt, t)
 	local menu_active, menu_input_service = false
 
 	if self._level_end_view_wrappers then
-		local level_end_view = self._level_end_view_wrappers[1]:level_end_view()
+		local level_end_view = self._level_end_view_wrappers[1]
 
 		if level_end_view:enable_chat() then
 			menu_active = true
@@ -973,7 +974,7 @@ StateLoading._verify_joined_lobby = function (self, dt, t)
 	local lobby_matchmaking_type_id = lobby_data.matchmaking_type
 	local lobby_difficulty = lobby_data.difficulty
 	local lobby_mechanism = lobby_data.mechanism
-	local lobby_quick_game = lobby_data.quick_game
+	local lobby_weave_quick_game = lobby_data.weave_quick_game
 	local lobby_private = MatchmakingManager.is_lobby_private(lobby_data)
 
 	if lobby_id then
@@ -981,7 +982,7 @@ StateLoading._verify_joined_lobby = function (self, dt, t)
 		lobby_matchmaking_type_id = LobbyInternal.get_lobby_data_from_id_by_key(lobby_id, "matchmaking_type") or lobby_matchmaking_type_id
 		lobby_difficulty = LobbyInternal.get_lobby_data_from_id_by_key(lobby_id, "difficulty") or lobby_difficulty
 		lobby_mechanism = LobbyInternal.get_lobby_data_from_id_by_key(lobby_id, "mechanism") or lobby_mechanism
-		lobby_quick_game = LobbyInternal.get_lobby_data_from_id_by_key(lobby_id, "quick_game") or lobby_quick_game
+		lobby_weave_quick_game = LobbyInternal.get_lobby_data_from_id_by_key(lobby_id, "weave_quick_game") or lobby_weave_quick_game
 		lobby_private = LobbyInternal.get_lobby_data_from_id_by_key(lobby_id, "is_private") == "true" or lobby_private
 	end
 
@@ -989,7 +990,7 @@ StateLoading._verify_joined_lobby = function (self, dt, t)
 	lobby_matchmaking_type_id = lobby_matchmaking_type_id or self._lobby_client:lobby_data("matchmaking_type")
 	lobby_difficulty = lobby_difficulty or self._lobby_client:lobby_data("difficulty")
 	lobby_mechanism = lobby_mechanism or self._lobby_client:lobby_data("mechanism")
-	lobby_quick_game = lobby_quick_game or self._lobby_client:lobby_data("quick_game")
+	lobby_weave_quick_game = lobby_weave_quick_game or self._lobby_client:lobby_data("weave_quick_game")
 	lobby_private = lobby_private or self._lobby_client:lobby_data("is_private") == "true"
 
 	local lobby_matchmaking_type = IS_PS4 and lobby_matchmaking_type_id or lobby_matchmaking_type_id and NetworkLookup.game_modes[tonumber(lobby_matchmaking_type_id)]
@@ -1003,12 +1004,6 @@ StateLoading._verify_joined_lobby = function (self, dt, t)
 
 		if mechanism_settings.required_dlc then
 			required_dlcs[mechanism_settings.required_dlc] = true
-		end
-
-		local difficulty_settings = DifficultySettings[lobby_difficulty]
-
-		if difficulty_settings and difficulty_settings.dlc_requirement then
-			required_dlcs[difficulty_settings.dlc_requirement] = true
 		end
 
 		for dlc_name, _ in pairs(required_dlcs) do
@@ -1030,6 +1025,7 @@ StateLoading._verify_joined_lobby = function (self, dt, t)
 
 		if not Development.parameter("unlock_all_difficulties") and not lobby_private and not mechanism_settings.disable_difficulty_check then
 			local best_aquired_power_level = BulldozerPlayer.best_aquired_power_level()
+			local difficulty_settings = DifficultySettings[lobby_difficulty]
 
 			if best_aquired_power_level < difficulty_settings.required_power_level then
 				has_unlocked_difficulty = false
@@ -1043,7 +1039,7 @@ StateLoading._verify_joined_lobby = function (self, dt, t)
 				local joining_existing_game = true
 				local extra_requirement_data = ExtraDifficultyRequirements[difficulty_settings.extra_requirement_name]
 
-				if not extra_requirement_data.requirement_function(joining_existing_game) and (lobby_quick_game ~= "true" or lobby_mechanism ~= "weave") then
+				if not extra_requirement_data.requirement_function(joining_existing_game) and lobby_weave_quick_game ~= "true" then
 					has_unlocked_difficulty = false
 					difficulty_error_message = difficulty_error_message .. string.format("\n* %s", Localize(extra_requirement_data.description_text))
 				end
@@ -1679,7 +1675,6 @@ StateLoading.on_exit = function (self, application_shutdown)
 			network_transmit = self._network_transmit,
 			checkpoint_data = self._checkpoint_data,
 			quickplay_bonus = self._quickplay_bonus,
-			local_quickplay_bonus = self._local_quickplay_bonus,
 			level_end_view_wrappers = self._level_end_view_wrappers,
 			saved_scoreboard_stats = self._saved_scoreboard_stats,
 			host_migration_info = self.parent.loading_context.host_migration_info,
@@ -1877,6 +1872,10 @@ StateLoading._packages_loaded = function (self)
 			return false
 		end
 
+		if not level_transition_handler.pickup_package_loader:loading_completed() then
+			return false
+		end
+
 		if not level_transition_handler.transient_package_loader:loading_completed() then
 			return false
 		end
@@ -2030,30 +2029,39 @@ StateLoading._update_loadout_resync = function (self)
 	return state
 end
 
-StateLoading._destroy_network_handler = function (self, application_shutdown)
-	if self._network_server or self._network_client then
+StateLoading._destroy_network_handler = function (self, application_shutdown, optional_loading_context)
+	local network_handler = self._network_server or self._network_client
+
+	if optional_loading_context then
+		network_handler = optional_loading_context.network_server or optional_loading_context.network_client
+		optional_loading_context.network_server = nil
+		optional_loading_context.network_client = nil
+	else
+		self._network_server = nil
+		self._network_client = nil
+	end
+
+	if network_handler then
 		local level_transition_handler = Managers.level_transition_handler
 		local enemy_package_loader = level_transition_handler.enemy_package_loader
 
 		enemy_package_loader:network_context_destroyed()
-		enemy_package_loader:unload_enemy_packages(application_shutdown, "StateLoading:_destroy_network")
+
+		if application_shutdown then
+			enemy_package_loader:on_application_shutdown()
+		end
 
 		local transient_package_loader = level_transition_handler.transient_package_loader
 
 		transient_package_loader:network_context_destroyed()
 		transient_package_loader:unload_all_packages()
+
+		local pickup_package_loader = level_transition_handler.pickup_package_loader
+
+		pickup_package_loader:network_context_destroyed()
 		Managers.party:network_context_destroyed()
 		Managers.mechanism:network_context_destroyed()
-	end
-
-	if self._network_server then
-		self._network_server:destroy()
-
-		self._network_server = nil
-	elseif self._network_client then
-		self._network_client:destroy()
-
-		self._network_client = nil
+		network_handler:destroy()
 	end
 end
 
@@ -2086,7 +2094,7 @@ StateLoading._destroy_network = function (self, application_shutdown)
 		Managers.account:set_current_lobby(nil)
 	end
 
-	self:_destroy_network_handler(true)
+	self:_destroy_network_handler(application_shutdown)
 
 	if self._lobby_host then
 		self._lobby_host:destroy()
@@ -2407,7 +2415,10 @@ StateLoading.setup_chat_manager = function (self, lobby, host_peer_id, my_peer_i
 	local function member_func()
 		if DEDICATED_SERVER and Managers.level_transition_handler:in_hub_level() then
 			local mechanism = Managers.mechanism:game_mechanism()
-			local reservation_handler = mechanism:get_slot_reservation_handler()
+
+			assert(DEDICATED_SERVER, "Mismanaged use of 'get_slot_reservation_handler'")
+
+			local reservation_handler = mechanism:get_slot_reservation_handler(Network.peer_id(), ReservationHandlerTypes.session)
 
 			return reservation_handler:reservers()
 		end
@@ -2424,6 +2435,7 @@ end
 
 StateLoading.setup_enemy_package_loader = function (self, lobby, host_peer_id, my_peer_id, network_handler)
 	Managers.level_transition_handler.enemy_package_loader:network_context_created(lobby, host_peer_id, my_peer_id, network_handler)
+	Managers.level_transition_handler.pickup_package_loader:network_context_created(lobby, host_peer_id, my_peer_id, network_handler)
 	Managers.level_transition_handler.transient_package_loader:network_context_created(lobby, host_peer_id, my_peer_id)
 end
 
@@ -2497,17 +2509,7 @@ end
 StateLoading.clear_network_loading_context = function (self)
 	local loading_context = self.parent.loading_context
 
-	if loading_context.network_client then
-		loading_context.network_client:destroy()
-
-		loading_context.network_client = nil
-	end
-
-	if loading_context.network_server then
-		loading_context.network_server:destroy()
-
-		loading_context.network_server = nil
-	end
+	self:_destroy_network_handler(false, loading_context)
 
 	if self._lobby_host then
 		self._lobby_host:destroy()

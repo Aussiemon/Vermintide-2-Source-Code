@@ -1744,7 +1744,7 @@ DamageUtils.vs_register_dark_pact_player_damage = function (attacker_unit, attac
 	end
 end
 
-DamageUtils.add_damage_network = function (attacked_unit, attacker_unit, original_damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source, hit_ragdoll_actor, source_attacker_unit, buff_attack_type, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier, skip_buffs)
+DamageUtils.add_damage_network = function (attacked_unit, attacker_unit, original_damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source, hit_ragdoll_actor, source_attacker_unit, buff_attack_type, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier, skip_buffs, target_index)
 	local network_manager = Managers.state.network
 
 	if not network_manager:game() then
@@ -1826,7 +1826,7 @@ DamageUtils.add_damage_network = function (attacked_unit, attacker_unit, origina
 
 			local health_extension = ScriptUnit.extension(victim_unit, "health_system")
 
-			health_extension:add_damage(attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, buff_attack_type, backstab_multiplier)
+			health_extension:add_damage(attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, buff_attack_type, backstab_multiplier, target_index)
 
 			if not HEALTH_ALIVE[victim_unit] then
 				Managers.state.unit_spawner:prioritize_death_watch_unit(attacked_unit, t)
@@ -1846,8 +1846,9 @@ DamageUtils.add_damage_network = function (attacked_unit, attacker_unit, origina
 		first_hit = first_hit or false
 		total_hits = total_hits or 0
 		backstab_multiplier = backstab_multiplier or 1
+		target_index = target_index or 1
 
-		network_manager.network_transmit:send_rpc_server("rpc_add_damage_network", unit_id, is_level_unit, attacker_unit_id, attacker_is_level_unit, source_attacker_unit_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_react_type_id, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+		network_manager.network_transmit:send_rpc_server("rpc_add_damage_network", unit_id, is_level_unit, attacker_unit_id, attacker_is_level_unit, source_attacker_unit_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_react_type_id, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier, target_index)
 	end
 
 	return damage_amount
@@ -1978,7 +1979,7 @@ DamageUtils.add_damage_network_player = function (damage_profile, target_index, 
 				local num_calls = math.floor(damage_amount / max_network_damage)
 
 				for _ = 1, num_calls do
-					target_health_extension:add_damage(attacker_unit, max_network_damage, hit_zone_name, damage_type, hit_position, attack_direction, damage_source, hit_ragdoll_actor, source_attacker_unit, nil, is_critical_strike, added_dot, first_hit, total_hits, charge_value, backstab_multiplier)
+					target_health_extension:add_damage(attacker_unit, max_network_damage, hit_zone_name, damage_type, hit_position, attack_direction, damage_source, hit_ragdoll_actor, source_attacker_unit, nil, is_critical_strike, added_dot, first_hit, total_hits, charge_value, backstab_multiplier, target_index)
 				end
 
 				local remaining_damage_amount = damage_amount - max_network_damage * num_calls
@@ -1988,7 +1989,7 @@ DamageUtils.add_damage_network_player = function (damage_profile, target_index, 
 
 			local networkified_damage_amount = DamageUtils.networkify_damage(damage_amount)
 
-			target_health_extension:add_damage(attacker_unit, networkified_damage_amount, hit_zone_name, damage_type, hit_position, attack_direction, damage_source, hit_ragdoll_actor, source_attacker_unit, nil, is_critical_strike, added_dot, first_hit, total_hits, charge_value, backstab_multiplier)
+			target_health_extension:add_damage(attacker_unit, networkified_damage_amount, hit_zone_name, damage_type, hit_position, attack_direction, damage_source, hit_ragdoll_actor, source_attacker_unit, nil, is_critical_strike, added_dot, first_hit, total_hits, charge_value, backstab_multiplier, target_index)
 
 			if not HEALTH_ALIVE[victim_unit] then
 				Managers.state.unit_spawner:prioritize_death_watch_unit(hit_unit, t)
@@ -2612,7 +2613,7 @@ DamageUtils.debug_deal_damage = function (victim_unit, damage)
 		return
 	end
 
-	DamageUtils.add_damage_network(victim_unit, victim_unit, damage, "torso", "undefined", nil, Vector3(0, 0, 1), "debug")
+	DamageUtils.add_damage_network(victim_unit, victim_unit, damage, "torso", "undefined", nil, Vector3(0, 0, 1), "debug", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 end
 
 DamageUtils.check_distance = function (action, blackboard, attacking_unit, target_unit)
@@ -2955,7 +2956,7 @@ DamageUtils.damage_level_unit = function (hit_unit, attacker_unit, hit_zone_name
 	local damage_type = "destructible_level_object_hit"
 	local hit_ragdoll_actor, source_attacker_unit, buff_attack_type, hit_react_type, added_dot
 
-	DamageUtils.add_damage_network(hit_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, nil, hit_normal, damage_source, hit_ragdoll_actor, source_attacker_unit, buff_attack_type, hit_react_type, is_critical_strike, added_dot)
+	DamageUtils.add_damage_network(hit_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, nil, hit_normal, damage_source, hit_ragdoll_actor, source_attacker_unit, buff_attack_type, hit_react_type, is_critical_strike, added_dot, nil, nil, nil, nil, target_index)
 end
 
 DamageUtils._projectile_hit_object = function (current_action, owner_unit, owner_player, owner_buff_extension, target_settings, hit_unit, hit_actor, hit_position, hit_rotation, hit_normal, is_husk, breed, is_server, check_buffs, check_backstab, is_critical_strike, difficulty_rank, power_level, ranged_boost_curve_multiplier, damage_profile, damage_source, critical_hit_effect, world, hit_effect, attack_direction, damage_source_id, damage_profile_id, max_targets, num_penetrations, current_amount_of_mass_hit)

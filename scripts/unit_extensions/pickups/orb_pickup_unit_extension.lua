@@ -17,12 +17,14 @@ OrbPickupUnitExtension.init = function (self, extension_init_context, unit, exte
 	self._pickup_settings = AllPickups[self.pickup_name]
 	self._orb_flight_target_position = extension_init_data.flight_enabled and extension_init_data.orb_flight_target_position or nil
 
-	local orb_offset = self._pickup_settings.orb_offset
+	if self._orb_flight_target_position then
+		local orb_offset = self._pickup_settings.orb_offset
 
-	if orb_offset then
-		local target_pos = self._orb_flight_target_position
+		if orb_offset then
+			local target_pos = self._orb_flight_target_position
 
-		target_pos:store(target_pos:unbox() + Vector3Aux.unbox(orb_offset))
+			target_pos:store(target_pos:unbox() + Vector3Aux.unbox(orb_offset))
+		end
 	end
 
 	Unit.flow_event(unit, "update_visuals")

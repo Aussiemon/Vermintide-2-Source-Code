@@ -637,7 +637,7 @@ dlc_settings.buff_function_templates = {
 		if current_health > 30 then
 			local damage_direction = -Vector3.up()
 
-			DamageUtils.add_damage_network(unit, unit, damage, "torso", "wounded_dot", nil, damage_direction)
+			DamageUtils.add_damage_network(unit, unit, damage, "torso", "wounded_dot", nil, damage_direction, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 		end
 	end,
 	apply_killer_in_the_shadows_buff = function (unit, buff, params)
@@ -1810,7 +1810,7 @@ dlc_settings.buff_function_templates = {
 	end,
 	boon_skulls_04_regen_update = function (unit, buff, params)
 		local thp_added = buff.thp_added or 0
-		local total_thp = MorrisBuffTweakData.boon_skulls_04_data.thp_per_second * MorrisBuffTweakData.boon_skulls_04_data.proc_duration
+		local total_thp = MorrisBuffTweakData.boon_skulls_04_data.thp_per_second * buff.duration
 
 		if total_thp <= thp_added then
 			return
@@ -1835,7 +1835,7 @@ dlc_settings.buff_function_templates = {
 		end
 
 		local thp_added = buff.thp_added or 0
-		local total_thp = MorrisBuffTweakData.boon_skulls_04_data.thp_per_second * MorrisBuffTweakData.boon_skulls_04_data.proc_duration
+		local total_thp = MorrisBuffTweakData.boon_skulls_04_data.thp_per_second * buff.duration
 
 		if thp_added < total_thp then
 			local network_manager = Managers.state.network
@@ -2112,6 +2112,29 @@ dlc_settings.buff_function_templates = {
 			buff_extension:add_buff("boon_range_02_increased_damage_tracker", {
 				attacker_unit = buff.attacker_unit,
 			})
+		end
+	end,
+	match_num_buffs_update = function (unit, buff, params)
+		local buff_tracker = buff.buff_tracker or {}
+
+		buff.buff_tracker = buff_tracker
+
+		local buff_to_check = buff.template.buff_to_check
+		local buff_to_add = buff.template.buff_to_add
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local num_buffs = buff_extension:num_buff_stacks(buff_to_check)
+		local num_buffs_added = #buff_tracker
+
+		if num_buffs ~= num_buffs_added then
+			for i = num_buffs_added + 1, num_buffs do
+				buff_tracker[i] = buff_extension:add_buff(buff_to_add)
+			end
+
+			for i = num_buffs_added, num_buffs + 1, -1 do
+				buff_extension:remove_buff(buff_tracker[i])
+
+				buff_tracker[i] = nil
+			end
 		end
 	end,
 }
@@ -2548,7 +2571,7 @@ dlc_settings.proc_functions = {
 			local damage_dealt = params[2]
 			local damage = damage_dealt
 
-			DamageUtils.add_damage_network(hit_unit, owner_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
+			DamageUtils.add_damage_network(hit_unit, owner_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 
 			local beam_effect = NetworkLookup.effects["fx/cw_chain_lightning"]
 			local start_point = POSITION_LOOKUP[owner_unit] + 0.5 * Vector3.up()
@@ -2587,7 +2610,7 @@ dlc_settings.proc_functions = {
 					if ALIVE[target_unit] and not hit_units[target_unit] and HEALTH_ALIVE[target_unit] and target_unit ~= hit_unit then
 						hit_units[target_unit] = true
 
-						DamageUtils.add_damage_network(target_unit, owner_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
+						DamageUtils.add_damage_network(target_unit, owner_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, i)
 						audio_system:play_audio_unit_event(sound_event, target_unit)
 
 						start_point = end_point
@@ -2675,12 +2698,15 @@ dlc_settings.proc_functions = {
 
 		local buff_to_add = buff.template.buff_to_add
 		local buff_system = Managers.state.entity:system("buff_system")
-		local server_buff_id = buff_system:add_buff(owner_unit, buff_to_add, owner_unit, true)
 		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
-		local buff = buff_extension:get_non_stacking_buff(buff_to_add)
 
-		if buff then
-			buff.server_id = server_buff_id
+		if not buff_extension:get_non_stacking_buff(buff_to_add) then
+			local server_buff_id = buff_system:add_buff(owner_unit, buff_to_add, owner_unit, true)
+			local new_buff = buff_extension:get_non_stacking_buff(buff_to_add)
+
+			if new_buff then
+				new_buff.server_id = server_buff_id
+			end
 		end
 	end,
 	add_buff_on_non_friendly_damage_taken = function (owner_unit, buff, params)
@@ -2969,7 +2995,7 @@ dlc_settings.proc_functions = {
 					if HEALTH_ALIVE[target_unit] and not hit_units[target_unit] then
 						hit_units[target_unit] = true
 
-						DamageUtils.add_damage_network(target_unit, owner_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
+						DamageUtils.add_damage_network(target_unit, owner_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, i)
 
 						local audio_system = Managers.state.entity:system("audio_system")
 						local sound_event = template.sound_event
@@ -3093,7 +3119,7 @@ dlc_settings.proc_functions = {
 				end
 
 				if damage_to_deal > 0 then
-					DamageUtils.add_damage_network(owner_unit, owner_unit, damage_to_deal, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, owner_unit)
+					DamageUtils.add_damage_network(owner_unit, owner_unit, damage_to_deal, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, owner_unit, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 				end
 			end
 		end
@@ -3478,7 +3504,7 @@ dlc_settings.proc_functions = {
 			if percent_health_after_damage < health_threshold and not has_cooldown and damage_source ~= "life_tap" then
 				local damage_to_deal = percent_health_after_damage > 0 and amount or current_health - 1
 
-				DamageUtils.add_damage_network(owner_unit, owner_unit, damage_to_deal, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, owner_unit)
+				DamageUtils.add_damage_network(owner_unit, owner_unit, damage_to_deal, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, owner_unit, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 
 				local buffs_to_add = template.buffs_to_add
 				local buff_system = Managers.state.entity:system("buff_system")
@@ -3513,7 +3539,7 @@ dlc_settings.proc_functions = {
 				damage_dealt = damage_dealt * dr_amount
 
 				if damage_dealt > 0 then
-					DamageUtils.add_damage_network(guardian_unit, attacker_unit, damage_dealt, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, owner_unit)
+					DamageUtils.add_damage_network(guardian_unit, attacker_unit, damage_dealt, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, owner_unit, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 				end
 			end
 		end
@@ -3738,7 +3764,7 @@ dlc_settings.proc_functions = {
 			local boost_curve = BoostCurves[target_settings.boost_curve_type]
 			local damage = DamageUtils.calculate_damage(DamageOutput, hit_unit, owner_unit, hit_zone_name, power_level, boost_curve, boost_damage_multiplier, is_critical_strike, damage_profile, target_index, backstab_multiplier, damage_source)
 
-			DamageUtils.add_damage_network(hit_unit, owner_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
+			DamageUtils.add_damage_network(hit_unit, owner_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 
 			local area_damage_system = Managers.state.entity:system("area_damage_system")
 			local position = POSITION_LOOKUP[hit_unit]
@@ -4255,7 +4281,7 @@ dlc_settings.proc_functions = {
 		local boost_curve = BoostCurves[target_settings.boost_curve_type]
 		local damage = DamageUtils.calculate_damage(DamageOutput, attacking_unit, owner_unit, hit_zone_name, power_level, boost_curve, boost_damage_multiplier, is_critical_strike, damage_profile, target_index, backstab_multiplier, damage_source)
 
-		DamageUtils.add_damage_network(attacking_unit, owner_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
+		DamageUtils.add_damage_network(attacking_unit, owner_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 
 		local area_damage_system = Managers.state.entity:system("area_damage_system")
 		local position = POSITION_LOOKUP[attacking_unit]
@@ -4676,7 +4702,7 @@ dlc_settings.proc_functions = {
 		end
 
 		if hp_to_consume > 0 then
-			DamageUtils.add_damage_network(owner_unit, owner_unit, hp_to_consume, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, owner_unit)
+			DamageUtils.add_damage_network(owner_unit, owner_unit, hp_to_consume, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, owner_unit, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 		end
 	end,
 	boon_skulls_05_on_hit = function (owner_unit, buff, params)
@@ -4702,6 +4728,53 @@ dlc_settings.proc_functions = {
 		local buff_system = Managers.state.entity:system("buff_system")
 
 		buff_system:add_buff_synced(owner_unit, buff.template.buff_to_add, BuffSyncType.LocalAndServer)
+	end,
+	boon_skulls_07_on_skull_picked_up = function (unit, buff, params)
+		local mechanism = Managers.mechanism:game_mechanism()
+		local deus_run_controller = mechanism:get_deus_run_controller()
+		local multiplier = 1
+
+		for _, player in pairs(Managers.player:human_players()) do
+			local power_ups = deus_run_controller:get_player_power_ups(player:network_id(), player:local_player_id())
+
+			if table.find_func(power_ups, function (_, power_up)
+				return power_up.name == "boon_skulls_set_bonus_02"
+			end) then
+				multiplier = multiplier + MorrisBuffTweakData.boon_skulls_set_bonus_02.effect_amplify_amount
+			end
+		end
+
+		local game_mode = Managers.state.game_mode:game_mode()
+
+		if game_mode.on_picked_up_soft_currency then
+			local skull_unit = params[2]
+			local coins_to_gain = buff.template.coins_to_gain * multiplier
+
+			game_mode:on_picked_up_soft_currency(skull_unit, unit, coins_to_gain, DeusSoftCurrencySettings.types.GROUND)
+		end
+
+		local player = Managers.player:local_player()
+
+		Managers.state.event:trigger("player_pickup_deus_soft_currency", player)
+	end,
+	boon_skulls_08_on_skull_picked_up = function (unit, buff, params)
+		local interactor_unit = params[1]
+		local local_player = Managers.player:local_player()
+		local local_player_unit = local_player and local_player.player_unit
+
+		if interactor_unit == local_player_unit then
+			local cooldown_to_reduce = buff.template.cooldown_to_reduce
+			local buff_extension = ScriptUnit.extension(unit, "buff_system")
+			local has_full_set = buff_extension:num_buff_stacks("power_up_boon_skulls_set_bonus_02_event") > 0
+
+			if has_full_set then
+				cooldown_to_reduce = cooldown_to_reduce * (1 + MorrisBuffTweakData.boon_skulls_set_bonus_02.effect_amplify_amount)
+			end
+
+			local career_extension = ScriptUnit.extension(unit, "career_system")
+
+			career_extension:reduce_activated_ability_cooldown_percent(cooldown_to_reduce, 1, true)
+		end
 	end,
 	teammates_extra_damage_aura_reduce_own_damage = function (unit, buff, params)
 		local target_unit = params[1]

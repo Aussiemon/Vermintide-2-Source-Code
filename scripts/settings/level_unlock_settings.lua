@@ -447,6 +447,12 @@ LevelUnlockUtils.weave_unlocked = function (statistics_db, player_stats_id, weav
 
 	local weave_data = WeaveSettings.templates[weave_name]
 
+	if not weave_data then
+		printf("LevelUnlockUtils.weave_unlocked: Unable to join weave '%s', no weave_data was found.", weave_name)
+
+		return false
+	end
+
 	if not ignore_dlc_check then
 		local dlc_name = weave_data.dlc_name
 

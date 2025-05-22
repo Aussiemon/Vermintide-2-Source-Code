@@ -60,6 +60,10 @@ GameServerInternal.user_name = function (game_server, peer_id)
 	return SteamGameServer.name(game_server, peer_id)
 end
 
+GameServerInternal.set_max_members = function (game_server, new_max_members)
+	SteamGameServer.set_max_members(game_server, new_max_members)
+end
+
 if DEDICATED_SERVER then
 	GameServerInternal.open_channel = function (game_server, peer)
 		local channel_id = SteamGameServer.open_channel(game_server, peer)

@@ -415,6 +415,25 @@ local video_settings_definition = {
 	},
 }
 local subtitles_background_color_preview = Colors.get_color_table_with_alpha("black", UISettings.subtitles_background_alpha)
+
+local function _update_slider_image_size(content, style, options_view)
+	local text_padding = 5
+
+	content.slider_image_base_size_x = content.slider_image_base_size_x or style.slider_image.size[1]
+	content.slider_image_base_offset_x = content.slider_image_base_offset_x or style.slider_image.offset[1]
+	content.slider_image_text_base_offset_x = content.slider_image_text_base_offset_x or style.slider_image_text.offset[1]
+
+	local text = content.slider_image_text
+	local text_width = UIUtils.get_text_width(options_view.ui_renderer, style.slider_image_text, text)
+
+	style.slider_image.size[1] = text_width + text_padding * 2
+
+	local offset_x = text_width - content.slider_image_base_size_x + text_padding * 2
+
+	style.slider_image.offset[1] = content.slider_image_base_offset_x - offset_x
+	style.slider_image_text.offset[1] = content.slider_image_text_base_offset_x - offset_x
+end
+
 local audio_settings_definition = {
 	{
 		text = "settings_view_header_game_sound",
@@ -565,12 +584,16 @@ local audio_settings_definition = {
 	{
 		setting_name = "subtitles_font_size",
 		widget_type = "slider",
-		value_set_function = function (content, style, value)
+		value_set_function = function (content, style, value, options_view)
 			style.slider_image_text.font_size = value
+
+			_update_slider_image_size(content, style, options_view)
 		end,
-		value_saved_function = function (content, style, value)
-			style.slider_image_text.font_size = value
+		value_saved_function = function (content, style, value, options_view)
 			style.slider_image.color = subtitles_background_color_preview
+			style.slider_image_text.font_size = value
+
+			_update_slider_image_size(content, style, options_view)
 		end,
 		slider_image = {
 			slider_image = "rect_masked",
@@ -1199,7 +1222,7 @@ local function set_function(self, user_setting_name, widget_type, content, style
 	local setting_type = content.definition.setting_type or "user_settings"
 
 	self:_set_setting(setting_type, user_setting_name, new_value)
-	value_set_function(content, style, new_value)
+	value_set_function(content, style, new_value, self)
 end
 
 local function setup_function(self, user_setting_name, widget_type, options, definition)
@@ -1269,7 +1292,7 @@ local function saved_value_function(self, user_setting_name, widget_type, widget
 		content.current_selection = table.find(content.options_values, saved_value) or table.find(content.options_values, default_value)
 	end
 
-	saved_function(content, style, saved_value)
+	saved_function(content, style, saved_value, self)
 end
 
 local function generate_settings(settings_definition)

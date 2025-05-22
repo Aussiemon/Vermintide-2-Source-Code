@@ -373,7 +373,7 @@ PackmasterStateDragging.update_damage = function (self, unit, target_unit, t)
 		local damage_type = breed.dragging_damage_type
 		local hit_react_type
 
-		DamageUtils.add_damage_network(target_unit, unit, damage_amount, hit_zone_name, damage_type, nil, Vector3.up(), breed.name, nil, nil, nil, hit_react_type)
+		DamageUtils.add_damage_network(target_unit, unit, damage_amount, hit_zone_name, damage_type, nil, Vector3.up(), breed.name, nil, nil, nil, hit_react_type, nil, nil, nil, nil, nil, nil, 1)
 
 		self._next_damage_pulse_time = t + breed.dragging_time_to_damage
 	end

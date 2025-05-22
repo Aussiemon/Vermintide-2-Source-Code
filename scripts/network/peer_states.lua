@@ -1,5 +1,7 @@
 ﻿-- chunkname: @scripts/network/peer_states.lua
 
+local ReservationHandlerTypes = require("scripts/managers/game_mode/mechanisms/reservation_handler_types")
+
 PeerStates = {}
 SlotReservationConnectStatus = table.enum("PENDING", "FAILED", "SUCCEEDED")
 
@@ -28,6 +30,12 @@ PeerStates.Connecting = {
 		self.requested_party_index = requested_party_index
 
 		self.server:peer_connected(self.peer_id)
+
+		if self.is_remote and not self.has_eac then
+			Managers.eac:server_add_peer(self.peer_id)
+
+			self.has_eac = true
+		end
 	end,
 	rpc_post_game_notified = function (self, in_post_game)
 		self._has_been_notfied_of_post_game_state = true
@@ -42,7 +50,7 @@ PeerStates.Connecting = {
 		match_handler:register_pending_peer(self.peer_id, group_leader)
 
 		local mechanism_manager = Managers.mechanism
-		local slot_reservation_handler = mechanism_manager:get_slot_reservation_handler()
+		local slot_reservation_handler = mechanism_manager:get_slot_reservation_handler(self.server.my_peer_id, ReservationHandlerTypes.pending_custom_game) or mechanism_manager:get_slot_reservation_handler(self.server.my_peer_id, ReservationHandlerTypes.session)
 
 		slot_reservation_handler:connecting_slot_reservation_info_received(self.peer_id, peers, group_leader)
 	end,
@@ -82,7 +90,7 @@ PeerStates.Connecting = {
 
 		if self.is_remote then
 			local mechanism_manager = Managers.mechanism
-			local slot_reservation_handler = mechanism_manager:get_slot_reservation_handler()
+			local slot_reservation_handler = mechanism_manager:get_slot_reservation_handler(self.server.my_peer_id, ReservationHandlerTypes.pending_custom_game) or mechanism_manager:get_slot_reservation_handler(self.server.my_peer_id, ReservationHandlerTypes.session)
 
 			if slot_reservation_handler then
 				reservation_status = slot_reservation_handler:handle_slot_reservation_for_connecting_peer(self, dt)
@@ -166,18 +174,13 @@ PeerStates.Connecting = {
 					local num_joining_peers = self.server:num_joining_peers()
 					local num_peers = self.server:num_active_peers()
 					local peers_ingame = num_peers - num_joining_peers
-					local num_reserved_slots = self.server:num_reserved_slots()
 					local max_members = self.server.lobby_host:get_max_members()
 
-					if max_members < peers_ingame + num_reserved_slots then
-						if self.server:is_reserved(self.peer_id) then
-							self.server:remove_reserved_slot(self.peer_id)
-						else
-							printf("[PSM] No free slots and peer not reserved, disconnecting peer (%s)", self.peer_id)
-							self.server:disconnect_peer(self.peer_id, "full_server")
+					if max_members < peers_ingame + 1 then
+						printf("[PSM] No free slots and peer not reserved, disconnecting peer (%s)", self.peer_id)
+						self.server:disconnect_peer(self.peer_id, "full_server")
 
-							return PeerStates.Disconnecting
-						end
+						return PeerStates.Disconnecting
 					end
 
 					local peer_id = self.peer_id
@@ -226,12 +229,6 @@ PeerStates.Loading = {
 		self.game_started = false
 		self.is_ingame = nil
 
-		if self.is_remote and not self.has_eac then
-			Managers.eac:server_add_peer(self.peer_id)
-
-			self.has_eac = true
-		end
-
 		Managers.level_transition_handler.transient_package_loader:hot_join_sync(peer_id)
 	end,
 	rpc_is_ingame = function (self)
@@ -250,23 +247,24 @@ PeerStates.Loading = {
 		self.loaded_level = NetworkLookup.level_keys[level_id]
 
 		local enemies_are_loaded = Managers.level_transition_handler.enemy_package_loader:load_sync_done_for_peer(self.peer_id)
+		local pickups_are_loaded = Managers.level_transition_handler.pickup_package_loader:load_sync_done_for_peer(self.peer_id)
 
-		if enemies_are_loaded then
-			printf("Peer %s has loaded the level and all enemies are loaded", self.peer_id)
+		if enemies_are_loaded and pickups_are_loaded then
+			printf("Peer %s has loaded the level and all enemies and pickups are loaded", self.peer_id)
 		else
-			printf("Peer %s has loaded the level but not all enemies, so we wait", self.peer_id)
+			printf("Peer %s has loaded the level but we wait because: Enemies loaded (%s), Pickups loaded (%s)", self.peer_id, enemies_are_loaded, pickups_are_loaded)
 		end
 	end,
 	update = function (self, dt)
-		local server = self.server
 		local level_transition_handler = Managers.level_transition_handler
 		local level_key = level_transition_handler:get_current_level_key()
 
 		if self.loaded_level == level_key then
 			local enemies_are_loaded = level_transition_handler.enemy_package_loader:load_sync_done_for_peer(self.peer_id)
+			local pickups_are_loaded = level_transition_handler.pickup_package_loader:load_sync_done_for_peer(self.peer_id)
 			local state_determined, can_play = Managers.eac:server_check_peer(self.peer_id)
 
-			if enemies_are_loaded and state_determined and can_play then
+			if enemies_are_loaded and pickups_are_loaded and state_determined and can_play then
 				return PeerStates.LoadingProfilePackages
 			end
 		end
@@ -330,7 +328,7 @@ PeerStates.LoadingProfilePackages = {
 }
 
 local function _has_ongoing_resync(network_server, peer_id)
-	local ongoing_resync = not network_server:are_profile_packages_fully_synced_for_peer(peer_id) or not Managers.level_transition_handler.enemy_package_loader:load_sync_done_for_peer(peer_id)
+	local ongoing_resync = not network_server:are_profile_packages_fully_synced_for_peer(peer_id) or not Managers.level_transition_handler.enemy_package_loader:load_sync_done_for_peer(peer_id) or not Managers.level_transition_handler.pickup_package_loader:load_sync_done_for_peer(peer_id)
 
 	return ongoing_resync
 end

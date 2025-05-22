@@ -122,6 +122,11 @@ DeusSwapWeaponInteractionUI._populate_widget = function (self, interactable_unit
 	local pickup_ext = ScriptUnit.extension(interactable_unit, "pickup_system")
 	local cost = pickup_ext:get_purchase_cost()
 	local stored_purchase = pickup_ext:get_stored_purchase()
+
+	if not stored_purchase then
+		return
+	end
+
 	local melee, ranged = deus_run_controller:get_own_loadout()
 	local equipped_item = self._type == "melee" and melee or ranged
 	local tooltip_widget = self._widgets_by_name.weapon_tooltip

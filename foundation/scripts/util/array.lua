@@ -198,14 +198,14 @@ local function array_erase_back(a)
 	a[2] = n - 1
 end
 
-local function array_push_back(a, item)
+local function array_push_back(a, item, ...)
 	local t, n = a[1], a[2] + 1
 
 	t[n] = item
 	a[2] = n
 end
 
-local function array_push_back2(a, item1, item2)
+local function array_push_back2(a, item1, item2, ...)
 	local t, n = a[1], a[2]
 
 	t[n + 1] = item1
@@ -213,7 +213,7 @@ local function array_push_back2(a, item1, item2)
 	a[2] = n + 2
 end
 
-local function array_push_back3(a, item1, item2, item3)
+local function array_push_back3(a, item1, item2, item3, ...)
 	local t, n = a[1], a[2]
 
 	t[n + 1] = item1
@@ -222,7 +222,7 @@ local function array_push_back3(a, item1, item2, item3)
 	a[2] = n + 3
 end
 
-local function array_push_back4(a, item1, item2, item3, item4)
+local function array_push_back4(a, item1, item2, item3, item4, ...)
 	local t, n = a[1], a[2]
 
 	t[n + 1] = item1
@@ -232,7 +232,7 @@ local function array_push_back4(a, item1, item2, item3, item4)
 	a[2] = n + 4
 end
 
-local function array_push_back5(a, item1, item2, item3, item4, item5)
+local function array_push_back5(a, item1, item2, item3, item4, item5, ...)
 	local t, n = a[1], a[2]
 
 	t[n + 1] = item1
@@ -243,7 +243,7 @@ local function array_push_back5(a, item1, item2, item3, item4, item5)
 	a[2] = n + 5
 end
 
-local function array_push_back6(a, item1, item2, item3, item4, item5, item6)
+local function array_push_back6(a, item1, item2, item3, item4, item5, item6, ...)
 	local t, n = a[1], a[2]
 
 	t[n + 1] = item1
@@ -255,7 +255,7 @@ local function array_push_back6(a, item1, item2, item3, item4, item5, item6)
 	a[2] = n + 6
 end
 
-local function array_push_back7(a, item1, item2, item3, item4, item5, item6, item7)
+local function array_push_back7(a, item1, item2, item3, item4, item5, item6, item7, ...)
 	local t, n = a[1], a[2]
 
 	t[n + 1] = item1
@@ -268,7 +268,7 @@ local function array_push_back7(a, item1, item2, item3, item4, item5, item6, ite
 	a[2] = n + 7
 end
 
-local function array_push_back8(a, item1, item2, item3, item4, item5, item6, item7, item8)
+local function array_push_back8(a, item1, item2, item3, item4, item5, item6, item7, item8, ...)
 	local t, n = a[1], a[2]
 
 	t[n + 1] = item1
@@ -282,7 +282,7 @@ local function array_push_back8(a, item1, item2, item3, item4, item5, item6, ite
 	a[2] = n + 8
 end
 
-local function array_push_back9(a, item1, item2, item3, item4, item5, item6, item7, item8, item9)
+local function array_push_back9(a, item1, item2, item3, item4, item5, item6, item7, item8, item9, ...)
 	local t, n = a[1], a[2]
 
 	t[n + 1] = item1
@@ -297,7 +297,7 @@ local function array_push_back9(a, item1, item2, item3, item4, item5, item6, ite
 	a[2] = n + 9
 end
 
-local function array_push_back10(a, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10)
+local function array_push_back10(a, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, ...)
 	local t, n = a[1], a[2]
 
 	t[n + 1] = item1
@@ -313,7 +313,7 @@ local function array_push_back10(a, item1, item2, item3, item4, item5, item6, it
 	a[2] = n + 10
 end
 
-local function array_push_back11(a, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11)
+local function array_push_back11(a, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, ...)
 	local t, n = a[1], a[2]
 
 	t[n + 1] = item1
@@ -330,7 +330,7 @@ local function array_push_back11(a, item1, item2, item3, item4, item5, item6, it
 	a[2] = n + 11
 end
 
-local function array_push_back12(a, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12)
+local function array_push_back12(a, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12, ...)
 	local t, n = a[1], a[2]
 
 	t[n + 1] = item1
@@ -348,7 +348,7 @@ local function array_push_back12(a, item1, item2, item3, item4, item5, item6, it
 	a[2] = n + 12
 end
 
-local function array_push_back13(a, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12, item13)
+local function array_push_back13(a, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12, item13, ...)
 	local t, n = a[1], a[2]
 
 	t[n + 1] = item1
@@ -367,7 +367,7 @@ local function array_push_back13(a, item1, item2, item3, item4, item5, item6, it
 	a[2] = n + 13
 end
 
-local function array_push_back14(a, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12, item13, item14)
+local function array_push_back14(a, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12, item13, item14, ...)
 	local t, n = a[1], a[2]
 
 	t[n + 1] = item1
@@ -387,7 +387,7 @@ local function array_push_back14(a, item1, item2, item3, item4, item5, item6, it
 	a[2] = n + 14
 end
 
-local function array_push_back15(a, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12, item13, item14, item15)
+local function array_push_back15(a, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12, item13, item14, item15, ...)
 	local t, n = a[1], a[2]
 
 	t[n + 1] = item1
@@ -406,6 +406,28 @@ local function array_push_back15(a, item1, item2, item3, item4, item5, item6, it
 	t[n + 14] = item14
 	t[n + 15] = item15
 	a[2] = n + 15
+end
+
+local function array_push_back16(a, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12, item13, item14, item15, item16, ...)
+	local t, n = a[1], a[2]
+
+	t[n + 1] = item1
+	t[n + 2] = item2
+	t[n + 3] = item3
+	t[n + 4] = item4
+	t[n + 5] = item5
+	t[n + 6] = item6
+	t[n + 7] = item7
+	t[n + 8] = item8
+	t[n + 9] = item9
+	t[n + 10] = item10
+	t[n + 11] = item11
+	t[n + 12] = item12
+	t[n + 13] = item13
+	t[n + 14] = item14
+	t[n + 15] = item15
+	t[n + 16] = item16
+	a[2] = n + 16
 end
 
 local array_push_back_table_lut = {
@@ -623,6 +645,7 @@ local a = {
 	push_back13 = array_push_back13,
 	push_back14 = array_push_back14,
 	push_back15 = array_push_back15,
+	push_back16 = array_push_back16,
 	push_back_table = array_push_back_table,
 	insert_at = array_insert_at,
 	insert_sorted = array_insert_sorted,

@@ -496,7 +496,7 @@ local scenegraph_definition = {
 		parent = "perk_title_divider",
 		vertical_alignment = "bottom",
 		size = {
-			420,
+			410,
 			1,
 		},
 		position = {
@@ -510,7 +510,7 @@ local scenegraph_definition = {
 		parent = "career_perk_1",
 		vertical_alignment = "center",
 		size = {
-			420,
+			410,
 			1,
 		},
 		position = {
@@ -524,7 +524,7 @@ local scenegraph_definition = {
 		parent = "career_perk_2",
 		vertical_alignment = "center",
 		size = {
-			420,
+			410,
 			1,
 		},
 		position = {

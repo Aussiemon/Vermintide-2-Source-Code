@@ -7,6 +7,7 @@ local full_size = {
 	1080,
 }
 local radu_offset = 200
+local ALLOW_BOON_REMOVAL = true
 local scenegraph_definition = {
 	root = {
 		is_root = true,
@@ -196,7 +197,21 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			15,
+			20,
+		},
+	},
+	bottom_corner_left_top = {
+		horizontal_alignment = "left",
+		parent = "window",
+		vertical_alignment = "top",
+		size = {
+			110,
+			110,
+		},
+		position = {
+			0,
+			0,
+			20,
 		},
 	},
 	options_background_mask = {
@@ -255,6 +270,62 @@ local scenegraph_definition = {
 			1,
 		},
 	},
+	options_background_mask_left = {
+		horizontal_alignment = "left",
+		parent = "window",
+		vertical_alignment = "center",
+		size = {
+			585,
+			full_size[2],
+		},
+		position = {
+			-225,
+			0,
+			6,
+		},
+	},
+	options_background_left = {
+		horizontal_alignment = "left",
+		parent = "window",
+		vertical_alignment = "center",
+		size = {
+			350,
+			full_size[2],
+		},
+		position = {
+			0,
+			0,
+			1,
+		},
+	},
+	options_window_edge_left = {
+		horizontal_alignment = "left",
+		parent = "options_background_left",
+		vertical_alignment = "center",
+		size = {
+			0,
+			full_size[2],
+		},
+		position = {
+			-225,
+			0,
+			6,
+		},
+	},
+	options_background_edge_left = {
+		horizontal_alignment = "left",
+		parent = "options_window_edge_left",
+		vertical_alignment = "center",
+		size = {
+			126,
+			full_size[2],
+		},
+		position = {
+			443,
+			0,
+			-5,
+		},
+	},
 	power_up_root = {
 		horizontal_alignment = "center",
 		parent = "options_background",
@@ -281,6 +352,50 @@ local scenegraph_definition = {
 			70 + radu_offset,
 			60,
 			10,
+		},
+	},
+	own_power_up_root = {
+		horizontal_alignment = "left",
+		parent = "window",
+		vertical_alignment = "top",
+		size = {
+			64,
+			64,
+		},
+		position = {
+			45,
+			-90,
+			7,
+		},
+	},
+	own_power_up_anchor = {
+		parent = "own_power_up_root",
+		position = {
+			0,
+			0,
+			0,
+		},
+	},
+	scrollbar_anchor = {
+		horizontal_alignment = "left",
+		parent = "window",
+		vertical_alignment = "top",
+		position = {
+			50,
+			-90,
+			7,
+		},
+		size = {
+			200,
+			735,
+		},
+	},
+	own_power_up_window = {
+		parent = "scrollbar_anchor",
+		position = {
+			-20,
+			0,
+			0,
 		},
 	},
 	top_options_background = {
@@ -325,6 +440,30 @@ local scenegraph_definition = {
 			1,
 		},
 	},
+	top_options_background_left = {
+		horizontal_alignment = "left",
+		parent = "options_window_edge_left",
+		vertical_alignment = "top",
+		size = {
+			351,
+			111,
+		},
+		position = {
+			225,
+			0,
+			10,
+		},
+	},
+	boons_text = {
+		horizontal_alignment = "center",
+		parent = "top_options_background_left",
+		vertical_alignment = "center",
+		position = {
+			0,
+			0,
+			1,
+		},
+	},
 	bottom_options_background = {
 		horizontal_alignment = "right",
 		parent = "options_window_edge",
@@ -335,6 +474,20 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
+			0,
+			10,
+		},
+	},
+	bottom_options_background_left = {
+		horizontal_alignment = "left",
+		parent = "options_window_edge_left",
+		vertical_alignment = "bottom",
+		size = {
+			351,
+			111,
+		},
+		position = {
+			225,
 			0,
 			10,
 		},
@@ -390,7 +543,7 @@ local scenegraph_definition = {
 			0,
 		},
 		position = {
-			75,
+			0,
 			-120,
 			6,
 		},
@@ -404,7 +557,7 @@ local scenegraph_definition = {
 			0,
 		},
 		position = {
-			100,
+			120,
 			150,
 			6,
 		},
@@ -418,7 +571,7 @@ local scenegraph_definition = {
 			0,
 		},
 		position = {
-			0,
+			-280,
 			-220 * 0,
 			1,
 		},
@@ -432,7 +585,7 @@ local scenegraph_definition = {
 			0,
 		},
 		position = {
-			0,
+			-280,
 			-220,
 			1,
 		},
@@ -446,7 +599,7 @@ local scenegraph_definition = {
 			0,
 		},
 		position = {
-			0,
+			-280,
 			-440,
 			1,
 		},
@@ -507,6 +660,49 @@ local scenegraph_definition = {
 			10,
 		},
 	},
+	power_up_description_root = {
+		size = {
+			484,
+			194,
+		},
+		position = {
+			0,
+			0,
+			UILayer.end_screen + 200,
+		},
+	},
+	blocker = {
+		parent = "window",
+		size = {
+			500,
+			1080,
+		},
+		position = {
+			-500,
+			0,
+			400,
+		},
+	},
+	input_helper_text = {
+		horizontal_alignment = "center",
+		parent = "window",
+		vertical_alignment = "top",
+	},
+}
+local power_up_widget_size = {
+	64,
+	64,
+}
+local power_up_widget_spacing = {
+	20,
+	10,
+}
+local max_power_up_amount = 100
+local max_height = 0
+local sine_strength = 0
+local offset = {
+	50,
+	0,
 }
 local shrine_title_text_style = {
 	dynamic_font_size = true,
@@ -556,6 +752,26 @@ local coins_text_style = {
 		2,
 	},
 }
+local boons_text_style = {
+	dynamic_font_size = true,
+	font_size = 28,
+	font_type = "hell_shark_header",
+	horizontal_alignment = "left",
+	localize = true,
+	upper_case = true,
+	use_shadow = true,
+	vertical_alignment = "center",
+	text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+	offset = {
+		80,
+		15,
+		2,
+	},
+	area_size = {
+		326,
+		135,
+	},
+}
 local bottom_text_style = {
 	dynamic_font_size = true,
 	font_size = 28,
@@ -584,6 +800,21 @@ local hold_text_style = {
 	offset = {
 		0,
 		0,
+		2,
+	},
+}
+local input_help_text_style = {
+	font_size = 35,
+	font_type = "hell_shark_header",
+	horizontal_alignment = "center",
+	localize = true,
+	upper_case = true,
+	use_shadow = true,
+	vertical_alignment = "top",
+	text_color = Colors.get_color_table_with_alpha("white", 255),
+	offset = {
+		0,
+		-50,
 		2,
 	},
 }
@@ -2613,16 +2844,6 @@ local widgets = {
 		0,
 	}),
 	window_background = UIWidgets.create_simple_rect("window", background_color),
-	bottom_corner_left = UIWidgets.create_simple_uv_texture("athanor_decoration_corner", {
-		{
-			0,
-			1,
-		},
-		{
-			1,
-			0,
-		},
-	}, "bottom_corner_left"),
 	top_options_background = UIWidgets.create_simple_texture("athanor_decoration_headline", "top_options_background"),
 	options_background_edge = UIWidgets.create_simple_texture("shrine_sidebar_background", "options_background_edge"),
 	options_background = UIWidgets.create_tiled_texture("options_background", "menu_frame_bg_01", {
@@ -2644,6 +2865,46 @@ local widgets = {
 			1,
 		},
 	}, "options_background_mask"),
+	top_options_background_left = UIWidgets.create_simple_uv_texture("athanor_decoration_headline", {
+		{
+			0.609375,
+			0,
+		},
+		{
+			0,
+			1,
+		},
+	}, "top_options_background_left", nil, nil, nil, nil, nil, scenegraph_definition.top_options_background_left.size),
+	options_background_edge_left = UIWidgets.create_simple_uv_texture("shrine_sidebar_background", {
+		{
+			1,
+			0,
+		},
+		{
+			0,
+			1,
+		},
+	}, "options_background_edge_left"),
+	options_background_left = UIWidgets.create_tiled_texture("options_background_left", "menu_frame_bg_01_mask2", {
+		960,
+		1080,
+	}, nil, true, {
+		255,
+		128,
+		128,
+		128,
+	}),
+	options_background_mask_left = UIWidgets.create_simple_uv_texture("shrine_sidebar_write_mask2", {
+		{
+			1,
+			0,
+		},
+		{
+			0.35,
+			1,
+		},
+	}, "options_background_mask_left"),
+	power_up_mask = UIWidgets.create_simple_texture("mask_rect", "own_power_up_window"),
 	options_background_bottom = UIWidgets.create_simple_uv_texture("athanor_decoration_headline", {
 		{
 			0,
@@ -2659,6 +2920,7 @@ local widgets = {
 	ready_button_tokens = create_token_holder("ready_button", scenegraph_definition.ready_button.size),
 	coins_icon = UIWidgets.create_simple_texture("deus_icons_coin", "coins_icon"),
 	coins_text = UIWidgets.create_simple_text("0", "coins_text", nil, nil, coins_text_style),
+	boons_text = UIWidgets.create_simple_text("menu_weave_forge_options_sub_title_properties_utility", "boons_text", nil, nil, boons_text_style),
 	screen_overlay = UIWidgets.create_simple_rect("blessing_root", {
 		0,
 		255,
@@ -2666,6 +2928,15 @@ local widgets = {
 		10,
 	}),
 	hold_to_buy_text = UIWidgets.create_simple_text("hold_to_buy", "hold_to_buy_text", nil, nil, hold_text_style),
+	power_up_description = UIWidgets.create_power_up("power_up_description_root", scenegraph_definition.power_up_description_root.size, true, ALLOW_BOON_REMOVAL),
+	blocker = UIWidgets.create_simple_rect("blocker", {
+		255,
+		0,
+		0,
+		0,
+	}),
+	portrait_input_helper_text = UIWidgets.create_simple_text("menu_description_show_team", "input_helper_text", nil, nil, input_help_text_style),
+	boon_input_helper_text = UIWidgets.create_simple_text("menu_description_show_boons", "input_helper_text", nil, nil, input_help_text_style),
 }
 local top_widgets = {
 	console_cursor = UIWidgets.create_console_cursor("console_cursor"),
@@ -2885,6 +3156,91 @@ local animations_definitions = {
 			end,
 		},
 	},
+	switch_to_portraits = {
+		{
+			end_progress = 0.2,
+			name = "animate_out",
+			start_progress = 0,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+
+				params.options_background_mask_left_start_pos = params.options_background_mask_left_start_pos or ui_scenegraph.options_background_mask_left.local_position[1]
+				params.options_background_left_start_pos = params.options_background_left_start_pos or ui_scenegraph.options_background_left.local_position[1]
+				ui_scenegraph.options_background_mask_left.local_position[1] = math.lerp(ui_scenegraph.options_background_mask_left.local_position[1], scenegraph_definition.options_background_mask_left.position[1] - 400, anim_progress)
+				ui_scenegraph.options_background_left.local_position[1] = math.lerp(ui_scenegraph.options_background_left.local_position[1], scenegraph_definition.options_background_left.position[1] - 400, anim_progress)
+				ui_scenegraph.own_power_up_anchor.local_position[1] = math.lerp(ui_scenegraph.own_power_up_anchor.local_position[1], scenegraph_definition.own_power_up_anchor.position[1] - 400, anim_progress)
+				ui_scenegraph.scrollbar_anchor.local_position[1] = math.lerp(ui_scenegraph.scrollbar_anchor.local_position[1], scenegraph_definition.scrollbar_anchor.position[1] - 400, anim_progress)
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.options_background_mask_left_start_pos = nil
+				params.options_background_left_start_pos = nil
+			end,
+		},
+		{
+			end_progress = 0.3,
+			name = "animate_in",
+			start_progress = 0.1,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+
+				for i = 2, 4 do
+					local entry = "player_" .. i
+
+					ui_scenegraph[entry].local_position[1] = math.lerp(ui_scenegraph[entry].local_position[1], scenegraph_definition[entry].position[1] + 400, anim_progress)
+				end
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+		},
+	},
+	switch_to_boons = {
+		{
+			end_progress = 0.2,
+			name = "animate_out",
+			start_progress = 0,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+
+				for i = 2, 4 do
+					local entry = "player_" .. i
+
+					ui_scenegraph[entry].local_position[1] = math.lerp(ui_scenegraph[entry].local_position[1], scenegraph_definition[entry].position[1], anim_progress)
+				end
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+		},
+		{
+			end_progress = 0.3,
+			name = "animate_in",
+			start_progress = 0.1,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+
+				ui_scenegraph.options_background_mask_left.local_position[1] = math.lerp(ui_scenegraph.options_background_mask_left.local_position[1], scenegraph_definition.options_background_mask_left.position[1], anim_progress)
+				ui_scenegraph.options_background_left.local_position[1] = math.lerp(ui_scenegraph.options_background_left.local_position[1], scenegraph_definition.options_background_left.position[1], anim_progress)
+				ui_scenegraph.own_power_up_anchor.local_position[1] = math.lerp(ui_scenegraph.own_power_up_anchor.local_position[1], scenegraph_definition.own_power_up_anchor.position[1], anim_progress)
+				ui_scenegraph.scrollbar_anchor.local_position[1] = math.lerp(ui_scenegraph.scrollbar_anchor.local_position[1], scenegraph_definition.scrollbar_anchor.position[1], anim_progress)
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+		},
+	},
 }
 local interaction_data = {
 	interaction_ongoing = false,
@@ -2926,6 +3282,50 @@ local purchase_interaction = {
 		interaction_data.interaction_ongoing = false
 	end,
 }
+local round_power_up_widget_data = {
+	background_icon = "button_frame_01",
+	width = power_up_widget_size[1],
+	icon_size = {
+		35,
+		35,
+	},
+	icon_offset = {
+		15.5,
+		14,
+		1,
+	},
+	background_icon_size = {
+		65,
+		65,
+	},
+	background_icon_offset = {
+		0,
+		0,
+		-1,
+	},
+}
+local rectangular_power_up_widget_data = {
+	background_icon = "button_frame_01",
+	width = power_up_widget_size[1],
+	icon_size = {
+		58,
+		58,
+	},
+	icon_offset = {
+		5,
+		5,
+		0,
+	},
+	background_icon_size = {
+		65,
+		65,
+	},
+	background_icon_offset = {
+		0,
+		0,
+		1,
+	},
+}
 
 return {
 	scenegraph_definition = scenegraph_definition,
@@ -2943,4 +3343,10 @@ return {
 	interaction_data = interaction_data,
 	purchase_interaction = purchase_interaction,
 	animations_definitions = animations_definitions,
+	max_power_up_amount = max_power_up_amount,
+	round_power_up_widget_data = round_power_up_widget_data,
+	rectangular_power_up_widget_data = rectangular_power_up_widget_data,
+	power_up_widget_size = power_up_widget_size,
+	power_up_widget_spacing = power_up_widget_spacing,
+	allow_boon_removal = ALLOW_BOON_REMOVAL,
 }

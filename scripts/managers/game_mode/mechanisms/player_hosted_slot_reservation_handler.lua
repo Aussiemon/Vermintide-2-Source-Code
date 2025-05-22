@@ -7,10 +7,16 @@ local empty_party_slot = {
 	reserved = false,
 }
 
-PlayerHostedSlotReservationHandler.init = function (self, mechanism_manager, party_settings)
+PlayerHostedSlotReservationHandler.init = function (self, party_settings, owner, reservation_handler_type)
+	self._owner_peer_id = owner
+	self._reservation_handler_type = reservation_handler_type
 	self._group_leaders = {}
+	self._peer_id_to_party_id = {}
+	self._reserved_peers = {}
 
-	self:update_slot_settings(party_settings)
+	if party_settings then
+		self:update_slot_settings(party_settings)
+	end
 
 	self._party_manager = Managers.party
 	self._pending_peer_informations = {}
@@ -22,24 +28,36 @@ PlayerHostedSlotReservationHandler.init = function (self, mechanism_manager, par
 
 	self._synced = false
 
-	local network_handler = mechanism_manager:network_handler()
+	local network_handler = Managers.mechanism:network_handler()
 
 	if network_handler then
 		self:request_slot_reservation_sync()
 
-		if network_handler.is_server then
-			self:try_reserve_slots(Network.peer_id(), network_handler:active_peers())
+		local peer_id = Network.peer_id()
+
+		if network_handler.is_server and self._owner_peer_id == peer_id then
+			local active_peers = network_handler:active_peers()
+
+			active_peers = table.is_empty(active_peers) and {
+				Network.peer_id(),
+			} or active_peers
+
+			self:try_reserve_slots(Network.peer_id(), active_peers)
 		end
 	end
 
 	self._dangling_peers = {}
 end
 
+PlayerHostedSlotReservationHandler.set_reservation_handler_type = function (self, new_type)
+	self._reservation_handler_type = new_type
+end
+
 PlayerHostedSlotReservationHandler.update_slot_settings = function (self, party_settings)
 	self._max_party_slots = 0
 	self._num_slots_total = 0
-	self._peer_id_to_party_id = self._peer_id_to_party_id or {}
-	self._reserved_peers = self._reserved_peers or {}
+
+	local num_parties = 0
 
 	for _, party_data in pairs(party_settings) do
 		if party_data.game_participating then
@@ -47,6 +65,8 @@ PlayerHostedSlotReservationHandler.update_slot_settings = function (self, party_
 			local num_slots = party_data.num_slots
 
 			self:_expand(party_id, num_slots)
+
+			num_parties = math.max(num_parties, party_id)
 
 			for i = 1, #self._reserved_peers[party_id] do
 				local slot_data = self._reserved_peers[party_id][i]
@@ -60,7 +80,7 @@ PlayerHostedSlotReservationHandler.update_slot_settings = function (self, party_
 
 	local dangling_peers = {}
 
-	for party_id = #party_settings + 1, #self._reserved_peers do
+	for party_id = num_parties + 1, #self._reserved_peers do
 		local party_data = self._reserved_peers[party_id]
 
 		for slot_i = 1, #party_data do
@@ -80,7 +100,7 @@ PlayerHostedSlotReservationHandler.update_slot_settings = function (self, party_
 		local peer_id = dangling_peers[i]
 		local found = false
 
-		for party_id = 1, #party_settings do
+		for party_id = 1, num_parties do
 			local party_data = self._reserved_peers[party_id]
 
 			for slot_i = 1, #party_data do
@@ -103,7 +123,7 @@ PlayerHostedSlotReservationHandler.update_slot_settings = function (self, party_
 		end
 	end
 
-	for party_id = #party_settings + 1, #self._reserved_peers do
+	for party_id = num_parties + 1, #self._reserved_peers do
 		assert(table.is_empty(table.select_array(self._reserved_peers, function (_, slot_data)
 			return slot_data.peer_id
 		end)), "[PlayerHostedSlotReservationHandler] Dangling peers remain in the slot reservation handler")
@@ -176,26 +196,6 @@ PlayerHostedSlotReservationHandler.handle_dangling_peers = function (self)
 			self._dangling_peers[peer_id] = nil
 		end
 	end
-end
-
-PlayerHostedSlotReservationHandler.shrink = function (self)
-	local force_disconnect_at_t = Managers.time:time("main") + 2
-
-	for party_id, slots in pairs(self._reserved_peers) do
-		for slot_id, slot_data in pairs(slots) do
-			if slot_data.reserved and slot_data.friend_party_leader ~= Network.peer_id() then
-				local peer_id = slot_data.peer_id
-
-				self:_remove_peer_reservation(peer_id)
-
-				self._dangling_peers[peer_id] = force_disconnect_at_t
-			end
-		end
-	end
-
-	self:update_slot_settings({
-		self._party_manager:parties()[1],
-	})
 end
 
 PlayerHostedSlotReservationHandler.num_slots_total = function (self)
@@ -348,6 +348,7 @@ PlayerHostedSlotReservationHandler._update_reservations = function (self)
 end
 
 PlayerHostedSlotReservationHandler.remove_peer_reservations = function (self, peer_id, force_remove_peers)
+	local update_lobby
 	local peers_to_remove = self._group_leaders[peer_id]
 
 	if peers_to_remove then
@@ -368,11 +369,17 @@ PlayerHostedSlotReservationHandler.remove_peer_reservations = function (self, pe
 		for peer_id, _ in pairs(peers_to_remove) do
 			self:_remove_peer_reservation(peer_id)
 		end
+
+		update_lobby = true
 	else
-		self:_remove_peer_reservation(peer_id)
+		local successful_removal = self:_remove_peer_reservation(peer_id)
+
+		update_lobby = successful_removal
 	end
 
-	self:_update_reservations()
+	if update_lobby then
+		self:_update_reservations()
+	end
 end
 
 PlayerHostedSlotReservationHandler.network_context_created = function (self, lobby, server_peer_id, own_peer_id, is_server, network_handler)
@@ -399,11 +406,9 @@ PlayerHostedSlotReservationHandler._remove_peer_reservation = function (self, pe
 	if self._dangling_peers[peer_id] then
 		self._dangling_peers[peer_id] = nil
 
-		return
+		return false
 	elseif not peer_party_id then
-		Application.warning(string.format("[PlayerHostedSlotReservationHandler] No reserved slot was found for peer %q", peer_id))
-
-		return
+		return false
 	else
 		local removed_peer = false
 		local party_slots = self._reserved_peers[peer_party_id]
@@ -426,7 +431,7 @@ PlayerHostedSlotReservationHandler._remove_peer_reservation = function (self, pe
 		if is_hosting and removed_peer then
 			self._party_manager:server_remove_friend_party_peer(peer_id)
 		elseif not removed_peer then
-			Crashify.print_exception("[PlayerHostedSlotReservationHandler]", "Tried removing peer %s but was not reserved to begin with", peer_id)
+			-- Nothing
 		end
 
 		self._peer_id_to_party_id[peer_id] = nil
@@ -442,6 +447,8 @@ PlayerHostedSlotReservationHandler._remove_peer_reservation = function (self, pe
 		end
 
 		self._group_leaders[peer_id] = nil
+
+		return removed_peer
 	end
 end
 
@@ -556,12 +563,13 @@ PlayerHostedSlotReservationHandler.update_slots = function (self, reserved_peers
 			printf("[PlayerHostedSlotReservationHandler] Sending update to clients (%s)", formatted)
 		end
 
+		local handler_type_id = NetworkLookup.reservation_handler_types[self._reservation_handler_type]
 		local network_handler = Managers.mechanism:network_handler()
 		local match_handler = network_handler:get_match_handler()
 
 		match_handler:send_rpc_down_if("rpc_sync_vs_custom_game_slot_data", function (peer_id)
 			return table.find(reserved_peers, peer_id)
-		end, reserved_peers, reserved_peers_party_ids, friend_party_ids, party_leaders)
+		end, self._owner_peer_id, handler_type_id, reserved_peers, reserved_peers_party_ids, friend_party_ids, party_leaders)
 	end
 end
 
@@ -603,15 +611,16 @@ PlayerHostedSlotReservationHandler.slot_reservation_sync_requested = function (s
 	local reserved_peers, party_ids, friend_party_ids, party_leaders = self:_build_slot_info()
 
 	if not table.find(reserved_peers, requester_peer_id) then
-		printf("[PlayerHostedSlotReservationHandler] Non reserved peer %s requested a slot reservation sync.")
+		printf("[PlayerHostedSlotReservationHandler] Non reserved peer %s requested a slot reservation sync.", requester_peer_id)
 
 		return
 	end
 
+	local handler_type_id = NetworkLookup.reservation_handler_types[self._reservation_handler_type]
 	local network_handler = Managers.mechanism:network_handler()
 	local match_handler = network_handler:get_match_handler()
 
-	match_handler:send_rpc("rpc_sync_vs_custom_game_slot_data", requester_peer_id, reserved_peers, party_ids, friend_party_ids, party_leaders)
+	match_handler:send_rpc("rpc_sync_vs_custom_game_slot_data", requester_peer_id, self._owner_peer_id, handler_type_id, reserved_peers, party_ids, friend_party_ids, party_leaders)
 end
 
 PlayerHostedSlotReservationHandler.request_slot_reservation_sync = function (self)

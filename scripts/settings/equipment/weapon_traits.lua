@@ -87,6 +87,9 @@ local buff_tweak_data = {
 	trait_necklace_heal_self_on_heal_other = {
 		multiplier = 0.5,
 	},
+	trait_necklace_heal_share = {
+		multiplier = 0.2,
+	},
 	trait_necklace_increased_healing_received = {
 		multiplier = 0.3,
 	},
@@ -380,6 +383,17 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				stat_buff = "heal_self_on_heal_other",
+			},
+		},
+	},
+	trait_necklace_heal_share = {
+		buffs = {
+			{
+				buff_func = "heal_other_players_percent_at_range",
+				event = "on_healed_consumeable",
+				multiplier = 0.2,
+				name = "necklace_heal_share",
+				range = 10,
 			},
 		},
 	},
@@ -724,15 +738,15 @@ WeaponTraits.traits = {
 		},
 	},
 	necklace_heal_self_on_heal_other = {
-		advanced_description = "description_trait_necklace_heal_self_on_heal_other",
-		buff_name = "trait_necklace_heal_self_on_heal_other",
+		advanced_description = "conqueror_desc_3",
+		buff_name = "trait_necklace_heal_share",
 		buffer = "server",
 		display_name = "trait_necklace_heal_self_on_heal_other",
 		icon = "necklace_heal_self_on_heal_other",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.trait_necklace_heal_self_on_heal_other.multiplier,
+				value = buff_tweak_data.trait_necklace_heal_share.multiplier,
 			},
 		},
 	},

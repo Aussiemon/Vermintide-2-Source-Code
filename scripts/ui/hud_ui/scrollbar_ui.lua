@@ -11,7 +11,7 @@ local RESET_TIME = 5
 local SCROLL_LENGTH = 150
 local SCROLL_LENGTH_HORIZONTAL = 300
 
-ScrollbarUI.init = function (self, ui_scenegraph, scroll_area_scenegraph_id, scroll_area_anchor_scenegraph_id, excess_area, enable_auto_scroll, optional_scroll_area_hotspot_widget, horizontal_scrollbar)
+ScrollbarUI.init = function (self, ui_scenegraph, scroll_area_scenegraph_id, scroll_area_anchor_scenegraph_id, excess_area, enable_auto_scroll, optional_scroll_area_hotspot_widget, optional_is_horizontal_scrollbar, optional_left_aligned)
 	self._scroll_area_scenegraph_id = scroll_area_scenegraph_id
 	self._scroll_area_anchor_scenegraph_id = scroll_area_anchor_scenegraph_id
 	self._scroll_area_hotspot_widget = optional_scroll_area_hotspot_widget
@@ -19,7 +19,8 @@ ScrollbarUI.init = function (self, ui_scenegraph, scroll_area_scenegraph_id, scr
 	self._ui_scenegraph = ui_scenegraph
 	self._auto_scroll_enabled = enable_auto_scroll
 	self._auto_scroll_enabled_at_start = enable_auto_scroll
-	self._horizontal_scrollbar = horizontal_scrollbar
+	self._horizontal_scrollbar = optional_is_horizontal_scrollbar
+	self._left_aligned = optional_left_aligned
 
 	self:_create_ui_elements()
 end
@@ -33,7 +34,7 @@ ScrollbarUI._create_ui_elements = function (self)
 
 	local setup_func = definitions.setup_func
 
-	self._widgets, self._widgets_by_name = setup_func(self._ui_scenegraph, self._scroll_area_anchor_scenegraph_id, self._excess_area, self._horizontal_scrollbar)
+	self._widgets, self._widgets_by_name = setup_func(self._ui_scenegraph, self._scroll_area_anchor_scenegraph_id, self._excess_area, self._horizontal_scrollbar, self._left_aligned)
 
 	if not self._scroll_area_hotspot_widget then
 		local widget_definition = UIWidgets.create_simple_hotspot(self._scroll_area_anchor_scenegraph_id)
@@ -58,6 +59,8 @@ ScrollbarUI.force_update_progress = function (self, offset_index)
 	local offset = self._ui_scenegraph[self._scroll_area_scenegraph_id].local_position[offset_index]
 
 	self._progress = math.inv_lerp(0, self._excess_area, math.abs(offset))
+
+	table.clear(self._ui_animations)
 end
 
 ScrollbarUI._auto_scroll = function (self, dt, t)
@@ -85,6 +88,18 @@ end
 
 ScrollbarUI.disable_input = function (self, disable)
 	self._input_disabled = disable
+
+	local widget = self._widgets_by_name.scrollbar
+
+	widget.content.gamepad_input_disabled = disable
+end
+
+ScrollbarUI.disable_gamepad_input = function (self, disable)
+	self._gamepad_input_disabled = disable
+
+	local widget = self._widgets_by_name.scrollbar
+
+	widget.content.gamepad_input_disabled = disable
 end
 
 ScrollbarUI._update_input = function (self, dt, t, input_service, ui_renderer)
@@ -111,7 +126,7 @@ ScrollbarUI._update_input = function (self, dt, t, input_service, ui_renderer)
 	local scroll_value = 0
 
 	if self._horizontal_scrollbar then
-		if gamepad_active then
+		if gamepad_active and not self._gamepad_input_disabled then
 			local scroll_axis = input_service:get("gamepad_right_axis")
 
 			scroll_value = scroll_axis and -scroll_axis[1] or 0
@@ -120,7 +135,7 @@ ScrollbarUI._update_input = function (self, dt, t, input_service, ui_renderer)
 
 			scroll_value = scroll_axis and scroll_axis[2] or 0
 		end
-	elseif gamepad_active then
+	elseif gamepad_active and not self._gamepad_input_disabled then
 		local scroll_axis = input_service:get("gamepad_right_axis")
 
 		scroll_value = scroll_axis and scroll_axis[2] or 0

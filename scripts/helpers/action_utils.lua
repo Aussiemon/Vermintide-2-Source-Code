@@ -495,7 +495,7 @@ ActionUtils.spawn_pickup_projectile = function (world, weapon_unit, projectile_u
 			local limited_item_id = limited_item_extension.id
 			local spawner_unit = limited_item_extension.spawner_unit
 			local level = LevelHelper:current_level(world)
-			local spawner_unit_id = Level.unit_index(level, spawner_unit)
+			local spawner_unit_id = spawner_unit and Level.unit_index(level, spawner_unit) or 0
 
 			projectile_unit_template_name_id = NetworkLookup.go_types.explosive_pickup_projectile_unit_limited
 
@@ -511,7 +511,7 @@ ActionUtils.spawn_pickup_projectile = function (world, weapon_unit, projectile_u
 		local limited_item_id = limited_item_extension.id
 		local spawner_unit = limited_item_extension.spawner_unit
 		local level = LevelHelper:current_level(world)
-		local spawner_unit_id = Level.unit_index(level, spawner_unit)
+		local spawner_unit_id = spawner_unit and Level.unit_index(level, spawner_unit) or 0
 
 		projectile_unit_template_name_id = NetworkLookup.go_types.pickup_projectile_unit_limited
 

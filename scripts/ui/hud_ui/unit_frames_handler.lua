@@ -49,6 +49,8 @@ UnitFramesHandler.init = function (self, parent, ingame_ui_context)
 	self._unit_frame_index_by_ui_id = {}
 	self.unit_frame_by_player = {}
 	self._cached_versus_level = {}
+	self._insignia_visibility = Application.user_setting("toggle_versus_level_in_all_game_modes")
+	self._insignia_dirty_id = 1
 	self._is_spectator = false
 	self._spectated_player = nil
 	self._spectated_player_unit = nil
@@ -59,6 +61,7 @@ UnitFramesHandler.init = function (self, parent, ingame_ui_context)
 
 	event_manager:register(self, "add_respawn_counter_event", "add_respawn_counter_event")
 	event_manager:register(self, "on_spectator_target_changed", "on_spectator_target_changed")
+	event_manager:register(self, "on_game_options_changed", "on_game_options_changed")
 
 	if self._is_dark_pact then
 		event_manager:register(self, "add_damage_feedback_event", "add_damage_feedback_event")
@@ -141,6 +144,16 @@ UnitFramesHandler.on_spectator_target_changed = function (self, spectated_player
 	self:_create_enemy_party_members_unit_frames()
 	self:_align_party_member_frames()
 	self:set_visible(true)
+end
+
+UnitFramesHandler.on_game_options_changed = function (self)
+	local old_insignia_visibility = self._insignia_visibility
+	local insignia_visibility = Application.user_setting("toggle_versus_level_in_all_game_modes")
+
+	if old_insignia_visibility ~= insignia_visibility then
+		self._insignia_visibility = insignia_visibility
+		self._insignia_dirty_id = self._insignia_dirty_id + 1
+	end
 end
 
 UnitFramesHandler.unit_frame_amount = function (self)
@@ -820,10 +833,12 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 		dirty = true
 	end
 
-	if data.versus_level ~= versus_level then
+	if data.versus_level ~= versus_level or data.insignia_dirty_id ~= self._insignia_dirty_id then
 		data.versus_level = versus_level
 
 		widget:set_versus_level(versus_level)
+
+		data.insignia_dirty_id = self._insignia_dirty_id
 	end
 
 	if data.display_name ~= display_name then
@@ -1113,6 +1128,7 @@ UnitFramesHandler.destroy = function (self)
 
 	event_manager:unregister("add_respawn_counter_event", self)
 	event_manager:unregister("on_spectator_target_changed", self)
+	event_manager:unregister("on_game_options_changed", self)
 
 	if self._is_dark_pact then
 		event_manager:unregister("add_damage_feedback_event", self)

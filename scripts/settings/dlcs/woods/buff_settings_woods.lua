@@ -670,7 +670,7 @@ settings.buff_function_templates = {
 				DamageUtils.heal_network(owner_unit, owner_unit, hp_to_gain, "career_passive")
 
 				if thp_to_lose - hp_to_gain > 0 then
-					DamageUtils.add_damage_network(owner_unit, owner_unit, thp_to_lose - hp_to_gain, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, owner_unit)
+					DamageUtils.add_damage_network(owner_unit, owner_unit, thp_to_lose - hp_to_gain, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, owner_unit, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 				end
 			end
 		end

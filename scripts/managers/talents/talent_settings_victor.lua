@@ -1257,9 +1257,9 @@ TalentTrees = TalentTrees or {}
 TalentTrees.witch_hunter = {
 	{
 		{
-			"victor_zealot_reaper",
-			"victor_zealot_bloodlust_2",
-			"victor_zealot_heal_share",
+			"victor_zealot_thp_linesman",
+			"victor_zealot_thp_smiter",
+			"victor_zealot_thp_tank",
 		},
 		{
 			"victor_zealot_attack_speed_on_health_percent",
@@ -1289,9 +1289,9 @@ TalentTrees.witch_hunter = {
 	},
 	{
 		{
-			"victor_bountyhunter_regrowth_2",
-			"victor_bountyhunter_bloodlust_2",
-			"victor_bountyhunter_heal_share",
+			"victor_bountyhunter_thp_ninjafencer",
+			"victor_bountyhunter_thp_smiter",
+			"victor_bountyhunter_thp_linesman",
 		},
 		{
 			"victor_bountyhunter_debuff_defence_on_crit",
@@ -1321,9 +1321,9 @@ TalentTrees.witch_hunter = {
 	},
 	{
 		{
-			"victor_witchhunter_regrowth_2",
-			"victor_witchhunter_reaper",
-			"victor_witchhunter_heal_share",
+			"victor_witchhunter_thp_ninjafencer",
+			"victor_witchhunter_thp_linesman",
+			"victor_witchhunter_thp_smiter",
 		},
 		{
 			"victor_witchhunter_guaranteed_crit_on_timed_block",
@@ -1398,6 +1398,42 @@ Talents.witch_hunter = {
 		},
 		buffs = {
 			"victor_zealot_conqueror",
+		},
+	},
+	{
+		buffer = "server",
+		icon = "victor_zealot_regrowth",
+		name = "victor_zealot_thp_linesman",
+		num_ranks = 1,
+		display_name = BuffUtils.get_buff_template("thp_linesman", "adventure").buffs[1].display_name,
+		description = BuffUtils.get_buff_template("thp_linesman", "adventure").buffs[1].description,
+		description_values = BuffUtils.get_buff_template("thp_linesman", "adventure").buffs[1].description_values,
+		buffs = {
+			"thp_linesman",
+		},
+	},
+	{
+		buffer = "server",
+		icon = "victor_zealot_bloodlust",
+		name = "victor_zealot_thp_smiter",
+		num_ranks = 1,
+		display_name = BuffUtils.get_buff_template("thp_smiter", "adventure").buffs[1].display_name,
+		description = BuffUtils.get_buff_template("thp_smiter", "adventure").buffs[1].description,
+		description_values = BuffUtils.get_buff_template("thp_smiter", "adventure").buffs[1].description_values,
+		buffs = {
+			"thp_smiter",
+		},
+	},
+	{
+		buffer = "server",
+		icon = "victor_zealot_conqueror",
+		name = "victor_zealot_thp_tank",
+		num_ranks = 1,
+		display_name = BuffUtils.get_buff_template("thp_tank", "adventure").buffs[1].display_name,
+		description = BuffUtils.get_buff_template("thp_tank", "adventure").buffs[1].description,
+		description_values = BuffUtils.get_buff_template("thp_tank", "adventure").buffs[1].description_values,
+		buffs = {
+			"thp_tank",
 		},
 	},
 	{
@@ -1698,6 +1734,42 @@ Talents.witch_hunter = {
 		},
 		buffs = {
 			"victor_bountyhunter_conqueror",
+		},
+	},
+	{
+		buffer = "server",
+		icon = "victor_bountyhunter_regrowth",
+		name = "victor_bountyhunter_thp_ninjafencer",
+		num_ranks = 1,
+		display_name = BuffUtils.get_buff_template("thp_ninjafencer", "adventure").buffs[1].display_name,
+		description = BuffUtils.get_buff_template("thp_ninjafencer", "adventure").buffs[1].description,
+		description_values = BuffUtils.get_buff_template("thp_ninjafencer", "adventure").buffs[1].description_values,
+		buffs = {
+			"thp_ninjafencer",
+		},
+	},
+	{
+		buffer = "server",
+		icon = "victor_bountyhunter_bloodlust",
+		name = "victor_bountyhunter_thp_smiter",
+		num_ranks = 1,
+		display_name = BuffUtils.get_buff_template("thp_smiter", "adventure").buffs[1].display_name,
+		description = BuffUtils.get_buff_template("thp_smiter", "adventure").buffs[1].description,
+		description_values = BuffUtils.get_buff_template("thp_smiter", "adventure").buffs[1].description_values,
+		buffs = {
+			"thp_smiter",
+		},
+	},
+	{
+		buffer = "server",
+		icon = "victor_bountyhunter_conqueror",
+		name = "victor_bountyhunter_thp_linesman",
+		num_ranks = 1,
+		display_name = BuffUtils.get_buff_template("thp_linesman", "adventure").buffs[1].display_name,
+		description = BuffUtils.get_buff_template("thp_linesman", "adventure").buffs[1].description,
+		description_values = BuffUtils.get_buff_template("thp_linesman", "adventure").buffs[1].description_values,
+		buffs = {
+			"thp_linesman",
 		},
 	},
 	{
@@ -2016,6 +2088,42 @@ Talents.witch_hunter = {
 		},
 		buffs = {
 			"victor_witchhunter_conqueror",
+		},
+	},
+	{
+		buffer = "server",
+		icon = "victor_bountyhunter_regrowth",
+		name = "victor_witchhunter_thp_ninjafencer",
+		num_ranks = 1,
+		display_name = BuffUtils.get_buff_template("thp_ninjafencer", "adventure").buffs[1].display_name,
+		description = BuffUtils.get_buff_template("thp_ninjafencer", "adventure").buffs[1].description,
+		description_values = BuffUtils.get_buff_template("thp_ninjafencer", "adventure").buffs[1].description_values,
+		buffs = {
+			"thp_ninjafencer",
+		},
+	},
+	{
+		buffer = "server",
+		icon = "victor_bountyhunter_conqueror",
+		name = "victor_witchhunter_thp_linesman",
+		num_ranks = 1,
+		display_name = BuffUtils.get_buff_template("thp_linesman", "adventure").buffs[1].display_name,
+		description = BuffUtils.get_buff_template("thp_linesman", "adventure").buffs[1].description,
+		description_values = BuffUtils.get_buff_template("thp_linesman", "adventure").buffs[1].description_values,
+		buffs = {
+			"thp_linesman",
+		},
+	},
+	{
+		buffer = "server",
+		icon = "victor_bountyhunter_bloodlust",
+		name = "victor_witchhunter_thp_smiter",
+		num_ranks = 1,
+		display_name = BuffUtils.get_buff_template("thp_smiter", "adventure").buffs[1].display_name,
+		description = BuffUtils.get_buff_template("thp_smiter", "adventure").buffs[1].description,
+		description_values = BuffUtils.get_buff_template("thp_smiter", "adventure").buffs[1].description_values,
+		buffs = {
+			"thp_smiter",
 		},
 	},
 	{

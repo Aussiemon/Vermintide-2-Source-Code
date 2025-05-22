@@ -62,10 +62,12 @@ BackendInterfaceTalentsPlayfab.refresh_bot_talents = function (self)
 	local backend_mirror = self._backend_mirror
 	local loadout_selection = PlayerData.loadout_selection or EMPTY_TABLE
 	local bot_equipment = loadout_selection.bot_equipment or EMPTY_TABLE
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+	local bot_loadout_allowed = InventorySettings.bot_loadout_allowed_mechanisms[mechanism_name]
 
 	for career_name, settings in pairs(CareerSettings) do
 		if settings.playfab_name then
-			local bot_loadout_index = bot_equipment[career_name]
+			local bot_loadout_index = bot_loadout_allowed and bot_equipment[career_name]
 
 			if bot_loadout_index then
 				local talent_string = backend_mirror:get_character_data(career_name, "talents", bot_loadout_index)

@@ -341,13 +341,28 @@ end
 
 AdventureMechanism.get_level_end_view = function (self)
 	local lobby = Managers.state.network:lobby()
-	local is_quickplay = lobby:lobby_data("quick_game") == "true"
+	local is_weave_quickplay = lobby:lobby_data("weave_quick_game") == "true"
 
-	if self._current_game_mode == WEAVE_GAME_MODE_KEY and not is_quickplay then
+	if self._current_game_mode == WEAVE_GAME_MODE_KEY and not is_weave_quickplay then
 		return "LevelEndViewWeave"
 	end
 
 	return "LevelEndView"
+end
+
+AdventureMechanism.get_level_end_view_packages = function (self)
+	local lobby = Managers.state.network:lobby()
+	local is_weave_quickplay = lobby:lobby_data("weave_quick_game") == "true"
+
+	if self._current_game_mode == WEAVE_GAME_MODE_KEY and not is_weave_quickplay then
+		return {
+			"resource_packages/levels/ui_end_screen_victory",
+		}
+	end
+
+	return {
+		"resource_packages/levels/ui_end_screen",
+	}
 end
 
 AdventureMechanism.game_round_ended = function (self, t, dt, reason)

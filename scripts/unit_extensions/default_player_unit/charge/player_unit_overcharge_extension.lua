@@ -229,7 +229,7 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 
 				damage_amount = buff_extension:apply_buffs_to_value(damage_amount, "vent_damage")
 
-				DamageUtils.add_damage_network(wielder, wielder, damage_amount, "torso", "overcharge", nil, Vector3(0, 1, 0), "overcharge", nil, nil, nil, nil, false, false, false, 0, 1)
+				DamageUtils.add_damage_network(wielder, wielder, damage_amount, "torso", "overcharge", nil, Vector3(0, 1, 0), "overcharge", nil, nil, nil, nil, false, false, false, 0, 1, nil, 1)
 			end
 
 			self.vent_damage_pool = 0

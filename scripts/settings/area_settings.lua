@@ -5,6 +5,7 @@ AreaSettings.helmgart = {
 	description_text = "area_selection_helmgart_description",
 	display_name = "area_selection_helmgart_name",
 	level_image = "area_icon_helmgart",
+	long_description_text = "area_selection_helmgart_description_long",
 	menu_sound_event = "Play_hud_menu_area_helmgart",
 	name = "helmgart",
 	sort_order = 1,

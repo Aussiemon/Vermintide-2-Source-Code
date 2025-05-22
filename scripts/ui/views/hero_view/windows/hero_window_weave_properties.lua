@@ -460,7 +460,7 @@ HeroWindowWeaveProperties._setup_menu_options = function (self, career_name, slo
 				local talent_data = TalentUtils.get_talent_by_id(hero_name, talent_id)
 				local required_forge_level = backend_interface_weaves:get_talent_required_forge_level(talent_name) or 0
 				local icon = talent_data and talent_data.icon or "icons_placeholder"
-				local title_text = talent_data and Localize(talent_data.name) or "Undefined"
+				local title_text = talent_data and Localize(talent_data.display_name or talent_data.name) or "Undefined"
 				local description_text = talent_data and UIUtils.get_talent_description(talent_data) or "Undefined"
 				local widget = UIWidget.init(widget_definition)
 				local entry = {
@@ -1733,7 +1733,7 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded, prev
 				presentation_data.value = cost_value
 
 				if tooltip_data then
-					tooltip_data.talent_title = talent_data and Localize(talent_data.name) or "n/a"
+					tooltip_data.talent_title = talent_data and Localize(talent_data.display_name or talent_data.name) or "n/a"
 					tooltip_data.sub_title = tooltip_slot_title .. " - " .. tooltip_slot_sub_title
 					tooltip_data.description = talent_data and UIUtils.get_talent_description(talent_data) or "n/a"
 					tooltip_data.input = localized_strings.slot_clear_input_description_talent

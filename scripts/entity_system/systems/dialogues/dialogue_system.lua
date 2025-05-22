@@ -371,7 +371,6 @@ local DUMMY_EVENT_DATA = {}
 
 DialogueSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = {
-		is_silenced = false,
 		user_memory = {},
 		context = {
 			health = 1,
@@ -484,16 +483,6 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 			local concept, source, test_query, test_user_context_list, test_global_context = unpack(event_data)
 
 			dialogue_system._tagquery_database:debug_test_query(concept, source, test_query, test_user_context_list, test_global_context)
-		end,
-		set_silenced = function (self, new_is_silenced_value)
-			local safe_is_silenced = new_is_silenced_value or false
-
-			if extension.is_silenced ~= safe_is_silenced then
-				extension.is_silenced = safe_is_silenced
-			end
-		end,
-		is_silenced = function (self)
-			return extension.is_silenced
 		end,
 	})
 
@@ -863,11 +852,12 @@ DialogueSystem._update_currently_playing_dialogues = function (self, dt)
 					ghost_mode_blocked = true
 				end
 
-				if extension.input:is_silenced() or ghost_mode_blocked then
+				if ghost_mode_blocked or ScriptUnit.has_extension(unit, "health_system") and not HEALTH_ALIVE[unit] then
 					if self._is_server then
 						local go_id, is_level_unit = Managers.state.network:game_object_or_level_id(unit)
 
-						Managers.state.network.network_transmit:send_rpc_all("rpc_interrupt_dialogue_event", go_id, is_level_unit)
+						self:rpc_interrupt_dialogue_event(0, go_id, is_level_unit)
+						Managers.state.network.network_transmit:send_rpc_clients("rpc_interrupt_dialogue_event", go_id, is_level_unit)
 					end
 
 					break
@@ -1033,10 +1023,6 @@ DialogueSystem.physics_async_update = function (self, context, t)
 				will_play = false
 			end
 
-			if extension.input:is_silenced() then
-				will_play = false
-			end
-
 			if will_play then
 				extension.used_query = query
 
@@ -1049,7 +1035,8 @@ DialogueSystem.physics_async_update = function (self, context, t)
 					local playing_unit = interrupt_dialogue.currently_playing_unit
 					local go_id, is_level_unit = network_manager:game_object_or_level_id(playing_unit)
 
-					network_manager.network_transmit:send_rpc_all("rpc_interrupt_dialogue_event", go_id, is_level_unit)
+					self:rpc_interrupt_dialogue_event(0, go_id, is_level_unit)
+					network_manager.network_transmit:send_rpc_clients("rpc_interrupt_dialogue_event", go_id, is_level_unit)
 				end
 
 				local go_id, is_level_unit = network_manager:game_object_or_level_id(dialogue_actor_unit)

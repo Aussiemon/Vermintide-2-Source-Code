@@ -244,6 +244,7 @@ ProcEvents = {
 	"on_controlled_unit_removed",
 	"on_controlled_unit_death",
 	"on_boon_granted",
+	"on_mutator_skull_picked_up",
 	"on_death",
 	"on_damage_dealt",
 	"on_block",
@@ -329,7 +330,7 @@ ProcFunctions = {
 		if ALIVE[owner_unit] and Managers.player.is_server then
 			local damage_amount = buff.bonus
 
-			DamageUtils.add_damage_network(owner_unit, owner_unit, damage_amount, "full", "buff", nil, Vector3(1, 0, 0), "buff")
+			DamageUtils.add_damage_network(owner_unit, owner_unit, damage_amount, "full", "buff", nil, Vector3(1, 0, 0), "buff", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 		end
 	end,
 	metal_mutator_stacks_on_hit = function (owner_unit, buff, params)
@@ -345,7 +346,7 @@ ProcFunctions = {
 				local breeds = buff.template.breeds
 
 				if table.contains(breeds, breed.name) then
-					DamageUtils.add_damage_network(hit_unit, owner_unit, damage_amount, "full", "metal_mutator", nil, Vector3(1, 0, 0), "buff")
+					DamageUtils.add_damage_network(hit_unit, owner_unit, damage_amount, "full", "metal_mutator", nil, Vector3(1, 0, 0), "buff", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 				end
 
 				current_stacks = 0
@@ -558,6 +559,195 @@ ProcFunctions = {
 				end
 
 				DamageUtils.heal_network(owner_unit, owner_unit, heal_amount, "heal_from_proc")
+			end
+		end
+	end,
+	thp_linesman_func = function (owner_unit, buff, params, world, param_order)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		if ALIVE[owner_unit] then
+			local attack_type = params[param_order.buff_attack_type]
+
+			if not attack_type or attack_type ~= "light_attack" and attack_type ~= "heavy_attack" then
+				return
+			end
+
+			local hit_unit = params[param_order.attacked_unit]
+			local breed = AiUtils.unit_breed(hit_unit)
+
+			if not breed then
+				return
+			end
+
+			local damage_amount = params[param_order.damage_amount]
+
+			if damage_amount > 0 then
+				local buff_template = buff.template
+				local base_value = buff_template.base_value
+				local target_number = params[param_order.target_index]
+
+				if target_number then
+					local target_dropoff = buff_template.target_dropoff
+					local max_targets = buff_template.max_targets
+
+					if target_dropoff < target_number then
+						base_value = base_value / buff_template.dropoff_divisor
+					end
+
+					if target_number <= max_targets then
+						local heal_amount = base_value
+
+						if script_data.show_player_health then
+							print(string.format("Linesman THP: Target %s gives %s THP", target_number, heal_amount))
+						end
+
+						DamageUtils.heal_network(owner_unit, owner_unit, heal_amount, "heal_from_proc")
+					end
+				end
+			end
+		end
+	end,
+	thp_ninjafencer_func = function (owner_unit, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local heal_amount = buff.bonus
+		local hit_unit = params[1]
+		local attack_type = params[2]
+		local hit_zone_name = params[3]
+		local target_number = params[4]
+		local critical_hit = params[6]
+		local breed = AiUtils.unit_breed(hit_unit)
+
+		if ALIVE[owner_unit] and breed and (attack_type == "light_attack" or attack_type == "heavy_attack") and target_number == 1 then
+			local hit_weakspot = hit_zone_name == "head" or hit_zone_name == "neck" or hit_zone_name == "weakspot"
+
+			if critical_hit then
+				DamageUtils.heal_network(owner_unit, owner_unit, heal_amount, "heal_from_proc")
+
+				buff.has_procced = true
+
+				if hit_weakspot then
+					DamageUtils.heal_network(owner_unit, owner_unit, heal_amount, "heal_from_proc")
+
+					buff.has_procced = true
+				end
+			elseif hit_weakspot then
+				DamageUtils.heal_network(owner_unit, owner_unit, heal_amount, "heal_from_proc")
+
+				buff.has_procced = true
+			else
+				DamageUtils.heal_network(owner_unit, owner_unit, heal_amount / 4, "heal_from_proc")
+
+				buff.has_procced = true
+			end
+		end
+	end,
+	thp_smiter_func = function (owner_unit, buff, params, world, param_order)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		if ALIVE[owner_unit] then
+			local killing_blow_data = params[1]
+
+			if not killing_blow_data then
+				return
+			end
+
+			local attack_type = killing_blow_data[DamageDataIndex.ATTACK_TYPE]
+
+			if attack_type and (attack_type == "light_attack" or attack_type == "heavy_attack") then
+				local breed = params[2]
+
+				if breed and not breed.is_hero then
+					local thp_return = breed.bloodlust_health or 0
+					local heal_amount = thp_return
+
+					if script_data.show_player_health then
+						print(string.format("Smiter THP: %s gives %s", breed.name, heal_amount))
+					end
+
+					DamageUtils.heal_network(owner_unit, owner_unit, heal_amount, "heal_from_proc")
+				end
+			end
+		end
+	end,
+	thp_tank_stagger_func = function (owner_unit, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		if ALIVE[owner_unit] then
+			local buff_template = buff.template
+			local hit_unit = params[1]
+			local damage_profile = params[2]
+			local attack_type = damage_profile.charge_value
+			local stagger_type = params[4]
+			local stagger_value = params[6]
+			local breed = AiUtils.unit_breed(hit_unit)
+			local target_index = params[8]
+			local base_value = buff.template.base_value
+
+			if damage_profile.is_push then
+				local push_modifier = buff.template.push_modifier
+
+				base_value = base_value * push_modifier
+			end
+
+			local max_targets = buff_template.max_targets
+			local stagger_calculation = math.min(math.max(stagger_type, stagger_value), 3)
+			local stagger_index = {
+				0.25,
+				1,
+				2,
+			}
+			local stagger_multiplier = stagger_index[stagger_calculation] or 1
+			local heal_amount = base_value * stagger_multiplier
+
+			if target_index and target_index <= max_targets and breed and not breed.is_hero and (attack_type == "light_attack" or attack_type == "heavy_attack" or attack_type == "action_push") then
+				if script_data.show_player_health then
+					print(string.format("Tank THP: %s * %s = %s (Target %s/%s)", base_value, stagger_multiplier, heal_amount, target_index, max_targets))
+				end
+
+				DamageUtils.heal_network(owner_unit, owner_unit, heal_amount, "heal_from_proc")
+			end
+		end
+	end,
+	thp_tank_kill_func = function (owner_unit, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		if ALIVE[owner_unit] then
+			local killing_blow_data = params[1]
+
+			if not killing_blow_data then
+				return
+			end
+
+			local attack_type = killing_blow_data[DamageDataIndex.ATTACK_TYPE]
+
+			if attack_type and (attack_type == "light_attack" or attack_type == "heavy_attack") then
+				local breed = params[2]
+
+				if breed and not breed.is_hero then
+					local base_value = buff.template.base_value
+					local target_index = killing_blow_data[16]
+					local max_targets = buff.template.max_targets
+					local heal_amount = base_value
+
+					if target_index and target_index <= max_targets then
+						if script_data.show_player_health then
+							print(string.format("Tank THP: Kill gives %s (Target %s/%s)", heal_amount, target_index, max_targets))
+						end
+
+						DamageUtils.heal_network(owner_unit, owner_unit, heal_amount, "heal_from_proc")
+					end
+				end
 			end
 		end
 	end,
@@ -2509,6 +2699,8 @@ ProcFunctions = {
 				first_person_extension:play_hud_sound_event("Stop_career_ability_markus_huntsman_loop")
 			end
 		end
+
+		return true
 	end,
 	end_huntsman_activated_ability = function (owner_unit, buff, params)
 		if ALIVE[owner_unit] then
@@ -2991,7 +3183,7 @@ ProcFunctions = {
 			if health_extension:current_health() - damage_taken < 0 then
 				if Managers.player.is_server then
 					DamageUtils.heal_network(owner_unit, owner_unit, 30, "heal_from_proc")
-					DamageUtils.add_damage_network(owner_unit, owner_unit, health_extension:current_health() - 1, "torso", "buff", nil, Vector3(0, 0, 0), nil, nil, owner_unit)
+					DamageUtils.add_damage_network(owner_unit, owner_unit, health_extension:current_health() - 1, "torso", "buff", nil, Vector3(0, 0, 0), nil, nil, owner_unit, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 				end
 
 				local career_extension = ScriptUnit.has_extension(owner_unit, "career_system")
@@ -3673,7 +3865,7 @@ ProcFunctions = {
 			}
 
 			if breed and breed.name == "hero_es_knight" and not DamageUtils.check_block(owner_unit, knight_unit, fatigue_type, "front") then
-				DamageUtils.add_damage_network(knight_unit, knight_unit, damage_amount, "full", "forced", nil, Vector3(1, 0, 0), "buff")
+				DamageUtils.add_damage_network(knight_unit, knight_unit, damage_amount, "full", "forced", nil, Vector3(1, 0, 0), "buff", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 			end
 		end
 	end,
@@ -3900,7 +4092,7 @@ ProcFunctions = {
 
 			local damage_to_deal = current_health - damage_amount > 1 and damage_amount or current_health - 1
 
-			DamageUtils.add_damage_network(owner_unit, owner_unit, damage_to_deal, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, owner_unit)
+			DamageUtils.add_damage_network(owner_unit, owner_unit, damage_to_deal, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, owner_unit, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 
 			local buffs_to_add = template.buffs_to_add
 			local buff_system = Managers.state.entity:system("buff_system")
@@ -5664,6 +5856,101 @@ BuffTemplates = {
 				multiplier = 0.075,
 				name = "power_level_unbalance",
 				stat_buff = "power_level",
+			},
+		},
+	},
+	thp_linesman = {
+		buffs = {
+			{
+				base_value = 1,
+				buff_func = "thp_linesman_func",
+				description = "thp_linesman_desc",
+				display_name = "thp_linesman_name",
+				dropoff_divisor = 2,
+				event = "on_player_damage_dealt",
+				max_targets = 10,
+				name = "thp_linesman",
+				target_dropoff = 5,
+				description_values = {},
+				perks = {
+					buff_perks.linesman_healing,
+				},
+			},
+		},
+	},
+	thp_ninjafencer = {
+		buffs = {
+			{
+				bonus = 2,
+				buff_func = "thp_ninjafencer_func",
+				description = "thp_ninjafencer_desc",
+				display_name = "thp_ninjafencer_name",
+				event = "on_hit",
+				name = "thp_ninjafencer",
+				description_values = {
+					{
+						value = 0.5,
+					},
+					{
+						value = 2,
+					},
+					{
+						value = 4,
+					},
+				},
+				perks = {
+					buff_perks.ninja_healing,
+				},
+			},
+		},
+	},
+	thp_smiter = {
+		buffs = {
+			{
+				buff_func = "thp_smiter_func",
+				description = "thp_smiter_desc",
+				display_name = "thp_smiter_name",
+				event = "on_kill",
+				name = "thp_smiter",
+				description_values = {},
+				perks = {
+					buff_perks.smiter_healing,
+				},
+			},
+		},
+	},
+	thp_tank = {
+		buffs = {
+			{
+				base_value = 1,
+				buff_func = "thp_tank_stagger_func",
+				description = "thp_tank_desc",
+				display_name = "thp_tank_name",
+				event = "on_stagger",
+				max_targets = 5,
+				name = "thp_tank",
+				push_modifier = 0.5,
+				description_values = {
+					{
+						value = 2,
+					},
+					{
+						value = 0.25,
+					},
+				},
+				perks = {
+					buff_perks.tank_healing,
+				},
+			},
+			{
+				base_value = 0.25,
+				buff_func = "thp_tank_kill_func",
+				event = "on_kill",
+				max_targets = 5,
+				name = "thp_tank_kill",
+				perks = {
+					buff_perks.tank_healing,
+				},
 			},
 		},
 	},

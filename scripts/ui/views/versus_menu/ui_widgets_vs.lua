@@ -3380,9 +3380,9 @@ UIWidgets.create_player_panel = function (scenegraph_id, talent_tooltip_scenegra
 					255,
 				},
 				offset = {
-					-215,
-					10,
-					3,
+					-509,
+					1,
+					14,
 				},
 				texture_size = {
 					40,

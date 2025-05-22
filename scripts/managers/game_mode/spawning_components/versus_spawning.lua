@@ -72,7 +72,7 @@ VersusSpawning.get_spawn_time = function (self, party)
 	local num_used_slots = party.num_used_slots
 	local spawn_timers = self._settings.dark_pact_respawn_timers[num_used_slots]
 	local minimum_spawn_time = self._settings.dark_pact_minimum_spawn_time
-	local min_score = -150
+	local min_score = -200
 	local max_score = 0
 	local score_difference = (self._win_conditions:get_total_score(pactsworn_party_id) - self._win_conditions:get_total_score(hero_party_id) - min_score) / (max_score - min_score)
 

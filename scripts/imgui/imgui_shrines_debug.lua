@@ -88,13 +88,11 @@ ImguiShrinesDebug._update_controls = function (self)
 		local pickup_system = Managers.state.entity:system("pickup_system")
 
 		if self._selected_shrine_type == "deus_cursed_chest" then
-			local shrine_unit = pickup_system:debug_spawn_pickup("deus_cursed_chest", position)
-
-			if shrine_unit then
+			pickup_system:debug_spawn_pickup("deus_cursed_chest", position, function (shrine_unit)
 				local terror_event = self._selected_cursed_challenge == "default" and "cursed_chest_prototype" or self._selected_cursed_challenge
 
 				Unit.set_data(shrine_unit, "debug_override_terror_event", terror_event)
-			end
+			end)
 		else
 			pickup_system:debug_spawn_pickup("DEBUG_deus_weapon_chest_" .. self._selected_shrine_type, position)
 		end

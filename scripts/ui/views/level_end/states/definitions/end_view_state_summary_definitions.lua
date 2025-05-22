@@ -592,6 +592,25 @@ for i = 1, num_experience_entries do
 end
 
 local animation_definitions = {
+	transition_enter_fast = {
+		{
+			end_progress = 0.3,
+			name = "fade_in",
+			start_progress = 0,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 0
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+
+				params.render_settings.alpha_multiplier = anim_progress
+				ui_scenegraph.background.local_position[2] = 400 * (1 - anim_progress)
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+		},
+	},
 	transition_enter = {
 		{
 			end_progress = 2.3,

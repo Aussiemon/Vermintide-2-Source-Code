@@ -23,6 +23,7 @@ return {
 	update_spirits = function (context, data, dt, t)
 		local spirits = data.spirits
 		local hit_distance = 1
+		local damage_i = 1
 
 		for id, spirit in pairs(spirits) do
 			local unit = spirit.unit
@@ -58,7 +59,9 @@ return {
 										damage = current_health - 1
 									end
 
-									DamageUtils.add_damage_network(player_unit, unit, damage, "torso", "death_explosion", nil, direction, "undefined")
+									DamageUtils.add_damage_network(player_unit, unit, damage, "torso", "death_explosion", nil, direction, "undefined", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, damage_i)
+
+									damage_i = damage_i + 1
 								end
 							end
 

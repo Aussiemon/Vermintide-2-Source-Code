@@ -36,7 +36,7 @@ LimitedItemTrackSystem.init = function (self, entity_system_creation_context, sy
 	self.mark_item_for_transformation = function (extension)
 		local unit = extension.unit
 
-		self.marked_items[unit] = extension.id
+		self.marked_items[unit] = extension.id > 0 and extension.id or nil
 	end
 
 	self.enable_spawner = function (extension)
@@ -261,25 +261,28 @@ LimitedItemTrackSystem.on_add_extension = function (self, world, unit, extension
 
 		if extension_name == "LimitedItemExtension" then
 			extension.unit = unit
-			extension.id = extension_init_data.id
+			extension.id = extension_init_data.id or 0
 			extension.spawner_unit = extension_init_data.spawner_unit
 			extension.mark_for_transformation = self.mark_item_for_transformation
 
 			if self.is_server then
 				local spawner_extension = self.spawners[extension.spawner_unit]
-				local item = spawner_extension.items[extension.id]
 
-				if item and type(item) ~= "boolean" then
-					Crashify.print_exception("LimitedItemTrackSystem", "Added limited unit with occupied id")
-				end
+				if spawner_extension then
+					local item = spawner_extension.items[extension.id]
 
-				if spawner_extension:is_transformed(extension.id) then
-					spawner_extension.items[extension.id] = unit
+					if item and type(item) ~= "boolean" then
+						Crashify.print_exception("LimitedItemTrackSystem", "Added limited unit with occupied id")
+					end
+
+					if spawner_extension:is_transformed(extension.id) then
+						spawner_extension.items[extension.id] = unit
+					end
 				end
 			end
 		elseif extension_name == "HeldLimitedItemExtension" then
 			extension.unit = unit
-			extension.id = extension_init_data.id
+			extension.id = extension_init_data.id or 0
 			extension.spawner_unit = extension_init_data.spawner_unit
 		else
 			fassert(false, "Unknown extension name %q", extension_name)
@@ -300,12 +303,15 @@ LimitedItemTrackSystem.on_remove_extension = function (self, unit, extension_nam
 			local item_extension = self.items[unit]
 			local spawner_unit = item_extension.spawner_unit
 			local spawner_extension = self.spawners[spawner_unit]
-			local marked_id = self.marked_items[unit]
 
-			if marked_id then
-				spawner_extension:transform(marked_id)
-			else
-				spawner_extension:remove(item_extension.id)
+			if spawner_extension then
+				local marked_id = self.marked_items[unit]
+
+				if marked_id then
+					spawner_extension:transform(marked_id)
+				else
+					spawner_extension:remove(item_extension.id)
+				end
 			end
 		end
 

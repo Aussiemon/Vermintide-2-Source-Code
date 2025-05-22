@@ -28,6 +28,11 @@ DeusPowerUpInteractionUI._populate_widget = function (self, interactable_unit)
 	local pickup_ext = ScriptUnit.extension(interactable_unit, "pickup_system")
 	local cost = pickup_ext:get_purchase_cost()
 	local stored_purchase = pickup_ext:get_stored_purchase()
+
+	if not stored_purchase then
+		return
+	end
+
 	local chest_info_widget = self._widgets_by_name.chest_content
 
 	chest_info_widget.content.rarity_text = nil

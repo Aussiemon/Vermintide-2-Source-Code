@@ -18,7 +18,7 @@ NetworkedAnimationVariableTemplates = {
 			local target_unit_id = GameSession.game_object_field(network_manager:game(), unit_id, "target_unit_id")
 
 			scratchpad.target_unit = network_manager:game_object_or_level_unit(target_unit_id)
-			scratchpad.previous_move_animation_value = 0
+			scratchpad.previous_move_animation_value = nil
 			scratchpad.move_animation_variable = Unit.animation_find_variable(unit, scratchpad.variable_name)
 		end,
 		update = function (unit, scratchpad, dt, t)
@@ -41,17 +41,19 @@ NetworkedAnimationVariableTemplates = {
 			local animation_move_speed_config = data.animation_move_speed_config
 
 			if animation_move_speed_config then
-				local wanted_value = AiUtils.calculate_animation_movespeed(animation_move_speed_config, unit, target_unit)
+				local wanted_value = AiUtils.calculate_animation_movespeed(animation_move_speed_config, unit, target_unit, data.estimated_attack_time)
 				local lerp_speed = data.move_speed_variable_lerp_speed
 				local lerp_t = math.min(dt * lerp_speed, 1)
-				local final_value = math.lerp_clamped(scratchpad.previous_move_animation_value, wanted_value, lerp_t)
+				local final_value = math.lerp_clamped(scratchpad.previous_move_animation_value or 0, wanted_value, lerp_t)
 
-				scratchpad.previous_move_animation_value = final_value
+				if scratchpad.previous_move_animation_value ~= final_value then
+					scratchpad.previous_move_animation_value = final_value
 
-				local animation_variable = scratchpad.move_animation_variable
+					local animation_variable = scratchpad.move_animation_variable
 
-				if animation_variable then
-					Unit.animation_set_variable(unit, animation_variable, final_value)
+					if animation_variable then
+						Unit.animation_set_variable(unit, animation_variable, final_value)
+					end
 				end
 			end
 		end,

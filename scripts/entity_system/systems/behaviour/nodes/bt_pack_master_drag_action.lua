@@ -227,7 +227,7 @@ BTPackMasterDragAction.run = function (self, unit, blackboard, t, dt)
 	if t > blackboard.time_to_damage then
 		local action = blackboard.action
 
-		DamageUtils.add_damage_network(drag_target_unit, unit, action.damage_amount, action.hit_zone_name, action.damage_type, nil, Vector3.up(), blackboard.breed.name, nil, nil, nil, action.hit_react_type)
+		DamageUtils.add_damage_network(drag_target_unit, unit, action.damage_amount, action.hit_zone_name, action.damage_type, nil, Vector3.up(), blackboard.breed.name, nil, nil, nil, action.hit_react_type, nil, nil, nil, nil, nil, nil, 1)
 
 		blackboard.time_to_damage = t + action.time_to_damage
 	end

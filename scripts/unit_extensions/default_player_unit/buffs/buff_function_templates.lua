@@ -351,7 +351,7 @@ BuffFunctionTemplates.functions = {
 			local damage = buff_template.damage
 			local damage_type = buff_template.damage_type
 
-			DamageUtils.add_damage_network(unit, unit, damage, "full", damage_type, nil, Vector3(1, 0, 0), "knockdown_bleed")
+			DamageUtils.add_damage_network(unit, unit, damage, "full", damage_type, nil, Vector3(1, 0, 0), "knockdown_bleed", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 		end
 	end,
 	temporary_health_degen_start = function (unit, buff, params)
@@ -366,7 +366,7 @@ BuffFunctionTemplates.functions = {
 			local damage = buff_template.damage
 			local damage_type = buff_template.damage_type
 
-			DamageUtils.add_damage_network(unit, unit, damage, "full", damage_type, nil, Vector3(1, 0, 0), "temporary_health_degen")
+			DamageUtils.add_damage_network(unit, unit, damage, "full", damage_type, nil, Vector3(1, 0, 0), "temporary_health_degen", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 		end
 	end,
 	health_degen_start = function (unit, buff, params)
@@ -381,7 +381,7 @@ BuffFunctionTemplates.functions = {
 			local damage = buff_template.damage
 			local damage_type = buff_template.damage_type
 
-			DamageUtils.add_damage_network(unit, unit, damage, "full", damage_type, nil, Vector3(1, 0, 0), "health_degen")
+			DamageUtils.add_damage_network(unit, unit, damage, "full", damage_type, nil, Vector3(1, 0, 0), "health_degen", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 		end
 	end,
 	convert_permanent_to_temporary_health = function (unit, buff, params)
@@ -414,7 +414,7 @@ BuffFunctionTemplates.functions = {
 
 				local damage_type = buff_template.damage_type
 
-				DamageUtils.add_damage_network(unit, unit, damage, "full", damage_type, nil, Vector3(1, 0, 0), "life_drain")
+				DamageUtils.add_damage_network(unit, unit, damage, "full", damage_type, nil, Vector3(1, 0, 0), "life_drain", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 			end
 		end
 	end,
@@ -772,7 +772,7 @@ BuffFunctionTemplates.functions = {
 				damage = damage * (liquid_extension.buff_damage_multiplier or 1)
 			end
 
-			DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
+			DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 		end
 
 		local owner_player = Managers.player:owner(unit)
@@ -886,7 +886,7 @@ BuffFunctionTemplates.functions = {
 			local damage = buff.damage[armor_type]
 			local damage_source = buff.damage_source
 
-			DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
+			DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 		end
 
 		local owner_player = Managers.player:owner(unit)
@@ -952,7 +952,7 @@ BuffFunctionTemplates.functions = {
 			local damage = buff.damage
 			local damage_source = buff.damage_source
 
-			DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
+			DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 		end
 
 		local owner_player = Managers.player:owner(unit)
@@ -1112,7 +1112,7 @@ BuffFunctionTemplates.functions = {
 			local damage = buff.damage[armor_type]
 			local damage_source = buff.damage_source
 
-			DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
+			DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 		end
 
 		local owner_player = Managers.player:owner(unit)
@@ -1222,7 +1222,7 @@ BuffFunctionTemplates.functions = {
 				damage = damage * buff.buff_damage_multiplier
 			end
 
-			DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
+			DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 		end
 
 		local owner_player = Managers.player:owner(unit)
@@ -1299,7 +1299,7 @@ BuffFunctionTemplates.functions = {
 			local damage = buff.damage[armor_type]
 			local damage_source = buff.damage_source
 
-			DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
+			DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 		end
 
 		local owner_player = Managers.player:owner(unit)
@@ -1394,7 +1394,7 @@ BuffFunctionTemplates.functions = {
 			local damage = buff.damage[armor_type]
 			local damage_source = buff.damage_source
 
-			DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
+			DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 		end
 
 		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
@@ -1791,7 +1791,7 @@ BuffFunctionTemplates.functions = {
 				local damage = buff.damage[armor_type]
 				local damage_source = buff.damage_source
 
-				DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
+				DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 			end
 
 			local is_friendly_target = not DamageUtils.is_enemy(attacker_unit, unit)
@@ -1885,7 +1885,7 @@ BuffFunctionTemplates.functions = {
 				local damage = buff.damage[armor_type]
 				local damage_source = buff.damage_source
 
-				DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
+				DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 			end
 		end
 
@@ -4490,7 +4490,7 @@ BuffFunctionTemplates.functions = {
 					local buff_system = Managers.state.entity:system("buff_system")
 
 					buff_system:add_buff(enemy_unit, "burning_dot_unchained_pulse", unit, false, 200, unit)
-					DamageUtils.add_damage_network(enemy_unit, enemy_unit, damage, "torso", "burn_shotgun", nil, Vector3(0, 0, 0), nil, nil, unit)
+					DamageUtils.add_damage_network(enemy_unit, enemy_unit, damage, "torso", "burn_shotgun", nil, Vector3(0, 0, 0), nil, nil, unit, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 				end
 			end
 
@@ -4512,7 +4512,7 @@ BuffFunctionTemplates.functions = {
 				local health_extension = ScriptUnit.has_extension(unit, "health_system")
 				local damage = health_extension:get_max_health() / 20
 
-				DamageUtils.add_damage_network(unit, unit, damage, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, unit)
+				DamageUtils.add_damage_network(unit, unit, damage, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, unit, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 			end
 		end
 	end,
@@ -4755,6 +4755,10 @@ BuffFunctionTemplates.functions = {
 			local status_extension = ScriptUnit.has_extension(unit, "status_system")
 
 			status_extension:set_invisible(true, nil, "huntsman_ability")
+
+			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+
+			first_person_extension:play_remote_hud_sound_event("Play_career_ability_markus_huntsman_loop_husk")
 		end
 	end,
 	end_huntsman_activated_ability = function (unit, buff, params)
@@ -5044,6 +5048,7 @@ BuffFunctionTemplates.functions = {
 		local status_extension = ScriptUnit.extension(unit, "status_system")
 
 		status_extension:set_invisible(true, nil, buff)
+		status_extension:set_noclip(true, buff)
 
 		if is_local(unit) and not is_bot(unit) then
 			Managers.state.camera:set_mood("skill_maiden_guard", buff, true)
@@ -5053,6 +5058,7 @@ BuffFunctionTemplates.functions = {
 		local status_extension = ScriptUnit.extension(unit, "status_system")
 
 		status_extension:set_invisible(false, nil, buff)
+		status_extension:set_noclip(false, buff)
 
 		if is_local(unit) and not is_bot(unit) then
 			Managers.state.camera:set_mood("skill_maiden_guard", buff, false)
@@ -5212,7 +5218,7 @@ BuffFunctionTemplates.functions = {
 
 			local damage = DamageUtils.calculate_damage(params.bonus.damage, unit, params.attacker_unit, "full", 1)
 
-			DamageUtils.add_damage_network(unit, params.attacker_unit, damage, "full", buff.template.damage_type, nil, Vector3(1, 0, 0))
+			DamageUtils.add_damage_network(unit, params.attacker_unit, damage, "full", buff.template.damage_type, nil, Vector3(1, 0, 0), nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 		end
 	end,
 	apply_volume_movement_buff = function (unit, buff, params)
@@ -5241,7 +5247,7 @@ BuffFunctionTemplates.functions = {
 				local damage_type = template.damage_type
 				local damage = template.damage
 
-				DamageUtils.add_damage_network(unit, unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), "buff")
+				DamageUtils.add_damage_network(unit, unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), "buff", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 
 				buff.next_damage_t = params.t + template.damage_frequency
 			end

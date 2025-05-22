@@ -128,7 +128,7 @@ settings.buff_function_templates = {
 			if health_left > 0 then
 				local damage_direction = -Vector3.up()
 
-				DamageUtils.add_damage_network(unit, unit, damage, "torso", "wounded_dot", nil, damage_direction)
+				DamageUtils.add_damage_network(unit, unit, damage, "torso", "wounded_dot", nil, damage_direction, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 
 				buff.next_damage_tick_t = t + buff.template.damage_frequency
 			end

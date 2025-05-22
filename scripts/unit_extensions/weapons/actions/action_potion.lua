@@ -130,7 +130,7 @@ ActionPotion.finish = function (self, reason)
 			inventory_extension:wield_previous_weapon()
 
 			if buff_extension:has_buff_type("trait_ring_not_consume_potion_damage") then
-				DamageUtils.add_damage_network(self.owner_unit, self.owner_unit, 20, "torso", "buff", nil, Vector3(0, 0, 1), "buff")
+				DamageUtils.add_damage_network(self.owner_unit, self.owner_unit, 20, "torso", "buff", nil, Vector3(0, 0, 1), "buff", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 			end
 		end
 	end

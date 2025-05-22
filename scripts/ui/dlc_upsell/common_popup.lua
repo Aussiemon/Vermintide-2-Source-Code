@@ -38,7 +38,11 @@ CommonPopup.create_ui_elements = function (self)
 	local settings = self._common_settings
 	local definitions = settings.definitions
 
-	definitions = definitions or local_require(settings.definitions_path)
+	if not definitions then
+		definitions = local_require(settings.definitions_path)
+		self._common_settings.definitions = definitions
+	end
+
 	self._definitions = definitions
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 

@@ -20,14 +20,13 @@ local function network_printf(format, ...)
 end
 
 NetworkClient.init = function (self, server_peer_id, wanted_profile_index, wanted_party_index, clear_peer_states, lobby_client, voip)
-	Managers.mechanism:set_network_client(self)
 	self:set_state(NetworkClientStates.connecting)
 
 	self.server_peer_id = server_peer_id
-	self._my_peer_id = Network.peer_id()
-	PEER_ID_TO_CHANNEL[self._my_peer_id] = 0
-	CHANNEL_TO_PEER_ID[0] = self._my_peer_id
-	self._network_state = NetworkState:new(false, self, server_peer_id, self._my_peer_id)
+	self.my_peer_id = Network.peer_id()
+	PEER_ID_TO_CHANNEL[self.my_peer_id] = 0
+	CHANNEL_TO_PEER_ID[0] = self.my_peer_id
+	self._network_state = NetworkState:new(false, self, server_peer_id, self.my_peer_id)
 
 	Managers.level_transition_handler:register_network_state(self._network_state)
 
@@ -80,20 +79,16 @@ NetworkClient.init = function (self, server_peer_id, wanted_profile_index, wante
 	end
 
 	self.connecting_timeout = 0
+	self._match_handler = NetworkMatchHandler:new(self, false, self.my_peer_id, self.server_peer_id, lobby_client)
 
-	local mode = "peer_to_peer"
-
-	if lobby_client:is_dedicated_server() then
-		mode = "client_server"
-	end
-
-	Managers.eac:before_join(mode)
-
-	self._match_handler = NetworkMatchHandler:new(self, false, self._my_peer_id, self.server_peer_id, lobby_client)
+	Managers.mechanism:set_network_client(self)
 end
 
 NetworkClient.destroy = function (self)
-	Managers.eac:after_leave()
+	if Managers.eac:eac_ready_locally() then
+		Managers.eac:after_leave()
+	end
+
 	self._match_handler:destroy()
 	Managers.mechanism:set_network_client(nil)
 	Managers.level_transition_handler:deregister_network_state()
@@ -154,6 +149,14 @@ end
 
 NetworkClient.rpc_notify_connected = function (self, channel_id)
 	if not self._notification_sent then
+		local mode = "peer_to_peer"
+
+		if self.lobby_client:is_dedicated_server() then
+			mode = "client_server"
+		end
+
+		Managers.eac:before_join(mode)
+
 		local channel_id = PEER_ID_TO_CHANNEL[self.server_peer_id]
 
 		Managers.eac:set_host(self.server_peer_id)
@@ -174,8 +177,18 @@ NetworkClient.rpc_notify_connected = function (self, channel_id)
 	end
 end
 
+NetworkClient.is_network_state_fully_synced_for_peer = function (self, peer_id)
+	local mechanism_synced = Managers.mechanism:is_peer_fully_synced(peer_id)
+
+	if not mechanism_synced then
+		return false
+	end
+
+	return self._network_state:is_peer_fully_synced(peer_id)
+end
+
 NetworkClient.is_fully_synced = function (self)
-	local own_id = self._my_peer_id
+	local own_id = self.my_peer_id
 	local mechanism_synced = Managers.mechanism:is_peer_fully_synced(own_id)
 
 	if not mechanism_synced then
@@ -277,7 +290,7 @@ NetworkClient.on_game_entered = function (self)
 end
 
 NetworkClient.request_profile = function (self, local_player_id, profile_name, career_name, force_respawn)
-	self._profile_requester:request_profile(self._my_peer_id, local_player_id, profile_name, career_name, force_respawn)
+	self._profile_requester:request_profile(self.my_peer_id, local_player_id, profile_name, career_name, force_respawn)
 end
 
 NetworkClient.profile_requester = function (self)
@@ -337,7 +350,7 @@ NetworkClient.update = function (self, dt, t)
 	self.profile_synchronizer:update()
 	self:_update_connections()
 
-	if not self.wait_for_state_loading and self.state == NetworkClientStates.loading then
+	if not self.wait_for_state_loading and self.state == NetworkClientStates.loading and Managers.eac:eac_ready_locally() then
 		local state_determined, can_play = Managers.eac:check_host()
 		local level_transition_handler = Managers.level_transition_handler
 
@@ -384,14 +397,16 @@ NetworkClient._update_eac_match = function (self)
 		return
 	end
 
-	local _, can_play = Managers.eac:check_host()
+	if Managers.eac:eac_ready_locally() then
+		local _, can_play = Managers.eac:check_host()
 
-	if not can_play then
-		printf("eac mismatch leading to eac_authorize_failed")
+		if not can_play then
+			printf("eac mismatch leading to eac_authorize_failed")
 
-		self.fail_reason = "eac_authorize_failed"
+			self.fail_reason = "eac_authorize_failed"
 
-		self:set_state(NetworkClientStates.eac_match_failed)
+			self:set_state(NetworkClientStates.eac_match_failed)
+		end
 	end
 end
 
@@ -428,7 +443,7 @@ NetworkClient.is_peer_hot_join_synced = function (self, peer_id)
 end
 
 NetworkClient.rpc_slot_reservation_request_peers = function (self, channel_id)
-	local peer_id = self._my_peer_id
+	local peer_id = self.my_peer_id
 
 	printf("[NetworkClient] Game host requested peers to reserve. Responding with (%s)", peer_id)
 	RPC.rpc_provide_slot_reservation_info(channel_id, {
@@ -460,6 +475,28 @@ NetworkClient.get_startup_breeds = function (self)
 	return self._network_state:get_startup_breeds()
 end
 
+NetworkClient.get_session_pickup_map = function (self)
+	return self._network_state:get_session_pickup_map()
+end
+
+NetworkClient.get_own_loaded_session_pickup_map = function (self)
+	return self._network_state:get_own_loaded_session_pickup_map()
+end
+
+NetworkClient.set_own_loaded_session_pickups = function (self, pickup_map)
+	self._network_state:set_own_loaded_session_pickups(pickup_map)
+end
+
+NetworkClient.get_loaded_session_pickups = function (self, peer_id)
+	return self._network_state:get_loaded_session_pickup_map(peer_id)
+end
+
 NetworkClient.get_game_mode_event_data = function (self)
 	return self._network_state:get_game_mode_event_data()
+end
+
+NetworkClient.has_unlocked_dlc = function (self, peer_id, dlc_name)
+	local unlocked_dlcs = self._network_state:get_unlocked_dlcs_set(peer_id)
+
+	return unlocked_dlcs[dlc_name]
 end

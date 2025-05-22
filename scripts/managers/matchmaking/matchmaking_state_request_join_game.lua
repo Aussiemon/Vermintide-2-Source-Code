@@ -55,7 +55,7 @@ MatchmakingStateRequestJoinGame.on_enter = function (self, state_context)
 
 		local pop_chat = true
 
-		Managers.chat:add_local_system_message(PEER_ID_TO_CHANNEL[Network.peer_id()], Localize("matchmaking_status_starting_handshake"), pop_chat)
+		Managers.chat:add_local_system_message(1, Localize("matchmaking_status_starting_handshake"), pop_chat)
 	else
 		self._state = "failed_pre_connection_verification"
 		self._pre_verification_error = error_message or "pre_verification_failed"

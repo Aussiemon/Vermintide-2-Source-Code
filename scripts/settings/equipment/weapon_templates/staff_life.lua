@@ -338,6 +338,7 @@ weapon_template.actions = {
 				beastmen_bestigor = 1,
 				beastmen_standard_bearer = 1,
 				chaos_berzerker = 1,
+				chaos_bulwark = 1,
 				chaos_corruptor_sorcerer = 1,
 				chaos_raider = 1,
 				chaos_vortex_sorcerer = 1,

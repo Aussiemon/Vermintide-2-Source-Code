@@ -146,21 +146,26 @@ DialogueSettings.level_specific_load_files = {
 	inn_level = {
 		"dialogues/generated/hub_conversations",
 		"dialogues/generated/fleur_conversations",
+		"dialogues/generated/hub_level_specific_greetings",
 	},
 	keep_base = {
 		"dialogues/generated/hub_conversations",
 	},
 	inn_level_celebrate = {
 		"dialogues/generated/hub_conversations_crawl",
+		"dialogues/generated/hub_level_specific_greetings",
 	},
 	inn_level_halloween = {
 		"dialogues/generated/hub_conversations",
+		"dialogues/generated/hub_level_specific_greetings",
 	},
 	inn_level_skulls = {
 		"dialogues/generated/npc_dlc_event_skulls",
+		"dialogues/generated/hub_level_specific_greetings",
 	},
 	inn_level_sonnstill = {
 		"dialogues/generated/hub_conversations",
+		"dialogues/generated/hub_level_specific_greetings",
 	},
 	bell = {
 		"dialogues/generated/wood_elf_bell",

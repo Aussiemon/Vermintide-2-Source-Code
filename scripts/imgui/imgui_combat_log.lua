@@ -259,7 +259,7 @@ ImguiCombatLog.log_buff = function (self, unit, buff, added, stack_count, max_st
 	local line = self:_add_line("buff")
 
 	if added then
-		self:_add_colored_segment(line, string.format("[Added] %s -> %s (mult: %.2f)", tostring(owner_breed and owner_breed.name or unit), tostring(buff.buff_type), buff.multiplier or 1), Colors.get_table("lime"))
+		self:_add_colored_segment(line, string.format("[Added] %s -> %s (mult: %.2f)", tostring(owner_breed and owner_breed.name or unit), tostring(buff.buff_type), type(buff.multiplier) == "function" and buff.multiplier(unit, ScriptUnit.extension(unit, "buff_system")) or buff.multiplier or 1), Colors.get_table("lime"))
 
 		if stack_count and max_stacks then
 			self:_add_colored_segment(line, string.format("(stacks: %d/%d)", stack_count, max_stacks), Colors.get_table("lime"))

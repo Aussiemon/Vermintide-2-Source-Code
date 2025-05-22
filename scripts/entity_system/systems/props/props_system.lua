@@ -19,6 +19,7 @@ local extensions = {
 	"ScaleUnitExtension",
 	"StoreDisplayItemGizmoExtension",
 	"RotatingHazardExtension",
+	"EventUpsellPropExtension",
 }
 
 DLCUtils.append("prop_extension", extensions)

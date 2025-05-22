@@ -132,7 +132,13 @@ AIDebugger.update = function (self, t, dt)
 	end
 
 	if DebugKeyHandler.key_pressed("j", "kill all but selected AI", "ai", "left shift") then
-		Managers.state.conflict:destroy_close_units(nil, self.active_unit, 262144)
+		local pos = Vector3.zero()
+
+		pos = Managers.player:local_player() and POSITION_LOOKUP[Managers.player:local_player().player_unit] or pos
+
+		Managers.state.debug:send_conflict_director_command("destroy_close_units", nil, pos, {
+			"512",
+		})
 	elseif DebugKeyHandler.key_pressed("j", "damage selected AI", "ai", "left alt") then
 		local kill_unit = self.active_unit
 
@@ -158,8 +164,10 @@ AIDebugger.update = function (self, t, dt)
 
 					if should_knock_down then
 						health_extension:knock_down(kill_unit)
-					else
+					elseif self.is_server then
 						health_extension:die("forced")
+					else
+						AiUtils.kill_unit(kill_unit)
 					end
 				end
 			else

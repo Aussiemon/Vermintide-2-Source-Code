@@ -567,9 +567,21 @@ HeroViewStateStore._initial_windows_setups = function (self, params)
 	local start_state = params.start_state
 
 	if start_state then
-		self:go_to_store_path({
-			start_state,
-		})
+		if type(start_state) ~= "table" then
+			self:go_to_store_path({
+				start_state,
+			})
+		else
+			if start_state.store_path then
+				self:go_to_store_path(start_state.store_path)
+			else
+				self:go_to_store_path(start_state)
+			end
+
+			if start_state.layout_name then
+				self:set_layout_by_name(start_state.layout_name)
+			end
+		end
 	else
 		self:go_to_store_path({
 			"featured",

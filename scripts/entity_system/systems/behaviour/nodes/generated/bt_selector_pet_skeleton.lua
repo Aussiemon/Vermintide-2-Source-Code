@@ -289,7 +289,7 @@ BTSelector_pet_skeleton.run = function (self, unit, blackboard, t, dt)
 
 	do
 		local node_command_combat = children[11]
-		local condition_result = blackboard.new_command_attack and (ALIVE[blackboard.target_unit] or blackboard.attack_locked_in_t)
+		local condition_result = blackboard.new_command_attack and (ALIVE[blackboard.target_unit] or blackboard.attack_locked_in_t) and (not ALIVE[blackboard.locked_target_unit] or blackboard.locked_target_unit == blackboard.target_unit or not ALIVE[blackboard.target_unit])
 
 		if condition_result then
 			self:set_running_child(unit, blackboard, t, node_command_combat, "aborted")

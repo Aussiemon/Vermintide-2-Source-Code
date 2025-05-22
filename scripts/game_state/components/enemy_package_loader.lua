@@ -11,7 +11,6 @@ local BREED_PATH = EnemyPackageLoaderSettings.breed_path
 local ALIAS_TO_BREED = EnemyPackageLoaderSettings.alias_to_breed
 local BREED_TO_ALIASES = EnemyPackageLoaderSettings.breed_to_aliases
 local OPT_LOOKUP_BREED_NAMES = EnemyPackageLoaderSettings.opt_lookup_breed_names
-local UNLOAD_STARTUP_PACKAGES_BETWEEN_LEVELS = EnemyPackageLoaderSettings.unload_startup_packages_between_levels
 
 local function get_weighted_random_index(random, entries, entry_weight_map)
 	local range_start = 0
@@ -914,39 +913,26 @@ EnemyPackageLoader.random_director_list = function (self)
 	return self._random_director_list
 end
 
-EnemyPackageLoader.unload_enemy_packages = function (self, force_unload_startup_packages, reason)
-	local unload_startup_packages = force_unload_startup_packages or UNLOAD_STARTUP_PACKAGES_BETWEEN_LEVELS
+EnemyPackageLoader.on_application_shutdown = function (self)
+	printf("[EnemyPackageLoader] unload_enemy_packages")
 
-	printf("[EnemyPackageLoader] unload_enemy_packages (unload startup enemies=%s, reason=%s)", unload_startup_packages, reason)
-
-	local breeds_to_load_at_startup = self._network_handler and self:get_startup_breeds() or self._breeds_to_load_at_startup or {}
 	local locked_breeds = self._locked_breeds
 	local loaded_breed_map = self._loaded_breed_map
 	local session_breed_map = self._session_breed_map
 
 	for breed_name, status in pairs(loaded_breed_map) do
-		if unload_startup_packages or not breeds_to_load_at_startup[breed_name] then
-			fassert(not locked_breeds[breed_name], "EnemyPackageLoader:unload_enemy_packages: Trying to unload a locked breed, remember to unlock breed on shutdown! If you are locking packages via level flow, use unload_enemy_packages external in event to unload.")
+		fassert(not locked_breeds[breed_name], "EnemyPackageLoader:on_application_shutdown: Trying to unload a locked breed, remember to unlock breed on shutdown! If you are locking packages via level flow, use unload_enemy_packages external in event to unload.")
 
-			local package_name = self:_breed_package_name(breed_name)
+		local package_name = self:_breed_package_name(breed_name)
 
-			Managers.package:unload(package_name, PACKAGE_REFERENCE_NAME)
+		Managers.package:unload(package_name, PACKAGE_REFERENCE_NAME)
 
-			if self._is_server then
-				session_breed_map[breed_name] = nil
-			end
-
-			loaded_breed_map[breed_name] = nil
+		if self._is_server then
+			session_breed_map[breed_name] = nil
 		end
+
+		loaded_breed_map[breed_name] = nil
 	end
-
-	self:_update_package_diffs()
-
-	if self._is_server and unload_startup_packages then
-		table.clear(self._breeds_to_load_at_startup)
-	end
-
-	self._random_director_list = nil
 end
 
 EnemyPackageLoader.get_startup_breeds = function (self)

@@ -100,7 +100,6 @@ StoreWindowPanel._create_ui_elements = function (self, params, offset)
 
 	ItemHelper.create_tab_unseen_item_stars(tab_cat)
 
-	local in_sub_page = #self._parent:get_store_path() > 1
 	local total_length = 0
 
 	for index, page_name in ipairs(menu_options) do

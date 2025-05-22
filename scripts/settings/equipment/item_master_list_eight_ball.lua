@@ -107,7 +107,7 @@ ItemMasterList.waywatcher_hat_1010 = {
 	item_type = "hat",
 	rarity = "promo",
 	slot_type = "hat",
-	template = "ww_helmet_mask_jaw",
+	template = "ww_hoods_jaw",
 	unit = "units/beings/player/way_watcher_upgraded/headpiece/ww_u_fatshark_hat_01",
 	can_wield = {
 		"we_waywatcher",

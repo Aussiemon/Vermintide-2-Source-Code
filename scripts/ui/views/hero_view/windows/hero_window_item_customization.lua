@@ -744,9 +744,9 @@ HeroWindowItemCustomization._handle_input = function (self, input_service, dt, t
 	end
 
 	local current_skin = hover_skin or selected_skin or item_skin or default_skin
-	local item_data = current_skin and ItemMasterList[current_skin]
+	local skin_data = current_skin and WeaponSkins.skins[current_skin]
 
-	illusions_name_content.text = item_data and Localize(item_data.display_name) or ""
+	illusions_name_content.text = skin_data and Localize(skin_data.display_name) or ""
 
 	if self._material_items and self._current_recipe_name then
 		local craft_button = widgets_by_name.craft_button
@@ -1439,12 +1439,12 @@ HeroWindowItemCustomization._on_illusion_index_pressed = function (self, index, 
 	local widget = illusion_widgets[index]
 	local content = widget.content
 	local skin_key = content.skin_key
-	local item_data = ItemMasterList[skin_key]
 
 	self._skin_dirty = false
 
 	if not ignore_item_spawn then
 		local locked = content.locked
+		local item_data = ItemMasterList[skin_key]
 		local item = {
 			data = item_data,
 			skin = skin_key,
@@ -1477,8 +1477,9 @@ HeroWindowItemCustomization._on_illusion_index_pressed = function (self, index, 
 	end
 
 	local weapon_illusion_base_widgets_by_name = self._weapon_illusion_base_widgets_by_name
+	local skin_data = WeaponSkins.skins[skin_key]
 
-	weapon_illusion_base_widgets_by_name.illusions_name.content.text = Localize(item_data.display_name)
+	weapon_illusion_base_widgets_by_name.illusions_name.content.text = Localize(skin_data.display_name)
 
 	local widgets = self._illusion_widgets
 
@@ -2183,14 +2184,13 @@ HeroWindowItemCustomization._create_material_requirement_widgets = function (sel
 			content.item = {
 				data = table.clone(ItemMasterList[item_key]),
 			}
+			material_items[#material_items + 1] = required_backend_id
 
 			local is_red_dust = item_key == "crafting_material_dust_4"
 
 			if is_red_dust and ExperienceSettings.get_highest_character_level() < LootChestData.LEVEL_USED_FOR_POOL_LEVELS then
 				has_all_requirements = false
-			elseif has_required_amount then
-				material_items[#material_items + 1] = required_backend_id
-			else
+			elseif not has_required_amount then
 				has_all_requirements = false
 			end
 		end

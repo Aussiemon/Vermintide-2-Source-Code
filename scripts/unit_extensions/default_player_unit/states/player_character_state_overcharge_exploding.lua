@@ -89,7 +89,7 @@ PlayerCharacterStateOverchargeExploding.explode = function (self)
 		local _, procced = buff_extension:apply_buffs_to_value(0, "overcharge_damage_immunity")
 
 		if not procced then
-			DamageUtils.add_damage_network(unit, unit, self_damage, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, unit)
+			DamageUtils.add_damage_network(unit, unit, self_damage, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, unit, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 		end
 	end
 
@@ -177,7 +177,7 @@ PlayerCharacterStateOverchargeExploding.update = function (self, unit, input, dt
 		self.damage_timer = t + 0.5
 
 		if not self.inside_inn then
-			DamageUtils.add_damage_network(unit, unit, 10, "torso", "overcharge", nil, Vector3(0, 0, 1), "overcharge")
+			DamageUtils.add_damage_network(unit, unit, 10, "torso", "overcharge", nil, Vector3(0, 0, 1), "overcharge", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 		end
 
 		Managers.state.controller_features:add_effect("rumble", {

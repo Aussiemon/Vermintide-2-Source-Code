@@ -85,6 +85,7 @@ return {
 		local damage_type = template.damage_type
 		local min_damage_interval, max_damage_interval = template.min_damage_interval, template.max_damage_interval
 		local min_damage_distance, max_damage_distance = template.min_damage_distance, template.max_damage_distance
+		local damage_i = 1
 
 		for player_unit, damage_data in pairs(player_damage_data) do
 			if not HEALTH_ALIVE[player_unit] then
@@ -104,8 +105,9 @@ return {
 					local player_position = POSITION_LOOKUP[player_unit]
 					local damage_direction = Vector3.normalize(player_position - center_position)
 
-					DamageUtils.add_damage_network(player_unit, player_unit, damage, "torso", damage_type, nil, damage_direction)
+					DamageUtils.add_damage_network(player_unit, player_unit, damage, "torso", damage_type, nil, damage_direction, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, damage_i)
 
+					damage_i = damage_i + 1
 					damage_data.last_t = t
 				end
 			end

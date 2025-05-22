@@ -1714,6 +1714,7 @@ ItemMasterList.frame_community_01 = {
 ItemMasterList.frame_skulls = {
 	description = "frame_skulls_description",
 	display_name = "frame_skulls_name",
+	display_unit = "units/weapons/weapon_display/display_portrait_frame",
 	hud_icon = "unit_frame_02",
 	information_text = "information_text_frame",
 	inventory_icon = "icon_portrait_frame_skulls",
@@ -1722,6 +1723,9 @@ ItemMasterList.frame_skulls = {
 	slot_type = "frame",
 	temporary_template = "frame_skulls",
 	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"skulls",
+	},
 }
 ItemMasterList.frame_geheimnisnacht_01 = {
 	description = "frame_geheimnisnacht_01_description",
@@ -3103,6 +3107,7 @@ ItemMasterList.frame_0094 = {
 ItemMasterList.frame_0095 = {
 	description = "frame_0095_description",
 	display_name = "frame_0095_name",
+	display_unit = "units/weapons/weapon_display/display_portrait_frame",
 	hud_icon = "unit_frame_02",
 	information_text = "information_text_frame",
 	inventory_icon = "icon_portrait_frame_0095",
@@ -3111,6 +3116,9 @@ ItemMasterList.frame_0095 = {
 	slot_type = "frame",
 	temporary_template = "frame_0095",
 	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"skulls",
+	},
 }
 ItemMasterList.frame_0096 = {
 	description = "frame_0096_description",
@@ -3235,6 +3243,7 @@ ItemMasterList.frame_season_04_tier_4 = {
 ItemMasterList.frame_skulls_2021 = {
 	description = "portrait_frame_skulls_2021_description",
 	display_name = "portrait_frame_skulls_2021_name",
+	display_unit = "units/weapons/weapon_display/display_portrait_frame",
 	hud_icon = "unit_frame_02",
 	information_text = "information_text_frame",
 	inventory_icon = "icon_portrait_frame_skulls2021",
@@ -3243,10 +3252,14 @@ ItemMasterList.frame_skulls_2021 = {
 	slot_type = "frame",
 	temporary_template = "frame_skulls_2021",
 	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"skulls",
+	},
 }
 ItemMasterList.frame_skulls_2022 = {
 	description = "portrait_frame_skulls_2022_description",
 	display_name = "portrait_frame_skulls_2022_name",
+	display_unit = "units/weapons/weapon_display/display_portrait_frame",
 	hud_icon = "unit_frame_02",
 	information_text = "information_text_frame",
 	inventory_icon = "icon_portrait_frame_skulls2022",
@@ -3255,6 +3268,9 @@ ItemMasterList.frame_skulls_2022 = {
 	slot_type = "frame",
 	temporary_template = "frame_skulls_2022",
 	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"skulls",
+	},
 }
 ItemMasterList.crafting_material_scrap = {
 	can_stack = true,

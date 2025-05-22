@@ -10,6 +10,9 @@ require("scripts/managers/matchmaking/matchmaking_state_idle")
 require("scripts/managers/matchmaking/matchmaking_state_ingame")
 require("scripts/managers/matchmaking/matchmaking_state_friend_client")
 require("scripts/managers/matchmaking/matchmaking_state_wait_for_countdown")
+
+local ReservationHandlerTypes = require("scripts/managers/game_mode/mechanisms/reservation_handler_types")
+
 DLCUtils.require_list("matchmaking_state_files")
 
 MatchmakingManager = class(MatchmakingManager)
@@ -134,10 +137,8 @@ local RPCS = {
 	"rpc_matchmaking_request_status_message",
 	"rpc_matchmaking_status_message",
 	"rpc_set_client_game_privacy",
-	"rpc_game_server_reserve_slots",
 	"rpc_game_server_set_group_leader",
 	"rpc_matchmaking_broadcast_game_server_ip_address",
-	"rpc_set_quick_game",
 	"rpc_start_game_countdown_finished",
 	"rpc_matchmaking_sync_quickplay_data",
 	"rpc_matchmaking_request_quickplay_data",
@@ -181,15 +182,10 @@ MatchmakingManager.init = function (self, params)
 	self.statistics_db = params.statistics_db
 	self.network_server = params.network_server
 	self._network_hash = self.lobby.network_hash
-	self._host_matchmaking_data = {}
 	self._power_level_timer = 0
 	self.party_owned_dlcs = {}
 	self._level_weights = {}
 	self._loaded_mutator_packages = {}
-	self._quick_game = params.quick_game
-
-	self:set_local_quick_game(params.local_quick_game)
-
 	self.peers_to_sync = {}
 
 	local network_options = LobbySetup.network_options()
@@ -1042,7 +1038,7 @@ MatchmakingManager.set_matchmaking_data = function (self, next_mission_id, diffi
 	lobby_data.host = Network.peer_id()
 	lobby_data.num_players = num_players
 	lobby_data.difficulty = difficulty
-	lobby_data.quick_game = quick_game and "true" or "false"
+	lobby_data.weave_quick_game = mechanism == "weave" and quick_game and "true" or "false"
 	lobby_data.country_code = Managers.account:region()
 	lobby_data.twitch_enabled = GameSettingsDevelopment.twitch_enabled and Managers.twitch:is_connected() and Managers.twitch:game_mode_supported(matchmaking_type, difficulty) and "true" or "false"
 	lobby_data.eac_authorized = eac_authorized and "true" or "false"
@@ -1084,7 +1080,6 @@ MatchmakingManager.find_game = function (self, search_config)
 		local quick_game = search_config.quick_game
 
 		fassert(quick_game ~= nil, "Quick game wasn't set!")
-		self:set_quick_game(quick_game)
 
 		local join_method = search_config.join_method
 
@@ -1149,6 +1144,8 @@ MatchmakingManager.find_game = function (self, search_config)
 		self:_change_state(next_state, self.params, self.state_context)
 
 		self.start_matchmaking_time = 1000000
+
+		Managers.venture.quickplay:set_has_pending_quick_game(quick_game)
 	end
 end
 
@@ -1163,7 +1160,6 @@ MatchmakingManager._terminate_dangling_matchmaking_lobbies = function (self)
 end
 
 MatchmakingManager.cancel_matchmaking = function (self)
-	self:set_local_quick_game(false)
 	mm_printf("Cancelling matchmaking")
 
 	local is_matchmaking = self:is_game_matchmaking()
@@ -1269,7 +1265,6 @@ MatchmakingManager.cancel_matchmaking = function (self)
 
 		self.network_transmit:send_rpc_clients("rpc_set_matchmaking", false, false, mission_id_lookup, difficulty_lookup, quick_game, mechanism_lookup)
 		self:reset_lobby_filters()
-		self:set_quick_game(false)
 
 		if not DEDICATED_SERVER then
 			party:set_leader(self.network_server.lobby_host:lobby_host())
@@ -1282,6 +1277,10 @@ MatchmakingManager.cancel_matchmaking = function (self)
 
 		if match_handler then
 			match_handler:send_rpc_down("rpc_cancel_matchmaking")
+		end
+
+		if Managers.venture.quickplay then
+			Managers.venture.quickplay:set_has_pending_quick_game(false)
 		end
 	else
 		party:set_leader(nil)
@@ -1383,15 +1382,7 @@ MatchmakingManager.rpc_set_matchmaking = function (self, channel_id, is_matchmak
 		mm_printf_force("Set matchmaking=%s, private_game=%s", tostring(is_matchmaking), tostring(private_game))
 
 		if is_matchmaking then
-			local mission_id = NetworkLookup.mission_ids[mission_id]
-			local difficulty = NetworkLookup.difficulties[difficulty_id]
 			local mechanism = NetworkLookup.mechanisms[mechanism_id]
-
-			self._host_matchmaking_data.mission_id = mission_id
-			self._host_matchmaking_data.difficulty = difficulty
-			self._host_matchmaking_data.quick_game = quick_game
-			self._host_matchmaking_data.mechanism = mechanism
-
 			local state_context = {
 				private_game = private_game,
 				mechanism = mechanism,
@@ -1417,9 +1408,7 @@ MatchmakingManager.rpc_set_matchmaking = function (self, channel_id, is_matchmak
 				current_state._lobby_client = nil
 			end
 
-			table.clear(self._host_matchmaking_data)
 			self:_change_state(MatchmakingStateIdle, self.params, {})
-			self:set_local_quick_game(false)
 		end
 	end
 end
@@ -1529,7 +1518,7 @@ MatchmakingManager.rpc_matchmaking_request_join_lobby = function (self, channel_
 		user_blocked = relationship == 5 or relationship == 6
 	end
 
-	local missing_dlc = self:_missing_required_dlc(lobby_mechanism, difficulty_key, client_unlocked_dlcs)
+	local missing_dlc = not is_friend and self:_missing_required_dlc(lobby_mechanism, difficulty_key, client_unlocked_dlcs)
 	local friend_join_mode = Application.user_setting("friend_join_mode")
 
 	if not lobby_id_match then
@@ -1769,7 +1758,7 @@ MatchmakingManager.lobby_match = function (self, lobby_data, act_key, mission_id
 				return false, "wrong weave name"
 			end
 		else
-			local lobby_quick_game = lobby_data.quick_game
+			local lobby_quick_game = lobby_data.weave_quick_game
 
 			if lobby_quick_game ~= "true" then
 				return false, "ranked weave"
@@ -1993,12 +1982,6 @@ MatchmakingManager.rpc_matchmaking_broadcast_game_server_ip_address = function (
 	end
 end
 
-MatchmakingManager.rpc_game_server_reserve_slots = function (self, channel_id, peer_table)
-	for _, peer_id in ipairs(peer_table) do
-		self.network_server:add_reserve_slot(peer_id)
-	end
-end
-
 MatchmakingManager.rpc_set_quick_game = function (self, channel_id, quick_game)
 	self:set_quick_game(quick_game)
 end
@@ -2092,7 +2075,7 @@ MatchmakingManager.rpc_matchmaking_request_reserve_slots = function (self, chann
 		reply = "lobby_id_mismatch"
 	else
 		local game_mechanism = Managers.mechanism:game_mechanism()
-		local slot_reservation_handler = game_mechanism:get_slot_reservation_handler()
+		local slot_reservation_handler = game_mechanism:get_slot_reservation_handler(Network.peer_id(), ReservationHandlerTypes.pending_custom_game) or game_mechanism:get_slot_reservation_handler(Network.peer_id(), ReservationHandlerTypes.session)
 		local reserved, leader_party_id = slot_reservation_handler:try_reserve_slots(group_leader_peer_id, peers_to_reserve)
 
 		if not reserved then
@@ -2131,7 +2114,6 @@ MatchmakingManager.hot_join_sync = function (self, peer_id)
 	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
 	RPC.rpc_set_client_game_privacy(channel_id, self:is_game_private())
-	RPC.rpc_set_quick_game(channel_id, self:is_quick_game())
 	RPC.rpc_matchmaking_request_quickplay_data(channel_id)
 end
 
@@ -2398,26 +2380,6 @@ MatchmakingManager.is_game_private = function (self)
 	return is_private
 end
 
-MatchmakingManager.set_local_quick_game = function (self, quick_game)
-	self._local_quick_game = quick_game or false
-end
-
-MatchmakingManager.is_local_quick_game = function (self)
-	return self._local_quick_game
-end
-
-MatchmakingManager.set_quick_game = function (self, quick_game)
-	self._quick_game = quick_game
-
-	if self.is_server then
-		Managers.state.network.network_transmit:send_rpc_clients("rpc_set_quick_game", quick_game)
-	end
-end
-
-MatchmakingManager.is_quick_game = function (self)
-	return self._quick_game
-end
-
 MatchmakingManager._matchmaking_status = function (self)
 	local state_name = self._state.NAME
 
@@ -2545,8 +2507,8 @@ MatchmakingManager.search_info = function (self)
 				local mission_id = lobby:lobby_data("mission_id")
 				local difficulty = lobby:lobby_data("difficulty")
 				local matchmaking_type = lobby:lobby_data("matchmaking_type")
-				local lobby_quick_game = lobby:lobby_data("quick_game") == "true"
-				local quick_game = lobby_quick_game or self:is_quick_game()
+				local weave_quick_game = lobby:lobby_data("weave_quick_game") == "true"
+				local quick_game = weave_quick_game or Managers.venture.quickplay:has_pending_quick_game() or Managers.venture.quickplay:is_quick_game()
 				local mechanism = lobby:lobby_data("mechanism")
 
 				info.mission_id = mission_id
@@ -2562,8 +2524,8 @@ MatchmakingManager.search_info = function (self)
 		local difficulty = lobby:lobby_data("difficulty")
 		local matchmaking_type = lobby:lobby_data("matchmaking_type")
 		local mechanism = lobby:lobby_data("mechanism")
-		local lobby_quick_game = lobby:lobby_data("quick_game") == "true"
-		local quick_game = lobby_quick_game or self:is_quick_game()
+		local lobby_weave_quick_game = lobby:lobby_data("weave_quick_game") == "true"
+		local quick_game = lobby_weave_quick_game or Managers.venture.quickplay:has_pending_quick_game() or Managers.venture.quickplay:is_quick_game()
 
 		info.mission_id = selected_mission_id
 		info.difficulty = difficulty
@@ -2724,58 +2686,6 @@ MatchmakingManager.get_matchmaking_settings_for_mechanism = function (mechanism_
 	return MatchmakingSettingsOverrides[mechanism_name] or MatchmakingSettings
 end
 
-MatchmakingManager.get_matchmaking_hierarchy_status = function (self)
-	fassert(self:is_in_versus_custom_game_lobby(), "'get_matchmaking_hierarchy_status()' called in wrong matchmaking state. The concept of the matchmaking hierarchy only exists in MatchmakingStatePlayerHostedGame and MatchmakingStateWaitJoinPlayerHosted when RPCs has to be forwarded, for example when using the chat.")
-
-	local state_context = self.state_context
-
-	if not state_context then
-		return
-	end
-
-	local hierarchy_data = {}
-	local lobby_client = state_context.lobby_client
-	local lobby_member_data = self.lobby:members()
-	local lobby_members = FrameTable.alloc_table()
-
-	for peer_id, _ in pairs(lobby_member_data.members) do
-		lobby_members[#lobby_members + 1] = peer_id
-	end
-
-	hierarchy_data.is_match_host = self.is_server and not lobby_client
-	hierarchy_data.is_friend_party_leader = self.is_server
-	hierarchy_data.is_friend_party_client = not self.is_server
-
-	local friend_party = hierarchy_data.is_match_host and Managers.party:server_get_friend_party_from_peer(Network.peer_id()).peers or lobby_members
-
-	if hierarchy_data.is_match_host or hierarchy_data.is_friend_party_leader then
-		hierarchy_data.friend_party_clients = {}
-
-		local own_peer_id = Network.peer_id()
-
-		for _, party_member in pairs(friend_party) do
-			if party_member ~= own_peer_id then
-				hierarchy_data.friend_party_clients[#hierarchy_data.friend_party_clients + 1] = party_member
-			end
-		end
-	end
-
-	if hierarchy_data.is_match_host then
-		local exclude_own_peer_id = true
-
-		hierarchy_data.connecting_friend_party_leaders = Managers.party:server_get_friend_party_leaders(exclude_own_peer_id)
-		hierarchy_data.match_host = Network.peer_id()
-	elseif hierarchy_data.is_friend_party_leader then
-		hierarchy_data.match_host = lobby_client:lobby_host()
-	end
-
-	if hierarchy_data.is_friend_party_client then
-		hierarchy_data.friend_party_leader = self.lobby:lobby_host()
-	end
-
-	return hierarchy_data
-end
-
 local hierarchical_matchmaking_states = {
 	MatchmakingStatePlayerHostedGame = true,
 	MatchmakingStateWaitJoinPlayerHosted = true,
@@ -2795,32 +2705,6 @@ MatchmakingManager.is_in_versus_custom_game_lobby = function (self)
 		return true
 	else
 		return hierarchical_matchmaking_states[self._state.NAME]
-	end
-end
-
-MatchmakingManager.hierarchical_matchmaking_state_get_peers_to_forward_to = function (self, sender_peer_id)
-	local hierarchy_data = self:get_matchmaking_hierarchy_status()
-
-	if sender_peer_id == hierarchy_data.match_host then
-		return hierarchy_data.friend_party_clients
-	end
-
-	if not hierarchy_data.is_match_host and table.contains(hierarchy_data.friend_party_clients, sender_peer_id) then
-		return {
-			hierarchy_data.match_host,
-		}
-	end
-
-	if hierarchy_data.is_match_host and table.contains(hierarchy_data.friend_party_clients, sender_peer_id) then
-		return hierarchy_data.connecting_friend_party_leaders
-	end
-
-	if hierarchy_data.is_match_host and table.contains(hierarchy_data.connecting_friend_party_leaders, sender_peer_id) then
-		return hierarchy_data.friend_party_clients
-	end
-
-	if hierarchy_data.is_friend_party_client then
-		return {}
 	end
 end
 

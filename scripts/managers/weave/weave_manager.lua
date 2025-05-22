@@ -432,7 +432,9 @@ WeaveManager.get_active_wind_settings = function (self)
 end
 
 WeaveManager.get_scaling_value = function (self, scaling_value_key)
-	local quick_game = Managers.matchmaking:is_quick_game()
+	local lobby = Managers.state.network:lobby()
+	local weave_quick_game = lobby and lobby:lobby_data("weave_quick_game") == "true"
+	local quick_game = weave_quick_game or Managers.venture.quickplay:is_quick_game()
 	local template = WeaveSettings.templates[self._active_weave_name]
 	local scaling_settings = template.scaling_settings
 	local scaling_setting = not quick_game and scaling_settings and scaling_settings[scaling_value_key]

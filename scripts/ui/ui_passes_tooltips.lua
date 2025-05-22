@@ -3753,7 +3753,7 @@ UITooltipPasses = {
 			local disabled = ui_content.disabled
 			local is_selected = ui_content.is_selected
 
-			text_content.title = talent.name or "n/a"
+			text_content.title = talent.display_name or talent.name or "n/a"
 
 			local requirement_text, information_text
 
@@ -9935,7 +9935,8 @@ UITooltipPasses = {
 				return 0
 			end
 
-			local career_names_string = ""
+			local dupes = FrameTable.alloc_table()
+			local career_names_arr = FrameTable.alloc_table()
 
 			for career_name, loadouts in pairs(all_career_loadouts) do
 				local localized_career_name = Localize(career_name)
@@ -9943,11 +9944,16 @@ UITooltipPasses = {
 
 				for i = 1, #loadouts do
 					local loadout_index = loadouts[i]
+					local final_career_name = localized_career_name .. (num_loadouts > 1 and string.format("{#color(193,91,36)} (%d){#reset()}", loadout_index) or "")
 
-					career_names_string = career_names_string .. localized_career_name .. (num_loadouts > 1 and string.format("{#color(193,91,36)}(%d){#reset()}, ", loadout_index) or ", ")
+					if not dupes[final_career_name] then
+						dupes[final_career_name] = true
+						career_names_arr[#career_names_arr + 1] = final_career_name
+					end
 				end
 			end
 
+			local career_names_string = table.concat(career_names_arr, ", ")
 			local alpha = 255 * pass_data.alpha_multiplier
 			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin
@@ -10093,7 +10099,8 @@ UITooltipPasses = {
 				return 0
 			end
 
-			local career_names_string = ""
+			local dupes = FrameTable.alloc_table()
+			local career_names_arr = FrameTable.alloc_table()
 
 			for career_name, loadouts in pairs(all_career_loadouts) do
 				local localized_career_name = Localize(career_name)
@@ -10101,11 +10108,16 @@ UITooltipPasses = {
 
 				for i = 1, #loadouts do
 					local loadout_index = loadouts[i]
+					local final_career_name = localized_career_name .. (num_loadouts > 1 and string.format("{#color(193,91,36)} (%d){#reset()}", loadout_index) or "")
 
-					career_names_string = career_names_string .. localized_career_name .. (num_loadouts > 1 and string.format("{#color(193,91,36)}(%d){#reset()}, ", loadout_index) or ", ")
+					if not dupes[final_career_name] then
+						dupes[final_career_name] = true
+						career_names_arr[#career_names_arr + 1] = final_career_name
+					end
 				end
 			end
 
+			local career_names_string = table.concat(career_names_arr, ", ")
 			local alpha = 255 * pass_data.alpha_multiplier
 			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin

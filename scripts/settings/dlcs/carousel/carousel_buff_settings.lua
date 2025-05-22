@@ -16,6 +16,33 @@ local function is_bot(unit)
 end
 
 settings.buff_templates = {
+	vs_core_attack_speed_melee = {
+		buffs = {
+			{
+				multiplier = 0.1,
+				name = "vs_core_attack_speed_melee",
+				stat_buff = "attack_speed_melee",
+			},
+		},
+	},
+	vs_core_reduced_overcharge = {
+		buffs = {
+			{
+				multiplier = 0.2,
+				name = "vs_core_reduced_overcharge",
+				stat_buff = "reduced_overcharge",
+			},
+		},
+	},
+	vs_core_critical_strike_chance = {
+		buffs = {
+			{
+				bonus = 0.1,
+				name = "vs_core_critical_strike_chance",
+				stat_buff = "critical_strike_chance",
+			},
+		},
+	},
 	vs_gutter_runner_allow_dismount = {
 		buffs = {
 			{
@@ -664,7 +691,7 @@ settings.buff_function_templates = {
 				local damage = buff.damage[armor_type]
 				local damage_source = buff.damage_source
 
-				DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
+				DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 			end
 		end
 

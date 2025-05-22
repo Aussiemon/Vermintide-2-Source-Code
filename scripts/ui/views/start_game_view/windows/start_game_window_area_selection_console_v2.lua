@@ -1,16 +1,17 @@
-﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_area_selection_console.lua
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_area_selection_console_v2.lua
 
-local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_area_selection_console_definitions")
+local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_area_selection_console_v2_definitions")
 local widget_definitions = definitions.widgets
 local area_widget_definitions = definitions.area_widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
+local STATIC_HEADER = true
 
-StartGameWindowAreaSelectionConsole = class(StartGameWindowAreaSelectionConsole)
-StartGameWindowAreaSelectionConsole.NAME = "StartGameWindowAreaSelectionConsole"
+StartGameWindowAreaSelectionConsoleV2 = class(StartGameWindowAreaSelectionConsoleV2)
+StartGameWindowAreaSelectionConsoleV2.NAME = "StartGameWindowAreaSelectionConsoleV2"
 
-StartGameWindowAreaSelectionConsole.on_enter = function (self, params, offset)
-	print("[StartGameWindow] Enter Substate StartGameWindowAreaSelectionConsole")
+StartGameWindowAreaSelectionConsoleV2.on_enter = function (self, params, offset)
+	print("[StartGameWindow] Enter Substate StartGameWindowAreaSelectionConsoleV2")
 
 	self.parent = params.parent
 
@@ -25,6 +26,8 @@ StartGameWindowAreaSelectionConsole.on_enter = function (self, params, offset)
 		snap_pixel_positions = true,
 	}
 	self._has_exited = false
+	self._params = params
+	self._offset = offset
 
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
@@ -45,7 +48,7 @@ StartGameWindowAreaSelectionConsole.on_enter = function (self, params, offset)
 	self:_update_area_option()
 end
 
-StartGameWindowAreaSelectionConsole.create_ui_elements = function (self, params, offset)
+StartGameWindowAreaSelectionConsoleV2.create_ui_elements = function (self, params, offset)
 	local ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 
 	self.ui_scenegraph = ui_scenegraph
@@ -65,6 +68,10 @@ StartGameWindowAreaSelectionConsole.create_ui_elements = function (self, params,
 
 	local area_widgets = {}
 	local area_widgets_by_name = {}
+	local widget = UIWidget.init(definitions.main_campaign_widget)
+
+	area_widgets[#area_widgets + 1] = widget
+	area_widgets_by_name.main_campaign = widget
 
 	for name, widget_definition in pairs(area_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
@@ -75,6 +82,7 @@ StartGameWindowAreaSelectionConsole.create_ui_elements = function (self, params,
 
 	self._area_widgets = area_widgets
 	self._area_widgets_by_name = area_widgets_by_name
+	self._level_image_widgets = {}
 
 	UIRenderer.clear_scenegraph_queue(self.ui_top_renderer)
 
@@ -89,12 +97,17 @@ StartGameWindowAreaSelectionConsole.create_ui_elements = function (self, params,
 	end
 end
 
-StartGameWindowAreaSelectionConsole._setup_area_widgets = function (self)
+StartGameWindowAreaSelectionConsoleV2._setup_area_widgets = function (self)
 	local sorted_area_settings = {}
+	local max_widgets = definitions.grid_settings[1] * definitions.grid_settings[2]
 
 	for _, settings in pairs(AreaSettings) do
 		if not settings.exclude_from_area_selection then
 			sorted_area_settings[#sorted_area_settings + 1] = settings
+		end
+
+		if #sorted_area_settings == max_widgets then
+			break
 		end
 	end
 
@@ -105,23 +118,27 @@ StartGameWindowAreaSelectionConsole._setup_area_widgets = function (self)
 	table.sort(sorted_area_settings, sort_func)
 
 	local num_areas = #sorted_area_settings
-	local widget_size = scenegraph_definition.area_root.size
+	local widget_size = scenegraph_definition.area_root_1.size
 	local widget_width = widget_size[1]
-	local spacing = 50
-	local total_width = widget_width * num_areas + spacing * (num_areas - 1)
-	local width_offset = -(total_width / 2) + widget_width / 2
+	local spacing = 30
+	local base_offset = -705
+	local base_area_offset = 280
+	local width_offset = base_area_offset
+	local grid_settings = definitions.grid_settings
+	local selection_grid = {}
 	local statistics_db = self.statistics_db
 	local stats_id = self._stats_id
 	local assigned_widgets = {}
 
 	for i = 1, num_areas do
 		local settings = sorted_area_settings[i]
-		local widget = self._area_widgets[i]
+		local widget = i == 1 and self._widgets_by_name.main_campaign or self._area_widgets[i]
 
 		assigned_widgets[i] = widget
 
 		local level_image = settings.level_image
 		local content = widget.content
+		local style = widget.style
 
 		content.icon = level_image
 
@@ -136,6 +153,7 @@ StartGameWindowAreaSelectionConsole._setup_area_widgets = function (self)
 
 		content.locked = not unlocked
 		content.area_name = name
+		content.area_desc = settings.long_description_text or self:_create_random_desc()
 
 		local highest_completed_difficulty_index = math.huge
 		local acts = settings.acts
@@ -155,41 +173,90 @@ StartGameWindowAreaSelectionConsole._setup_area_widgets = function (self)
 
 		local offset = widget.offset
 
-		offset[1] = width_offset
-		width_offset = width_offset + widget_width + spacing
+		if i == 1 then
+			local y_offset = math.floor((num_areas - 1) / grid_settings[1])
+
+			offset[1] = base_offset
+			offset[2] = -y_offset * (widget_width + spacing) * 0.5
+			style.divider.texture_size[2] = (y_offset + 1) * (widget_width + spacing)
+			selection_grid[i] = {}
+			selection_grid[i][#selection_grid[i] + 1] = widget
+		else
+			local x_offset = (i - 2) % grid_settings[1]
+			local y_offset = math.floor((i - 2) / grid_settings[1])
+
+			offset[1] = base_offset + x_offset * (widget_width + spacing) + base_area_offset * math.sign(i - 1)
+			offset[2] = -y_offset * (widget_width + spacing)
+			width_offset = width_offset + widget_width + spacing
+
+			local column_index = 2 + (i - 2) % grid_settings[1]
+
+			selection_grid[column_index] = selection_grid[column_index] or {}
+			selection_grid[column_index][#selection_grid[column_index] + 1] = widget
+		end
 	end
 
 	self._active_area_widgets = assigned_widgets
+	self._selection_grid = selection_grid
+	self._selected_grid_index = {
+		1,
+		1,
+	}
 end
 
-StartGameWindowAreaSelectionConsole._select_area_by_name = function (self, area_name)
-	local active_area_widgets = self._active_area_widgets
-	local idx = 1
+StartGameWindowAreaSelectionConsoleV2._create_random_desc = function (self)
+	local num_texts = 1 + Math.random(5)
+	local base_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla in nulla eu rutrum. "
+	local text = ""
 
-	if active_area_widgets then
-		for i = 1, #active_area_widgets do
-			local widget = active_area_widgets[i]
-			local content = widget.content
-			local is_selected = content.area_name == area_name
-			local button_hotspot = widget.content.button_hotspot
+	for i = 1, num_texts do
+		text = text .. base_text
+	end
 
-			button_hotspot.is_selected = is_selected
-			idx = is_selected and i or idx
+	return text
+end
+
+StartGameWindowAreaSelectionConsoleV2._select_area_by_name = function (self, area_name)
+	local selection_grid = self._selection_grid
+	local area_desc = " "
+	local grid_idx = self._selected_grid_index
+
+	if selection_grid then
+		for i = 1, #selection_grid do
+			local column = selection_grid[i]
+
+			for j = 1, #column do
+				local widget = column[j]
+				local content = widget.content
+				local is_selected = content.area_name == area_name
+				local button_hotspot = widget.content.button_hotspot
+
+				button_hotspot.is_selected = is_selected
+				grid_idx = is_selected and {
+					i,
+					j,
+				} or grid_idx
+				area_desc = is_selected and content.area_desc or area_desc
+			end
 		end
 	end
 
 	self._selected_area_name = area_name
-	self._selected_area_index = idx
+	self._selected_grid_index = grid_idx
 
-	self:_set_area_presentation_info(area_name)
+	self:_set_area_presentation_info(area_name, area_desc)
 
 	self._area_unavailable = area_name == nil
 end
 
-StartGameWindowAreaSelectionConsole._set_area_presentation_info = function (self, area_name)
+StartGameWindowAreaSelectionConsoleV2._set_area_presentation_info = function (self, area_name, area_desc)
 	local title_text = ""
 	local description_text = ""
+	local area_type_text = ""
 	local unlocked = true
+	local local_player = Managers.player:local_player()
+	local stats_id = local_player:stats_id()
+	local statistics_db = Managers.player:statistics_db()
 	local settings = AreaSettings[area_name]
 
 	if settings then
@@ -201,18 +268,74 @@ StartGameWindowAreaSelectionConsole._set_area_presentation_info = function (self
 
 		title_text = Localize(settings.display_name)
 		description_text = Localize(settings.description_text)
+		area_type_text = unlocked and (settings.area_type or settings.sort_order == 1 and "area_selection_campaign" or "area_selection_side_quest") or "dlc1_2_dlc_level_locked_tooltip"
 	end
 
 	local widgets_by_name = self._widgets_by_name
 
 	widgets_by_name.area_title.content.text = title_text
-	widgets_by_name.description_text.content.text = description_text
+	widgets_by_name.area_desc.content.text = area_desc
+	widgets_by_name.area_type.content.text = area_type_text
+	widgets_by_name.area_type.content.dlc_locked = not unlocked
+	widgets_by_name.area_type.content.locked = not unlocked
+
+	if STATIC_HEADER then
+		local area_desc_widget = widgets_by_name.area_desc
+		local area_desc_style = area_desc_widget.style
+
+		area_desc_style.text.area_size = {
+			1200,
+			225,
+		}
+		area_desc_style.text.vertical_alignment = "top"
+		area_desc_style.text.dynamic_font_size_word_wrap = true
+		area_desc_style.text_shadow.area_size = {
+			1200,
+			225,
+		}
+		area_desc_style.text_shadow.vertical_alignment = "top"
+		area_desc_style.text_shadow.dynamic_font_size_word_wrap = true
+		widgets_by_name.area_title.offset[2] = 200
+		widgets_by_name.title_divider.offset[2] = 200
+		widgets_by_name.area_type.offset[2] = 200
+	else
+		local text_height = UIUtils.get_text_height(self.ui_renderer, widgets_by_name.area_desc.style.text.area_size, widgets_by_name.area_desc.style.text, area_desc)
+
+		widgets_by_name.area_title.offset[2] = text_height
+		widgets_by_name.title_divider.offset[2] = text_height
+		widgets_by_name.area_type.offset[2] = text_height
+	end
+
+	local act_spacing = 40
+	local level_spacing = 5
+	local acts = settings.acts
+	local offset = 0
+
+	table.clear(self._level_image_widgets)
+
+	for _, act in ipairs(acts) do
+		local act = GameActs[act]
+
+		for _, level in ipairs(act) do
+			local level_settings = LevelSettings[level]
+			local level_unlocked = LevelUnlockUtils.level_unlocked(statistics_db, stats_id, level_settings.level_id)
+			local level_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_settings.level_id)
+			local level_image_widget = UIWidget.init(definitions.create_level_image_func(level_settings.small_level_image or level_settings.level_id .. "_small_image", level_difficulty_index > 0))
+
+			level_image_widget.offset[1] = offset
+			offset = offset + level_spacing + level_image_widget.style.level_image.texture_size[1]
+			level_image_widget.style.level_image.saturated = not level_unlocked
+			level_image_widget.style.level_image.color = level_unlocked and level_image_widget.style.level_image.unlocked_color or level_image_widget.style.level_image.locked_color
+			level_image_widget.content.completed = level_difficulty_index > 0
+			level_image_widget.content.boss_level = level_settings.boss_level
+			self._level_image_widgets[#self._level_image_widgets + 1] = level_image_widget
+		end
+
+		offset = offset + act_spacing
+	end
 
 	if not unlocked then
 		self.parent:set_input_description("select_area_buy")
-
-		widgets_by_name.not_owned_text.content.visible = true
-		widgets_by_name.requirements_not_met_text.content.visible = false
 	else
 		local requirements_fulfilled = true
 
@@ -227,15 +350,13 @@ StartGameWindowAreaSelectionConsole._set_area_presentation_info = function (self
 		if requirements_fulfilled then
 			self.parent:set_input_description("select_area_confirm")
 
-			widgets_by_name.requirements_not_met_text.content.visible = false
+			widgets_by_name.area_type.content.locked = false
 		else
 			self.parent:set_input_description("select_area_base")
 
-			widgets_by_name.requirements_not_met_text.content.visible = true
-			widgets_by_name.requirements_not_met_text.content.text = settings.unlock_requirement_description
+			widgets_by_name.area_type.content.text = settings.unlock_requirement_description
+			widgets_by_name.area_type.content.locked = true
 		end
-
-		widgets_by_name.not_owned_text.content.visible = false
 	end
 
 	local parent = self.parent
@@ -250,8 +371,8 @@ StartGameWindowAreaSelectionConsole._set_area_presentation_info = function (self
 	self:_play_sound(menu_sound_event)
 end
 
-StartGameWindowAreaSelectionConsole.on_exit = function (self, params)
-	print("[StartGameWindow] Exit Substate StartGameWindowAreaSelectionConsole")
+StartGameWindowAreaSelectionConsoleV2.on_exit = function (self, params)
+	print("[StartGameWindow] Exit Substate StartGameWindowAreaSelectionConsoleV2")
 
 	self.ui_animator = nil
 
@@ -263,16 +384,16 @@ StartGameWindowAreaSelectionConsole.on_exit = function (self, params)
 	self:_play_sound("Stop_hud_menu_area_music")
 end
 
-StartGameWindowAreaSelectionConsole.update = function (self, dt, t)
+StartGameWindowAreaSelectionConsoleV2.update = function (self, dt, t)
 	self:_update_animations(dt)
 	self:_handle_input(dt, t)
 end
 
-StartGameWindowAreaSelectionConsole.post_update = function (self, dt, t)
+StartGameWindowAreaSelectionConsoleV2.post_update = function (self, dt, t)
 	self:draw(dt)
 end
 
-StartGameWindowAreaSelectionConsole._update_animations = function (self, dt)
+StartGameWindowAreaSelectionConsoleV2._update_animations = function (self, dt)
 	local ui_animator = self.ui_animator
 
 	ui_animator:update(dt)
@@ -315,7 +436,7 @@ StartGameWindowAreaSelectionConsole._update_animations = function (self, dt)
 	end
 end
 
-StartGameWindowAreaSelectionConsole._is_button_pressed = function (self, widget)
+StartGameWindowAreaSelectionConsoleV2._is_button_pressed = function (self, widget)
 	local content = widget.content
 	local hotspot = content.button_hotspot
 
@@ -326,7 +447,7 @@ StartGameWindowAreaSelectionConsole._is_button_pressed = function (self, widget)
 	end
 end
 
-StartGameWindowAreaSelectionConsole._is_button_hovered = function (self, widget)
+StartGameWindowAreaSelectionConsoleV2._is_button_hovered = function (self, widget)
 	local content = widget.content
 	local hotspot = content.button_hotspot
 
@@ -335,7 +456,7 @@ StartGameWindowAreaSelectionConsole._is_button_hovered = function (self, widget)
 	end
 end
 
-StartGameWindowAreaSelectionConsole._update_area_option = function (self)
+StartGameWindowAreaSelectionConsoleV2._update_area_option = function (self)
 	local area_name = self.parent:get_selected_area_name()
 
 	if area_name ~= self._selected_area_name then
@@ -343,19 +464,23 @@ StartGameWindowAreaSelectionConsole._update_area_option = function (self)
 	end
 end
 
-StartGameWindowAreaSelectionConsole._handle_input = function (self, dt, t)
+StartGameWindowAreaSelectionConsoleV2._handle_input = function (self, dt, t)
 	local parent = self.parent
 	local input_service = parent:window_input_service()
 	local active_area_widgets = self._active_area_widgets
+	local selection_grid = self._selection_grid
 	local mouse_active = Managers.input:is_device_active("mouse")
 
 	if not mouse_active then
-		local num_areas = #active_area_widgets
-		local current_area_index = self._selected_area_index
+		local current_area_column = self._selected_grid_index[1]
+		local current_area_row = self._selected_grid_index[2]
+		local current_num_columns = #selection_grid
+		local current_num_rows = #selection_grid[current_area_column]
 
 		if input_service:get("move_left") then
-			local index = math.clamp(current_area_index - 1, 1, num_areas)
-			local widget = active_area_widgets[index]
+			local index = math.clamp(current_area_column - 1, 1, current_num_columns)
+			local num_rows = #selection_grid[index]
+			local widget = selection_grid[index][math.min(current_area_row, num_rows)]
 			local content = widget.content
 			local area_name = content.area_name
 
@@ -363,8 +488,33 @@ StartGameWindowAreaSelectionConsole._handle_input = function (self, dt, t)
 				self:_select_area_by_name(area_name)
 			end
 		elseif input_service:get("move_right") then
-			local index = math.clamp(current_area_index + 1, 1, num_areas)
-			local widget = active_area_widgets[index]
+			local index = math.clamp(current_area_column + 1, 1, current_num_columns)
+			local num_rows = #selection_grid[index]
+			local widget = selection_grid[index][math.min(current_area_row, num_rows)]
+			local content = widget.content
+			local area_name = content.area_name
+
+			if self._selected_area_name ~= area_name then
+				self:_select_area_by_name(area_name)
+			end
+		elseif input_service:get("move_down") then
+			local index = current_area_row + 1
+			local widget = selection_grid[current_area_column][index]
+
+			while not widget and current_area_column > 1 do
+				current_area_column = current_area_column - 1
+				widget = selection_grid[current_area_column][index]
+			end
+
+			local content = widget and widget.content
+			local area_name = content and content.area_name or self._selected_area_name
+
+			if self._selected_area_name ~= area_name then
+				self:_select_area_by_name(area_name)
+			end
+		elseif input_service:get("move_up") then
+			local index = math.clamp(current_area_row - 1, 1, current_num_rows)
+			local widget = selection_grid[current_area_column][index]
 			local content = widget.content
 			local area_name = content.area_name
 
@@ -398,15 +548,9 @@ StartGameWindowAreaSelectionConsole._handle_input = function (self, dt, t)
 	if not self._area_unavailable and gamepad_confirm_pressed then
 		self:_on_select_button_pressed()
 	end
-
-	if input_service:get("toggle_menu", true) or input_service:get("back_menu", true) then
-		local layout_name = "custom_game"
-
-		self.parent:set_layout_by_name(layout_name)
-	end
 end
 
-StartGameWindowAreaSelectionConsole._on_select_button_pressed = function (self)
+StartGameWindowAreaSelectionConsoleV2._on_select_button_pressed = function (self)
 	local area_name = self._selected_area_name
 	local settings = AreaSettings[area_name]
 	local unlocked = true
@@ -443,7 +587,7 @@ StartGameWindowAreaSelectionConsole._on_select_button_pressed = function (self)
 	self:_play_sound("Play_hud_menu_area_start")
 end
 
-StartGameWindowAreaSelectionConsole.draw = function (self, dt)
+StartGameWindowAreaSelectionConsoleV2.draw = function (self, dt)
 	local ui_top_renderer = self.ui_top_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.parent:window_input_service()
@@ -468,6 +612,16 @@ StartGameWindowAreaSelectionConsole.draw = function (self, dt)
 		end
 	end
 
+	local level_image_widgets = self._level_image_widgets
+
+	if level_image_widgets then
+		for i = 1, #level_image_widgets do
+			local widget = level_image_widgets[i]
+
+			UIRenderer.draw_widget(ui_top_renderer, widget)
+		end
+	end
+
 	if not self._draw_video_next_frame then
 		if self._video_widget and not self._has_exited then
 			if not self._video_created then
@@ -483,11 +637,11 @@ StartGameWindowAreaSelectionConsole.draw = function (self, dt)
 	UIRenderer.end_pass(ui_top_renderer)
 end
 
-StartGameWindowAreaSelectionConsole._play_sound = function (self, event)
+StartGameWindowAreaSelectionConsoleV2._play_sound = function (self, event)
 	self.parent:play_sound(event)
 end
 
-StartGameWindowAreaSelectionConsole._assign_video_player = function (self, material_name, video_player)
+StartGameWindowAreaSelectionConsoleV2._assign_video_player = function (self, material_name, video_player)
 	self:_destroy_video_widget()
 
 	local scenegraph_id = "video"
@@ -505,14 +659,14 @@ StartGameWindowAreaSelectionConsole._assign_video_player = function (self, mater
 	self._video_created = true
 	self._draw_video_next_frame = true
 
-	local background_widget = self._widgets_by_name.background
+	local background_widget = self._widgets_by_name.foreground
 	local background_widget_style = background_widget.style
 	local color = background_widget_style.rect.color
 
-	self._ui_animations.fade_in = UIAnimation.init(UIAnimation.function_by_time, color, 1, 255, 0, 1, math.easeOutCubic)
+	self._ui_animations.fade_in = UIAnimation.init(UIAnimation.function_by_time, color, 1, 255, 0, 0.5, math.easeInCubic)
 end
 
-StartGameWindowAreaSelectionConsole._destroy_video_widget = function (self)
+StartGameWindowAreaSelectionConsoleV2._destroy_video_widget = function (self)
 	local widget = self._video_widget
 
 	if widget then
@@ -528,7 +682,7 @@ StartGameWindowAreaSelectionConsole._destroy_video_widget = function (self)
 	self._video_created = nil
 end
 
-StartGameWindowAreaSelectionConsole._animate_area_widget = function (self, widget, dt)
+StartGameWindowAreaSelectionConsoleV2._animate_area_widget = function (self, widget, dt)
 	local content = widget.content
 	local style = widget.style
 	local hotspot = content.button_hotspot
@@ -570,7 +724,7 @@ StartGameWindowAreaSelectionConsole._animate_area_widget = function (self, widge
 	hotspot.selection_progress = selection_progress
 end
 
-StartGameWindowAreaSelectionConsole._show_storepage = function (self, url, dlc_name)
+StartGameWindowAreaSelectionConsoleV2._show_storepage = function (self, url, dlc_name)
 	local platform = PLATFORM
 
 	if IS_WINDOWS and rawget(_G, "Steam") then

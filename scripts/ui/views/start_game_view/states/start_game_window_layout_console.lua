@@ -52,7 +52,7 @@ local windows = {
 		name = "mission_selection",
 	},
 	area_selection = {
-		class_name = "StartGameWindowAreaSelectionConsole",
+		class_name = "StartGameWindowAreaSelectionConsoleV2",
 		ignore_alignment = true,
 		name = "area_selection",
 	},
@@ -201,6 +201,7 @@ local window_layouts = {
 		close_on_exit = false,
 		input_focus_window = "area_selection",
 		name = "area_selection",
+		return_to_top_level = true,
 		save_data_table = "custom",
 		sound_event_enter = "play_gui_lobby_button_00_custom",
 		windows = {

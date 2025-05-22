@@ -492,6 +492,44 @@ ConflictUtils.find_center_tri = function (nav_world, pos, above_max, below_max)
 	end
 end
 
+ConflictUtils.find_center_tri_with_fallback = function (nav_world, pos, above_max, below_max)
+	above_max, below_max = above_max or 30, below_max or 30
+
+	local success, altitude, p1, p2, p3 = GwNavQueries.triangle_from_position(nav_world, pos, above_max, below_max)
+
+	if success then
+		pos.z = altitude
+
+		return pos, p1, p2, p3
+	end
+
+	local fallback_z_diff = 5
+
+	if above_max < fallback_z_diff or below_max < fallback_z_diff then
+		success, altitude, p1, p2, p3 = GwNavQueries.triangle_from_position(nav_world, pos, math.max(above_max, fallback_z_diff), math.max(below_max, fallback_z_diff))
+
+		if success then
+			pos.z = altitude
+
+			return pos, p1, p2, p3
+		end
+	end
+
+	local fallback_xy_diff = 5
+
+	pos = GwNavQueries.inside_position_from_outside_position(nav_world, pos, fallback_z_diff, fallback_z_diff, fallback_xy_diff, 0.5)
+
+	if pos then
+		local _
+
+		_, _, p1, p2, p3 = GwNavQueries.triangle_from_position(nav_world, pos, math.max(above_max, fallback_z_diff), math.max(below_max, fallback_z_diff))
+
+		return pos, p1, p2, p3
+	end
+
+	return nil
+end
+
 ConflictUtils.simulate_dummy_target = function (nav_world, center_pos, t)
 	local radius = 15
 	local add_vec = Vector3(radius, 0, 1)
@@ -1634,7 +1672,7 @@ ConflictUtils.find_positions_around_position = function (center_position, output
 	for i = 1, num_of_positions do
 		for try = 1, tries do
 			local pos = get_next_pos()
-			local spawn_pos = ConflictUtils.find_center_tri(nav_world, pos, above_max, below_max)
+			local spawn_pos = ConflictUtils.find_center_tri_with_fallback(nav_world, pos, above_max, below_max)
 
 			if spawn_pos then
 				local valid_position = filter_func(spawn_pos)

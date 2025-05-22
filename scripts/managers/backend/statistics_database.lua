@@ -500,9 +500,7 @@ StatisticsDatabase._get_stat = function (self, stat, ...)
 end
 
 StatisticsDatabase.get_stat = function (self, id, ...)
-	local stat = self.statistics[id]
-
-	stat = self:_get_stat(stat, ...)
+	local stat = self:_get_or_create_stat(id, 0, ...)
 
 	return stat and stat.value or 0
 end
@@ -522,6 +520,12 @@ StatisticsDatabase.get_persistent_stat = function (self, id, ...)
 		return stat.persistent_value
 	else
 		local definition = self:_get_stat(StatisticsDefinitions[CATEGORY], ...)
+
+		if not definition then
+			ferror("[StatisticsDatabase] Failed fetching statistic using parameters: %s", table.concat({
+				...,
+			}, ", "))
+		end
 
 		if definition.database_name then
 			return definition.value

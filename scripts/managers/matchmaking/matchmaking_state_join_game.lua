@@ -49,7 +49,7 @@ MatchmakingStateJoinGame.on_enter = function (self, state_context)
 
 		local pop_chat = true
 
-		Managers.chat:add_local_system_message(PEER_ID_TO_CHANNEL[Network.peer_id], Localize("matchmaking_status_aquiring_profiles"), pop_chat)
+		Managers.chat:add_local_system_message(1, Localize("matchmaking_status_aquiring_profiles"), pop_chat)
 	else
 		WwiseWorld.trigger_event(self._wwise_world, "menu_wind_countdown_warning")
 		self:_set_state_to_start_lobby()
@@ -171,7 +171,7 @@ MatchmakingStateJoinGame.update = function (self, dt, t)
 		end
 	end
 
-	if Managers.state.network.is_server and not Managers.state.network.network_server:are_all_peers_ingame() then
+	if Managers.state.network.is_server and not Managers.state.network.network_server:are_all_peers_ingame(nil, true) then
 		Managers.simple_popup:queue_popup(Localize("player_join_block_exit_game"), Localize("popup_error_topic"), "ok", Localize("popup_choice_ok"))
 		self._matchmaking_manager:cancel_matchmaking()
 

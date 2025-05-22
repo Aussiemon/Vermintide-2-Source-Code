@@ -112,20 +112,24 @@ PartyManager.clear_parties = function (self, sync_to_clients)
 	self._party_by_name = {}
 	self._num_parties = 0
 	self._num_game_participating_parties = 0
-	self._undecided_party = self:_register_party({
-		game_participating = false,
-		name = "undecided",
-		num_open_slots = 0,
-		num_slots = 16,
-		party_id = 0,
-		tags = {},
-	})
+	self._undecided_party = self:create_party(self:generate_undecided_party())
 	self._parties[0] = self._undecided_party
 	self._cleared = true
 
 	if sync_to_clients then
 		self:_send_rpc_to_clients("rpc_reset_party_data")
 	end
+end
+
+PartyManager.generate_undecided_party = function (self)
+	return {
+		game_participating = false,
+		name = "undecided",
+		num_open_slots = 0,
+		num_slots = 16,
+		party_id = 0,
+		tags = {},
+	}
 end
 
 PartyManager.gather_party_members = function (self, party_id)
@@ -154,7 +158,7 @@ PartyManager.gather_party_members = function (self, party_id)
 	return members
 end
 
-PartyManager._register_party = function (self, def)
+PartyManager.create_party = function (self, def)
 	debug_printf("Register party. party_id: %q | name: %q | num_slots: %q", def.party_id, def.name, def.num_slots)
 
 	local num_slots = def.num_slots
@@ -210,7 +214,7 @@ PartyManager.register_parties = function (self, party_definitions)
 
 		fassert(party_id ~= 0, "This party id is reserved for undecided party.")
 
-		local party = self:_register_party(def)
+		local party = self:create_party(def)
 
 		self._parties[party_id] = party
 		self._party_by_name[party_name] = party

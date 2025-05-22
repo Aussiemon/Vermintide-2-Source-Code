@@ -24,7 +24,7 @@ require("scripts/ui/views/start_game_view/windows/start_game_window_custom_game_
 require("scripts/ui/views/start_game_view/windows/start_game_window_heroic_deed_overview_console")
 require("scripts/ui/views/start_game_view/windows/start_game_window_twitch_overview_console")
 require("scripts/ui/views/start_game_view/windows/start_game_window_mission_selection_console")
-require("scripts/ui/views/start_game_view/windows/start_game_window_area_selection_console")
+require("scripts/ui/views/start_game_view/windows/start_game_window_area_selection_console_v2")
 require("scripts/ui/views/start_game_view/windows/start_game_window_difficulty_console")
 require("scripts/ui/views/start_game_view/windows/start_game_window_mutator_grid_console")
 require("scripts/ui/views/start_game_view/windows/start_game_window_mutator_summary_console")
@@ -378,17 +378,12 @@ StartGameStateSettingsOverview._initial_windows_setups = function (self, params)
 	self._active_windows = active_windows
 	self._window_params = params
 
-	if Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) then
-		if Managers.mechanism:current_mechanism_name() == "deus" then
-			self:set_layout_by_name("deus_twitch")
-		else
-			self:set_layout_by_name("twitch")
-		end
-	else
-		local start_layout_name = params.start_state or self:_start_layout_name()
+	local start_layout_name
 
-		self:set_layout_by_name(start_layout_name)
-	end
+	start_layout_name = Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and (Managers.mechanism:current_mechanism_name() == "deus" and "deus_twitch" or "twitch") or params.start_state or self:_start_layout_name()
+
+	self:set_layout_by_name(start_layout_name)
+	self:set_top_level_layout_name(start_layout_name)
 end
 
 StartGameStateSettingsOverview.window_input_service = function (self)
@@ -653,6 +648,14 @@ StartGameStateSettingsOverview.set_window_input_focus = function (self, window_n
 	end
 
 	self._window_focused = window_name
+end
+
+StartGameStateSettingsOverview.set_top_level_layout_name = function (self, layout_name)
+	self._top_level_layout_name = layout_name
+end
+
+StartGameStateSettingsOverview.get_top_level_layout_name = function (self)
+	return self._top_level_layout_name
 end
 
 StartGameStateSettingsOverview.get_selected_game_mode_layout_name = function (self)
@@ -950,7 +953,15 @@ StartGameStateSettingsOverview._handle_input = function (self, dt, t)
 			window_params.return_layout_name = nil
 		end
 
-		return_layout_name = return_layout_name or self:get_previous_selected_layout_name()
+		if not return_layout_name then
+			local layout_settings = self:get_layout_setting_by_name(self._selected_layout_name)
+
+			if layout_settings.return_to_top_level then
+				return_layout_name = self:get_top_level_layout_name() or self:get_previous_selected_layout_name()
+			else
+				return_layout_name = self:get_previous_selected_layout_name()
+			end
+		end
 
 		if return_layout_name then
 			self:set_layout_by_name(return_layout_name)
@@ -1523,11 +1534,6 @@ StartGameStateSettingsOverview.is_difficulty_approved = function (self, difficul
 
 	local difficulty_settings = DifficultySettings[difficulty_key]
 
-	if difficulty_settings.dlc_requirement and not Managers.unlock:is_dlc_unlocked(difficulty_settings.dlc_requirement) then
-		difficulty_approved = false
-		dlc_requirement = difficulty_settings.dlc_requirement
-	end
-
 	if difficulty_settings.extra_requirement_name then
 		local players = human_players
 
@@ -1544,6 +1550,28 @@ StartGameStateSettingsOverview.is_difficulty_approved = function (self, difficul
 
 			extra_requirement = requirement_data.description_text
 			difficulty_approved = false
+		end
+	end
+
+	if difficulty_settings.dlc_requirement then
+		local network_handler = Managers.mechanism:network_handler()
+
+		if network_handler then
+			local anyone_has_unlocked_dlc = false
+			local peers = network_handler:get_peers()
+
+			for i = 1, #peers do
+				local peer_id = peers[i]
+
+				if network_handler:is_network_state_fully_synced_for_peer(peer_id) and network_handler:has_unlocked_dlc(peer_id, difficulty_settings.dlc_requirement) then
+					anyone_has_unlocked_dlc = true
+				end
+			end
+
+			if not anyone_has_unlocked_dlc then
+				difficulty_approved = false
+				dlc_requirement = difficulty_settings.dlc_requirement
+			end
 		end
 	end
 

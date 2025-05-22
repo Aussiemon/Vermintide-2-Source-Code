@@ -539,7 +539,7 @@ BTConditions.should_teleport_to_commander = function (blackboard)
 end
 
 BTConditions.has_command_attack = function (blackboard)
-	return blackboard.new_command_attack and (ALIVE[blackboard.target_unit] or blackboard.attack_locked_in_t)
+	return blackboard.new_command_attack and (ALIVE[blackboard.target_unit] or blackboard.attack_locked_in_t) and (not ALIVE[blackboard.locked_target_unit] or blackboard.locked_target_unit == blackboard.target_unit or not ALIVE[blackboard.target_unit])
 end
 
 BTConditions.pet_skeleton_is_armored = function (blackboard)

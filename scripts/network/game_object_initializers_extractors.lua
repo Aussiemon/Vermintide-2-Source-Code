@@ -1165,7 +1165,7 @@ go_type_table = {
 			local id = limited_item_extension.id
 			local world = gameobject_functor_context.world
 			local level = LevelHelper:current_level(world)
-			local spawner_unit_index = Level.unit_index(level, spawner_unit)
+			local spawner_unit_index = spawner_unit and Level.unit_index(level, spawner_unit) or NetworkConstants.invalid_game_object_id
 			local data_table = {
 				go_type = NetworkLookup.go_types.pickup_projectile_unit_limited,
 				husk_unit = NetworkLookup.husks[unit_name],
@@ -1260,7 +1260,7 @@ go_type_table = {
 			local item_name = death_extension.item_name or AllPickups[pickup_name].item_name
 			local world = gameobject_functor_context.world
 			local level = LevelHelper:current_level(world)
-			local spawner_unit_index = Level.unit_index(level, spawner_unit)
+			local spawner_unit_index = spawner_unit and Level.unit_index(level, spawner_unit) or NetworkConstants.invalid_game_object_id
 			local data_table = {
 				go_type = NetworkLookup.go_types.explosive_pickup_projectile_unit_limited,
 				husk_unit = NetworkLookup.husks[unit_name],
@@ -3667,7 +3667,7 @@ go_type_table = {
 			local limited_item_id = GameSession.game_object_field(game_session, go_id, "limited_item_id")
 			local world = gameobject_functor_context.world
 			local level = LevelHelper:current_level(world)
-			local spawner_unit = Level.unit_by_index(level, spawner_unit_index)
+			local spawner_unit = spawner_unit_index ~= NetworkConstants.invalid_game_object_id and Level.unit_by_index(level, spawner_unit_index) or nil
 			local extension_init_data = {
 				projectile_locomotion_system = {
 					network_position = network_position,
@@ -3763,7 +3763,7 @@ go_type_table = {
 
 			local world = gameobject_functor_context.world
 			local level = LevelHelper:current_level(world)
-			local spawner_unit = Level.unit_by_index(level, spawner_unit_index)
+			local spawner_unit = spawner_unit_index ~= NetworkConstants.invalid_game_object_id and Level.unit_by_index(level, spawner_unit_index) or nil
 			local extension_init_data = {
 				projectile_locomotion_system = {
 					network_position = network_position,

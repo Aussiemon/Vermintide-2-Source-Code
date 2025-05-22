@@ -325,7 +325,7 @@ HeroWindowTalents._populate_talents_by_hero = function (self, initialize)
 				end
 
 				content[icon_name] = talent_data and talent_data.icon or "icons_placeholder"
-				content[title_text_name] = talent_data and Localize(talent_data.name) or "Undefined"
+				content[title_text_name] = talent_data and Localize(talent_data.display_name or talent_data.name) or "Undefined"
 				hotspot.is_selected = is_selected
 				hotspot.talent = talent_data
 				hotspot.talent_id = id

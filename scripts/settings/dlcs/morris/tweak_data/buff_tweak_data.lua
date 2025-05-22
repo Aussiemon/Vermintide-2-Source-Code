@@ -193,7 +193,7 @@ MorrisBuffTweakData = MorrisBuffTweakData or {
 		proc_chance = 0.25,
 	},
 	hand_of_shallya = {
-		multiplier = 0.5,
+		multiplier = 0.2,
 	},
 	power_up_of_shallya = {
 		multiplier = 0.3,
@@ -551,6 +551,34 @@ MorrisBuffTweakData = MorrisBuffTweakData or {
 		max_stacks = 5,
 		power_on_proc = 0.2,
 		power_per_stack = 0.02,
+	},
+	boon_skulls_set_01_data = {
+		duration_modifier_func = function (unit, sub_buff_template, duration, buff_extension, params)
+			local has_full_set = buff_extension:num_buff_stacks("power_up_boon_skulls_set_bonus_01_event") > 0
+
+			if has_full_set then
+				duration = duration * (1 + MorrisBuffTweakData.boon_skulls_set_bonus_01.duration_amplify_amount)
+			end
+
+			return duration
+		end,
+	},
+	boon_skulls_06_data = {
+		power_per_stack = 0.025,
+	},
+	boon_skulls_07 = {
+		coins_to_gain = 10,
+	},
+	boon_skulls_08 = {
+		cooldown_to_reduce = 0.35,
+	},
+	boon_skulls_set_bonus_01 = {
+		duration_amplify_amount = 0.5,
+		effect_amplify_amount = 0.5,
+	},
+	boon_skulls_set_bonus_02 = {
+		duration_amplify_amount = 0.5,
+		effect_amplify_amount = 0.25,
 	},
 	boon_supportbomb_shared_data = {
 		duration = 10,

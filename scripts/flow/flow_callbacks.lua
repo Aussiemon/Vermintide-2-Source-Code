@@ -1267,6 +1267,10 @@ function flow_callback_create_networked_flow_state(params)
 
 			return flow_return_table
 		end
+	else
+		local flow_state_unit = params.flow_state_unit
+
+		Managers.level_transition_handler:queue_create_networked_flow_state(flow_state_unit)
 	end
 end
 
@@ -2037,7 +2041,7 @@ function flow_callback_start_mission(params)
 	else
 		local mission_system = Managers.state.entity:system("mission_system")
 
-		mission_system:flow_callback_start_mission(mission_name, params.unit)
+		mission_system:flow_callback_start_mission(mission_name, params.unit, params.client_may_start, params.only_once)
 	end
 end
 
@@ -2337,7 +2341,7 @@ function flow_callback_damage_player_bot_ai(params)
 		for i = 0, damage_chunks - 1 do
 			local damage_to_apply = math.min(clamped_damage - damage_chunks * i, damage_chunks)
 
-			DamageUtils.add_damage_network(unit, attacker_unit, damage_to_apply, hit_zone_name, damage_type, hit_position, damage_direction)
+			DamageUtils.add_damage_network(unit, attacker_unit, damage_to_apply, hit_zone_name, damage_type, hit_position, damage_direction, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, i)
 		end
 	end
 end
@@ -2448,7 +2452,7 @@ function flow_callback_overcharge_init_unit(params)
 		local hit_position = Unit.world_position(unit, 0)
 		local attack_direction = Vector3.up()
 
-		health_extension:add_damage(unit, init_damage, hit_zone_name, "destructible_level_object_hit", hit_position, attack_direction, "wounded_degen")
+		health_extension:add_damage(unit, init_damage, hit_zone_name, "destructible_level_object_hit", hit_position, attack_direction, "wounded_degen", nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 	end
 end
 
@@ -2460,7 +2464,7 @@ function flow_callback_overcharge_sync_damage(params)
 	local health_extension = ScriptUnit.extension(unit, "health_system")
 	local attack_direction = Vector3.up()
 
-	health_extension:add_damage(unit, damage, hit_zone_name, "destructible_level_object_hit", hit_position, attack_direction, "wounded_degen")
+	health_extension:add_damage(unit, damage, hit_zone_name, "destructible_level_object_hit", hit_position, attack_direction, "wounded_degen", nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 end
 
 function flow_callback_overcharge_damage_unit(params)
@@ -2479,7 +2483,7 @@ function flow_callback_overcharge_damage_unit(params)
 		local attack_direction = Vector3.up()
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 
-		health_extension:add_damage(unit, damage, hit_zone_name, "destructible_level_object_hit", hit_position, attack_direction, "wounded_degen")
+		health_extension:add_damage(unit, damage, hit_zone_name, "destructible_level_object_hit", hit_position, attack_direction, "wounded_degen", nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 	end
 end
 
@@ -3000,7 +3004,7 @@ function flow_callback_damage_unit(params)
 		local attack_direction = Vector3.up()
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 
-		health_extension:add_damage(unit, damage, hit_zone_name, "destructible_level_object_hit", hit_position, attack_direction, "wounded_degen")
+		health_extension:add_damage(unit, damage, hit_zone_name, "destructible_level_object_hit", hit_position, attack_direction, "wounded_degen", nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 	end
 end
 
@@ -3965,7 +3969,7 @@ function flow_callback_barrel_explode(params)
 	local health_extension = ScriptUnit.extension(unit, "health_system")
 
 	health_extension:set_max_health(1)
-	health_extension:add_damage(unit, 1, "full", "grenade", Unit.world_position(unit, 0), Vector3(1, 0, 0))
+	health_extension:add_damage(unit, 1, "full", "grenade", Unit.world_position(unit, 0), Vector3(1, 0, 0), nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 end
 
 function flow_callback_kill_unit(params)
@@ -3973,7 +3977,7 @@ function flow_callback_kill_unit(params)
 	local health_extension = ScriptUnit.extension(unit, "health_system")
 
 	health_extension:set_max_health(1)
-	health_extension:add_damage(unit, 1, "full", "forced", Unit.local_position(unit, 0), Vector3(0, 0, 1))
+	health_extension:add_damage(unit, 1, "full", "forced", Unit.local_position(unit, 0), Vector3(0, 0, 1), nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 end
 
 function flow_callback_set_mutator_active(params)
@@ -5085,7 +5089,7 @@ function flow_callback_environment_hazard_damage_collision(params)
 		local health_extension = ScriptUnit.extension(hit_unit, "health_system")
 		local damage = hazard_settings.enemy.difficulty_damage[difficulty_rank] or hazard_settings.enemy.difficulty_damage[2]
 
-		health_extension:add_damage(hit_unit, damage, hit_zone_name, "cutting", hit_unit_position, push_direction, "wounded_degen")
+		health_extension:add_damage(hit_unit, damage, hit_zone_name, "cutting", hit_unit_position, push_direction, "wounded_degen", nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 
 		if health_extension:is_dead() then
 			local gibbs = {
@@ -5119,7 +5123,7 @@ function flow_callback_hazard_push_damage_player_and_husks(params)
 			local damage_direction = Vector3.up()
 			local health_extension = ScriptUnit.extension(hit_unit, "health_system")
 
-			health_extension:add_damage(hit_unit, damage, hit_zone_name, damage_type, hit_unit_position, damage_direction)
+			health_extension:add_damage(hit_unit, damage, hit_zone_name, damage_type, hit_unit_position, damage_direction, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 		end
 
 		local pushed_velocity = Vector3.normalize(hit_unit_flat_position - hazard_flat_position) * push_multiplier
@@ -5706,6 +5710,30 @@ function flow_callback_termite_part_2_timer_challenge(params)
 	achievement_manager:trigger_event("termite2_timer_challenge")
 end
 
+function flow_callback_termite_part_3_collectible_challenge(params)
+	local achievement_manager = Managers.state.achievement
+
+	achievement_manager:trigger_event("termite3_collectible_challenge")
+end
+
+function flow_callback_termite_part_3_searchlight_challenge(params)
+	local achievement_manager = Managers.state.achievement
+
+	achievement_manager:trigger_event("termite3_searchlight_challenge")
+end
+
+function flow_callback_termite_part_3_generator_challenge(params)
+	local achievement_manager = Managers.state.achievement
+
+	achievement_manager:trigger_event("termite3_generator_challenge")
+end
+
+function flow_callback_termite_part_3_portal_challenge(params)
+	local achievement_manager = Managers.state.achievement
+
+	achievement_manager:trigger_event("termite3_portal_challenge")
+end
+
 function flow_callback_register_combination_puzzle(params)
 	local group_name_id = params.puzzle_group
 	local puzzle_id = params.puzzle_name or ""
@@ -5911,6 +5939,37 @@ function flow_callbacks_get_owner_of_unit_that_occupied_objective_socket(params)
 	local owner_unit = objective_socket_system:get_owner_of_unit_that_occupied_socket(params.socket_unit, params.socket_name)
 
 	flow_return_table.owner_unit = Unit.alive(owner_unit) and owner_unit or Unit.null_reference()
+
+	return flow_return_table
+end
+
+function flow_query_is_special_event_active(params)
+	flow_return_table.is_event_active = false
+
+	local live_events_interface = Managers.backend:get_interface("live_events")
+
+	if live_events_interface and live_events_interface.get_active_events then
+		local live_events = live_events_interface:get_active_events()
+
+		if live_events and #live_events ~= 0 then
+			flow_return_table.is_event_active = true
+		end
+	end
+
+	return flow_return_table
+end
+
+function flow_query_global_listener(params)
+	local dialogue_profile = params.dialogue_profile
+	local entity_manager = Managers.state.entity
+
+	if entity_manager then
+		local surrounding_aware_system = Managers.state.entity:system("surrounding_aware_system")
+
+		flow_return_table.unit = surrounding_aware_system:query_global_listener(dialogue_profile) or Unit.null_reference()
+	else
+		flow_return_table.unit = Unit.null_reference()
+	end
 
 	return flow_return_table
 end

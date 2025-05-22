@@ -197,7 +197,7 @@ BTStormfiendDualShootAction.shoot_hit_check = function (self, unit, blackboard)
 					local damage_direction = data.direction:unbox()
 					local damage_source = blackboard.breed.name
 
-					DamageUtils.add_damage_network(hit_unit, attacker_unit, damage, "torso", damage_type, hit_position, damage_direction, damage_source)
+					DamageUtils.add_damage_network(hit_unit, attacker_unit, damage, "torso", damage_type, hit_position, damage_direction, damage_source, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, i)
 
 					hit_enemies[hit_unit] = true
 				end

@@ -333,6 +333,10 @@ GameMechanismManager.get_level_end_view = function (self)
 	return self._game_mechanism and self._game_mechanism.get_level_end_view and self._game_mechanism:get_level_end_view()
 end
 
+GameMechanismManager.get_level_end_view_packages = function (self)
+	return self._game_mechanism and self._game_mechanism.get_level_end_view_packages and self._game_mechanism:get_level_end_view_packages()
+end
+
 GameMechanismManager.handle_ingame_enter = function (self, game_mode)
 	local game_mechanism = self._game_mechanism
 
@@ -388,6 +392,10 @@ GameMechanismManager.set_network_server = function (self, network_server)
 	if network_server then
 		self._network_client = nil
 	end
+
+	if self._game_mechanism.network_handler_set then
+		self._game_mechanism:network_handler_set(network_server)
+	end
 end
 
 GameMechanismManager.set_network_client = function (self, network_client)
@@ -395,6 +403,10 @@ GameMechanismManager.set_network_client = function (self, network_client)
 
 	if network_client then
 		self._network_server = nil
+	end
+
+	if self._game_mechanism.network_handler_set then
+		self._game_mechanism:network_handler_set(network_client)
 	end
 end
 
@@ -500,6 +512,12 @@ GameMechanismManager._init_mechanism = function (self)
 
 		if switching_mechanism and self._game_mechanism.entered_mechanism_due_to_switch then
 			self._game_mechanism:entered_mechanism_due_to_switch()
+		end
+
+		local network_handler = self:network_handler()
+
+		if network_handler and self._game_mechanism.network_handler_set then
+			self._game_mechanism:network_handler_set(network_handler)
 		end
 
 		if switching_mechanism then
@@ -686,7 +704,6 @@ GameMechanismManager.refresh_mechanism_setting_for_title = function (self)
 end
 
 GameMechanismManager.max_party_members = function (self)
-	local num_slots = 0
 	local settings = MechanismSettings[self._mechanism_key]
 	local party_definitions = settings.party_data
 
@@ -697,7 +714,7 @@ GameMechanismManager.max_instance_members = function (self)
 	fassert(self._mechanism_key, "No mechanism set yet.")
 
 	if self._game_mechanism.max_instance_members then
-		local max_members = self._game_mechanism:max_instance_members()
+		local max_members = self._game_mechanism:max_instance_members(self._lobby)
 
 		assert(max_members > 0, "[GameMechanismManager] At least one must be provided to lobbies.")
 
@@ -878,7 +895,7 @@ GameMechanismManager.debug_load_level = function (self, level_name, environment_
 	end
 end
 
-GameMechanismManager._on_venture_start = function (self)
+GameMechanismManager._on_venture_start = function (self, loading_context)
 	self._venture_started = true
 
 	local is_server = self._is_server
@@ -886,6 +903,7 @@ GameMechanismManager._on_venture_start = function (self)
 
 	Managers.venture.statistics = statistics_db
 	Managers.venture.challenge = ChallengeManager:new(statistics_db, is_server)
+	Managers.venture.quickplay = QuickplayManager:new(loading_context, is_server)
 
 	Managers:on_venture_start()
 
@@ -906,9 +924,9 @@ GameMechanismManager._on_venture_end = function (self)
 	self._venture_started = false
 end
 
-GameMechanismManager.check_venture_start = function (self)
+GameMechanismManager.check_venture_start = function (self, loading_context)
 	if not self._venture_started then
-		self:_on_venture_start()
+		self:_on_venture_start(loading_context)
 	end
 end
 
@@ -1160,16 +1178,6 @@ GameMechanismManager.setup_mechanism_parties = function (self)
 	if self._game_mechanism.setup_mechanism_parties then
 		self._game_mechanism:setup_mechanism_parties(self)
 	end
-
-	if not IS_CONSOLE and self._lobby and self._lobby.set_max_members then
-		self._lobby:set_max_members(self:max_instance_members())
-	end
-end
-
-GameMechanismManager.update_lobby_max_members = function (self)
-	if self._lobby.set_max_members then
-		self._lobby:set_max_members(self:max_instance_members())
-	end
 end
 
 GameMechanismManager.get_level_dialogue_context = function (self)
@@ -1192,9 +1200,15 @@ GameMechanismManager.get_player_level_fallback = function (self, player)
 	end
 end
 
-GameMechanismManager.get_slot_reservation_handler = function (self)
+GameMechanismManager.get_slot_reservation_handler = function (self, owner, session_type)
 	if self._game_mechanism.get_slot_reservation_handler then
-		return self._game_mechanism:get_slot_reservation_handler()
+		return self._game_mechanism:get_slot_reservation_handler(owner, session_type)
+	end
+end
+
+GameMechanismManager.get_all_reservation_handlers_by_owner = function (self, owner)
+	if self._game_mechanism.get_all_reservation_handlers_by_owner then
+		return self._game_mechanism:get_all_reservation_handlers_by_owner(owner)
 	end
 end
 

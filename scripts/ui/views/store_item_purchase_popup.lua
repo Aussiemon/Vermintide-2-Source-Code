@@ -1146,6 +1146,7 @@ StoreItemPurchasePopup._create_ui_elements = function (self, params)
 	self._static_widgets = static_widgets
 	self._widgets_by_name = widgets_by_name
 	self._widgets_by_state = widgets_by_state
+	widgets_by_name.purchase_button.content.button_hotspot.disable_button = script_data["eac-untrusted"]
 
 	UIRenderer.clear_scenegraph_queue(self._purchase_ui_renderer)
 

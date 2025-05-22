@@ -808,13 +808,13 @@ BackendInterfaceItem.get_item_template = function (self, item_data, backend_id)
 				modified_templates[backend_id] = {}
 			end
 
-			if not modified_templates[backend_id][template_name] then
+			if not modified_templates[backend_id][item_template] then
 				table.clear(modified_templates[backend_id])
 
-				modified_templates[backend_id][template_name] = GearUtils.apply_properties_to_item_template(item_template, backend_id)
+				modified_templates[backend_id][item_template] = GearUtils.apply_properties_to_item_template(item_template, backend_id)
 			end
 
-			return modified_templates[backend_id][template_name]
+			return modified_templates[backend_id][item_template]
 		end
 
 		return item_template

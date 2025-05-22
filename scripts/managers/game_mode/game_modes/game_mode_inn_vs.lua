@@ -4,6 +4,7 @@ require("scripts/managers/game_mode/game_modes/game_mode_base")
 require("scripts/managers/admin/dedicated_server_commands")
 require("scripts/managers/game_mode/spawning_components/simple_spawning")
 
+local ReservationHandlerTypes = require("scripts/managers/game_mode/mechanisms/reservation_handler_types")
 local COMPLETE_LEVEL_VAR = false
 local FAIL_LEVEL_VAR = false
 
@@ -207,7 +208,7 @@ GameModeInnVs.player_left_party = function (self, peer_id, local_player_id, part
 end
 
 GameModeInnVs.on_game_server_unreserve_party_slot = function (self, slot_index, peer_id)
-	if DEDICATED_SERVER and self._mechanism:get_slot_reservation_handler():is_empty() then
+	if DEDICATED_SERVER and self._mechanism:get_slot_reservation_handler(Network.peer_id(), ReservationHandlerTypes.session):is_empty() then
 		self._transition_state = "restart_game_server"
 	end
 end
@@ -271,10 +272,12 @@ GameModeInnVs.server_update = function (self, t, dt)
 		end
 	end
 
-	local reservation_handler = self._mechanism:get_slot_reservation_handler()
+	local handlers = Managers.mechanism:get_all_reservation_handlers_by_owner(Network.peer_id())
 
-	if reservation_handler and reservation_handler.handle_dangling_peers then
-		reservation_handler:handle_dangling_peers()
+	for _, handler in pairs(handlers) do
+		if handler.handle_dangling_peers then
+			handler:handle_dangling_peers()
+		end
 	end
 end
 

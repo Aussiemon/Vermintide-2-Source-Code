@@ -990,7 +990,7 @@ local function create_player_panel_widget(team_index, player_index)
 			host_texture = "host_icon",
 			is_local_player = false,
 			kick_button_texture = "tab_menu_icon_04",
-			kick_tooltip_text = "input_description_vote_kick_player",
+			kick_tooltip_text = "vs_player_hosted_lobby_kick",
 			player_level = "*Level 0",
 			player_name = "*Missing Name",
 			profile_button_texture = "tab_menu_icon_05",

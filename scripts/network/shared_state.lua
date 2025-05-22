@@ -359,6 +359,8 @@ SharedState.init = function (self, context, spec, is_server, network_server, ser
 	if self._is_server then
 		self._network_server:register_shared_state(self)
 	end
+
+	self:_init_immediate_initializations()
 end
 
 SharedState.register_callback = function (self, cb_type, obj, func_name, ...)
@@ -1078,4 +1080,36 @@ SharedState.validate_spec = function (spec)
 	fassert(spec.server, "spec invalid, missing server spec")
 	check_spec_part(spec.peer)
 	check_spec_part(spec.server)
+end
+
+SharedState._init_immediate_initializations = function (self)
+	local peer_spec = self._spec.peer
+	local server_spec = self._spec.server
+	local is_server = self._is_server
+	local peer_id = self._peer_id
+	local key_types = self._key_type_lookup
+
+	for i = 1, #key_types do
+		local key_type = key_types[i]
+		local as_peer_spec = peer_spec[key_type]
+
+		if as_peer_spec then
+			local immediate_init_func = as_peer_spec.immediate_initialization
+
+			if immediate_init_func then
+				local key, value = immediate_init_func(self, peer_id)
+
+				self:set_own(key, value)
+			end
+		elseif is_server then
+			local as_server_spec = server_spec[key_type]
+			local immediate_init_func = as_server_spec.immediate_initialization
+
+			if immediate_init_func then
+				local key, value = immediate_init_func(self, peer_id)
+
+				self:set_server(key, value)
+			end
+		end
+	end
 end

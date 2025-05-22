@@ -27,9 +27,6 @@ DebugListPicker.init = function (self, list, save_data_name, item_validation_fun
 	self.column = self.pick_list[self.column_index]
 	self.item = self.column[self.row_index] or "?"
 	self.max_cols_seen = 3
-	self._original_list_orders = table.select_map(list, function (_, v)
-		return table.mirror_array(v)
-	end)
 end
 
 DebugListPicker.destroy = function (self)
@@ -73,7 +70,7 @@ DebugListPicker.setup = function (self)
 
 		for j = 1, num_rows do
 			local item = column[j]
-			local text = item[1] .. "(Enables Autoload)"
+			local text = item[1] .. "(Load)"
 			local min, max = Gui.text_extents(self.gui, text:upper(), self.font_mtrl, self.font_size)
 			local width = max.x - min.x
 			local height = max.y - min.y
@@ -128,15 +125,13 @@ DebugListPicker.current_item_name = function (self)
 end
 
 DebugListPicker._sort_column = function (self, column)
-	local column_index = table.index_of(self.pick_list, column)
-	local original_order = self._original_list_orders[column_index]
 	local valid = self._item_validation_func
 
 	table.sort(column, function (a, b)
-		local a_valid, b_valid = valid(a[1]), valid(b[1])
+		local a_valid, b_valid = not not valid(a[1]), not not valid(b[1])
 
 		if a_valid == b_valid then
-			return original_order[a] < original_order[b]
+			return a[1] < b[1]
 		elseif a_valid then
 			return true
 		end
@@ -154,13 +149,13 @@ DebugListPicker.update = function (self, t, dt)
 	local pick_list = self.pick_list
 	local column = self.column
 	local item = self.item
+	local last_row = self.row_index
 
 	if DebugKeyHandler.key_pressed("right_key", "switch spawn category", "ai") then
 		self.column_index = self.column_index + 1
 		self.column_index = (self.column_index - 1) % #pick_list + 1
 		self.column = self.pick_list[self.column_index]
 		self.row_index = math.clamp(self.column.last_row_index or self.row_index, 1, #self.column)
-		self.item = self.column[self.row_index]
 	end
 
 	if DebugKeyHandler.key_pressed("left_key", "switch spawn category", "ai") then
@@ -168,13 +163,11 @@ DebugListPicker.update = function (self, t, dt)
 		self.column_index = (self.column_index - 1) % #pick_list + 1
 		self.column = self.pick_list[self.column_index]
 		self.row_index = math.clamp(self.column.last_row_index or self.row_index, 1, #self.column)
-		self.item = self.column[self.row_index]
 	end
 
 	if DebugKeyHandler.key_pressed("up_key", "switch spawn category", "ai") and wall_time > self.move_cursor_timer then
 		self.row_index = self.row_index - 1
 		self.row_index = (self.row_index - 1) % #column + 1
-		self.item = self.column[self.row_index]
 		self.move_cursor_timer = wall_time + 0.1
 		column.last_row_index = self.row_index
 	end
@@ -182,10 +175,13 @@ DebugListPicker.update = function (self, t, dt)
 	if DebugKeyHandler.key_pressed("down_key", "switch spawn category", "ai") and wall_time > self.move_cursor_timer then
 		self.row_index = self.row_index + 1
 		self.row_index = (self.row_index - 1) % #column + 1
-		self.item = self.column[self.row_index]
 		self.move_cursor_timer = wall_time + 0.1
 		column.last_row_index = self.row_index
 	end
+
+	local same_row = last_row == self.row_index
+
+	self.item = self.column[self.row_index]
 
 	if not script_data.disable_debug_draw then
 		local item = self.item
@@ -239,6 +235,18 @@ DebugListPicker.update = function (self, t, dt)
 
 		self:_sort_column(column)
 
+		if same_row and self.item and self._last_selected_item and self.item ~= self._last_selected_item then
+			local found_i = table.find_func(column, function (_, col)
+				return type(col) == "table" and col[1] == self._last_selected_item[1]
+			end)
+
+			if found_i then
+				self.row_index = found_i
+			end
+		else
+			self._last_selected_item = self.item
+		end
+
 		local start_idx = math.clamp(self.row_index - max_display_items + 1, 1, #column)
 		local end_idx = math.min(#column, max_display_items) + (start_idx - 1)
 
@@ -253,7 +261,7 @@ DebugListPicker.update = function (self, t, dt)
 			local loaded = self._item_validation_func(item_text)
 
 			if not loaded then
-				item_text = item_text .. " (Enables Autoload)"
+				item_text = item_text .. " (Load)"
 			end
 
 			if i == self.row_index then

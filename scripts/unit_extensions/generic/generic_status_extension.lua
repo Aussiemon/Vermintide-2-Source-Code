@@ -7,6 +7,7 @@ local MAX_INTOXICATION_LEVEL = 3
 local MIN_INTOXICATION_LEVEL = -3
 local NUM_PACK_MASTER_GRABS = 2
 local NUM_GLOBADIER_POISONS = 2
+local GLOBADIER_POISONS_TIMEOUT = 60
 local NUM_TIMES_KNOCKED_DOWN = 2
 local block_breaking_fatigue_types = {
 	blocked_attack = true,
@@ -114,7 +115,7 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 
 	self._base_max_wounds = self.wounds
 	self._num_times_grabbed_by_pack_master = 0
-	self._num_times_hit_by_globadier_poison = 0
+	self._hit_by_globadier_poison_instances = {}
 	self._num_times_knocked_down = 0
 	self.is_server = Managers.player.is_server
 	self.update_funcs = {}
@@ -385,7 +386,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 				if t > self.next_hanging_damage_time then
 					local h = PlayerUnitStatusSettings.hanging_by_pack_master
 
-					DamageUtils.add_damage_network(unit, unit, h.damage_amount, h.hit_zone_name, h.damage_type, nil, Vector3.up(), "skaven_pack_master", nil, unit)
+					DamageUtils.add_damage_network(unit, unit, h.damage_amount, h.hit_zone_name, h.damage_type, nil, Vector3.up(), "skaven_pack_master", nil, unit, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 
 					self.next_hanging_damage_time = t + 1
 				end
@@ -1893,7 +1894,7 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 		num_times_grabbed = num_times_grabbed + 1
 		self._num_times_grabbed_by_pack_master = num_times_grabbed
 
-		SurroundingAwareSystem.add_event(unit, dialogue_event, DialogueSettings.grabbed_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
+		SurroundingAwareSystem.add_event(unit, dialogue_event, DialogueSettings.grabbed_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile, "enemy_tag", "skaven_pack_master")
 		Managers.music:trigger_event("enemy_pack_master_grabbed_stinger")
 	elseif grabbed_status == "pack_master_dragging" then
 		if not is_grabbed then
@@ -1995,17 +1996,39 @@ GenericStatusExtension.query_pack_master_player = function (self)
 	return self.pack_master_player
 end
 
-GenericStatusExtension.hit_by_globadier_poison = function (self)
-	local unit = self.unit
-	local dialogue_event = "hit_by_goo"
-	local num_times_poisoned = self._num_times_hit_by_globadier_poison
+GenericStatusExtension.hit_by_globadier_poison = function (self, damage_id)
+	local t = Managers.time:time("game")
+	local instances = self._hit_by_globadier_poison_instances
+	local n = 0
 
-	if num_times_poisoned >= NUM_GLOBADIER_POISONS then
-		dialogue_event = "hit_by_goo_multiple_times"
+	for attacker, data in pairs(instances) do
+		if t > data.t then
+			instances[attacker] = nil
+		elseif not data.claimed then
+			n = n + 1
+		end
 	end
 
-	num_times_poisoned = num_times_poisoned + 1
-	self._num_times_hit_by_globadier_poison = num_times_poisoned
+	local dialogue_event = "hit_by_goo"
+
+	if instances[damage_id] then
+		instances[damage_id].t = t + GLOBADIER_POISONS_TIMEOUT
+	else
+		instances[damage_id] = {
+			t = t + GLOBADIER_POISONS_TIMEOUT,
+		}
+		n = n + 1
+	end
+
+	if n > NUM_GLOBADIER_POISONS then
+		dialogue_event = "hit_by_goo_multiple_times"
+
+		for _, data in pairs(instances) do
+			data.claimed = true
+		end
+	end
+
+	local unit = self.unit
 
 	SurroundingAwareSystem.add_event(unit, dialogue_event, DialogueSettings.globadier_poisoned_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
 end
@@ -2027,7 +2050,7 @@ GenericStatusExtension.set_grabbed_by_corruptor = function (self, grabbed_status
 			locomotion_extension:set_wanted_velocity(Vector3.zero())
 		end
 
-		SurroundingAwareSystem.add_event(unit, "grabbed", DialogueSettings.grabbed_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
+		SurroundingAwareSystem.add_event(unit, "grabbed", DialogueSettings.grabbed_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile, "enemy_tag", "chaos_corruptor_sorcerer")
 		Managers.music:trigger_event("enemy_pack_master_grabbed_stinger")
 	elseif grabbed_status == "chaos_corruptor_released" and not self.is_husk then
 		locomotion_extension:set_wanted_velocity(Vector3.zero())

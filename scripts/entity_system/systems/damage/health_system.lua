@@ -365,7 +365,7 @@ HealthSystem.update_debug = function (self)
 	end
 end
 
-HealthSystem.rpc_add_damage = function (self, channel_id, victim_unit_go_id, victim_unit_is_level_unit, attacker_unit_go_id, attacker_is_level_unit, source_attacker_unit_go_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot, first_hit, total_hits, attack_type_id, backstab_multiplier)
+HealthSystem.rpc_add_damage = function (self, channel_id, victim_unit_go_id, victim_unit_is_level_unit, attacker_unit_go_id, attacker_is_level_unit, source_attacker_unit_go_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot, first_hit, total_hits, attack_type_id, backstab_multiplier, target_index)
 	fassert(not self.is_server, "Tried sending rpc_add_damage to something other than client")
 
 	local victim_unit
@@ -405,7 +405,7 @@ HealthSystem.rpc_add_damage = function (self, channel_id, victim_unit_go_id, vic
 	end
 
 	if damage_type ~= "sync_health" then
-		victim_health_extension:add_damage(attacker_unit_alive and attacker_unit or victim_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type, backstab_multiplier)
+		victim_health_extension:add_damage(attacker_unit_alive and attacker_unit or victim_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type, backstab_multiplier, target_index)
 	end
 
 	if victim_health_extension:is_alive() and is_dead then
@@ -428,6 +428,7 @@ HealthSystem.rpc_add_damage = function (self, channel_id, victim_unit_go_id, vic
 		killing_blow[DamageDataIndex.TOTAL_HITS] = total_hits
 		killing_blow[DamageDataIndex.ATTACK_TYPE] = attack_type
 		killing_blow[DamageDataIndex.BACKSTAB_MULTIPLIER] = backstab_multiplier
+		killing_blow[DamageDataIndex.TARGET_INDEX] = target_index or 1
 
 		local death_system = Managers.state.entity:system("death_system")
 
@@ -435,7 +436,7 @@ HealthSystem.rpc_add_damage = function (self, channel_id, victim_unit_go_id, vic
 	end
 end
 
-HealthSystem.rpc_add_damage_network = function (self, channel_id, victim_unit_go_id, victim_unit_is_level_unit, attacker_unit_go_id, attacker_is_level_unit, source_attacker_unit_go_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_react_type_id, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+HealthSystem.rpc_add_damage_network = function (self, channel_id, victim_unit_go_id, victim_unit_is_level_unit, attacker_unit_go_id, attacker_is_level_unit, source_attacker_unit_go_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_react_type_id, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier, target_index)
 	fassert(self.is_server, "Tried sending rpc_add_damage_network to something other than the server")
 
 	local victim_unit
@@ -474,7 +475,7 @@ HealthSystem.rpc_add_damage_network = function (self, channel_id, victim_unit_go
 	first_hit = first_hit or false
 	total_hits = total_hits or 0
 
-	DamageUtils.add_damage_network(victim_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, buff_attack_type, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+	DamageUtils.add_damage_network(victim_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, buff_attack_type, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier, nil, target_index)
 end
 
 HealthSystem.rpc_damage_taken_overcharge = function (self, channel_id, unit_go_id, damage)
@@ -660,7 +661,7 @@ HealthSystem.rpc_take_falling_damage = function (self, channel_id, go_id, fall_h
 		local hit_zone_name = "full"
 		local damage_type = "kinetic"
 
-		DamageUtils.add_damage_network(unit, unit, fall_damage, hit_zone_name, damage_type, nil, damage_direction, "ground_impact")
+		DamageUtils.add_damage_network(unit, unit, fall_damage, hit_zone_name, damage_type, nil, damage_direction, "ground_impact", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 	end
 end
 

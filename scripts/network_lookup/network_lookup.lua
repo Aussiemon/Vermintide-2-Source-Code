@@ -30,6 +30,8 @@ require("scripts/unit_extensions/weapons/area_damage/liquid/damage_wave_template
 require("scripts/unit_extensions/weapons/area_damage/liquid/liquid_area_damage_templates")
 require("scripts/settings/equipment/weapon_skins")
 
+local ReservationHandlerTypes = require("scripts/managers/game_mode/mechanisms/reservation_handler_types")
+
 NetworkLookup = {}
 
 function create_lookup(lookup, hashtable)
@@ -173,6 +175,7 @@ if not DialogueLookup then
 		"dialogues/generated/lookup_witch_hunter_generic_vo",
 		"dialogues/generated/lookup_weather_vo",
 		"dialogues/generated/lookup_fleur_conversations",
+		"dialogues/generated/lookup_hub_level_specific_greetings",
 	}
 
 	DLCUtils.append("dialogue_lookup", dialogue_lookup_tables)
@@ -251,6 +254,8 @@ NetworkLookup.breeds = create_lookup({}, Breeds)
 for breed_name, breed in pairs(PlayerBreeds) do
 	NetworkLookup.breeds[#NetworkLookup.breeds + 1] = breed_name
 end
+
+NetworkLookup.reservation_handler_types = create_lookup({}, ReservationHandlerTypes)
 
 local temp = {}
 
@@ -2329,6 +2334,7 @@ end
 NetworkLookup.dialogue_profiles = {
 	"inn_keeper",
 	"vs_pactsworn_mission_giver",
+	"krask_minion",
 	"vs_heroes_mission_giver",
 }
 

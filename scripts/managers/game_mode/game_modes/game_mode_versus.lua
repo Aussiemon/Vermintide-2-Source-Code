@@ -9,6 +9,8 @@ require("scripts/managers/admin/dedicated_server_commands")
 require("scripts/ui/views/pactsworn_video_transition_view")
 require("scripts/managers/game_mode/versus_party_selection_logic")
 
+local ReservationHandlerTypes = require("scripts/managers/game_mode/mechanisms/reservation_handler_types")
+
 script_data.disable_gamemode_end = script_data.disable_gamemode_end or Development.parameter("disable_gamemode_end")
 
 local game_mode_versus_testify = script_data.testify and require("scripts/managers/game_mode/game_modes/game_mode_versus_testify")
@@ -737,7 +739,7 @@ end
 GameModeVersus.server_update = function (self, t, dt)
 	GameModeVersus.super.server_update(self, t, dt)
 
-	local reservation_handler = self._mechanism:get_slot_reservation_handler()
+	local reservation_handler = self._mechanism:get_slot_reservation_handler(Network.peer_id(), ReservationHandlerTypes.session)
 
 	if DEDICATED_SERVER then
 		self:_handle_dedicated_input(t, dt)
@@ -1771,10 +1773,12 @@ GameModeVersus.get_end_of_round_screen_settings = function (self)
 end
 
 GameModeVersus.ended = function (self, reason)
-	local all_peers_ingame = self._network_server:are_all_peers_ingame()
+	if self._current_mechanism_state == "round_2" and self._mechanism:is_last_set() then
+		local all_peers_ingame = self._network_server:are_all_peers_ingame()
 
-	if not all_peers_ingame then
-		self._network_server:disconnect_joining_peers()
+		if not all_peers_ingame then
+			self._network_server:disconnect_joining_peers()
+		end
 	end
 end
 

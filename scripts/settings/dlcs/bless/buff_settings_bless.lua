@@ -753,7 +753,7 @@ settings.buff_function_templates = {
 
 			local damage_to_deal = damage * multiplier
 
-			DamageUtils.add_damage_network(owner_unit, attacker_unit, damage_to_deal, "torso", "buff", nil, Vector3(0, 0, 0), "career_ability", nil, attacker_unit)
+			DamageUtils.add_damage_network(owner_unit, attacker_unit, damage_to_deal, "torso", "buff", nil, Vector3(0, 0, 0), "career_ability", nil, attacker_unit, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 
 			local career_extension = ScriptUnit.has_extension(attacker_unit, "career_system")
 			local career_power_level = career_extension:get_career_power_level()
@@ -786,7 +786,7 @@ settings.buff_function_templates = {
 			local multiplier = buff.template.damage_multiplier
 			local damage_to_deal = damage * multiplier
 
-			DamageUtils.add_damage_network(owner_unit, attacker_unit, damage_to_deal, "torso", "buff", nil, Vector3(0, 0, 0), "career_ability", nil, attacker_unit)
+			DamageUtils.add_damage_network(owner_unit, attacker_unit, damage_to_deal, "torso", "buff", nil, Vector3(0, 0, 0), "career_ability", nil, attacker_unit, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 
 			local career_extension = ScriptUnit.has_extension(attacker_unit, "career_system")
 			local career_power_level = career_extension:get_career_power_level()
@@ -1032,7 +1032,7 @@ settings.buff_function_templates = {
 				end
 
 				Managers.state.achievement:trigger_event("bless_delay_damage", unit, damage_per_tick)
-				DamageUtils.add_damage_network(unit, unit, damage_per_tick, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, unit)
+				DamageUtils.add_damage_network(unit, unit, damage_per_tick, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, unit, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 
 				if not buff.damage_dealt then
 					buff.damage_dealt = 0

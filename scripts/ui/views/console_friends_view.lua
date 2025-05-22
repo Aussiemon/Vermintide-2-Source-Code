@@ -79,7 +79,7 @@ ConsoleFriendsView.on_enter = function (self)
 end
 
 ConsoleFriendsView._join_game = function (self)
-	if self.network_server and not self.network_server:are_all_peers_ingame() then
+	if self.network_server and not self.network_server:are_all_peers_ingame(nil, true) then
 		self._popup_id = Managers.popup:queue_popup(Localize("popup_join_blocked_by_joining_player"), Localize("popup_invite_not_installed_header"), "ok", Localize("menu_ok"))
 	else
 		local current_friend_index = self._current_friend_index

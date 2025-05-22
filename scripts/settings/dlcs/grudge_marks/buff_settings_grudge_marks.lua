@@ -1159,7 +1159,7 @@ settings.buff_function_templates = {
 			end
 
 			if damage_per_tick > 0 then
-				DamageUtils.add_damage_network(unit, unit, damage_per_tick, "torso", "buff", nil, Vector3(0, 0, 0), "buff", nil, unit)
+				DamageUtils.add_damage_network(unit, unit, damage_per_tick, "torso", "buff", nil, Vector3(0, 0, 0), "buff", nil, unit, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 			end
 		end
 	end,

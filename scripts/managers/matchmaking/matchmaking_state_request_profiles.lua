@@ -24,7 +24,7 @@ MatchmakingStateRequestProfiles.on_enter = function (self, state_context)
 
 	local pop_chat = true
 
-	Managers.chat:add_local_system_message(PEER_ID_TO_CHANNEL[Network.peer_id], Localize("matchmaking_status_requesting_profiles"), pop_chat)
+	Managers.chat:add_local_system_message(1, Localize("matchmaking_status_requesting_profiles"), pop_chat)
 end
 
 MatchmakingStateRequestProfiles.on_exit = function (self)

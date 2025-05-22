@@ -54,6 +54,8 @@ ItemHelper.get_template_by_item_name = function (name)
 
 	if item_type_template == Weapons then
 		template = WeaponUtils.get_weapon_template(template_name)
+	elseif slot_type == "frame" then
+		template = CosmeticUtils.generate_frame_template(name)
 	else
 		template = item_type_templates[slot_type][template_name]
 	end

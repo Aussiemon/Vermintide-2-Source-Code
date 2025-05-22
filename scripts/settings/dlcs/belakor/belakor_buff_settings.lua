@@ -269,18 +269,8 @@ settings.proc_functions = {
 		if is_server() then
 			local killed_unit = params[1]
 			local position = Unit.world_position(killed_unit, 0) + Vector3(0, 0, 1.5)
-			local pickup_system = Managers.state.entity:system("pickup_system")
-			local with_physics = true
-			local rotation = Quaternion.identity()
-			local spawn_type = "dropped"
-			local pickup_name = "belakor_crystal"
-			local override_unit_template_name = "belakor_crystal_throw"
 
-			for i = 1, buff.template.crystal_count do
-				local velocity = Vector3(2 * math.random() - 1, 2 * math.random() - 1, 1)
-
-				pickup_system:spawn_pickup(pickup_name, position, rotation, with_physics, spawn_type, velocity, override_unit_template_name)
-			end
+			BelakorBalancing.spawn_crystal_func(position)
 		end
 
 		return true

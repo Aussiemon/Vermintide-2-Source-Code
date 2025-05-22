@@ -16,6 +16,7 @@ local breed_data = {
 	bot_opportunity_target_melee_range = 5,
 	bot_opportunity_target_melee_range_while_ranged = 4,
 	death_reaction = "ai_default",
+	death_sound_event = "Play_packmaster_vce_death",
 	default_inventory_template = "pack_master",
 	detection_radius = 12,
 	dialogue_source_name = "skaven_pack_master",

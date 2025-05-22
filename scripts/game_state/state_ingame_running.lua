@@ -188,12 +188,14 @@ StateInGameRunning.on_enter = function (self, params)
 	loading_context.play_end_of_level_game = nil
 	self.game_mode_key = Managers.state.game_mode:game_mode_key()
 
-	local quickplay_bonus = loading_context.quickplay_bonus or loading_context.local_quickplay_bonus
+	local quickplay_bonus = Managers.venture.quickplay:is_quick_game()
 
 	if not quickplay_bonus and self.game_mode_key == "weave" then
 		local lobby = self.is_server and self._lobby_host or self._lobby_client
 
-		quickplay_bonus = lobby:lobby_data("quick_game") == "true"
+		quickplay_bonus = lobby:lobby_data("weave_quick_game") == "true"
+
+		Managers.venture.quickplay:set_is_weave_quick_game()
 	end
 
 	if self.game_mode_key == "weave" or self.game_mode_key == "versus" then
@@ -202,7 +204,7 @@ StateInGameRunning.on_enter = function (self, params)
 	end
 
 	self.rewards = Rewards:new(level_key, self.game_mode_key, quickplay_bonus)
-	self.is_quickplay = not not quickplay_bonus
+	self.is_quickplay = quickplay_bonus
 	self._level_end_view_wrapper = params.level_end_view_wrapper
 
 	if self._level_end_view_wrapper then
@@ -336,6 +338,7 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 		end
 
 		level_end_view_context.level_end_view = Managers.mechanism:get_level_end_view()
+		level_end_view_context.level_end_view_packages = Managers.mechanism:get_level_end_view_packages()
 		self.parent.parent.loading_context.level_end_view_context = level_end_view_context
 
 		if IS_PS4 then
@@ -371,7 +374,7 @@ StateInGameRunning.check_invites = function (self)
 		return
 	end
 
-	if self.network_server and not self.network_server:are_all_peers_ingame() then
+	if self.network_server and not self.network_server:are_all_peers_ingame(nil, true) then
 		return
 	end
 
@@ -417,7 +420,7 @@ StateInGameRunning.check_invites = function (self)
 			mm_printf("Found an invite, but game was not fully installed.")
 
 			self.popup_id = Managers.popup:queue_popup(Localize("popup_invite_not_installed"), Localize("popup_invite_not_installed_header"), "not_installed", Localize("menu_ok"))
-		elseif self.network_server and not self.network_server:are_all_peers_ingame() then
+		elseif self.network_server and not self.network_server:are_all_peers_ingame(nil, true) then
 			mm_printf("Found an invite, but someone is trying to join the game.")
 
 			self.popup_id = Managers.popup:queue_popup(Localize("popup_join_blocked_by_joining_player"), Localize("popup_invite_not_installed_header"), "not_installed", Localize("menu_ok"))
@@ -444,7 +447,7 @@ StateInGameRunning.wanted_transition = function (self)
 		return
 	end
 
-	if self.network_server and self.is_in_inn and not self.network_server:are_all_peers_ingame() then
+	if self.network_server and self.is_in_inn and not self.network_server:are_all_peers_ingame(nil, true) then
 		return
 	end
 
@@ -468,8 +471,6 @@ StateInGameRunning.wanted_transition = function (self)
 
 		data = self._invite_lobby_data
 		self._invite_lobby_data = nil
-
-		Managers.matchmaking:set_local_quick_game(false)
 	end
 
 	if not wanted_transition then
@@ -608,7 +609,6 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 				self._completed_weave = weave_manager:get_active_weave()
 
 				StatisticsUtil.register_weave_complete(statistics_db, player, is_quickplay, difficulty_key)
-				Managers.matchmaking:set_quick_game(false)
 			else
 				local saved_scoreboard_stats = ScoreboardHelper.get_weave_stats(self.statistics_db, self.profile_synchronizer)
 
@@ -1336,11 +1336,10 @@ StateInGameRunning.rpc_trigger_local_afk_system_message = function (self, channe
 			player_name = is_player_controlled and (lobby:user_name(peer_id) or tostring(peer_id)) or player:name()
 		end
 
-		local channel_id = 1
 		local pop_chat = true
 		local message = string.format(Localize(message_id), player_name)
 
-		Managers.chat:add_local_system_message(channel_id, message, pop_chat)
+		Managers.chat:add_local_system_message(1, message, pop_chat)
 	end
 end
 

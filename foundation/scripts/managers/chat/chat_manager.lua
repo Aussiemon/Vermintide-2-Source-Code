@@ -575,7 +575,7 @@ ChatManager.send_chat_message = function (self, channel_id, local_player_id, mes
 
 	if message_type == Irc.PARTY_MSG or message_type == Irc.TEAM_MSG or message_type == Irc.ALL_MSG then
 		if self.is_server then
-			peer_id = sender_peer_id and sender_peer_id or peer_id
+			peer_id = sender_peer_id or peer_id
 
 			local network_handler = Managers.mechanism:network_handler()
 
@@ -629,9 +629,11 @@ ChatManager.send_chat_message = function (self, channel_id, local_player_id, mes
 		end
 	end
 
-	local localized_message = self:_get_localized_message(message, localize, localization_parameters, localize_parameters)
+	if self:is_channel_member(channel_id) and (is_system_message or not self.peer_ignore_list[peer_id]) then
+		local localized_message = self:_get_localized_message(message, localize, localization_parameters, localize_parameters)
 
-	self:_add_message_to_list(channel_id, peer_id, local_player_id, localized_message, is_system_message, pop_chat, is_dev, message_type)
+		self:_add_message_to_list(channel_id, peer_id, local_player_id, localized_message, is_system_message, pop_chat, is_dev, message_type)
+	end
 end
 
 ChatManager.send_system_chat_message = function (self, channel_id, message_id, localization_parameters, localize_parameters, pop_chat)
@@ -677,18 +679,22 @@ ChatManager.send_system_chat_message = function (self, channel_id, message_id, l
 		end
 	end
 
-	local message_sender = "System"
-	local localized_message = self:_get_localized_message(message_id, localize, localization_parameters, localize_parameters)
+	if self:is_channel_member(channel_id) then
+		local message_sender = "System"
+		local localized_message = self:_get_localized_message(message_id, localize, localization_parameters, localize_parameters)
 
-	self:_add_message_to_list(channel_id, message_sender, 0, localized_message, is_system_message, pop_chat, is_dev)
+		self:_add_message_to_list(channel_id, message_sender, 0, localized_message, is_system_message, pop_chat, is_dev)
+	end
 end
 
 ChatManager.add_local_system_message = function (self, channel_id, message, pop_chat)
-	local message_sender = "System"
-	local is_system_message = true
-	local is_dev = false
+	if self:is_channel_member(channel_id) then
+		local message_sender = "System"
+		local is_system_message = true
+		local is_dev = false
 
-	self:_add_message_to_list(channel_id, message_sender, 0, message, is_system_message, pop_chat, is_dev)
+		self:_add_message_to_list(channel_id, message_sender, 0, message, is_system_message, pop_chat, is_dev)
+	end
 end
 
 ChatManager.add_irc_message = function (self, message_type, username, message, parameter, context)
@@ -744,6 +750,11 @@ end
 
 ChatManager.is_channel_member = function (self, channel_id)
 	local channel = self.channels[channel_id]
+
+	if not channel then
+		return channel_id == 1
+	end
+
 	local members = channel.members_func()
 	local my_peer_id = self.my_peer_id
 

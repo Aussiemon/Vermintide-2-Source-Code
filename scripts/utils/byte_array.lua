@@ -50,7 +50,7 @@ ByteArray = {
 		fassert(value % 1 == 0, "number %f must be an integer", value)
 		fassert(value >= 0 and value <= 255, "number %d has to be within the 8bit unsigned range", value)
 
-		index = index or 1
+		index = index or #array + 1
 		array[index] = value
 
 		return array, index + 1

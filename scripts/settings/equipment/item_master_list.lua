@@ -98,6 +98,10 @@ for item_name, item_data in pairs(ItemMasterList) do
 
 		MagicItemByUnlockName[required_unlock_key] = item_name
 	end
+
+	if item_data.slot_type == "frame" then
+		item_data.display_unit = item_data.display_unit or "units/weapons/weapon_display/display_portrait_frame"
+	end
 end
 
 all_item_types = {}

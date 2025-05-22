@@ -215,6 +215,86 @@ local settings = {
 	},
 	{
 		category = "Allround useful stuff!",
+		description = "Teleports the player to another player every 2 seconds.",
+		setting_name = "teleport player to player repeatedly",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			local data = {}
+
+			options.data = data
+
+			local players = Managers.player:players()
+			local local_player = Managers.player:local_player()
+
+			for _, player in pairs(players) do
+				if player ~= local_player then
+					options[#options + 1] = player:name()
+					data[#data + 1] = player
+				end
+			end
+
+			options[#options + 1] = "Turn Off"
+			data[#data + 1] = {}
+		end,
+		func = function (options, index)
+			local data = options.data
+
+			if table.is_empty(data) then
+				return
+			end
+
+			local updator_id = "teleport player to player repeatedly"
+
+			if Managers.updator:has(updator_id) then
+				Managers.updator:remove(updator_id)
+			end
+
+			local timer = 0
+			local target_player_unit = data[index].player_unit
+
+			Managers.updator:add(function (dt)
+				timer = timer - dt
+
+				if timer > 0 then
+					return
+				end
+
+				timer = 2
+
+				UPDATE_POSITION_LOOKUP()
+
+				local local_player = Managers.player:local_player()
+
+				if not local_player then
+					return
+				end
+
+				local player_unit = local_player.player_unit
+
+				if not Unit.alive(player_unit) then
+					return
+				end
+
+				if not Unit.alive(target_player_unit) then
+					Managers.updator:remove(updator_id)
+
+					return
+				end
+
+				local player_locomotion_ext = ScriptUnit.extension(player_unit, "locomotion_system")
+				local target_locomotion_ext = ScriptUnit.extension(target_player_unit, "locomotion_system")
+				local mover = Unit.mover(target_player_unit)
+				local pos = Mover.position(mover)
+				local rot = target_locomotion_ext:current_rotation()
+
+				player_locomotion_ext:teleport_to(pos, rot)
+			end, updator_id)
+		end,
+	},
+	{
+		category = "Allround useful stuff!",
 		description = "Teleports the bots to the local player.",
 		setting_name = "teleport bots to local player",
 		func = function ()
@@ -1932,6 +2012,12 @@ local settings = {
 		func = function ()
 			Managers.state.entity:system("pickup_system"):debug_draw_spread_pickups()
 		end,
+	},
+	{
+		category = "AI",
+		description = "Shows which dynamic packages that have been loaded or unloaded.",
+		is_boolean = true,
+		setting_name = "debug_pickup_package_loader",
 	},
 	{
 		category = "AI recommended",
@@ -8946,8 +9032,8 @@ local settings = {
 	},
 	{
 		category = "Deus",
-		description = "Activates all non talent Deus PowerUps ",
-		setting_name = "Activate all non talent Deus PowerUps",
+		description = "Activates all Deus PowerUps ",
+		setting_name = "Activate all Deus PowerUps",
 		item_source = {},
 		func = function (options, index)
 			if not Managers.mechanism:current_mechanism_name() == "deus" then
@@ -8964,36 +9050,47 @@ local settings = {
 			local local_player = Managers.player:local_player()
 			local local_player_id = local_player:local_player_id()
 			local local_peer_id = local_player:network_id()
-			local buff_system = Managers.state.entity:system("buff_system")
-			local talent_interface = Managers.backend:get_talents_interface()
-			local deus_backend = Managers.backend:get_interface("deus")
-			local local_player_unit = local_player.player_unit
-			local profile_index = local_player:profile_index()
-			local career_index = local_player:career_index()
 			local existing_power_ups = deus_run_controller:get_player_power_ups(local_peer_id, local_player_id)
+			local stride = 50
+			local num = 0
+			local power_ups = {}
 
 			for rarity, power_ups_for_rarity in pairs(DeusPowerUps) do
 				for power_up_name, power_up in pairs(power_ups_for_rarity) do
-					if not power_up.talent then
-						local already_added
+					local already_added
 
-						for _, existing_power_up in ipairs(existing_power_ups) do
-							if existing_power_up.name == power_up_name then
-								already_added = true
+					for _, existing_power_up in ipairs(existing_power_ups) do
+						if existing_power_up.name == power_up_name then
+							already_added = true
 
-								break
-							end
-						end
-
-						if not already_added then
-							local power_up = DeusPowerUpUtils.generate_specific_power_up(power_up_name, rarity)
-
-							deus_run_controller:add_power_ups({
-								power_up,
-							}, local_player_id, false)
+							break
 						end
 					end
+
+					local mutators = power_up.mutators
+					local mutator_valid = table.is_empty(mutators)
+
+					for i = 1, #mutators do
+						if Managers.state.game_mode:has_activated_mutator(mutators[i]) then
+							mutator_valid = true
+
+							break
+						end
+					end
+
+					if mutator_valid and not already_added then
+						num = num + 1
+
+						local idx = math.ceil(num / stride)
+
+						power_ups[idx] = power_ups[idx] or {}
+						power_ups[idx][#power_ups[idx] + 1] = DeusPowerUpUtils.generate_specific_power_up(power_up_name, rarity)
+					end
 				end
+			end
+
+			for i = 1, #power_ups do
+				deus_run_controller:add_power_ups(power_ups[i], local_player_id, false)
 			end
 		end,
 	},

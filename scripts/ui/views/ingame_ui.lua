@@ -849,12 +849,11 @@ end
 
 IngameUI.add_local_system_message = function (self, message)
 	if not self.system_message_delay or self.last_sent_system_message ~= message then
-		local channel_id = 1
 		local pop_chat = true
 		local localized_message = Localize(message)
 
 		if IS_WINDOWS then
-			Managers.chat:add_local_system_message(channel_id, localized_message, pop_chat)
+			Managers.chat:add_local_system_message(1, localized_message, pop_chat)
 		else
 			local local_player = Managers.player:local_player()
 			local stats_id = local_player:stats_id()

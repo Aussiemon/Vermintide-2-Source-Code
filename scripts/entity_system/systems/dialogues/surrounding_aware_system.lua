@@ -52,33 +52,65 @@ SurroundingAwareSystem.populate_global_observers = function (self)
 		local level_mission_givers = level_settings and level_settings.mission_givers
 
 		if level_mission_givers then
-			table.merge(mission_givers, level_mission_givers)
+			table.append(mission_givers, level_mission_givers)
 		end
 
 		local game_mode_settings = Managers.state.game_mode:settings()
 		local game_mode_mission_givers = game_mode_settings.mission_givers
 
 		if game_mode_mission_givers then
-			table.merge(mission_givers, game_mode_mission_givers)
+			table.append(mission_givers, game_mode_mission_givers)
 		end
 
 		for i = 1, #mission_givers do
 			local mission_giver = mission_givers[i]
 			local dialogue_profile = mission_giver.dialogue_profile
+			local faction = mission_giver.faction
 			local side_name = mission_giver.side_name
-			local side = Managers.state.side:get_side_from_name(side_name)
-			local extension_init_data = {
-				dialogue_system = {
-					dialogue_profile = dialogue_profile,
-				},
-				surrounding_aware_system = {
-					side_id = side and side.side_id,
-				},
-			}
 
-			Managers.state.unit_spawner:spawn_network_unit("units/hub_elements/empty", "dialogue_node", extension_init_data)
+			self:request_global_listener(dialogue_profile, faction, side_name)
 		end
 	end
+end
+
+SurroundingAwareSystem.request_global_listener = function (self, dialogue_profile, optional_faction, optional_side_name)
+	local side = Managers.state.side:get_side_from_name(optional_side_name)
+
+	for unit, observer_data in pairs(self.global_observers) do
+		if observer_data.dialogue_profile == dialogue_profile then
+			local dialogue_extension = ScriptUnit.extension(unit, "dialogue_system")
+
+			fassert(not optional_faction or optional_faction == dialogue_extension.faction, "[SurroundingAwareSystem] Mismatching faction when requesting duplicate global listener '%s'. Wanted '%s' while existing listener has '%s'", dialogue_profile, optional_faction, dialogue_extension.faction)
+
+			local surrounding_aware_extension = self.unit_extension_data[unit]
+
+			fassert(not optional_side_name or (side and side.side_id) == surrounding_aware_extension.side_id, "[SurroundingAwareSystem] Mismatching side name when requesting duplicate global listener '%s'. Wanted '%s' while existing listener has '%s'", dialogue_profile, optional_side_name, side and side:name() or nil)
+
+			return unit
+		end
+	end
+
+	local extension_init_data = {
+		dialogue_system = {
+			dialogue_profile = dialogue_profile,
+			faction = optional_faction,
+		},
+		surrounding_aware_system = {
+			side_id = side and side.side_id,
+		},
+	}
+
+	return Managers.state.unit_spawner:spawn_network_unit("units/hub_elements/empty", "dialogue_node", extension_init_data)
+end
+
+SurroundingAwareSystem.query_global_listener = function (self, dialogue_profile)
+	for unit, listener_data in pairs(self.global_observers) do
+		if listener_data.dialogue_profile == dialogue_profile then
+			return unit
+		end
+	end
+
+	return nil
 end
 
 SurroundingAwareSystem.destroy = function (self)

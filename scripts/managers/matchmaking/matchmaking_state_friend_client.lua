@@ -15,7 +15,6 @@ local PingCount = 3
 local TimeOutCheckingLatency = 10
 
 MatchmakingStateFriendClient.init = function (self, params)
-	self.matchmaking_manager = params.matchmaking_manager
 	self.wwise_world = params.wwise_world
 	self.lobby = params.lobby
 	self.network_transmit = params.network_transmit
@@ -77,7 +76,7 @@ MatchmakingStateFriendClient.update = function (self, dt, t)
 
 	local search_config = self._state_context.search_config
 
-	if self._is_versus and self.matchmaking_manager:is_quick_game() then
+	if self._is_versus and Managers.venture.quickplay:has_pending_quick_game() then
 		if self._state == MatchmakingState.Init then
 			self._state = MatchmakingState.RequestingRegions
 		elseif self._state == MatchmakingState.RequestingRegions then

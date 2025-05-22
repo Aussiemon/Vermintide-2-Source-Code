@@ -182,6 +182,10 @@ DebugManager.update = function (self, dt, t)
 		Managers.level_transition_handler.enemy_package_loader:debug_loaded_breeds()
 	end
 
+	if script_data.debug_pickup_package_loader then
+		Managers.level_transition_handler.pickup_package_loader:debug_loaded_pickups()
+	end
+
 	self:_update_bot_behavior_debug()
 	self:_update_actor_draw(dt)
 

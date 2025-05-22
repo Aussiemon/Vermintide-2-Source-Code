@@ -4,6 +4,7 @@ require("scripts/ui/dlc_upsell/common_popup_settings")
 require("scripts/ui/dlc_upsell/unlock_reminder_popup")
 require("scripts/ui/dlc_upsell/upsell_popup")
 require("scripts/ui/dlc_upsell/handbook_popup")
+require("scripts/ui/active_event/active_event_popup")
 
 CommonPopupHandler = class(CommonPopupHandler)
 

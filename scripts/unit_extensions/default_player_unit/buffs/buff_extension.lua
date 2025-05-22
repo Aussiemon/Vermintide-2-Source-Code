@@ -657,7 +657,7 @@ BuffExtension._add_stat_buff = function (self, sub_buff_template, buff)
 
 	local index
 
-	if application_method == "proc" then
+	if application_method == "proc" or type(multiplier) == "function" then
 		index = self.individual_stat_buff_index
 		stat_buff[index] = {
 			bonus = bonus,
@@ -666,7 +666,7 @@ BuffExtension._add_stat_buff = function (self, sub_buff_template, buff)
 		}
 		self.individual_stat_buff_index = index + 1
 	else
-		index = application_method == "stacking_multiplier_multiplicative" and (sub_buff_template.stacking_name or sub_buff_template.name) or 1
+		index = application_method == "stacking_multiplier_multiplicative" and (sub_buff_template.stacking_name or sub_buff_template.name) or 0
 
 		if not stat_buff[index] then
 			stat_buff[index] = {
@@ -838,7 +838,7 @@ BuffExtension.update_stat_buff = function (self, stat_buff_type, difference, ind
 	local stat_buff = stat_buffs[stat_buff_type]
 	local application_method = StatBuffApplicationMethods[stat_buff_type]
 
-	index = index or 1
+	index = index or 0
 
 	if application_method == "stacking_bonus" then
 		local current_bonus = stat_buff[index].bonus
@@ -1130,7 +1130,7 @@ BuffExtension._remove_stat_buff = function (self, buff)
 
 	local index = buff.stat_buff_index
 
-	if application_method == "proc" then
+	if application_method == "proc" or type(stat_buffs[index].multiplier) == "function" then
 		stat_buffs[index] = nil
 	elseif application_method == "stacking_bonus" then
 		local current_bonus = stat_buffs[index].bonus
@@ -1388,22 +1388,44 @@ BuffExtension.apply_buffs_to_value = function (self, value, stat_buff)
 	local procced = false
 	local is_proc = StatBuffApplicationMethods[stat_buff] == "proc"
 	local id
+	local root_multiplier = 1
+	local root_bonus = 0
 
-	for name, stat_buff_data in pairs(stat_buffs) do
+	for index, stat_buff_data in pairs(stat_buffs) do
 		local proc_chance = stat_buff_data.proc_chance
 
 		if self:has_procced(proc_chance, stat_buff) then
 			local bonus = stat_buff_data.bonus
 			local multiplier = stat_buff_data.multiplier
+			local multiplier_type = type(multiplier)
 
-			if type(multiplier) == "table" then
-				local wind_strength = Managers.weave:get_wind_strength()
+			if multiplier_type == "function" then
+				multiplier = multiplier(self._unit, self)
 
-				multiplier = multiplier[wind_strength]
+				local application_method = StatBuffApplicationMethods[stat_buff]
+
+				if application_method == "stacking_multiplier" or application_method == "stacking_multiplier_multiplicative" then
+					root_multiplier = root_multiplier + multiplier
+					final_value = final_value + bonus
+				elseif application_method == "stacking_bonus_and_multiplier" then
+					root_bonus = root_bonus + bonus
+					root_multiplier = root_multiplier + multiplier
+				end
+			else
+				if multiplier_type == "table" then
+					local wind_strength = Managers.weave:get_wind_strength()
+
+					multiplier = multiplier[wind_strength]
+				end
+
+				if index == 0 then
+					root_multiplier = root_multiplier + multiplier
+					root_bonus = root_bonus + bonus
+				else
+					multiplier = multiplier + 1
+					final_value = final_value * multiplier + bonus
+				end
 			end
-
-			multiplier = multiplier + 1
-			final_value = final_value * multiplier + bonus
 
 			if is_proc then
 				procced = true
@@ -1413,6 +1435,8 @@ BuffExtension.apply_buffs_to_value = function (self, value, stat_buff)
 			end
 		end
 	end
+
+	final_value = final_value * root_multiplier + root_bonus
 
 	return final_value, procced, id
 end

@@ -1110,10 +1110,9 @@ HeroViewStateOverview._set_loadout_item = function (self, item, strict_slot_name
 	if not self:is_bot_career() then
 		if not self.parent:is_loadout_dirty() then
 			if slot_type == "frame" then
-				local frame_data = ItemHelper.get_template_by_item_name(item_data.key)
 				local cosmetic_system = Managers.state.entity:system("cosmetic_system")
 
-				cosmetic_system:set_equipped_frame(unit, frame_data.name)
+				cosmetic_system:set_equipped_frame(unit, item_data.key)
 			elseif slot_type ~= "skin" and slot_type ~= "weapon_pose" then
 				self._equip_request = {
 					slot_type = slot_type,

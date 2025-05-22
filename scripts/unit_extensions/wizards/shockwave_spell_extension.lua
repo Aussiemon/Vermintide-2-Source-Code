@@ -74,7 +74,7 @@ ShockwaveSpellExtension.damage_enemies = function (self, position, t)
 				local attacker_unit = self._unit
 				local damage_type = "grenade"
 
-				DamageUtils.add_damage_network(unit, attacker_unit, 240, hit_zone_name, damage_type, hit_unit_position, damage_direction, damage_source)
+				DamageUtils.add_damage_network(unit, attacker_unit, 240, hit_zone_name, damage_type, hit_unit_position, damage_direction, damage_source, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 			end
 		end
 
@@ -89,6 +89,7 @@ end
 ShockwaveSpellExtension.damage_player = function (self, position, radius)
 	local players = self._players
 	local radius_squared = radius * radius
+	local target_index = 1
 
 	for _, player in pairs(players) do
 		local player_unit = player.player_unit
@@ -104,7 +105,7 @@ ShockwaveSpellExtension.damage_player = function (self, position, radius)
 				local current_health = health_extension:current_health()
 				local damage = current_health / 2
 
-				health_extension:add_damage(player_unit, damage, hit_zone_name, damage_type, player_position, damage_direction)
+				health_extension:add_damage(player_unit, damage, hit_zone_name, damage_type, player_position, damage_direction, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, target_index)
 
 				HIT_ENEMIES[player_unit] = true
 
@@ -113,6 +114,8 @@ ShockwaveSpellExtension.damage_player = function (self, position, radius)
 				local locomotion_extension = ScriptUnit.extension(player_unit, "locomotion_system")
 
 				locomotion_extension:add_external_velocity(pushed_velocity)
+
+				target_index = target_index + 1
 			end
 		end
 	end

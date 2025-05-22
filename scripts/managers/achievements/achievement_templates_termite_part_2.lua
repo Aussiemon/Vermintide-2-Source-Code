@@ -6,8 +6,14 @@ local add_meta_challenge = AchievementTemplateHelper.add_meta_challenge
 local PLACEHOLDER_ICON = AchievementTemplateHelper.PLACEHOLDER_ICON
 local achievements = AchievementTemplates.achievements
 local add_console_achievements = AchievementTemplateHelper.add_console_achievements
-local XB1_ACHIEVEMENT_ID = {}
-local PS4_ACHIEVEMENT_ID = {}
+local XB1_ACHIEVEMENT_ID = {
+	termite2_complete_legend = 125,
+	termite2_mushroom_challenge = 126,
+	termite2_water_challenge = 127,
+}
+local PS4_ACHIEVEMENT_ID = {
+	termite2_mushroom_challenge = "094",
+}
 local portals = {
 	LevelSettings.dlc_termite_2,
 }
@@ -131,3 +137,4 @@ termite2_all_challenges[#termite2_all_challenges + 1] = "termite2_mushroom_chall
 termite2_all_challenges[#termite2_all_challenges + 1] = "termite2_water_challenge"
 
 add_meta_challenge(achievements, "termite2_all_challenges", termite2_all_challenges, "achv_termite2_all_challenges_icon", nil, nil, nil)
+add_console_achievements(XB1_ACHIEVEMENT_ID, PS4_ACHIEVEMENT_ID)

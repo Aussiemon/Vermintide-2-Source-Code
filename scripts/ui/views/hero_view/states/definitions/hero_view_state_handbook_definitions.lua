@@ -582,6 +582,8 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 	local small_side_detail_texture = "button_detail_03"
 	local small_side_detail_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(small_side_detail_texture)
 	local small_side_detail_texture_size = small_side_detail_texture_settings.size
+	local list_item_offset_x = 20
+	local list_item_padding_text_padding = 20
 	local list_content = {
 		allow_multi_hover = true,
 	}
@@ -639,59 +641,79 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				tab_list_entry_size[2],
 			},
 			text = {
+				dynamic_font_size = true,
 				font_size = 22,
 				horizontal_alignment = "left",
 				upper_case = true,
 				vertical_alignment = "center",
-				word_wrap = true,
+				word_wrap = false,
 				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 				offset = {
-					40,
+					list_item_offset_x + list_item_padding_text_padding,
 					0,
 					14,
+				},
+				size = {
+					tab_list_entry_size[1] - list_item_offset_x - list_item_padding_text_padding * 2,
+					tab_list_entry_size[2],
 				},
 			},
 			text_hover = {
+				dynamic_font_size = true,
 				font_size = 22,
 				horizontal_alignment = "left",
 				upper_case = true,
 				vertical_alignment = "center",
-				word_wrap = true,
+				word_wrap = false,
 				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
-					40,
+					list_item_offset_x + list_item_padding_text_padding,
 					0,
 					14,
+				},
+				size = {
+					tab_list_entry_size[1] - list_item_offset_x - list_item_padding_text_padding * 2,
+					tab_list_entry_size[2],
 				},
 			},
 			text_selected = {
+				dynamic_font_size = true,
 				font_size = 22,
 				horizontal_alignment = "left",
 				upper_case = true,
 				vertical_alignment = "center",
-				word_wrap = true,
+				word_wrap = false,
 				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
-					40,
+					list_item_offset_x + list_item_padding_text_padding,
 					0,
 					14,
 				},
+				size = {
+					tab_list_entry_size[1] - list_item_offset_x - list_item_padding_text_padding * 2,
+					tab_list_entry_size[2],
+				},
 			},
 			text_shadow = {
+				dynamic_font_size = true,
 				font_size = 22,
 				horizontal_alignment = "left",
 				upper_case = true,
 				vertical_alignment = "center",
-				word_wrap = true,
+				word_wrap = false,
 				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
-					42,
+					list_item_offset_x + list_item_padding_text_padding + 2,
 					-2,
 					13,
+				},
+				size = {
+					tab_list_entry_size[1] - list_item_offset_x - list_item_padding_text_padding * 2,
+					tab_list_entry_size[2],
 				},
 			},
 			rect = {
@@ -727,7 +749,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 					255,
 				},
 				offset = {
-					20,
+					list_item_offset_x,
 					0,
 					10,
 				},

@@ -87,9 +87,10 @@ ScriptPresence.update_playing = function (self, user_id)
 			local presence_string
 
 			if game_mode_key == "weave" then
-				local is_quick_game = Managers.matchmaking:is_quick_game()
+				local lobby = Managers.state.network and Managers.state.network:lobby()
+				local weave_quick_game = lobby and lobby:lobby_data("weave_quick_game") == "true"
 
-				if is_quick_game then
+				if weave_quick_game then
 					presence_string = prefix .. "_" .. "weave_quick_game_" .. current_difficulty
 				else
 					presence_string = "playing_weave"

@@ -172,7 +172,7 @@ DeusChestExtension.update = function (self, unit, input, dt, context, t)
 			local collected_by_peers = GameSession.game_object_field(game_session, go_id, "collected_by_peers")
 			local peer_id = deus_run_controller:get_own_peer_id()
 			local is_purchased = self._is_purchased
-			local new_is_purchased = table.contains(collected_by_peers, peer_id)
+			local new_is_purchased = not self._stored_purchase and server_chest_type ~= DEUS_CHEST_TYPES.upgrade or table.contains(collected_by_peers, peer_id)
 
 			if is_purchased ~= new_is_purchased and new_is_purchased == true then
 				self._is_purchased = new_is_purchased
@@ -374,15 +374,18 @@ DeusChestExtension.get_stored_purchase = function (self)
 	if self._chest_type == DEUS_CHEST_TYPES.power_up then
 		local deus_run_controller = self._deus_run_controller
 		local peer_id = deus_run_controller:get_own_peer_id()
-		local power_up_name = self._stored_purchase.name
-		local max_reached = deus_run_controller:reached_max_power_ups(peer_id, power_up_name)
 
-		if max_reached then
-			local go_id = self._go_id or Managers.state.unit_storage:go_id(self.unit)
-			local current_node = self._deus_run_controller:get_current_node()
-			local seed = HashUtils.fnv32_hash(go_id .. "_" .. current_node.weapon_pickup_seed)
+		if self._stored_purchase then
+			local power_up_name = self._stored_purchase.name
+			local max_reached = deus_run_controller:reached_max_power_ups(peer_id, power_up_name)
 
-			self:_generate_stored_power_up(seed)
+			if max_reached then
+				local go_id = self._go_id or Managers.state.unit_storage:go_id(self.unit)
+				local current_node = self._deus_run_controller:get_current_node()
+				local seed = HashUtils.fnv32_hash(go_id .. "_" .. current_node.weapon_pickup_seed)
+
+				self:_generate_stored_power_up(seed)
+			end
 		end
 	end
 
@@ -485,6 +488,10 @@ DeusChestExtension.can_be_unlocked = function (self)
 	local can_interact = self:can_interact()
 
 	if not can_interact then
+		return false
+	end
+
+	if not self._stored_purchase and self._chest_type ~= DEUS_CHEST_TYPES.upgrade then
 		return false
 	end
 
@@ -664,7 +671,11 @@ DeusChestExtension._update_chest_animation_and_sound_state = function (self, che
 	local sound_state = self._sound_state
 	local sound_state_interact = self._sound_state_interact
 
-	if interacting_with_unit then
+	if not self._stored_purchase and self._chest_type ~= DEUS_CHEST_TYPES.upgrade then
+		animation_state = "player_far"
+		sound_state = "sound_player_far"
+		sound_state_interact = "interact_false"
+	elseif interacting_with_unit then
 		animation_state = "player_interacting"
 		sound_state_interact = "interact_true"
 	elseif distance_squared < RELIQUARY_NEAR_DISTANCE * RELIQUARY_NEAR_DISTANCE then

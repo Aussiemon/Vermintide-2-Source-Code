@@ -31,7 +31,7 @@ StateLoadingMigrateHost._init_network = function (self)
 		self.parent:register_rpcs()
 	end
 
-	if IS_XB1 then
+	if Managers.voice_chat then
 		Managers.voice_chat:reset()
 	end
 

@@ -219,13 +219,6 @@ CareerAbilityESHuntsman._run_ability = function (self, skip_cooldown)
 		Managers.state.camera:set_mood("skill_huntsman_stealth", "skill_huntsman_stealth", true)
 	end
 
-	if local_player or is_server and bot_player then
-		local status_extension = self._status_extension
-
-		status_extension:set_invisible(true, nil, "huntsman_ability")
-		first_person_extension:play_remote_hud_sound_event("Play_career_ability_markus_huntsman_loop_husk")
-	end
-
 	if not skip_cooldown then
 		career_extension:start_activated_ability_cooldown()
 	end

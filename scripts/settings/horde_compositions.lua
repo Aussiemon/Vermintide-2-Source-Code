@@ -27761,6 +27761,584 @@ HordeCompositions.termite_lvl2_wave_8_commander_shields = {
 		},
 	},
 }
+HordeCompositions.termite_lvl3_spotlight = {
+	{
+		{
+			name = "mixed",
+			weight = 3,
+			breeds = {
+				"skaven_slave",
+				{
+					18,
+					20,
+				},
+				"skaven_clan_rat",
+				{
+					1,
+					2,
+				},
+				"skaven_clan_rat_with_shield",
+				{
+					5,
+					6,
+				},
+			},
+		},
+	},
+	{
+		{
+			name = "mixed",
+			weight = 3,
+			breeds = {
+				"skaven_slave",
+				{
+					18,
+					20,
+				},
+				"skaven_clan_rat",
+				{
+					2,
+					4,
+				},
+				"skaven_clan_rat_with_shield",
+				{
+					6,
+					7,
+				},
+			},
+		},
+	},
+	{
+		{
+			name = "mixed",
+			weight = 3,
+			breeds = {
+				"skaven_slave",
+				{
+					18,
+					20,
+				},
+				"skaven_clan_rat",
+				{
+					4,
+					6,
+				},
+				"skaven_clan_rat_with_shield",
+				{
+					7,
+					8,
+				},
+			},
+		},
+	},
+	{
+		{
+			name = "mixed",
+			weight = 3,
+			breeds = {
+				"skaven_slave",
+				{
+					18,
+					20,
+				},
+				"skaven_clan_rat",
+				{
+					6,
+					8,
+				},
+				"skaven_clan_rat_with_shield",
+				{
+					8,
+					9,
+				},
+			},
+		},
+	},
+	{
+		{
+			name = "mixed",
+			weight = 3,
+			breeds = {
+				"skaven_slave",
+				{
+					18,
+					20,
+				},
+				"skaven_clan_rat",
+				{
+					8,
+					11,
+				},
+				"skaven_clan_rat_with_shield",
+				{
+					11,
+					13,
+				},
+			},
+		},
+	},
+	{
+		{
+			name = "mixed",
+			weight = 3,
+			breeds = {
+				"skaven_slave",
+				{
+					18,
+					20,
+				},
+				"skaven_clan_rat",
+				{
+					8,
+					11,
+				},
+				"skaven_clan_rat_with_shield",
+				{
+					11,
+					13,
+				},
+			},
+		},
+	},
+	{
+		{
+			name = "mixed",
+			weight = 3,
+			breeds = {
+				"skaven_slave",
+				{
+					18,
+					20,
+				},
+				"skaven_clan_rat",
+				{
+					8,
+					11,
+				},
+				"skaven_clan_rat_with_shield",
+				{
+					11,
+					13,
+				},
+			},
+		},
+	},
+	{},
+}
+HordeCompositions.termite_lvl3_spotlight_commanders = {
+	{
+		{
+			name = "plain",
+			weight = 1,
+			breeds = {
+				"skaven_storm_vermin_commander",
+				3,
+			},
+		},
+	},
+	{
+		{
+			name = "plain",
+			weight = 1,
+			breeds = {
+				"skaven_storm_vermin_commander",
+				4,
+			},
+		},
+	},
+	{
+		{
+			name = "plain",
+			weight = 1,
+			breeds = {
+				"skaven_storm_vermin_commander",
+				6,
+			},
+		},
+	},
+	{
+		{
+			name = "plain",
+			weight = 1,
+			breeds = {
+				"skaven_storm_vermin_commander",
+				8,
+			},
+		},
+	},
+	{
+		{
+			name = "plain",
+			weight = 1,
+			breeds = {
+				"skaven_storm_vermin_commander",
+				8,
+				"skaven_storm_vermin_with_shield",
+				2,
+			},
+		},
+	},
+	{
+		{
+			name = "plain",
+			weight = 1,
+			breeds = {
+				"skaven_storm_vermin_commander",
+				8,
+				"skaven_storm_vermin_with_shield",
+				2,
+			},
+		},
+	},
+	{
+		{
+			name = "plain",
+			weight = 1,
+			breeds = {
+				"skaven_storm_vermin_commander",
+				8,
+				"skaven_storm_vermin_with_shield",
+				2,
+			},
+		},
+	},
+	{},
+}
+HordeCompositions.termite_lvl3_spotlight_monks = {
+	{
+		{
+			name = "plain",
+			weight = 1,
+			breeds = {
+				"skaven_plague_monk",
+				4,
+			},
+		},
+	},
+	{
+		{
+			name = "plain",
+			weight = 1,
+			breeds = {
+				"skaven_plague_monk",
+				5,
+			},
+		},
+	},
+	{
+		{
+			name = "plain",
+			weight = 1,
+			breeds = {
+				"skaven_plague_monk",
+				6,
+			},
+		},
+	},
+	{
+		{
+			name = "plain",
+			weight = 1,
+			breeds = {
+				"skaven_plague_monk",
+				8,
+			},
+		},
+	},
+	{
+		{
+			name = "plain",
+			weight = 1,
+			breeds = {
+				"skaven_plague_monk",
+				10,
+			},
+		},
+	},
+	{
+		{
+			name = "plain",
+			weight = 1,
+			breeds = {
+				"skaven_plague_monk",
+				10,
+			},
+		},
+	},
+	{
+		{
+			name = "plain",
+			weight = 1,
+			breeds = {
+				"skaven_plague_monk",
+				10,
+			},
+		},
+	},
+	{},
+}
+HordeCompositions.termite_lvl3_spotlight_shields = {
+	{
+		{
+			name = "plain",
+			weight = 1,
+			breeds = {
+				"skaven_clan_rat_with_shield",
+				8,
+				"skaven_storm_vermin_commander",
+				2,
+			},
+		},
+	},
+	{
+		{
+			name = "plain",
+			weight = 1,
+			breeds = {
+				"skaven_clan_rat_with_shield",
+				8,
+				"skaven_storm_vermin_commander",
+				3,
+			},
+		},
+	},
+	{
+		{
+			name = "plain",
+			weight = 1,
+			breeds = {
+				"skaven_clan_rat_with_shield",
+				10,
+				"skaven_storm_vermin_commander",
+				4,
+			},
+		},
+	},
+	{
+		{
+			name = "plain",
+			weight = 1,
+			breeds = {
+				"skaven_clan_rat_with_shield",
+				10,
+				"skaven_storm_vermin_commander",
+				6,
+			},
+		},
+	},
+	{
+		{
+			name = "plain",
+			weight = 1,
+			breeds = {
+				"skaven_clan_rat_with_shield",
+				11,
+				"skaven_storm_vermin_commander",
+				8,
+			},
+		},
+	},
+	{
+		{
+			name = "plain",
+			weight = 1,
+			breeds = {
+				"skaven_clan_rat_with_shield",
+				11,
+				"skaven_storm_vermin_commander",
+				8,
+			},
+		},
+	},
+	{
+		{
+			name = "plain",
+			weight = 1,
+			breeds = {
+				"skaven_clan_rat_with_shield",
+				11,
+				"skaven_storm_vermin_commander",
+				8,
+			},
+		},
+	},
+	{},
+}
+HordeCompositions.termite_lvl3_spotlight_specials = {
+	{
+		{
+			name = "cradetour",
+			weight = 3,
+			breeds = {
+				"skaven_warpfire_thrower",
+				1,
+				"skaven_gutter_runner",
+				1,
+				"skaven_poison_wind_globadier",
+				1,
+				"skaven_ratling_gunner",
+				1,
+			},
+		},
+	},
+	{
+		{
+			name = "cradetour",
+			weight = 3,
+			breeds = {
+				"skaven_warpfire_thrower",
+				{
+					1,
+					2,
+				},
+				"skaven_gutter_runner",
+				1,
+				"skaven_poison_wind_globadier",
+				1,
+				"skaven_ratling_gunner",
+				{
+					1,
+					2,
+				},
+			},
+		},
+	},
+	{
+		{
+			name = "cradetour",
+			weight = 3,
+			breeds = {
+				"skaven_warpfire_thrower",
+				{
+					1,
+					3,
+				},
+				"skaven_gutter_runner",
+				1,
+				"skaven_poison_wind_globadier",
+				1,
+				"skaven_ratling_gunner",
+				{
+					1,
+					3,
+				},
+			},
+		},
+	},
+	{
+		{
+			name = "cradetour",
+			weight = 3,
+			breeds = {
+				"skaven_warpfire_thrower",
+				{
+					1,
+					3,
+				},
+				"skaven_gutter_runner",
+				{
+					1,
+					2,
+				},
+				"skaven_poison_wind_globadier",
+				{
+					1,
+					2,
+				},
+				"skaven_ratling_gunner",
+				{
+					1,
+					3,
+				},
+			},
+		},
+	},
+	{
+		{
+			name = "cradetour",
+			weight = 3,
+			breeds = {
+				"skaven_warpfire_thrower",
+				{
+					2,
+					3,
+				},
+				"skaven_gutter_runner",
+				{
+					2,
+					3,
+				},
+				"skaven_poison_wind_globadier",
+				{
+					1,
+					2,
+				},
+				"skaven_ratling_gunner",
+				{
+					2,
+					3,
+				},
+			},
+		},
+	},
+	{
+		{
+			name = "cradetour",
+			weight = 3,
+			breeds = {
+				"skaven_warpfire_thrower",
+				{
+					2,
+					3,
+				},
+				"skaven_gutter_runner",
+				{
+					2,
+					3,
+				},
+				"skaven_poison_wind_globadier",
+				{
+					1,
+					2,
+				},
+				"skaven_ratling_gunner",
+				{
+					2,
+					3,
+				},
+			},
+		},
+	},
+	{
+		{
+			name = "cradetour",
+			weight = 3,
+			breeds = {
+				"skaven_warpfire_thrower",
+				{
+					2,
+					3,
+				},
+				"skaven_gutter_runner",
+				{
+					2,
+					3,
+				},
+				"skaven_poison_wind_globadier",
+				{
+					1,
+					2,
+				},
+				"skaven_ratling_gunner",
+				{
+					2,
+					3,
+				},
+			},
+		},
+	},
+	{},
+}
 HordeCompositions.event_strom_boss = {
 	{
 		{

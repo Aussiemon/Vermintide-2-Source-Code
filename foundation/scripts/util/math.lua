@@ -44,6 +44,10 @@ end
 
 local math_clamp = math.clamp
 
+math.normalize = function (val, min, max)
+	return (val - min) / (max - min)
+end
+
 math.lerp = function (a, b, p)
 	return a * (1 - p) + b * p
 end

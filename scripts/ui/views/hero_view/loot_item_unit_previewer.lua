@@ -319,7 +319,11 @@ LootItemUnitPreviewer._load_item_units = function (self, item)
 		end
 
 		if item_template.texture_package_name then
-			self:load_package(item_template.texture_package_name)
+			local package_available = Application.can_get("package", item_template.texture_package_name)
+
+			if package_available then
+				self:load_package(item_template.texture_package_name)
+			end
 		end
 
 		local material_settings = item_template.material_settings

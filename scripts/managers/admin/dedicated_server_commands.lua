@@ -1,5 +1,7 @@
 ﻿-- chunkname: @scripts/managers/admin/dedicated_server_commands.lua
 
+local ReservationHandlerTypes = require("scripts/managers/game_mode/mechanisms/reservation_handler_types")
+
 DedicatedServerCommands = class(DedicatedServerCommands)
 
 local Commands, MetaCommands
@@ -183,7 +185,10 @@ Commands = {
 		min_args = 0,
 		func = function ()
 			local mechanism = Managers.mechanism:game_mechanism()
-			local reservation_handler = mechanism:get_slot_reservation_handler()
+
+			assert(DEDICATED_SERVER, "Mismanaged use of 'get_slot_reservation_handler'")
+
+			local reservation_handler = mechanism:get_slot_reservation_handler(Network.peer_id(), ReservationHandlerTypes.session)
 			local network_manager = Managers.state.network
 			local reserved_peer_ids = reservation_handler:peers()
 
@@ -215,7 +220,9 @@ Commands = {
 			party_id = tonumber(party_id)
 			party_size = tonumber(party_size)
 
-			local reservation_handler = Managers.mechanism:get_slot_reservation_handler()
+			assert(DEDICATED_SERVER, "Mismanaged use of 'get_slot_reservation_handler'")
+
+			local reservation_handler = Managers.mechanism:get_slot_reservation_handler(Network.peer_id(), ReservationHandlerTypes.session)
 			local result, reason = reservation_handler:set_party_size(party_id, party_size)
 
 			if not result then
@@ -263,7 +270,9 @@ Commands = {
 			local response = ""
 
 			if Managers.level_transition_handler:in_hub_level() then
-				local peers = Managers.mechanism:game_mechanism():get_slot_reservation_handler():peers()
+				assert(DEDICATED_SERVER, "Mismanaged use of 'get_slot_reservation_handler'")
+
+				local peers = Managers.mechanism:game_mechanism():get_slot_reservation_handler(Network.peer_id(), ReservationHandlerTypes.session):peers()
 
 				for i = 1, #peers do
 					local peer_id = peers[i]
@@ -292,7 +301,9 @@ Commands = {
 			party_id = tonumber(party_id)
 
 			if Managers.level_transition_handler:in_hub_level() then
-				local reservers = Managers.mechanism:game_mechanism():get_slot_reservation_handler()._reserved_peers[party_id]
+				assert(DEDICATED_SERVER, "Mismanaged use of 'get_slot_reservation_handler'")
+
+				local reservers = Managers.mechanism:game_mechanism():get_slot_reservation_handler(Network.peer_id(), ReservationHandlerTypes.session)._reserved_peers[party_id]
 
 				if not reservers then
 					return false, string.format("Failed to list party - Invalid party id %d", party_id)
@@ -637,7 +648,10 @@ Commands = {
 			end
 
 			local mechanism = Managers.mechanism:game_mechanism()
-			local reservation_handler = mechanism:get_slot_reservation_handler()
+
+			assert(DEDICATED_SERVER, "Mismanaged use of 'get_slot_reservation_handler'")
+
+			local reservation_handler = mechanism:get_slot_reservation_handler(Network.peer_id(), ReservationHandlerTypes.session)
 			local result, reason = reservation_handler:swap_players(peer_id_1, peer_id_2)
 
 			if not result then
@@ -661,7 +675,9 @@ Commands = {
 
 			party_id = tonumber(party_id)
 
-			local reservation_handler = Managers.mechanism:get_slot_reservation_handler()
+			assert(DEDICATED_SERVER, "Mismanaged use of 'get_slot_reservation_handler'")
+
+			local reservation_handler = Managers.mechanism:get_slot_reservation_handler(Network.peer_id(), ReservationHandlerTypes.session)
 
 			if reservation_handler:is_fully_reserved() then
 				return false, "Failed to move player - All parties are full"
@@ -840,7 +856,9 @@ MetaCommands = {
 		end
 
 		if Managers.level_transition_handler:in_hub_level() then
-			num_players = Managers.mechanism:game_mechanism():get_slot_reservation_handler()._num_slots_reserved
+			assert(DEDICATED_SERVER, "Mismanaged use of 'get_slot_reservation_handler'")
+
+			num_players = Managers.mechanism:game_mechanism():get_slot_reservation_handler(Network.peer_id(), ReservationHandlerTypes.session)._num_slots_reserved
 		else
 			num_players = Managers.player:num_human_players()
 		end

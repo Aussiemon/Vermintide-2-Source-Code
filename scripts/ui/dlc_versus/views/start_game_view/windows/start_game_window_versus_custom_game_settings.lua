@@ -129,7 +129,8 @@ StartGameWindowVersusCustomGameSettings.update = function (self, dt, t)
 	self:_update_animations(dt)
 	self:_draw(dt, t)
 
-	local has_slot_reservation_handler = Managers.mechanism:mechanism_try_call("get_slot_reservation_handler")
+	local match_owner = Managers.mechanism:network_handler():get_match_handler():get_match_owner()
+	local has_slot_reservation_handler = Managers.mechanism:mechanism_try_call("get_all_reservation_handlers_by_owner", match_owner)
 
 	self._is_loading = not has_slot_reservation_handler or not Managers.matchmaking:is_in_versus_custom_game_lobby()
 end

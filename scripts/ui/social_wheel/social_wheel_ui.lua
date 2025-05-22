@@ -233,6 +233,8 @@ SocialWheelUI.destroy = function (self)
 
 		table.clear(self._loaded_weapon_pose_packages)
 	end
+
+	self:_set_player_input_scale(1, nil)
 end
 
 SocialWheelUI._widget_angle = function (self, total_angle, num_elements, i)
@@ -534,8 +536,8 @@ SocialWheelUI._set_player_input_scale = function (self, scale, lerp_time)
 	if input_service then
 		local block = scale == 0
 
-		input_service:set_input_blocked("look_controller_3p", block)
-		input_service:set_input_blocked("look", block)
+		input_service:set_input_blocked("look_controller_3p", block, nil, "SocialWheelUI")
+		input_service:set_input_blocked("look", block, nil, "SocialWheelUI")
 	end
 end
 

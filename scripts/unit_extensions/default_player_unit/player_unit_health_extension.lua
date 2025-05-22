@@ -407,7 +407,7 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 					local damage = temporary_health - math.max(new_temporary_health, min_temporary_health_left)
 
 					if damage > 0 then
-						DamageUtils.add_damage_network(unit, unit, damage, "torso", "temporary_health_degen", nil, Vector3(1, 0, 0), "temporary_health_degen")
+						DamageUtils.add_damage_network(unit, unit, damage, "torso", "temporary_health_degen", nil, Vector3(1, 0, 0), "temporary_health_degen", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 					end
 				end
 
@@ -522,7 +522,7 @@ PlayerUnitHealthExtension.create_streak_damage = function (self, streak_damage, 
 	end
 end
 
-PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type, backstab_multiplier)
+PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type, backstab_multiplier, target_index)
 	if DamageUtils.is_in_inn then
 		return
 	end
@@ -650,7 +650,7 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 
 	fassert(damage_type, "No damage_type!")
 
-	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, first_hit, total_hits, attack_type)
+	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, first_hit, total_hits, attack_type, nil, target_index)
 
 	if damage_type ~= "temporary_health_degen" and damage_type ~= "knockdown_bleed" then
 		StatisticsUtil.register_damage(unit, damage_table, self.statistics_db)
@@ -827,8 +827,9 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 			first_hit = first_hit or false
 			total_hits = total_hits or 1
 			backstab_multiplier = backstab_multiplier or 1
+			target_index = target_index or 1
 
-			self.network_transmit:send_rpc_clients("rpc_add_damage", unit_id, false, attacker_unit_id, attacker_is_level_unit, source_attacker_unit_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot, first_hit, total_hits, attack_type_id, backstab_multiplier)
+			self.network_transmit:send_rpc_clients("rpc_add_damage", unit_id, false, attacker_unit_id, attacker_is_level_unit, source_attacker_unit_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot, first_hit, total_hits, attack_type_id, backstab_multiplier, target_index)
 		end
 	end
 end
@@ -837,7 +838,7 @@ PlayerUnitHealthExtension.add_heal = function (self, healer_unit, heal_amount, h
 	local unit = self.unit
 	local status_extension = self.status_extension
 
-	self:_add_to_damage_history_buffer(unit, healer_unit, -heal_amount, nil, "heal", nil, heal_source_name, nil, nil, nil, nil)
+	self:_add_to_damage_history_buffer(unit, healer_unit, -heal_amount, nil, "heal", nil, heal_source_name, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
 
 	if status_extension and status_extension:heal_can_remove_wounded(heal_type) then
 		local razer_chroma = Managers.razer_chroma

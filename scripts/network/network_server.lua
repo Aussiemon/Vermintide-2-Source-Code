@@ -8,6 +8,8 @@ require("scripts/utils/profile_requester")
 require("scripts/settings/profiles/sp_profiles")
 require("scripts/network/network_match_handler")
 
+local ReservationHandlerTypes = require("scripts/managers/game_mode/mechanisms/reservation_handler_types")
+
 PEER_ID_TO_CHANNEL = PEER_ID_TO_CHANNEL or {}
 CHANNEL_TO_PEER_ID = CHANNEL_TO_PEER_ID or {}
 
@@ -24,8 +26,6 @@ PeerState = PeerState or CreateStrictEnumTable("Broken", "Connecting", "Connecte
 NetworkServer = class(NetworkServer)
 
 NetworkServer.init = function (self, player_manager, lobby_host, wanted_profile_index, game_server_manager)
-	Managers.mechanism:set_network_server(self)
-
 	local my_peer_id = Network.peer_id()
 
 	PEER_ID_TO_CHANNEL[my_peer_id] = 0
@@ -73,7 +73,6 @@ NetworkServer.init = function (self, player_manager, lobby_host, wanted_profile_
 	Managers.mechanism:set_profile_synchronizer(self.profile_synchronizer)
 
 	self.voip = Voip:new(is_server, lobby_host)
-	self._reserved_slots = {}
 
 	if IS_XB1 then
 		self._host_migration_session_id = Application.guid()
@@ -130,6 +129,8 @@ NetworkServer.init = function (self, player_manager, lobby_host, wanted_profile_
 	end
 
 	self._match_handler = NetworkMatchHandler:new(self, true, my_peer_id, my_peer_id, lobby_host)
+
+	Managers.mechanism:set_network_server(self)
 end
 
 NetworkServer.server_join = function (self)
@@ -508,7 +509,7 @@ NetworkServer._update_lobby_data = function (self, dt, t)
 		self._lobby_data_sync_requested = true
 	end
 
-	local has_srh, slot_handler = Managers.mechanism:mechanism_try_call("get_slot_reservation_handler")
+	local has_srh, slot_handler = Managers.mechanism:mechanism_try_call("get_slot_reservation_handler", Network.peer_id(), ReservationHandlerTypes.session)
 
 	if has_srh and slot_handler:poll_sync_lobby_data_required() then
 		self._lobby_data_sync_requested = true
@@ -781,7 +782,7 @@ NetworkServer.approve_channel = function (self, channel_id, peer_id, instance_id
 		local mechanism = Managers.mechanism:game_mechanism()
 
 		if mechanism.get_slot_reservation_handler then
-			local slot_reservation_handler = mechanism:get_slot_reservation_handler()
+			local slot_reservation_handler = mechanism:get_slot_reservation_handler(Network.peer_id(), ReservationHandlerTypes.session)
 
 			slot_reservation_handler:send_slot_update_to_clients()
 		end
@@ -984,7 +985,6 @@ NetworkServer.update = function (self, dt, t)
 		end
 	end
 
-	self:_update_reserve_slots(dt)
 	self:update_disconnect_kicked_peers_by_time(dt)
 	self:_update_lobby_data(dt, t)
 	self:_update_eac_match()
@@ -1182,36 +1182,6 @@ NetworkServer.rpc_clear_peer_state = function (self, channel_id)
 	end
 end
 
-NetworkServer._update_reserve_slots = function (self, dt)
-	local reserved_slots = self._reserved_slots
-
-	for peer_id, time in pairs(reserved_slots) do
-		reserved_slots[peer_id] = time - dt
-
-		if reserved_slots[peer_id] <= 0 then
-			self:remove_reserved_slot(peer_id)
-		end
-	end
-end
-
-NetworkServer.add_reserve_slot = function (self, peer_id)
-	printf("[NetworkServer] Reserved slot for peer (%s) for 15 seconds", peer_id)
-
-	self._reserved_slots[peer_id] = 15
-end
-
-NetworkServer.remove_reserved_slot = function (self, peer_id)
-	self._reserved_slots[peer_id] = nil
-end
-
-NetworkServer.is_reserved = function (self, peer_id)
-	return self._reserved_slots[peer_id] ~= nil
-end
-
-NetworkServer.num_reserved_slots = function (self)
-	return table.size(self._reserved_slots)
-end
-
 NetworkServer.players_past_connecting = function (self)
 	local peers = FrameTable.alloc_table()
 
@@ -1259,34 +1229,27 @@ end
 
 local dummy_ignore_map = {}
 
-NetworkServer.are_all_peers_ingame = function (self, ignore_map)
+NetworkServer.are_all_peers_ingame = function (self, ignore_map, ignore_other_session_peers)
 	ignore_map = ignore_map or dummy_ignore_map
 
 	local peer_state_machines = self.peer_state_machines
 
 	for peer_id, peer_state_machine in pairs(peer_state_machines) do
-		local state_name = peer_state_machine.current_state.state_name
+		repeat
+			if ignore_other_session_peers then
+				local leader_peer_id = self._match_handler:query_peer_data(peer_id, "leader_peer_id", true)
 
-		if ignore_map[peer_id] == nil and state_name ~= "InGame" and state_name ~= "InPostGame" and state_name ~= "Disconnected" and state_name ~= "Disconnecting" then
-			return false
-		end
-	end
+				if leader_peer_id and leader_peer_id ~= self.my_peer_id then
+					break
+				end
+			end
 
-	return true
-end
+			local state_name = peer_state_machine.current_state.state_name
 
-NetworkServer.all_approved_peers_are_connected = function (self, ignore_map)
-	ignore_map = ignore_map or dummy_ignore_map
-
-	local peer_state_machines = self.peer_state_machines
-
-	for peer_id, peer_state_machine in pairs(peer_state_machines) do
-		local current_state = peer_state_machine.current_state
-		local state_name = current_state.state_name
-
-		if ignore_map[peer_id] == nil and not current_state.approved_for_joining then
-			return false
-		end
+			if ignore_map[peer_id] == nil and state_name ~= "InGame" and state_name ~= "InPostGame" and state_name ~= "Disconnected" and state_name ~= "Disconnecting" then
+				return false
+			end
+		until true
 	end
 
 	return true
@@ -1472,7 +1435,7 @@ NetworkServer.rpc_slot_reservation_request_party_change = function (self, channe
 		local mechanism = Managers.mechanism:game_mechanism()
 
 		if mechanism.get_slot_reservation_handler then
-			local slot_reservation_handler = mechanism:get_slot_reservation_handler()
+			local slot_reservation_handler = mechanism:get_slot_reservation_handler(match_host, ReservationHandlerTypes.pending_custom_game) or mechanism:get_slot_reservation_handler(match_host, ReservationHandlerTypes.session)
 
 			slot_reservation_handler:move_player(peer_id, wanted_party_index)
 		end
@@ -1519,6 +1482,32 @@ NetworkServer.set_startup_breeds = function (self, breed_list)
 	self._network_state:set_startup_breeds(breed_list)
 end
 
+NetworkServer.get_session_pickup_map = function (self)
+	return self._network_state:get_session_pickup_map()
+end
+
+NetworkServer.set_session_pickup_map = function (self, pickup_map)
+	self._network_state:set_session_pickup_map(pickup_map)
+end
+
+NetworkServer.get_own_loaded_session_pickup_map = function (self)
+	return self._network_state:get_own_loaded_session_pickup_map()
+end
+
+NetworkServer.set_own_loaded_session_pickups = function (self, pickup_map)
+	self._network_state:set_own_loaded_session_pickups(pickup_map)
+end
+
+NetworkServer.get_loaded_session_pickups = function (self, peer_id)
+	return self._network_state:get_loaded_session_pickup_map(peer_id)
+end
+
 NetworkServer.get_game_mode_event_data = function (self)
 	return self._network_state:get_game_mode_event_data()
+end
+
+NetworkServer.has_unlocked_dlc = function (self, peer_id, dlc_name)
+	local unlocked_dlcs = self._network_state:get_unlocked_dlcs_set(peer_id)
+
+	return unlocked_dlcs[dlc_name]
 end

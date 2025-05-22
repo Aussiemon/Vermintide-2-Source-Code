@@ -18,12 +18,13 @@ ActionCareerESQuestingKnight.client_owner_start_action = function (self, new_act
 
 	self._combo_no_wield = new_action.combo_no_wield or false
 	self._hit_fx_triggered = false
-	self._cooldown_started = false
 
 	self:_play_vo()
 	self:_play_vfx()
 	self.inventory_extension:check_and_drop_pickups("career_ability")
 	self.status_extension:set_stagger_immune(true)
+
+	self._cooldown_started = chain_action_data and chain_action_data.cooldown_started or false
 end
 
 ActionCareerESQuestingKnight.client_owner_post_update = function (self, dt, t, world, can_damage, current_time_in_action)
@@ -68,6 +69,10 @@ ActionCareerESQuestingKnight.finish = function (self, reason, data)
 
 		career_extension:start_activated_ability_cooldown()
 	end
+
+	return {
+		cooldown_started = self._cooldown_started,
+	}
 end
 
 ActionCareerESQuestingKnight._play_vo = function (self)

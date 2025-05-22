@@ -301,10 +301,10 @@ HeroWindowCosmeticsLoadoutPoseInventoryConsole._update_illusions = function (sel
 
 			local content = widget.content
 			local skin_key = content.skin_key
-			local item_data = ItemMasterList[skin_key]
+			local skin_data = WeaponSkins.skins[skin_key]
 			local widgets_by_name = self._widgets_by_name
 
-			widgets_by_name.illusions_name.content.text = Localize(item_data.display_name)
+			widgets_by_name.illusions_name.content.text = Localize(skin_data.display_name)
 
 			return
 		elseif UIUtils.is_button_hover(widget) then
@@ -316,9 +316,9 @@ HeroWindowCosmeticsLoadoutPoseInventoryConsole._update_illusions = function (sel
 		local widget = illusion_widgets[self._selected_skin_index]
 		local content = widget.content
 		local skin_key = content.skin_key
-		local item_data = ItemMasterList[skin_key]
+		local skin_data = WeaponSkins.skins[skin_key]
 
-		widgets_by_name.illusions_name.content.text = Localize(item_data.display_name)
+		widgets_by_name.illusions_name.content.text = Localize(skin_data.display_name)
 	end
 
 	if UIUtils.is_button_pressed(widgets_by_name.apply_illusion_button) then
@@ -731,7 +731,6 @@ HeroWindowCosmeticsLoadoutPoseInventoryConsole._on_illusion_index_pressed = func
 	local widget = illusion_widgets[index]
 	local content = widget.content
 	local skin_key = content.skin_key
-	local item_data = ItemMasterList[skin_key]
 
 	self._skin_dirty = false
 
@@ -764,8 +763,9 @@ HeroWindowCosmeticsLoadoutPoseInventoryConsole._on_illusion_index_pressed = func
 	end
 
 	local widgets_by_name = self._widgets_by_name
+	local skin_data = WeaponSkins.skins[skin_key]
 
-	widgets_by_name.illusions_name.content.text = Localize(item_data.display_name)
+	widgets_by_name.illusions_name.content.text = Localize(skin_data.display_name)
 
 	local widgets = self._illusion_widgets
 

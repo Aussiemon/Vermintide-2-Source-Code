@@ -243,7 +243,7 @@ end
 
 MenuInputDescriptionUI = class(MenuInputDescriptionUI)
 
-MenuInputDescriptionUI.init = function (self, ingame_ui_context, ui_renderer, input_service, number_of_elements, layer, generic_actions, use_fullscreen_layout)
+MenuInputDescriptionUI.init = function (self, ingame_ui_context, ui_renderer, input_service, number_of_elements, layer, generic_actions, use_fullscreen_layout, optional_max_width)
 	self:clear_input_descriptions()
 
 	self.input_service = input_service
@@ -252,6 +252,7 @@ MenuInputDescriptionUI.init = function (self, ingame_ui_context, ui_renderer, in
 	self.render_settings = {
 		snap_pixel_positions = true,
 	}
+	self._max_width = optional_max_width or math.huge
 	self._use_fullscreen_layout = use_fullscreen_layout
 	scenegraph_definition.screen.position[3] = layer and layer + 10 or UILayer.controller_description
 
@@ -398,14 +399,14 @@ MenuInputDescriptionUI.setup_console_widget_selections = function (self)
 	return console_widget_selections
 end
 
-MenuInputDescriptionUI.set_input_description = function (self, console_selection_data)
+MenuInputDescriptionUI.set_input_description = function (self, console_selection_data, optional_scale)
 	self:clear_input_descriptions()
 
+	local scale = optional_scale or 1
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local console_input_description_widgets = self.console_input_description_widgets
-	local number_of_descriptions = #console_input_description_widgets
-	local spacing = 30
+	local spacing = 30 * scale
 	local widgets_width_list = {}
 	local total_width = 0
 	local widget_use_index = 0
@@ -452,8 +453,10 @@ MenuInputDescriptionUI.set_input_description = function (self, console_selection
 			local scenegraph_id = "input_description_" .. widget_use_index
 			local scenegraph_icon_id = "input_description_icon_" .. widget_use_index
 			local scenegraph_text_id = "input_description_text_" .. widget_use_index
-			local action_texture_size = action_texture_data.size
+			local action_texture_size = table.shallow_copy(action_texture_data.size)
 
+			action_texture_size[1] = action_texture_size[1] * scale
+			action_texture_size[2] = action_texture_size[2] * scale
 			ui_scenegraph[scenegraph_icon_id].size = action_texture_size
 			ui_scenegraph[scenegraph_text_id].local_position[1] = action_texture_size[1]
 			widget_content.icon = action_texture_data.texture
@@ -461,8 +464,12 @@ MenuInputDescriptionUI.set_input_description = function (self, console_selection
 			widget_content.text = description_text
 
 			local text_style = widget_style.text
+
+			text_style._original_font_size = text_style._original_font_size or text_style.font_size
+			text_style.font_size = text_style._original_font_size * scale
+
 			local font, scaled_font_size = UIFontByResolution(text_style)
-			local text_width, text_height, min = UIRenderer.text_size(ui_renderer, description_text, font[1], scaled_font_size)
+			local text_width = UIRenderer.text_size(ui_renderer, description_text, font[1], scaled_font_size)
 			local widget_length = action_texture_size[1] + text_width
 
 			if self._use_fullscreen_layout then
@@ -471,9 +478,16 @@ MenuInputDescriptionUI.set_input_description = function (self, console_selection
 				ui_scenegraph[scenegraph_id].local_position[1] = -widget_length / 2
 			end
 
+			local text_shadow_style = widget_style.text_shadow
+
+			text_shadow_style.font_size = text_style._original_font_size * scale
 			total_width = total_width + widget_length + spacing
 			widgets_width_list[widget_use_index] = widget_length
 		end
+	end
+
+	if not optional_scale and total_width > self._max_width then
+		return self:set_input_description(console_selection_data, self._max_width / total_width)
 	end
 
 	self.number_of_descriptions_in_use = widget_use_index ~= 0 and widget_use_index or nil
@@ -514,6 +528,9 @@ MenuInputDescriptionUI._align_inputs = function (self, total_width, spacing, wid
 	if widget_use_index then
 		if self._use_fullscreen_layout then
 			local widget_start_position = 50
+			local max_width = math.min(self._max_width, parent_width)
+
+			widget_start_position = math.clamp(max_width - (total_width + widget_start_position * 2), 0, widget_start_position)
 
 			for i = 1, widget_use_index do
 				local widget_width = widgets_width_list[i]

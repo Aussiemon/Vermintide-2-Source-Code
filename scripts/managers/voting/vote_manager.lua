@@ -38,11 +38,13 @@ local DLC_DEPENDENCIES = {}
 VoteManager._gather_dlc_dependencies = function (self, vote_data)
 	table.clear(DLC_DEPENDENCIES)
 
+	local votes_require_type
 	local mechanism = vote_data.mechanism
 	local mechanism_settings = mechanism and MechanismSettings[mechanism]
 
 	if mechanism_settings and mechanism_settings.required_dlc then
 		DLC_DEPENDENCIES[#DLC_DEPENDENCIES + 1] = NetworkLookup.dlcs[mechanism_settings.required_dlc]
+		votes_require_type = "all"
 	end
 
 	local difficulty = vote_data.difficulty
@@ -50,10 +52,11 @@ VoteManager._gather_dlc_dependencies = function (self, vote_data)
 
 	if difficulty_settings and difficulty_settings.dlc_requirement then
 		DLC_DEPENDENCIES[#DLC_DEPENDENCIES + 1] = NetworkLookup.dlcs[difficulty_settings.dlc_requirement]
+		votes_require_type = votes_require_type == "all" and "all" or "any"
 	end
 
 	if #DLC_DEPENDENCIES > 0 then
-		return DLC_DEPENDENCIES
+		return DLC_DEPENDENCIES, votes_require_type
 	end
 end
 
@@ -72,10 +75,10 @@ VoteManager.request_vote = function (self, name, vote_data, voter_peer_id, ignor
 		local start_new_voting = self:can_start_vote(name, vote_data)
 
 		if start_new_voting then
-			local dlc_dependencies
+			local dlc_dependencies, votes_require_type
 
 			if not ignore_dlc_check then
-				dlc_dependencies = self:_gather_dlc_dependencies(vote_data)
+				dlc_dependencies, votes_require_type = self:_gather_dlc_dependencies(vote_data)
 			end
 
 			if dlc_dependencies then
@@ -85,6 +88,7 @@ VoteManager.request_vote = function (self, name, vote_data, voter_peer_id, ignor
 					voters = self:_active_peers(),
 					vote_data = vote_data,
 					voter_peer_id = voter_peer_id or Network.peer_id(),
+					votes_require_type = votes_require_type,
 				}
 
 				Managers.state.network.network_transmit:send_rpc_all("rpc_client_check_dlc", dlc_dependencies)
@@ -134,8 +138,6 @@ VoteManager.request_vote = function (self, name, vote_data, voter_peer_id, ignor
 		local client_start_vote_rpc = vote_template.client_start_vote_rpc
 		local sync_data = vote_template.pack_sync_data(vote_data)
 
-		Managers.matchmaking:set_local_quick_game(false)
-		Managers.matchmaking:set_quick_game(vote_data.quick_game or false)
 		Managers.state.network.network_transmit:send_rpc_server(client_start_vote_rpc, vote_type_id, sync_data)
 
 		if vote_template.initial_vote_func then
@@ -561,12 +563,15 @@ end
 VoteManager._handle_requirement_results = function (self, requirement_check_data)
 	local is_done = true
 	local success = true
+	local votes_require_type = requirement_check_data.votes_require_type
 
 	for peer_id, _ in pairs(requirement_check_data.voters) do
 		if requirement_check_data.results[peer_id] == nil then
 			is_done = false
-		elseif not requirement_check_data.results[peer_id] then
+		elseif votes_require_type == "all" and not requirement_check_data.results[peer_id] then
 			success = false
+		elseif votes_require_type == "any" and requirement_check_data.results[peer_id] then
+			success = true
 		end
 	end
 
@@ -707,8 +712,6 @@ VoteManager._start_vote_base = function (self, peer_id, vote_type_id, sync_data,
 		votes = {},
 		data = data,
 	}
-
-	Managers.matchmaking:set_local_quick_game(false)
 end
 
 VoteManager.rpc_client_start_vote_peer_id = function (self, channel_id, vote_type_id, sync_data, voters)

@@ -31,6 +31,7 @@ MatchmakingStateStartGame._verify_requirements = function (self)
 	table.clear(DLCS_TO_CHECK)
 	table.clear(ADDED_DLCS)
 
+	local votes_require_type
 	local search_config = self.search_config
 	local human_players = Managers.player:human_players()
 	local matchmaking_type = search_config.matchmaking_type
@@ -43,6 +44,7 @@ MatchmakingStateStartGame._verify_requirements = function (self)
 		if mechanism_settings.required_dlc and not ADDED_DLCS[mechanism_settings.required_dlc] then
 			DLCS_TO_CHECK[#DLCS_TO_CHECK + 1] = NetworkLookup.dlcs[mechanism_settings.required_dlc]
 			ADDED_DLCS[mechanism_settings.required_dlc] = true
+			votes_require_type = "all"
 		end
 
 		if mechanism_settings.extra_requirements_function then
@@ -100,6 +102,7 @@ MatchmakingStateStartGame._verify_requirements = function (self)
 		if difficulty_settings.dlc_requirement and not ADDED_DLCS[difficulty_settings.dlc_requirement] then
 			DLCS_TO_CHECK[#DLCS_TO_CHECK + 1] = NetworkLookup.dlcs[difficulty_settings.dlc_requirement]
 			ADDED_DLCS[difficulty_settings.dlc_requirement] = true
+			votes_require_type = votes_require_type == "all" and "all" or "any"
 		end
 	end
 
@@ -108,6 +111,7 @@ MatchmakingStateStartGame._verify_requirements = function (self)
 		self._verify_dlc_data = {
 			voters = self:_active_peers(),
 			results = {},
+			votes_require_type = votes_require_type,
 		}
 
 		Managers.state.network.network_transmit:send_rpc_all("rpc_matchmaking_verify_dlc", DLCS_TO_CHECK)
@@ -438,12 +442,15 @@ end
 MatchmakingStateStartGame._handle_results = function (self, verify_dlc_data)
 	local is_done = true
 	local success = true
+	local votes_require_type = verify_dlc_data.votes_require_type
 
 	for peer_id, _ in pairs(verify_dlc_data.voters) do
 		if verify_dlc_data.results[peer_id] == nil then
 			is_done = false
-		elseif not verify_dlc_data.results[peer_id] then
+		elseif votes_require_type == "all" and not verify_dlc_data.results[peer_id] then
 			success = false
+		elseif votes_require_type == "any" and verify_dlc_data.results[peer_id] then
+			success = true
 		end
 	end
 

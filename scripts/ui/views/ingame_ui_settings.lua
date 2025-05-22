@@ -40,7 +40,7 @@ local transitions = {
 
 		local network_server = Managers.state.network.network_server
 
-		if network_server and not network_server:are_all_peers_ingame() then
+		if network_server and not network_server:are_all_peers_ingame(nil, true) then
 			local text = Localize("player_join_block_exit_game")
 
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup", Localize("menu_ok"))
@@ -56,7 +56,7 @@ local transitions = {
 
 		local network_server = Managers.state.network.network_server
 
-		if network_server and not network_server:are_all_peers_ingame() then
+		if network_server and not network_server:are_all_peers_ingame(nil, true) then
 			local text = Localize("player_join_block_exit_game")
 
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup_hero_view", Localize("menu_ok"))
@@ -73,7 +73,7 @@ local transitions = {
 		local network_server = Managers.state.network.network_server
 		local warning_message_data = Managers.mechanism:mechanism_setting("progress_loss_warning_message_data")
 
-		if network_server and network_server:num_active_peers() > 1 and network_server:are_all_peers_ingame() then
+		if network_server and network_server:num_active_peers() > 1 and network_server:are_all_peers_ingame(nil, true) then
 			local text = warning_message_data ~= nil and warning_message_data.is_allowed() and Localize("exit_game_popup_text") .. "\n\n" .. Localize("exit_game_popup_text_is_hosting_players") .. "\n\n\n" .. Localize(warning_message_data.message) or Localize("exit_game_popup_text") .. "\n\n" .. Localize("exit_game_popup_text_is_hosting_players")
 
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_game_topic"), "end_game", Localize("popup_choice_yes"), "cancel_popup", Localize("popup_choice_no"))
@@ -107,7 +107,7 @@ local transitions = {
 		local network_server = Managers.state.network.network_server
 
 		if network_server then
-			if not network_server:are_all_peers_ingame() then
+			if not network_server:are_all_peers_ingame(nil, true) then
 				local text = Localize("player_join_block_exit_game")
 
 				self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup", Localize("menu_ok"))
@@ -131,7 +131,7 @@ local transitions = {
 
 		local network_server = Managers.state.network.network_server
 
-		if network_server and not network_server:are_all_peers_ingame() then
+		if network_server and not network_server:are_all_peers_ingame(nil, true) then
 			local text = Localize("player_join_block_exit_game")
 
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup_hero_view", Localize("menu_ok"))
@@ -146,7 +146,7 @@ local transitions = {
 
 		local network_server = Managers.state.network.network_server
 
-		if network_server and not network_server:are_all_peers_ingame() then
+		if network_server and not network_server:are_all_peers_ingame(nil, true) then
 			local text = Localize("player_join_block_exit_game")
 
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup", Localize("menu_ok"))
@@ -161,7 +161,7 @@ local transitions = {
 
 		local network_server = Managers.state.network.network_server
 
-		if network_server and not network_server:are_all_peers_ingame() then
+		if network_server and not network_server:are_all_peers_ingame(nil, true) then
 			local text = Localize("player_join_block_exit_game")
 
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup_hero_view", Localize("menu_ok"))
@@ -176,7 +176,7 @@ local transitions = {
 
 		local network_server = Managers.state.network.network_server
 
-		if network_server and not network_server:are_all_peers_ingame() then
+		if network_server and not network_server:are_all_peers_ingame(nil, true) then
 			local text = Localize("player_join_block_restart_demo")
 
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup", Localize("menu_ok"))
@@ -191,7 +191,7 @@ local transitions = {
 
 		local network_server = Managers.state.network.network_server
 
-		if network_server and not network_server:are_all_peers_ingame() then
+		if network_server and not network_server:are_all_peers_ingame(nil, true) then
 			local text = Localize("player_join_block_restart_demo")
 
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup_hero_view", Localize("menu_ok"))
@@ -293,7 +293,7 @@ local transitions = {
 
 		local network_server = Managers.state.network.network_server
 
-		if network_server and not network_server:are_all_peers_ingame() then
+		if network_server and not network_server:are_all_peers_ingame(nil, true) then
 			local text = Localize("player_join_block_exit_game")
 
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup", Localize("menu_ok"))
@@ -314,7 +314,7 @@ local transitions = {
 
 		local network_server = Managers.state.network.network_server
 
-		if network_server and not network_server:are_all_peers_ingame() then
+		if network_server and not network_server:are_all_peers_ingame(nil, true) then
 			local text = Localize("player_join_block_exit_game")
 
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup_hero_view", Localize("menu_ok"))
@@ -339,7 +339,7 @@ local transitions = {
 	do_return_to_pc_menu = function (self)
 		local network_server = Managers.state.network.network_server
 
-		if network_server and network_server:are_all_peers_ingame() then
+		if network_server and network_server:are_all_peers_ingame(nil, true) then
 			self.return_to_pc_menu = true
 		elseif not network_server then
 			self.return_to_pc_menu = true
@@ -350,7 +350,7 @@ local transitions = {
 
 		local network_server = Managers.state.network.network_server
 
-		if network_server and not network_server:are_all_peers_ingame() then
+		if network_server and not network_server:are_all_peers_ingame(nil, true) then
 			local text = Localize("player_join_block_exit_game")
 
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup", Localize("menu_ok"))
@@ -371,7 +371,7 @@ local transitions = {
 
 		local network_server = Managers.state.network.network_server
 
-		if network_server and not network_server:are_all_peers_ingame() then
+		if network_server and not network_server:are_all_peers_ingame(nil, true) then
 			local text = Localize("player_join_block_exit_game")
 
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup_hero_view", Localize("menu_ok"))
@@ -393,7 +393,7 @@ local transitions = {
 		local network_server = Managers.state.network.network_server
 
 		if network_server then
-			if not network_server:are_all_peers_ingame() then
+			if not network_server:are_all_peers_ingame(nil, true) then
 				local text = Localize("player_join_block_exit_game")
 
 				self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup", Localize("menu_ok"))
@@ -417,7 +417,7 @@ local transitions = {
 
 		local network_server = Managers.state.network.network_server
 
-		if network_server and not network_server:are_all_peers_ingame() then
+		if network_server and not network_server:are_all_peers_ingame(nil, true) then
 			local text = Localize("player_join_block_exit_game")
 
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup_hero_view", Localize("menu_ok"))

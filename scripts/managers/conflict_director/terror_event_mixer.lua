@@ -203,6 +203,10 @@ TerrorEventMixer.init_functions = {
 			spawn_positions[i] = boxed_spawn_pos
 		end
 
+		if element.spawn_failed_func and table.is_empty(spawn_positions) then
+			element.spawn_failed_func(center_position)
+		end
+
 		return true
 	end,
 	vs_assign_boss_profile = function (event, element, t)

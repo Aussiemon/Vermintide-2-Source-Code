@@ -774,7 +774,7 @@ achievements.woods_wall_kill_gutter = {
 	required_dlc = "woods",
 	required_dlc_extra = "woods",
 	events = {
-		"register_kill",
+		"register_damage",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "woods_wall_kill_gutter") > 0
@@ -784,32 +784,25 @@ achievements.woods_wall_kill_gutter = {
 			return
 		end
 
-		local target_breed = event_data[register_kill_victim_breed]
-
-		if not target_breed or not target_breed.name or target_breed.name ~= "skaven_gutter_runner" then
-			return
-		end
-
-		local damage_data = event_data[register_kill_damage_data]
+		local target_breed = event_data[5]
+		local target_name = target_breed.name
+		local is_gutter_runner = target_breed and target_name == "skaven_gutter_runner"
+		local damage_data = event_data[3]
 		local damage_source = damage_data[DamageDataIndex.DAMAGE_SOURCE_NAME]
-
-		if damage_source ~= "career_ability" then
-			return
-		end
-
+		local is_career_ability = damage_data and damage_source == "career_ability"
 		local attacker_unit = damage_data[DamageDataIndex.ATTACKER]
 		local career_extension = ScriptUnit.has_extension(attacker_unit, "career_system")
+		local is_thornsister = career_extension and career_extension:career_name() == "we_thornsister"
 
-		if not career_extension or career_extension:career_name() ~= "we_thornsister" then
-			return
-		end
+		if is_gutter_runner and is_career_ability and is_thornsister then
+			local target_unit = event_data[2]
+			local blackboard = BLACKBOARDS[target_unit]
+			local jump_data = blackboard.jump_data
+			local is_jumping = jump_data and (jump_data.state == "in_air" or jump_data.state == "in_air_no_target" or jump_data.state == "snapping")
 
-		local victim_unit = event_data[register_kill_victim_unit]
-		local bb = BLACKBOARDS[victim_unit]
-		local jump_data = bb.jump_data
-
-		if jump_data and (jump_data.state == "in_air" or jump_data.state == "in_air_no_target" or jump_data.state == "snapping") then
-			rpc_increment_stat(attacker_unit, "woods_wall_kill_gutter")
+			if is_jumping then
+				rpc_increment_stat(attacker_unit, "woods_wall_kill_gutter")
+			end
 		end
 	end,
 }

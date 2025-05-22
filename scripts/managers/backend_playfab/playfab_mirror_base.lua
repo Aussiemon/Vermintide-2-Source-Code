@@ -764,6 +764,14 @@ PlayFabMirrorBase.sign_in_reward_request_cb = function (self, result)
 				self:add_unlocked_weapon_skin(unlocked_weapon_skins[i])
 			end
 		end
+
+		local unlocked_weapon_poses = reward_data.unlocked_weapon_poses
+
+		if unlocked_weapon_poses then
+			for i = 1, #unlocked_weapon_poses do
+				self:add_unlocked_weapon_pose(unlocked_weapon_poses[i])
+			end
+		end
 	end
 
 	self:_request_quests()
@@ -2602,7 +2610,7 @@ PlayFabMirrorBase.add_unlocked_cosmetic = function (self, cosmetic_name, offline
 end
 
 PlayFabMirrorBase.add_unlocked_weapon_pose = function (self, weapon_pose_name, offline_backend_id)
-	if self._unlocked_cosmetics then
+	if self._unlocked_weapon_poses then
 		local backend_id = self:_create_fake_inventory_items({
 			[weapon_pose_name] = offline_backend_id or true,
 		}, "cosmetics")

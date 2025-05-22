@@ -271,7 +271,7 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage, da
 	source_attacker_unit = attacker_blackboard and attacker_blackboard.commander_unit
 
 	if is_level_unit then
-		inflicted_damage = DamageUtils.add_damage_network(target_unit, attacker_unit, damage, "torso", action.damage_type, nil, damage_direction, damage_source, nil, source_attacker_unit, nil, action.hit_react_type)
+		inflicted_damage = DamageUtils.add_damage_network(target_unit, attacker_unit, damage, "torso", action.damage_type, nil, damage_direction, damage_source, nil, source_attacker_unit, nil, action.hit_react_type, nil, nil, nil, nil, nil, nil, 1)
 	else
 		local difficulty_manager = Managers.state.difficulty
 		local difficulty_settings = difficulty_manager:get_difficulty_settings()
@@ -403,7 +403,7 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage, da
 			end
 		end
 
-		inflicted_damage = DamageUtils.add_damage_network(target_unit, attacker_unit, damage, "torso", action.damage_type, nil, damage_direction, damage_source, nil, source_attacker_unit, nil, action.hit_react_type)
+		inflicted_damage = DamageUtils.add_damage_network(target_unit, attacker_unit, damage, "torso", action.damage_type, nil, damage_direction, damage_source, nil, source_attacker_unit, nil, action.hit_react_type, nil, nil, nil, nil, nil, nil, 1)
 
 		local push_speed = action.player_push_speed
 
@@ -1326,7 +1326,7 @@ AiUtils.kill_unit = function (victim_unit, attacker_unit, hit_zone_name, damage_
 		local skip_buffs = true
 
 		for i = 1, math.ceil(health / damage_amount) do
-			DamageUtils.add_damage_network(victim_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, nil, damage_direction, damage_source, nil, nil, nil, nil, false, false, nil, nil, nil, skip_buffs)
+			DamageUtils.add_damage_network(victim_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, nil, damage_direction, damage_source, nil, nil, nil, nil, false, false, nil, nil, nil, skip_buffs, 1)
 		end
 	end
 end
@@ -1837,9 +1837,32 @@ AiUtils.taunt_nearby_units = function (unit, radius, duration, t, optional_effec
 	return nearby_ai
 end
 
-AiUtils.calculate_animation_movespeed = function (animation_move_speed_config, unit, target_unit)
+AiUtils.calculate_animation_movespeed = function (animation_move_speed_config, unit, target_unit, optional_estimated_attack_time)
 	local max_value = animation_move_speed_config[1].value
-	local distance_to_target = Vector3.distance(POSITION_LOOKUP[unit], POSITION_LOOKUP[target_unit])
+	local unit_pos, target_pos = POSITION_LOOKUP[unit], POSITION_LOOKUP[target_unit]
+	local distance_to_target = Vector3.distance(unit_pos, target_pos)
+	local target_locomotion_ext = ScriptUnit.has_extension(target_unit, "locomotion_system")
+
+	if target_locomotion_ext and target_locomotion_ext.current_velocity then
+		local target_vel = target_locomotion_ext:current_velocity()
+
+		if Vector3.length_squared(target_vel) > 0 then
+			target_vel = target_vel * (1 + (optional_estimated_attack_time or 1))
+
+			local own_locomotion_ext = ScriptUnit.extension(unit, "locomotion_system")
+			local own_velocity = own_locomotion_ext:current_velocity()
+			local own_speed = Vector3.length(own_velocity)
+
+			if own_speed > 0 then
+				local u = target_vel
+				local v = Vector3.normalize(target_pos - unit_pos) * Vector3.length(target_vel)
+				local projected_velocity = Vector3.dot(u, v) / distance_to_target * v
+
+				distance_to_target = distance_to_target + Vector3.length(projected_velocity / own_speed)
+			end
+		end
+	end
+
 	local wanted_value, num_configs = max_value, #animation_move_speed_config
 
 	for i = 1, num_configs do

@@ -162,6 +162,7 @@ require("scripts/unit_extensions/human/ai_player_unit/ai_shield_user_husk_extens
 require("scripts/unit_extensions/human/ai_player_unit/bulwark_shield_extension")
 require("scripts/unit_extensions/human/ai_player_unit/bulwark_husk_shield_extension")
 require("scripts/unit_extensions/props/quest_challenge_prop_extension")
+require("scripts/unit_extensions/props/event_upsell_prop_extension")
 require("scripts/unit_extensions/weaves/weave_capture_point_extension")
 require("scripts/unit_extensions/weaves/weave_target_extension")
 require("scripts/unit_extensions/weaves/weave_limited_item_spawner_extension")
@@ -391,6 +392,7 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	}, {
 		"PerlinLightExtension",
 		"QuestChallengePropExtension",
+		"EventUpsellPropExtension",
 	})
 	self:_add_system("end_zone_system", EndZoneSystem, entity_system_creation_context)
 	self:_add_system("progress_system", ProgressSystem, entity_system_creation_context)

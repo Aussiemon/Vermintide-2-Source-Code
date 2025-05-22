@@ -3,6 +3,7 @@
 require("scripts/ui/reward_popup/reward_popup_ui")
 DLCUtils.require_list("end_view_state")
 
+local definitions = local_require("scripts/ui/views/level_end/level_end_view_base_definitions")
 local extra_portrait_materials = {}
 
 for _, dlc in pairs(DLCSettings) do
@@ -17,15 +18,12 @@ end
 
 local SPEED_UP_MULT_MAX = 3
 local SPEED_UP_LERP_SPEED = 4
-local RPCS = {
-	"rpc_signal_end_of_level_done",
-	"rpc_notify_lobby_joined",
-}
 
 LevelEndViewBase = class(LevelEndViewBase)
 
 LevelEndViewBase.init = function (self, context)
 	self:setup_world(context)
+	self:setup_transition_data()
 
 	local game_won = context.game_won
 	local rewards = context.rewards
@@ -48,6 +46,8 @@ LevelEndViewBase.init = function (self, context)
 	self._lobby = context.lobby
 	self.is_server = context.is_server
 	self._state_speed_mult = 1
+	self._state_machine_complete = false
+	self._skip_pressed = false
 
 	if not self.is_server then
 		local statistics_db = Managers.player:statistics_db()
@@ -103,19 +103,115 @@ LevelEndViewBase.init = function (self, context)
 	end
 end
 
-LevelEndViewBase.register_rpcs = function (self, network_event_delegate)
-	self._registered_rpcs = true
-
-	network_event_delegate:register(self, unpack(RPCS))
-
-	self._network_event_delegate = network_event_delegate
+LevelEndViewBase.state_machine_completed = function (self)
+	return self._state_machine_complete
 end
 
-LevelEndViewBase.unregister_rpcs = function (self)
-	self._network_event_delegate:unregister(self)
+LevelEndViewBase.setup_transition_data = function (self)
+	self._transition_animations = {}
+	self._transition_render_settings = {
+		alpha_multiplier = 0,
+		snap_pixel_positions = true,
+	}
+	self._transition_scenegraph_ui = UISceneGraph.init_scenegraph(definitions.transition_scenegraph_definition)
+	self._transition_widgets, self._transition_widgets_by_name = UIUtils.create_widgets(definitions.transition_widget_definition)
 
-	self._network_event_delegate = nil
-	self._registered_rpcs = false
+	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
+
+	self._transition_ui_animator = UIAnimator:new(self._transition_scenegraph_ui, definitions.transition_animations)
+end
+
+LevelEndViewBase.trigger_transition = function (self, transition_data)
+	self:_cleanup_transitions()
+
+	local params = {
+		parent = self,
+		render_settings = self._transition_render_settings,
+		transition_data = transition_data,
+	}
+	local widgets = self._transition_widgets
+	local animation_name = transition_data.animation_name or "default"
+
+	self._transition_animations[#self._transition_animations + 1] = self._transition_ui_animator:start_animation(animation_name, widgets, definitions.transition_scenegraph_definition, params)
+end
+
+LevelEndViewBase.transition_camera = function (self, transition_data)
+	if not transition_data.camera_name then
+		return
+	end
+
+	local camera_pose
+	local level_name = transition_data.level_name or "levels/end_screen/world"
+	local unit_indices = LevelResource.unit_indices(level_name, "units/hub_elements/cutscene_camera/cutscene_camera")
+
+	for _, index in pairs(unit_indices) do
+		local unit_data = LevelResource.unit_data(level_name, index)
+		local name = DynamicData.get(unit_data, "name")
+
+		if name and name == transition_data.camera_name then
+			local position = LevelResource.unit_position(level_name, index)
+			local rotation = LevelResource.unit_rotation(level_name, index)
+			local pose = Matrix4x4.from_quaternion_position(rotation, position)
+
+			camera_pose = Matrix4x4Box(pose)
+
+			print("Found camera: " .. name)
+		end
+	end
+
+	self._camera_pose = camera_pose
+
+	self:position_camera()
+end
+
+LevelEndViewBase._cleanup_transitions = function (self)
+	for _, anim_id in pairs(self._transition_animations) do
+		self._transition_ui_animator:stop_animation(anim_id)
+	end
+
+	table.clear(self._transition_animations)
+end
+
+LevelEndViewBase._update_transition_fade = function (self, dt, t)
+	if table.is_empty(self._transition_animations) then
+		return
+	end
+
+	self:_update_transition_animations(dt, t)
+	self:_draw_transition_widgets(dt, t)
+end
+
+LevelEndViewBase._draw_transition_widgets = function (self, dt, t)
+	local ui_renderer = self.ui_renderer
+	local ui_top_renderer = self.ui_top_renderer
+	local ui_scenegraph = self._transition_scenegraph_ui
+	local input_manager = self.input_manager
+	local render_settings = self._transition_render_settings
+	local input_service = self:input_service()
+
+	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
+
+	for _, widget in ipairs(self._transition_widgets) do
+		UIRenderer.draw_widget(ui_renderer, widget)
+	end
+
+	UIRenderer.end_pass(ui_renderer)
+end
+
+LevelEndViewBase._update_transition_animations = function (self, dt, t)
+	local ui_animator = self._transition_ui_animator
+
+	ui_animator:update(dt)
+
+	local num_anims = #self._transition_animations
+
+	for i = num_anims, 1, -1 do
+		local anim_id = self._transition_animations[i]
+
+		if ui_animator:is_animation_completed(anim_id) then
+			self._transition_animations[i] = nil
+		end
+	end
 end
 
 LevelEndViewBase.enable_chat = function (self)
@@ -232,11 +328,14 @@ LevelEndViewBase.update = function (self, dt, t)
 	end
 
 	self:_handle_queued_presentations()
+	self:_update_transition_fade(dt, t)
 
 	if self._machine then
 		if self._state_can_speed_up then
 			local speed_up_target = 1
 			local input_service = self.input_manager:get_service("end_of_level")
+
+			self._skip_pressed = input_service:get("skip_pressed") or input_service:get("confirm_press")
 
 			if input_service:get("confirm_hold", true) or input_service:get("skip", true) then
 				speed_up_target = SPEED_UP_MULT_MAX
@@ -268,6 +367,10 @@ LevelEndViewBase.update = function (self, dt, t)
 	end
 end
 
+LevelEndViewBase.skip_pressed = function (self)
+	return self._skip_pressed
+end
+
 LevelEndViewBase.transitioning = function (self)
 	return self.exiting
 end
@@ -282,11 +385,9 @@ LevelEndViewBase.left_lobby = function (self)
 end
 
 LevelEndViewBase.destroy = function (self, keep_resources)
-	if self._registered_rpcs then
-		self._network_event_delegate:unregister(self)
-	end
-
 	self.ui_animator = nil
+
+	self:_cleanup_transitions()
 
 	if self._machine then
 		self._machine:destroy()
@@ -956,6 +1057,8 @@ LevelEndViewBase._proceed_to_next_auto_state = function (self, index, num_states
 
 	if index == num_states then
 		self:_push_mouse_cursor()
+
+		self._state_machine_complete = true
 	end
 
 	self._next_auto_state_index = nil
@@ -1107,7 +1210,7 @@ local cam_shake_settings = {
 }
 
 LevelEndViewBase.setup_camera = function (self)
-	local camera_pose
+	local camera_pose, camera_index
 	local level_name = "levels/end_screen/world"
 	local unit_indices = LevelResource.unit_indices(level_name, "units/hub_elements/cutscene_camera/cutscene_camera")
 
@@ -1121,12 +1224,16 @@ LevelEndViewBase.setup_camera = function (self)
 			local pose = Matrix4x4.from_quaternion_position(rotation, position)
 
 			camera_pose = Matrix4x4Box(pose)
+			camera_index = index
 
 			print("Found camera: " .. name)
+
+			break
 		end
 	end
 
 	self._camera_pose = camera_pose
+	self._camera_index = camera_index
 
 	self:position_camera()
 end
@@ -1321,7 +1428,7 @@ LevelEndViewBase.set_input_manager = function (self, input_manager)
 end
 
 LevelEndViewBase.input_service = function (self)
-	return self:displaying_reward_presentation() and FAKE_INPUT_SERVICE or self.input_manager:get_service("end_of_level")
+	return (self:displaying_reward_presentation() or not table.is_empty(self._transition_animations)) and FAKE_INPUT_SERVICE or self.input_manager:get_service("end_of_level")
 end
 
 LevelEndViewBase.menu_input_service = function (self)

@@ -50,6 +50,7 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 	local function_result = result.FunctionResult
 	local items = function_result.items
 	local unlocked_weapon_skins = function_result.unlocked_weapon_skins
+	local new_weapon_skin_rewards = function_result.new_weapon_skin_rewards
 	local new_cosmetics = function_result.new_cosmetics
 	local new_unlocked_weapon_poses = function_result.new_unlocked_weapon_poses
 	local updated_statistics = function_result.updated_statistics
@@ -79,6 +80,19 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 	if unlocked_weapon_skins then
 		for i = 1, #unlocked_weapon_skins do
 			backend_mirror:add_unlocked_weapon_skin(unlocked_weapon_skins[i])
+		end
+	end
+
+	if new_weapon_skin_rewards then
+		local weapon_skins = backend_mirror:get_unlocked_weapon_skins()
+
+		for i = 1, #new_weapon_skin_rewards do
+			local id = new_weapon_skin_rewards[i]
+			local backend_id = weapon_skins[id]
+
+			if backend_id then
+				loot[#loot + 1] = backend_id
+			end
 		end
 	end
 

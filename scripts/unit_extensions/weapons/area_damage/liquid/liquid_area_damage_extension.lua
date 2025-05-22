@@ -769,7 +769,7 @@ LiquidAreaDamageExtension._pulse_damage = function (self)
 			if is_player and do_direct_damage_player or not is_player and do_direct_damage_ai then
 				local damage = damage_table[armor_category] or damage_table[1]
 
-				DamageUtils.add_damage_network(unit, unit, damage, "torso", damage_type, nil, damage_dir, self._liquid_area_damage_template, nil, source_attacker_unit)
+				DamageUtils.add_damage_network(unit, unit, damage, "torso", damage_type, nil, damage_dir, self._liquid_area_damage_template, nil, source_attacker_unit, nil, nil, nil, nil, nil, nil, nil, nil, 1)
 
 				if is_player_attacker then
 					local breed = AiUtils.unit_breed(unit)

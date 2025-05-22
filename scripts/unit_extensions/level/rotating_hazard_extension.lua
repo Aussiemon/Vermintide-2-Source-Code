@@ -401,7 +401,7 @@ RotatingHazardExtension._update_damage = function (self, area_settings, area_dat
 							local damage_type = "kinetic"
 							local hit_react_type = "medium"
 
-							DamageUtils.add_damage_network(player_unit, hazard_unit, settings.damage_tick, "full", damage_type, nil, dir_to_player, nil, nil, hazard_unit, nil, hit_react_type)
+							DamageUtils.add_damage_network(player_unit, hazard_unit, settings.damage_tick, "full", damage_type, nil, dir_to_player, nil, nil, hazard_unit, nil, hit_react_type, nil, nil, nil, nil, nil, nil, 1)
 
 							local buffs_to_add = settings.buffs_on_tick
 

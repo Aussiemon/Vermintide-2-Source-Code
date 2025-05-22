@@ -2019,3 +2019,7 @@ end
 function flow_callback_wwise_trigger_event_with_environment()
 	return
 end
+
+function flow_query_global_listener()
+	return
+end

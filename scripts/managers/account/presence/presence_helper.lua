@@ -30,16 +30,14 @@ PresenceHelper.lobby_gamemode = function (lobby_data)
 	local is_in_prologue = Managers.level_transition_handler:get_current_level_key() == "prologue"
 	local is_in_plaza = Managers.level_transition_handler:get_current_level_key() == "plaza"
 	local matchmakin_type = lobby_data.matchmaking_type
-	local quick_game = to_boolean(lobby_data.quick_game)
+	local quick_game = to_boolean(lobby_data.weave_quick_game) or Managers.venture.quickplay and Managers.venture.quickplay:is_quick_game()
 	local is_weekly_event = tonumber(matchmakin_type) == NetworkLookup.matchmaking_types.event
 	local is_custom_game = tonumber(matchmakin_type) == NetworkLookup.matchmaking_types.custom
 	local is_playing_deed = Managers.deed:has_deed()
 	local is_twitch_enabled = to_boolean(lobby_data.twitch_enabled)
 	local has_match_started = to_boolean(lobby_data.match_started)
-	local matchmaking_manager = Managers.matchmaking
-	local local_quick_game = matchmaking_manager:is_local_quick_game()
 	local is_in_inn_level = Managers.level_transition_handler:in_hub_level()
-	local is_quick_game = (local_quick_game or quick_game) and not is_in_inn_level
+	local is_quick_game = quick_game and not is_in_inn_level
 	local match_state = Managers.mechanism:get_state()
 
 	if is_in_prologue then

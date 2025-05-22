@@ -29,7 +29,6 @@ GameModeWeave.init = function (self, settings, world, network_handler, is_server
 	self:_setup_bot_spawn_priority_lookup()
 
 	self._local_player_spawned = false
-	self._quick_play = Managers.matchmaking:is_quick_game()
 	self._has_locked_party_size = Managers.matchmaking:is_game_private()
 
 	local event_manager = Managers.state.event
@@ -325,10 +324,6 @@ GameModeWeave.ended = function (self, reason)
 	if reason == "won" and not next_objective_index then
 		weave_manager:sync_end_of_weave_data()
 	end
-end
-
-GameModeWeave.game_lost = function (self)
-	Managers.matchmaking:set_quick_game(false)
 end
 
 GameModeWeave.get_end_screen_config = function (self, game_won, game_lost, player)
