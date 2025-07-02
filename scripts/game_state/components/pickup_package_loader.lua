@@ -322,10 +322,6 @@ PickupPackageLoader.loading_completed = function (self)
 	return true
 end
 
-PickupPackageLoader.random_director_list = function (self)
-	return self._random_director_list
-end
-
 PickupPackageLoader.on_application_shutdown = function (self)
 	local loaded_pickup_map = self._loaded_pickup_map
 	local session_pickup_map = self._session_pickup_map

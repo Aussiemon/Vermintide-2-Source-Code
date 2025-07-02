@@ -491,6 +491,10 @@ NetworkClient.get_loaded_session_pickups = function (self, peer_id)
 	return self._network_state:get_loaded_session_pickup_map(peer_id)
 end
 
+NetworkClient.get_initialized_mutator_map = function (self)
+	return self._network_state:get_initialized_mutator_map()
+end
+
 NetworkClient.get_game_mode_event_data = function (self)
 	return self._network_state:get_game_mode_event_data()
 end
@@ -499,4 +503,20 @@ NetworkClient.has_unlocked_dlc = function (self, peer_id, dlc_name)
 	local unlocked_dlcs = self._network_state:get_unlocked_dlcs_set(peer_id)
 
 	return unlocked_dlcs[dlc_name]
+end
+
+NetworkClient.get_loaded_mutator_map = function (self, peer_id)
+	return self._network_state:get_loaded_mutator_map(peer_id)
+end
+
+NetworkClient.get_own_loaded_mutator_map = function (self)
+	return self._network_state:get_own_loaded_mutator_map()
+end
+
+NetworkClient.set_own_loaded_mutator_map = function (self, mutator_map)
+	self._network_state:set_own_loaded_mutator_map(mutator_map)
+end
+
+NetworkClient.state_revision = function (self)
+	return self._network_state:get_revision()
 end

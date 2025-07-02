@@ -60,6 +60,7 @@ VersusGameServerSlotReservationHandler._register_party = function (self, party_d
 		party_slots[i] = table.clone(empty_party_slot)
 	end
 
+	party_slots.game_participating = party_data.game_participating
 	self._reserved_peers[party_id] = party_slots
 end
 
@@ -158,7 +159,7 @@ VersusGameServerSlotReservationHandler._send_peer_updates_to_clients = function 
 		local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
 		if channel_id then
-			for party_id, party_slots in pairs(reserved_peers) do
+			for party_id, party_slots in ipairs(reserved_peers) do
 				local party_data = data[party_id]
 				local server_name = Managers.game_server:server_name()
 
@@ -908,13 +909,16 @@ VersusGameServerSlotReservationHandler._redistribute_parties_evenly = function (
 
 		for party_id = 1, #reserved_peers do
 			local party_slots = reserved_peers[party_id]
-			local num_total_slots = #party_slots
-			local num_free_slots = self:_num_unreserved_slots(party_id)
 
-			if most_free_slots < num_free_slots or num_free_slots == most_free_slots and num_total_slots < most_total_slots then
-				most_free_slots = num_free_slots
-				most_free_slots_team_id = party_id
-				most_total_slots = num_total_slots
+			if party_slots.game_participating then
+				local num_total_slots = #party_slots
+				local num_free_slots = self:_num_unreserved_slots(party_id)
+
+				if most_free_slots < num_free_slots or num_free_slots == most_free_slots and num_total_slots < most_total_slots then
+					most_free_slots = num_free_slots
+					most_free_slots_team_id = party_id
+					most_total_slots = num_total_slots
+				end
 			end
 		end
 

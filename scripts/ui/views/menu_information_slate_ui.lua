@@ -323,15 +323,26 @@ MenuInformationSlateUI._parse_text_data = function (self, data, idx, offset)
 		text_style.offset[1] = 20
 		offset = offset + spacing
 
+		local indent = 1
 		local bullet_points = string.split_deprecated(text, "|")
 
 		for bullet_point_idx, bullet_point in ipairs(bullet_points) do
+			local indent_macro = string.match(bullet_point, "%$INDENT;[%a%d_]*:")
+
+			if indent_macro then
+				local arg_start = string.find(indent_macro, ";")
+
+				indent = tonumber(string.sub(indent_macro, arg_start + 1, -2))
+			end
+
 			local bullet_point_text_style = table.clone(text_style)
 
+			bullet_point_text_style.offset[1] = bullet_point_text_style.offset[1] + (indent - 1) * 30
 			bullet_point_text_style.area_size = {
-				405,
+				405 - 30 * (indent - 1),
 				50,
 			}
+			bullet_point = string.gsub(bullet_point, "%$INDENT;[%a%d_]*:", "")
 
 			local widget_definition = UIWidgets.create_simple_text(bullet_point, "body_anchor", nil, nil, bullet_point_text_style)
 			local widget = UIWidget.init(widget_definition)
@@ -340,33 +351,90 @@ MenuInformationSlateUI._parse_text_data = function (self, data, idx, offset)
 			self._widgets_by_name["text_" .. idx .. "_bullet_point_" .. bullet_point_idx] = widget
 			widget.offset[2] = offset
 
+			local dot_widget, inner_dot_widget, dash_widget
 			local masked = true
-			local widget_definition = UIWidgets.create_simple_texture("dot", "body_anchor", masked, nil, {
-				255,
-				192,
-				192,
-				192,
-			}, {
-				0,
-				offset - 3,
-				1,
-			}, {
-				20,
-				20,
-			})
 
-			widget_definition.style.texture_id.horizontal_alignment = "left"
-			widget_definition.style.texture_id.vertical_alignment = "top"
+			if indent > 2 then
+				local widget_definition = UIWidgets.create_simple_texture("rect_masked", "body_anchor", masked, nil, {
+					255,
+					192,
+					192,
+					192,
+				}, {
+					bullet_point_text_style.offset[1] - 30 + 10,
+					offset - 3 - 8,
+					1,
+				}, {
+					5,
+					5,
+				})
 
-			local dot_widget = UIWidget.init(widget_definition)
+				widget_definition.style.texture_id.horizontal_alignment = "left"
+				widget_definition.style.texture_id.vertical_alignment = "top"
+				dash_widget = UIWidget.init(widget_definition)
+				self._body_widgets[#self._body_widgets + 1] = dash_widget
+				self._widgets_by_name["text_" .. idx .. "_bullet_point_dash_" .. bullet_point_idx] = dash_widget
+			else
+				local widget_definition = UIWidgets.create_simple_texture("dot", "body_anchor", masked, nil, {
+					255,
+					192,
+					192,
+					192,
+				}, {
+					bullet_point_text_style.offset[1] - 30,
+					offset - 3,
+					1,
+				}, {
+					20,
+					20,
+				})
 
-			self._body_widgets[#self._body_widgets + 1] = dot_widget
-			self._widgets_by_name["text_" .. idx .. "_bullet_point_dot_" .. bullet_point_idx] = dot_widget
+				widget_definition.style.texture_id.horizontal_alignment = "left"
+				widget_definition.style.texture_id.vertical_alignment = "top"
+				dot_widget = UIWidget.init(widget_definition)
+				self._body_widgets[#self._body_widgets + 1] = dot_widget
+				self._widgets_by_name["text_" .. idx .. "_bullet_point_dot_" .. bullet_point_idx] = dot_widget
 
-			local rows, return_indices = UIRenderer.word_wrap(self._ui_renderer, bullet_point, font_material, font_size, 405)
+				if indent == 2 then
+					local masked = true
+					local widget_definition = UIWidgets.create_simple_texture("dot", "body_anchor", masked, nil, {
+						255,
+						0,
+						0,
+						0,
+					}, {
+						bullet_point_text_style.offset[1] - 30 + 3,
+						offset - 3 - 3,
+						2,
+					}, {
+						14,
+						14,
+					})
+
+					widget_definition.style.texture_id.horizontal_alignment = "left"
+					widget_definition.style.texture_id.vertical_alignment = "top"
+					inner_dot_widget = UIWidget.init(widget_definition)
+					self._body_widgets[#self._body_widgets + 1] = inner_dot_widget
+					self._widgets_by_name["text_" .. idx .. "_bullet_point_inner_dot_" .. bullet_point_idx] = inner_dot_widget
+				end
+			end
+
+			local rows, return_indices = UIRenderer.word_wrap(self._ui_renderer, bullet_point, font_material, font_size, bullet_point_text_style.area_size[1])
 
 			widget.widget_height = full_font_height * #rows
-			dot_widget.widget_height = widget.widget_height
+
+			if dot_widget then
+				dot_widget.widget_height = widget.widget_height
+			end
+
+			if inner_dot_widget then
+				inner_dot_widget.widget_height = widget.widget_height
+			end
+
+			if dash_widget then
+				dash_widget.widget_height = widget.widget_height
+			end
+
 			offset = offset - widget.widget_height - (#rows > 1 and spacing * 0.5 or 0)
 		end
 

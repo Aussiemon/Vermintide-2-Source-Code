@@ -197,8 +197,14 @@ StartGameWindowWeaveInfo._update_can_play = function (self)
 		else
 			play_button_console.content.locked = true
 		end
+	elseif self._selected_weave_name and LevelUnlockUtils.weave_disabled(self._selected_weave_name) then
+		widgets_by_name.play_button.content.button_hotspot.disable_button = true
+		widgets_by_name.play_button.content.locked = true
+		play_button_console.content.locked = true
 	else
 		play_button_console.content.locked = false
+		widgets_by_name.play_button.content.button_hotspot.disable_button = false
+		widgets_by_name.play_button.content.locked = false
 		play_button_console.content.text = Localize("start_game_window_play")
 	end
 end
@@ -347,7 +353,9 @@ StartGameWindowWeaveInfo._update_party_status = function (self, dt)
 	local play_button_widget_content = play_button_widget.content
 	local play_button_hotspot = play_button_widget_content.button_hotspot
 
-	play_button_hotspot.disable_button = is_searching
+	if not play_button_widget_content.locked then
+		play_button_hotspot.disable_button = is_searching
+	end
 end
 
 StartGameWindowWeaveInfo._play_sound = function (self, event)
@@ -434,7 +442,9 @@ StartGameWindowWeaveInfo._update_selected_weave = function (self)
 			self._objective_widgets = objective_widgets
 		end
 
-		widgets_by_name.play_button.content.button_hotspot.disable_button = false
+		if not widgets_by_name.play_button.content.locked then
+			widgets_by_name.play_button.content.button_hotspot.disable_button = false
+		end
 	end
 end
 

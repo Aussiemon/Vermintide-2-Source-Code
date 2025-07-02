@@ -1510,8 +1510,7 @@ PopupHandler.update = function (self, dt, from_manager)
 			self:_initialize_popup(current_popup)
 		end
 
-		local ui_renderer = self.ui_renderer
-		local ui_renderer, input_manager = ui_renderer, self.input_manager or self.mock_input_manager
+		local ui_renderer, input_manager = self.ui_renderer, self.input_manager or self.mock_input_manager
 		local input_service = input_manager:get_service("popup")
 		local gamepad_active = input_manager:is_device_active("gamepad")
 		local widget = current_popup.widget

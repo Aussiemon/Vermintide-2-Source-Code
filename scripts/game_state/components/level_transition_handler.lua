@@ -3,6 +3,7 @@
 require("scripts/game_state/components/enemy_package_loader")
 require("scripts/game_state/components/transient_package_loader")
 require("scripts/game_state/components/pickup_package_loader")
+require("scripts/game_state/components/general_synced_package_loader")
 
 local global_print = print
 
@@ -32,6 +33,7 @@ LevelTransitionHandler.init = function (self)
 	self.enemy_package_loader = EnemyPackageLoader:new()
 	self.transient_package_loader = TransientPackageLoader:new()
 	self.pickup_package_loader = PickupPackageLoader:new()
+	self.general_synced_package_loader = GeneralSyncedPackageLoader:new()
 	self._network_state = nil
 
 	local level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages
@@ -87,6 +89,7 @@ LevelTransitionHandler.deregister_network_state = function (self)
 	self._network_state = nil
 	self._offline_level_data = table.clone(self._default_level_data)
 	self._offline_level_data.level_session_id = math.random_seed()
+	self._currently_loaded_level_session_id = nil
 end
 
 LevelTransitionHandler.register_rpcs = function (self, network_event_delegate)
@@ -153,6 +156,7 @@ LevelTransitionHandler.update = function (self)
 
 	self.enemy_package_loader:update()
 	self.pickup_package_loader:update()
+	self.general_synced_package_loader:update()
 	self.transient_package_loader:update()
 end
 
@@ -180,7 +184,7 @@ LevelTransitionHandler.load_current_level = function (self)
 	local new_environment_variation_id = self:get_current_environment_variation_id()
 	local new_loaded_level_session_id = self:get_current_level_session_id()
 
-	print("load_current_level, loading %s %s", new_level_key, tostring(new_environment_variation_id))
+	printf("load_current_level, loading %s %s", new_level_key, tostring(new_environment_variation_id))
 	fassert(LevelSettings[new_level_key], "The level named %q does not exist in LevelSettings.", tostring(new_level_key))
 
 	local currently_loaded_level_key = self._currently_loaded_level_key
@@ -208,7 +212,6 @@ LevelTransitionHandler.load_current_level = function (self)
 		dprint("loading extra packages: [%s] %s", new_level_key, table.tostring(extra_packages))
 
 		self.loading_packages[new_level_key] = true
-		self._has_loaded_all_packages = false
 
 		local current_level_settings = currently_loaded_level_key and LevelSettings[currently_loaded_level_key]
 		local current_level_render_overrides = current_level_settings and current_level_settings.render_settings_overrides
@@ -239,6 +242,7 @@ LevelTransitionHandler.load_current_level = function (self)
 	self._currently_loaded_level_key = new_level_key
 	self._currently_loaded_environment_variation_id = new_environment_variation_id
 	self._currently_loaded_level_session_id = new_loaded_level_session_id
+	self._has_loaded_all_packages = false
 end
 
 LevelTransitionHandler.release_level_resources = function (self)

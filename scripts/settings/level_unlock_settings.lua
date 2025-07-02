@@ -37,6 +37,9 @@ GameActsDisplayNames = {
 }
 
 DLCUtils.dofile("level_unlock_settings")
+
+local EMPTY_TABLE = {}
+
 require("scripts/settings/packaged_levels")
 
 local function is_level_available_on_disk(level_data)
@@ -194,20 +197,34 @@ LevelUnlockUtils.completed_level_difficulty_index = function (statistics_db, pla
 	end
 end
 
+LevelUnlockUtils.is_journey_disabled = function (journey_name)
+	local override_journeys = Managers.mechanism and Managers.mechanism:mechanism_setting_for_title("override_journeys") or EMPTY_TABLE
+
+	return override_journeys[journey_name] == false
+end
+
+LevelUnlockUtils.is_chaos_waste_god_disabled = function (god_name)
+	local override_gods = Managers.mechanism and Managers.mechanism:mechanism_setting_for_title("override_gods") or EMPTY_TABLE
+
+	return override_gods[god_name] == false
+end
+
 LevelUnlockUtils.unlocked_journeys = function (statistics_db, player_stats_id)
 	local journeys = {}
 
 	for i = 1, #AvailableJourneyOrder do
 		local journey_name = AvailableJourneyOrder[i]
 
-		if i == 1 then
-			journeys[#journeys + 1] = journey_name
+		if #journeys == 0 then
+			if not LevelUnlockUtils.is_journey_disabled(journey_name) then
+				journeys[#journeys + 1] = journey_name
+			end
 		else
 			local difficulty = LevelUnlockUtils.completed_journey_difficulty_index(statistics_db, player_stats_id, AvailableJourneyOrder[i - 1])
 
 			if not script_data.unlock_all_levels and (not difficulty or difficulty == 0) then
 				break
-			else
+			elseif not LevelUnlockUtils.is_journey_disabled(journey_name) then
 				journeys[#journeys + 1] = journey_name
 			end
 		end
@@ -337,6 +354,12 @@ local function sort_levels_by_order(a, b)
 	return a_order < b_order
 end
 
+LevelUnlockUtils.is_level_disabled = function (level_key)
+	local override_levels = Managers.mechanism and Managers.mechanism:mechanism_setting_for_title("override_levels")
+
+	return override_levels and override_levels[level_key] == false
+end
+
 local required_completed_levels = {}
 
 LevelUnlockUtils.get_required_completed_levels = function (statistics_db, player_stats_id, level_key)
@@ -352,11 +375,13 @@ LevelUnlockUtils.get_required_completed_levels = function (statistics_db, player
 			local act_levels = GameActs[act_key]
 
 			for _, act_level_key in ipairs(act_levels) do
-				local settings = LevelSettings[act_level_key]
+				if not LevelUnlockUtils.is_level_disabled(act_level_key) then
+					local settings = LevelSettings[act_level_key]
 
-				if highest_presentation_order < settings.act_presentation_order then
-					highest_presentation_order = settings.act_presentation_order
-					last_act_level_key = act_level_key
+					if highest_presentation_order < settings.act_presentation_order then
+						highest_presentation_order = settings.act_presentation_order
+						last_act_level_key = act_level_key
+					end
 				end
 			end
 
@@ -378,11 +403,13 @@ LevelUnlockUtils.get_required_completed_levels = function (statistics_db, player
 		local highest_presentation_order = -1
 
 		for _, required_act_level_key in ipairs(required_levels_unlocked_in_act) do
-			local settings = LevelSettings[required_act_level_key]
+			if not LevelUnlockUtils.is_level_disabled(required_act_level_key) then
+				local settings = LevelSettings[required_act_level_key]
 
-			if highest_presentation_order < settings.act_presentation_order then
-				highest_presentation_order = settings.act_presentation_order
-				last_act_level_key = required_act_level_key
+				if highest_presentation_order < settings.act_presentation_order then
+					highest_presentation_order = settings.act_presentation_order
+					last_act_level_key = required_act_level_key
+				end
 			end
 		end
 
@@ -427,7 +454,7 @@ LevelUnlockUtils.current_weave = function (statistics_db, player_stats_id, ignor
 		if weave_completed then
 			local next_weave = i + 1
 
-			if weave_templates[next_weave] then
+			if weave_templates[next_weave] and not LevelUnlockUtils.weave_disabled(next_weave) then
 				highest_consecutive_unlocked_weave = next_weave
 			end
 		else
@@ -438,6 +465,26 @@ LevelUnlockUtils.current_weave = function (statistics_db, player_stats_id, ignor
 	local weave_template = weave_templates[highest_consecutive_unlocked_weave]
 
 	return weave_template.name
+end
+
+LevelUnlockUtils.weave_disabled = function (weave_name)
+	local override_weaves = Managers.mechanism and Managers.mechanism:mechanism_setting_for_title("override_weaves") or EMPTY_TABLE
+
+	if override_weaves.levels and override_weaves.levels[weave_name] ~= nil then
+		return not override_weaves.levels[weave_name]
+	end
+
+	local weave_data = WeaveSettings.templates[weave_name]
+
+	if not weave_data then
+		return false
+	end
+
+	if override_weaves.winds and override_weaves.winds[weave_data.wind] ~= nil then
+		return not override_weaves.winds[weave_data.wind]
+	end
+
+	return false
 end
 
 LevelUnlockUtils.weave_unlocked = function (statistics_db, player_stats_id, weave_name, ignore_dlc_check, num_players)
@@ -488,6 +535,10 @@ LevelUnlockUtils.level_unlocked = function (statistics_db, player_stats_id, leve
 		return true
 	end
 
+	if LevelUnlockUtils.is_level_disabled(level_key) then
+		return false
+	end
+
 	if level_key == "any" then
 		return true
 	end
@@ -524,11 +575,13 @@ LevelUnlockUtils.level_unlocked = function (statistics_db, player_stats_id, leve
 
 		if required_levels_unlocked_in_act then
 			for _, required_act_level in ipairs(required_levels_unlocked_in_act) do
-				local level_stat = statistics_db:get_persistent_stat(player_stats_id, "completed_levels", required_act_level)
-				local level_completed = level_stat and level_stat ~= 0
+				if not LevelUnlockUtils.is_level_disabled(required_act_level) then
+					local level_stat = statistics_db:get_persistent_stat(player_stats_id, "completed_levels", required_act_level)
+					local level_completed = level_stat and level_stat ~= 0
 
-				if not level_completed then
-					return false
+					if not level_completed then
+						return false
+					end
 				end
 			end
 		end
@@ -567,11 +620,13 @@ LevelUnlockUtils.act_unlocked = function (statistics_db, player_stats_id, act_ke
 	local act_levels = GameActs[act_key]
 
 	for _, level_key in ipairs(act_levels) do
-		local level_stat = statistics_db:get_persistent_stat(player_stats_id, "completed_levels", level_key)
-		local level_completed = level_stat and level_stat ~= 0
+		if not LevelUnlockUtils.is_level_disabled(level_key) then
+			local level_stat = statistics_db:get_persistent_stat(player_stats_id, "completed_levels", level_key)
+			local level_completed = level_stat and level_stat ~= 0
 
-		if not level_completed then
-			return false
+			if not level_completed then
+				return false
+			end
 		end
 	end
 

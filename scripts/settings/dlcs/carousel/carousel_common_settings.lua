@@ -112,6 +112,10 @@ settings.mechanism_settings = {
 			default = "versus",
 			keep = "inn_vs",
 		},
+		base_career_buffs = {
+			"vs_core_attack_speed_melee",
+			"vs_core_reduced_overcharge",
+		},
 	},
 }
 settings.network_lookups = {

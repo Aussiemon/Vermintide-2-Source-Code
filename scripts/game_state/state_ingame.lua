@@ -1948,6 +1948,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 	if application_shutdown then
 		level_transition_handler.enemy_package_loader:on_application_shutdown()
 		level_transition_handler.pickup_package_loader:on_application_shutdown()
+		level_transition_handler.general_synced_package_loader:on_application_shutdown()
 	end
 
 	level_transition_handler.transient_package_loader:unload_all_packages(application_shutdown)
@@ -2000,6 +2001,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 		Managers.deed:network_context_destroyed()
 		level_transition_handler.enemy_package_loader:network_context_destroyed()
 		level_transition_handler.pickup_package_loader:network_context_destroyed()
+		level_transition_handler.general_synced_package_loader:network_context_destroyed()
 		level_transition_handler.transient_package_loader:network_context_destroyed()
 		Managers.party:network_context_destroyed()
 

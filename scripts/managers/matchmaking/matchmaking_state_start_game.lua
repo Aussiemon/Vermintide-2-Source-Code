@@ -163,8 +163,13 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 		end
 
 		if mechanism == "weave" then
-			local weave_index = Math.random(#WeaveSettings.templates_ordered)
-			local weave_template = WeaveSettings.templates_ordered[weave_index]
+			local templates = table.shallow_copy(WeaveSettings.templates_ordered)
+
+			table.array_remove_if(templates, function (v)
+				return LevelUnlockUtils.weave_disabled(v.name)
+			end)
+
+			local weave_template = table.random(templates)
 
 			weave_name = weave_template.name
 			mission_id = weave_name
@@ -173,12 +178,17 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 			Managers.weave:set_next_objective(1)
 		elseif mechanism == "deus" then
 			local unlocked_journeys = self._matchmaking_manager:gather_party_unlocked_journeys()
-
-			mission_id = unlocked_journeys[Math.random(1, #unlocked_journeys)]
-
 			local backend_deus = Managers.backend:get_interface("deus")
 			local journey_cycle = backend_deus:get_journey_cycle()
 			local journey_data = journey_cycle.journey_data
+			local filtered_journeys = table.shallow_copy(unlocked_journeys)
+
+			table.array_remove_if(filtered_journeys, function (v)
+				return LevelUnlockUtils.is_chaos_waste_god_disabled(journey_data[v].dominant_god)
+			end)
+
+			mission_id = filtered_journeys[Math.random(1, #filtered_journeys)]
+
 			local journey_settings = journey_data[mission_id]
 			local dominant_god = journey_settings.dominant_god
 			local vote_data = {
@@ -208,9 +218,14 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 			print("MatchmakingStateStartGame preferred_level_keys", preferred_level_keys)
 
 			if preferred_level_keys then
-				table.dump(preferred_level_keys, "preferred_level_keys")
+				local filtered_level_keys = table.shallow_copy(preferred_level_keys)
 
-				mission_id = preferred_level_keys[Math.random(1, #preferred_level_keys)]
+				table.array_remove_if(filtered_level_keys, function (v)
+					return LevelUnlockUtils.is_level_disabled(v.name)
+				end)
+				table.dump(filtered_level_keys, "filtered_level_keys")
+
+				mission_id = filtered_level_keys[Math.random(1, #filtered_level_keys)]
 			else
 				mission_id = self._matchmaking_manager:get_weighed_random_unlocked_level(ignore_dlc_check, false, excluded_level_keys)
 			end

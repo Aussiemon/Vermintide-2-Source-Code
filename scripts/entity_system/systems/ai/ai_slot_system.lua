@@ -2010,7 +2010,7 @@ AISlotSystem.update_target_slots = function (self, t, target_unit, target_units,
 		target_unit_extension.was_on_ladder = is_on_ladder
 	end
 
-	local real_target_unit_position = POSITION_LOOKUP[target_unit]
+	local real_target_unit_position = Unit.local_position(target_unit, 0)
 	local target_unit_position = is_on_ladder and real_target_unit_position or get_target_pos_on_navmesh(real_target_unit_position, nav_world)
 	local target_unit_position_known = target_unit_extension.position:unbox()
 	local outside_navmesh_at_t = target_unit_extension.outside_navmesh_at_t
@@ -2027,7 +2027,7 @@ AISlotSystem.update_target_slots = function (self, t, target_unit, target_units,
 		target_unit_position = target_unit_position_known
 	else
 		outside_navmesh = true
-		target_unit_position = POSITION_LOOKUP[target_unit]
+		target_unit_position = real_target_unit_position
 		dist_sq = Vector3_distance_sq(target_unit_position, target_unit_position_known)
 	end
 

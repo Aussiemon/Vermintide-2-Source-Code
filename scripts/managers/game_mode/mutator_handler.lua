@@ -47,9 +47,9 @@ MutatorHandler.init = function (self, mutators, is_server, network_handler, has_
 
 		self:initialize_mutators(mutators)
 	else
-		local network_state = network_handler:get_network_state()
+		self._initialized_mutator_map = network_handler:get_initialized_mutator_map()
 
-		self._initialized_mutator_map = network_state:get_initialized_mutator_map()
+		local network_state = network_handler:get_network_state()
 
 		network_state:register_callback("client_data_updated", self, "on_client_mutator_list_updated", "initialized_mutator_map")
 	end

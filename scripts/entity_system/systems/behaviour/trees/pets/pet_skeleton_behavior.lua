@@ -11,6 +11,7 @@ local COMMAND_COMBAT = {
 		{
 			"BTMeleeOverlapAttackAction",
 			condition = "ask_target_before_attacking",
+			enter_hook = "start_command_attack",
 			leave_hook = "command_attack_done",
 			name = "running_command_attack",
 			action_data = ACTIONS_ARMORED.running_command_attack,
@@ -18,6 +19,7 @@ local COMMAND_COMBAT = {
 		{
 			"BTMeleeOverlapAttackAction",
 			condition = "ask_target_before_attacking",
+			enter_hook = "start_command_attack",
 			leave_hook = "command_attack_done",
 			name = "command_attack",
 			action_data = ACTIONS_ARMORED.command_attack,
@@ -36,6 +38,7 @@ local COMMAND_COMBAT = {
 		{
 			"BTMeleeOverlapAttackAction",
 			condition = "ask_target_before_attacking",
+			enter_hook = "start_command_attack",
 			leave_hook = "command_attack_done",
 			name = "running_command_attack",
 			action_data = ACTIONS_DEFAULT.running_command_attack,
@@ -43,6 +46,7 @@ local COMMAND_COMBAT = {
 		{
 			"BTMeleeOverlapAttackAction",
 			condition = "ask_target_before_attacking",
+			enter_hook = "start_command_attack",
 			leave_hook = "command_attack_done",
 			name = "command_attack",
 			action_data = ACTIONS_DUAL_WIELD.command_attack,
@@ -61,6 +65,7 @@ local COMMAND_COMBAT = {
 		{
 			"BTMeleeOverlapAttackAction",
 			condition = "ask_target_before_attacking",
+			enter_hook = "start_command_attack",
 			leave_hook = "command_attack_done",
 			name = "running_command_attack",
 			action_data = ACTIONS_DEFAULT.running_command_attack,
@@ -68,6 +73,7 @@ local COMMAND_COMBAT = {
 		{
 			"BTMeleeOverlapAttackAction",
 			condition = "ask_target_before_attacking",
+			enter_hook = "start_command_attack",
 			leave_hook = "command_attack_done",
 			name = "command_attack",
 			action_data = ACTIONS_DEFAULT.command_attack,
@@ -93,6 +99,7 @@ local COMMAND_COMBAT = {
 		{
 			"BTMeleeOverlapAttackAction",
 			condition = "ask_target_before_attacking",
+			enter_hook = "start_command_attack",
 			leave_hook = "command_attack_done",
 			name = "command_attack",
 			action_data = ACTIONS_DEFAULT.command_attack,

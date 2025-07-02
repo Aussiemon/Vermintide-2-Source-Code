@@ -320,7 +320,10 @@ StateLoading._setup_first_time_ui = function (self)
 		loading_context.play_trailer = nil
 		self._first_time_view = TitleLoadingUI:new(self._world, params, auto_skip)
 
-		Managers.transition:hide_loading_icon()
+		if not self._first_time_view:is_loading_packages() then
+			Managers.transition:hide_loading_icon()
+		end
+
 		Managers.chat:enable_gui(false)
 		self._loading_view:deactivate()
 	end
@@ -678,12 +681,6 @@ StateLoading.set_invitation_error = function (self)
 	self._has_invitation_error = true
 end
 
-StateLoading._matchmaking_packages_loaded = function (self)
-	local matchmaking_manager = Managers.matchmaking
-
-	return not matchmaking_manager or matchmaking_manager:all_packages_loaded()
-end
-
 StateLoading.update = function (self, dt, t)
 	if script_data.subtitle_debug then
 		self:_handle_do_reload()
@@ -694,7 +691,7 @@ StateLoading.update = function (self, dt, t)
 
 	local level_transition_handler = Managers.level_transition_handler
 
-	if IS_PS4 and not self._popup_id and not self._handled_psn_client_error and self:_update_loading_global_packages() and level_transition_handler:all_packages_loaded() and level_transition_handler.enemy_package_loader:loading_completed() and level_transition_handler.pickup_package_loader:loading_completed() and level_transition_handler.transient_package_loader:loading_completed() and self:_matchmaking_packages_loaded() and Managers.backend:profiles_loaded() then
+	if IS_PS4 and not self._popup_id and not self._handled_psn_client_error and self:_update_loading_global_packages() and level_transition_handler:all_packages_loaded() and level_transition_handler.enemy_package_loader:loading_completed() and level_transition_handler.pickup_package_loader:loading_completed() and level_transition_handler.transient_package_loader:loading_completed() and level_transition_handler.general_synced_package_loader:loading_completed() and Managers.backend:profiles_loaded() then
 		local psn_client_error = Managers.account:psn_client_error()
 
 		if psn_client_error then
@@ -1876,11 +1873,11 @@ StateLoading._packages_loaded = function (self)
 			return false
 		end
 
-		if not level_transition_handler.transient_package_loader:loading_completed() then
+		if not level_transition_handler.general_synced_package_loader:loading_completed() then
 			return false
 		end
 
-		if not self:_matchmaking_packages_loaded() then
+		if not level_transition_handler.transient_package_loader:loading_completed() then
 			return false
 		end
 
@@ -2055,10 +2052,8 @@ StateLoading._destroy_network_handler = function (self, application_shutdown, op
 
 		transient_package_loader:network_context_destroyed()
 		transient_package_loader:unload_all_packages()
-
-		local pickup_package_loader = level_transition_handler.pickup_package_loader
-
-		pickup_package_loader:network_context_destroyed()
+		level_transition_handler.pickup_package_loader:network_context_destroyed()
+		level_transition_handler.general_synced_package_loader:network_context_destroyed()
 		Managers.party:network_context_destroyed()
 		Managers.mechanism:network_context_destroyed()
 		network_handler:destroy()
@@ -2436,6 +2431,7 @@ end
 StateLoading.setup_enemy_package_loader = function (self, lobby, host_peer_id, my_peer_id, network_handler)
 	Managers.level_transition_handler.enemy_package_loader:network_context_created(lobby, host_peer_id, my_peer_id, network_handler)
 	Managers.level_transition_handler.pickup_package_loader:network_context_created(lobby, host_peer_id, my_peer_id, network_handler)
+	Managers.level_transition_handler.general_synced_package_loader:network_context_created(lobby, host_peer_id, my_peer_id, network_handler)
 	Managers.level_transition_handler.transient_package_loader:network_context_created(lobby, host_peer_id, my_peer_id)
 end
 

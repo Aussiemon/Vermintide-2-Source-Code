@@ -35,7 +35,6 @@ function mm_printf_force(format_text, ...)
 end
 
 local extra_timeout = Development.parameter("network_timeout_really_long") and 10000 or 0
-local PACKAGE_REF = "MatchmakingManager"
 local ALWAYS_HOST_GAME = DEDICATED_SERVER and true or false
 
 MatchmakingSettings = {
@@ -185,7 +184,6 @@ MatchmakingManager.init = function (self, params)
 	self._power_level_timer = 0
 	self.party_owned_dlcs = {}
 	self._level_weights = {}
-	self._loaded_mutator_packages = {}
 	self.peers_to_sync = {}
 
 	local network_options = LobbySetup.network_options()
@@ -268,11 +266,7 @@ MatchmakingManager.have_game_mode_event_data = function (self)
 	return self._game_mode_event_data and not table.is_empty(self._game_mode_event_data)
 end
 
-local mutators_to_load_scratch = {}
-
 MatchmakingManager.set_game_mode_event_data = function (self, event_data)
-	self:_load_package_diff(event_data)
-
 	self._game_mode_event_data = event_data
 
 	if self.is_server then
@@ -283,46 +277,8 @@ MatchmakingManager.set_game_mode_event_data = function (self, event_data)
 	end
 end
 
-MatchmakingManager._load_package_diff = function (self, event_data)
-	local package_manager = Managers.package
-	local mutators = event_data and event_data.mutators
-
-	if mutators then
-		for mutator_i = 1, #mutators do
-			local mutator_name = mutators[mutator_i]
-			local mutator_packages = MutatorTemplates[mutator_name].packages
-
-			if mutator_packages then
-				for package_i = 1, #mutator_packages do
-					mutators_to_load_scratch[mutator_packages[package_i]] = true
-				end
-			end
-		end
-
-		for package_name in pairs(mutators_to_load_scratch) do
-			if not package_manager:has_loaded(package_name, PACKAGE_REF) and not package_manager:is_loading(package_name, PACKAGE_REF) then
-				package_manager:load(package_name, PACKAGE_REF, nil, true)
-
-				self._loaded_mutator_packages[package_name] = true
-			end
-		end
-	end
-
-	for package_name in pairs(self._loaded_mutator_packages) do
-		if not mutators_to_load_scratch[package_name] then
-			package_manager:unload(package_name, PACKAGE_REF)
-
-			self._loaded_mutator_packages[package_name] = nil
-		end
-	end
-
-	table.clear(mutators_to_load_scratch)
-end
-
 MatchmakingManager.clear_game_mode_event_data = function (self)
 	self._game_mode_event_data = nil
-
-	self:_load_package_diff({})
 
 	if self.is_server then
 		self.network_server:get_network_state():set_game_mode_event_data({})
@@ -335,18 +291,6 @@ MatchmakingManager.on_client_game_mode_event_data_updated = function (self, key_
 	else
 		self:clear_game_mode_event_data()
 	end
-end
-
-MatchmakingManager.all_packages_loaded = function (self)
-	local package_manager = Managers.package
-
-	for package_name in pairs(self._loaded_mutator_packages) do
-		if not package_manager:has_loaded(package_name, PACKAGE_REF) then
-			return false
-		end
-	end
-
-	return true
 end
 
 MatchmakingManager.set_statistics_db = function (self, statistics_db)
@@ -409,8 +353,6 @@ MatchmakingManager.activate_waystone_portal = function (self, waystone_type)
 	end
 end
 
-local empty_event_data = {}
-
 MatchmakingManager.destroy = function (self)
 	mm_printf("destroying")
 	self:_terminate_dangling_matchmaking_lobbies()
@@ -428,8 +370,6 @@ MatchmakingManager.destroy = function (self)
 
 		self.afk_popup_id = nil
 	end
-
-	self:_load_package_diff(empty_event_data)
 end
 
 MatchmakingManager.register_rpcs = function (self, network_event_delegate)

@@ -12,6 +12,7 @@ CinematicsView = class(CinematicsView)
 
 local VIDEO_PACKAGES = {
 	"resource_packages/menu_cinematics_videos",
+	"resource_packages/videos/vermintide_2_versus_trailer",
 }
 
 CinematicsView.init = function (self, ingame_ui_context)
@@ -61,7 +62,7 @@ CinematicsView._unload_packages = function (self)
 	local package_manager = Managers.package
 
 	for _, name in ipairs(VIDEO_PACKAGES) do
-		if package_manager:has_loaded(name, "cinematics_view") then
+		if package_manager:has_loaded(name, "cinematics_view") or package_manager:is_loading(name, "cinematics_view") then
 			package_manager:unload(name, "cinematics_view", nil, true)
 		end
 	end
@@ -325,6 +326,7 @@ CinematicsView.on_exit = function (self)
 	self:_destroy_video_players()
 	self:_destroy_video_renderer()
 	self:_unload_packages()
+	ShowCursorStack.hide("CinematicsView")
 
 	self._initialized = false
 end

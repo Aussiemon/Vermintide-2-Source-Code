@@ -1511,3 +1511,23 @@ NetworkServer.has_unlocked_dlc = function (self, peer_id, dlc_name)
 
 	return unlocked_dlcs[dlc_name]
 end
+
+NetworkServer.get_initialized_mutator_map = function (self)
+	return self._network_state:get_initialized_mutator_map()
+end
+
+NetworkServer.get_loaded_mutator_map = function (self, peer_id)
+	return self._network_state:get_loaded_mutator_map(peer_id)
+end
+
+NetworkServer.get_own_loaded_mutator_map = function (self)
+	return self._network_state:get_own_loaded_mutator_map()
+end
+
+NetworkServer.set_own_loaded_mutator_map = function (self, mutator_map)
+	self._network_state:set_own_loaded_mutator_map(mutator_map)
+end
+
+NetworkServer.state_revision = function (self)
+	return self._network_state:get_revision()
+end

@@ -792,7 +792,7 @@ VersusTabUI._show_profile_by_peer_id = function (self, peer_id)
 
 		Steam.open_url(url)
 	elseif IS_XB1 then
-		local xuid = self.network_lobby.lobby:xuid(peer_id)
+		local xuid = self.network_lobby:xuid(peer_id)
 
 		if xuid then
 			XboxLive.show_gamercard(Managers.account:user_id(), xuid)

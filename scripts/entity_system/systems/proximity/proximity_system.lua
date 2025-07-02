@@ -355,7 +355,7 @@ ProximitySystem.update = function (self, context, t)
 		for unit, extension in pairs(self.unit_extension_data) do
 			local color = extension.has_been_seen and Color(0, 255, 0) or Color(255, 0, 0)
 
-			QuickDrawer:sphere(POSITION_LOOKUP[unit] + Vector3.up(), 2, color)
+			QuickDrawer:sphere(Unit.local_position(unit, 0) + Vector3.up(), 2, color)
 		end
 	end
 end
@@ -382,11 +382,11 @@ ProximitySystem.physics_async_update = function (self, context, t)
 	local nearby_units = nearby_units
 	local dt = context.dt
 	local Broadphase_move = Broadphase.move
-	local POSITION_LOOKUP = POSITION_LOOKUP
+	local Unit_local_position = Unit.local_position
 	local enemy_broadphase = self.enemy_broadphase
 
 	for unit, extension in pairs(self.ai_unit_extensions_map) do
-		local position = POSITION_LOOKUP[unit]
+		local position = Unit_local_position(unit, 0)
 
 		if position then
 			Broadphase_move(enemy_broadphase, extension.enemy_broadphase_id, position)
@@ -396,7 +396,7 @@ ProximitySystem.physics_async_update = function (self, context, t)
 	local player_unit_extensions_map, player_units_broadphase = self.player_unit_extensions_map, self.player_units_broadphase
 
 	for unit, extension in pairs(player_unit_extensions_map) do
-		local position = POSITION_LOOKUP[unit]
+		local position = Unit_local_position(unit, 0)
 
 		if position then
 			Broadphase_move(player_units_broadphase, extension.player_broadphase_id, position)
@@ -406,7 +406,7 @@ ProximitySystem.physics_async_update = function (self, context, t)
 	local special_units_broadphase = self.special_units_broadphase
 
 	for unit, extension in pairs(self.special_unit_extension_map) do
-		local position = POSITION_LOOKUP[unit]
+		local position = Unit_local_position(unit, 0)
 
 		if position then
 			Broadphase_move(special_units_broadphase, extension.special_broadphase_id, position)
@@ -421,7 +421,7 @@ ProximitySystem.physics_async_update = function (self, context, t)
 
 	for unit, extension in pairs(player_unit_extensions_map) do
 		repeat
-			local position = POSITION_LOOKUP[unit]
+			local position = Unit_local_position(unit, 0)
 
 			if not position then
 				break
@@ -505,7 +505,7 @@ ProximitySystem.physics_async_update = function (self, context, t)
 						local is_alive = HEALTH_ALIVE[nearby_unit]
 
 						if nearby_unit ~= unit and is_alive and enemy_units_lookup[nearby_unit] and self:_valid_dialogue_unit(nearby_unit, nil) then
-							local nearby_unit_pos = POSITION_LOOKUP[nearby_unit]
+							local nearby_unit_pos = Unit_local_position(nearby_unit, 0)
 							local nearby_unit_pos_flat = Vector3.flat(nearby_unit_pos)
 							local direction_unit_nearby_unit = nearby_unit_pos_flat - my_pos_flat
 
@@ -635,7 +635,7 @@ ProximitySystem._update_nearby_boss = function (self)
 	end
 
 	local broadphase_result = self._broadphase_result
-	local player_position = POSITION_LOOKUP[player_unit]
+	local player_position = Unit.local_position(player_unit, 0)
 
 	if not player_position then
 		return
@@ -698,7 +698,7 @@ ProximitySystem._update_nearby_enemies = function (self)
 			local unit = broadphase_result[i]
 
 			if self:_valid_dialogue_unit(unit, nil) then
-				new_nearby[unit] = Vector3.distance_squared(POSITION_LOOKUP[unit], player_pos)
+				new_nearby[unit] = Vector3.distance_squared(Unit.local_position(unit, 0), player_pos)
 
 				if not old_nearby[unit] then
 					list_len = list_len + 1
@@ -817,7 +817,7 @@ ProximitySystem._nearby_enemies_debug = function (self, list, new_nearby, new_en
 		end
 
 		for unit, _ in pairs(new_enabled_fx) do
-			QuickDrawer:sphere(POSITION_LOOKUP[unit], 1.2, Color(0, 255, 0))
+			QuickDrawer:sphere(Unit.local_position(unit, 0), 1.2, Color(0, 255, 0))
 		end
 	end
 end
@@ -833,7 +833,6 @@ ProximitySystem._clear_old_enabled_fx = function (self, old_enabled_fx)
 end
 
 ProximitySystem.post_update = function (self, context, t)
-	local POSITION_LOOKUP = POSITION_LOOKUP
 	local enemy_check_raycasts = self.enemy_check_raycasts
 	local unit_forwards = self.unit_forwards
 	local physics_world = self.physics_world
@@ -847,12 +846,12 @@ ProximitySystem.post_update = function (self, context, t)
 		local nearby_unit = enemy_check_raycasts[read_index + 1]
 
 		if Unit_alive(unit) and Unit_alive(nearby_unit) then
-			local nearby_unit_pos = POSITION_LOOKUP[nearby_unit] or Unit.world_position(nearby_unit, 0)
+			local nearby_unit_pos = Unit.world_position(nearby_unit, 0)
 			local did_hit = not darkness_system:is_in_darkness(nearby_unit_pos) and check_raycast_center(physics_world, unit, nearby_unit)
 
 			if did_hit then
 				local nearby_unit_pos_flat = Vector3.flat(nearby_unit_pos)
-				local position = POSITION_LOOKUP[unit]
+				local position = Unit.local_position(unit, 0)
 				local my_pos_flat = Vector3.flat(position)
 				local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 				local event_data = FrameTable.alloc_table()

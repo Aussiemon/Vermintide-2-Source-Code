@@ -536,7 +536,7 @@ MusicManager._update_boss_music_intensity = function (self, conflict_director)
 		local player_unit = local_player.player_unit
 
 		if Unit.alive(player_unit) then
-			local player_position = POSITION_LOOKUP[player_unit]
+			local player_position = Unit.local_position(player_unit, 0)
 			local boss_units = conflict_director:alive_bosses()
 			local additional_contributing_units = FrameTable.alloc_table()
 
@@ -547,14 +547,14 @@ MusicManager._update_boss_music_intensity = function (self, conflict_director)
 			local min_distance_sq = math.huge
 
 			for _, unit in pairs(boss_units) do
-				local unit_position = POSITION_LOOKUP[unit]
+				local unit_position = Unit.local_position(unit, 0)
 				local distance_sq = Vector3.distance_squared(player_position, unit_position)
 
 				min_distance_sq = distance_sq < min_distance_sq and distance_sq or min_distance_sq
 			end
 
 			for _, unit in pairs(additional_contributing_units) do
-				local unit_position = POSITION_LOOKUP[unit]
+				local unit_position = Unit.local_position(unit, 0)
 				local distance_sq = Vector3.distance_squared(player_position, unit_position)
 
 				min_distance_sq = distance_sq < min_distance_sq and distance_sq or min_distance_sq
@@ -762,7 +762,7 @@ MusicManager._horde_done_spawning = function (self, horde)
 		local player_unit = player.player_unit
 
 		if Unit.alive(player_unit) then
-			pos = POSITION_LOOKUP[player_unit]
+			pos = Unit.local_position(player_unit, 0)
 
 			local num_units = AiUtils.broadphase_query(pos, engage_distance, ai_units)
 

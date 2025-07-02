@@ -444,28 +444,28 @@ DeusMapUI._update_power_ups = function (self)
 					self._widgets_by_name[scenegraph_id] = widget
 				end
 			end
+
+			self._total_num_power_ups = total_num_power_ups
+			self._power_up_widgets = power_up_widgets
+			self._power_ups = power_ups
+			self._party_power_ups = party_power_ups
+
+			local excess = math.ceil(self._total_num_power_ups / 2) * (definitions.power_up_widget_size[2] + definitions.power_up_widget_spacing[2]) - self._ui_scenegraph.own_power_up_window.size[2]
+
+			if excess > 0 then
+				local ui_scenegraph = self._ui_scenegraph
+				local scroll_area_scenegraph_id = "own_power_up_anchor"
+				local scroll_area_anchor_scenegraph_id = "own_power_up_window"
+				local excess_area = excess
+				local enable_auto_scroll = false
+				local optional_scroll_area_hotspot_widget, horizontal_scrollbar
+				local left_aligned = true
+
+				self._scrollbar_ui = ScrollbarUI:new(ui_scenegraph, scroll_area_scenegraph_id, scroll_area_anchor_scenegraph_id, excess_area, enable_auto_scroll, optional_scroll_area_hotspot_widget, horizontal_scrollbar, left_aligned)
+			else
+				self._scrollbar_ui = nil
+			end
 		end
-	end
-
-	self._total_num_power_ups = total_num_power_ups
-	self._power_up_widgets = power_up_widgets
-	self._power_ups = power_ups
-	self._party_power_ups = party_power_ups
-
-	local excess = math.ceil(self._total_num_power_ups / 2) * (definitions.power_up_widget_size[2] + definitions.power_up_widget_spacing[2]) - self._ui_scenegraph.own_power_up_window.size[2]
-
-	if excess > 0 then
-		local ui_scenegraph = self._ui_scenegraph
-		local scroll_area_scenegraph_id = "own_power_up_anchor"
-		local scroll_area_anchor_scenegraph_id = "own_power_up_window"
-		local excess_area = excess
-		local enable_auto_scroll = false
-		local optional_scroll_area_hotspot_widget, horizontal_scrollbar
-		local left_aligned = true
-
-		self._scrollbar_ui = ScrollbarUI:new(ui_scenegraph, scroll_area_scenegraph_id, scroll_area_anchor_scenegraph_id, excess_area, enable_auto_scroll, optional_scroll_area_hotspot_widget, horizontal_scrollbar, left_aligned)
-	else
-		self._scrollbar_ui = nil
 	end
 end
 

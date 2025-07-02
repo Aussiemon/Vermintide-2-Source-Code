@@ -4937,8 +4937,7 @@ UIPasses.auto_layout = {
 	end,
 	update = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, input_service, dt, visible)
 		local min_x, min_y, max_x, max_y = 0, 0, 0, 0
-		local layout_delta_x = ui_style and ui_style.layout_delta_x or 0
-		local layout_delta_x, layout_delta_y = layout_delta_x, ui_style and ui_style.layout_delta_y or 1
+		local layout_delta_x, layout_delta_y = ui_style and ui_style.layout_delta_x or 0, ui_style and ui_style.layout_delta_y or 1
 		local x_correction = layout_delta_x < 0 and 1 or 0
 		local y_correction = layout_delta_y < 0 and 1 or 0
 		local current_pos_x, current_pos_y = 0, 0
@@ -5084,8 +5083,7 @@ UIPasses.auto_layout = {
 		pass_data._size_table[2] = total_height
 
 		local pass_position = Vector3(0, 0, 0)
-		local layout_delta_x = ui_style and ui_style.layout_delta_x or 0
-		local layout_delta_x, layout_delta_y = layout_delta_x, ui_style and ui_style.layout_delta_y or 1
+		local layout_delta_x, layout_delta_y = ui_style and ui_style.layout_delta_x or 0, ui_style and ui_style.layout_delta_y or 1
 		local x_correction = layout_delta_x < 0 and 1 or 0
 		local y_correction = layout_delta_y < 0 and 1 or 0
 		local background_passes = pass_data.background_passes

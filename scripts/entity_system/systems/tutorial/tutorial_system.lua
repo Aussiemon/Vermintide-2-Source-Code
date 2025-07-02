@@ -435,8 +435,7 @@ TutorialSystem.iterate_objective_tooltips = function (self, t, unit, extension, 
 			end
 
 			if objective_units_n > 1 then
-				local vector3_distance_sq = Vector3.distance_squared
-				local unit_position = POSITION_LOOKUP[unit]
+				local unit_position = Unit.local_position(unit, 0)
 
 				sort_unit_position_upvalue = unit_position
 

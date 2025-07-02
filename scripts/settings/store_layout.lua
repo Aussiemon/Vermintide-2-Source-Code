@@ -4,6 +4,7 @@ require("scripts/settings/store_dlc_settings")
 
 if not StoreLayoutConfig then
 	StoreLayoutConfig = {
+		base_filter = "( not is_event_item or is_active_event_item )",
 		menu_options = {
 			"featured",
 			"cosmetics",
@@ -285,8 +286,7 @@ if not StoreLayoutConfig then
 	StoreLayoutConfig.pages.frames = {
 		category_button_texture = "store_category_icon_portrait_frames",
 		display_name = "frame",
-		exclusive_filter = true,
-		item_filter = "item_type == frame and not is_event_item",
+		item_filter = "item_type == frame",
 		layout = "item_list",
 		sort_order = 99,
 		sound_event_enter = "Play_hud_store_category_button",
@@ -691,4 +691,75 @@ end
 
 StoreLayoutConfig.compare_sort_key = function (a, b)
 	return a.sort_key < b.sort_key
+end
+
+StoreLayoutConfig.get_item_filter = function (path, temporary_page_func)
+	local structure = StoreLayoutConfig.structure
+	local pages = StoreLayoutConfig.pages
+	local item_filter = StoreLayoutConfig.base_filter
+	local added_filters = item_filter == "" and 0 or 1
+
+	for index, path_name in ipairs(path) do
+		local page = pages[path_name] or temporary_page_func(path_name)
+		local page_item_filter = page.item_filter
+		local page_exclusive_filter = page.exclusive_filter
+
+		if page_exclusive_filter then
+			item_filter = StoreLayoutConfig.base_filter .. " and " .. page_item_filter
+			added_filters = 1
+		elseif page_item_filter then
+			item_filter = item_filter .. " and " .. page_item_filter
+			added_filters = added_filters + 1
+		end
+
+		if type(structure) == "table" then
+			structure = structure[path_name]
+		end
+	end
+
+	if type(structure) == "table" then
+		local sub_filter = StoreLayoutConfig._get_sub_filter(structure)
+
+		if sub_filter then
+			item_filter = item_filter .. " and ( " .. sub_filter .. " ) "
+		end
+	end
+
+	return item_filter
+end
+
+StoreLayoutConfig._get_sub_filter = function (structure)
+	local pages = StoreLayoutConfig.pages
+	local sub_filter
+
+	for path_name, sub_structure_or_string in pairs(structure) do
+		local page_filter
+		local page = pages[path_name]
+
+		if page then
+			page_filter = page.item_filter
+		end
+
+		if type(sub_structure_or_string) == "table" then
+			local sub_sub_filter = StoreLayoutConfig._get_sub_filter(sub_structure_or_string)
+
+			if sub_sub_filter then
+				if page_filter then
+					page_filter = page_filter .. " and ( " .. sub_sub_filter .. " ) "
+				else
+					page_filter = sub_sub_filter
+				end
+			end
+		end
+
+		if page_filter then
+			if sub_filter then
+				sub_filter = sub_filter .. " or ( " .. page_filter .. " ) "
+			else
+				sub_filter = " ( " .. page_filter .. " ) "
+			end
+		end
+	end
+
+	return sub_filter
 end

@@ -119,7 +119,13 @@ end
 StartGameWindowWeaveList._can_play = function (self)
 	local can_play = self._selected_weave_name ~= nil
 
-	return can_play
+	if not can_play then
+		return false
+	end
+
+	local widget = self._weave_entry_widgets[self._current_index]
+
+	return not widget or not widget.content.locked
 end
 
 StartGameWindowWeaveList._can_set_next_weave = function (self)
@@ -393,6 +399,11 @@ end
 StartGameWindowWeaveList._on_weave_widget_pressed = function (self, widget, ignore_sound)
 	local widgets = self._weave_entry_widgets
 	local selected_widget = widget
+
+	if selected_widget.content.locked then
+		return
+	end
+
 	local selected_content = selected_widget.content
 	local template_id = selected_content.template_id
 
@@ -495,7 +506,7 @@ StartGameWindowWeaveList._populate_list = function (self)
 		if weave_completed or highest_consecutive_unlocked_weave == i then
 			unlocked_weave_templates[i] = true
 
-			if weave_completed and not highest_consecutive_unlocked_weave_found then
+			if weave_completed and not highest_consecutive_unlocked_weave_found or LevelUnlockUtils.weave_disabled(template.name) then
 				if weave_templates[i + 1] then
 					highest_consecutive_unlocked_weave = i + 1
 				end
@@ -511,6 +522,10 @@ StartGameWindowWeaveList._populate_list = function (self)
 			local widget_definition = create_weave_entry_func(#self._weave_entry_widgets + 1, i, template, true)
 			local widget = UIWidget.init(widget_definition)
 
+			if LevelUnlockUtils.weave_disabled(template.name) then
+				widget.content.locked = true
+			end
+
 			self._weave_entry_widgets[#self._weave_entry_widgets + 1] = widget
 			self._weave_entry_widgets_by_name[template.name] = widget
 		end
@@ -519,6 +534,10 @@ StartGameWindowWeaveList._populate_list = function (self)
 	local template = weave_templates[highest_consecutive_unlocked_weave]
 	local widget_definition = create_weave_entry_func(1, highest_consecutive_unlocked_weave, template, false, "next_weave")
 	local widget = UIWidget.init(widget_definition)
+
+	if LevelUnlockUtils.weave_disabled(template.name) then
+		widget.content.locked = true
+	end
 
 	self._next_weave_widget = widget
 

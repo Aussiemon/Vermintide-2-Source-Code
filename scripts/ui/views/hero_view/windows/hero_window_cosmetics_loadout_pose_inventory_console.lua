@@ -858,50 +858,48 @@ HeroWindowCosmeticsLoadoutPoseInventoryConsole._setup_illusions = function (self
 	local widget_definition = create_illusion_button()
 
 	for weapon_skins_rarity, weapon_skins in pairs(weapon_skin_combinations_tables) do
-		if weapon_skins_rarity ~= "magic" then
-			for _, skin in ipairs(weapon_skins) do
-				if not used_skins[skin] then
-					if not rarity_settings[weapon_skins_rarity] then
-						local weapon_skin_data = WeaponSkins.skins[skin]
+		for _, skin in ipairs(weapon_skins) do
+			if not used_skins[skin] then
+				if not rarity_settings[weapon_skins_rarity] then
+					local weapon_skin_data = WeaponSkins.skins[skin]
 
-						weapon_skins_rarity = weapon_skin_data and weapon_skin_data.rarity or weapon_skins_rarity
+					weapon_skins_rarity = weapon_skin_data and weapon_skin_data.rarity or weapon_skins_rarity
+				end
+
+				local unlocked = unlocked_weapon_skins[skin] or skin == default_skin
+				local event_skin_available = true
+				local skin_item = ItemMasterList[skin] or EMPTY_TABLE
+				local event_quest_requirement = skin_item.event_quest_requirement
+
+				if not unlocked and event_quest_requirement then
+					event_skin_available = quest_interface:get_quest_key(event_quest_requirement)
+				end
+
+				if event_skin_available then
+					local icon_texture = "button_illusion_" .. weapon_skins_rarity
+
+					if not UIAtlasHelper.has_texture_by_name(icon_texture) then
+						icon_texture = "button_illusion_default"
 					end
 
-					local unlocked = unlocked_weapon_skins[skin] or skin == default_skin
-					local event_skin_available = true
-					local skin_item = ItemMasterList[skin] or EMPTY_TABLE
-					local event_quest_requirement = skin_item.event_quest_requirement
-
-					if not unlocked and event_quest_requirement then
-						event_skin_available = quest_interface:get_quest_key(event_quest_requirement)
+					if unlocked then
+						num_unlocked_skins = num_unlocked_skins + 1
+					else
+						icon_texture = "button_illusion_locked"
 					end
 
-					if event_skin_available then
-						local icon_texture = "button_illusion_" .. weapon_skins_rarity
+					local widget = UIWidget.init(widget_definition)
 
-						if not UIAtlasHelper.has_texture_by_name(icon_texture) then
-							icon_texture = "button_illusion_default"
-						end
+					widgets[#widgets + 1] = widget
 
-						if unlocked then
-							num_unlocked_skins = num_unlocked_skins + 1
-						else
-							icon_texture = "button_illusion_locked"
-						end
+					local content = widget.content
 
-						local widget = UIWidget.init(widget_definition)
-
-						widgets[#widgets + 1] = widget
-
-						local content = widget.content
-
-						content.skin_key = skin
-						content.icon_texture = icon_texture
-						content.locked = not unlocked
-						content.rarity = weapon_skins_rarity
-						total_width = total_width + spacing + width
-						used_skins[skin] = true
-					end
+					content.skin_key = skin
+					content.icon_texture = icon_texture
+					content.locked = not unlocked
+					content.rarity = weapon_skins_rarity
+					total_width = total_width + spacing + width
+					used_skins[skin] = true
 				end
 			end
 		end

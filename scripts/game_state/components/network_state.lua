@@ -538,3 +538,21 @@ NetworkState.get_unlocked_dlcs_set = function (self, peer_id)
 
 	return self._shared_state:get_peer(peer_id, key)
 end
+
+NetworkState.get_loaded_mutator_map = function (self, peer_id)
+	local key = self._shared_state:get_key("loaded_mutator_map")
+
+	return self._shared_state:get_peer(peer_id, key)
+end
+
+NetworkState.get_own_loaded_mutator_map = function (self)
+	local key = self._shared_state:get_key("loaded_mutator_map")
+
+	return self._shared_state:get_own(key)
+end
+
+NetworkState.set_own_loaded_mutator_map = function (self, mutator_map)
+	local key = self._shared_state:get_key("loaded_mutator_map")
+
+	self._shared_state:set_own(key, mutator_map)
+end

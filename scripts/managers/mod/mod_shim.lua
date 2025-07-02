@@ -244,6 +244,38 @@ ModShim.wedges = {
 				end,
 			},
 		},
+		override_hooks = {
+			{
+				name = "BuffFunctionTemplates.functions.apply_huntsman_activated_ability",
+				func = function (vmf_mod, mod_func, mod_name, hooked_function, ...)
+					if vmf_mod:get(vmf_mod.SETTING_NAMES.HUNTSMAN_VISUAL) then
+						local Unit_flow_event = Unit.flow_event
+						local PlayerUnitFirstPerson_play_remote_hud_sound_event = PlayerUnitFirstPerson.play_remote_hud_sound_event
+						local PlayerBotUnitFirstPerson_play_remote_hud_sound_event = PlayerBotUnitFirstPerson.play_remote_hud_sound_event
+
+						local function nop()
+							return
+						end
+
+						Unit.flow_event = nop
+						PlayerUnitFirstPerson.play_remote_hud_sound_event = nop
+						PlayerBotUnitFirstPerson.play_remote_hud_sound_event = nop
+
+						local result = {
+							hooked_function(...),
+						}
+
+						Unit.flow_event = Unit_flow_event
+						PlayerUnitFirstPerson.play_remote_hud_sound_event = PlayerUnitFirstPerson_play_remote_hud_sound_event
+						PlayerBotUnitFirstPerson.play_remote_hud_sound_event = PlayerBotUnitFirstPerson_play_remote_hud_sound_event
+
+						return unpack(result)
+					else
+						return hooked_function(...)
+					end
+				end,
+			},
+		},
 	},
 }
 ModShim.warnings = ModShim.warnings or {}
@@ -508,11 +540,37 @@ ModShim._handle_hook_overrides = function (self, vmf_mod, mod_name, mod_data, ov
 		repeat
 			local hook = override_hooks[hook_i]
 			local name = hook.name
-			local object_name, method_name = string.match(name, "^([^:.]+)[:.]([^:.]+)$")
-			local object = rawget(_G, object_name)
+			local object = _G
+			local object_name = ""
+			local method_name, prev_separator
+
+			for match, separator in string.gmatch(name, "([^:.]+)([:.]?-?)") do
+				if separator ~= "" then
+					if prev_separator then
+						object_name = object_name .. prev_separator
+					end
+
+					object_name = object_name .. match
+					object = object[match]
+
+					if not object then
+						break
+					end
+				else
+					method_name = match
+				end
+
+				prev_separator = separator
+			end
 
 			if not object then
-				Application.error("[ModShim] Attempting to wedge method '%s' in '%s' for mod '%s' but the object does not exist in the global scope.", method_name, object_name, mod_name)
+				Application.error("[ModShim] Attempting to wedge method '%s' (%s) for mod '%s' but the object '%s' does not exist in the global scope.", method_name, name, mod_name, object_name)
+
+				break
+			end
+
+			if type(object) ~= "table" then
+				Application.error("[ModShim] Attempting to wedge method '%s' (%s) for mod '%s' but the object '%s' is not a table.", method_name, name, mod_name, object_name)
 
 				break
 			end
@@ -520,7 +578,7 @@ ModShim._handle_hook_overrides = function (self, vmf_mod, mod_name, mod_data, ov
 			local method = rawget(object, method_name)
 
 			if not method then
-				Application.error("[ModShim] Attempting to wedge method '%s' in '%s' for mod '%s' but it doesn't exist.", method_name, object_name, mod_name)
+				Application.error("[ModShim] Attempting to wedge method '%s' in '%s' (%s) for mod '%s' but it doesn't exist.", method_name, object_name, name, mod_name)
 
 				break
 			end
@@ -612,7 +670,9 @@ ModShim.mod_post_create = function (self, mod_data)
 				local ok, error = pcall(self._mod_created, self, vmf_mod, mod_name, mod_id)
 
 				if not ok then
-					printf("[ModShim] Error during mod_wedge: %s", error)
+					printf("[ModShim] Error during mod_wedge: %s (%s)", error, table.tostring({
+						...,
+					}))
 					print(Script.callstack())
 				end
 			end,

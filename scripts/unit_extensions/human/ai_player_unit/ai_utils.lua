@@ -1439,7 +1439,7 @@ end
 
 AiUtils.push_intersecting_players = function (unit, source_unit, displaced_units, data, t, dt, hit_func, ...)
 	local self_forward = Quaternion.forward(Unit.local_rotation(unit, 0))
-	local self_pos = POSITION_LOOKUP[unit]
+	local self_pos = Unit.local_position(unit, 0)
 	local push_pos = self_pos + self_forward * data.push_forward_offset
 	local radius = data.push_width * 1.5
 	local dodge_radius = data.dodged_width and data.dodged_width * 1.5
@@ -1458,7 +1458,7 @@ AiUtils.push_intersecting_players = function (unit, source_unit, displaced_units
 					displaced_units[hit_unit] = nil
 				end
 			else
-				local other_pos = POSITION_LOOKUP[hit_unit]
+				local other_pos = Unit.local_position(hit_unit, 0)
 				local to_target = other_pos - push_pos
 
 				if dodge_radius then
@@ -1841,24 +1841,27 @@ AiUtils.calculate_animation_movespeed = function (animation_move_speed_config, u
 	local max_value = animation_move_speed_config[1].value
 	local unit_pos, target_pos = POSITION_LOOKUP[unit], POSITION_LOOKUP[target_unit]
 	local distance_to_target = Vector3.distance(unit_pos, target_pos)
-	local target_locomotion_ext = ScriptUnit.has_extension(target_unit, "locomotion_system")
 
-	if target_locomotion_ext and target_locomotion_ext.current_velocity then
-		local target_vel = target_locomotion_ext:current_velocity()
+	if distance_to_target > math.epsilon then
+		local target_locomotion_ext = ScriptUnit.has_extension(target_unit, "locomotion_system")
 
-		if Vector3.length_squared(target_vel) > 0 then
-			target_vel = target_vel * (1 + (optional_estimated_attack_time or 1))
+		if target_locomotion_ext and target_locomotion_ext.current_velocity then
+			local target_vel = target_locomotion_ext:current_velocity()
 
-			local own_locomotion_ext = ScriptUnit.extension(unit, "locomotion_system")
-			local own_velocity = own_locomotion_ext:current_velocity()
-			local own_speed = Vector3.length(own_velocity)
+			if Vector3.length_squared(target_vel) > 0 then
+				target_vel = target_vel * (1 + (optional_estimated_attack_time or 1))
 
-			if own_speed > 0 then
-				local u = target_vel
-				local v = Vector3.normalize(target_pos - unit_pos) * Vector3.length(target_vel)
-				local projected_velocity = Vector3.dot(u, v) / distance_to_target * v
+				local own_locomotion_ext = ScriptUnit.extension(unit, "locomotion_system")
+				local own_velocity = own_locomotion_ext:current_velocity()
+				local own_speed = Vector3.length(own_velocity)
 
-				distance_to_target = distance_to_target + Vector3.length(projected_velocity / own_speed)
+				if own_speed > 0 then
+					local u = target_vel
+					local v = Vector3.normalize(target_pos - unit_pos) * Vector3.length(target_vel)
+					local projected_velocity = Vector3.dot(u, v) / distance_to_target * v
+
+					distance_to_target = distance_to_target + Vector3.length(projected_velocity / own_speed)
+				end
 			end
 		end
 	end

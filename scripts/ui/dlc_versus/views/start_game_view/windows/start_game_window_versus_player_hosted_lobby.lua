@@ -217,27 +217,35 @@ StartGameWindowVersusPlayerHostedLobby._update_avatars = function (self)
 	end
 end
 
-StartGameWindowVersusPlayerHostedLobby._update_can_play = function (self)
+StartGameWindowVersusPlayerHostedLobby._can_play = function (self)
 	local can_play, reason = true, "tutorial_no_text"
 	local is_player_hosting = self._matchmaking_manager:is_player_hosting()
 
 	if is_player_hosting then
 		local match_handler = self._match_handler
 		local match_owner = match_handler:get_match_owner()
+		local is_match_owner = match_owner == Network.peer_id()
 		local game_mechanism = Managers.mechanism:game_mechanism()
 		local slot_reservation_handler = game_mechanism:get_slot_reservation_handler(match_owner, ReservationHandlerTypes.pending_custom_game) or game_mechanism:get_slot_reservation_handler(match_owner, ReservationHandlerTypes.session)
 		local all_teams_have_members = slot_reservation_handler:all_teams_have_members()
+		local network_server = Managers.state.network.network_server
+		local all_players_joined = is_match_owner and network_server:are_all_peers_ingame(nil, true)
 
-		if not all_teams_have_members then
-			can_play = Development.parameter("allow_versus_force_start_single_player")
+		if not all_teams_have_members and not Development.parameter("allow_versus_force_start_single_player") or not all_players_joined then
+			can_play = false
 			reason = "interaction_action_missing_players"
 		end
-
-		local widgets_by_name = self._widgets_by_name
-
-		widgets_by_name.force_start_button.content.button_hotspot.disable_button = not can_play
-		widgets_by_name.locked_reason.content.text = reason
 	end
+
+	return can_play, reason
+end
+
+StartGameWindowVersusPlayerHostedLobby._update_can_play = function (self)
+	local can_play, reason = self:_can_play()
+	local widgets_by_name = self._widgets_by_name
+
+	widgets_by_name.force_start_button.content.button_hotspot.disable_button = not can_play
+	widgets_by_name.locked_reason.content.text = reason
 end
 
 StartGameWindowVersusPlayerHostedLobby._update_play_button_texture = function (self, gamepad_active)
@@ -305,14 +313,10 @@ end
 StartGameWindowVersusPlayerHostedLobby._handle_input = function (self, t)
 	local input_service = self._parent:window_input_service()
 	local matchmaking_manager = self._matchmaking_manager
-	local match_handler = self._match_handler
-	local match_owner = match_handler:get_match_owner()
-	local game_mechanism = Managers.mechanism:game_mechanism()
-	local slot_reservation_handler = game_mechanism:get_slot_reservation_handler(match_owner, ReservationHandlerTypes.pending_custom_game) or game_mechanism:get_slot_reservation_handler(match_owner, ReservationHandlerTypes.session)
-	local all_teams_have_members = slot_reservation_handler:all_teams_have_members() or Development.parameter("allow_versus_force_start_single_player")
 	local widget = self._widgets_by_name.force_start_button
+	local can_play = self:_can_play()
 
-	if all_teams_have_members and matchmaking_manager:is_player_hosting() and (UIUtils.is_button_pressed(widget) or input_service:get("force_start")) then
+	if can_play and (UIUtils.is_button_pressed(widget) or input_service:get("force_start")) then
 		matchmaking_manager:force_start_game()
 		self._parent:play_sound("versus_hud_player_lobby_searching_for_match")
 	end
@@ -356,6 +360,10 @@ StartGameWindowVersusPlayerHostedLobby._handle_input = function (self, t)
 		if content.empty then
 			if UIUtils.is_button_pressed(panel_widget) then
 				local wanted_party_id = content.team_index
+				local match_handler = self._match_handler
+				local match_owner = match_handler:get_match_owner()
+				local game_mechanism = Managers.mechanism:game_mechanism()
+				local slot_reservation_handler = game_mechanism:get_slot_reservation_handler(match_owner, ReservationHandlerTypes.pending_custom_game) or game_mechanism:get_slot_reservation_handler(match_owner, ReservationHandlerTypes.session)
 
 				slot_reservation_handler:request_party_change(wanted_party_id)
 				self._parent:play_sound("versus_hud_player_lobby_switch_slot")

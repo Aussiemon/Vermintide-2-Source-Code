@@ -826,8 +826,7 @@ InputDebugger.update_selected_filter_edit = function (self, input_service, dt, t
 
 		render_text("Enter new number: " .. current_number_text, Vector3(x_pos, top, 900), normal_color)
 
-		local index = self.number_edit_index or 1
-		local index, mode = index, self.number_edit_mode or ""
+		local index, mode = self.number_edit_index or 1, self.number_edit_mode or ""
 		local keystrokes = Keyboard.keystrokes()
 
 		for i = #keystrokes, 1, -1 do

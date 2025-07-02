@@ -25,12 +25,6 @@ return function ()
 				"inn_keeper",
 			},
 			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"inn_keeper",
-			},
-			{
 				"faction_memory",
 				"temple_lake_crossing_destroy_bell",
 				OP.EQ,
@@ -66,12 +60,6 @@ return function ()
 			{
 				"query_context",
 				"source_name",
-				OP.EQ,
-				"inn_keeper",
-			},
-			{
-				"user_context",
-				"player_profile",
 				OP.EQ,
 				"inn_keeper",
 			},
@@ -142,26 +130,6 @@ return function ()
 				OP.EQ,
 				"inn_keeper",
 			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"inn_keeper",
-			},
-			{
-				"faction_memory",
-				"temple_lake_crossing_start",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"temple_lake_crossing_start",
-				OP.ADD,
-				1,
-			},
 		},
 	})
 	define_rule({
@@ -182,8 +150,8 @@ return function ()
 				"temple_lake_crossing_temple_sighted_no_elf_a",
 			},
 			{
-				"user_context",
-				"player_profile",
+				"query_context",
+				"source_name",
 				OP.EQ,
 				"inn_keeper",
 			},
@@ -238,12 +206,6 @@ return function ()
 				"inn_keeper",
 			},
 			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"inn_keeper",
-			},
-			{
 				"faction_memory",
 				"temple_sanctum_find_waystone_puzzle_area_open",
 				OP.EQ,
@@ -279,12 +241,6 @@ return function ()
 			{
 				"query_context",
 				"source_name",
-				OP.EQ,
-				"inn_keeper",
-			},
-			{
-				"user_context",
-				"player_profile",
 				OP.EQ,
 				"inn_keeper",
 			},
@@ -361,8 +317,8 @@ return function ()
 				"temple_sanctum_find_waystone_puzzle_first_step_b",
 			},
 			{
-				"user_context",
-				"player_profile",
+				"query_context",
+				"source_name",
 				OP.EQ,
 				"inn_keeper",
 			},
@@ -388,12 +344,6 @@ return function ()
 			{
 				"query_context",
 				"source_name",
-				OP.EQ,
-				"inn_keeper",
-			},
-			{
-				"user_context",
-				"player_profile",
 				OP.EQ,
 				"inn_keeper",
 			},
@@ -437,12 +387,6 @@ return function ()
 				"inn_keeper",
 			},
 			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"inn_keeper",
-			},
-			{
 				"faction_memory",
 				"temple_sanctum_find_waystone_puzzle_fragment_three_placed",
 				OP.EQ,
@@ -478,12 +422,6 @@ return function ()
 			{
 				"query_context",
 				"source_name",
-				OP.EQ,
-				"inn_keeper",
-			},
-			{
-				"user_context",
-				"player_profile",
 				OP.EQ,
 				"inn_keeper",
 			},
@@ -528,8 +466,8 @@ return function ()
 				"temple_sanctum_find_waystone_puzzle_start_a_HEARD",
 			},
 			{
-				"user_context",
-				"player_profile",
+				"query_context",
+				"source_name",
 				OP.EQ,
 				"inn_keeper",
 			},
@@ -553,8 +491,8 @@ return function ()
 				"temple_sanctum_find_waystone_puzzle_waystone_complete_a",
 			},
 			{
-				"user_context",
-				"player_profile",
+				"query_context",
+				"source_name",
 				OP.EQ,
 				"inn_keeper",
 			},
@@ -628,8 +566,8 @@ return function ()
 				"temple_start_banter_a",
 			},
 			{
-				"user_context",
-				"player_profile",
+				"query_context",
+				"source_name",
 				OP.EQ,
 				"inn_keeper",
 			},
@@ -663,12 +601,6 @@ return function ()
 				"wood_elf",
 				OP.EQ,
 				0,
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"inn_keeper",
 			},
 			{
 				"faction_memory",

@@ -236,7 +236,7 @@ EndViewStateScore.show_gamercard = function (self, peer_id)
 			Steam.open_url(url)
 		elseif IS_XB1 then
 			if self._context.lobby and self._context.lobby.lobby then
-				local xuid = self._context.lobby.lobby:xuid(peer_id)
+				local xuid = self._context.lobby:xuid(peer_id)
 
 				if xuid then
 					Managers.account:show_player_profile(xuid)

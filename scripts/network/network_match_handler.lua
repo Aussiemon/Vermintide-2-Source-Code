@@ -119,6 +119,7 @@ NetworkMatchHandler.poll_propagation_peer = function (self)
 end
 
 NetworkMatchHandler.rpc_network_match_sync_player_data = function (self, channel_id, peer_id, player_name, leader_peer_id, is_match_owner, versus_level)
+	local from_peer = CHANNEL_TO_PEER_ID[channel_id]
 	local peer_data = self:_try_unstore_data(peer_id) or self:_create_data()
 
 	self._data_by_peer[peer_id] = peer_data
@@ -137,7 +138,7 @@ NetworkMatchHandler.rpc_network_match_sync_player_data = function (self, channel
 	end
 
 	if VERBOSE_LOG then
-		printf("[NetworkMatchHandler] Sync data received for peer %s (%s). has_leader=%s, is_match_owner=%s", peer_id, player_name, leader_peer_id, is_match_owner)
+		printf("[NetworkMatchHandler] Sync data received from peer %s for peer %s (%s). has_leader=%s, is_match_owner=%s", from_peer, peer_id, player_name, leader_peer_id, is_match_owner)
 	end
 
 	local sender_peer_id = CHANNEL_TO_PEER_ID[channel_id]
@@ -171,8 +172,10 @@ NetworkMatchHandler._network_match_changed = function (self, new_match_owner_pee
 		})
 
 		self:_request_sync()
-	else
+	elseif self._is_server then
 		self._data_by_peer[self._my_peer_id].is_match_owner = true
+	else
+		self._data_by_peer[self._server_peer_id].is_match_owner = true
 	end
 
 	if self._is_server then
@@ -186,6 +189,10 @@ NetworkMatchHandler.rpc_network_match_request_sync = function (self, channel_id)
 	local requester_peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
 	printf("[NetworkMatchHandler] Peer %s requested sync", requester_peer_id)
+
+	if VERBOSE_LOG then
+		printf("[NetworkMatchHandler] Own data:\n%s", table.tostring(self._data_by_peer))
+	end
 
 	local requester_data = self._data_by_peer[requester_peer_id]
 
@@ -210,10 +217,11 @@ NetworkMatchHandler.rpc_network_match_request_sync = function (self, channel_id)
 		self:sync_data_up()
 
 		return
+	elseif requester_data.leader_peer_id == my_peer_id then
+		self:sync_data_down_to(requester_peer_id)
+	else
+		self:sync_data_to(requester_peer_id)
 	end
-
-	assert(requester_data.leader_peer_id == my_peer_id, "[NetworkMatchHandler] Only a client of ourselves is expected here")
-	self:sync_data_down_to(requester_peer_id)
 end
 
 NetworkMatchHandler._request_sync = function (self)
@@ -279,6 +287,13 @@ NetworkMatchHandler.sync_data_down_to = function (self, target_peer)
 			RPC.rpc_network_match_sync_player_data(channel_id, peer_id, player_name, leader_peer_id, is_match_owner, peer_data.versus_level)
 		end
 	end
+end
+
+NetworkMatchHandler.sync_data_to = function (self, target_peer)
+	local channel_id = PEER_ID_TO_CHANNEL[target_peer]
+	local my_data = self._data_by_peer[self._my_peer_id]
+
+	RPC.rpc_network_match_sync_player_data(channel_id, self._my_peer_id, my_data.player_name, my_data.leader_peer_id, my_data.is_match_owner, my_data.versus_level)
 end
 
 NetworkMatchHandler.send_rpc_up = function (self, rpc, ...)
@@ -406,7 +421,9 @@ NetworkMatchHandler._clear_non_session_peers = function (self)
 end
 
 NetworkMatchHandler.client_disconnected = function (self, peer_id)
-	self:_store_data(peer_id)
+	if self._data_by_peer[peer_id] then
+		self:_store_data(peer_id)
+	end
 end
 
 NetworkMatchHandler.has_peer_data = function (self, peer_id)
@@ -436,7 +453,12 @@ NetworkMatchHandler._try_unstore_data = function (self, peer_id)
 end
 
 NetworkMatchHandler._store_data = function (self, peer_id)
-	self._stored_data[peer_id] = self._data_by_peer[peer_id]
+	local data = self._data_by_peer[peer_id]
+
+	data.is_synced = DEFAULT_DATA.is_synced
+	data.is_match_owner = DEFAULT_DATA.is_match_owner
+	data.leader_peer_id = DEFAULT_DATA.leader_peer_id
+	self._stored_data[peer_id] = data
 	self._data_by_peer[peer_id] = nil
 end
 

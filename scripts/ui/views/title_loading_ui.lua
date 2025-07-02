@@ -951,13 +951,36 @@ TitleLoadingUI.init = function (self, world, params, force_done)
 	Managers.input:map_device_to_service("title_loading_ui", "keyboard")
 	Managers.input:map_device_to_service("title_loading_ui", "mouse")
 	Managers.input:map_device_to_service("title_loading_ui", "gamepad")
+
+	if first_time_video then
+		Managers.package:load("resource_packages/videos/" .. first_time_video.material_name, "intro_cinematic", callback(self, "cb_cinematic_package_loaded"), true)
+
+		self._loading_packages = true
+	else
+		self:_setup_gui()
+	end
+end
+
+TitleLoadingUI.cb_cinematic_package_loaded = function (self)
+	self._cinematic_package_loaded = true
+
 	self:_setup_gui()
+end
+
+TitleLoadingUI.is_loading_packages = function (self)
+	return self._loading_packages
 end
 
 TitleLoadingUI._setup_gui = function (self)
 	self._ui_renderer = UIRenderer.create(self._world, "material", "materials/ui/ui_1080p_title_screen", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_versus_available_common", "material", "materials/ui/ui_1080p_menu_atlas_textures", "material", first_time_video.video_name, "material", "materials/fonts/gw_fonts")
 
 	self:_create_elements()
+
+	self._loading_packages = nil
+
+	if Managers.transition:loading_icon_active() then
+		Managers.transition:hide_loading_icon()
+	end
 end
 
 TitleLoadingUI._create_elements = function (self)
@@ -1094,6 +1117,10 @@ end
 TitleLoadingUI.update = function (self, dt, t)
 	if DO_RELOAD then
 		self:_create_elements()
+	end
+
+	if not self._ui_renderer then
+		return
 	end
 
 	if not self._startup_settings_done then
@@ -1676,6 +1703,12 @@ TitleLoadingUI._update_input = function (self, dt)
 
 			self._sound_started = false
 		end
+
+		if self._cinematic_package_loaded then
+			Managers.package:unload("resource_packages/videos/" .. first_time_video.material_name, "intro_cinematic")
+
+			self._cinematic_package_loaded = false
+		end
 	else
 		local fraction = math.clamp(progress, 0, 1)
 
@@ -1789,6 +1822,12 @@ TitleLoadingUI._render_video = function (self, dt)
 			if not Managers.transition:loading_icon_active() then
 				Managers.transition:show_loading_icon()
 			end
+
+			if self._cinematic_package_loaded then
+				Managers.package:unload("resource_packages/videos/" .. first_time_video.material_name, "intro_cinematic")
+
+				self._cinematic_package_loaded = false
+			end
 		else
 			if not self._sound_started then
 				if first_time_video.sound_start then
@@ -1806,7 +1845,12 @@ end
 
 TitleLoadingUI.destroy = function (self)
 	self:_stop_subtitles()
-	UIRenderer.destroy(self._ui_renderer, self._world)
+
+	if self._ui_renderer then
+		UIRenderer.destroy(self._ui_renderer, self._world)
+
+		self._ui_renderer = nil
+	end
 
 	if self._sound_started and first_time_video.sound_stop then
 		Managers.music:trigger_event(first_time_video.sound_stop)

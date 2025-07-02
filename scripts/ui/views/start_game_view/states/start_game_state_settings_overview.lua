@@ -124,7 +124,6 @@ StartGameStateSettingsOverview._calculate_current_weave = function (self)
 	local num_entries = #weave_templates
 	local statistics_db = Managers.player:statistics_db()
 	local stats_id = Managers.player:local_player():stats_id()
-	local unlocked_weave_templates = {}
 	local highest_consecutive_unlocked_weave = 1
 	local highest_consecutive_unlocked_weave_found = false
 
@@ -132,9 +131,7 @@ StartGameStateSettingsOverview._calculate_current_weave = function (self)
 		local template = weave_templates[i]
 		local weave_completed = LevelUnlockUtils.weave_unlocked(statistics_db, stats_id, template.name, ignore_dlc_check)
 
-		if weave_completed or highest_consecutive_unlocked_weave == i then
-			unlocked_weave_templates[i] = true
-
+		if (weave_completed or highest_consecutive_unlocked_weave == i) and not LevelUnlockUtils.weave_disabled(template.name) then
 			if weave_completed and not highest_consecutive_unlocked_weave_found then
 				if weave_templates[i + 1] then
 					highest_consecutive_unlocked_weave = i + 1

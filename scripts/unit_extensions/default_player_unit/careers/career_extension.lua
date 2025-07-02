@@ -168,6 +168,16 @@ CareerExtension.extensions_ready = function (self, world, unit)
 		end
 	end
 
+	local mechanism_buffs = Managers.mechanism:mechanism_setting_for_title("base_career_buffs")
+
+	if mechanism_buffs then
+		for i = 1, #mechanism_buffs do
+			local buff = mechanism_buffs[i]
+
+			buff_extension:add_buff(buff)
+		end
+	end
+
 	self._first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 	self._buff_extension = ScriptUnit.extension(unit, "buff_system")
 

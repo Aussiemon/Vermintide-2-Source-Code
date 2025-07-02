@@ -245,6 +245,7 @@ StateDedicatedServer.setup_enemy_package_loader = function (self, game_server, _
 
 	Managers.level_transition_handler.enemy_package_loader:network_context_created(game_server, peer_id, peer_id, network_handler)
 	Managers.level_transition_handler.pickup_package_loader:network_context_created(game_server, peer_id, peer_id, network_handler)
+	Managers.level_transition_handler.general_synced_package_loader:network_context_created(game_server, peer_id, peer_id, network_handler)
 	Managers.level_transition_handler.transient_package_loader:network_context_created(game_server, peer_id, peer_id)
 end
 

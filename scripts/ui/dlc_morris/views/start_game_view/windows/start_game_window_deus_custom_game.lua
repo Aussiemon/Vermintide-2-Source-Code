@@ -127,7 +127,17 @@ StartGameWindowDeusCustomGame._can_play = function (self)
 	local selected_level_id = parent:get_selected_level_id()
 	local can_play = selected_level_id ~= nil and not self._dlc_locked
 
-	return can_play
+	if not can_play then
+		return false
+	end
+
+	if LevelUnlockUtils.is_journey_disabled(selected_level_id) then
+		return false
+	end
+
+	local dominant_god = self._journey_cycle.journey_data[selected_level_id].dominant_god
+
+	return not LevelUnlockUtils.is_chaos_waste_god_disabled(dominant_god)
 end
 
 StartGameWindowDeusCustomGame._update_can_play = function (self)
@@ -156,6 +166,15 @@ StartGameWindowDeusCustomGame._gather_unlocked_journeys = function (self)
 
 	for _, journey_name in ipairs(LevelUnlockUtils.unlocked_journeys(self._statistics_db, self._stats_id)) do
 		unlocked_journeys[journey_name] = true
+	end
+
+	local journey_cycle = self._backend_deus:get_journey_cycle()
+	local journey_data = journey_cycle.journey_data
+
+	for k, _ in pairs(unlocked_journeys) do
+		if LevelUnlockUtils.is_chaos_waste_god_disabled(journey_data[k].dominant_god) then
+			unlocked_journeys[k] = nil
+		end
 	end
 
 	self._unlocked_journeys = unlocked_journeys

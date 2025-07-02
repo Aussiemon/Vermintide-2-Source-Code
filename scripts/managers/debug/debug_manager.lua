@@ -186,6 +186,10 @@ DebugManager.update = function (self, dt, t)
 		Managers.level_transition_handler.pickup_package_loader:debug_loaded_pickups()
 	end
 
+	if script_data.debug_general_synced_package_loader then
+		Managers.level_transition_handler.general_synced_package_loader:debug_loaded_packages()
+	end
+
 	self:_update_bot_behavior_debug()
 	self:_update_actor_draw(dt)
 

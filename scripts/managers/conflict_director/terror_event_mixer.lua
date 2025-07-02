@@ -57,6 +57,7 @@ TerrorEventMixer = TerrorEventMixer or {}
 local TerrorEventMixer = TerrorEventMixer
 
 TerrorEventMixer.active_events = TerrorEventMixer.active_events or {}
+TerrorEventMixer.active_event_i = -1
 TerrorEventMixer.start_event_list = TerrorEventMixer.start_event_list or {}
 TerrorEventMixer.finished_events = TerrorEventMixer.finished_events or {}
 TerrorEventMixer.optional_data = TerrorEventMixer.optional_data or {}
@@ -1815,10 +1816,12 @@ TerrorEventMixer.stop_event = function (event_name)
 		local event = active_events[i]
 
 		if event.name == event_name then
-			active_events[i] = active_events[num_events]
-			active_events[num_events] = nil
-
+			table.remove(active_events, i)
 			table.insert(TerrorEventMixer.finished_events, event.name)
+
+			if i <= TerrorEventMixer.active_event_i then
+				TerrorEventMixer.active_event_i = TerrorEventMixer.active_event_i - 1
+			end
 
 			break
 		end
@@ -1867,30 +1870,22 @@ end
 
 TerrorEventMixer.update = function (t, dt, gui)
 	local active_events = TerrorEventMixer.active_events
-	local num_events = #active_events
-	local num_events_at_start_of_update = num_events
-	local i = 1
 
-	while i <= num_events do
-		local event = active_events[i]
+	TerrorEventMixer.active_event_i = 1
 
-		if not event then
-			printf("TerrorEventMixer.update -> nil event, num_events: %d num_events_at_start_of_update: %d i:%d", num_events, num_events_at_start_of_update, i)
-			table.dump(active_events, "active_events")
-		end
-
+	while TerrorEventMixer.active_event_i <= #active_events do
+		local event = active_events[TerrorEventMixer.active_event_i]
 		local event_completed = TerrorEventMixer.run_event(event, t, dt)
 
-		if event_completed then
-			active_events[i] = active_events[num_events]
-			active_events[num_events] = nil
-			num_events = num_events - 1
-
+		if event_completed and TerrorEventMixer.find_event(event.name) then
+			table.remove(active_events, TerrorEventMixer.active_event_i)
 			table.insert(TerrorEventMixer.finished_events, event.name)
 		else
-			i = i + 1
+			TerrorEventMixer.active_event_i = TerrorEventMixer.active_event_i + 1
 		end
 	end
+
+	TerrorEventMixer.active_event_i = -1
 
 	local start_events = TerrorEventMixer.start_event_list
 

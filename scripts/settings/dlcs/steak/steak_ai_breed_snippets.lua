@@ -105,7 +105,7 @@ AiBreedSnippets.on_beastmen_minotaur_update = function (unit, blackboard, t)
 			end
 		elseif t > blackboard.charge_astar_timer then
 			local nav_world = blackboard.nav_world
-			local target_position = POSITION_LOOKUP[blackboard.target_unit]
+			local target_position = Unit.local_position(blackboard.target_unit, 0)
 			local success, z = GwNavQueries.triangle_from_position(nav_world, target_position, 1, 1)
 
 			if success then
@@ -113,7 +113,7 @@ AiBreedSnippets.on_beastmen_minotaur_update = function (unit, blackboard, t)
 				local width = 7
 				local new_astar = blackboard.navigation_extension:get_reusable_astar("charge")
 
-				GwNavAStar.start_with_propagation_box(new_astar, nav_world, POSITION_LOOKUP[unit], wanted_position, width, traverse_logic)
+				GwNavAStar.start_with_propagation_box(new_astar, nav_world, Unit.local_position(unit, 0), wanted_position, width, traverse_logic)
 
 				blackboard.charge_astar_timer = t + 1
 			else

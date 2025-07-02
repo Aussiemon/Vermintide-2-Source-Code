@@ -2029,6 +2029,10 @@ function flow_callback_start_tutorial_intro_text(params)
 end
 
 function flow_callback_start_mission(params)
+	if not Managers.state.network or not Managers.state.network:game() then
+		return
+	end
+
 	local mission_name = params.mission_name
 
 	fassert(mission_name, "[flow_callback_start_mission] No mission name passed")

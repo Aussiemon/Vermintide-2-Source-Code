@@ -248,23 +248,52 @@ PeerStates.Loading = {
 
 		local enemies_are_loaded = Managers.level_transition_handler.enemy_package_loader:load_sync_done_for_peer(self.peer_id)
 		local pickups_are_loaded = Managers.level_transition_handler.pickup_package_loader:load_sync_done_for_peer(self.peer_id)
+		local general_packages_loaded = Managers.level_transition_handler.general_synced_package_loader:load_sync_done_for_peer(self.peer_id)
 
-		if enemies_are_loaded and pickups_are_loaded then
+		if enemies_are_loaded and pickups_are_loaded and general_packages_loaded then
 			printf("Peer %s has loaded the level and all enemies and pickups are loaded", self.peer_id)
 		else
-			printf("Peer %s has loaded the level but we wait because: Enemies loaded (%s), Pickups loaded (%s)", self.peer_id, enemies_are_loaded, pickups_are_loaded)
+			printf("Peer %s has loaded the level but we wait because: Enemies loaded (%s), Pickups loaded (%s), General packages loaded: (%s)", self.peer_id, enemies_are_loaded, pickups_are_loaded, general_packages_loaded)
 		end
 	end,
+	rpc_provide_slot_reservation_info = function (self, peers, group_leader)
+		local mechanism_manager = Managers.mechanism
+		local slot_reservation_handler = mechanism_manager:get_slot_reservation_handler(self.server.my_peer_id, ReservationHandlerTypes.session)
+
+		slot_reservation_handler:connecting_slot_reservation_info_received(self.peer_id, peers, group_leader)
+	end,
 	update = function (self, dt)
+		if self.is_remote then
+			local mechanism_manager = Managers.mechanism
+			local pending_custom_game_srh = mechanism_manager:get_slot_reservation_handler(self.server.my_peer_id, ReservationHandlerTypes.pending_custom_game)
+
+			if pending_custom_game_srh then
+				local session_srh = mechanism_manager:get_slot_reservation_handler(self.server.my_peer_id, ReservationHandlerTypes.session)
+				local reservation_status = session_srh:handle_slot_reservation_for_connecting_peer(self, dt)
+
+				if reservation_status == SlotReservationConnectStatus.FAILED then
+					printf("[PSM] Failed to reserve joining player (%s) while hosting a custom game", self.peer_id)
+					self.server:disconnect_peer(self.peer_id, "host_has_no_backend_connection")
+
+					return PeerStates.Disconnecting
+				end
+
+				if reservation_status ~= SlotReservationConnectStatus.SUCCEEDED then
+					return
+				end
+			end
+		end
+
 		local level_transition_handler = Managers.level_transition_handler
 		local level_key = level_transition_handler:get_current_level_key()
 
 		if self.loaded_level == level_key then
 			local enemies_are_loaded = level_transition_handler.enemy_package_loader:load_sync_done_for_peer(self.peer_id)
 			local pickups_are_loaded = level_transition_handler.pickup_package_loader:load_sync_done_for_peer(self.peer_id)
+			local general_packages_loaded = level_transition_handler.general_synced_package_loader:load_sync_done_for_peer(self.peer_id)
 			local state_determined, can_play = Managers.eac:server_check_peer(self.peer_id)
 
-			if enemies_are_loaded and pickups_are_loaded and state_determined and can_play then
+			if enemies_are_loaded and pickups_are_loaded and general_packages_loaded and state_determined and can_play then
 				return PeerStates.LoadingProfilePackages
 			end
 		end
@@ -328,7 +357,7 @@ PeerStates.LoadingProfilePackages = {
 }
 
 local function _has_ongoing_resync(network_server, peer_id)
-	local ongoing_resync = not network_server:are_profile_packages_fully_synced_for_peer(peer_id) or not Managers.level_transition_handler.enemy_package_loader:load_sync_done_for_peer(peer_id) or not Managers.level_transition_handler.pickup_package_loader:load_sync_done_for_peer(peer_id)
+	local ongoing_resync = not network_server:are_profile_packages_fully_synced_for_peer(peer_id) or not Managers.level_transition_handler.enemy_package_loader:load_sync_done_for_peer(peer_id) or not Managers.level_transition_handler.pickup_package_loader:load_sync_done_for_peer(peer_id) or not Managers.level_transition_handler.general_synced_package_loader:load_sync_done_for_peer(peer_id)
 
 	return ongoing_resync
 end

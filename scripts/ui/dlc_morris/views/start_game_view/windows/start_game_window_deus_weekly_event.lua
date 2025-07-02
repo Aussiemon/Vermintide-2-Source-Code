@@ -55,6 +55,7 @@ StartGameWindowDeusWeeklyEvent._fetch_event_data = function (self)
 	local rewards = live_event_interface:get_weekly_chaos_wastes_rewards_data() or EMPTY_TABLE
 
 	self._refresh_time = os.time(os.date("!*t", information.end_timestamp / 1000))
+	self._weekly_journey_name = game_mode_data and game_mode_data.journey_name
 
 	local widget_definition = create_weekly_event_information_box(game_mode_data)
 	local widget = UIWidget.init(widget_definition)
@@ -250,7 +251,7 @@ StartGameWindowDeusWeeklyEvent._evaluate_rewards = function (self, data, difficu
 
 		reward_data.collected = claimed or unlocked_weapon_skins[item_name] ~= nil
 
-		local item = item_name and ItemMasterList[item_name]
+		local item = WeaponSkins.skins[item_name] or ItemMasterList[item_name]
 
 		reward_data.desc = Localize(item and item.display_name or "lb_unkown")
 		reward_data.icon = item and item.inventory_icon or "icons_placeholder"
@@ -529,8 +530,13 @@ end
 
 StartGameWindowDeusWeeklyEvent._can_play = function (self)
 	local selected_difficulty_key = self._current_difficulty
+	local can_play = selected_difficulty_key ~= nil and not self._dlc_locked
 
-	return selected_difficulty_key ~= nil and not self._dlc_locked
+	if not can_play then
+		return false
+	end
+
+	return self._weekly_journey_name and not LevelUnlockUtils.is_journey_disabled(self._weekly_journey_name)
 end
 
 StartGameWindowDeusWeeklyEvent._set_info_window = function (self, difficulty_key)

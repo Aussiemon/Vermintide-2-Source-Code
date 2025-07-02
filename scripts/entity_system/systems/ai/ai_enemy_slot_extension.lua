@@ -85,7 +85,7 @@ AIEnemySlotExtension._improve_slot_position = function (self, self_unit, t, nav_
 		return
 	end
 
-	local ai_unit_position = POSITION_LOOKUP[self_unit]
+	local ai_unit_position = Unit.local_position(self_unit, 0)
 
 	if in_queue then
 		self.wait_slot_distance = Vector3_distance(new_position, ai_unit_position) or math.huge
@@ -101,7 +101,7 @@ AIEnemySlotExtension._improve_slot_position = function (self, self_unit, t, nav_
 end
 
 AIEnemySlotExtension._improve_ai_slot_position = function (self, self_unit, t, nav_world, target_unit)
-	local ai_unit_position = POSITION_LOOKUP[self_unit]
+	local ai_unit_position = Unit.local_position(self_unit, 0)
 	local new_position
 
 	if USE_ENGINE_SLOID_SYSTEM then
@@ -329,7 +329,7 @@ AIEnemySlotExtension._update_target = function (self, target_unit)
 		return
 	end
 
-	local target_unit_position = POSITION_LOOKUP[target_unit]
+	local target_unit_position = Unit.local_position(target_unit, 0)
 
 	self.target_position:store(target_unit_position)
 end
@@ -408,8 +408,8 @@ AIEnemySlotExtension.on_ai_slot_gained = function (self, defender_unit, system)
 
 	local unit = self.unit
 	local blackboard = BLACKBOARDS[unit]
-	local defender_pos = POSITION_LOOKUP[defender_unit]
-	local attacker_pos = POSITION_LOOKUP[unit]
+	local defender_pos = Unit.local_position(defender_unit, 0)
+	local attacker_pos = Unit.local_position(unit, 0)
 	local infighting = target_blackboard.breed.infighting
 	local distance = USE_ENGINE_SLOID_SYSTEM and 3 or infighting.distance or 2
 	local attacker_infighting = blackboard.breed.infighting

@@ -308,7 +308,7 @@ LevelEndViewWeave.get_hero_from_score = function (self, player_data)
 	local profile_data = SPProfiles[profile_index]
 	local careers = profile_data.careers
 	local career_settings = careers[career_index]
-	local weapon_pose_weapon, weapon_pose_slot, weapon_pose_anim_event
+	local weapon_pose_anim_event, weapon_pose_weapon, weapon_pose_slot
 	local weapon_pose = player_data.weapon_pose and player_data.weapon_pose.item_name
 
 	if weapon_pose then

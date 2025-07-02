@@ -110,6 +110,24 @@ StartGameWindowMutatorGridConsole.on_enter = function (self, params, offset)
 	item_grid:change_category("heroic_deeds")
 	item_grid:disable_item_drag()
 	item_grid:apply_item_sorting_function(item_sort_func)
+
+	local override_levels = Managers.mechanism and Managers.mechanism:mechanism_setting_for_title("override_levels")
+
+	if override_levels then
+		local items = item_grid:items()
+
+		for i = 1, #items do
+			local item = items[i]
+
+			if override_levels[item.level_key] == false then
+				item_grid:lock_item_by_id(item.backend_id, true)
+			end
+		end
+
+		item_grid:mark_locked_items(true)
+		item_grid:disable_locked_items(true)
+	end
+
 	self:_setup_input_buttons()
 
 	self._item_grid = item_grid

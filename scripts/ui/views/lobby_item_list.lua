@@ -571,6 +571,12 @@ local function level_is_locked(lobby_data)
 		if not weave_quick_game then
 			local ignore_dlc_check = false
 			local weave_name = mission_id
+			local weave_disabled = LevelUnlockUtils.weave_disabled(weave_name)
+
+			if weave_disabled then
+				return true
+			end
+
 			local weave_unlocked = LevelUnlockUtils.weave_unlocked(statistics_db, player_stats_id, weave_name, ignore_dlc_check)
 
 			if weave_unlocked then

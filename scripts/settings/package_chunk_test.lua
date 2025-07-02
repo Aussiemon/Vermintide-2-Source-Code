@@ -233,6 +233,7 @@ PackageChunkPackages = {
 	"resource_packages/dlcs/anniversary_2025",
 	"resource_packages/dlcs/skulls_2025",
 	"resource_packages/dlcs/versus_rewards",
+	"resource_packages/videos/vermintide_2_prologue_intro",
 	"units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_mesh",
 	"units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
 	"units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_mesh",

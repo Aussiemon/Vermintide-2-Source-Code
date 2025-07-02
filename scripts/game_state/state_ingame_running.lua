@@ -195,7 +195,9 @@ StateInGameRunning.on_enter = function (self, params)
 
 		quickplay_bonus = lobby:lobby_data("weave_quick_game") == "true"
 
-		Managers.venture.quickplay:set_is_weave_quick_game()
+		if quickplay_bonus then
+			Managers.venture.quickplay:set_is_weave_quick_game()
+		end
 	end
 
 	if self.game_mode_key == "weave" or self.game_mode_key == "versus" then

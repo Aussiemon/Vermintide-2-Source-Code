@@ -830,7 +830,7 @@ local function check_to_release_slot(slot)
 	local release_slot_lock = ai_unit_extension.release_slot_lock
 
 	if not release_slot_lock then
-		local ai_unit_position = POSITION_LOOKUP[ai_unit]
+		local ai_unit_position = Unit.local_position(ai_unit, 0)
 
 		if ai_unit_position then
 			local slot_position = slot.absolute_position:unbox()
@@ -1087,7 +1087,7 @@ AIPlayerSlotExtension.update_target_slots = function (self, t, all_slot_proviers
 	end
 
 	local self_unit = self.unit
-	local real_target_unit_position = POSITION_LOOKUP[self_unit]
+	local real_target_unit_position = Unit.local_position(self_unit, 0)
 	local target_unit_position = is_on_ladder and real_target_unit_position or AISlotUtils.get_target_pos_on_navmesh(real_target_unit_position, nav_world)
 	local target_unit_position_known = self.position:unbox()
 	local outside_navmesh_at_t = self.outside_navmesh_at_t
@@ -1275,7 +1275,7 @@ AIPlayerSlotExtension._update_anchor_slot_position = function (self, slot, shoul
 	local locomotion_ext = self._locomotion_ext
 	local target_position = self.position:unbox()
 	local ai_unit = slot.ai_unit
-	local ai_position = ai_unit and POSITION_LOOKUP[ai_unit]
+	local ai_position = ai_unit and Unit.local_position(ai_unit, 0)
 	local direction_vector = ai_unit and Vector3_normalize(ai_position - target_position) or Vector3.forward()
 	local slot_type = slot.type
 	local slot_distance = SlotTypeSettings[slot_type].distance
@@ -1462,7 +1462,7 @@ local function get_slot_queue_position(slot, nav_world, distance_modifier, t)
 	end
 
 	local target_unit_position = target_unit_extension.position:unbox()
-	local ai_unit_position = POSITION_LOOKUP[ai_unit]
+	local ai_unit_position = Unit.local_position(ai_unit, 0)
 	local slot_queue_direction = slot.queue_direction:unbox()
 	local slot_queue_distance_modifier = distance_modifier or 0
 	local target_to_ai_distance = Vector3_distance(target_unit_position, ai_unit_position)
@@ -1561,7 +1561,7 @@ AIPlayerSlotExtension.debug_draw = function (self, drawer, t, nav_world, i_targe
 						local slot_position = slot.original_absolute_position:unbox()
 
 						if ALIVE[ai_unit] then
-							local ai_unit_position = POSITION_LOOKUP[ai_unit]
+							local ai_unit_position = Unit.local_position(ai_unit, 0)
 
 							drawer:circle(ai_unit_position + z, 0.35, Vector3.up(), color)
 							drawer:circle(ai_unit_position + z, 0.3, Vector3.up(), color)
@@ -1614,7 +1614,7 @@ AIPlayerSlotExtension.debug_draw = function (self, drawer, t, nav_world, i_targe
 
 							for k = 1, queue_n do
 								local ai_unit_waiting = queue[k].unit
-								local ai_unit_position = POSITION_LOOKUP[ai_unit_waiting]
+								local ai_unit_position = Unit.local_position(ai_unit_waiting, 0)
 
 								if ai_unit_position then
 									drawer:circle(ai_unit_position + z, 0.35, Vector3.up(), color)
@@ -1758,7 +1758,7 @@ end
 TEST_SLOT = 0
 
 AIPlayerSlotExtension._get_best_slot = function (self, attacker_unit, slot_type, skip_slots_behind_target, avoid_slots_behind_overwhelmed_target)
-	local ai_unit_position = POSITION_LOOKUP[attacker_unit]
+	local ai_unit_position = Unit.local_position(attacker_unit, 0)
 	local target_unit_position = self.position:unbox()
 	local slot_data = self.all_slots[slot_type]
 	local target_slots = slot_data.slots
@@ -1796,7 +1796,7 @@ AIPlayerSlotExtension._get_best_slot = function (self, attacker_unit, slot_type,
 					if slot_owner == attacker_unit then
 						slot_score = slot_distance + OWNER_STICKY_VALUE
 					elseif slot.released then
-						local current_owner_position = POSITION_LOOKUP[slot_owner]
+						local current_owner_position = Unit.local_position(slot_owner, 0)
 						local owner_distance = Vector3_distance_sq(slot_position, current_owner_position) + RELEASED_OWNER_DISTANCE_MODIFIER
 
 						if slot_distance < owner_distance then
@@ -1821,7 +1821,7 @@ AIPlayerSlotExtension._get_best_slot = function (self, attacker_unit, slot_type,
 end
 
 AIPlayerSlotExtension._get_best_slot_to_wait_on = function (self, attacker_unit, slot_type, skip_slots_behind_target, avoid_slots_behind_overwhelmed_target, nav_world, t)
-	local ai_unit_position = POSITION_LOOKUP[attacker_unit]
+	local ai_unit_position = Unit.local_position(attacker_unit, 0)
 	local target_unit_position = self.position:unbox()
 	local all_slots = self.all_slots
 	local slot_data = all_slots[slot_type]
@@ -1866,7 +1866,7 @@ end
 AIPlayerSlotExtension._update_slot = function (self, slot, attacker_unit, nav_world, traverse_logic)
 	check_to_release_slot(slot)
 
-	local ai_unit_position = POSITION_LOOKUP[attacker_unit]
+	local ai_unit_position = Unit.local_position(attacker_unit, 0)
 	local target_unit_position = self.position:unbox()
 	local slot_behind_target = slot_is_behind_target(slot, ai_unit_position, target_unit_position)
 
@@ -1913,7 +1913,7 @@ AIPlayerSlotExtension.request_best_slot = function (self, slot_consumer_ext, ski
 		self:_update_slot(slot, attacker_unit, nav_world, traverse_logic)
 	else
 		local previous_slot, currently_in_queue = slot_consumer_ext:get_current_slot()
-		local ai_unit_position = POSITION_LOOKUP[attacker_unit]
+		local ai_unit_position = Unit.local_position(attacker_unit, 0)
 		local target_unit_position = self.position:unbox()
 		local currently_holds_a_slot = not currently_in_queue and previous_slot and previous_slot.owner_extension == self
 		local is_behind_target = previous_slot and slot_is_behind_target(previous_slot, ai_unit_position, target_unit_position)
@@ -1970,7 +1970,7 @@ AIPlayerSlotExtension.get_destination = function (self, slot_consumer_ext, slot,
 		end
 	else
 		local ai_unit = slot_consumer_ext.unit
-		local ai_unit_position = POSITION_LOOKUP[ai_unit]
+		local ai_unit_position = Unit.local_position(ai_unit, 0)
 		local distance_modifier = slot.queue[1] == slot_consumer_ext and -0.5 or 0.5
 		local slot_queue_position = get_slot_queue_position(slot, nav_world, distance_modifier, t)
 		local above_limit = SLOT_QUEUE_RANDOM_POS_MAX_UP

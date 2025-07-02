@@ -622,6 +622,12 @@ StartGameWindowLobbyBrowserConsole.is_lobby_joinable = function (self, lobby_dat
 	if mechanism == "weave" then
 		if mission_id ~= "false" and not weave_quick_game then
 			local weave_name = mission_id
+			local weave_disabled = LevelUnlockUtils.weave_disabled(weave_name)
+
+			if weave_disabled then
+				return false, "weave_disabled"
+			end
+
 			local ignore_dlc_check = false
 			local weave_unlocked = LevelUnlockUtils.weave_unlocked(statistics_db, player_stats_id, weave_name, ignore_dlc_check) or weave_name == self._current_weave
 

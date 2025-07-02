@@ -315,35 +315,8 @@ StoreWindowCategoryItemList._update_item_list = function (self)
 	local pages = StoreLayoutConfig.pages
 	local product_type = "item"
 	local layout = {}
-	local item_filter = ""
-	local added_filters = 0
-
-	for index, path_name in ipairs(path) do
-		local page = pages[path_name] or self._parent:get_temporary_page(path_name)
-		local page_item_filter = page.item_filter
-		local page_exclusive_filter = page.exclusive_filter
-
-		if page_exclusive_filter then
-			item_filter = page_item_filter
-			added_filters = 1
-		elseif page_item_filter then
-			if added_filters > 0 then
-				item_filter = item_filter .. " and "
-			end
-
-			item_filter = item_filter .. page_item_filter
-			added_filters = added_filters + 1
-		end
-	end
-
-	local items
-
-	if added_filters > 0 then
-		items = self:_get_items_by_filter(item_filter)
-	else
-		items = self:_get_all_items()
-	end
-
+	local item_filter = StoreLayoutConfig.get_item_filter(path, callback(self._parent.get_temporary_page, self))
+	local items = self:_get_items_by_filter(item_filter)
 	local insert_index = 0
 
 	for backend_id, item in pairs(items) do

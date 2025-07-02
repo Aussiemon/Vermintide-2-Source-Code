@@ -75,9 +75,6 @@ FlowHelperManager.register_line_of_sight_check = function (self, owner_unit, sou
 	local source_checks = los_checks[owner_unit] or {}
 
 	los_checks[owner_unit] = source_checks
-
-	assert(not source_checks[unit_to_check], "[FlowHelperManager] Registering line of sight check between unit '%s' and '%s' without unregistering the previous one.")
-
 	source_checks[unit_to_check] = {
 		is_in_los = false,
 		last_t = 0,

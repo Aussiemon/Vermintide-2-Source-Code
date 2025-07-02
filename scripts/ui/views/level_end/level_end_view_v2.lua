@@ -284,18 +284,98 @@ LevelEndView._get_hero_from_score = function (self, player_data)
 		end
 	end
 
+	local verfied_weapon_slot, verified_weapon, verified_weapon_pose = self:_verify_weapon_data(player_data, weapon_pose_slot or player_data.weapon and career_settings.preview_wield_slot or nil, weapon_pose_weapon or player_data.weapon, weapon_pose_anim_event)
+
 	return {
 		profile_index = profile_index,
 		career_index = career_index,
 		hero_name = career_settings.profile_name,
 		skin_name = player_data.hero_skin,
-		weapon_slot = weapon_pose_slot or player_data.weapon and career_settings.preview_wield_slot or nil,
-		weapon_pose_anim_event = weapon_pose_anim_event,
+		weapon_slot = verfied_weapon_slot,
+		weapon_pose_anim_event = verified_weapon_pose,
 		preview_items = {
 			player_data.hat,
-			weapon_pose_weapon or player_data.weapon,
+			verified_weapon,
 		},
 	}
+end
+
+local EMPTY_TABLE = {}
+
+LevelEndView._verify_weapon_data = function (self, player_data, weapon_slot, weapon, weapon_pose_anim)
+	local profile_index = player_data.profile_index
+	local career_index = player_data.career_index
+	local profile_data = SPProfiles[profile_index]
+	local careers = profile_data.careers
+	local career_settings = careers[career_index]
+	local career_name = career_settings.name
+	local verified_weapon_slot = career_settings.preview_wield_slot
+	local verified_weapon = {
+		item_name = career_settings.preview_items[1],
+	}
+	local verfied_pose_anim
+
+	if not weapon or weapon and not weapon.item_name then
+		print(string.format("[LevelEndView] No preview weapon was set - using DEFAULT for %s with peer_id: %s", player_data.name, player_data.peer_id))
+
+		return verified_weapon_slot, verified_weapon, verfied_pose_anim
+	end
+
+	local backend_common = Managers.backend:get_interface("common")
+	local item_data = rawget(ItemMasterList, weapon.item_name)
+
+	if not backend_common:can_wield(career_name, item_data) then
+		print(string.format("[LevelEndView] %q is not wieldable by %s  - using DEFAULT for %s with peer_id: %s", weapon.item_name, career_name, player_data.name, player_data.peer_id))
+
+		return verified_weapon_slot, verified_weapon, verfied_pose_anim
+	end
+
+	if item_data.slot_type ~= weapon_slot then
+		return verified_weapon_slot, verified_weapon, verfied_pose_anim
+	end
+
+	verified_weapon_slot = weapon_slot
+	verified_weapon.item_name = weapon.item_name
+
+	local weapon_skin_verfied = false
+	local skin_name = weapon.skin_name
+
+	if skin_name then
+		local skin_combination_table = item_data.skin_combination_table
+		local weapon_skin_combinations_tables = WeaponSkins.skin_combinations[skin_combination_table] or EMPTY_TABLE
+
+		for _, weapon_skins in pairs(weapon_skin_combinations_tables) do
+			for _, skin in ipairs(weapon_skins) do
+				if skin == skin_name then
+					weapon_skin_verfied = true
+
+					break
+				end
+			end
+
+			if weapon_skin_verfied then
+				break
+			end
+		end
+
+		verified_weapon.skin_name = weapon_skin_verfied and skin_name
+	end
+
+	local weapon_item_type = string.gsub(item_data.name, "^vs_", "")
+
+	if item_data.rarity == "magic" then
+		weapon_item_type = string.gsub(weapon_item_type, "_magic_0%d$", "")
+	end
+
+	local package_name = "resource_packages/pose_packages/" .. weapon_item_type
+
+	if Application.can_get("package", package_name) then
+		verfied_pose_anim = weapon_pose_anim
+	else
+		verfied_pose_anim = nil
+	end
+
+	return verified_weapon_slot, verified_weapon, verfied_pose_anim
 end
 
 LevelEndView._destroy_team_previewer = function (self)
@@ -329,6 +409,26 @@ LevelEndView._setup_team_previewer = function (self)
 	local hero_locations = self:_gather_hero_locations()
 
 	self._team_previewer:setup_team(team_data, hero_locations)
+end
+
+LevelEndView._handle_global_shader_flags = function (self)
+	local necromancer_shader_flag_active = false
+
+	for _, data in pairs(self._team_heroes) do
+		local profile_index = data.profile_index
+		local career_index = data.career_index
+		local profile = SPProfiles[profile_index]
+		local career = profile.careers[career_index]
+		local career_name = career.name
+
+		if career_name == "bw_necromancer" then
+			necromancer_shader_flag_active = true
+
+			break
+		end
+	end
+
+	GlobalShaderFlags.set_global_shader_flag("NECROMANCER_CAREER_REMAP", necromancer_shader_flag_active)
 end
 
 LevelEndView.draw_weave_widgets = function (self, dt, input_service)
@@ -438,6 +538,8 @@ LevelEndView._update_fade = function (self, dt, t)
 		Managers.transition:fade_out(2)
 
 		self._fade_out_triggered = true
+
+		self:_handle_global_shader_flags()
 	end
 end
 

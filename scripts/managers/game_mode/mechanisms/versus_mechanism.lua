@@ -1206,7 +1206,7 @@ VersusMechanism._get_chat_members = function (self, party_id)
 	local match_handler = self._network_handler:get_match_handler()
 	local reservation_handler = self:get_slot_reservation_handler(match_handler:get_match_owner(), ReservationHandlerTypes.pending_custom_game) or self:get_slot_reservation_handler(match_handler:get_match_owner(), ReservationHandlerTypes.session)
 
-	if self._network_handler and is_player_hosting(self._network_handler) then
+	if reservation_handler and self._network_handler and is_player_hosting(self._network_handler) then
 		local peers = reservation_handler:peers_by_party(party_id)
 
 		table.append(_members_list, peers)

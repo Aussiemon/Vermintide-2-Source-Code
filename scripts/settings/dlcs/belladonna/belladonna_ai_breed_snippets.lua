@@ -59,7 +59,7 @@ AiBreedSnippets.on_beastmen_bestigor_update = function (unit, blackboard, t)
 			end
 		elseif t > blackboard.charge_astar_timer then
 			local nav_world = blackboard.nav_world
-			local target_position = POSITION_LOOKUP[blackboard.target_unit]
+			local target_position = Unit.local_position(blackboard.target_unit, 0)
 			local success, z = GwNavQueries.triangle_from_position(nav_world, target_position, 1, 1)
 
 			if success then
@@ -67,7 +67,7 @@ AiBreedSnippets.on_beastmen_bestigor_update = function (unit, blackboard, t)
 				local width = 7
 				local new_astar = blackboard.navigation_extension:get_reusable_astar("charge")
 
-				GwNavAStar.start_with_propagation_box(new_astar, nav_world, POSITION_LOOKUP[unit], wanted_position, width, traverse_logic)
+				GwNavAStar.start_with_propagation_box(new_astar, nav_world, Unit.local_position(unit, 0), wanted_position, width, traverse_logic)
 
 				blackboard.charge_astar_timer = t + 1
 			else
@@ -208,14 +208,14 @@ end
 
 AiBreedSnippets.on_beastmen_standard_bearer_update = function (unit, blackboard, t)
 	if HEALTH_ALIVE[blackboard.standard_unit] then
-		local self_position = POSITION_LOOKUP[unit]
+		local self_position = Unit.local_position(unit, 0)
 		local standard_position = Unit.local_position(blackboard.standard_unit, 0)
 		local distance_to_standard = Vector3.distance(self_position, standard_position)
 
 		blackboard.distance_to_standard = distance_to_standard
 
 		if HEALTH_ALIVE[blackboard.target_unit] then
-			local target_position = POSITION_LOOKUP[blackboard.target_unit]
+			local target_position = Unit.local_position(blackboard.target_unit, 0)
 
 			blackboard.target_distance_to_standard = Vector3.distance(target_position, standard_position)
 		end
@@ -252,14 +252,14 @@ AiBreedSnippets.on_beastmen_standard_bearer_update = function (unit, blackboard,
 			end
 		elseif t > blackboard.plant_standard_astar_timer then
 			local nav_world = blackboard.nav_world
-			local target_position = POSITION_LOOKUP[blackboard.target_unit]
+			local target_position = Unit.local_position(blackboard.target_unit, 0)
 			local success, z = GwNavQueries.triangle_from_position(nav_world, target_position, 1, 1)
 
 			if success then
 				local wanted_position = Vector3(target_position[1], target_position[2], z)
 				local new_astar = navigation_extension:get_reusable_astar("plant_standard")
 
-				GwNavAStar.start(new_astar, nav_world, POSITION_LOOKUP[unit], wanted_position, traverse_logic)
+				GwNavAStar.start(new_astar, nav_world, Unit.local_position(unit, 0), wanted_position, traverse_logic)
 
 				blackboard.plant_standard_astar_timer = t + 1
 			else

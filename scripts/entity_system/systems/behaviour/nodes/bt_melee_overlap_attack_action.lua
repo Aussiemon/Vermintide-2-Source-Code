@@ -374,7 +374,7 @@ end
 BTMeleeOverlapAttackAction._attack_finished = function (self, unit, blackboard, t, dt)
 	local action = blackboard.action
 
-	if action.is_combo_attack then
+	if action.is_combo_attack and ALIVE[blackboard.locked_target_unit] then
 		return not self:_init_attack(unit, blackboard.locked_target_unit, blackboard, action, t)
 	end
 
