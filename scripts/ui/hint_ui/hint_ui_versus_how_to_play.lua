@@ -121,7 +121,7 @@ HintUIVersusHowToPlay._update_input = function (self, dt, t, input_data)
 
 		local input_action = input_data.input_action
 
-		input_action = input_action and gamepad_active and input_data.gamepad_action or input_action
+		input_action = input_action and (gamepad_active and input_data.gamepad_action or input_action)
 
 		local input_text = "$KEY;" .. input_data.input_service_name .. "__" .. input_action .. ":"
 		local input_string = string.format(Localize(self._hint_data.foot_text), input_text)

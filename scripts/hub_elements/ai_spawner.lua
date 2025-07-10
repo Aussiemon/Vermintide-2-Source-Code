@@ -24,7 +24,7 @@ AISpawner.init = function (self, world, unit)
 		if spawner_name ~= nil then
 			local terror_event_id = Unit.get_data(unit, "terror_event_id")
 
-			terror_event_id = (not terror_event_id or terror_event_id ~= "") and terror_event_id
+			terror_event_id = terror_event_id and terror_event_id ~= "" and terror_event_id
 
 			local hidden = Unit.get_data(unit, "hidden")
 
@@ -48,7 +48,7 @@ AISpawner.init = function (self, world, unit)
 	else
 		local terror_event_id = Unit.get_data(self._unit, "terror_event_id")
 
-		terror_event_id = (not terror_event_id or terror_event_id ~= "") and terror_event_id
+		terror_event_id = terror_event_id and terror_event_id ~= "" and terror_event_id
 
 		self._spawner_system:register_raw_spawner(self._unit, terror_event_id)
 	end
