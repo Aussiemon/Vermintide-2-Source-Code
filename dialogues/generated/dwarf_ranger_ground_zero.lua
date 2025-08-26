@@ -917,10 +917,10 @@ return function ()
 				"ebh_level_ground_zero_lord_banter_05",
 			},
 			sound_events_duration = {
-				8.340916633606,
-				10.945666313171,
-				10.867562294006,
-				4.8926248550415,
+				8.0673542022705,
+				10.755520820618,
+				10.125062942505,
+				4.621687412262,
 			},
 		},
 		ebh_level_ground_zero_lord_insect_spell = {
@@ -957,10 +957,10 @@ return function ()
 				"ebh_level_ground_zero_lord_insect_spell_04",
 			},
 			sound_events_duration = {
-				3.4226040840149,
-				3.0002708435059,
-				3.7621250152588,
-				5.1398539543152,
+				3.2327916622162,
+				2.2907416820526,
+				3.6120624542236,
+				4.8039793968201,
 			},
 		},
 		ebh_level_ground_zero_lord_intro = {
@@ -989,8 +989,8 @@ return function ()
 				[2] = "ebh_level_ground_zero_lord_intro_02",
 			},
 			sound_events_duration = {
-				[1] = 19.150812149048,
-				[2] = 17.64560508728,
+				[1] = 19.003000259399,
+				[2] = 17.006937026978,
 			},
 		},
 		ebh_level_ground_zero_lord_retaliation_missile = {
@@ -1027,10 +1027,10 @@ return function ()
 				"ebh_level_ground_zero_lord_retaliation_missile_04",
 			},
 			sound_events_duration = {
-				5.7061457633972,
-				3.861249923706,
-				5.7626042366028,
-				4.9964165687561,
+				5.113166809082,
+				3.7718541622162,
+				5.5806460380554,
+				4.6491456031799,
 			},
 		},
 		ebh_level_ground_zero_lord_spawn_enemies = {
@@ -1067,10 +1067,10 @@ return function ()
 				"ebh_level_ground_zero_lord_spawn_enemies_04",
 			},
 			sound_events_duration = {
-				4.180645942688,
-				13.026000022888,
-				8.7754373550415,
-				3.8321459293366,
+				4.0282082557678,
+				12.872729301453,
+				8.6049165725708,
+				3.510645866394,
 			},
 		},
 		pdr_ground_zero_intro_a = {

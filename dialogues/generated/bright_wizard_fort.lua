@@ -2,6 +2,101 @@
 
 return function ()
 	define_rule({
+		name = "pbw_fort_intro_a",
+		probability = 1,
+		response = "pbw_fort_intro_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"fort_intro_a",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"faction_memory",
+				"fort_intro_a",
+				OP.EQ,
+				0,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"fort_intro_a",
+				OP.ADD,
+				1,
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_fort_intro_b",
+		probability = 1,
+		response = "pbw_fort_intro_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"fort_intro_a",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_fort_intro_c",
+		probability = 1,
+		response = "pbw_fort_intro_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"fort_intro_b",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+	})
+	define_rule({
 		name = "pbw_level_fort_cannonballs",
 		probability = 1,
 		response = "pbw_level_fort_cannonballs",
@@ -362,6 +457,93 @@ return function ()
 		},
 	})
 	add_dialogues({
+		pbw_fort_intro_a = {
+			category = "level_talk",
+			database = "bright_wizard_fort",
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+				[2] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pbw_fort_intro_a_01",
+				[2] = "pbw_fort_intro_a_02",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1] = "pbw_fort_intro_a_01",
+				[2] = "pbw_fort_intro_a_02",
+			},
+			sound_events_duration = {
+				[1] = 3.1690833568573,
+				[2] = 4.5353956222534,
+			},
+		},
+		pbw_fort_intro_b = {
+			category = "level_talk",
+			database = "bright_wizard_fort",
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+				[2] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pbw_fort_intro_b_01",
+				[2] = "pbw_fort_intro_b_02",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1] = "pbw_fort_intro_b_01",
+				[2] = "pbw_fort_intro_b_02",
+			},
+			sound_events_duration = {
+				[1] = 3.5425624847412,
+				[2] = 2.4352083206177,
+			},
+		},
+		pbw_fort_intro_c = {
+			category = "level_talk",
+			database = "bright_wizard_fort",
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+				[2] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pbw_fort_intro_c_01",
+				[2] = "pbw_fort_intro_c_02",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1] = "pbw_fort_intro_c_01",
+				[2] = "pbw_fort_intro_c_02",
+			},
+			sound_events_duration = {
+				[1] = 3.263375043869,
+				[2] = 2.9231667518616,
+			},
+		},
 		pbw_level_fort_cannonballs = {
 			category = "level_talk",
 			database = "bright_wizard_fort",

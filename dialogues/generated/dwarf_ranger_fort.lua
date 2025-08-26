@@ -69,20 +69,6 @@ return function ()
 				OP.EQ,
 				"dwarf_ranger",
 			},
-			{
-				"faction_memory",
-				"fort_intro_b",
-				OP.TIMEDIFF,
-				OP.GT,
-				1,
-			},
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"fort_intro_b",
-				OP.TIMESET,
-			},
 		},
 	})
 	define_rule({
@@ -107,20 +93,6 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"dwarf_ranger",
-			},
-			{
-				"faction_memory",
-				"fort_intro_c",
-				OP.TIMEDIFF,
-				OP.GT,
-				1,
-			},
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"fort_intro_c",
-				OP.TIMESET,
 			},
 		},
 	})
@@ -1034,8 +1006,8 @@ return function ()
 				[2] = "pdr_fort_intro_b_02",
 			},
 			sound_events_duration = {
-				[1] = 4.4252290725708,
-				[2] = 1.7625416517258,
+				[1] = 4.6252288818359,
+				[2] = 1.9625416994095,
 			},
 		},
 		pdr_fort_intro_c = {
@@ -1063,8 +1035,8 @@ return function ()
 				[2] = "pdr_fort_intro_c_02",
 			},
 			sound_events_duration = {
-				[1] = 5.4843335151672,
-				[2] = 3.5754165649414,
+				[1] = 5.6843333244324,
+				[2] = 3.7754166126251,
 			},
 		},
 		pdr_level_fort_cannonballs = {

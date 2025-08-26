@@ -108,20 +108,6 @@ return function ()
 				OP.EQ,
 				"ferry_lady",
 			},
-			{
-				"user_memory",
-				"wizard_tower_destroy_wards_a",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"wizard_tower_destroy_wards_a",
-				OP.ADD,
-				1,
-			},
 		},
 	})
 	define_rule({
@@ -140,20 +126,6 @@ return function ()
 				"source_name",
 				OP.EQ,
 				"ferry_lady",
-			},
-			{
-				"user_memory",
-				"wizard_tower_door",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"wizard_tower_door",
-				OP.ADD,
-				1,
 			},
 		},
 	})
@@ -174,20 +146,6 @@ return function ()
 				OP.EQ,
 				"ferry_lady",
 			},
-			{
-				"user_memory",
-				"wizard_tower_enchantment",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"wizard_tower_enchantment",
-				OP.ADD,
-				1,
-			},
 		},
 	})
 	define_rule({
@@ -206,20 +164,6 @@ return function ()
 				"source_name",
 				OP.EQ,
 				"ferry_lady",
-			},
-			{
-				"user_memory",
-				"wizard_tower_flame_source",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"wizard_tower_flame_source",
-				OP.ADD,
-				1,
 			},
 		},
 	})
@@ -240,20 +184,6 @@ return function ()
 				OP.EQ,
 				"ferry_lady",
 			},
-			{
-				"user_memory",
-				"wizard_tower_jungle_two",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"wizard_tower_jungle_two",
-				OP.ADD,
-				1,
-			},
 		},
 	})
 	define_rule({
@@ -272,20 +202,6 @@ return function ()
 				"source_name",
 				OP.EQ,
 				"ferry_lady",
-			},
-			{
-				"user_memory",
-				"wizard_tower_keep_climbing",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"wizard_tower_keep_climbing",
-				OP.ADD,
-				1,
 			},
 		},
 	})
@@ -448,20 +364,6 @@ return function ()
 				OP.EQ,
 				"ferry_lady",
 			},
-			{
-				"user_memory",
-				"wizard_tower_test_subjects",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"wizard_tower_test_subjects",
-				OP.ADD,
-				1,
-			},
 		},
 	})
 	define_rule({
@@ -547,20 +449,6 @@ return function ()
 				OP.EQ,
 				"inn_keeper",
 			},
-			{
-				"user_memory",
-				"wizard_tower_destroy_wards_a",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"wizard_tower_destroy_wards_a",
-				OP.ADD,
-				1,
-			},
 		},
 	})
 	define_rule({
@@ -579,20 +467,6 @@ return function ()
 				"source_name",
 				OP.EQ,
 				"inn_keeper",
-			},
-			{
-				"user_memory",
-				"wizard_tower_door",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"wizard_tower_door",
-				OP.ADD,
-				1,
 			},
 		},
 	})
@@ -613,20 +487,6 @@ return function ()
 				OP.EQ,
 				"inn_keeper",
 			},
-			{
-				"user_memory",
-				"wizard_tower_enchantment",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"wizard_tower_enchantment",
-				OP.ADD,
-				1,
-			},
 		},
 	})
 	define_rule({
@@ -645,20 +505,6 @@ return function ()
 				"source_name",
 				OP.EQ,
 				"inn_keeper",
-			},
-			{
-				"user_memory",
-				"wizard_tower_flame_source",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"wizard_tower_flame_source",
-				OP.ADD,
-				1,
 			},
 		},
 	})
@@ -712,20 +558,6 @@ return function ()
 				OP.EQ,
 				"inn_keeper",
 			},
-			{
-				"user_memory",
-				"wizard_tower_intro_a",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"wizard_tower_intro_a",
-				OP.ADD,
-				1,
-			},
 		},
 	})
 	define_rule({
@@ -744,20 +576,6 @@ return function ()
 				"source_name",
 				OP.EQ,
 				"inn_keeper",
-			},
-			{
-				"user_memory",
-				"wizard_tower_jungle_two",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"wizard_tower_jungle_two",
-				OP.ADD,
-				1,
 			},
 		},
 	})
@@ -778,20 +596,6 @@ return function ()
 				OP.EQ,
 				"inn_keeper",
 			},
-			{
-				"user_memory",
-				"wizard_tower_keep_climbing",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"wizard_tower_keep_climbing",
-				OP.ADD,
-				1,
-			},
 		},
 	})
 	define_rule({
@@ -810,20 +614,6 @@ return function ()
 				"source_name",
 				OP.EQ,
 				"inn_keeper",
-			},
-			{
-				"user_memory",
-				"wizard_tower_test_subjects",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"wizard_tower_test_subjects",
-				OP.ADD,
-				1,
 			},
 		},
 	})
@@ -948,20 +738,6 @@ return function ()
 				OP.EQ,
 				"sofia_fuegonasus",
 			},
-			{
-				"user_memory",
-				"wizard_tower_door",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"wizard_tower_door",
-				OP.ADD,
-				1,
-			},
 		},
 	})
 	define_rule({
@@ -980,20 +756,6 @@ return function ()
 				"source_name",
 				OP.EQ,
 				"sofia_fuegonasus",
-			},
-			{
-				"user_memory",
-				"wizard_tower_enchantment",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"wizard_tower_enchantment",
-				OP.ADD,
-				1,
 			},
 		},
 	})
@@ -1014,20 +776,6 @@ return function ()
 				OP.EQ,
 				"sofia_fuegonasus",
 			},
-			{
-				"user_memory",
-				"wizard_tower_keep_climbing",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"wizard_tower_keep_climbing",
-				OP.ADD,
-				1,
-			},
 		},
 	})
 	define_rule({
@@ -1046,20 +794,6 @@ return function ()
 				"source_name",
 				OP.EQ,
 				"sofia_fuegonasus",
-			},
-			{
-				"user_memory",
-				"wizard_tower_library_two_a",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"wizard_tower_library_two_a",
-				OP.ADD,
-				1,
 			},
 		},
 	})
@@ -1156,20 +890,6 @@ return function ()
 				OP.EQ,
 				"sofia_fuegonasus",
 			},
-			{
-				"user_memory",
-				"wizard_tower_test_subjects",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"wizard_tower_test_subjects",
-				OP.ADD,
-				1,
-			},
 		},
 	})
 	define_rule({
@@ -1189,20 +909,6 @@ return function ()
 				OP.EQ,
 				"sofia_fuegonasus",
 			},
-			{
-				"user_memory",
-				"wizard_tower_waste_disposal_a",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"wizard_tower_waste_disposal_a",
-				OP.ADD,
-				1,
-			},
 		},
 	})
 	define_rule({
@@ -1221,20 +927,6 @@ return function ()
 				"source_name",
 				OP.EQ,
 				"sofia_fuegonasus",
-			},
-			{
-				"user_memory",
-				"wizard_tower_welcome_a",
-				OP.EQ,
-				0,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"wizard_tower_welcome_a",
-				OP.ADD,
-				1,
 			},
 		},
 	})

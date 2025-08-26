@@ -1,4 +1,4 @@
-﻿-- chunkname: @levels/honduras_dlcs/termite/level_unlock_settings_termite_part_1.lua
+﻿-- chunkname: @levels/honduras_dlcs/termite/level_unlock_settings_termite.lua
 
 AreaSettings.termite = {
 	description_text = "area_selection_termite_description",
@@ -8,7 +8,7 @@ AreaSettings.termite = {
 	long_description_text = "area_selection_termite_description_long",
 	menu_sound_event = "Play_hud_menu_area_termite",
 	name = "termite",
-	sort_order = 7,
+	sort_order = 5,
 	store_page_url = "https://store.steampowered.com/app/552500/Warhammer_Vermintide_2/",
 	video_settings = {
 		material_name = "area_video_termite",

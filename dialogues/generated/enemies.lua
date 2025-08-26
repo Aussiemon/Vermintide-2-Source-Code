@@ -21,31 +21,6 @@ return function ()
 		},
 	})
 	define_rule({
-		name = "ecm_gameplay_comment_player_healing",
-		probability = 1,
-		response = "ecm_gameplay_comment_player_healing",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak",
-			},
-			{
-				"query_context",
-				"dialogue_name_nopre",
-				OP.EQ,
-				"gameplay_self_heal",
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"chaos_marauder",
-			},
-		},
-	})
-	define_rule({
 		name = "ecm_gameplay_dogpile_shouts",
 		probability = 1,
 		response = "ecm_gameplay_dogpile_shouts",
@@ -2971,28 +2946,6 @@ return function ()
 				[1] = 2.6563487052917,
 			},
 		},
-		ecm_gameplay_comment_player_healing = {
-			category = "enemy_high_prio",
-			database = "enemies",
-			dialogue_animations_n = 1,
-			face_animations_n = 1,
-			sound_events_n = 1,
-			dialogue_animations = {
-				[1] = "dialogue_shout",
-			},
-			face_animations = {
-				[1] = "face_angry",
-			},
-			localization_strings = {
-				[1] = "ecm_gameplay_comment_player_healing",
-			},
-			sound_events = {
-				[1] = "ecm_gameplay_comment_player_healing",
-			},
-			sound_events_duration = {
-				[1] = 2.0381455421448,
-			},
-		},
 		ecm_gameplay_dogpile_shouts = {
 			category = "enemy_basic_prio",
 			database = "enemies",
@@ -3056,7 +3009,7 @@ return function ()
 				[1] = "ecm_gameplay_running_towards_players",
 			},
 			sound_events_duration = {
-				[1] = 2.7142012417316,
+				[1] = 2.6622343957424,
 			},
 		},
 		ecr_gameplay_attacking_bright_wizard_backstab = {
@@ -3560,7 +3513,7 @@ return function ()
 				[1] = "ecr_gameplay_land",
 			},
 			sound_events_duration = {
-				[1] = 0.66479074954987,
+				[1] = 0.65106110274792,
 			},
 		},
 		ecr_gameplay_player_knocked_down = {
@@ -5717,7 +5670,7 @@ return function ()
 				[1] = "Play_plague_monk_running_vce",
 			},
 			sound_events_duration = {
-				[1] = 4.3576783537865,
+				[1] = 3.6055112481117,
 			},
 		},
 		epm_gameplay_startled = {
@@ -5739,7 +5692,7 @@ return function ()
 				[1] = "Play_plague_monk_alerted_vce",
 			},
 			sound_events_duration = {
-				[1] = 4.3576783537865,
+				[1] = 3.6055112481117,
 			},
 		},
 		epwg_gameplay_begin_suicide_run = {
@@ -6415,7 +6368,7 @@ return function ()
 				[1] = "esr_gameplay_land",
 			},
 			sound_events_duration = {
-				[1] = 0.66479074954987,
+				[1] = 0.65106110274792,
 			},
 		},
 		esr_gameplay_player_knocked_down = {

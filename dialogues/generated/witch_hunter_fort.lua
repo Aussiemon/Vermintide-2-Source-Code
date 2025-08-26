@@ -69,20 +69,6 @@ return function ()
 				OP.EQ,
 				"witch_hunter",
 			},
-			{
-				"faction_memory",
-				"fort_intro_b",
-				OP.TIMEDIFF,
-				OP.GT,
-				1,
-			},
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"fort_intro_b",
-				OP.TIMESET,
-			},
 		},
 	})
 	define_rule({
@@ -107,20 +93,6 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"witch_hunter",
-			},
-			{
-				"faction_memory",
-				"fort_intro_c",
-				OP.TIMEDIFF,
-				OP.GT,
-				1,
-			},
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"fort_intro_c",
-				OP.TIMESET,
 			},
 		},
 	})
@@ -1034,8 +1006,8 @@ return function ()
 				[2] = "pwh_fort_intro_b_02",
 			},
 			sound_events_duration = {
-				[1] = 1.8164166212082,
-				[2] = 3.7455208301544,
+				[1] = 2.0164165496826,
+				[2] = 3.9455208778381,
 			},
 		},
 		pwh_fort_intro_c = {
@@ -1063,8 +1035,8 @@ return function ()
 				[2] = "pwh_fort_intro_c_02",
 			},
 			sound_events_duration = {
-				[1] = 3.0910415649414,
-				[2] = 3.0151040554047,
+				[1] = 3.2910416126251,
+				[2] = 3.2151041030884,
 			},
 		},
 		pwh_level_fort_cannonballs = {

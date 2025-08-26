@@ -18854,7 +18854,7 @@ return function ()
 				[1] = "player_combat_walk_normal",
 			},
 			sound_events_duration = {
-				[1] = 4.3557691574097,
+				[1] = 4.147599697113,
 			},
 		},
 		ewt_spawning_warpfire_thrower = {

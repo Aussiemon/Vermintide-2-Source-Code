@@ -1731,7 +1731,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_friendly_fire_bright_wizard",
-		probability = 0.4,
+		probability = 0.3,
 		response = "pwe_gameplay_friendly_fire_bright_wizard",
 		criterias = {
 			{
@@ -1769,7 +1769,7 @@ return function ()
 				"last_friendly_fire",
 				OP.TIMEDIFF,
 				OP.GT,
-				5,
+				10,
 			},
 		},
 		on_done = {
@@ -1782,7 +1782,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_friendly_fire_dwarf_ranger",
-		probability = 0.4,
+		probability = 0.3,
 		response = "pwe_gameplay_friendly_fire_dwarf_ranger",
 		criterias = {
 			{
@@ -1820,7 +1820,7 @@ return function ()
 				"last_friendly_fire",
 				OP.TIMEDIFF,
 				OP.GT,
-				5,
+				10,
 			},
 		},
 		on_done = {
@@ -1833,7 +1833,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_friendly_fire_empire_soldier",
-		probability = 0.4,
+		probability = 0.3,
 		response = "pwe_gameplay_friendly_fire_empire_soldier",
 		criterias = {
 			{
@@ -1871,7 +1871,7 @@ return function ()
 				"last_friendly_fire",
 				OP.TIMEDIFF,
 				OP.GT,
-				5,
+				10,
 			},
 		},
 		on_done = {
@@ -1884,7 +1884,7 @@ return function ()
 	})
 	define_rule({
 		name = "pwe_gameplay_friendly_fire_witch_hunter",
-		probability = 0.4,
+		probability = 0.3,
 		response = "pwe_gameplay_friendly_fire_witch_hunter",
 		criterias = {
 			{
@@ -1922,7 +1922,7 @@ return function ()
 				"last_friendly_fire",
 				OP.TIMEDIFF,
 				OP.GT,
-				5,
+				10,
 			},
 		},
 		on_done = {
