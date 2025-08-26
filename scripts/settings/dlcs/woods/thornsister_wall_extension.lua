@@ -28,8 +28,6 @@ ThornSisterWallExtension.init = function (self, extension_init_context, unit, ex
 		self._owner_career_power_level = career_extension and career_extension:get_career_power_level() or 100
 	end
 
-	self._original_rotation = QuaternionBox(Unit.local_rotation(unit, 0))
-
 	local side_manager = Managers.state.side
 	local side = side_manager.side_by_unit[self._owner_unit] or Managers.state.side:get_side_from_name("heroes")
 	local side_id = side.side_id
@@ -44,6 +42,10 @@ ThornSisterWallExtension.init = function (self, extension_init_context, unit, ex
 
 		self._player_boss_trample_radius = (extents[1] > extents[2] and extents[1] or extents[2]) * extents_padding
 	end
+end
+
+ThornSisterWallExtension.game_object_initialized = function (self)
+	Managers.state.event:trigger("sister_wall_spawned", self._unit)
 end
 
 ThornSisterWallExtension.update = function (self, unit, input, dt, context, t)
@@ -268,5 +270,18 @@ ThornSisterWallExtension._check_player_boss_trample = function (self)
 				end
 			end
 		end
+	end
+end
+
+ThornSisterWallExtension.move_prop = function (self, wanted_pose)
+	local wanted_position = Matrix4x4.translation(wanted_pose)
+	local wanted_rotation = Matrix4x4.rotation(wanted_pose)
+
+	Unit.set_local_position(self._unit, 0, wanted_position)
+	Unit.set_local_rotation(self._unit, 0, wanted_rotation)
+
+	if self._versus_blocker_unit then
+		Unit.set_local_position(self._versus_blocker_unit, 0, wanted_position)
+		Unit.set_local_rotation(self._versus_blocker_unit, 0, wanted_rotation)
 	end
 end

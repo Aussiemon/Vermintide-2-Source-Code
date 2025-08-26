@@ -143,6 +143,15 @@ settings.buff_templates = {
 				name = "grudge_mark_health",
 				stat_buff = "max_health",
 			},
+		},
+	},
+	grudge_mark_dwarf_fest_troll_boss = {
+		buffs = {
+			{
+				multiplier = 1.5,
+				name = "grudge_mark_health",
+				stat_buff = "max_health",
+			},
 			{
 				apply_buff_func = "ai_update_max_health",
 				name = "grudge_mark_health_update",
@@ -816,11 +825,8 @@ settings.buff_function_templates = {
 				local breed_enhancements = parent_attributes.breed_enhancements
 
 				for enhancement_name, value in pairs(breed_enhancements) do
-					if value then
-						if enhancement_name == "intangible" then
-							enhancement_name = "intangible_mirror"
-						end
-
+					if value and (enhancement_name == "intangible" or true) then
+						enhancement_name = "intangible_mirror"
 						enhancements[#enhancements + 1] = BreedEnhancements[enhancement_name]
 					end
 				end
@@ -884,12 +890,10 @@ settings.buff_function_templates = {
 									mirror_units[#mirror_units + 1] = ai_unit
 								end
 
-								if breed.name == "chaos_troll" then
-									local health_extension = ScriptUnit.has_extension(ai_unit, "health_system")
+								local health_extension = ScriptUnit.has_extension(ai_unit, "health_system")
 
-									if health_extension.force_set_wounded then
-										health_extension:force_set_wounded()
-									end
+								if health_extension.force_set_wounded then
+									health_extension:force_set_wounded()
 								end
 
 								local death_extension = ScriptUnit.extension(ai_unit, "death_system")

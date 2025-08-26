@@ -47,6 +47,9 @@ UnitSpawner.init = function (self, world, entity_manager, is_server)
 	self.unit_death_watch_lookup = {}
 	self.unit_death_watch_list_n = 0
 	self.unit_death_watch_list_dirty = false
+	self._async_spawn_queue = {}
+	self._async_spawn_handle = 0
+	self._spawned_async_units = {}
 end
 
 UnitSpawner.destroy = function (self)
@@ -348,19 +351,72 @@ UnitSpawner.spawn_network_unit = function (self, unit_name, unit_template_name, 
 	return unit, go_id
 end
 
-UnitSpawner.request_spawn_network_unit = function (self, template_name, position, rotation, source_unit, state_int, group_spawn_index)
+UnitSpawner.queue_spawn_network_unit = function (self, ...)
+	local spawn_queue = self._async_spawn_queue
+	local handle = self._async_spawn_handle
+
+	self._async_spawn_handle = handle + 1
+
+	local packed_args = Managers.state.network.network_transmit:pack_temp_types(nil, ...)
+
+	spawn_queue[#spawn_queue + 1] = {
+		handle = handle,
+		unpack(packed_args),
+	}
+
+	return handle
+end
+
+UnitSpawner.remove_queued_network_unit = function (self, handle)
+	local spawned_unit = self._spawned_async_units[handle]
+
+	if spawned_unit then
+		self:mark_for_deletion(spawned_unit)
+
+		return
+	end
+
+	local spawn_queue = self._async_spawn_queue
+
+	for i = #spawn_queue, 1, -1 do
+		if spawn_queue[i].handle == handle then
+			table.remove(spawn_queue, i)
+
+			break
+		end
+	end
+end
+
+UnitSpawner.spawn_queued_units = function (self)
+	local spawn_queue = self._async_spawn_queue
+
+	for i = 1, #spawn_queue do
+		local spawn_data = spawn_queue[i]
+
+		Managers.state.network.network_transmit:unpack_temp_types(spawn_data)
+
+		local unit = self:spawn_network_unit(unpack(spawn_data))
+
+		self._async_spawn_queue[i] = nil
+		self._spawned_async_units[spawn_data.handle] = unit
+	end
+end
+
+UnitSpawner.try_claim_async_unit = function (self, handle)
+	local spawned_unit = self._spawned_async_units[handle]
+
+	self._spawned_async_units[handle] = nil
+
+	return spawned_unit
+end
+
+UnitSpawner.request_spawn_template_unit = function (self, template_name, position, rotation, source_unit, state_int, group_spawn_index)
 	group_spawn_index = group_spawn_index or 1
 
-	if self.is_server then
-		local spawn_template = SpawnUnitTemplates[template_name]
+	local template_id = NetworkLookup.spawn_unit_templates[template_name]
+	local source_unit_id = Managers.state.unit_storage:go_id(source_unit)
 
-		spawn_template.spawn_func(source_unit, position, rotation, state_int, group_spawn_index)
-	else
-		local template_id = NetworkLookup.spawn_unit_templates[template_name]
-		local source_unit_id = Managers.state.unit_storage:go_id(source_unit)
-
-		Managers.state.network.network_transmit:send_rpc_server("rpc_request_spawn_network_unit", template_id, position, rotation, source_unit_id, state_int, group_spawn_index)
-	end
+	Managers.state.network.network_transmit:send_rpc_server("rpc_request_spawn_template_unit", template_id, position, rotation, source_unit_id, state_int, group_spawn_index)
 end
 
 UnitSpawner.world_delete_units = function (self, world, units_list, units_list_n)
@@ -429,6 +485,8 @@ UnitSpawner.spawn_unit_from_game_object = function (self, go_id, owner_id, go_te
 	local is_husk = true
 
 	self:create_unit_extensions(self.world, unit, unit_template_name, extension_init_data, is_husk)
+
+	return unit
 end
 
 UnitSpawner.destroy_game_object_unit = function (self, go_id, owner_id)

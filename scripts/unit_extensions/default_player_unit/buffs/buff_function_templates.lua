@@ -446,16 +446,32 @@ BuffFunctionTemplates.functions = {
 	end,
 	health_regen_start = function (unit, buff, params)
 		if Managers.state.network.is_server then
-			buff.next_heal_time = params.t + buff.template.time_between_heal
+			local time_between_heal = buff.template.time_between_heal
+
+			if type(buff.template.time_between_heal) == "table" then
+				local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+
+				time_between_heal = buff.template.time_between_heal[difficulty_rank]
+			end
+
+			buff.next_heal_time = params.t + time_between_heal
 		end
 	end,
 	health_regen_update = function (unit, buff, params)
 		if Managers.state.network.is_server and buff.next_heal_time < params.t then
 			local buff_template = buff.template
+			local time_between_heal = buff_template.time_between_heal
 
-			buff.next_heal_time = buff.next_heal_time + buff_template.time_between_heal
+			if type(buff_template.time_between_heal) == "table" then
+				local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
 
-			local heal_amount = buff_template.heal
+				time_between_heal = buff_template.time_between_heal[difficulty_rank]
+			end
+
+			buff.next_heal_time = buff.next_heal_time + time_between_heal
+
+			local health_extension = ScriptUnit.has_extension(unit, "health_system")
+			local heal_amount = buff_template.heal or buff_template.heal_percent * health_extension:get_max_health()
 			local heal_type = buff_template.heal_type or "health_regen"
 
 			DamageUtils.heal_network(unit, unit, heal_amount, heal_type)
@@ -5461,6 +5477,43 @@ BuffFunctionTemplates.functions = {
 
 			AiUtils.kill_unit(owner_unit, nil, nil, damage_type, damage_direction)
 		end
+	end,
+	sorcerer_tether_buff_invulnerability_update = function (owner_unit, buff, params, world)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local sorcerer_unit = buff.attacker_unit
+
+		if not HEALTH_ALIVE[sorcerer_unit] then
+			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
+			buff_extension:remove_buff(buff.id)
+		end
+	end,
+	sorcerer_tether_buff_apply_visuals = function (owner_unit, buff, params, world)
+		local ref_count = Unit.get_data(owner_unit, "sorcerer_tether_buff_invulnerability_count") or 0
+
+		if ref_count == 0 then
+			local node = Unit.has_node(owner_unit, "j_hips") and Unit.node(owner_unit, "j_hips") or 0
+			local particle_unit = World.spawn_unit(world, "fx/units/sphere_troll_chief")
+
+			World.link_unit(world, particle_unit, 0, owner_unit, node)
+			Unit.set_data(owner_unit, "sorcerer_tether_buff_invulnerability_visual", particle_unit)
+		end
+
+		Unit.set_data(owner_unit, "sorcerer_tether_buff_invulnerability_count", ref_count + 1)
+	end,
+	sorcerer_tether_buff_remove_visuals = function (owner_unit, buff, params, world)
+		local ref_count = Unit.get_data(owner_unit, "sorcerer_tether_buff_invulnerability_count")
+
+		if ref_count == 1 then
+			local particle_unit = Unit.get_data(owner_unit, "sorcerer_tether_buff_invulnerability_visual")
+
+			World.destroy_unit(world, particle_unit)
+		end
+
+		Unit.set_data(owner_unit, "sorcerer_tether_buff_invulnerability_count", ref_count - 1)
 	end,
 }
 

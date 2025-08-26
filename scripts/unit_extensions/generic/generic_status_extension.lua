@@ -122,7 +122,13 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 
 	self:set_spawn_grace_time(5)
 
-	self.ready_for_assisted_respawn = false
+	if extension_init_data.respawn_unit then
+		self.ready_for_assisted_respawn = true
+		self.assisted_respawn_flavour_unit = extension_init_data.respawn_unit
+	else
+		self.ready_for_assisted_respawn = false
+	end
+
 	self.assisted_respawning = false
 	self.player = extension_init_data.player
 	self.is_bot = self.player.bot_player

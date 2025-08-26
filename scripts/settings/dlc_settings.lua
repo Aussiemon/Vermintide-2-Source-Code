@@ -530,6 +530,14 @@ DLCSettings = DLCSettings or {
 	handbook = {
 		localization = "localization/handbook_tutorials",
 	},
+	dwarf_fest = {
+		localization = "localization/dwarf_fest",
+		package_name = "resource_packages/dlcs/dwarf_fest",
+		additional_settings = {
+			common = "scripts/settings/dlcs/dwarf_fest/dwarf_fest_common_settings",
+			level = "scripts/settings/dlcs/dwarf_fest/dwarf_fest_level_settings",
+		},
+	},
 	termite_part_3 = {
 		localization = "localization/termite_3",
 		package_name = "resource_packages/dlcs/termite_part_3",

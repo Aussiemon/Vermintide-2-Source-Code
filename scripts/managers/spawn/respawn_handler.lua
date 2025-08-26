@@ -455,6 +455,10 @@ RespawnHandler.get_active_respawn_units = function (self)
 	return active_respawn_units
 end
 
+RespawnHandler.get_available_and_active_respawn_units = function (self)
+	return self._respawn_units
+end
+
 RespawnHandler.rpc_to_client_respawn_player = function (self, channel_id, local_player_id, profile_index, career_index, respawn_unit_id, slot_index, health_kit_id, potion_id, grenade_id, network_additional_items)
 	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
@@ -484,11 +488,7 @@ RespawnHandler._respawn_player = function (self, player, profile_index, career_i
 	local ammo_melee = respawn_settings.ammo_melee
 	local ammo_ranged = respawn_settings.ammo_ranged
 	local ability_cooldown_percent_int = 0
-	local unit = player:spawn(position, rotation, false, ammo_melee, ammo_ranged, health_kit, potion, grenade, ability_cooldown_percent_int, additional_items)
-	local status_extension = ScriptUnit.extension(unit, "status_system")
-
-	status_extension:set_ready_for_assisted_respawn(true, respawn_unit)
-
+	local unit = player:spawn(position, rotation, false, ammo_melee, ammo_ranged, health_kit, potion, grenade, ability_cooldown_percent_int, additional_items, nil, respawn_unit)
 	local network_manager = Managers.state.network
 	local unit_id = network_manager:unit_game_object_id(unit)
 	local respawn_unit_id = network_manager:level_object_id(respawn_unit)
@@ -657,6 +657,10 @@ end
 RespawnHandler._is_respawn_reachable = function (self, respawn_data)
 	if not respawn_data then
 		return false
+	end
+
+	if self._active_overridden_units[respawn_data.unit] then
+		return true
 	end
 
 	local main_path_info = Managers.state.conflict.main_path_info

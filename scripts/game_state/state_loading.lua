@@ -112,8 +112,10 @@ StateLoading.on_enter = function (self, param_block)
 		Managers.backend:start_benchmark()
 	end
 
-	if self._lobby_client ~= nil and not self._lobby_client:is_dedicated_server() then
-		Managers.party:set_leader(self._lobby_client:lobby_host())
+	local lobby = Managers.lobby:query_lobby("matchmaking_session_lobby")
+
+	if lobby and not lobby.is_host and not lobby:is_dedicated_server() then
+		Managers.party:set_leader(lobby:lobby_host())
 	end
 
 	Managers.transition:hide_icon_background()
@@ -122,7 +124,7 @@ StateLoading.on_enter = function (self, param_block)
 
 	self._menu_setup_done = false
 
-	if IS_XB1 and self._lobby_host then
+	if IS_XB1 and lobby and lobby.is_host then
 		Managers.account:set_round_id()
 	end
 
@@ -205,8 +207,6 @@ StateLoading._parse_loading_context = function (self)
 	if loading_context then
 		self._network_server = loading_context.network_server
 		self._network_client = loading_context.network_client
-		self._lobby_host = loading_context.lobby_host
-		self._lobby_client = loading_context.lobby_client
 		self._checkpoint_data = loading_context.checkpoint_data
 		self._quickplay_bonus = loading_context.quickplay_bonus
 		self._level_end_view_context = loading_context.level_end_view_context
@@ -249,7 +249,7 @@ end
 
 StateLoading._setup_end_of_level_ui = function (self)
 	if self._level_end_view_context then
-		self._level_end_view_context.lobby = self._lobby_host or self._lobby_client
+		self._level_end_view_context.lobby = Managers.lobby:query_lobby("matchmaking_session_lobby")
 		self._level_end_view_wrappers = {}
 		self._level_end_view_wrappers[1] = LevelEndViewWrapper:new(self._level_end_view_context)
 
@@ -371,7 +371,8 @@ StateLoading._trigger_loading_view = function (self, level_key, act_progression_
 
 		if game_mechanism:should_play_level_introduction() and not Development.parameter("gdc") then
 			local level_settings = LevelSettings[level_key]
-			local weave_name = self._lobby_client and self._lobby_client:lobby_data("weave_name") or Managers.weave:get_next_weave() or Development.parameter("weave_name")
+			local lobby = Managers.lobby:query_lobby("matchmaking_session_lobby")
+			local weave_name = lobby and lobby:lobby_data("weave_name") or Managers.weave:get_next_weave() or Development.parameter("weave_name")
 			local weave_template = WeaveSettings.templates[weave_name]
 
 			if weave_template then
@@ -418,7 +419,8 @@ StateLoading._trigger_loading_view = function (self, level_key, act_progression_
 end
 
 StateLoading.setup_loading_view = function (self, level_key)
-	self._level_key = level_key or Managers.mechanism:default_level_key()
+	level_key = level_key or Managers.mechanism:default_level_key()
+	self._level_key = level_key
 
 	if not DEDICATED_SERVER then
 		local package_manager = Managers.package
@@ -427,16 +429,17 @@ StateLoading.setup_loading_view = function (self, level_key)
 			package_manager:unload(self._ui_package_name, "global_loading_screens")
 		end
 
-		local level_key = self._level_key
 		local level_settings = LevelSettings[level_key]
 		local weave_name = Managers.weave:get_next_weave() or Development.parameter("weave_name")
 
 		if level_settings.game_mode == "weave" then
-			local weave_name = self._lobby_client and self._lobby_client:lobby_data("selected_mission_id") or weave_name
+			local lobby = Managers.lobby:query_lobby("matchmaking_session_lobby")
+
+			weave_name = lobby and lobby:lobby_data("selected_mission_id") or weave_name
 
 			if not weave_name or weave_name == "false" or not WeaveSettings.templates[weave_name] then
-				if IS_XB1 and not self._lobby_client:is_updating_lobby_data() then
-					self._lobby_client:force_update_lobby_data()
+				if IS_XB1 and not lobby:is_updating_lobby_data() then
+					lobby:force_update_lobby_data()
 				end
 
 				return
@@ -718,7 +721,9 @@ StateLoading.update = function (self, dt, t)
 	Managers.input:update(dt)
 	level_transition_handler:update(dt)
 
-	if self._should_start_breed_loading and level_transition_handler:all_packages_loaded() and level_transition_handler.enemy_package_loader:matching_session(self._network_server or self._network_client) and (not self._lobby_host or self._lobby_host:network_initialized()) then
+	local lobby = Managers.lobby:query_lobby("matchmaking_session_lobby")
+
+	if self._should_start_breed_loading and level_transition_handler:all_packages_loaded() and level_transition_handler.enemy_package_loader:matching_session(self._network_server or self._network_client) and lobby and (not lobby.is_host or lobby:network_initialized()) then
 		local weave_name = Managers.weave:get_next_weave() or Development.parameter("weave_name")
 		local weave_objective_index = Managers.weave:get_next_objective() or 1
 		local weave_data = WeaveSettings.templates[weave_name]
@@ -855,7 +860,9 @@ StateLoading._update_network = function (self, dt, t)
 
 			self:_destroy_network_handler(false)
 
-			if self._lobby_client then
+			local lobby = Managers.lobby:query_lobby("matchmaking_session_lobby")
+
+			if lobby then
 				self:create_popup(fail_reason, "popup_error_topic", "restart_as_server", "menu_accept")
 				self:_destroy_lobby_client()
 			end
@@ -887,7 +894,7 @@ StateLoading._update_lobbies = function (self, dt, t)
 
 		if action ~= nil then
 			if action == "join" then
-				self._server_lobby = GameServerLobbyClient:new(user_data.network_options, user_data.game_server_data, password)
+				Managers.lobby:make_lobby(GameServerLobbyClient, "matchmaking_join_lobby", "StateLoading (GameServerLobbyClient)", user_data.network_options, user_data.game_server_data, password)
 			else
 				self._teardown_network = true
 				self._permission_to_go_to_next_state = true
@@ -900,27 +907,29 @@ StateLoading._update_lobbies = function (self, dt, t)
 		end
 	end
 
-	if self._lobby_host then
-		local lobby_host = self._lobby_host
+	local lobby = Managers.lobby:query_lobby("matchmaking_session_lobby")
+	local join_lobby = Managers.lobby:query_lobby("matchmaking_join_lobby")
 
-		lobby_host:update(dt)
+	if lobby and lobby.is_host then
+		lobby:update(dt)
 
-		if lobby_host:is_joined() and not lobby_host:network_initialized() and self._lobby_host:lobby_host() ~= "0" then
+		if lobby:is_joined() and not lobby:network_initialized() and lobby:lobby_host() ~= "0" then
 			if not self._network_server then
 				self:host_joined()
 			end
 
 			local own_peer_id = Network.peer_id()
-			local host_peer_id = lobby_host:lobby_host()
+			local host_peer_id = lobby:lobby_host()
 			local is_server = true
 			local network_server = self._network_server
 
-			self:setup_chat_manager(lobby_host, host_peer_id, own_peer_id, is_server)
-			self:setup_deed_manager(lobby_host, host_peer_id, own_peer_id, is_server, network_server)
-			self:setup_enemy_package_loader(lobby_host, host_peer_id, own_peer_id, network_server)
-			self:setup_global_managers(lobby_host, host_peer_id, own_peer_id, is_server, network_server)
-			lobby_host:set_network_initialized(true)
-		elseif self._lobby_host.state == LobbyState.FAILED and not self._popup_id then
+			assert(host_peer_id == own_peer_id, "Is not host of own lobby")
+			self:setup_chat_manager(lobby, host_peer_id, own_peer_id, is_server)
+			self:setup_deed_manager(lobby, host_peer_id, own_peer_id, is_server, network_server)
+			self:setup_enemy_package_loader(lobby, host_peer_id, own_peer_id, network_server)
+			self:setup_global_managers(lobby, host_peer_id, own_peer_id, is_server, network_server)
+			lobby:set_network_initialized(true)
+		elseif lobby.state == LobbyState.FAILED and not self._popup_id then
 			local text_id
 
 			text_id = (IS_WINDOWS or IS_LINUX) and (rawget(_G, "Steam") and (Steam.connected() and "failure_start_steam_lobby_create" or "failure_start_no_steam") or "failure_start_no_lan") or IS_XB1 and (not Network.xboxlive_client_exists() and "failure_start_xbox_live_client" or "failure_start_xbox_lobby_create") or IS_PS4 and "failure_start_psn_lobby_create" or "failure_start"
@@ -935,16 +944,16 @@ StateLoading._update_lobbies = function (self, dt, t)
 		end
 	elseif self._lobby_finder then
 		self:_update_lobby_join(dt, t)
-	elseif self._server_lobby then
+	elseif join_lobby then
 		self:_update_server_lobby_join(dt, t)
-	elseif self._lobby_client then
-		self._lobby_client:update(dt)
+	elseif lobby then
+		lobby:update(dt)
 
-		local new_lobby_state = self._lobby_client.state
+		local new_lobby_state = lobby.state
 
-		if not self._lobby_verified and self._lobby_client:is_joined() then
+		if not self._lobby_verified and lobby:is_joined() then
 			self:_verify_joined_lobby(dt, t)
-		elseif self._lobby_client:failed() and not self._popup_id then
+		elseif lobby:failed() and not self._popup_id then
 			self:_destroy_lobby_client()
 			self:create_popup("failure_start_join_server", "popup_error_topic", "restart_as_server", "menu_accept")
 			Managers.transition:fade_out(GameSettings.transition_fade_out_speed)
@@ -964,8 +973,9 @@ StateLoading._verify_joined_lobby = function (self, dt, t)
 		return
 	end
 
-	local host = self._lobby_client:lobby_host()
-	local lobby_data = self._lobby_client:get_stored_lobby_data()
+	local lobby = Managers.lobby:get_lobby("matchmaking_session_lobby")
+	local host = lobby:lobby_host()
+	local lobby_data = lobby:get_stored_lobby_data()
 	local lobby_id = lobby_data.id
 	local lobby_network_hash = lobby_data.network_hash
 	local lobby_matchmaking_type_id = lobby_data.matchmaking_type
@@ -983,18 +993,18 @@ StateLoading._verify_joined_lobby = function (self, dt, t)
 		lobby_private = LobbyInternal.get_lobby_data_from_id_by_key(lobby_id, "is_private") == "true" or lobby_private
 	end
 
-	lobby_network_hash = lobby_network_hash or self._lobby_client:lobby_data("network_hash")
-	lobby_matchmaking_type_id = lobby_matchmaking_type_id or self._lobby_client:lobby_data("matchmaking_type")
-	lobby_difficulty = lobby_difficulty or self._lobby_client:lobby_data("difficulty")
-	lobby_mechanism = lobby_mechanism or self._lobby_client:lobby_data("mechanism")
-	lobby_weave_quick_game = lobby_weave_quick_game or self._lobby_client:lobby_data("weave_quick_game")
-	lobby_private = lobby_private or self._lobby_client:lobby_data("is_private") == "true"
+	lobby_network_hash = lobby_network_hash or lobby:lobby_data("network_hash")
+	lobby_matchmaking_type_id = lobby_matchmaking_type_id or lobby:lobby_data("matchmaking_type")
+	lobby_difficulty = lobby_difficulty or lobby:lobby_data("difficulty")
+	lobby_mechanism = lobby_mechanism or lobby:lobby_data("mechanism")
+	lobby_weave_quick_game = lobby_weave_quick_game or lobby:lobby_data("weave_quick_game")
+	lobby_private = lobby_private or lobby:lobby_data("is_private") == "true"
 
 	local lobby_matchmaking_type = IS_PS4 and lobby_matchmaking_type_id or lobby_matchmaking_type_id and NetworkLookup.game_modes[tonumber(lobby_matchmaking_type_id)]
 	local ready_to_compare_data = host ~= "0" and lobby_network_hash and lobby_matchmaking_type and lobby_difficulty and self._popup_id == nil
 
 	if ready_to_compare_data then
-		local client_network_hash = self._lobby_client.network_hash
+		local client_network_hash = lobby.network_hash
 		local has_required_dlcs = true
 		local required_dlcs = {}
 		local mechanism_settings = MechanismSettings[lobby_mechanism] or {}
@@ -1063,10 +1073,11 @@ StateLoading._verify_joined_lobby = function (self, dt, t)
 				local is_server = false
 				local network_handler = self._network_client
 
-				self:setup_chat_manager(self._lobby_client, host, own_peer_id, is_server)
-				self:setup_deed_manager(self._lobby_client, host, own_peer_id, is_server, network_handler)
-				self:setup_enemy_package_loader(self._lobby_client, host, own_peer_id, network_handler)
-				self:setup_global_managers(self._lobby_client, host, own_peer_id, is_server, network_handler)
+				assert(host ~= own_peer_id, "Is host of someone elses lobby")
+				self:setup_chat_manager(lobby, host, own_peer_id, is_server)
+				self:setup_deed_manager(lobby, host, own_peer_id, is_server, network_handler)
+				self:setup_enemy_package_loader(lobby, host, own_peer_id, network_handler)
+				self:setup_global_managers(lobby, host, own_peer_id, is_server, network_handler)
 			end
 		else
 			self:_destroy_lobby_client()
@@ -1092,11 +1103,17 @@ StateLoading._update_xbox_lobby_data = function (self, dt, t)
 			state = "UPDATE_LOBBY_DATA"
 		end
 	elseif state == "UPDATE_LOBBY_DATA" then
-		self._lobby_client:force_update_lobby_data()
+		local lobby = Managers.lobby:get_lobby("matchmaking_session_lobby")
+
+		lobby:force_update_lobby_data()
 
 		state = "WAIT_FOR_LOBBY_UPDATE"
-	elseif state == "WAIT_FOR_LOBBY_UPDATE" and not self._lobby_client:is_updating_lobby_data() then
-		state = "DONE"
+	elseif state == "WAIT_FOR_LOBBY_UPDATE" then
+		local lobby = Managers.lobby:get_lobby("matchmaking_session_lobby")
+
+		if not lobby:is_updating_lobby_data() then
+			state = "DONE"
+		end
 	end
 
 	self._xbox_lobby_data_state = state or "DONE"
@@ -1109,11 +1126,7 @@ StateLoading.lobby_verified = function (self)
 end
 
 StateLoading._destroy_lobby_client = function (self)
-	self._lobby_client:destroy()
-
-	self._lobby_client = nil
-	self.parent.loading_context.lobby_client = nil
-
+	Managers.lobby:destroy_lobby("matchmaking_session_lobby")
 	Managers.account:set_current_lobby(nil)
 
 	if self._voip then
@@ -1132,11 +1145,7 @@ StateLoading._destroy_lobby_client = function (self)
 end
 
 StateLoading._destroy_lobby_host = function (self)
-	self._lobby_host:destroy()
-
-	self._lobby_host = nil
-	self.parent.loading_context.lobby_host = nil
-
+	Managers.lobby:destroy_lobby("matchmaking_session_lobby")
 	Managers.account:set_current_lobby(nil)
 
 	if Managers.matchmaking then
@@ -1176,8 +1185,7 @@ StateLoading._update_lobby_join = function (self, dt, t)
 			print("=======================Autojoining this lobby")
 
 			local network_options = LobbySetup.network_options()
-
-			self._lobby_client = LobbyClient:new(network_options, lobby)
+			local lobby_client = Managers.lobby:make_lobby(LobbyClient, "matchmaking_session_lobby", "StateLoading (_update_lobby_join)", network_options, lobby)
 
 			self._lobby_finder:destroy()
 
@@ -1185,7 +1193,7 @@ StateLoading._update_lobby_join = function (self, dt, t)
 			self._handle_new_lobby_connection = true
 			found = true
 
-			Managers.account:set_current_lobby(self._lobby_client.lobby)
+			Managers.account:set_current_lobby(lobby_client.lobby)
 
 			if self._lobby_joined_callback then
 				self._lobby_joined_callback()
@@ -1218,18 +1226,16 @@ StateLoading._update_lobby_join = function (self, dt, t)
 end
 
 StateLoading._update_server_lobby_join = function (self, dt, t)
-	local lobby = self._server_lobby
+	local join_lobby = Managers.lobby:get_lobby("matchmaking_join_lobby")
 
-	lobby:update(dt)
+	join_lobby:update(dt)
 
-	local state = lobby:state()
+	if join_lobby:is_joined() then
+		Managers.lobby:move_lobby("matchmaking_join_lobby", "matchmaking_session_lobby")
 
-	if lobby:is_joined() then
-		self._lobby_client = lobby
-		self._server_lobby = nil
 		self._handle_new_lobby_connection = true
 
-		Managers.account:set_current_lobby(self._lobby_client.lobby)
+		Managers.account:set_current_lobby(join_lobby.lobby)
 
 		if self._lobby_joined_callback then
 			self._lobby_joined_callback()
@@ -1238,11 +1244,8 @@ StateLoading._update_server_lobby_join = function (self, dt, t)
 		end
 
 		return
-	elseif lobby:failed() then
-		self._server_lobby:destroy()
-
-		self._server_lobby = nil
-
+	elseif join_lobby:failed() then
+		Managers.lobby:destroy_lobby("matchmaking_join_lobby")
 		self:create_popup("failure_start_join_server", "popup_error_topic", "restart_as_server", "menu_accept")
 		Managers.transition:fade_out(GameSettings.transition_fade_out_speed)
 
@@ -1252,12 +1255,9 @@ StateLoading._update_server_lobby_join = function (self, dt, t)
 	end
 
 	if t > self._lobby_finder_timeout and not self._popup_id then
-		local name = self._server_lobby:id()
+		local name = join_lobby:id()
 
-		self._server_lobby:destroy()
-
-		self._server_lobby = nil
-
+		Managers.lobby:destroy_lobby("matchmaking_join_lobby")
 		self:create_popup("failure_start_join_server_timeout", "failure_find_host", "restart_as_server", "menu_accept", name)
 
 		self._wanted_state = StateTitleScreen
@@ -1268,9 +1268,9 @@ StateLoading._update_loading_screen = function (self, dt, t)
 	local permission_to_go_to_next_state
 
 	if self._network_server then
-		local lobby_host = self._lobby_host
+		local lobby = Managers.lobby:get_lobby("matchmaking_session_lobby")
 
-		if lobby_host and lobby_host:is_joined() and self._network_server:waiting_to_enter_game() then
+		if lobby:is_joined() and self._network_server:waiting_to_enter_game() then
 			permission_to_go_to_next_state = true
 		end
 	elseif self._network_client and self._network_client.state == NetworkClientStates.waiting_enter_game then
@@ -1681,12 +1681,11 @@ StateLoading.on_exit = function (self, application_shutdown)
 		loading_context.ingame_level_object, self._ingame_level_object = self._ingame_level_object, loading_context.ingame_level_object
 
 		local level_transition_handler = Managers.level_transition_handler
+		local lobby = Managers.lobby:get_lobby("matchmaking_session_lobby")
 
-		if self._lobby_host then
-			loading_context.lobby_host = self._lobby_host
-
+		if lobby.is_host then
 			local level_key = level_transition_handler:get_current_level_keys()
-			local stored_lobby_host_data = self._lobby_host:get_stored_lobby_data() or {}
+			local stored_lobby_host_data = lobby:get_stored_lobby_data() or {}
 
 			stored_lobby_host_data.mission_id = level_key
 			stored_lobby_host_data.unique_server_name = stored_lobby_host_data.unique_server_name or LobbyAux.get_unique_server_name()
@@ -1704,10 +1703,10 @@ StateLoading.on_exit = function (self, application_shutdown)
 
 			stored_lobby_host_data.host_type = host_type
 
-			self._lobby_host:set_lobby_data(stored_lobby_host_data)
+			lobby:set_lobby_data(stored_lobby_host_data)
 
-			if self._lobby_host:is_dedicated_server() then
-				self._lobby_host:set_level_name(Localize(LevelSettings[level_key].display_name))
+			if lobby:is_dedicated_server() then
+				lobby:set_level_name(Localize(LevelSettings[level_key].display_name))
 			end
 
 			loading_context.network_server = self._network_server
@@ -1715,7 +1714,6 @@ StateLoading.on_exit = function (self, application_shutdown)
 			self._network_server:unregister_rpcs()
 			self._network_server.voip:set_input_manager(nil)
 		else
-			loading_context.lobby_client = self._lobby_client
 			loading_context.network_client = self._network_client
 
 			self._network_client:unregister_rpcs()
@@ -2075,36 +2073,25 @@ StateLoading._destroy_network = function (self, application_shutdown)
 		self._lobby_finder = nil
 	end
 
-	if self._server_lobby then
-		self._server_lobby:destroy()
-
-		self._server_lobby = nil
-	end
-
-	if self._lobby_client then
-		self._lobby_client:destroy()
-
-		self._lobby_client = nil
-
-		Managers.account:set_current_lobby(nil)
-	end
-
 	self:_destroy_network_handler(application_shutdown)
 
-	if self._lobby_host then
-		self._lobby_host:destroy()
+	if Managers.lobby:query_lobby("matchmaking_join_lobby") then
+		Managers.lobby:destroy_lobby("matchmaking_join_lobby")
+	end
 
-		self._lobby_host = nil
+	local lobby = Managers.lobby:query_lobby("matchmaking_session_lobby")
 
+	if lobby then
+		Managers.lobby:destroy_lobby("matchmaking_session_lobby")
 		Managers.account:set_current_lobby(nil)
 	end
 
 	if rawget(_G, "LobbyInternal") then
 		if Managers.party:has_party_lobby() then
-			local lobby = Managers.party:steal_lobby()
+			local stolen_lobby_data = Managers.party:steal_lobby()
 
-			if type(lobby) ~= "table" then
-				LobbyInternal.leave_lobby(lobby)
+			if type(stolen_lobby_data) ~= "table" then
+				LobbyInternal.leave_lobby(stolen_lobby_data)
 			end
 		end
 
@@ -2229,12 +2216,14 @@ StateLoading.setup_join_lobby = function (self, optional_wait_time, setup_voip)
 		return
 	end
 
-	if not self._lobby_client then
+	local lobby = Managers.lobby:query_lobby("matchmaking_session_lobby")
+
+	if not lobby then
 		local network_options = LobbySetup.network_options()
 		local loading_context = self.parent.loading_context
 
 		if loading_context.join_lobby_data then
-			self._lobby_client = LobbyClient:new(network_options, self.parent.loading_context.join_lobby_data)
+			lobby = Managers.lobby:make_lobby(LobbyClient, "matchmaking_session_lobby", "StateLoading (setup_join_lobby)", network_options, self.parent.loading_context.join_lobby_data)
 		elseif loading_context.join_server_data then
 			local user_data = {
 				network_options = network_options,
@@ -2249,8 +2238,8 @@ StateLoading.setup_join_lobby = function (self, optional_wait_time, setup_voip)
 		self.parent.loading_context.join_lobby_data = nil
 		self._handle_new_lobby_connection = true
 
-		if self._lobby_client ~= nil then
-			Managers.account:set_current_lobby(self._lobby_client.lobby)
+		if lobby ~= nil then
+			Managers.account:set_current_lobby(lobby.lobby)
 		end
 
 		local main_time = Managers.time:time("main")
@@ -2261,7 +2250,7 @@ StateLoading.setup_join_lobby = function (self, optional_wait_time, setup_voip)
 	if setup_voip then
 		local is_server = false
 
-		self._voip = Voip:new(is_server, self._lobby_client)
+		self._voip = Voip:new(is_server, lobby)
 	end
 end
 
@@ -2334,8 +2323,7 @@ StateLoading.setup_lobby_host = function (self, wait_for_joined_callback, platfo
 
 	printf("StateLoading:setup_lobby_host - creating lobby_host with network_options: %s platform_lobby: %s", network_options_info, platform_lobby_info)
 
-	self._lobby_host = LobbyHost:new(network_options, platform_lobby, xbox_lobby_session_name, xbox_session_template_name)
-
+	local lobby = Managers.lobby:make_lobby(LobbyHost, "matchmaking_session_lobby", "StateLoading (setup_lobby_host)", network_options, platform_lobby, xbox_lobby_session_name, xbox_session_template_name)
 	local level_transition_handler = Managers.level_transition_handler
 
 	if not level_transition_handler:has_next_level() then
@@ -2364,7 +2352,7 @@ StateLoading.setup_lobby_host = function (self, wait_for_joined_callback, platfo
 		self:_create_network_server()
 	end
 
-	Managers.account:set_current_lobby(self._lobby_host.lobby)
+	Managers.account:set_current_lobby(lobby.lobby)
 
 	self._waiting_for_joined_callback = wait_for_joined_callback
 end
@@ -2380,10 +2368,11 @@ StateLoading.host_joined = function (self)
 end
 
 StateLoading._create_network_server = function (self)
+	local lobby = Managers.lobby:get_lobby("matchmaking_session_lobby")
 	local loading_context = self.parent.loading_context
 	local wanted_profile_index = self.parent.loading_context.wanted_profile_index
 
-	self._network_server = NetworkServer:new(Managers.player, self._lobby_host, wanted_profile_index)
+	self._network_server = NetworkServer:new(Managers.player, lobby, wanted_profile_index)
 	self._network_transmit = loading_context.network_transmit or NetworkTransmit:new(true, self._network_server.server_peer_id)
 
 	self._network_transmit:set_network_event_delegate(self._network_event_delegate)
@@ -2507,12 +2496,10 @@ StateLoading.clear_network_loading_context = function (self)
 
 	self:_destroy_network_handler(false, loading_context)
 
-	if self._lobby_host then
-		self._lobby_host:destroy()
+	local lobby = Managers.lobby:query_lobby("matchmaking_session_lobby")
 
-		self._lobby_host = nil
-		self.parent.loading_context.lobby_host = nil
-
+	if lobby and lobby.is_host then
+		Managers.lobby:destroy_lobby("matchmaking_session_lobby")
 		Managers.account:set_current_lobby(nil)
 	end
 
@@ -2520,12 +2507,18 @@ StateLoading.clear_network_loading_context = function (self)
 end
 
 StateLoading.setup_network_client = function (self, clear_peer_state, lobby_client)
-	self._lobby_client = lobby_client or self._lobby_client
+	if not lobby_client then
+		lobby_client = Managers.lobby:query_lobby("matchmaking_session_lobby")
+	elseif lobby_client.lobby ~= nil then
+		Managers.lobby:register_existing_lobby(lobby_client, "matchmaking_session_lobby", "StateLoading (setup_network_client)")
+	end
 
-	if self._lobby_client.lobby == nil then
+	if not lobby_client or lobby_client.lobby == nil then
 		self._wanted_state = StateTitleScreen
-		self._lobby_client = nil
-		self.parent.loading_context.lobby_client = nil
+
+		if Managers.lobby:query_lobby("matchmaking_session_lobby") then
+			Managers.lobby:destroy_lobby("matchmaking_session_lobby")
+		end
 
 		self:create_popup("failure_start_join_server", "popup_error_topic", "restart_as_server", "menu_accept")
 
@@ -2534,11 +2527,11 @@ StateLoading.setup_network_client = function (self, clear_peer_state, lobby_clie
 
 	Application.warning("Setting up network client")
 
-	local host = self._lobby_client:lobby_host()
+	local host = lobby_client:lobby_host()
 	local wanted_profile_index = self.parent.loading_context.wanted_profile_index
 	local wanted_party_index = self.parent.loading_context.wanted_party_index
 
-	self._network_client = NetworkClient:new(host, wanted_profile_index, wanted_party_index, clear_peer_state, self._lobby_client, self._voip)
+	self._network_client = NetworkClient:new(host, wanted_profile_index, wanted_party_index, clear_peer_state, lobby_client, self._voip)
 	self._network_transmit = NetworkTransmit:new(false, self._network_client.server_peer_id)
 
 	self._network_transmit:set_network_event_delegate(self._network_event_delegate)
@@ -2554,9 +2547,8 @@ StateLoading.setup_network_client = function (self, clear_peer_state, lobby_clie
 
 	loading_context.network_client = self._network_client
 	loading_context.network_transmit = self._network_transmit
-	loading_context.lobby_client = self._lobby_client
 
-	local lobby = self._lobby_client.lobby
+	local lobby = lobby_client.lobby
 
 	Managers.account:set_current_lobby(lobby)
 
@@ -2568,9 +2560,10 @@ StateLoading.get_current_level_keys = function (self)
 end
 
 StateLoading.set_lobby_host_data = function (self, level_key)
-	if self._lobby_host then
-		local lobby_host = self._lobby_host
-		local stored_lobby_host_data = lobby_host:get_stored_lobby_data() or {}
+	local lobby = Managers.lobby:query_lobby("matchmaking_session_lobby")
+
+	if lobby and lobby.is_host then
+		local stored_lobby_host_data = lobby:get_stored_lobby_data() or {}
 		local matchmaking_type
 
 		if IS_PS4 then
@@ -2640,29 +2633,30 @@ StateLoading.set_lobby_host_data = function (self, level_key)
 			stored_lobby_host_data.eac_authorized = eac_authorized and "true" or "false"
 		end
 
-		lobby_host:set_lobby_data(stored_lobby_host_data)
+		lobby:set_lobby_data(stored_lobby_host_data)
 	end
 end
 
 StateLoading.start_matchmaking = function (self)
-	assert(self._lobby_host)
+	local lobby = Managers.lobby:get_lobby("matchmaking_session_lobby")
 
-	local lobby_host = self._lobby_host
-	local stored_lobby_host_data = lobby_host:get_stored_lobby_data() or {}
+	assert(lobby.is_host)
+
+	local stored_lobby_host_data = lobby:get_stored_lobby_data() or {}
 
 	stored_lobby_host_data.matchmaking = "true"
 
-	lobby_host:set_lobby_data(stored_lobby_host_data)
+	lobby:set_lobby_data(stored_lobby_host_data)
 end
 
 StateLoading.get_lobby = function (self)
-	local lobby = self._lobby_host or self._lobby_client
+	local lobby = Managers.lobby:query_lobby("matchmaking_session_lobby")
 
 	return lobby
 end
 
 StateLoading.has_joined = function (self)
-	local lobby = self._lobby_host or self._lobby_client
+	local lobby = Managers.lobby:query_lobby("matchmaking_session_lobby")
 
 	return lobby and lobby:is_joined()
 end

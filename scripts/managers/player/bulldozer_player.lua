@@ -152,7 +152,7 @@ BulldozerPlayer.spawn_unit = function (self, unit_name, extension_init_data, uni
 	end
 end
 
-BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is_initial_spawn, ammo_melee, ammo_ranged, healthkit, potion, grenade, ability_cooldown_percent_int, additional_items, initial_buff_names)
+BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is_initial_spawn, ammo_melee, ammo_ranged, healthkit, potion, grenade, ability_cooldown_percent_int, additional_items, initial_buff_names, optional_respawn_unit)
 	local profile_index = self:profile_index()
 	local profile = SPProfiles[profile_index]
 	local careers = profile.careers
@@ -233,6 +233,7 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 			wounds = player_wounds,
 			profile_id = profile_index,
 			player = self,
+			respawn_unit = optional_respawn_unit,
 		},
 		hit_reaction_system = {
 			hit_reaction_template = "player",
@@ -392,6 +393,7 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 	player_manager:assign_unit_ownership(unit, self, is_player_unit)
 	Managers.state.event:trigger("level_start_local_player_spawned", is_initial_spawn, unit, side, breed)
 	Managers.telemetry_events:player_spawned(self)
+	Managers.state.event:trigger("new_player_unit", self, unit, self:unique_id())
 
 	if not breed.is_hero then
 		Unit.create_actor(unit, "enemy_collision", false)

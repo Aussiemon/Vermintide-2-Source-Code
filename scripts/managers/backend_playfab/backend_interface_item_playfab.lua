@@ -15,7 +15,6 @@ BackendInterfaceItemPlayfab.init = function (self, backend_mirror)
 	self._selected_career_custom_loadouts = {}
 	self._bot_loadouts = {}
 	self._dirty_weapon_pose_skins = {}
-	self._modified_templates = {}
 	self._last_id = 0
 	self._delete_deeds_request = {}
 	self._is_deleting_deeds = false
@@ -316,18 +315,6 @@ end
 
 BackendInterfaceItemPlayfab.set_properties_serialized = function (self, backend_id, properties)
 	return
-end
-
-BackendInterfaceItemPlayfab.get_properties = function (self, backend_id)
-	local item = self:get_item_from_id(backend_id)
-
-	if item then
-		local properties = item.properties
-
-		return properties
-	end
-
-	return nil
 end
 
 BackendInterfaceItemPlayfab.get_traits = function (self, backend_id)
@@ -884,23 +871,8 @@ end
 BackendInterfaceItemPlayfab.get_item_template = function (self, item_data, backend_id)
 	local template_name = item_data.temporary_template or item_data.template
 	local item_template = WeaponUtils.get_weapon_template(template_name)
-	local modified_templates = self._modified_templates
 
 	if item_template then
-		if backend_id then
-			if not modified_templates[backend_id] then
-				modified_templates[backend_id] = {}
-			end
-
-			if not modified_templates[backend_id][item_template] then
-				table.clear(modified_templates[backend_id])
-
-				modified_templates[backend_id][item_template] = GearUtils.apply_properties_to_item_template(item_template, backend_id)
-			end
-
-			return modified_templates[backend_id][item_template]
-		end
-
 		return item_template
 	end
 

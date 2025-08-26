@@ -176,6 +176,13 @@ if not DialogueLookup then
 		"dialogues/generated/lookup_weather_vo",
 		"dialogues/generated/lookup_fleur_conversations",
 		"dialogues/generated/lookup_hub_level_specific_greetings",
+		"dialogues/generated/lookup_wood_elf_dlc_dwarf_fest",
+		"dialogues/generated/lookup_npc_dlc_dwarf_fest",
+		"dialogues/generated/lookup_witch_hunter_dlc_dwarf_fest",
+		"dialogues/generated/lookup_hero_conversations_dlc_dwarf_fest",
+		"dialogues/generated/lookup_dwarf_ranger_dlc_dwarf_fest",
+		"dialogues/generated/lookup_empire_soldier_dlc_dwarf_fest",
+		"dialogues/generated/lookup_bright_wizard_dlc_dwarf_fest",
 	}
 
 	DLCUtils.append("dialogue_lookup", dialogue_lookup_tables)
@@ -387,6 +394,7 @@ NetworkLookup.husks = {
 	"units/beings/enemies/chaos_warrior_boss/chr_chaos_warrior_boss",
 	"units/beings/enemies/chaos_warrior_bulwark/chr_chaos_warrior_bulwark",
 	"units/beings/enemies/chaos_troll/chr_chaos_troll",
+	"units/beings/enemies/chaos_troll_chief/chr_chaos_troll_chief",
 	"units/beings/enemies/chaos_tentacle/chr_chaos_tentacle",
 	"units/beings/enemies/chaos_tentacle_portal/chr_chaos_tentacle_portal",
 	"units/beings/enemies/chaos_sorcerer/chr_chaos_sorcerer",
@@ -523,6 +531,7 @@ NetworkLookup.husks = {
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_02_3ps",
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_03_3ps",
 	"units/architecture/keep/keep_gamemode_door_03",
+	"units/gameplay/explosive_oil_jug_socket_01",
 }
 
 DLCUtils.append("husk_lookup", NetworkLookup.husks)
@@ -619,6 +628,7 @@ NetworkLookup.go_types = {
 	"engineer_career_data",
 	"priest_career_data",
 	"dialogue_node",
+	"explosive_barrel_socket",
 }
 
 DLCUtils.append("network_go_types", NetworkLookup.go_types)
@@ -808,6 +818,10 @@ local actions_temp = {}
 for _, breed_data in pairs(BreedActions) do
 	for action_name, action_data in pairs(breed_data) do
 		actions_temp[action_name] = true
+
+		if action_data.rage_event then
+			anims_temp[action_data.rage_event] = action_data.rage_event
+		end
 
 		if action_name == "stagger" then
 			local anims_table = action_data.stagger_anims
@@ -1225,7 +1239,9 @@ NetworkLookup.act_keys = create_lookup({
 NetworkLookup.mechanism_keys = create_lookup({}, MechanismSettings)
 NetworkLookup.game_mode_keys = create_lookup({}, GameModeSettings)
 NetworkLookup.fatigue_types = create_lookup({}, PlayerUnitStatusSettings.fatigue_point_costs)
-NetworkLookup.pickup_names = create_lookup({}, AllPickups)
+NetworkLookup.pickup_names = create_lookup({
+	"n/a",
+}, AllPickups)
 NetworkLookup.unlockable_level_keys = table.clone(UnlockableLevels)
 NetworkLookup.pickup_spawn_types = {
 	"spawner",
@@ -1474,16 +1490,11 @@ NetworkLookup.sound_events = {
 	"Play_weapon_ability_pyromancer_skull_shoot",
 	"Play_weapon_ability_pyromancer_skull_shoot_husk",
 	"player_combat_weapon_staff_geiser_fire",
-	"player_combat_weapon_bow_fire_light_poison",
-	"player_combat_weapon_bow_fire_heavy_poison",
 	"player_combat_weapon_bow_fire_light_homing",
-	"player_combat_weapon_bow_fire_heavy_homing",
 	"player_combat_weapon_bow_fire_heavy",
 	"player_combat_weapon_bow_fire_light",
 	"player_combat_weapon_shortbow_fire_light_poison",
 	"player_combat_weapon_shortbow_fire_heavy_poison",
-	"player_combat_weapon_shortbow_fire_light_homing",
-	"player_combat_weapon_shortbow_fire_heavy_homing",
 	"player_combat_weapon_shortbow_fire_heavy",
 	"player_combat_weapon_shortbow_fire_light",
 	"blunt_hit_shield_wood",
@@ -1603,6 +1614,7 @@ NetworkLookup.sound_events = {
 	"Play_boon_aoe_zone_explode_healing",
 	"Play_boon_aoe_zone_explode_power",
 	"Play_vs_rat_ogre_jump_3p",
+	"Play_dwarf_fest_boss_sorcerer_shield_spawn",
 }
 
 do
@@ -2336,6 +2348,8 @@ NetworkLookup.dialogue_profiles = {
 	"vs_pactsworn_mission_giver",
 	"krask_minion",
 	"vs_heroes_mission_giver",
+	"npc_cousin",
+	"npc_dwarf_revellers",
 }
 
 table.append_unique(NetworkLookup.dialogue_profiles, table.values(table.select_map(SPProfiles, function (_, profile)

@@ -160,6 +160,16 @@ PerceptionUtils.perception_standard_bearer = function (unit, blackboard, breed, 
 	end
 end
 
+PerceptionUtils.perception_tether_sorcerer = function (unit, blackboard, breed, pick_target_func, t)
+	local best_enemy, dist = pick_target_func(unit, blackboard, breed)
+
+	if best_enemy ~= blackboard.target_unit then
+		blackboard.target_unit = best_enemy
+		blackboard.target_unit_found_time = t
+		blackboard.target_dist = dist
+	end
+end
+
 PerceptionUtils.perception_pack_master = function (unit, blackboard, breed, pick_target_func, t)
 	if blackboard.drag_target_unit then
 		return

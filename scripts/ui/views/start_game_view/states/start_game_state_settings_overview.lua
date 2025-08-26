@@ -511,7 +511,12 @@ StartGameStateSettingsOverview.set_layout_by_name = function (self, name)
 
 	local index = table.find_by_key(self._window_layouts, "name", name)
 
-	fassert(index, "[StartGameStateSettingsOverview]:set_layout_by_name() - Could not find a layout with name %s", name)
+	if not index then
+		ferror("[StartGameStateSettingsOverview]:set_layout_by_name() - Could not find a layout with name %s. Layouts: (%s)", name, table.concat(table.select_array(self._window_layouts, function (_, l)
+			return l.name
+		end), ", "))
+	end
+
 	self:set_layout(index)
 end
 

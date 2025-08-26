@@ -327,7 +327,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_drachenfels_update = function (unit, b
 		local radius = 2
 		local height = 1
 		local half_height = height * 0.5
-		local size = Vector3(radius, half_height, radius)
+		local size = Vector3(0, radius, half_height)
 
 		bot_threat_position = bot_threat_position - Vector3.up() * half_height
 

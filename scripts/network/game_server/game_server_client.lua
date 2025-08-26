@@ -32,6 +32,7 @@ GameServerLobbyClient.init = function (self, network_options, game_server_data, 
 	self.network_hash = self._network_hash
 	self._is_party_host = not Managers.state.network or Managers.state.network.is_server
 	self._advertising_playing = true
+	self.is_host = false
 end
 
 GameServerLobbyClient.lobby_host = function (self)

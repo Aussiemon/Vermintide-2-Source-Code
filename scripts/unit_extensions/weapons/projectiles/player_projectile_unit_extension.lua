@@ -1405,7 +1405,7 @@ PlayerProjectileUnitExtension._spawn_pickup_projectile = function (self, pickup_
 	local network_velocity = AiAnimUtils.velocity_network_scale(velocity, true)
 	local network_angular_velocity = AiAnimUtils.velocity_network_scale(angular_velocity_transformed, true)
 
-	Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_pickup_projectile", pickup_unit_name_id, pickup_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, pickup_spawn_type_id, spawn_limit)
+	Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_pickup_projectile", pickup_unit_name_id, pickup_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, pickup_spawn_type_id, spawn_limit, false, false)
 end
 
 PlayerProjectileUnitExtension.do_aoe = function (self, aoe_data, position, network_sync)

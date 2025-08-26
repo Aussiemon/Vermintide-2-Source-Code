@@ -17,8 +17,10 @@ BTLeaveHooks.check_if_victim_was_grabbed = function (unit, blackboard, t)
 		local status_extension = ScriptUnit.has_extension(blackboard.victim_grabbed, "status_system")
 		local is_grabbed = status_extension and status_extension:is_grabbed_by_chaos_spawn()
 
-		if blackboard.stagger or is_grabbed and not HEALTH_ALIVE[unit] then
-			StatusUtils.set_grabbed_by_chaos_spawn_network(blackboard.victim_grabbed, false, unit)
+		if blackboard.stagger or not HEALTH_ALIVE[unit] then
+			if is_grabbed then
+				StatusUtils.set_grabbed_by_chaos_spawn_network(blackboard.victim_grabbed, false, unit)
+			end
 
 			blackboard.has_grabbed_victim = nil
 			blackboard.victim_grabbed = nil
@@ -100,7 +102,7 @@ BTLeaveHooks.stormfiend_boss_rage_leave = function (unit, blackboard, t)
 	health_extension.is_invincible = false
 
 	GameSession.set_game_object_field(game, go_id, "show_health_bar", true)
-	Managers.state.event:trigger("boss_health_bar_set_prioritized_unit", unit, "lord")
+	Managers.state.event:trigger("boss_health_bar_register_unit", unit, "lord")
 
 	local conflict_director = Managers.state.conflict
 	local level_analysis = conflict_director.level_analysis
@@ -214,7 +216,7 @@ BTLeaveHooks.on_lord_intro_leave = function (unit, blackboard, t)
 		local go_id = Managers.state.unit_storage:go_id(unit)
 
 		GameSession.set_game_object_field(game, go_id, "show_health_bar", true)
-		Managers.state.event:trigger("boss_health_bar_set_prioritized_unit", unit, "lord")
+		Managers.state.event:trigger("boss_health_bar_register_unit", unit, "lord")
 		Managers.state.conflict:add_angry_boss(1, blackboard)
 
 		blackboard.is_angry = true
@@ -235,7 +237,7 @@ BTLeaveHooks.on_lord_warlord_intro_leave = function (unit, blackboard, t)
 		local go_id = Managers.state.unit_storage:go_id(unit)
 
 		GameSession.set_game_object_field(game, go_id, "show_health_bar", true)
-		Managers.state.event:trigger("boss_health_bar_set_prioritized_unit", unit, "lord")
+		Managers.state.event:trigger("boss_health_bar_register_unit", unit, "lord")
 		Managers.state.conflict:add_angry_boss(1, blackboard)
 
 		blackboard.is_angry = true

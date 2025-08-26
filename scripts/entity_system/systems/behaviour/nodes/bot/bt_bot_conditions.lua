@@ -1017,17 +1017,7 @@ BTConditions.bot_in_melee_range = function (blackboard)
 		melee_range = math.lerp(12, 5, party_danger)
 	end
 
-	local target_aim_position
-	local override_aim_node_name = breed and breed.bot_melee_aim_node
-
-	if override_aim_node_name then
-		local override_aim_node = Unit.node(target_unit, override_aim_node_name)
-
-		target_aim_position = Unit.world_position(target_unit, override_aim_node)
-	else
-		target_aim_position = POSITION_LOOKUP[target_unit]
-	end
-
+	local target_aim_position = AiUtils.bot_melee_aim_pos(self_unit, target_unit)
 	local offset = target_aim_position - POSITION_LOOKUP[self_unit]
 	local distance_squared = Vector3.length_squared(offset)
 	local in_range = distance_squared < melee_range^2

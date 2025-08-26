@@ -455,7 +455,7 @@ DamageWaveTemplates.templates.thornsister_thorn_wall_push = {
 			for i = 1, #segments do
 				local spawn_position = segments[i]:unbox()
 
-				Managers.state.unit_spawner:request_spawn_network_unit("thornsister_thorn_wall_unit", spawn_position, rotation, source_unit, wall_index, i)
+				Managers.state.unit_spawner:request_spawn_template_unit("thornsister_thorn_wall_unit", spawn_position, rotation, source_unit, wall_index, i)
 			end
 		end
 	end,

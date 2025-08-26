@@ -29,6 +29,7 @@ LobbyHost.init = function (self, network_options, lobby)
 	self.peer_id = Network.peer_id()
 	self._network_initialized = false
 	self.platform = PLATFORM
+	self.is_host = true
 end
 
 LobbyHost.kick_all_except = function (self, ignored_peers)

@@ -29,3 +29,7 @@ end
 DecalManager.clear_all_of_type = function (self, pool_name)
 	EngineOptimizedManagers.decal_manager_clear_all_of_type(self._decal_system, pool_name)
 end
+
+DecalManager.move_decals = function (self, from_unit, to_unit)
+	EngineOptimizedManagers.decal_manager_move_decals(self._decal_system, from_unit, to_unit)
+end

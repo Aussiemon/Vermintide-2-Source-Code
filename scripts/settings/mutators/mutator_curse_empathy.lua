@@ -346,11 +346,14 @@ return {
 		for unit, damage_data in pairs(data.damage_buffer) do
 			if ALIVE[unit] then
 				local damaging_unit = damage_data.damaging_unit
-				local hit_zone_name = "full"
-				local hit_position = Vector3.up()
-				local damage_dir = Vector3.up()
 
-				DamageUtils.add_damage_network(unit, damaging_unit, damage_data.damage, hit_zone_name, CURSE_DAMAGE_TYPE, hit_position, damage_dir, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
+				if Unit.alive(damaging_unit) then
+					local hit_zone_name = "full"
+					local hit_position = Vector3.up()
+					local damage_dir = Vector3.up()
+
+					DamageUtils.add_damage_network(unit, damaging_unit, damage_data.damage, hit_zone_name, CURSE_DAMAGE_TYPE, hit_position, damage_dir, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1)
+				end
 			end
 
 			data.damage_buffer[unit] = nil

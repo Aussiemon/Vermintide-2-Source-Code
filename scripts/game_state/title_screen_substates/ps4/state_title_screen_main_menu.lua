@@ -803,7 +803,7 @@ StateTitleScreenMainMenu.cb_np_auth_data_received = function (self, result)
 end
 
 StateTitleScreenMainMenu._signin_to_backend = function (self)
-	local mechanism_name = Development.parameter("mechanism") or SaveData.last_mechanism or "adventure"
+	local mechanism_name = Development.parameter("mechanism") or "adventure"
 	local mechanism_settings = MechanismSettings[mechanism_name]
 	local playfab_mirror = mechanism_settings and mechanism_settings.playfab_mirror
 	local mirror = playfab_mirror or "PlayFabMirrorAdventure"

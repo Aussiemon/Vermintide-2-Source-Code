@@ -46,13 +46,15 @@ TutorialSystem.init = function (self, entity_system_creation_context, system_nam
 	self.health_extensions = {}
 	self.raycast_units = {}
 	self._objective_tooltip_prioritized_list = nil
+	self.frozen_unit_extension_data = {}
+	self.unit_extension_data = {}
 	self.gui = World.create_screen_gui(self.world, "material", "materials/fonts/gw_fonts", "immediate")
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
 
 	self.network_event_delegate = network_event_delegate
 
-	network_event_delegate:register(self, "rpc_tutorial_message", "rpc_pacing_changed", "rpc_objective_unit_set_active", "rpc_prioritize_objective_tooltip")
+	network_event_delegate:register(self, "rpc_tutorial_message", "rpc_pacing_changed", "rpc_objective_unit_set_active", "rpc_prioritize_objective_tooltip", "rpc_objective_unit_set_always_show")
 
 	SaveData.seen_handbook_popups = SaveData.seen_handbook_popups or {}
 
@@ -161,20 +163,88 @@ TutorialSystem.on_add_extension = function (self, world, unit, extension_name, e
 
 		extension.unit = unit
 		extension.active = false
+		extension.proxy_active = extension_init_data.proxy_active
 		extension.set_active = activate_func
 		extension.server_only = server_only
 		extension.network_synced = network_synced
-		extension.always_show = Unit.get_data(unit, "always_show")
+		extension.always_show = extension_init_data.always_show or Unit.get_data(unit, "always_show")
+
+		extension.set_always_show = function (extension, show)
+			extension.always_show = show
+
+			if Managers.player.is_server and not server_only then
+				local network_synced = extension.network_synced
+
+				if network_synced then
+					local network_manager = Managers.state.network
+					local unit_id, is_level_unit = network_manager:game_object_or_level_id(extension.unit)
+
+					network_manager.network_transmit:send_rpc_clients("rpc_objective_unit_set_always_show", unit_id, is_level_unit, show)
+				end
+			end
+		end
 	end
 
-	POSITION_LOOKUP[unit] = Unit.world_position(unit, 0)
+	if not POSITION_LOOKUP[unit] then
+		POSITION_LOOKUP[unit] = Unit.world_position(unit, 0)
+	end
 
 	ScriptUnit.set_extension(unit, "tutorial_system", extension, dummy_input)
+
+	self.unit_extension_data[unit] = extension
 
 	return extension
 end
 
 TutorialSystem.on_remove_extension = function (self, unit, extension_name)
+	self:_cleanup_extension(unit)
+
+	self.frozen_unit_extension_data[unit] = nil
+
+	ScriptUnit.remove_extension(unit, "tutorial_system")
+end
+
+TutorialSystem.on_freeze_extension = function (self, unit, extension_name)
+	self:freeze(unit, extension_name)
+end
+
+TutorialSystem.freeze = function (self, unit, extension_name, reason)
+	local frozen_extensions = self.frozen_unit_extension_data
+
+	if frozen_extensions[unit] then
+		return
+	end
+
+	local extension = self.unit_extension_data[unit]
+
+	fassert(extension, "Unit to freeze didn't have unfrozen extension")
+	self:_cleanup_extension(unit)
+
+	frozen_extensions[unit] = extension
+end
+
+TutorialSystem.unfreeze = function (self, unit, extension_name, data)
+	local extension = self.frozen_unit_extension_data[unit]
+
+	fassert(extension, "Unit to unfreeze didn't have frozen extension")
+
+	self.frozen_unit_extension_data[unit] = nil
+	self.unit_extension_data[unit] = extension
+
+	if extension_name == "ObjectiveHealthTutorialExtension" then
+		Managers.state.event:trigger("tutorial_event_add_health_bar", unit)
+
+		self.health_extensions[unit] = extension
+	elseif extension_name == "PlayerTutorialExtension" then
+		self.player_units[unit] = extension
+	end
+
+	if not POSITION_LOOKUP[unit] then
+		POSITION_LOOKUP[unit] = Unit.world_position(unit, 0)
+	end
+end
+
+TutorialSystem._cleanup_extension = function (self, unit)
 	if self.health_extensions[unit] then
 		self.health_extensions[unit] = nil
 
@@ -183,9 +253,13 @@ TutorialSystem.on_remove_extension = function (self, unit, extension_name)
 
 	self.player_units[unit] = nil
 
-	ScriptUnit.remove_extension(unit, "tutorial_system")
+	local extension = self.unit_extension_data[unit]
 
-	POSITION_LOOKUP[unit] = nil
+	if extension and extension.active then
+		extension:set_active(false)
+	end
+
+	self.unit_extension_data[unit] = nil
 end
 
 TutorialSystem.physics_async_update = function (self, context, t)
@@ -564,15 +638,26 @@ end
 
 TutorialSystem.rpc_objective_unit_set_active = function (self, channel_id, level_object_id, is_level_unit, activate)
 	local unit = Managers.state.network:game_object_or_level_unit(level_object_id, is_level_unit)
-	local extension = ScriptUnit.extension(unit, "tutorial_system")
+	local extension = ScriptUnit.has_extension(unit, "tutorial_system")
 
-	extension:set_active(activate)
+	if extension then
+		extension:set_active(activate)
+	end
 end
 
 TutorialSystem.rpc_prioritize_objective_tooltip = function (self, channel_id, prioritized_objective_tooltip_id)
 	local prioritized_objective_tooltip = NetworkLookup.objective_tooltips[prioritized_objective_tooltip_id]
 
 	self:prioritize_objective_tooltip(prioritized_objective_tooltip)
+end
+
+TutorialSystem.rpc_objective_unit_set_always_show = function (self, channel_id, object_id, is_level_unit, show)
+	local unit = Managers.state.network:game_object_or_level_unit(object_id, is_level_unit)
+	local extension = ScriptUnit.has_extension(unit, "tutorial_system")
+
+	if extension then
+		extension:set_always_show(show)
+	end
 end
 
 TutorialSystem.flow_callback_show_health_bar = function (self, unit, show)

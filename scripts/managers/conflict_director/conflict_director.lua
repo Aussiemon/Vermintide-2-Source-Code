@@ -1958,6 +1958,7 @@ ConflictDirector._spawn_unit = function (self, breed, spawn_pos, spawn_rot, spaw
 		health_system = {
 			health = health,
 			optional_data = optional_data,
+			breed = breed,
 		},
 		ai_system = {
 			size_variation = 1,
@@ -3724,7 +3725,7 @@ ConflictDirector.boss_event_running = function (self, side_id)
 
 	local num_spawned_by_breed = self._conflict_data_by_side[side_id].num_spawned_by_breed
 
-	return num_spawned_by_breed.skaven_rat_ogre > 0 or num_spawned_by_breed.skaven_stormfiend > 0 or num_spawned_by_breed.chaos_troll > 0 or num_spawned_by_breed.chaos_spawn > 0 or num_spawned_by_breed.beastmen_minotaur > 0
+	return num_spawned_by_breed.skaven_rat_ogre > 0 or num_spawned_by_breed.skaven_stormfiend > 0 or num_spawned_by_breed.chaos_troll > 0 or num_spawned_by_breed.chaos_spawn > 0 or num_spawned_by_breed.beastmen_minotaur > 0 or num_spawned_by_breed.chaos_troll_chief > 0
 end
 
 ConflictDirector.angry_boss = function (self)

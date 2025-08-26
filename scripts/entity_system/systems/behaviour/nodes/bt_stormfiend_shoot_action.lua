@@ -273,6 +273,9 @@ BTStormfiendShootAction.init_attack = function (self, unit, blackboard, action, 
 		data.attack_animation = attack_animation
 		data.aim_constraint_animations = action.aim_constraint_animations[attack_arm]
 		data.hit_enemies = {}
+		data.shoot_threat = {
+			rotation = QuaternionBox(),
+		}
 
 		local game = network_manager:game()
 		local go_id = Managers.state.unit_storage:go_id(unit)
@@ -347,6 +350,12 @@ BTStormfiendShootAction.leave = function (self, unit, blackboard, t, reason, des
 		if action.stop_shoot_sfx then
 			WwiseUtils.trigger_unit_event(blackboard.world, action.stop_shoot_sfx, unit, muzzle_node)
 		end
+	end
+
+	if data.shoot_threat and data.shoot_threat.handle then
+		local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
+
+		ai_bot_group_system:remove_threat(data.shoot_threat.handle)
 	end
 
 	table.clear(data)
@@ -446,13 +455,22 @@ BTStormfiendShootAction.run = function (self, unit, blackboard, t, dt)
 		local create_bot_threat_at_t = blackboard.create_bot_threat_at_t
 
 		if create_bot_threat_at_t and create_bot_threat_at_t < t then
-			local attack_rotation = blackboard.attack_rotation:unbox()
+			local attack_rotation
+
+			if data.current_gun_aim_position then
+				local _, direction = self:_fire_from_position_direction(unit, blackboard, data, dt)
+
+				attack_rotation = Quaternion.look(direction)
+			else
+				attack_rotation = blackboard.attack_rotation:unbox()
+			end
+
 			local bot_threats = blackboard.bot_threats_data
 			local current_bot_threat_index = blackboard.current_bot_threat_index
 			local current_bot_threat = bot_threats[current_bot_threat_index]
 			local bot_threat_range = blackboard.bot_threat_range
 
-			self:_create_bot_aoe_threat(unit, attack_rotation, current_bot_threat, bot_threat_range)
+			self:_create_bot_aoe_threat(unit, attack_rotation, current_bot_threat, bot_threat_range, data)
 
 			local next_bot_threat_index = current_bot_threat_index + 1
 			local next_bot_threat = bot_threats[next_bot_threat_index]
@@ -465,6 +483,23 @@ BTStormfiendShootAction.run = function (self, unit, blackboard, t, dt)
 			else
 				blackboard.create_bot_threat_at_t = nil
 				blackboard.current_bot_threat_index = nil
+			end
+		elseif data.shoot_threat.handle then
+			local attack_rotation
+
+			if data.current_gun_aim_position then
+				local _, direction = self:_fire_from_position_direction(unit, blackboard, data, dt)
+
+				attack_rotation = Quaternion.look(direction)
+			else
+				attack_rotation = blackboard.attack_rotation:unbox()
+			end
+
+			if Quaternion.angle(attack_rotation, data.shoot_threat.rotation:unbox()) > math.pi * 0.025 then
+				local bot_threat = data.shoot_threat.bot_threat
+				local bot_threat_range = data.shoot_threat.bot_threat_range
+
+				self:_create_bot_aoe_threat(unit, attack_rotation, bot_threat, bot_threat_range, data)
 			end
 		end
 
@@ -491,13 +526,23 @@ BTStormfiendShootAction._calculate_oobb_collision = function (self, bot_threat, 
 	return oobb_pos, self_rot, size
 end
 
-BTStormfiendShootAction._create_bot_aoe_threat = function (self, unit, attack_rotation, bot_threat, bot_threat_range)
-	local bot_threat_duration = bot_threat.duration
-	local unit_position = POSITION_LOOKUP[unit]
+BTStormfiendShootAction._create_bot_aoe_threat = function (self, unit, attack_rotation, bot_threat, bot_threat_range, shoot_data)
 	local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
+	local unit_position = POSITION_LOOKUP[unit]
+	local shoot_threat_data = shoot_data.shoot_threat
+
+	if shoot_threat_data.handle then
+		ai_bot_group_system:remove_threat(shoot_threat_data.handle)
+	end
+
 	local obstacle_position, obstacle_rotation, obstacle_size = self:_calculate_oobb_collision(bot_threat, bot_threat_range, unit_position, attack_rotation)
 
-	ai_bot_group_system:aoe_threat_created(obstacle_position, "oobb", obstacle_size, obstacle_rotation, bot_threat_duration)
+	shoot_threat_data.handle = ai_bot_group_system:aoe_threat_created(obstacle_position, "oobb", obstacle_size, obstacle_rotation, math.huge)
+
+	shoot_threat_data.rotation:store(attack_rotation)
+
+	shoot_threat_data.bot_threat = bot_threat
+	shoot_threat_data.bot_threat_range = bot_threat_range
 end
 
 BTStormfiendShootAction.constrain_aim = function (self, unit, blackboard, called_by_me)

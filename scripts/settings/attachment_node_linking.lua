@@ -6496,6 +6496,50 @@ AttachmentNodeLinking = {
 			},
 		},
 	},
+	ai_gutter_runner = {
+		right = {
+			wielded = {
+				{
+					source = "j_rightweaponattach",
+					target = 0,
+				},
+			},
+			unwielded = {
+				{
+					source = "j_rightweaponattach",
+					target = 0,
+				},
+			},
+		},
+		left = {
+			wielded = {
+				{
+					source = "j_leftweaponattach",
+					target = 0,
+				},
+			},
+			unwielded = {
+				{
+					source = "j_leftweaponattach",
+					target = 0,
+				},
+			},
+		},
+	},
+	ai_wind_globadier = {
+		wielded = {
+			{
+				source = "j_rightweaponattach",
+				target = 0,
+			},
+		},
+		unwielded = {
+			{
+				source = "j_rightweaponattach",
+				target = 0,
+			},
+		},
+	},
 	ai_outfit_head_ears = {
 		{
 			source = "j_spine1",
@@ -8256,6 +8300,846 @@ AttachmentNodeLinking = {
 		{
 			source = "j_head_end",
 			target = 0,
+		},
+	},
+	ai_body_chaos_troll_0000 = {
+		{
+			source = "root_point",
+			target = "root_point",
+		},
+		{
+			source = "j_hips",
+			target = "j_hips",
+		},
+		{
+			source = "j_leftupleg",
+			target = "j_leftupleg",
+		},
+		{
+			source = "j_rightupleg",
+			target = "j_rightupleg",
+		},
+		{
+			source = "j_spine",
+			target = "j_spine",
+		},
+		{
+			source = "j_bellyeyedown_1",
+			target = "j_bellyeyedown_1",
+		},
+		{
+			source = "j_bellyeyeup_1",
+			target = "j_bellyeyeup_1",
+		},
+		{
+			source = "j_leftleg",
+			target = "j_leftleg",
+		},
+		{
+			source = "j_leftupleg_roll",
+			target = "j_leftupleg_roll",
+		},
+		{
+			source = "j_rightleg",
+			target = "j_rightleg",
+		},
+		{
+			source = "j_rightupleg_roll",
+			target = "j_rightupleg_roll",
+		},
+		{
+			source = "j_spine1",
+			target = "j_spine1",
+		},
+		{
+			source = "j_leftfoot",
+			target = "j_leftfoot",
+		},
+		{
+			source = "j_leftleg_roll",
+			target = "j_leftleg_roll",
+		},
+		{
+			source = "j_leftshoulder",
+			target = "j_leftshoulder",
+		},
+		{
+			source = "j_neck",
+			target = "j_neck",
+		},
+		{
+			source = "j_rightfoot",
+			target = "j_rightfoot",
+		},
+		{
+			source = "j_rightleg_roll",
+			target = "j_rightleg_roll",
+		},
+		{
+			source = "j_rightshoulder",
+			target = "j_rightshoulder",
+		},
+		{
+			source = "j_bellyeyedown_left_anim",
+			target = "j_bellyeyedown_left_anim",
+		},
+		{
+			source = "j_bellyeyedown_mid_anim",
+			target = "j_bellyeyedown_mid_anim",
+		},
+		{
+			source = "j_bellyeyedown_right_anim",
+			target = "j_bellyeyedown_right_anim",
+		},
+		{
+			source = "j_bellyeyeup_left_anim",
+			target = "j_bellyeyeup_left_anim",
+		},
+		{
+			source = "j_bellyeyeup_mid_anim",
+			target = "j_bellyeyeup_mid_anim",
+		},
+		{
+			source = "j_bellyeyeup_right_anim",
+			target = "j_bellyeyeup_right_anim",
+		},
+		{
+			source = "j_head",
+			target = "j_head",
+		},
+		{
+			source = "j_leftarm",
+			target = "j_leftarm",
+		},
+		{
+			source = "j_rightarm",
+			target = "j_rightarm",
+		},
+		{
+			source = "j_leftarm_roll",
+			target = "j_leftarm_roll",
+		},
+		{
+			source = "j_leftforearm",
+			target = "j_leftforearm",
+		},
+		{
+			source = "j_rightarm_roll",
+			target = "j_rightarm_roll",
+		},
+		{
+			source = "j_rightforearm",
+			target = "j_rightforearm",
+		},
+		{
+			source = "j_leftforearm_roll",
+			target = "j_leftforearm_roll",
+		},
+		{
+			source = "j_lefthand",
+			target = "j_lefthand",
+		},
+		{
+			source = "j_rightforearm_roll",
+			target = "j_rightforearm_roll",
+		},
+		{
+			source = "j_righthand",
+			target = "j_righthand",
+		},
+		{
+			source = "j_leftweaponattach",
+			target = "j_leftweaponattach",
+		},
+		{
+			source = "j_rightweaponattach",
+			target = "j_rightweaponattach",
+		},
+		{
+			source = "j_lefttoebase",
+			target = "j_lefttoebase",
+		},
+		{
+			source = "j_righttoebase",
+			target = "j_righttoebase",
+		},
+		{
+			source = "j_lefteye",
+			target = "j_lefteye",
+		},
+		{
+			source = "j_righteye",
+			target = "j_righteye",
+		},
+		{
+			source = "j_jaw_anim",
+			target = "j_jaw_anim",
+		},
+		{
+			source = "j_left_ear_01",
+			target = "j_left_ear_01",
+		},
+		{
+			source = "j_leftcheek_01_anim",
+			target = "j_leftcheek_01_anim",
+		},
+		{
+			source = "j_leftcheek_03_anim",
+			target = "j_leftcheek_03_anim",
+		},
+		{
+			source = "j_leftcrease_01_anim",
+			target = "j_leftcrease_01_anim",
+		},
+		{
+			source = "j_lefteyebrowinner_anim",
+			target = "j_lefteyebrowinner_anim",
+		},
+		{
+			source = "j_lefteyebrowmid_anim",
+			target = "j_lefteyebrowmid_anim",
+		},
+		{
+			source = "j_lefteyebrowouter_anim",
+			target = "j_lefteyebrowouter_anim",
+		},
+		{
+			source = "j_lefteyeliddown_anim",
+			target = "j_lefteyeliddown_anim",
+		},
+		{
+			source = "j_lefteyelidtop_anim",
+			target = "j_lefteyelidtop_anim",
+		},
+		{
+			source = "j_leftsnarl_01_anim",
+			target = "j_leftsnarl_01_anim",
+		},
+		{
+			source = "j_right_ear_01",
+			target = "j_right_ear_01",
+		},
+		{
+			source = "j_rightcheek_01_anim",
+			target = "j_rightcheek_01_anim",
+		},
+		{
+			source = "j_rightcheek_03_anim",
+			target = "j_rightcheek_03_anim",
+		},
+		{
+			source = "j_rightcrease_01_anim",
+			target = "j_rightcrease_01_anim",
+		},
+		{
+			source = "j_righteyebrowinner_anim",
+			target = "j_righteyebrowinner_anim",
+		},
+		{
+			source = "j_righteyebrowmid_anim",
+			target = "j_righteyebrowmid_anim",
+		},
+		{
+			source = "j_righteyebrowouter_anim",
+			target = "j_righteyebrowouter_anim",
+		},
+		{
+			source = "j_righteyeliddown_anim",
+			target = "j_righteyeliddown_anim",
+		},
+		{
+			source = "j_righteyelidtop_anim",
+			target = "j_righteyelidtop_anim",
+		},
+		{
+			source = "j_rightsnarl_01_anim",
+			target = "j_rightsnarl_01_anim",
+		},
+		{
+			source = "j_upperlipcenter_anim",
+			target = "j_upperlipcenter_anim",
+		},
+		{
+			source = "j_upperlipleft1_anim",
+			target = "j_upperlipleft1_anim",
+		},
+		{
+			source = "j_upperlipleft2_anim",
+			target = "j_upperlipleft2_anim",
+		},
+		{
+			source = "j_upperlipright1_anim",
+			target = "j_upperlipright1_anim",
+		},
+		{
+			source = "j_upperlipright2_anim",
+			target = "j_upperlipright2_anim",
+		},
+		{
+			source = "j_left_ear_02",
+			target = "j_left_ear_02",
+		},
+		{
+			source = "j_lefthandthumb1",
+			target = "j_lefthandthumb1",
+		},
+		{
+			source = "j_leftinhandindex",
+			target = "j_leftinhandindex",
+		},
+		{
+			source = "j_leftinhandmiddle",
+			target = "j_leftinhandmiddle",
+		},
+		{
+			source = "j_leftinhandpinky",
+			target = "j_leftinhandpinky",
+		},
+		{
+			source = "j_right_ear_02",
+			target = "j_right_ear_02",
+		},
+		{
+			source = "j_righthandthumb1",
+			target = "j_righthandthumb1",
+		},
+		{
+			source = "j_rightinhandindex",
+			target = "j_rightinhandindex",
+		},
+		{
+			source = "j_rightinhandmiddle",
+			target = "j_rightinhandmiddle",
+		},
+		{
+			source = "j_rightinhandpinky",
+			target = "j_rightinhandpinky",
+		},
+		{
+			source = "j_tongue_01",
+			target = "j_tongue_01",
+		},
+		{
+			source = "j_chin_amim",
+			target = "j_chin_amim",
+		},
+		{
+			source = "j_leftcrease_02_anim",
+			target = "j_leftcrease_02_anim",
+		},
+		{
+			source = "j_lefthandindex1",
+			target = "j_lefthandindex1",
+		},
+		{
+			source = "j_lefthandmiddle1",
+			target = "j_lefthandmiddle1",
+		},
+		{
+			source = "j_lefthandpinky1",
+			target = "j_lefthandpinky1",
+		},
+		{
+			source = "j_lefthandthumb2",
+			target = "j_lefthandthumb2",
+		},
+		{
+			source = "j_lowerlipcenter_anim",
+			target = "j_lowerlipcenter_anim",
+		},
+		{
+			source = "j_lowerlipleft1_anim",
+			target = "j_lowerlipleft1_anim",
+		},
+		{
+			source = "j_lowerlipleft2_anim",
+			target = "j_lowerlipleft2_anim",
+		},
+		{
+			source = "j_lowerlipright1_anim",
+			target = "j_lowerlipright1_anim",
+		},
+		{
+			source = "j_lowerlipright2_anim",
+			target = "j_lowerlipright2_anim",
+		},
+		{
+			source = "j_rightcrease_02_anim",
+			target = "j_rightcrease_02_anim",
+		},
+		{
+			source = "j_righthandindex1",
+			target = "j_righthandindex1",
+		},
+		{
+			source = "j_righthandmiddle1",
+			target = "j_righthandmiddle1",
+		},
+		{
+			source = "j_righthandpinky1",
+			target = "j_righthandpinky1",
+		},
+		{
+			source = "j_righthandthumb2",
+			target = "j_righthandthumb2",
+		},
+		{
+			source = "j_tongue_02",
+			target = "j_tongue_02",
+		},
+		{
+			source = "j_lefthandindex2",
+			target = "j_lefthandindex2",
+		},
+		{
+			source = "j_lefthandmiddle2",
+			target = "j_lefthandmiddle2",
+		},
+		{
+			source = "j_lefthandpinky2",
+			target = "j_lefthandpinky2",
+		},
+		{
+			source = "j_lefthandthumb3",
+			target = "j_lefthandthumb3",
+		},
+		{
+			source = "j_righthandindex2",
+			target = "j_righthandindex2",
+		},
+		{
+			source = "j_righthandmiddle2",
+			target = "j_righthandmiddle2",
+		},
+		{
+			source = "j_righthandpinky2",
+			target = "j_righthandpinky2",
+		},
+		{
+			source = "j_righthandthumb3",
+			target = "j_righthandthumb3",
+		},
+		{
+			source = "j_tongue_03",
+			target = "j_tongue_03",
+		},
+		{
+			source = "j_lefthandindex3",
+			target = "j_lefthandindex3",
+		},
+		{
+			source = "j_lefthandmiddle3",
+			target = "j_lefthandmiddle3",
+		},
+		{
+			source = "j_lefthandpinky3",
+			target = "j_lefthandpinky3",
+		},
+		{
+			source = "j_righthandindex3",
+			target = "j_righthandindex3",
+		},
+		{
+			source = "j_righthandmiddle3",
+			target = "j_righthandmiddle3",
+		},
+		{
+			source = "j_righthandpinky3",
+			target = "j_righthandpinky3",
+		},
+	},
+	ai_body_chaos_troll_1001 = {
+		{
+			source = "root_point",
+			target = "root_point",
+		},
+		{
+			source = "j_hips",
+			target = "j_hips",
+		},
+		{
+			source = "j_leftupleg",
+			target = "j_leftupleg",
+		},
+		{
+			source = "j_rightupleg",
+			target = "j_rightupleg",
+		},
+		{
+			source = "j_spine",
+			target = "j_spine",
+		},
+		{
+			source = "j_leftleg",
+			target = "j_leftleg",
+		},
+		{
+			source = "j_leftupleg_roll",
+			target = "j_leftupleg_roll",
+		},
+		{
+			source = "j_rightleg",
+			target = "j_rightleg",
+		},
+		{
+			source = "j_rightupleg_roll",
+			target = "j_rightupleg_roll",
+		},
+		{
+			source = "j_spine1",
+			target = "j_spine1",
+		},
+		{
+			source = "j_leftfoot",
+			target = "j_leftfoot",
+		},
+		{
+			source = "j_leftleg_roll",
+			target = "j_leftleg_roll",
+		},
+		{
+			source = "j_leftshoulder",
+			target = "j_leftshoulder",
+		},
+		{
+			source = "j_neck",
+			target = "j_neck",
+		},
+		{
+			source = "j_rightfoot",
+			target = "j_rightfoot",
+		},
+		{
+			source = "j_rightleg_roll",
+			target = "j_rightleg_roll",
+		},
+		{
+			source = "j_rightshoulder",
+			target = "j_rightshoulder",
+		},
+		{
+			source = "j_head",
+			target = "j_head",
+		},
+		{
+			source = "j_leftarm",
+			target = "j_leftarm",
+		},
+		{
+			source = "j_rightarm",
+			target = "j_rightarm",
+		},
+		{
+			source = "j_leftarm_roll",
+			target = "j_leftarm_roll",
+		},
+		{
+			source = "j_leftforearm",
+			target = "j_leftforearm",
+		},
+		{
+			source = "j_rightarm_roll",
+			target = "j_rightarm_roll",
+		},
+		{
+			source = "j_rightforearm",
+			target = "j_rightforearm",
+		},
+		{
+			source = "j_leftforearm_roll",
+			target = "j_leftforearm_roll",
+		},
+		{
+			source = "j_lefthand",
+			target = "j_lefthand",
+		},
+		{
+			source = "j_rightforearm_roll",
+			target = "j_rightforearm_roll",
+		},
+		{
+			source = "j_righthand",
+			target = "j_righthand",
+		},
+		{
+			source = "j_leftweaponattach",
+			target = "j_leftweaponattach",
+		},
+		{
+			source = "j_rightweaponattach",
+			target = "j_rightweaponattach",
+		},
+		{
+			source = "j_lefttoebase",
+			target = "j_lefttoebase",
+		},
+		{
+			source = "j_righttoebase",
+			target = "j_righttoebase",
+		},
+		{
+			source = "j_lefteye",
+			target = "j_lefteye",
+		},
+		{
+			source = "j_righteye",
+			target = "j_righteye",
+		},
+		{
+			source = "j_jaw_anim",
+			target = "j_jaw_anim",
+		},
+		{
+			source = "j_leftcheek_01_anim",
+			target = "j_leftcheek_01_anim",
+		},
+		{
+			source = "j_leftcheek_03_anim",
+			target = "j_leftcheek_03_anim",
+		},
+		{
+			source = "j_leftcrease_01_anim",
+			target = "j_leftcrease_01_anim",
+		},
+		{
+			source = "j_lefteyebrowinner_anim",
+			target = "j_lefteyebrowinner_anim",
+		},
+		{
+			source = "j_lefteyebrowmid_anim",
+			target = "j_lefteyebrowmid_anim",
+		},
+		{
+			source = "j_lefteyebrowouter_anim",
+			target = "j_lefteyebrowouter_anim",
+		},
+		{
+			source = "j_lefteyeliddown_anim",
+			target = "j_lefteyeliddown_anim",
+		},
+		{
+			source = "j_lefteyelidtop_anim",
+			target = "j_lefteyelidtop_anim",
+		},
+		{
+			source = "j_leftsnarl_01_anim",
+			target = "j_leftsnarl_01_anim",
+		},
+		{
+			source = "j_right_ear_01",
+			target = "j_right_ear_01",
+		},
+		{
+			source = "j_rightcheek_01_anim",
+			target = "j_rightcheek_01_anim",
+		},
+		{
+			source = "j_rightcheek_03_anim",
+			target = "j_rightcheek_03_anim",
+		},
+		{
+			source = "j_rightcrease_01_anim",
+			target = "j_rightcrease_01_anim",
+		},
+		{
+			source = "j_righteyebrowinner_anim",
+			target = "j_righteyebrowinner_anim",
+		},
+		{
+			source = "j_righteyebrowmid_anim",
+			target = "j_righteyebrowmid_anim",
+		},
+		{
+			source = "j_righteyebrowouter_anim",
+			target = "j_righteyebrowouter_anim",
+		},
+		{
+			source = "j_righteyeliddown_anim",
+			target = "j_righteyeliddown_anim",
+		},
+		{
+			source = "j_righteyelidtop_anim",
+			target = "j_righteyelidtop_anim",
+		},
+		{
+			source = "j_rightsnarl_01_anim",
+			target = "j_rightsnarl_01_anim",
+		},
+		{
+			source = "j_upperlipcenter_anim",
+			target = "j_upperlipcenter_anim",
+		},
+		{
+			source = "j_upperlipleft1_anim",
+			target = "j_upperlipleft1_anim",
+		},
+		{
+			source = "j_upperlipleft2_anim",
+			target = "j_upperlipleft2_anim",
+		},
+		{
+			source = "j_upperlipright1_anim",
+			target = "j_upperlipright1_anim",
+		},
+		{
+			source = "j_upperlipright2_anim",
+			target = "j_upperlipright2_anim",
+		},
+		{
+			source = "j_lefthandthumb1",
+			target = "j_lefthandthumb1",
+		},
+		{
+			source = "j_leftinhandindex",
+			target = "j_leftinhandindex",
+		},
+		{
+			source = "j_leftinhandmiddle",
+			target = "j_leftinhandmiddle",
+		},
+		{
+			source = "j_leftinhandpinky",
+			target = "j_leftinhandpinky",
+		},
+		{
+			source = "j_right_ear_02",
+			target = "j_right_ear_02",
+		},
+		{
+			source = "j_righthandthumb1",
+			target = "j_righthandthumb1",
+		},
+		{
+			source = "j_rightinhandindex",
+			target = "j_rightinhandindex",
+		},
+		{
+			source = "j_rightinhandmiddle",
+			target = "j_rightinhandmiddle",
+		},
+		{
+			source = "j_rightinhandpinky",
+			target = "j_rightinhandpinky",
+		},
+		{
+			source = "j_tongue_01",
+			target = "j_tongue_01",
+		},
+		{
+			source = "j_chin_amim",
+			target = "j_chin_amim",
+		},
+		{
+			source = "j_leftcrease_02_anim",
+			target = "j_leftcrease_02_anim",
+		},
+		{
+			source = "j_lefthandindex1",
+			target = "j_lefthandindex1",
+		},
+		{
+			source = "j_lefthandpinky1",
+			target = "j_lefthandpinky1",
+		},
+		{
+			source = "j_lefthandthumb2",
+			target = "j_lefthandthumb2",
+		},
+		{
+			source = "j_lowerlipcenter_anim",
+			target = "j_lowerlipcenter_anim",
+		},
+		{
+			source = "j_lowerlipleft1_anim",
+			target = "j_lowerlipleft1_anim",
+		},
+		{
+			source = "j_lowerlipleft2_anim",
+			target = "j_lowerlipleft2_anim",
+		},
+		{
+			source = "j_lowerlipright1_anim",
+			target = "j_lowerlipright1_anim",
+		},
+		{
+			source = "j_lowerlipright2_anim",
+			target = "j_lowerlipright2_anim",
+		},
+		{
+			source = "j_rightcrease_02_anim",
+			target = "j_rightcrease_02_anim",
+		},
+		{
+			source = "j_righthandindex1",
+			target = "j_righthandindex1",
+		},
+		{
+			source = "j_righthandmiddle1",
+			target = "j_righthandmiddle1",
+		},
+		{
+			source = "j_righthandpinky1",
+			target = "j_righthandpinky1",
+		},
+		{
+			source = "j_righthandthumb2",
+			target = "j_righthandthumb2",
+		},
+		{
+			source = "j_tongue_02",
+			target = "j_tongue_02",
+		},
+		{
+			source = "j_lefthandindex2",
+			target = "j_lefthandindex2",
+		},
+		{
+			source = "j_lefthandpinky2",
+			target = "j_lefthandpinky2",
+		},
+		{
+			source = "j_lefthandthumb3",
+			target = "j_lefthandthumb3",
+		},
+		{
+			source = "j_righthandindex2",
+			target = "j_righthandindex2",
+		},
+		{
+			source = "j_righthandmiddle2",
+			target = "j_righthandmiddle2",
+		},
+		{
+			source = "j_righthandpinky2",
+			target = "j_righthandpinky2",
+		},
+		{
+			source = "j_righthandthumb3",
+			target = "j_righthandthumb3",
+		},
+		{
+			source = "j_tongue_03",
+			target = "j_tongue_03",
+		},
+		{
+			source = "j_lefthandindex3",
+			target = "j_lefthandindex3",
+		},
+		{
+			source = "j_lefthandpinky3",
+			target = "j_lefthandpinky3",
+		},
+		{
+			source = "j_righthandindex3",
+			target = "j_righthandindex3",
+		},
+		{
+			source = "j_righthandmiddle3",
+			target = "j_righthandmiddle3",
+		},
+		{
+			source = "j_righthandpinky3",
+			target = "j_righthandpinky3",
 		},
 	},
 	ai_bm_standard = {

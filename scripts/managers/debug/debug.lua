@@ -224,17 +224,31 @@ Debug.update_world_texts = function ()
 	local world_gui = Managers.state.debug_text._world_gui
 	local wt = Debug.world_texts
 	local num_texts = #wt
-	local tm = Matrix4x4.identity()
+	local world = Application.main_world()
+
+	if not ScriptWorld.has_viewport(world, "player_1") then
+		return
+	end
+
+	local viewport = ScriptWorld.viewport(Application.main_world(), "player_1")
+	local cam = ScriptViewport.camera(viewport)
+	local cam_tm = Camera.local_pose(cam)
+	local cam_pos = Matrix4x4.translation(cam_tm)
 
 	for i = 1, num_texts do
 		local item = wt[i]
 		local text = item[1]
-		local min, max, caret = Gui.text_extents(world_gui, text, font_mtrl, 2)
-		local textpos = Vector3(item[2], item[3], item[4])
+		local pos = Vector3(item[2], item[3], item[4])
+		local rot = Quaternion.flat_no_roll(Quaternion.look(pos - cam_pos, Vector3.up()))
+		local font_size = 0.3
+		local _, _, extent_3 = Gui.text_extents(world_gui, text, font_mtrl, font_size)
+		local width = extent_3[1]
 
-		textpos.x = textpos.x - (max.x - min.x) / 2
+		pos = pos - Quaternion.right(rot) * width * 0.5
 
-		Gui.text_3d(world_gui, text, font_mtrl, 1.5, font, tm, textpos, 1, Color(item[5], item[6], item[7]))
+		local tm = Matrix4x4.from_quaternion_position(rot, pos)
+
+		Gui.text_3d(world_gui, text, font_mtrl, font_size, font, tm, Vector3.zero(), 1, Color(item[5], item[6], item[7]))
 
 		wt[i] = nil
 	end
@@ -248,13 +262,31 @@ Debug.update_world_sticky_texts = function ()
 	local world_gui = Managers.state.debug_text._world_gui
 	local wt = Debug.world_sticky_texts
 	local num_texts = Debug.num_world_sticky_texts
-	local tm = Matrix4x4.identity()
+	local world = Application.main_world()
+
+	if not ScriptWorld.has_viewport(world, "player_1") then
+		return
+	end
+
+	local viewport = ScriptWorld.viewport(Application.main_world(), "player_1")
+	local cam = ScriptViewport.camera(viewport)
+	local cam_tm = Camera.local_pose(cam)
+	local cam_pos = Matrix4x4.translation(cam_tm)
 
 	for i = 1, num_texts do
 		local item = wt[i]
 		local text = item[1]
+		local pos = Vector3(item[2], item[3], item[4])
+		local rot = Quaternion.flat_no_roll(Quaternion.look(pos - cam_pos, Vector3.up()))
+		local font_size = 0.3
+		local _, _, extent_3 = Gui.text_extents(world_gui, text, font_mtrl, font_size)
+		local width = extent_3[1]
 
-		Gui.text_3d(world_gui, text, font_mtrl, 0.3, font, tm, Vector3(item[2], item[3], item[4]), 1, Color(item[5], item[6], item[7]))
+		pos = pos - Quaternion.right(rot) * width * 0.5
+
+		local tm = Matrix4x4.from_quaternion_position(rot, pos)
+
+		Gui.text_3d(world_gui, text, font_mtrl, font_size, font, tm, Vector3.zero(), 1, Color(item[5], item[6], item[7]))
 	end
 end
 
@@ -270,8 +302,8 @@ Debug.world_text = function (pos, text, color_name)
 	if wt[index] then
 		wt[index][1] = text
 		wt[index][2] = pos[1]
-		wt[index][3] = pos[3]
-		wt[index][4] = pos[2]
+		wt[index][3] = pos[2]
+		wt[index][4] = pos[3]
 		wt[index][5] = color[1]
 		wt[index][6] = color[2]
 		wt[index][7] = color[3]
@@ -279,8 +311,8 @@ Debug.world_text = function (pos, text, color_name)
 		wt[index] = {
 			text,
 			pos[1],
-			pos[3],
 			pos[2],
+			pos[3],
 			color[1],
 			color[2],
 			color[3],
@@ -309,8 +341,8 @@ Debug.world_sticky_text = function (pos, text, color_name)
 	if wt[index] then
 		wt[index][1] = text
 		wt[index][2] = pos[1]
-		wt[index][3] = pos[3]
-		wt[index][4] = pos[2]
+		wt[index][3] = pos[2]
+		wt[index][4] = pos[3]
 		wt[index][5] = color[1]
 		wt[index][6] = color[2]
 		wt[index][7] = color[3]
@@ -318,8 +350,8 @@ Debug.world_sticky_text = function (pos, text, color_name)
 		wt[index] = {
 			text,
 			pos[1],
-			pos[3],
 			pos[2],
+			pos[3],
 			color[1],
 			color[2],
 			color[3],

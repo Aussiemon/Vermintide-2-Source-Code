@@ -157,6 +157,11 @@ VersusHordeAbilitySystem._server_update_ability_charges = function (self, dt)
 			local custom_settings_modifier = self._custom_settings_modifier or 1
 
 			recharge_increment = not self._round_started and 0 or dt * cooldown_mod * custom_settings_modifier
+
+			if script_data.short_ability_cooldowns then
+				recharge_increment = recharge_increment * 100
+			end
+
 			data.ability_charge = math.clamp(data.ability_charge + recharge_increment, 0, cooldown)
 
 			if data.extension then

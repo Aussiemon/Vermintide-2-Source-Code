@@ -283,10 +283,15 @@ end
 
 PlayerUnitLocomotionExtension.post_update = function (self, unit, input, dt, context, t)
 	if self._platform_extension then
-		local delta = self._platform_extension:movement_delta()
 		local mover = Unit.mover(unit)
+		local parent_pos = Unit.local_position(self._platform_unit, 0)
 		local old_pos = Mover.position(mover)
-		local new_pos = old_pos + delta
+		local movement_delta, rotation_delta = self._platform_extension:movement_delta()
+		local new_pos = old_pos + movement_delta
+		local middle_pos_relative = old_pos + (new_pos - old_pos) * 0.5 - parent_pos
+		local affected_by_rotation = Quaternion.rotate(rotation_delta, middle_pos_relative) - middle_pos_relative
+
+		new_pos = new_pos + affected_by_rotation
 
 		Mover.set_position(mover, new_pos)
 		Unit.set_local_position(unit, 0, new_pos)
@@ -777,7 +782,14 @@ PlayerUnitLocomotionExtension.sync_network_velocity = function (self, game, go_i
 	local platform_ext = self._platform_extension
 
 	if platform_ext then
-		velocity = velocity + platform_ext:movement_delta() / dt
+		local movement_delta, rotation_delta = platform_ext:movement_delta()
+		local mover = Unit.mover(self.unit)
+		local parent_pos = Unit.local_position(self._platform_unit, 0)
+		local relative_pos = Mover.position(mover) - parent_pos
+		local movement_by_rotation = Quaternion.rotate(rotation_delta, relative_pos) - relative_pos
+		local platform_movement = movement_delta + movement_by_rotation
+
+		velocity = velocity + platform_movement / dt
 	end
 
 	local min = NetworkConstants.velocity.min

@@ -4,9 +4,9 @@ TalentUtils = {}
 TalentUtils.NIL = {}
 
 TalentUtils.get_talent = function (profile_name, talent_name)
-	local talent_id = TalentIDLookup[talent_name]
+	local talent = TalentIDLookup[talent_name]
 
-	return TalentUtils.get_talent_by_id(profile_name, talent_id)
+	return TalentUtils.get_talent_by_id(profile_name, talent.talent_id)
 end
 
 TalentUtils.get_talent_by_id = function (profile_name, talent_id)

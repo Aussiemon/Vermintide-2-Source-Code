@@ -899,10 +899,16 @@ BTChargeAttackAction._run_lunge = function (self, unit, blackboard, lunge_data, 
 	if lunge_data.get_position_at_distance and not blackboard.target_lunge_position then
 		local distance_threshold = lunge_data.get_position_at_distance
 		local target_position = POSITION_LOOKUP[blackboard.attacking_target]
-		local distance_to_target = Vector3.distance(POSITION_LOOKUP[unit], target_position)
+		local own_position = POSITION_LOOKUP[unit]
+		local distance_to_target = Vector3.distance(own_position, target_position)
 
 		if distance_to_target <= distance_threshold then
 			blackboard.target_lunge_position = Vector3Box(target_position)
+
+			local rot = Quaternion.look(target_position - own_position, Vector3.up())
+			local size = Vector3(2.5, lunge_data.get_position_at_distance + 4, 2)
+
+			Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(target_position + (target_position - own_position) * 0.5, "oobb", size, rot, 1)
 
 			if lunge_data.get_position_duration then
 				blackboard.get_lunge_position_duration = t + lunge_data.get_position_duration

@@ -35,8 +35,8 @@ StateInGameRunning.on_enter = function (self, params)
 	self.viewport_name = viewport_name
 	self.world_name = params.world_name
 	self.is_server = params.is_server
-	self._lobby_host = params.lobby_host
-	self._lobby_client = params.lobby_client
+	self._lobby_host = params.lobby.is_host and params.lobby
+	self._lobby_client = not params.lobby.is_host and params.lobby
 	self._network_options = params.network_options
 	self.statistics_db = params.statistics_db
 	self.profile_synchronizer = params.profile_synchronizer
@@ -293,14 +293,13 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 			level_end_view_context.party_composition = Managers.party:get_party_composition()
 		end
 
+		local players_session_score = Managers.mechanism:get_players_session_score(self.statistics_db, self.profile_synchronizer, self._saved_scoreboard_stats)
+
 		if self.is_server then
-			local players_session_score = Managers.mechanism:get_players_session_score(self.statistics_db, self.profile_synchronizer, self._saved_scoreboard_stats)
-
 			Managers.mechanism:sync_players_session_score(players_session_score)
-
-			level_end_view_context.players_session_score = players_session_score
 		end
 
+		level_end_view_context.players_session_score = players_session_score
 		self._weave_personal_best_achieved = nil
 		self._completed_weave = nil
 

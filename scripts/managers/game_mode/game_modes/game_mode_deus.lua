@@ -649,6 +649,10 @@ GameModeDeus.get_active_respawn_units = function (self)
 	return self._deus_spawning:get_active_respawn_units()
 end
 
+GameModeDeus.get_available_and_active_respawn_units = function (self)
+	return self._deus_spawning:get_available_and_active_respawn_units()
+end
+
 GameModeDeus.get_player_wounds = function (self, profile)
 	if Managers.state.game_mode:has_activated_mutator("instant_death") then
 		return 1

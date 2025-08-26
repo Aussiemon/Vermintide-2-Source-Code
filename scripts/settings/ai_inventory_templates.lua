@@ -677,6 +677,16 @@ items.wpn_chaos_troll_02 = {
 	unit_name = "units/weapons/enemy/wpn_chaos_troll/wpn_chaos_troll_02",
 	attachment_node_linking = AttachmentNodeLinking.ai_troll_axe,
 }
+items.skin_chaos_troll_0000 = {
+	unit_extension_template = "ai_skin_unit",
+	unit_name = "units/beings/enemies/chaos_troll/skins/0000/chr_chaos_troll_skin_0000",
+	attachment_node_linking = AttachmentNodeLinking.ai_body_chaos_troll_0000,
+}
+items.skin_chaos_troll_1001 = {
+	unit_extension_template = "ai_skin_unit",
+	unit_name = "units/beings/enemies/chaos_troll/skins/1001/chr_chaos_troll_skin_1001",
+	attachment_node_linking = AttachmentNodeLinking.ai_body_chaos_troll_1001,
+}
 items.wpn_chaos_sorcerer_stick = {
 	unit_name = "units/weapons/enemy/wpn_chaos_sorcerer_stick/wpn_sorcerer_stick",
 	attachment_node_linking = AttachmentNodeLinking.ai_chaos_sorcerer_stick,
@@ -1681,6 +1691,12 @@ item_categories.chaos_troll = {
 	items.wpn_chaos_troll_01,
 	items.wpn_chaos_troll_02,
 }
+item_categories.chaos_troll_skin_0000 = {
+	items.skin_chaos_troll_0000,
+}
+item_categories.chaos_troll_skin_1001 = {
+	items.skin_chaos_troll_1001,
+}
 item_categories.chaos_sorcerer_stick = {
 	items.wpn_chaos_sorcerer_stick,
 }
@@ -2151,11 +2167,6 @@ InventoryConfigurations.undead_npc_skeleton_armored = {
 		item_categories.undead_npc_skeleton_greaves_r,
 	},
 }
-InventoryConfigurations.pack_master = {
-	items = {
-		item_categories.packmaster_claw,
-	},
-}
 InventoryConfigurations.loot_rat_sack = {
 	items = {
 		item_categories.loot_rat_sack,
@@ -2167,11 +2178,29 @@ InventoryConfigurations.loot_rat_sack = {
 		item_categories.clan_rat_outfit_legs,
 	},
 }
+InventoryConfigurations.pack_master = {
+	items = {
+		item_categories.packmaster_claw,
+	},
+}
 InventoryConfigurations.ratlinggun = {
 	enemy_hit_sound = "bullet",
 	items = {
 		item_categories.ratlinggun,
 	},
+}
+InventoryConfigurations.warpfiregun = {
+	enemy_hit_sound = "bullet",
+	items = {
+		item_categories.warpfiregun,
+	},
+}
+InventoryConfigurations.gutter_runner = {
+	enemy_hit_sound = "dagger",
+	items = {},
+}
+InventoryConfigurations.wind_globadier = {
+	items = {},
 }
 InventoryConfigurations.warpfiregun = {
 	enemy_hit_sound = "bullet",
@@ -2201,12 +2230,17 @@ InventoryConfigurations.chaos_troll = {
 	anim_state_event = "to_1h_axe",
 	enemy_hit_sound = "sword",
 	items = {
+		item_categories.chaos_troll_skin_0000,
 		item_categories.chaos_troll,
 	},
 }
-InventoryConfigurations.gutter_runner = {
-	enemy_hit_sound = "dagger",
-	items = {},
+InventoryConfigurations.chaos_troll_chief = {
+	anim_state_event = "to_1h_axe",
+	enemy_hit_sound = "sword",
+	items = {
+		item_categories.chaos_troll_skin_1001,
+		item_categories.chaos_troll,
+	},
 }
 InventoryConfigurations.chaos_sorcerer = {
 	items = {

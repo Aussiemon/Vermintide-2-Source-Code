@@ -1036,6 +1036,7 @@ local action_data = {
 				offset_up = 0,
 				range = 4,
 				rotation_time = 1,
+				triggers_anim_cb_damage_multiple_times = true,
 				width = 2.5,
 				attack_anim = {
 					"attack_double_cross_01",
@@ -1071,6 +1072,7 @@ local action_data = {
 				offset_up = 0,
 				range = 4,
 				rotation_time = 1,
+				triggers_anim_cb_damage_multiple_times = true,
 				width = 2.5,
 				attack_anim = {
 					"attack_double_slash_01",
@@ -1105,6 +1107,7 @@ local action_data = {
 				offset_up = 0,
 				range = 4,
 				rotation_time = 1,
+				triggers_anim_cb_damage_multiple_times = true,
 				width = 2.5,
 				attack_anim = {
 					"attack_double_slash_02",
@@ -1176,6 +1179,7 @@ local action_data = {
 				offset_up = 0,
 				range = 4,
 				rotation_time = 1,
+				triggers_anim_cb_damage_multiple_times = true,
 				width = 1,
 				attack_anim = {
 					"attack_stab_01",
@@ -1211,6 +1215,7 @@ local action_data = {
 				offset_up = 0,
 				range = 4,
 				rotation_time = 1,
+				triggers_anim_cb_damage_multiple_times = true,
 				width = 1,
 				attack_anim = {
 					"attack_tripple_slash_01",

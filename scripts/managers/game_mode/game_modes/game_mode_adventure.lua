@@ -484,6 +484,10 @@ GameModeAdventure.get_active_respawn_units = function (self)
 	return self._adventure_spawning:get_active_respawn_units()
 end
 
+GameModeAdventure.get_available_and_active_respawn_units = function (self)
+	return self._adventure_spawning:get_available_and_active_respawn_units()
+end
+
 GameModeAdventure.get_player_wounds = function (self, profile)
 	if Managers.state.game_mode:has_activated_mutator("instant_death") then
 		return 1

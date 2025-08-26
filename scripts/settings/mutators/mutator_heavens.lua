@@ -153,7 +153,7 @@ return {
 				end
 			elseif t < last_spawn_time + data.follow_time + data.time_to_explode then
 				if t > last_spawn_time + data.follow_time + data.time_to_explode - 3 and not data.bots_alerted then
-					local aoe_thread_size = Vector3(data._nav_cost_radius, data._nav_cost_radius, data._nav_cost_radius * 0.5)
+					local aoe_thread_size = Vector3(0, data._nav_cost_radius, data._nav_cost_radius * 0.5)
 					local bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 
 					for i = 1, #data.units do

@@ -389,6 +389,14 @@ DebugManager._adjust_player_speed = function (self)
 			for __, unit in pairs(units) do
 				PlayerUnitMovementSettings.get_movement_settings_table(unit).player_speed_scale = speed_scale_list[speed_scale_index] * 0.01
 			end
+		elseif Mouse.button(Mouse.button_index("middle")) > 0.5 then
+			speed_scale_index = table.index_of(speed_scale_list, 100)
+
+			local units = PlayerUnitMovementSettings.get_active_units_in_movement_settings()
+
+			for __, unit in pairs(units) do
+				PlayerUnitMovementSettings.get_movement_settings_table(unit).player_speed_scale = speed_scale_list[speed_scale_index] * 0.01
+			end
 		end
 
 		self.speed_scale_index = speed_scale_index

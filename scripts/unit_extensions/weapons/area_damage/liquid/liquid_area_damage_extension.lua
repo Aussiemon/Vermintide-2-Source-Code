@@ -178,6 +178,8 @@ LiquidAreaDamageExtension.ready = function (self)
 	self._damage_direction = flow_dir
 end
 
+local threat_padding = 1 / (math.sqrt(3) * 0.5)
+
 LiquidAreaDamageExtension._set_active = function (self, real_index)
 	local flow = self._flow
 	local liquid = flow[real_index]

@@ -526,6 +526,10 @@ local function play_unit_audio(unit, sound_name)
 	Managers.state.entity:system("audio_system"):play_audio_unit_event(sound_name, unit)
 end
 
+local function play_unit_audio_local(unit, sound_name)
+	Managers.state.entity:system("audio_system"):player_unit_sound_local(sound_name, unit)
+end
+
 local function trigger_unit_dialogue_death_event(killed_unit, killer_unit, hit_zone, damage_type)
 	if not Unit.alive(killed_unit) or not Unit.alive(killer_unit) then
 		return
@@ -1058,7 +1062,7 @@ DeathReactions.templates = {
 					printf("[HON-43348] Globadier (%s) inside death reaction. Playing sound.", Unit.get_data(unit, "globadier_43348"))
 				end
 
-				play_unit_audio(unit, "Stop_enemy_foley_globadier_boiling_loop")
+				play_unit_audio_local(unit, "Stop_enemy_foley_globadier_boiling_loop")
 
 				if unit ~= killing_blow[DamageDataIndex.ATTACKER] and ScriptUnit.has_extension(unit, "ai_system") then
 					ScriptUnit.extension(unit, "ai_system"):attacked(killing_blow[DamageDataIndex.ATTACKER], t, killing_blow)
@@ -1108,6 +1112,8 @@ DeathReactions.templates = {
 			start = function (unit, context, t, killing_blow, is_server)
 				local data, result = ai_default_husk_start(unit, context, t, killing_blow)
 
+				play_unit_audio_local(unit, "Stop_enemy_foley_globadier_boiling_loop")
+
 				if not is_hot_join_sync(killing_blow) then
 					trigger_unit_dialogue_death_event(unit, killing_blow[DamageDataIndex.ATTACKER], killing_blow[DamageDataIndex.HIT_ZONE], killing_blow[DamageDataIndex.DAMAGE_TYPE])
 					trigger_player_killing_blow_ai_buffs(unit, killing_blow)
@@ -1152,7 +1158,7 @@ DeathReactions.templates = {
 					network_manager:anim_event(unit, "death_backward")
 
 					local pos = POSITION_LOOKUP[unit]
-					local size = Vector3(4, 4, 1)
+					local size = Vector3(0, 4, 1)
 					local bot_threat_duration = 1
 
 					Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(pos, "cylinder", size, nil, bot_threat_duration)

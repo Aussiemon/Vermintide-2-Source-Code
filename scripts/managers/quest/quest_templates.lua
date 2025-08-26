@@ -1196,6 +1196,192 @@ quest_templates.quests.quest_event_rat_kill_skaven_lords_2020 = {
 	end,
 }
 
+local function _generate_troll_quests(repeatable)
+	local _next_troll_fest_order = 0
+
+	local function get_next_troll_fest_order()
+		_next_troll_fest_order = _next_troll_fest_order + 1
+
+		return _next_troll_fest_order
+	end
+
+	quest_templates.quests["quest_event_dwarf_fest_trollkiller" .. (repeatable and "_repeatable" or "")] = {
+		icon = "quest_book_event_dwarf_fest",
+		name = "quest_event_dwarf_fest_trollkiller_name",
+		desc = repeatable and function ()
+			return string.format("%s (%s)", string.format(Localize("quest_event_dwarf_fest_trollkiller_desc"), QuestSettings.quest_event_dwarf_fest_trollkiller), Localize("repeatable"))
+		end or function ()
+			return string.format(Localize("quest_event_dwarf_fest_trollkiller_desc"), QuestSettings.quest_event_dwarf_fest_trollkiller)
+		end,
+		custom_order = get_next_troll_fest_order(),
+		stat_mappings = {
+			{
+				kills_per_breed = {
+					chaos_troll = true,
+					chaos_troll_chief = true,
+					vs_chaos_troll = true,
+				},
+				kill_assists_per_breed = {
+					chaos_troll = true,
+					chaos_troll_chief = true,
+					vs_chaos_troll = true,
+				},
+			},
+		},
+		completed = function (statistics_db, stats_id, quest_key)
+			local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+			return statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) >= QuestSettings.quest_event_dwarf_fest_trollkiller
+		end,
+		progress = function (statistics_db, stats_id, quest_key)
+			local stat_name = QuestSettings.stat_mappings[quest_key][1]
+			local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+
+			return {
+				count,
+				QuestSettings.quest_event_dwarf_fest_trollkiller,
+			}
+		end,
+	}
+
+	local secret_trolls_stat_mappings = {
+		{
+			dwarf_fest_secret_trolls_killed = {
+				first = true,
+			},
+		},
+		{
+			dwarf_fest_secret_trolls_killed = {
+				second = true,
+			},
+		},
+		{
+			dwarf_fest_secret_trolls_killed = {
+				third = true,
+			},
+		},
+	}
+
+	if repeatable then
+		get_next_troll_fest_order()
+	else
+		local secret_troll_names = {
+			"name_dwarf_fest_troll_001",
+			"name_dwarf_fest_troll_002",
+			"name_dwarf_fest_troll_003",
+		}
+		local num_trolls = #secret_trolls_stat_mappings
+
+		quest_templates.quests.quest_event_dwarf_fest_secret_trolls = {
+			icon = "quest_book_event_dwarf_fest",
+			name = "quest_event_dwarf_fest_secret_trolls_name",
+			desc = function ()
+				return string.format(Localize("quest_event_dwarf_fest_secret_trolls_desc"), Localize(secret_troll_names[1]), Localize(secret_troll_names[2]), Localize(secret_troll_names[3]), Localize("level_name_dlc_dwarf_fest"))
+			end,
+			custom_order = get_next_troll_fest_order(),
+			stat_mappings = secret_trolls_stat_mappings,
+			completed = function (statistics_db, stats_id, quest_key)
+				for i = 1, num_trolls do
+					local stat_name = QuestSettings.stat_mappings[quest_key][i]
+
+					if statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) <= 0 then
+						return false
+					end
+				end
+
+				return true
+			end,
+			progress = function (statistics_db, stats_id, quest_key)
+				local count = 0
+
+				for i = 1, num_trolls do
+					local stat_name = QuestSettings.stat_mappings[quest_key][i]
+
+					count = count + math.min(statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name), 1)
+				end
+
+				return {
+					count,
+					num_trolls,
+				}
+			end,
+			requirements = function (statistics_db, stats_id, quest_key)
+				local reqs = {}
+
+				for i = 1, num_trolls do
+					local stat_name = QuestSettings.stat_mappings[quest_key][i]
+					local completed = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) > 0
+
+					table.insert(reqs, {
+						name = secret_troll_names[i],
+						completed = completed,
+					})
+				end
+
+				return reqs
+			end,
+		}
+	end
+
+	local function add_troll_chief_challenge(id, difficulty_name)
+		local stat_mappings = {
+			{
+				kills_per_breed_difficulty = {
+					chaos_troll_chief = {},
+				},
+				kill_assists_per_breed_difficulty = {
+					chaos_troll_chief = {},
+				},
+			},
+		}
+		local rank = DifficultySettings[difficulty_name].rank
+
+		for other_difficulty_name, difficulty_setting in pairs(DifficultySettings) do
+			if rank <= (difficulty_setting.rank or math.huge) then
+				stat_mappings[1].kills_per_breed_difficulty.chaos_troll_chief[other_difficulty_name] = true
+				stat_mappings[1].kill_assists_per_breed_difficulty.chaos_troll_chief[other_difficulty_name] = true
+			end
+		end
+
+		quest_templates.quests["quest_event_" .. id .. (repeatable and "_repeatable" or "")] = {
+			icon = "quest_book_event_dwarf_fest",
+			name = "quest_event_" .. id .. "_name",
+			desc = repeatable and function ()
+				return string.format("%s (%s)", string.format(Localize("quest_event_dwarf_fest_troll_chief_desc"), Localize("chaos_troll_chief"), Localize(DifficultySettings[difficulty_name].display_name)), Localize("repeatable"))
+			end or function ()
+				return string.format(Localize("quest_event_dwarf_fest_troll_chief_desc"), Localize("chaos_troll_chief"), Localize(DifficultySettings[difficulty_name].display_name))
+			end,
+			custom_order = get_next_troll_fest_order(),
+			stat_mappings = stat_mappings,
+			completed = function (statistics_db, stats_id, quest_key)
+				local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+				return statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) >= 1
+			end,
+			progress = function (statistics_db, stats_id, quest_key)
+				local stat_name = QuestSettings.stat_mappings[quest_key][1]
+				local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+
+				return {
+					count,
+					1,
+				}
+			end,
+		}
+	end
+
+	for i = 1, #DefaultDifficulties do
+		local difficulty_name = DefaultDifficulties[i]
+		local player_facing_name = DifficultyMapping[difficulty_name]
+		local name = "dwarf_fest_troll_chief_" .. player_facing_name
+
+		add_troll_chief_challenge(name, difficulty_name)
+	end
+end
+
+_generate_troll_quests(false)
+_generate_troll_quests(true)
+
 local weekly_complete_quickplay_missions_mappings = {
 	{
 		played_levels_quickplay = {},

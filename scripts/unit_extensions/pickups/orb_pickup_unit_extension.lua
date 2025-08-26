@@ -10,6 +10,7 @@ OrbPickupUnitExtension.init = function (self, extension_init_context, unit, exte
 	OrbPickupUnitExtension.super.init(self, extension_init_context, unit, extension_init_data)
 
 	self._is_server = Managers.player.is_server
+	self._unit = unit
 
 	local side = Managers.state.side:get_side_from_name("heroes")
 
@@ -27,7 +28,13 @@ OrbPickupUnitExtension.init = function (self, extension_init_context, unit, exte
 		end
 	end
 
-	Unit.flow_event(unit, "update_visuals")
+	local custom_color = self._pickup_settings.custom_orb_color
+
+	if custom_color then
+		self:_set_custom_orb_color(custom_color.core, custom_color.shell)
+	else
+		Unit.flow_event(unit, "update_visuals")
+	end
 
 	self._hover = self._pickup_settings.hover_settings
 	self._hover_from = self._orb_flight_target_position or Vector3Box(POSITION_LOOKUP[unit])
@@ -82,12 +89,14 @@ OrbPickupUnitExtension.update = function (self, unit, input, dt, context, t)
 					local pickup_radius = pickup_settings.pickup_radius or 1
 
 					if distance < pickup_radius then
-						local buff_system = Managers.state.entity:system("buff_system")
+						if pickup_settings.granted_buff then
+							local buff_system = Managers.state.entity:system("buff_system")
 
-						if buff_system then
-							local sync_type = pickup_settings.buff_sync_type or BuffSyncType.All
+							if buff_system then
+								local sync_type = pickup_settings.buff_sync_type or BuffSyncType.All
 
-							buff_system:add_buff_synced(player_unit, pickup_settings.granted_buff, sync_type, self._buff_params)
+								buff_system:add_buff_synced(player_unit, pickup_settings.granted_buff, sync_type, self._buff_params)
+							end
 						end
 
 						local audio_system = Managers.state.entity:system("audio_system")
@@ -100,24 +109,17 @@ OrbPickupUnitExtension.update = function (self, unit, input, dt, context, t)
 							audio_system:play_2d_audio_unit_event_for_peer(pickup_sound, peer_id)
 						end
 
+						if pickup_settings.on_orb_pickup then
+							pickup_settings.on_orb_pickup(unit)
+						end
+
 						Managers.state.unit_spawner:mark_for_deletion(unit)
 
 						self._done = true
 
 						break
 					elseif self._magnetic and distance < self._magnetic.radius and not self._magnetic_target then
-						self._magnetic_target = player_unit
-
-						if not local_only then
-							local target_id = Managers.state.unit_storage:go_id(player_unit)
-
-							if target_id then
-								local game = Managers.state.network:game()
-								local go_id = Managers.state.unit_storage:go_id(unit)
-
-								GameSession.set_game_object_field(game, go_id, "magnetic_target_id", target_id)
-							end
-						end
+						self:ensure_magnetic_target(player_unit)
 					end
 				end
 			end
@@ -190,4 +192,41 @@ end
 
 OrbPickupUnitExtension.get_orb_flight_target_position = function (self)
 	return self._orb_flight_target_position
+end
+
+OrbPickupUnitExtension._set_custom_orb_color = function (self, boxed_color_core, boxed_color_shell)
+	local color_core = Color(boxed_color_core[1], boxed_color_core[2], boxed_color_core[3], boxed_color_core[4] or 1)
+	local color_shell = Vector3(boxed_color_shell[1], boxed_color_shell[2], boxed_color_shell[3])
+	local unit = self._unit
+
+	for i = 0, Unit.num_meshes(unit) - 1 do
+		local mesh = Unit.mesh(unit, i)
+
+		if Mesh.has_material(mesh, "deus_orb_core_01") then
+			local material = Mesh.material(mesh, "deus_orb_core_01")
+
+			Material.set_vector3(material, "material_variable", color_core)
+		end
+
+		if Mesh.has_material(mesh, "deus_orb_shell_01") then
+			local material = Mesh.material(mesh, "deus_orb_shell_01")
+
+			Material.set_vector3(material, "emissive_color", color_shell)
+		end
+	end
+end
+
+OrbPickupUnitExtension.ensure_magnetic_target = function (self, target_unit)
+	self._magnetic_target = target_unit
+
+	if not self._pickup_settings.local_only then
+		local target_id = Managers.state.unit_storage:go_id(target_unit)
+
+		if target_id then
+			local game = Managers.state.network:game()
+			local go_id = Managers.state.unit_storage:go_id(self._unit)
+
+			GameSession.set_game_object_field(game, go_id, "magnetic_target_id", target_id)
+		end
+	end
 end

@@ -169,7 +169,7 @@ ScriptUnit.extension_definitions = function (unit)
 		extensions[i] = class_name
 	end
 
-	return extensions
+	return extensions, i
 end
 
 ScriptUnit.move_extensions = function (unit, new_unit)

@@ -341,6 +341,7 @@ weapon_template.actions = {
 				chaos_bulwark = 1,
 				chaos_corruptor_sorcerer = 1,
 				chaos_raider = 1,
+				chaos_tether_sorcerer = 1,
 				chaos_vortex_sorcerer = 1,
 				chaos_warrior = 1,
 				skaven_gutter_runner = 1,

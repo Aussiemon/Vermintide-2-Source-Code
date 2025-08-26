@@ -359,6 +359,154 @@ AiBreedSnippets.on_chaos_troll_spawn = function (unit, blackboard)
 	end
 end
 
+AiBreedSnippets.on_chaos_troll_chief_spawn = function (unit, blackboard)
+	blackboard.aggro_list = {}
+	blackboard.fling_skaven_timer = 0
+	blackboard.can_get_downed = true
+	blackboard.crouch_sticky_timer = 0
+	blackboard.displaced_units = {}
+	blackboard.next_move_check = 0
+	blackboard.next_rage_time = 0
+	blackboard.running_downed_chunk_events = {}
+	blackboard.running_upped_chunk_events = {}
+	blackboard.stagger_immunity = nil
+
+	local breed = blackboard.breed
+	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+
+	blackboard.max_health_regen_per_sec = breed.max_health_regen_per_sec[difficulty_rank] or breed.max_health_regen_per_sec[2]
+	blackboard.max_health_regen_time = breed.max_health_regen_time[difficulty_rank] or breed.max_health_regen_time[2]
+
+	local can_start_angry = true
+
+	if ScriptUnit.has_extension(unit, "ai_group_system") then
+		local ai_group_extension = ScriptUnit.extension(unit, "ai_group_system")
+
+		can_start_angry = not ai_group_extension.in_patrol
+	end
+
+	if can_start_angry then
+		local conflict_director = Managers.state.conflict
+
+		setup_start_angry(unit, blackboard, conflict_director)
+		conflict_director:freeze_intensity_decay(10)
+		conflict_director:add_unit_to_bosses(unit)
+	end
+end
+
+AiBreedSnippets.on_chaos_troll_chief_update = function (unit, blackboard, t, dt)
+	if not Managers.state.network.is_server then
+		return
+	end
+
+	local running_downed_chunk_events = blackboard.running_downed_chunk_events
+	local running_upped_chunk_events = blackboard.running_upped_chunk_events
+	local health_extension = ScriptUnit.extension(unit, "health_system")
+	local is_down = health_extension.state == "down"
+
+	if is_down then
+		for phase, event in pairs(running_upped_chunk_events) do
+			if event.finish then
+				event.finish(unit, blackboard, phase)
+			end
+
+			running_upped_chunk_events[phase] = nil
+		end
+
+		local _, _, _, _, phase = health_extension:respawn_thresholds()
+
+		if not running_downed_chunk_events[phase] then
+			for chunk_phase, chunk_event in pairs(BreedActions[blackboard.breed.name].downed.downed_chunk_events) do
+				repeat
+					if (chunk_phase == phase or type(chunk_phase) == "table" and table.contains(chunk_phase, phase)) and (not chunk_event.condition_func or chunk_event.condition_func(unit, blackboard, phase, t, dt)) then
+						chunk_event.start(unit, blackboard, phase, t, dt)
+
+						running_downed_chunk_events[phase] = chunk_event
+					end
+
+					break
+				until true
+			end
+		elseif running_downed_chunk_events[phase].update then
+			running_downed_chunk_events[phase].update(unit, blackboard, t, dt)
+		end
+	else
+		for phase, event in pairs(running_downed_chunk_events) do
+			if event.finish then
+				event.finish(unit, blackboard, phase)
+			end
+
+			running_downed_chunk_events[phase] = nil
+		end
+
+		local _, _, _, _, phase = health_extension:respawn_thresholds()
+
+		if not running_upped_chunk_events[phase] then
+			for chunk_phase, chunk_event in pairs(BreedActions[blackboard.breed.name].downed.upped_chunk_events) do
+				repeat
+					if (chunk_phase == phase or type(chunk_phase) == "table" and table.contains(chunk_phase, phase)) and (not chunk_event.condition_func or chunk_event.condition_func(unit, blackboard, phase, t, dt)) then
+						chunk_event.start(unit, blackboard, phase, t, dt)
+
+						running_upped_chunk_events[phase] = chunk_event
+					end
+
+					break
+				until true
+			end
+		elseif running_upped_chunk_events[phase].update then
+			running_upped_chunk_events[phase].update(unit, blackboard, t, dt)
+		end
+	end
+end
+
+AiBreedSnippets.on_chaos_troll_chief_death = function (unit, blackboard)
+	AiBreedSnippets.on_chaos_troll_death(unit, blackboard)
+
+	local running_downed_chunk_events = blackboard.running_downed_chunk_events
+
+	for chunk, event in pairs(running_downed_chunk_events) do
+		if event.finish then
+			event.finish(unit, blackboard)
+		end
+
+		running_downed_chunk_events[chunk] = nil
+	end
+
+	local running_upped_chunk_events = blackboard.running_upped_chunk_events
+
+	for chunk, event in pairs(running_upped_chunk_events) do
+		if event.finish then
+			event.finish(unit, blackboard)
+		end
+
+		running_upped_chunk_events[chunk] = nil
+	end
+end
+
+AiBreedSnippets.on_chaos_troll_chief_despawn = function (unit, blackboard)
+	AiBreedSnippets.on_chaos_troll_despawn(unit, blackboard)
+
+	local running_downed_chunk_events = blackboard.running_downed_chunk_events
+
+	for chunk, event in pairs(running_downed_chunk_events) do
+		if event.finish then
+			event.finish(unit, blackboard)
+		end
+
+		running_downed_chunk_events[chunk] = nil
+	end
+
+	local running_upped_chunk_events = blackboard.running_upped_chunk_events
+
+	for chunk, event in pairs(running_upped_chunk_events) do
+		if event.finish then
+			event.finish(unit, blackboard)
+		end
+
+		running_upped_chunk_events[chunk] = nil
+	end
+end
+
 AiBreedSnippets.on_chaos_troll_death = function (unit, blackboard)
 	local conflict_director = Managers.state.conflict
 
@@ -1059,7 +1207,7 @@ function check_for_recent_attackers(unit, blackboard, t, ranged_range)
 		local is_melee = master_list_item and master_list_item.slot_type == "melee"
 
 		if Unit.alive(attacking_unit) and side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[attacking_unit] then
-			local dist_sqr = Vector3.distance_squared(POSITION_LOOKUP[unit], POSITION_LOOKUP[attacking_unit])
+			local dist_sqr = Vector3.distance_squared(Unit.local_position(unit, 0), Unit.local_position(attacking_unit, 0))
 
 			if min_retaliation_dist_sqr < dist_sqr and not is_melee then
 				blackboard.target_unit = attacking_unit
@@ -1140,7 +1288,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_update = function (unit, blackboard, t
 		local radius = 2
 		local height = 1
 		local half_height = height * 0.5
-		local size = Vector3(radius, half_height, radius)
+		local size = Vector3(0, radius, half_height)
 
 		bot_threat_position = bot_threat_position - Vector3.up() * half_height
 
@@ -1162,7 +1310,7 @@ AiBreedSnippets.reward_boss_kill_loot = function (unit, blackboard)
 	end
 
 	local nav_world = blackboard.nav_world
-	local position = POSITION_LOOKUP[unit]
+	local position = Unit.local_position(unit, 0)
 	local below = 1
 	local above = 1
 	local mechanism = Managers.mechanism:current_mechanism_name()
@@ -1863,7 +2011,7 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 		local radius = 2
 		local height = 1
 		local half_height = height * 0.5
-		local size = Vector3(radius, half_height, radius)
+		local size = Vector3(0, radius, half_height)
 
 		bot_threat_position = bot_threat_position - Vector3.up() * half_height
 

@@ -47,7 +47,7 @@ InvincibleHealthExtension.get_max_health = function (self)
 end
 
 InvincibleHealthExtension.set_max_health = function (self, health, update_unmodfied)
-	return
+	return self.health
 end
 
 InvincibleHealthExtension.get_damage_taken = function (self)

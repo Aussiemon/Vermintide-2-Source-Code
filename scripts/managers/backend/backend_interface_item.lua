@@ -199,14 +199,7 @@ Items.check_for_errors = function (self)
 	return error_data
 end
 
-local DO_RELOAD = true
-
 Items.update = function (self, dt)
-	if DO_RELOAD then
-		self._modified_templates = {}
-		DO_RELOAD = false
-	end
-
 	if self._dice_game_data then
 		local backend_session = Managers.backend:get_interface("session")
 		local session_ready = not self._debug_end_of_round_timeout and backend_session:get_state() == "END_OF_ROUND"
@@ -344,7 +337,6 @@ BackendInterfaceItem = class(BackendInterfaceItem)
 
 BackendInterfaceItem.init = function (self)
 	self._backend_items = Items:new()
-	self._modified_templates = {}
 end
 
 BackendInterfaceItem.type = function (self)
@@ -370,29 +362,6 @@ end
 
 BackendInterfaceItem.set_properties_serialized = function (self, backend_id, properties)
 	local error_code = BackendItem.set_traits(backend_id, properties)
-end
-
-BackendInterfaceItem.get_properties = function (self, backend_id)
-	local serialized_properties = BackendItem.get_traits(backend_id)
-
-	if not serialized_properties then
-		return nil
-	end
-
-	serialized_properties = serialized_properties or ""
-
-	local properties = {}
-
-	for rune_slot, property_key, rune_value in string.gmatch(serialized_properties, "([%w_]+):([%w_]+),([%w_]+)") do
-		local property_data = {}
-
-		property_data.rune_slot = rune_slot
-		property_data.property_key = property_key
-		property_data.rune_value = rune_value
-		properties[#properties + 1] = property_data
-	end
-
-	return properties
 end
 
 BackendInterfaceItem.get_traits = function (self, backend_id)
@@ -800,23 +769,8 @@ end
 BackendInterfaceItem.get_item_template = function (self, item_data, backend_id)
 	local template_name = item_data.temporary_template or item_data.template
 	local item_template = WeaponUtils.get_weapon_template(template_name)
-	local modified_templates = self._modified_templates
 
 	if item_template then
-		if backend_id then
-			if not modified_templates[backend_id] then
-				modified_templates[backend_id] = {}
-			end
-
-			if not modified_templates[backend_id][item_template] then
-				table.clear(modified_templates[backend_id])
-
-				modified_templates[backend_id][item_template] = GearUtils.apply_properties_to_item_template(item_template, backend_id)
-			end
-
-			return modified_templates[backend_id][item_template]
-		end
-
 		return item_template
 	end
 

@@ -2198,6 +2198,160 @@ UtilityConsiderations = {
 			is_condition = true,
 		},
 	},
+	troll_chief_melee_shove = {
+		distance_to_target = {
+			blackboard_input = "target_dist",
+			max_value = 15,
+			spline = {
+				0,
+				1,
+				0.5,
+				1,
+				0.6,
+				0,
+				1,
+				0,
+			},
+		},
+		target_is_not_downed = {
+			blackboard_input = "target_is_not_downed",
+			is_condition = true,
+		},
+		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
+			is_condition = true,
+		},
+	},
+	troll_chief_melee_sweep = {
+		distance_to_target = {
+			blackboard_input = "target_dist",
+			max_value = 15,
+			spline = {
+				0,
+				1,
+				0.7,
+				1,
+				0.9,
+				0,
+				1,
+				0,
+			},
+		},
+		time_since_last = {
+			blackboard_input = "time_since_last",
+			max_value = 4,
+			spline = {
+				0,
+				0,
+				0.95,
+				0,
+				1,
+				1,
+			},
+		},
+		target_is_not_downed = {
+			blackboard_input = "target_is_not_downed",
+			is_condition = true,
+		},
+		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
+			is_condition = true,
+		},
+	},
+	troll_chief_cleave = {
+		distance_to_target = {
+			blackboard_input = "target_dist",
+			max_value = 10.5,
+			spline = {
+				0,
+				1,
+				0.5,
+				1,
+				0.51,
+				1,
+				0.7,
+				1,
+				0.92,
+				0,
+				1,
+				0,
+			},
+		},
+		time_since_last = {
+			blackboard_input = "time_since_last",
+			max_value = 10,
+			spline = {
+				0,
+				0,
+				0.2,
+				0,
+				1,
+				1,
+			},
+		},
+		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
+			is_condition = true,
+		},
+		is_raging = {
+			blackboard_input = "stagger_immunity",
+			invert = true,
+			is_condition = true,
+		},
+	},
+	troll_chief_vomit = {
+		distance_to_target = {
+			blackboard_input = "target_dist",
+			max_value = 10,
+			spline = {
+				0,
+				1,
+				0.5233333333333333,
+				1,
+				0.8,
+				0,
+				1,
+				0,
+			},
+		},
+		time_since_last = {
+			blackboard_input = "time_since_last",
+			max_value = 1,
+			spline = {
+				0,
+				0,
+				0.8,
+				0,
+				1,
+				1,
+			},
+		},
+		time_since_last_done = {
+			blackboard_input = "time_since_last_done",
+			max_value = 10,
+			spline = {
+				0,
+				0,
+				0.8,
+				0,
+				1,
+				1,
+			},
+		},
+		target_is_not_downed = {
+			blackboard_input = "target_is_not_downed",
+			is_condition = true,
+		},
+		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
+			is_condition = true,
+		},
+		is_raging = {
+			blackboard_input = "stagger_immunity",
+			invert = true,
+			is_condition = true,
+		},
+	},
 	chaos_warrior_special_attack = {
 		distance_to_target = {
 			blackboard_input = "target_dist",

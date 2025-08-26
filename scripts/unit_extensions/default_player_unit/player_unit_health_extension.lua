@@ -440,6 +440,11 @@ PlayerUnitHealthExtension._update_outline_color = function (self, t, dt)
 	local is_disabled = self.status_extension:is_disabled()
 	local current_health_percent = self:current_health_percent()
 	local party = Managers.party:get_party_from_player_id(peer_id, local_player_id)
+
+	if not party then
+		return
+	end
+
 	local side = Managers.state.side.side_by_party[party]
 	local is_dark_pact = side:name() == "dark_pact"
 	local unit_side = Managers.state.side.side_by_unit[self.unit]
@@ -637,7 +642,7 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 			local not_same_player = owner_player and attacker_player and owner_player ~= attacker_player
 
 			if not_same_player and is_local_and_not_bot then
-				Managers.state.event:trigger("boss_health_bar_set_prioritized_unit", attacker_unit, "damage_taken")
+				Managers.state.event:trigger("boss_health_bar_register_unit", attacker_unit, "damage_taken")
 			end
 
 			QuestSettings.handle_bastard_block(self.unit, attacker_unit, false)
@@ -1264,7 +1269,7 @@ PlayerUnitHealthExtension.set_dead = function (self)
 end
 
 PlayerUnitHealthExtension.set_max_health = function (self, health)
-	return
+	return self.health
 end
 
 PlayerUnitHealthExtension.set_current_damage = function (self, damage)

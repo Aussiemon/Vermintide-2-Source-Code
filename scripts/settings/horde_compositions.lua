@@ -28421,6 +28421,246 @@ HordeCompositions.event_strom_boss = {
 		},
 	},
 }
+
+local TROLL_CHIEF_MAX_HORDE_SIZE = 36
+local difficulty_modifiers = {
+	cataclysm = 2.5,
+	cataclysm_2 = 3,
+	cataclysm_3 = 4,
+	champion = 1.3,
+	legend = 2,
+	recruit = 0.9,
+	veteran = 1,
+}
+
+local function troll_chief_generate_waves_defensive(difficulty, modifier)
+	local threat_mod = difficulty * modifier
+	local hordes = 1
+	local waves = {}
+
+	for i = 1, hordes do
+		local wave = {
+			weight = 4,
+			name = "wave_adds_" .. i,
+			breeds = {
+				"chaos_fanatic",
+				math.min(TROLL_CHIEF_MAX_HORDE_SIZE, math.floor(8 * threat_mod)),
+				"chaos_marauder",
+				math.min(TROLL_CHIEF_MAX_HORDE_SIZE, math.floor(4 * threat_mod)),
+				"chaos_marauder_with_shield",
+				math.min(TROLL_CHIEF_MAX_HORDE_SIZE, math.floor(1.6 * threat_mod)),
+				"chaos_warrior",
+				math.min(TROLL_CHIEF_MAX_HORDE_SIZE, math.floor(0.8 * threat_mod)),
+				"chaos_raider",
+				math.min(TROLL_CHIEF_MAX_HORDE_SIZE, math.floor(1.4 * threat_mod)),
+				"chaos_berzerker",
+				math.min(TROLL_CHIEF_MAX_HORDE_SIZE, math.floor(1 * threat_mod)),
+			},
+		}
+
+		waves[i] = wave
+	end
+
+	return waves
+end
+
+local function troll_chief_generate_waves_adds(difficulty, modifier)
+	local threat_mod = difficulty * modifier
+	local amount = math.ceil(difficulty)
+	local max = 2
+	local compositions = {
+		{
+			"skaven_warpfire_thrower",
+			math.clamp(amount - 0, 0, max),
+			"skaven_warpfire_thrower",
+			math.clamp(amount - 2, 0, max),
+			"skaven_ratling_gunner",
+			math.clamp(amount - 3, 0, max),
+		},
+		{
+			"skaven_gutter_runner",
+			math.clamp(amount - 0, 0, max),
+			"skaven_poison_wind_globadier",
+			math.clamp(amount - 2, 0, max),
+			"skaven_gutter_runner",
+			math.clamp(amount - 3, 0, max),
+		},
+		{
+			"skaven_ratling_gunner",
+			math.clamp(amount - 0, 0, max),
+			"skaven_ratling_gunner",
+			math.clamp(amount - 2, 0, max),
+			"skaven_pack_master",
+			math.clamp(amount - 3, 0, max),
+		},
+		{
+			"chaos_vortex_sorcerer",
+			math.clamp(amount - 0, 0, max),
+			"chaos_corruptor_sorcerer",
+			math.clamp(amount - 2, 0, max),
+			"chaos_vortex_sorcerer",
+			math.clamp(amount - 3, 0, max),
+		},
+	}
+	local waves = {}
+
+	for i = 1, #compositions do
+		local wave = {
+			weight = 4,
+			name = "wave_adds_" .. i,
+			breeds = {
+				"chaos_fanatic",
+				math.min(TROLL_CHIEF_MAX_HORDE_SIZE, math.floor(6 * threat_mod)),
+				"chaos_marauder",
+				math.min(TROLL_CHIEF_MAX_HORDE_SIZE, math.floor(4 * threat_mod)),
+				"chaos_marauder_with_shield",
+				math.min(TROLL_CHIEF_MAX_HORDE_SIZE, math.floor(1 * threat_mod)),
+				unpack(compositions[i]),
+			},
+		}
+
+		waves[i] = wave
+	end
+
+	return waves
+end
+
+HordeCompositions.troll_chief_defensive_1 = {
+	{
+		start_time = 3,
+		unpack(troll_chief_generate_waves_defensive(difficulty_modifiers.recruit, 0.6)),
+	},
+	{
+		start_time = 3,
+		unpack(troll_chief_generate_waves_defensive(difficulty_modifiers.veteran, 0.6)),
+	},
+	{
+		start_time = 3,
+		unpack(troll_chief_generate_waves_defensive(difficulty_modifiers.champion, 0.6)),
+	},
+	{
+		start_time = 3,
+		unpack(troll_chief_generate_waves_defensive(difficulty_modifiers.legend, 0.6)),
+	},
+	{
+		start_time = 3,
+		unpack(troll_chief_generate_waves_defensive(difficulty_modifiers.cataclysm, 0.6)),
+	},
+	{
+		start_time = 3,
+		unpack(troll_chief_generate_waves_defensive(difficulty_modifiers.cataclysm_2, 0.6)),
+	},
+	{
+		start_time = 3,
+		unpack(troll_chief_generate_waves_defensive(difficulty_modifiers.cataclysm_3, 0.6)),
+	},
+	{
+		start_time = 3,
+		unpack(troll_chief_generate_waves_defensive(difficulty_modifiers.recruit, 0.6)),
+	},
+}
+HordeCompositions.troll_chief_defensive_2 = {
+	{
+		start_time = 3,
+		unpack(troll_chief_generate_waves_defensive(difficulty_modifiers.recruit, 1)),
+	},
+	{
+		start_time = 3,
+		unpack(troll_chief_generate_waves_defensive(difficulty_modifiers.veteran, 1)),
+	},
+	{
+		start_time = 3,
+		unpack(troll_chief_generate_waves_defensive(difficulty_modifiers.champion, 1)),
+	},
+	{
+		start_time = 3,
+		unpack(troll_chief_generate_waves_defensive(difficulty_modifiers.legend, 1)),
+	},
+	{
+		start_time = 3,
+		unpack(troll_chief_generate_waves_defensive(difficulty_modifiers.cataclysm, 1)),
+	},
+	{
+		start_time = 3,
+		unpack(troll_chief_generate_waves_defensive(difficulty_modifiers.cataclysm_2, 1)),
+	},
+	{
+		start_time = 3,
+		unpack(troll_chief_generate_waves_defensive(difficulty_modifiers.cataclysm_3, 1)),
+	},
+	{
+		start_time = 3,
+		unpack(troll_chief_generate_waves_defensive(difficulty_modifiers.recruit, 1)),
+	},
+}
+HordeCompositions.troll_chief_rage_1 = {
+	{
+		start_time = 12,
+		unpack(troll_chief_generate_waves_adds(difficulty_modifiers.recruit, 0.6)),
+	},
+	{
+		start_time = 12,
+		unpack(troll_chief_generate_waves_adds(difficulty_modifiers.veteran, 0.6)),
+	},
+	{
+		start_time = 12,
+		unpack(troll_chief_generate_waves_adds(difficulty_modifiers.champion, 0.6)),
+	},
+	{
+		start_time = 12,
+		unpack(troll_chief_generate_waves_adds(difficulty_modifiers.legend, 0.6)),
+	},
+	{
+		start_time = 12,
+		unpack(troll_chief_generate_waves_adds(difficulty_modifiers.cataclysm, 0.6)),
+	},
+	{
+		start_time = 12,
+		unpack(troll_chief_generate_waves_adds(difficulty_modifiers.cataclysm_2, 0.6)),
+	},
+	{
+		start_time = 12,
+		unpack(troll_chief_generate_waves_adds(difficulty_modifiers.cataclysm_3, 0.6)),
+	},
+	{
+		start_time = 12,
+		unpack(troll_chief_generate_waves_adds(difficulty_modifiers.recruit, 0.6)),
+	},
+}
+HordeCompositions.troll_chief_rage_2 = {
+	{
+		start_time = 12,
+		unpack(troll_chief_generate_waves_adds(difficulty_modifiers.recruit, 1)),
+	},
+	{
+		start_time = 12,
+		unpack(troll_chief_generate_waves_adds(difficulty_modifiers.veteran, 1)),
+	},
+	{
+		start_time = 12,
+		unpack(troll_chief_generate_waves_adds(difficulty_modifiers.champion, 1)),
+	},
+	{
+		start_time = 12,
+		unpack(troll_chief_generate_waves_adds(difficulty_modifiers.legend, 1)),
+	},
+	{
+		start_time = 12,
+		unpack(troll_chief_generate_waves_adds(difficulty_modifiers.cataclysm, 1)),
+	},
+	{
+		start_time = 12,
+		unpack(troll_chief_generate_waves_adds(difficulty_modifiers.cataclysm_2, 1)),
+	},
+	{
+		start_time = 12,
+		unpack(troll_chief_generate_waves_adds(difficulty_modifiers.cataclysm_3, 1)),
+	},
+	{
+		start_time = 12,
+		unpack(troll_chief_generate_waves_adds(difficulty_modifiers.recruit, 1)),
+	},
+}
 HordeCompositions.pathfind_test_light = {
 	{
 		{

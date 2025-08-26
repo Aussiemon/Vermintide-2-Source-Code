@@ -52,6 +52,10 @@ end
 local PARTICLES_TEMP = {}
 local POSITIONS_TEMP = {}
 local SOUNDS_TEMP = {}
+local debug_drawer_info = {
+	mode = "retained",
+	name = "BTChampionAttackAction",
+}
 
 BTChampionAttackAction._init_attack = function (self, unit, blackboard, action, t)
 	blackboard.move_state = "attacking"
@@ -153,7 +157,10 @@ BTChampionAttackAction._init_attack = function (self, unit, blackboard, action, 
 						last_pos = new_wanted_pos
 
 						if debug then
-							QuickDrawerStay:sphere(new_wanted_pos, 0.25, Color(255, 0, 0))
+							local drawer = Managers.state.debug:drawer(debug_drawer_info)
+
+							drawer:reset()
+							drawer:sphere(new_wanted_pos, 0.25, Color(255, 0, 0))
 						end
 					end
 				end
@@ -197,7 +204,7 @@ BTChampionAttackAction._init_attack = function (self, unit, blackboard, action, 
 		if action.collision_type == "cylinder" then
 			local rot = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.attacking_target)
 			local pos = self:_calculate_cylinder_collision(action, POSITION_LOOKUP[unit], rot)
-			local size = Vector3(action.radius, action.radius, action.height * 0.5)
+			local size = Vector3(0, action.radius, action.height * 0.5)
 
 			Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(pos, "cylinder", size, nil, bot_threat_duration)
 		elseif action.collision_type == "oobb" or not action.collision_type then
@@ -400,11 +407,6 @@ BTChampionAttackAction._update_rotation = function (self, unit, t, dt, blackboar
 
 	locomotion_extension:set_wanted_rotation(rotation)
 end
-
-local debug_drawer_info = {
-	mode = "retained",
-	name = "BTChampionAttackAction",
-}
 
 BTChampionAttackAction._update_overlap = function (self, unit, blackboard, action, dt, t)
 	local start_t = blackboard.overlap_start_time

@@ -11,6 +11,7 @@ PickupSystem = class(PickupSystem, ExtensionSystemBase)
 local RPCS = {
 	"rpc_spawn_pickup_with_physics",
 	"rpc_spawn_pickup",
+	"rpc_finalize_consumption",
 	"rpc_spawn_linked_pickup",
 	"rpc_force_use_pickup",
 	"rpc_delete_pickup",
@@ -77,6 +78,7 @@ PickupSystem.init = function (self, context, system_name)
 	self._teleporting_pickups = {}
 	self._life_time_pickups = {}
 	self._limited_owned_pickups = {}
+	self._pickups_marked_for_consumption = {}
 
 	if not DEDICATED_SERVER then
 		-- Nothing
@@ -161,6 +163,10 @@ PickupSystem.on_add_extension = function (self, world, unit, extension_name, ext
 	return PickupSystem.super.on_add_extension(self, world, unit, extension_name, extension_init_data, ...)
 end
 
+PickupSystem.game_object_initialized = function (self, unit, go_id)
+	Managers.state.event:trigger("pickup_spawned", unit)
+end
+
 PickupSystem.on_remove_extension = function (self, unit, extension_name, ...)
 	if extension_name ~= "PickupSpawnerExtension" then
 		local ids = self._broadphase_ids
@@ -200,6 +206,15 @@ PickupSystem.on_remove_extension = function (self, unit, extension_name, ...)
 	end
 
 	return PickupSystem.super.on_remove_extension(self, unit, extension_name, ...)
+end
+
+PickupSystem.move_pickup_local_pose = function (self, unit, new_pose)
+	Unit.set_local_pose(unit, 0, new_pose)
+
+	local id = self._broadphase_ids[unit]
+	local position = Matrix4x4.translation(new_pose)
+
+	Broadphase.move(self._broadphase, id, position)
 end
 
 PickupSystem.get_pickups = function (self, position, radius, result)
@@ -889,6 +904,8 @@ PickupSystem.update = function (self, context, t)
 		self:_update_teleporting_pickups(dt, t)
 	end
 
+	self:_update_pickups_marked_for_consumption()
+
 	local statistics_db = self._statistics_db
 	local update_list = self.update_list
 
@@ -1129,10 +1146,10 @@ PickupSystem.hot_join_sync = function (self, sender)
 	return
 end
 
-PickupSystem.spawn_pickup = function (self, pickup_name, position, rotation, with_physics, spawn_type, velocity, override_unit_template_name)
+PickupSystem.spawn_pickup = function (self, pickup_name, position, rotation, with_physics, spawn_type, velocity, override_unit_template_name, optional_extension_init_data)
 	local pickup_settings = AllPickups[pickup_name]
 	local owner_peer_id, spawn_limit
-	local pickup_unit, _ = self:_spawn_pickup(pickup_settings, pickup_name, position, rotation, with_physics, spawn_type, owner_peer_id, spawn_limit, velocity, override_unit_template_name)
+	local pickup_unit, _ = self:_spawn_pickup(pickup_settings, pickup_name, position, rotation, with_physics, spawn_type, owner_peer_id, spawn_limit, velocity, override_unit_template_name, optional_extension_init_data)
 
 	return pickup_unit
 end
@@ -1180,7 +1197,7 @@ PickupSystem.buff_spawn_pickup = function (self, pickup_name, position, raycast_
 	end
 end
 
-PickupSystem._spawn_pickup = function (self, pickup_settings, pickup_name, position, rotation, with_physics, spawn_type, owner_peer_id, spawn_limit, velocity, override_unit_template_name)
+PickupSystem._spawn_pickup = function (self, pickup_settings, pickup_name, position, rotation, with_physics, spawn_type, owner_peer_id, spawn_limit, velocity, override_unit_template_name, optional_extension_init_data)
 	if not self.is_server then
 		Crashify.print_exception("PickupSystem", "Client tried to spawn a client owned pickup '%s'. Pickups may only be spawned by the server.", pickup_name)
 
@@ -1219,6 +1236,10 @@ PickupSystem._spawn_pickup = function (self, pickup_settings, pickup_name, posit
 			network_angular_velocity = AiAnimUtils.velocity_network_scale(Vector3.zero(), true),
 		},
 	}
+
+	if optional_extension_init_data then
+		table.merge(extension_init_data, optional_extension_init_data)
+	end
 
 	self._next_index = next_index + 1
 
@@ -1277,6 +1298,77 @@ PickupSystem._can_spawn = function (self, spawner_unit, pickup_name)
 	return Unit.get_data(spawner_unit, pickup_name) or Managers.mechanism:can_spawn_pickup(spawner_unit, pickup_name)
 end
 
+PickupSystem.mark_for_consumption = function (self, pickup_unit, interactor_unit)
+	if not Unit.get_data(pickup_unit, "interaction_data", "only_once") then
+		return
+	end
+
+	local individual_pickup = Unit.get_data(pickup_unit, "interaction_data", "individual_pickup")
+
+	if individual_pickup then
+		return
+	end
+
+	self._pickups_marked_for_consumption[pickup_unit] = interactor_unit
+end
+
+PickupSystem.marked_for_consumption = function (self, pickup_unit)
+	return self._pickups_marked_for_consumption[pickup_unit]
+end
+
+PickupSystem.finalize_consumption = function (self, pickup_unit, confirmed, optional_drop_pickup_name)
+	if not Unit.get_data(pickup_unit, "interaction_data", "only_once") then
+		return
+	end
+
+	local individual_pickup = Unit.get_data(pickup_unit, "interaction_data", "individual_pickup")
+
+	if individual_pickup then
+		return
+	end
+
+	if self.is_server then
+		if confirmed then
+			local blackboard = BLACKBOARDS[pickup_unit]
+
+			if blackboard then
+				Managers.state.conflict:destroy_unit(pickup_unit, blackboard, "picked_up_interactable")
+			else
+				Managers.state.unit_spawner:mark_for_deletion(pickup_unit)
+			end
+		else
+			self._pickups_marked_for_consumption[pickup_unit] = nil
+		end
+
+		if optional_drop_pickup_name and optional_drop_pickup_name ~= "n/a" then
+			local position, rotation = Unit.local_position(pickup_unit, 0), Unit.local_rotation(pickup_unit, 0)
+			local pickup_settings = AllPickups[optional_drop_pickup_name]
+
+			self:_spawn_pickup(pickup_settings, optional_drop_pickup_name, position, rotation, false, "dropped", Network.peer_id())
+		end
+	else
+		if confirmed then
+			Unit.set_unit_visibility(pickup_unit, false, nil, true)
+		end
+
+		local go_id = Managers.state.unit_storage:go_id(pickup_unit)
+
+		if go_id then
+			local drop_pickup_id = NetworkLookup.pickup_names[optional_drop_pickup_name or "n/a"]
+
+			Managers.state.network.network_transmit:send_rpc_server("rpc_finalize_consumption", go_id, confirmed, drop_pickup_id)
+		end
+	end
+end
+
+PickupSystem._update_pickups_marked_for_consumption = function (self)
+	for pickup_unit, interactor_unit in pairs(self._pickups_marked_for_consumption) do
+		if not ALIVE[pickup_unit] or not ALIVE[interactor_unit] then
+			self._pickups_marked_for_consumption[pickup_unit] = nil
+		end
+	end
+end
+
 PickupSystem.rpc_spawn_pickup_with_physics = function (self, channel_id, pickup_name_id, position, rotation, spawn_type_id)
 	local pickup_name = NetworkLookup.pickup_names[pickup_name_id]
 
@@ -1293,11 +1385,23 @@ PickupSystem.rpc_spawn_pickup = function (self, channel_id, pickup_name_id, posi
 
 	fassert(AllPickups[pickup_name], "pickup name %s does not exist in Pickups table", pickup_name)
 
-	local owner_peer_id = CHANNEL_TO_PEER_ID[channel_id or Network.peer_id()]
+	local owner_peer_id = CHANNEL_TO_PEER_ID[channel_id] or Network.peer_id()
 	local pickup_settings = AllPickups[pickup_name]
 	local spawn_type = NetworkLookup.pickup_spawn_types[spawn_type_id]
 
 	self:_spawn_pickup(pickup_settings, pickup_name, position, rotation, false, spawn_type, owner_peer_id)
+end
+
+PickupSystem.rpc_finalize_consumption = function (self, channel_id, interactable_go_id, confirmed, drop_pickup_id)
+	local unit = Managers.state.unit_storage:unit(interactable_go_id)
+
+	if not unit then
+		return
+	end
+
+	local drop_pickup_name = NetworkLookup.pickup_names[drop_pickup_id]
+
+	self:finalize_consumption(unit, confirmed, drop_pickup_name)
 end
 
 PickupSystem.rpc_spawn_linked_pickup = function (self, channel_id, pickup_name_id, link_position, link_rotation, spawn_type_id, hit_unit_go_id, node_index, is_level_unit, spawn_limit)

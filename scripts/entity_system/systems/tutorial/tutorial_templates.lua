@@ -44,7 +44,7 @@ TutorialTemplates.core_needs_help = {
 	end,
 	can_show = function (t, unit, data, raycast_unit)
 		local players = Managers.player:human_and_bot_players()
-		local unit_position = POSITION_LOOKUP[unit]
+		local unit_position = Unit.local_position(unit, 0)
 		local best_distance_sq = math.huge
 		local best_unit_position, has_raycast_unit, raycast_unit_pos, raycast_unit_dist
 
@@ -55,7 +55,7 @@ TutorialTemplates.core_needs_help = {
 				local status_extension = ScriptUnit.extension(player_unit, "status_system")
 
 				if not status_extension:is_dead() and (status_extension:is_pounced_down() or status_extension:get_is_ledge_hanging() or status_extension:is_grabbed_by_pack_master()) then
-					local player_position = POSITION_LOOKUP[player_unit]
+					local player_position = Unit.local_position(player_unit, 0)
 					local distance_sq = Vector3.distance_squared(unit_position, player_position)
 
 					if player_unit == raycast_unit then
@@ -104,7 +104,7 @@ TutorialTemplates.core_revive = {
 	end,
 	can_show = function (t, unit, data, raycast_unit, world)
 		local players = Managers.player:human_and_bot_players()
-		local unit_position = POSITION_LOOKUP[unit]
+		local unit_position = Unit.local_position(unit, 0)
 		local best_distance_sq = math.huge
 		local best_unit_position, has_raycast_unit, raycast_unit_pos, raycast_unit_dist
 
@@ -115,7 +115,7 @@ TutorialTemplates.core_revive = {
 				local status_extension = ScriptUnit.extension(player_unit, "status_system")
 
 				if status_extension:is_knocked_down() and not status_extension:is_dead() then
-					local player_position = POSITION_LOOKUP[player_unit]
+					local player_position = Unit.local_position(player_unit, 0)
 					local distance_sq = Vector3.distance_squared(unit_position, player_position)
 
 					if player_unit == raycast_unit then
@@ -155,7 +155,7 @@ local function find_best(unit, unit_position, units, best_position, best_distanc
 			local owner_unit = projectile_extension.owner_unit
 
 			if owner_unit ~= unit then
-				local projectile_position = POSITION_LOOKUP[projectile_unit]
+				local projectile_position = Unit.local_position(projectile_unit, 0)
 				local distance_sq = Vector3.distance_squared(unit_position, projectile_position)
 
 				if distance_sq < best_distance_sq then
@@ -186,7 +186,7 @@ TutorialTemplates.advanced_grenade = {
 		return
 	end,
 	can_show = function (t, unit, data, raycast_unit, world)
-		local unit_position = POSITION_LOOKUP[unit]
+		local unit_position = Unit.local_position(unit, 0)
 		local entity_manager = Managers.state.entity
 		local best_position, best_distance_sq = nil, 400
 
@@ -293,7 +293,7 @@ TutorialTemplates.elite_cage_respawn = {
 	end,
 	can_show = function (t, unit, data, raycast_unit, world)
 		local players = Managers.player:human_and_bot_players()
-		local unit_position = POSITION_LOOKUP[unit]
+		local unit_position = Unit.local_position(unit, 0)
 		local best_distance_sq = math.huge
 		local best_unit_position
 
@@ -304,7 +304,7 @@ TutorialTemplates.elite_cage_respawn = {
 				local status_extension = ScriptUnit.extension(player_unit, "status_system")
 
 				if status_extension:is_ready_for_assisted_respawn() then
-					local player_position = POSITION_LOOKUP[player_unit]
+					local player_position = Unit.local_position(player_unit, 0)
 					local distance_sq = Vector3.distance_squared(unit_position, player_position)
 
 					if distance_sq < best_distance_sq then
@@ -400,12 +400,12 @@ TutorialTemplates.objective_pickup = {
 			end
 		end
 
-		local unit_position = POSITION_LOOKUP[unit]
+		local unit_position = Unit.local_position(unit, 0)
 		local best_distance_sq = 10000
 		local objective_units_n = 0
 
 		for pickup_unit, pickup_extension in pairs(obj_units) do
-			if unit ~= pickup_unit then
+			if ALIVE[pickup_unit] and unit ~= pickup_unit then
 				local disregard = pickup_extension.disregard
 
 				if not disregard and ScriptUnit.has_extension(pickup_unit, "death_system") then
@@ -416,7 +416,7 @@ TutorialTemplates.objective_pickup = {
 					end
 				end
 
-				local pickup_unit_position = POSITION_LOOKUP[pickup_unit]
+				local pickup_unit_position = Unit.local_position(pickup_unit, 0)
 				local distance_sq = Vector3.distance_squared(unit_position, pickup_unit_position)
 
 				if not disregard and distance_sq < best_distance_sq then
@@ -483,26 +483,37 @@ TutorialTemplates.objective_socket = {
 		return
 	end,
 	can_show = function (t, unit, data, raycast_unit, world)
-		local unit_position = POSITION_LOOKUP[unit]
+		local unit_position = Unit.local_position(unit, 0)
 		local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
 		local slot_name = inventory_extension:get_wielded_slot_name()
 		local slot_data = inventory_extension:get_slot_data(slot_name)
 
 		if slot_name == "slot_level_event" and slot_data ~= nil then
 			local units = Managers.state.entity:get_entities("ObjectiveSocketUnitExtension")
+			local weapon_unit_1p = slot_data.right_unit_1p or slot_data.left_unit_1p
+
+			if not ScriptUnit.has_extension(weapon_unit_1p, "limited_item_track_system") then
+				return false
+			end
+
 			local unit_get_data = Unit.get_data
 			local objective_units_n = 0
+			local wpn_socket_type = unit_get_data(weapon_unit_1p, "socket_type")
 
 			for socket_unit, socket_extension in pairs(units) do
-				local sockets_enabled = unit_get_data(socket_unit, "sockets_enabled") ~= false
-				local tutorial_text_enabled = unit_get_data(socket_unit, "tutorial_text_enabled")
+				local socket_type = unit_get_data(socket_unit, "socket_type")
 
-				if sockets_enabled and tutorial_text_enabled then
-					local distance_sq = Vector3.distance_squared(unit_position, POSITION_LOOKUP[socket_unit])
+				if not wpn_socket_type or not socket_type or wpn_socket_type == socket_type then
+					local sockets_enabled = unit_get_data(socket_unit, "sockets_enabled") ~= false
+					local tutorial_text_enabled = unit_get_data(socket_unit, "tutorial_text_enabled")
 
-					if socket_extension.num_closed_sockets < socket_extension.num_sockets and distance_sq < socket_extension.distance then
-						objective_units_n = objective_units_n + 1
-						objective_units[objective_units_n] = socket_unit
+					if sockets_enabled and tutorial_text_enabled then
+						local distance_sq = Vector3.distance_squared(unit_position, Unit.local_position(socket_unit, 0))
+
+						if socket_extension.num_closed_sockets < socket_extension.num_sockets and distance_sq < socket_extension.distance then
+							objective_units_n = objective_units_n + 1
+							objective_units[objective_units_n] = socket_unit
+						end
 					end
 				end
 			end
@@ -511,15 +522,11 @@ TutorialTemplates.objective_socket = {
 				return false
 			end
 
-			local weapon_unit_1p = slot_data.right_unit_1p or slot_data.left_unit_1p
+			local first_socket_unit = objective_units[1]
 
-			if ScriptUnit.has_extension(weapon_unit_1p, "limited_item_track_system") then
-				local first_socket_unit = objective_units[1]
+			data.objective_text = Unit.get_data(first_socket_unit, "tutorial_text_id") or "tutorial_no_text"
 
-				data.objective_text = Unit.get_data(first_socket_unit, "tutorial_text_id") or "tutorial_no_text"
-
-				return true, objective_units, objective_units_n
-			end
+			return true, objective_units, objective_units_n
 		end
 
 		return false
@@ -560,7 +567,7 @@ TutorialTemplates.objective_unit = {
 		return
 	end,
 	can_show = function (t, unit, data, raycast_unit, world)
-		local unit_position = POSITION_LOOKUP[unit]
+		local unit_position = Unit.local_position(unit, 0)
 		local units = Managers.state.entity:get_entities("ObjectiveUnitExtension")
 		local vector3_distance_squared = Vector3.distance_squared
 		local best_unit
@@ -569,7 +576,7 @@ TutorialTemplates.objective_unit = {
 
 		for objective_unit, extension in pairs(units) do
 			if extension.active then
-				local distance_sq = vector3_distance_squared(unit_position, POSITION_LOOKUP[objective_unit])
+				local distance_sq = vector3_distance_squared(unit_position, Unit.local_position(objective_unit, 0))
 
 				if distance_sq < best_distance_sq then
 					best_unit = objective_unit

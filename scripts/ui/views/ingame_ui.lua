@@ -674,7 +674,10 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 		end
 	end
 
-	self.ingame_hud:update(dt, t)
+	if Managers.state.network:game() then
+		self.ingame_hud:update(dt, t)
+	end
+
 	self:_update_menu_blocking_information(dt, t, input_service, end_of_level_ui)
 	self:_render_debug_ui(dt, t)
 	self:_update_fade_transition()

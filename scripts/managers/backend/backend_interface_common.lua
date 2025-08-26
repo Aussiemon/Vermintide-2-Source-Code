@@ -185,20 +185,6 @@ local filter_macros = {
 
 		return backend_peddler:is_discounted_shilling_item(item_key)
 	end,
-	trinket_as_hero = function (item, backend_id)
-		local item_data = item.data
-
-		if item_data.traits then
-			for _, trait_name in ipairs(item_data.traits) do
-				local trait_config = BuffUtils.get_buff_template(trait_name)
-				local roll_dice_as_hero = trait_config.roll_dice_as_hero
-
-				if roll_dice_as_hero then
-					return true
-				end
-			end
-		end
-	end,
 	is_weapon = function (item, backend_id)
 		local item_data = item.data
 		local slot_type = item_data.slot_type

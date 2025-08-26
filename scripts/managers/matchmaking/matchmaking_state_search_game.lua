@@ -4,7 +4,6 @@ MatchmakingStateSearchGame = class(MatchmakingStateSearchGame)
 MatchmakingStateSearchGame.NAME = "MatchmakingStateSearchGame"
 
 MatchmakingStateSearchGame.init = function (self, params)
-	self._lobby = params.lobby
 	self._lobby_finder = params.lobby_finder
 	self._peer_id = Network.peer_id()
 	self._matchmaking_manager = params.matchmaking_manager
@@ -100,12 +99,13 @@ MatchmakingStateSearchGame._start_searching_for_games = function (self)
 
 	self._matchmaking_manager:setup_filter_requirements(1, self._current_distance_filter, self._current_filters, self._current_near_filters)
 
-	local lobby_data = self._lobby:get_stored_lobby_data()
+	local own_lobby = Managers.lobby:get_lobby("matchmaking_session_lobby")
+	local lobby_data = own_lobby:get_stored_lobby_data()
 
 	lobby_data.matchmaking = "searching"
 	lobby_data.time_of_search = tostring(os.time())
 
-	self._lobby:set_lobby_data(lobby_data)
+	own_lobby:set_lobby_data(lobby_data)
 	Managers.level_transition_handler:clear_next_level()
 	self._lobby_finder:refresh()
 	self._matchmaking_manager:send_system_chat_message("matchmaking_status_start_search")

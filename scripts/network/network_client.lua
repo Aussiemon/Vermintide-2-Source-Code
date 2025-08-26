@@ -391,7 +391,7 @@ NetworkClient._update_eac_match = function (self)
 	end
 
 	local lobby_manager = Managers.lobby
-	local lobby_to_join = lobby_manager:query_lobby("matchmaking_game_server_client") or lobby_manager:query_lobby("matchmaking_join_lobby")
+	local lobby_to_join = lobby_manager:query_lobby("matchmaking_join_lobby")
 
 	if lobby_to_join and lobby_to_join:is_dedicated_server() then
 		return

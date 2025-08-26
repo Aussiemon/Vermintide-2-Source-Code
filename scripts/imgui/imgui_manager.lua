@@ -491,7 +491,7 @@ ImguiX.heading = function (key, fmt, ...)
 	Imgui.text(string.format(fmt, ...))
 end
 
-ImguiX.combo_search = function (index, search_results, search_text, data)
+ImguiX.combo_search = function (index, search_results, search_text, data, optional_aliases)
 	local new_search_text = Imgui.input_text("Search", search_text)
 
 	if new_search_text ~= search_text then
@@ -502,6 +502,14 @@ ImguiX.combo_search = function (index, search_results, search_text, data)
 		for i, datum in ipairs(data) do
 			if string.find(string.lower(datum), needle) then
 				search_results[#search_results + 1] = datum
+			elseif optional_aliases then
+				for _, aliases in ipairs(optional_aliases) do
+					if string.find(string.lower(aliases[i]), needle) then
+						search_results[#search_results + 1] = datum
+
+						break
+					end
+				end
 			end
 		end
 

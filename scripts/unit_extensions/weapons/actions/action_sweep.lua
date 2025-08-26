@@ -828,10 +828,10 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 		local hit_unit = Script.type_name(hit_actor) == "Actor" and Actor.unit(hit_actor) or nil
 		local hit_position = result.position
 		local hit_normal = result.normal
+		local use_saved_target_instead = false
 
 		if has_hit_precision_target_and_has_last_hit_result then
 			local last_potential_result_index = #self._last_potential_hit_result
-			local use_saved_target_instead = false
 
 			if lost_precision_target then
 				use_saved_target_instead = true
@@ -848,12 +848,14 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 					hit_unit = Actor.unit(hit_actor)
 					hit_position = self._last_potential_hit_result[last_potential_result_index].hit_position:unbox()
 					hit_normal = self._last_potential_hit_result[last_potential_result_index].hit_normal:unbox()
+					result.actor = hit_actor
+					result.position = hit_position
+					result.normal = hit_normal
 
 					local potential_unit = self._last_potential_hit_result[last_potential_result_index].hit_unit
 
 					hit_units[potential_unit] = nil
 					self._last_potential_hit_result[last_potential_result_index].already_hit = true
-					i = i - 1
 				end
 			end
 

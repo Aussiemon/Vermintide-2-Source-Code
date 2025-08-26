@@ -679,7 +679,14 @@ TutorialUI.update_objective_tooltip_widget = function (self, widget_holder, play
 	end
 
 	local widget = widget_holder.widget
-	local position_offset = widget.content.position_offset and Vector3.up() + widget.content.position_offset:unbox() or Vector3.up()
+	local position_offset = widget.content.position_offset and Vector3.up() + widget.content.position_offset:unbox()
+
+	if Unit.get_data(objective_unit, "breed") then
+		position_offset = Vector3(0, 0, AiUtils.breed_height(objective_unit) + 0.75)
+	end
+
+	position_offset = position_offset or Vector3.up()
+
 	local objective_unit_position = Unit.world_position(objective_unit, 0) + position_offset
 	local first_person_extension = self:_get_player_first_person_extension()
 	local player_position = first_person_extension:current_position()

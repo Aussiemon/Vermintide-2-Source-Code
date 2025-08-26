@@ -132,6 +132,7 @@ PopupProfilePicker.show = function (self, current_profile_index, current_career_
 	local input_manager = self._input_manager
 
 	input_manager:capture_input(self._INPUT_DEVICES, 1, "popup_profile_picker", "PopupProfilePicker")
+	self:_play_sound("hud_hot_join_hero_popup")
 end
 
 PopupProfilePicker.hide = function (self)
@@ -143,6 +144,8 @@ PopupProfilePicker.hide = function (self)
 	self._selected_hero_name = nil
 	self._selected_career_name = nil
 	self._makeshift_lobby_data = nil
+
+	self:_play_sound("hud_hot_join_hero_popup_stop")
 end
 
 PopupProfilePicker.input_service = function (self)
@@ -178,6 +181,12 @@ end
 PopupProfilePicker.set_result = function (self, accepted, reason)
 	local selected_hero_name = accepted and self._selected_hero_name
 	local selected_career_name = accepted and self._selected_career_name
+
+	if accepted then
+		self:_play_sound("hud_hot_join_hero_popup_accept")
+	else
+		self:_play_sound("hud_hot_join_hero_popup_decline")
+	end
 
 	self._join_lobby_result = {
 		accepted = accepted,

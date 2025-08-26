@@ -31,6 +31,10 @@ local base_effect = {
 
 			attach_unit = cosmetic_extension and cosmetic_extension:get_third_person_mesh_unit() or attach_unit
 
+			local inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
+
+			attach_unit = inventory_extension and inventory_extension:get_skin_unit() or attach_unit
+
 			local material_variable = status_template.unit_material_variable
 
 			if material_variable then

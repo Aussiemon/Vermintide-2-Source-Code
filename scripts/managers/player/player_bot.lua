@@ -106,7 +106,7 @@ PlayerBot.telemetry_id = function (self)
 	return self._telemetry_id
 end
 
-PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_melee, ammo_ranged, healthkit, potion, grenade, ability_cooldown_percent_int, additional_items)
+PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_melee, ammo_ranged, healthkit, potion, grenade, ability_cooldown_percent_int, additional_items, _, optional_respawn_unit)
 	local profile_index = self._profile_index
 	local profile = SPProfiles[profile_index]
 	local career_index = self:career_index()
@@ -174,6 +174,7 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 			wounds = player_wounds,
 			profile_id = profile_index,
 			player = self,
+			respawn_unit = optional_respawn_unit,
 		},
 		hit_reaction_system = {
 			hit_reaction_template = "player",
@@ -279,6 +280,7 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 	local unit_name = skin_data.third_person
 	local unit = self:spawn_unit(unit_name, extension_init_data, unit_template_name, position, rotation)
 
+	Managers.state.event:trigger("new_player_unit", self, unit, self:unique_id())
 	ScriptUnit.extension(unit, "attachment_system"):show_attachments(true)
 	Unit.set_data(unit, "sound_character", career.sound_character)
 	Unit.create_actor(unit, "bot_collision", false)

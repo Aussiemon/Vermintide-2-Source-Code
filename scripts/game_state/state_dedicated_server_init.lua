@@ -54,9 +54,7 @@ StateDedicatedServerInit._init_network = function (self)
 	cprintf("server_name = %s", game_server_name)
 	cprint("----------------------------------------")
 	cprintf("You need to open port %d for incoming traffic to make the server detectable", network_options.query_port)
-
-	self._game_server = GameServer:new(network_options, game_server_name)
-
+	Managers.lobby:make_lobby(GameServer, "matchmaking_session_lobby", "StateDedicatedServerInit", network_options, game_server_name)
 	Managers.party:set_leader(nil)
 	self:_load_save_data()
 
@@ -83,7 +81,7 @@ StateDedicatedServerInit.cb_save_data_loaded = function (self, info)
 end
 
 StateDedicatedServerInit.update = function (self, dt, t)
-	local game_server = self._game_server
+	local game_server = Managers.lobby:get_lobby("matchmaking_session_lobby")
 	local server_state = game_server:update(dt, t)
 	local state = self._state
 
@@ -110,7 +108,7 @@ StateDedicatedServerInit.update = function (self, dt, t)
 	elseif state == "wait_for_connect" then
 		if server_state == "connected" then
 			cprint("Connected to Steam")
-			self.parent:setup_network_server(game_server)
+			self.parent:setup_network_server()
 			self.parent:setup_global_managers(game_server)
 
 			return StateDedicatedServerRunning

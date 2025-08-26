@@ -10,23 +10,6 @@ end
 
 BTBotActivateAbilityAction.name = "BTBotActivateAbilityAction"
 
-local function update_target_location(target, aim_position)
-	local node = 0
-	local target_unit_blackboard = BLACKBOARDS[target]
-	local target_breed = target_unit_blackboard and target_unit_blackboard.breed
-	local aim_node = target_breed and (target_breed.bot_melee_aim_node or "j_spine") or "rp_center"
-
-	if Unit.has_node(target, aim_node) then
-		node = Unit.node(target, aim_node)
-	end
-
-	local aim_pos = Unit.world_position(target, node)
-
-	aim_position:store(aim_pos)
-
-	return aim_pos
-end
-
 BTBotActivateAbilityAction.enter = function (self, unit, blackboard, t)
 	local action_data = self._tree_node.action_data
 	local career_extension = blackboard.career_extension
@@ -214,7 +197,7 @@ BTBotActivateAbilityAction.run = function (self, unit, blackboard, t, dt)
 
 				input_extension:set_aim_position(camera_position + current_forward)
 			else
-				local aim_position = update_target_location(target_unit, data.aim_position)
+				local aim_position = AiUtils.bot_melee_aim_pos(unit, target_unit, data.aim_position)
 				local input_extension = blackboard.input_extension
 
 				input_extension:set_aiming(true, true, false)

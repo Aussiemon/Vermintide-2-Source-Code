@@ -4,11 +4,11 @@ require("scripts/settings/difficulty_settings")
 
 DifficultyManager = class(DifficultyManager)
 
-DifficultyManager.init = function (self, world, is_server, network_event_delegate, lobby_host)
+DifficultyManager.init = function (self, world, is_server, network_event_delegate, lobby)
 	self.world = world
 	self.is_server = is_server
 	self.network_event_delegate = network_event_delegate
-	self.lobby_host = lobby_host
+	self._lobby = lobby
 
 	network_event_delegate:register(self, "rpc_set_difficulty")
 
@@ -34,12 +34,12 @@ DifficultyManager.set_difficulty = function (self, difficulty, tweak)
 	SET_BREED_DIFFICULTY(difficulty)
 
 	if self.is_server then
-		local lobby_data = self.lobby_host:get_stored_lobby_data()
+		local lobby_data = self._lobby:get_stored_lobby_data()
 
 		lobby_data.difficulty = difficulty
 		lobby_data.difficulty_tweak = tweak
 
-		self.lobby_host:set_lobby_data(lobby_data)
+		self._lobby:set_lobby_data(lobby_data)
 
 		local network_manager = Managers.state.network
 

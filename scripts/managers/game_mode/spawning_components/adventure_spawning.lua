@@ -621,6 +621,10 @@ AdventureSpawning.get_active_respawn_units = function (self)
 	return self._respawn_handler:get_active_respawn_units()
 end
 
+AdventureSpawning.get_available_and_active_respawn_units = function (self)
+	return self._respawn_handler:get_available_and_active_respawn_units()
+end
+
 AdventureSpawning.set_move_dead_players_to_next_respawn = function (self, value)
 	self._respawn_handler:set_move_dead_players_to_next_respawn(value)
 end

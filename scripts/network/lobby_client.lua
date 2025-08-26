@@ -17,6 +17,7 @@ LobbyClient.init = function (self, network_options, lobby_data, joined_lobby)
 	self.peer_id = Network.peer_id()
 	self._host_peer_id = nil
 	self._host_channel_id = nil
+	self.is_host = false
 
 	if HAS_STEAM then
 		self:set_steam_lobby_reconnectable(true)

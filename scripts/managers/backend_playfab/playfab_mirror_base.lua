@@ -3329,6 +3329,14 @@ PlayFabMirrorBase.fix_career_data_request_cb = function (self, result)
 			self._unlocked_cosmetics = self:_parse_unlocked_cosmetics()
 		end
 
+		local unlocked_weapon_poses = function_result.unlocked_weapon_poses
+
+		if unlocked_weapon_poses then
+			self:set_read_only_data("unlocked_weapon_poses", unlocked_weapon_poses, true)
+
+			self._unlocked_weapon_poses = self:_parse_unlocked_weapon_poses()
+		end
+
 		self:_request_user_inventory()
 	else
 		self:_verify_default_gear()

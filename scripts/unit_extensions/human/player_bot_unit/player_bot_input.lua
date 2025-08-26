@@ -58,6 +58,7 @@ PlayerBotInput.extensions_ready = function (self, world, unit)
 	self._first_person_extension = ext(unit, "first_person_system")
 	self._ai_bot_group_extension = ext(unit, "ai_bot_group_system")
 	self._locomotion_extension = ext(unit, "locomotion_system")
+	self._ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 end
 
 PlayerBotInput.destroy = function (self)
@@ -503,12 +504,14 @@ PlayerBotInput._update_movement = function (self, dt, t)
 	look.x = math.half_pi - math.atan2(needed_delta_rotation_forward.y, needed_delta_rotation_forward.x)
 	look.y = math.asin(math.clamp(needed_delta_rotation_forward.z, -1, 1))
 
-	local ai_bot_group_extension = self._ai_bot_group_extension
-	local threat_data = ai_bot_group_extension.data.aoe_threat
+	local bot_position = Unit.local_position(unit, 0)
 
-	self._avoiding_aoe_threat = t < threat_data.expires
+	self._avoiding_aoe_threat = self._ai_bot_group_system:is_inside_aoe_threat(bot_position)
 
 	if self._avoiding_aoe_threat then
+		local ai_bot_group_extension = self._ai_bot_group_extension
+		local threat_data = ai_bot_group_extension.data.aoe_threat
+
 		current_goal = threat_data.escape_to:unbox()
 
 		self:dodge()
@@ -562,20 +565,22 @@ PlayerBotInput._update_movement = function (self, dt, t)
 			end
 		end
 
-		local flat_right = Vector3.flat(Quaternion.right(wanted_rotation))
-		local flat_forward = Vector3.flat(Quaternion.forward(wanted_rotation))
+		Debug.text("avoiding: %s", self._avoiding_aoe_threat)
 
-		move.x = move_scale * Vector3.dot(flat_right, goal_direction)
-		move.y = move_scale * Vector3.dot(flat_forward, goal_direction)
-	end
+		if self._avoiding_aoe_threat and (not flat_goal_vector or Vector3.length_squared(flat_goal_vector) < 0.0001) then
+			if not player_bot_navigation:destination_reached() then
+				player_bot_navigation:stop()
+			end
+		elseif not self._avoiding_aoe_threat and self._ai_bot_group_system:is_inside_aoe_threat(bot_position + goal_direction * move_scale) then
+			move.x = 0
+			move.y = 0
+		else
+			local flat_right = Vector3.flat(Quaternion.right(wanted_rotation))
+			local flat_forward = Vector3.flat(Quaternion.forward(wanted_rotation))
 
-	if self._avoiding_aoe_threat and (not flat_goal_vector or Vector3.length_squared(flat_goal_vector) < 0.25) then
-		if player_bot_navigation:destination_reached() then
-			player_bot_navigation:stop()
+			move.x = move_scale * Vector3.dot(flat_right, goal_direction)
+			move.y = move_scale * Vector3.dot(flat_forward, goal_direction)
 		end
-
-		self._avoiding_aoe_threat = false
-		threat_data.expires = 0
 	end
 end
 
@@ -687,4 +692,8 @@ end
 
 PlayerBotInput.force_release_input = function (self)
 	return true
+end
+
+PlayerBotInput.avoiding_aoe_threat = function (self)
+	return self._avoiding_aoe_threat
 end

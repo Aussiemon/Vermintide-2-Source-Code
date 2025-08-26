@@ -174,7 +174,7 @@ StartGameWindowAreaSelectionConsoleV2._setup_area_widgets = function (self)
 		local offset = widget.offset
 
 		if i == 1 then
-			local y_offset = math.floor((num_areas - 1) / grid_settings[1])
+			local y_offset = math.floor(math.max(0, num_areas - 2) / grid_settings[1])
 
 			offset[1] = base_offset
 			offset[2] = -y_offset * (widget_width + spacing) * 0.5
@@ -362,9 +362,12 @@ StartGameWindowAreaSelectionConsoleV2._set_area_presentation_info = function (se
 	local parent = self.parent
 	local video_player = parent:get_video_player_by_name(area_name)
 	local video_settings = settings.video_settings
-	local material_name = video_settings.material_name
 
-	self:_assign_video_player(material_name, video_player)
+	if video_settings then
+		local material_name = video_settings.material_name
+
+		self:_assign_video_player(material_name, video_player)
+	end
 
 	local menu_sound_event = settings.menu_sound_event
 

@@ -53,11 +53,13 @@ dofile("scripts/settings/breeds/breed_chaos_raider")
 dofile("scripts/settings/breeds/breed_chaos_warrior")
 dofile("scripts/settings/breeds/breed_chaos_bulwark")
 dofile("scripts/settings/breeds/breed_chaos_troll")
+dofile("scripts/settings/breeds/breed_chaos_troll_chief")
 dofile("scripts/settings/breeds/breed_chaos_dummy_troll")
 dofile("scripts/settings/breeds/breed_chaos_tentacle")
 dofile("scripts/settings/breeds/breed_chaos_vortex_sorcerer")
 dofile("scripts/settings/breeds/breed_chaos_vortex")
 dofile("scripts/settings/breeds/breed_chaos_corruptor_sorcerer")
+dofile("scripts/settings/breeds/breed_chaos_tether_sorcerer")
 dofile("scripts/settings/breeds/breed_chaos_plague_wave_spawner")
 dofile("scripts/settings/breeds/breed_chaos_spawn")
 dofile("scripts/settings/breeds/breed_chaos_dummy_sorcerer")
@@ -275,6 +277,7 @@ local PerceptionTypes = {
 	perception_regular = true,
 	perception_regular_update_aggro = true,
 	perception_standard_bearer = true,
+	perception_tether_sorcerer = true,
 }
 local TargetSelectionTypes = {
 	horde_pick_closest_target_with_spillover = true,
@@ -296,6 +299,7 @@ local TargetSelectionTypes = {
 	pick_rat_ogre_target_idle = true,
 	pick_rat_ogre_target_with_weights = true,
 	pick_solitary_target = true,
+	pick_tether_target = true,
 }
 
 for name, breed in pairs(Breeds) do

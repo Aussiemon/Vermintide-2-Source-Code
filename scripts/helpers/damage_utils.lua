@@ -1727,7 +1727,7 @@ DamageUtils.create_hit_zone_lookup = function (unit, breed)
 	BreedHitZonesLookup[breed_name] = hit_zones_lookup
 end
 
-DamageUtils.vs_register_dark_pact_player_damage = function (attacker_unit, attacked_unit, damage_source, damage_type, player_manager, source_attacker_unit)
+DamageUtils.vs_register_dark_pact_player_damage = function (attacker_unit, attacked_unit, damage_source, damage_type, player_manager, source_attacker_unit, damage_amount)
 	local attacker_player = player_manager:owner(attacker_unit)
 	local attacked_player = player_manager:owner(attacked_unit)
 
@@ -1739,7 +1739,7 @@ DamageUtils.vs_register_dark_pact_player_damage = function (attacker_unit, attac
 		if attacker_unit and is_dark_pact_attacker then
 			local horde_ability_system = Managers.state.entity:system("versus_horde_ability_system")
 
-			horde_ability_system:server_ability_recharge_boost(attacker_player.peer_id, nil, damage_source, damage_type, target_downed)
+			horde_ability_system:server_ability_recharge_boost(attacker_player.peer_id, nil, damage_source, damage_type, target_downed, damage_amount)
 		end
 	end
 end
@@ -2068,6 +2068,7 @@ DamageUtils.buff_on_attack = function (unit, hit_unit, attack_type, is_critical,
 		return false
 	end
 
+	local hit_unit_buff_extension = ScriptUnit.has_extension(hit_unit, "buff_system")
 	local side_manager = Managers.state.side
 	local hostile_unit = side_manager:is_enemy(unit, hit_unit)
 
@@ -2076,6 +2077,10 @@ DamageUtils.buff_on_attack = function (unit, hit_unit, attack_type, is_critical,
 
 		if ranged_attack then
 			buff_extension:trigger_procs("on_ranged_hit", hit_unit, attack_type, hit_zone_name, target_number, buff_type, is_critical, unmodified)
+
+			if hit_unit_buff_extension then
+				hit_unit_buff_extension:trigger_procs("on_hit_by_ranged", unit, attack_type, hit_zone_name, target_number, buff_type, is_critical, unmodified)
+			end
 		else
 			buff_extension:trigger_procs("on_melee_hit", hit_unit, attack_type, hit_zone_name, target_number, buff_type, is_critical, unmodified)
 		end
@@ -2083,6 +2088,10 @@ DamageUtils.buff_on_attack = function (unit, hit_unit, attack_type, is_critical,
 		buff_extension:trigger_procs("on_hit", hit_unit, attack_type, hit_zone_name, target_number, buff_type, is_critical, unmodified)
 		Managers.state.achievement:trigger_event("on_hit", hit_unit, attack_type, hit_zone_name, target_number, buff_type, is_critical, unmodified, unit, damage_source)
 		Managers.state.event:trigger("on_hit", hit_unit, attack_type, hit_zone_name, target_number, buff_type, is_critical, unmodified, unit)
+
+		if hit_unit_buff_extension then
+			hit_unit_buff_extension:trigger_procs("on_hit_by_other", unit, attack_type, hit_zone_name, target_number, buff_type, is_critical, unmodified)
+		end
 	end
 
 	if is_critical and hostile_unit then
@@ -2483,6 +2492,13 @@ local HEALED_UNITS = {}
 
 DamageUtils.heal_network = function (healed_unit, healer_unit, heal_amount, heal_type)
 	fassert(Managers.player.is_server or LEVEL_EDITOR_TEST, "Only server can heal")
+
+	local buff_extension = ScriptUnit.has_extension(healed_unit, "buff_system")
+
+	if buff_extension and buff_extension:has_buff_perk("healing_immune") then
+		return
+	end
+
 	table.clear(HEALED_UNITS)
 
 	local buffed_heal_amount, shared_medpack = DamageUtils.apply_buffs_to_heal(healed_unit, healer_unit, heal_amount, heal_type, HEALED_UNITS)

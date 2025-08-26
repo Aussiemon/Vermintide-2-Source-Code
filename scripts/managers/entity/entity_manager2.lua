@@ -179,9 +179,19 @@ EntityManager2.sync_unit_extensions = function (self, unit, go_id)
 	local extensions = self._units[unit]
 
 	if extensions then
+		local extension_to_system_map = self._extension_to_system_map
+		local self_systems = self._systems
+
 		for extension_name, extension in pairs(extensions) do
 			if extension.game_object_initialized ~= nil then
 				extension:game_object_initialized(unit, go_id)
+			end
+
+			local extension_system_name = extension_to_system_map[extension_name]
+			local system = self_systems[extension_system_name]
+
+			if system.game_object_initialized ~= nil then
+				system:game_object_initialized(unit, go_id)
 			end
 		end
 	end

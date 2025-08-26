@@ -35,6 +35,7 @@ ImguiCatTesterTools.curated_breed_list = ImguiCatTesterTools.curated_breed_list 
 	"chaos_raider",
 	"chaos_spawn",
 	"chaos_troll",
+	"chaos_troll_chief",
 	"chaos_vortex_sorcerer",
 	"chaos_warrior",
 	"critter_pig",

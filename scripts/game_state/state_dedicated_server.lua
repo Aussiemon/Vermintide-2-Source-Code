@@ -170,9 +170,8 @@ StateDedicatedServer.update = function (self, dt, t)
 	end
 end
 
-StateDedicatedServer.setup_network_server = function (self, game_server)
-	self._game_server = game_server
-
+StateDedicatedServer.setup_network_server = function (self)
+	local game_server = Managers.lobby:get_lobby("matchmaking_session_lobby")
 	local initial_level = Managers.mechanism:default_level_key()
 	local loading_context = self.parent.loading_context
 
@@ -279,10 +278,8 @@ StateDedicatedServer._destroy_network = function (self)
 		self._network_server = nil
 	end
 
-	if self._game_server then
-		self._game_server:destroy()
-
-		self._game_server = nil
+	if Managers.lobby:query_lobby("matchmaking_session_lobby") then
+		Managers.lobby:destroy_lobby("matchmaking_session_lobby")
 	end
 
 	self.parent.loading_context = {}
@@ -313,7 +310,6 @@ StateDedicatedServer.on_exit = function (self, application_shutdown)
 
 		loading_context.network_server = self._network_server
 		loading_context.network_transmit = self._network_transmit
-		loading_context.lobby_host = self._game_server
 	end
 
 	self._network_event_delegate:destroy()

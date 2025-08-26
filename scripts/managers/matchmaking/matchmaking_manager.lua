@@ -1093,10 +1093,6 @@ MatchmakingManager._terminate_dangling_matchmaking_lobbies = function (self)
 	if Managers.lobby:query_lobby("matchmaking_join_lobby") then
 		Managers.lobby:destroy_lobby("matchmaking_join_lobby")
 	end
-
-	if Managers.lobby:query_lobby("matchmaking_game_server_client") then
-		Managers.lobby:destroy_lobby("matchmaking_game_server_client")
-	end
 end
 
 MatchmakingManager.cancel_matchmaking = function (self)
@@ -1141,22 +1137,16 @@ MatchmakingManager.cancel_matchmaking = function (self)
 	self.state_context = {}
 
 	if self._state then
-		self:_terminate_dangling_matchmaking_lobbies()
-
 		if self._state.terminate then
 			self._state:terminate()
 		end
+
+		self:_terminate_dangling_matchmaking_lobbies()
 
 		if self._state.lobby_client then
 			self._state.lobby_client:destroy()
 
 			self._state.lobby_client = nil
-		end
-
-		if self._state._lobby_client then
-			self._state._lobby_client:destroy()
-
-			self._state._lobby_client = nil
 		end
 
 		if self._state._lobby_unclaimed then
@@ -1265,7 +1255,7 @@ end
 
 MatchmakingManager.is_matchmaking_versus = function (self)
 	local lobby_mechanism = self.lobby and self.lobby:lobby_data("mechanism")
-	local lobby_client = self._state._lobby_client or self._state.lobby_client or Managers.lobby:query_lobby("matchmaking_join_lobby")
+	local lobby_client = self._state.lobby_client or Managers.lobby:query_lobby("matchmaking_session_lobby") or Managers.lobby:query_lobby("matchmaking_join_lobby")
 	local lobby_client_mechanism = lobby_client and lobby_client:lobby_data("mechanism")
 	local name = self._state.NAME
 	local is_matchmaking = name ~= "MatchmakingStateIdle"
@@ -1340,12 +1330,6 @@ MatchmakingManager.rpc_set_matchmaking = function (self, channel_id, is_matchmak
 				current_state.lobby_client:destroy()
 
 				current_state.lobby_client = nil
-			end
-
-			if current_state._lobby_client then
-				current_state._lobby_client:destroy()
-
-				current_state._lobby_client = nil
 			end
 
 			self:_change_state(MatchmakingStateIdle, self.params, {})
@@ -2207,7 +2191,7 @@ end
 
 MatchmakingManager.allow_cancel_matchmaking = function (self)
 	local state = self._state
-	local lobby_client = Managers.lobby:query_lobby("matchmaking_join_lobby") or state.lobby_client
+	local lobby_client = Managers.lobby:query_lobby("matchmaking_join_lobby") or Managers.lobby:query_lobby("matchmaking_join_lobby") or state.lobby_client
 
 	if lobby_client then
 		if lobby_client:is_joined() then
@@ -2379,7 +2363,7 @@ MatchmakingManager.get_reserved_slots = function (self)
 		reserved_slots_mask = self.lobby:lobby_data("reserved_slots_mask") or reserved_slots_mask
 		mechanism_name = self.lobby:lobby_data("mechanism")
 	else
-		local lobby = self._state.lobby_client or Managers.lobby:query_lobby("matchmaking_join_lobby") or self._state._lobby_client or self.lobby
+		local lobby = self._state.lobby_client or Managers.lobby:query_lobby("matchmaking_join_lobby") or Managers.lobby:query_lobby("matchmaking_join_lobby") or self.lobby
 
 		if not lobby then
 			return
@@ -2441,7 +2425,7 @@ MatchmakingManager.search_info = function (self)
 			info.matchmaking_type = search_config.matchmaking_type
 			info.mechanism = search_config.mechanism
 		else
-			local lobby = self._state.lobby_client or Managers.lobby:query_lobby("matchmaking_join_lobby") or self._state._lobby_client
+			local lobby = self._state.lobby_client or Managers.lobby:query_lobby("matchmaking_join_lobby") or Managers.lobby:query_lobby("matchmaking_join_lobby")
 
 			if lobby then
 				local mission_id = lobby:lobby_data("mission_id")

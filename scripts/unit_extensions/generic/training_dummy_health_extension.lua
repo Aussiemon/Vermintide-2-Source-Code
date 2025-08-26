@@ -101,7 +101,7 @@ TrainingDummyHealthExtension.update = function (self, dt, context, t)
 end
 
 TrainingDummyHealthExtension.set_max_health = function (self, health, update_unmodfied)
-	return
+	return self.health
 end
 
 TrainingDummyHealthExtension.set_current_damage = function (self, damage)

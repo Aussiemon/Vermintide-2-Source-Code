@@ -51,6 +51,12 @@ end
 LobbyInternal.init_client = function (network_options)
 	LobbyInternal.client = Network.init_steam_client(network_options.config_file_name)
 
+	if not LobbyInternal._peer_id_property_set then
+		LobbyInternal._peer_id_property_set = true
+
+		Crashify.print_property("peer_id", Network.peer_id())
+	end
+
 	GameSettingsDevelopment.set_ignored_rpc_logs()
 end
 

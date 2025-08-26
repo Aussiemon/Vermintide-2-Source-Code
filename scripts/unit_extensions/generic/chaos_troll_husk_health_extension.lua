@@ -20,32 +20,73 @@ ChaosTrollHuskHealthExtension.init = function (self, extension_init_context, uni
 	self.network_event_delegate = extension_init_context.system_data.network_event_delegate
 
 	self.network_event_delegate:register(self, "rpc_sync_current_max_health")
+
+	self.skin_unit = nil
+
+	local inventory_extension = ScriptUnit.has_extension(self.unit, "ai_inventory_system")
+
+	if inventory_extension then
+		self.skin_unit = inventory_extension:get_skin_unit()
+	end
 end
 
 ChaosTrollHuskHealthExtension.set_max_health = function (self, value, set_only_current_max_health)
 	if set_only_current_max_health then
+		value = DamageUtils.networkify_health(value)
 		self.current_max_health = value
 	else
-		ChaosTrollHuskHealthExtension.super.set_max_health(self, value)
+		value = ChaosTrollHuskHealthExtension.super.set_max_health(self, value)
+
 		self:_setup_initial_health_variables(value)
 	end
+
+	return value
 end
 
 ChaosTrollHuskHealthExtension._setup_initial_health_variables = function (self, new_max_health, from_init)
-	local breed = Breeds.chaos_troll
-	local action = BreedActions.chaos_troll.downed
+	local breed = self._breed
+	local action = BreedActions[breed.name].downed
 
-	self.go_down_health = new_max_health * action.become_downed_hp_percent
 	self.regen_pulse_interval = breed.regen_pulse_interval
 	self.downed_pulse_interval = breed.downed_pulse_interval
 	self.regen_pulse_intensity = breed.regen_pulse_intensity
 	self.downed_pulse_intensity = breed.downed_pulse_intensity
 	self.action = action
 	self.respawn_hp_max = new_max_health
+	self.go_down_health = self:respawn_thresholds(new_max_health, new_max_health)
 end
 
 ChaosTrollHuskHealthExtension.current_max_health_percent = function (self)
 	return self.health / self.current_max_health
+end
+
+local margin = 0.0001
+
+ChaosTrollHuskHealthExtension.respawn_thresholds = function (self, optional_max_health, optional_new_health)
+	local action = self.action
+	local max_health = optional_max_health or self.current_max_health
+	local health = optional_new_health or self.health
+	local go_down_health, respawn_hp_min, phase
+
+	if action.fixed_hp_chunks then
+		local chunk_size = max_health / action.fixed_hp_chunks
+
+		if chunk_size % 1 ~= 0 then
+			health = math.round_to_closest_multiple(health, chunk_size % 1)
+		end
+
+		local current_chunk = math.ceil(math.round_to_closest_multiple(health / chunk_size, margin))
+		local next_chunk = math.clamp(current_chunk - 1, 0, action.fixed_hp_chunks)
+
+		go_down_health = next_chunk * chunk_size
+		respawn_hp_min = go_down_health + chunk_size * action.respawn_hp_chunk_percent
+		phase = action.fixed_hp_chunks - current_chunk + 1
+	else
+		go_down_health = health * action.become_downed_hp_percent
+		respawn_hp_min = health * action.respawn_hp_min_percent
+	end
+
+	return go_down_health, respawn_hp_min, go_down_health / max_health, respawn_hp_min / max_health, phase
 end
 
 ChaosTrollHuskHealthExtension.update = function (self, dt, context, t)
@@ -59,9 +100,13 @@ ChaosTrollHuskHealthExtension.update = function (self, dt, context, t)
 		if t > self.start_reset_time then
 			self.down_reset_timer = self.down_reset_timer + dt
 
-			local percent_damage = 1 - self.down_reset_timer / self.action.reset_duration
+			local percent_damage = 1 - (self.action.reset_duration > 0 and self.down_reset_timer / self.action.reset_duration or 0)
 
-			set_material_property(self.unit, "damage_value", "mtr_skin", percent_damage, true)
+			if self.skin_unit ~= nil then
+				set_material_property(self.skin_unit, "damage_value", "mtr_skin", percent_damage, true)
+			else
+				set_material_property(self.unit, "damage_value", "mtr_skin", percent_damage, true)
+			end
 		end
 	elseif self.state == "unhurt" or self.state == "wounded" then
 		ChaosTrollHealthExtension.update_regen_effect(self, t, dt, self.regen_pulse_interval, self.regen_pulse_intensity)
@@ -118,8 +163,9 @@ ChaosTrollHuskHealthExtension.sync_damage_taken = function (self, damage, set_ma
 			set_material_property(self.unit, "damage_value", "mtr_skin", 1, true)
 
 			local t = Managers.time:time("game")
+			local downed_duration = AiUtils.downed_duration(self.action)
 
-			self.start_reset_time = t + (self.action.downed_duration + self.action.standup_anim_duration - self.action.reset_duration)
+			self.start_reset_time = t + (downed_duration + self.action.standup_anim_duration - self.action.reset_duration)
 			self.down_reset_timer = 0
 		elseif state == "wounded" or state == "unhurt" then
 			set_material_property(self.unit, "damage_value", "mtr_skin", 0, true)

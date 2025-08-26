@@ -1457,6 +1457,7 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 	local unit = self._unit
 	local self_pos = POSITION_LOOKUP[unit]
 	local blackboard = self._blackboard
+	local avoiding_aoe_threat = blackboard.input_extension:avoiding_aoe_threat()
 	local override_box = blackboard.navigation_destination_override
 	local override_melee = blackboard.melee and blackboard.melee.engage_position_set and override_box:unbox()
 	local override_ranged = blackboard.shoot and blackboard.shoot.disengage_position_set and override_box:unbox()
@@ -1531,7 +1532,7 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 		if override_ability then
 			blackboard.activate_ability_data.move_to_position_set = false
 		end
-	elseif override_vortex_escape or override_liquid_escape or cover_position or override_melee or override_ranged or override_ability then
+	elseif not avoiding_aoe_threat and (override_vortex_escape or override_liquid_escape or cover_position or override_melee or override_ranged or override_ability) then
 		local override = transport_unit_override or override_vortex_escape or override_liquid_escape or cover_position or override_melee or override_ranged or override_ability
 		local offset = override - previous_destination
 		local override_allowed = hold_position == nil or hold_position_max_distance_sq >= Vector3.distance_squared(hold_position, override)
@@ -1585,7 +1586,7 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 			elseif priority_target_enemy and enemy_unit ~= priority_target_enemy and self:_enemy_path_allowed(priority_target_enemy) then
 				target_position = self:_find_target_position_on_nav_mesh(nav_world, POSITION_LOOKUP[priority_target_enemy])
 				path_callback = callback(self, "cb_enemy_path_result", priority_target_enemy)
-			elseif enemy_unit and (enemy_unit == priority_target_enemy or enemy_unit == blackboard.urgent_target_enemy) and self:_enemy_path_allowed(enemy_unit) then
+			elseif enemy_unit and (enemy_unit == priority_target_enemy or enemy_unit == blackboard.urgent_target_enemy) and self:_enemy_path_allowed(enemy_unit) and not blackboard.input_extension:avoiding_aoe_threat() then
 				target_position = self:_find_target_position_on_nav_mesh(nav_world, POSITION_LOOKUP[enemy_unit])
 				path_callback = callback(self, "cb_enemy_path_result", enemy_unit)
 			elseif blackboard.target_ally_needs_aid and target_ally_need_type ~= "in_need_of_attention_look" then
@@ -1647,7 +1648,7 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 				target_position = nil
 			end
 
-			if not target_position then
+			if not target_position and not avoiding_aoe_threat then
 				target_position = ai_bot_group_extension.data.follow_position
 				moving_towards_follow_position = true
 			end

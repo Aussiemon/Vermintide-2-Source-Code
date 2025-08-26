@@ -1790,6 +1790,51 @@ PerceptionUtils.pick_corruptor_target = function (unit, blackboard, breed)
 	return closest_enemy, closest_dist
 end
 
+PerceptionUtils.pick_tether_target = function (unit, blackboard, breed)
+	local side_manager = Managers.state.side
+	local pos = POSITION_LOOKUP[unit]
+	local best_boss
+	local best_boss_max_health = 0
+	local bosses = Managers.state.conflict:alive_bosses()
+
+	for i = 1, #bosses do
+		local boss_unit = bosses[i]
+
+		if side_manager:is_ally(unit, boss_unit) then
+			local health_extension = ScriptUnit.has_extension(boss_unit, "health_system")
+			local max_health = health_extension and health_extension:get_max_health() or 0
+
+			if best_boss_max_health < max_health then
+				best_boss = boss_unit
+				best_boss_max_health = max_health
+			end
+		end
+	end
+
+	if best_boss then
+		return best_boss, Vector3.distance(pos, POSITION_LOOKUP[best_boss])
+	end
+
+	local closest_player
+	local closest_player_dist_sq = math.huge
+	local players = Managers.player:players()
+
+	for unique_id, player in pairs(players) do
+		local player_pos = POSITION_LOOKUP[player.player_unit]
+
+		if player_pos then
+			local dist_sq = Vector3.distance_squared(player_pos, pos)
+
+			if dist_sq < closest_player_dist_sq then
+				closest_player = player.player_unit
+				closest_player_dist_sq = dist_sq
+			end
+		end
+	end
+
+	return closest_player, math.sqrt(closest_player_dist_sq)
+end
+
 function double_raycast(blackboard, from, cast_template, enemy_unit, physics_world)
 	if not blackboard.line_of_sight_casts then
 		blackboard.line_of_sight_casts = {}

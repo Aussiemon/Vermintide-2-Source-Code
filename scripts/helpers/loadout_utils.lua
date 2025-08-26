@@ -127,8 +127,8 @@ LoadoutUtils.properties_from_rpc_params = function (properties_array, properties
 		local property_name = properties_lookup[property_id]
 		local property_value = properties_values_array[i]
 
-		properties[property_name] = property_value
 		num_properties = num_properties + 1
+		properties[property_name] = property_value
 	end
 
 	for i = 1, #traits_array do

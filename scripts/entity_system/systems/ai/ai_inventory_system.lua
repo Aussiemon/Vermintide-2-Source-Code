@@ -206,6 +206,12 @@ AIInventorySystem.update = function (self, context, t, dt)
 				link_unit(wielded, world, item_unit, unit)
 			end
 		end
+
+		local breed = Unit.get_data(unit, "breed")
+
+		if breed and breed.on_weapon_wield then
+			breed.on_weapon_wield(unit)
+		end
 	end
 
 	self.units_to_wield_n = 0

@@ -1269,6 +1269,17 @@ UIRenderer.text_alignment_size = function (self, text, font_material, font_size,
 	return width, height, min
 end
 
+UIRenderer.break_paragraphs = function (text, paragraphs)
+	local n = 1
+
+	for line in string.gmatch(text, "[^\n]+") do
+		paragraphs[n] = line
+		n = n + 1
+	end
+
+	return paragraphs, n
+end
+
 UIRenderer.draw_video = function (self, material_name, position, size, color, video_player_reference, optional_video_player)
 	if script_data.disable_video_player then
 		return true

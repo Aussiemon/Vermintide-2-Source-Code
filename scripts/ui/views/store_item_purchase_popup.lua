@@ -1388,33 +1388,19 @@ StoreItemPurchasePopup._calculate_discount_textures = function (self, widget, di
 	local icons_content = content.discont_number_icons
 	local texture_sizes = icons_style.texture_sizes
 	local texture_offsets = icons_style.texture_offsets
-	local offset = icons_style.offset
-	local default_offset = icons_style.default_offset
 	local total_width = 0
-	local previous_offset_x = 0
 	local height_spacing = 9
-	local area_length = 106
-	local discount_string = tostring(math.floor(discount))
-	local length = string.len(discount_string) + 2
+	local discount_string = tostring(math.abs(math.floor(discount)))
+	local length = string.len(discount_string)
 
-	for i = 1, length do
-		local texture_name
-
-		if i == 1 then
-			texture_name = "store_number_minus"
-		elseif i == length then
-			texture_name = "store_number_percent"
-		else
-			local char = string.sub(discount_string, i - 1, i - 1)
-
-			texture_name = "store_number_" .. char
-		end
-
+	local function append_character(char)
+		local texture_name = "store_number_" .. char
 		local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture_name)
 		local size = {
 			texture_settings.size[1],
 			texture_settings.size[2],
 		}
+		local i = #texture_offsets + 1
 
 		icons_content[i] = texture_name
 		texture_sizes[i] = size
@@ -1429,6 +1415,18 @@ StoreItemPurchasePopup._calculate_discount_textures = function (self, widget, di
 		}
 		total_width = total_width + size[1]
 	end
+
+	if discount > 0 then
+		append_character("minus")
+	end
+
+	for i = 1, length do
+		local char = string.sub(discount_string, i, i)
+
+		append_character(char)
+	end
+
+	append_character("percent")
 
 	content.discount = true
 end

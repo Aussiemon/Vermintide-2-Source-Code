@@ -455,9 +455,10 @@ LocomotionUtils.new_random_goal = function (nav_world, blackboard, start_pos, mi
 	end
 end
 
-LocomotionUtils.new_random_goal_uniformly_distributed = function (nav_world, blackboard, start_pos, min_dist, max_dist, max_tries, test_points, above, below)
-	local above = above or 30
-	local below = below or 30
+LocomotionUtils.new_random_goal_uniformly_distributed = function (nav_world, _, start_pos, min_dist, max_dist, max_tries, test_points, above, below)
+	above = above or 30
+	below = below or 30
+
 	local tries = 0
 
 	while tries < max_tries do
@@ -873,9 +874,10 @@ LocomotionUtils.closest_mesh_positions_outward = function (nav_world, outside_po
 end
 
 LocomotionUtils.pos_on_mesh = function (nav_world, pos, above, below)
-	local above = above or 30
-	local below = below or 30
-	local success, altitude, p1, p2, p3 = GwNavQueries.triangle_from_position(nav_world, pos, above, below)
+	above = above or 30
+	below = below or 30
+
+	local success, altitude = GwNavQueries.triangle_from_position(nav_world, pos, above, below)
 
 	if success then
 		local projected_pos = Vector3(pos.x, pos.y, altitude)

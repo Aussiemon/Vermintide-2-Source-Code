@@ -66,11 +66,23 @@ local magic_mt = {
 local format = string.format
 
 ImguiLuaScratchpad.init = function (self)
-	self._expr = ""
+	if not script_data.lua_inspector_config then
+		local config = Development.setting("lua_inspector_config")
+
+		if not config then
+			script_data.lua_inspector_config = {
+				dirty = false,
+				expr = "",
+				persistent = false,
+				sort_keys = false,
+			}
+		else
+			script_data.lua_inspector_config = config
+		end
+	end
+
 	self._thunk, self._error, self._val = nil
 	self._func_info_magic = setmetatable({}, magic_mt)
-	self._is_persistent = false
-	self._sort_keys = false
 end
 
 ImguiLuaScratchpad.update = function (self)
@@ -80,11 +92,11 @@ end
 ImguiLuaScratchpad.draw = function (self)
 	local do_close = Imgui.begin_window("Lua Inspector")
 
-	self._is_persistent = Imgui.checkbox("Is persistent", self._is_persistent)
+	script_data.lua_inspector_config.persistent = Imgui.checkbox("Is persistent", script_data.lua_inspector_config.persistent)
 
 	Imgui.same_line()
 
-	self._sort_keys = Imgui.checkbox("Sort keys (slow)", self._sort_keys)
+	script_data.lua_inspector_config.sort_keys = Imgui.checkbox("Sort keys (slow)", script_data.lua_inspector_config.sort_keys)
 
 	Imgui.same_line()
 
@@ -104,11 +116,13 @@ ImguiLuaScratchpad.draw = function (self)
 		Imgui.text_colored("Thunk loaded.", 100, 255, 100, 255)
 	end
 
-	local last_expr = self._expr
+	local last_expr = script_data.lua_inspector_config.expr
 
-	self._expr = Imgui.input_text_multiline("Input", last_expr)
+	script_data.lua_inspector_config.expr = Imgui.input_text_multiline("Input", last_expr)
 
-	if last_expr ~= self._expr then
+	if last_expr ~= script_data.lua_inspector_config.expr then
+		script_data.lua_inspector_config.dirty = true
+
 		self:_load_expression()
 	end
 
@@ -219,7 +233,7 @@ ImguiLuaScratchpad._inspect_table = function (self, name, tab)
 	Imgui.text_colored(format("[%s: %p]", class_name, tab), unpack(self._TYPE_TO_COLOR.table))
 
 	if is_open then
-		if self._sort_keys then
+		if script_data.lua_inspector_config.sort_keys then
 			local keys = table.keys(tab)
 
 			table.sort(keys, compare)
@@ -242,10 +256,10 @@ ImguiLuaScratchpad._inspect_table = function (self, name, tab)
 end
 
 ImguiLuaScratchpad._load_expression = function (self)
-	self._thunk, self._error = loadstring("return " .. self._expr, "Input")
+	self._thunk, self._error = loadstring("return " .. script_data.lua_inspector_config.expr, "Input")
 
 	if not self._thunk then
-		self._thunk, self._error = loadstring(self._expr, "Input")
+		self._thunk, self._error = loadstring(script_data.lua_inspector_config.expr, "Input")
 	end
 
 	return self._thunk ~= nil
@@ -302,11 +316,18 @@ ImguiLuaScratchpad._execute_thunk = function (self)
 
 	if ok then
 		self._val, self._error = val
+
+		if script_data.lua_inspector_config.dirty then
+			script_data.lua_inspector_config.dirty = false
+
+			Development.set_setting("lua_inspector_config", script_data.lua_inspector_config)
+			Application.save_user_settings()
+		end
 	else
 		self._val, self._error = val, "Runtime error"
 	end
 end
 
 ImguiLuaScratchpad.is_persistent = function (self)
-	return self._is_persistent
+	return script_data.lua_inspector_config.persistent
 end

@@ -920,16 +920,36 @@ table.filter = function (t, func, out)
 	return out
 end
 
-table.filter_to_array = function (t, func)
-	local copy = {}
+table.filter_to_array = function (t, func, out)
+	out = out or {}
+
+	local n = 0
 
 	for k, v in pairs(t) do
-		if func(v) == true then
-			copy[#copy + 1] = v
+		if func(v) then
+			n = n + 1
+			out[n] = v
 		end
 	end
 
-	return copy
+	return out, n
+end
+
+table.filter_array = function (t, func, out)
+	out = out or {}
+
+	local n = 0
+
+	for i = 1, #t do
+		local v = t[i]
+
+		if func(v) then
+			n = n + 1
+			out[n] = v
+		end
+	end
+
+	return out, n
 end
 
 table.get_value_or_last = function (t, index)

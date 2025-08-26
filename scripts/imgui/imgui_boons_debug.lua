@@ -79,7 +79,9 @@ ImguiBoonsDebug._update_controls = function (self)
 		return
 	end
 
-	self._selected_boon_id, self._filtered_boon_list, self._filter_text = ImguiX.combo_search(self._selected_boon_id, self._filtered_boon_list, self._filter_text, self._boon_list)
+	local aliases = self:_fetch_aliases(self._boon_list)
+
+	self._selected_boon_id, self._filtered_boon_list, self._filter_text = ImguiX.combo_search(self._selected_boon_id, self._filtered_boon_list, self._filter_text, self._boon_list, aliases)
 
 	if Imgui.button("Add", 100, 20) then
 		local local_player = Managers.player and Managers.player:local_player()
@@ -122,4 +124,44 @@ ImguiBoonsDebug._update_controls = function (self)
 			power_up,
 		}, local_player_id, true)
 	end
+end
+
+ImguiBoonsDebug._fetch_aliases = function (self, boons)
+	local name_aliases = {}
+	local description_aliases = {}
+	local talent_tree, profile_name
+	local local_player = Managers.player:local_player()
+
+	if local_player then
+		local profile_index = local_player:profile_index()
+		local career_index = local_player:career_index()
+
+		if (profile_index or 0) * (career_index or 0) > 0 then
+			profile_name = SPProfiles[profile_index].display_name
+			talent_tree = TalentTrees[profile_name][career_index]
+		end
+	end
+
+	for i, boon_name in ipairs(boons) do
+		local boon = DeusPowerUpTemplates[boon_name]
+
+		if talent_tree and string.gmatch(boon_name, "%a+_%d+_%d+")() then
+			local talent_parts = string.split(boon_name, "_")
+			local talent_row = tonumber(talent_parts[2])
+			local talent_col = tonumber(talent_parts[3])
+			local talent_name = talent_tree[talent_row][talent_col]
+			local talent = TalentUtils.get_talent(profile_name, talent_name)
+
+			name_aliases[i] = talent.display_name and Localize(talent.display_name) or Localize(talent.name)
+			description_aliases[i] = UIUtils.get_talent_description(talent)
+		else
+			name_aliases[i] = boon.display_name and Localize(boon.display_name) or ""
+			description_aliases[i] = boon.advanced_description and UIUtils.get_trait_description(nil, boon) or ""
+		end
+	end
+
+	return {
+		name_aliases,
+		description_aliases,
+	}
 end

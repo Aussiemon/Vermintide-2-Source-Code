@@ -44,6 +44,7 @@ GenericHealthExtension.init = function (self, extension_init_context, unit, exte
 		pdArray.new(),
 	}
 	self.network_transmit = extension_init_context.network_transmit
+	self._breed = extension_init_data.breed
 
 	local health = extension_init_data.health or Unit.get_data(unit, "health")
 
@@ -62,16 +63,14 @@ GenericHealthExtension.init = function (self, extension_init_context, unit, exte
 	self.last_damage_data = {}
 	self._health_system = extension_init_context.owning_system
 	self._recent_attackers = {}
-
-	self:set_max_health(health)
-
-	self.unmodified_max_health = self.health
+	health = self:set_max_health(health)
+	self.unmodified_max_health = health
 	self._min_health_percentage = nil
 	self._recent_damage_type = nil
 	self._recent_hit_react_type = nil
 	self._last_damage_t = nil
 	self._damage_cap = extension_init_data.damage_cap_per_hit or Unit.get_data(unit, "damage_cap_per_hit")
-	self._damage_cap_per_hit = self._damage_cap or self.health
+	self._damage_cap_per_hit = self._damage_cap or health
 end
 
 GenericHealthExtension.destroy = function (self)
@@ -232,6 +231,8 @@ GenericHealthExtension.set_max_health = function (self, health)
 
 		self.network_transmit:send_rpc_clients("rpc_sync_damage_taken", go_id, is_level_unit, true, network_health, state)
 	end
+
+	return network_health
 end
 
 GenericHealthExtension._add_to_damage_history_buffer = function (self, unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, first_hit, total_hits, attack_type, backstab_multiplier, target_index)
@@ -423,6 +424,11 @@ end
 
 GenericHealthExtension.add_heal = function (self, healer_unit, heal_amount, heal_source_name, heal_type)
 	local unit = self.unit
+	local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+
+	if buff_extension and buff_extension:has_buff_perk("healing_immune") then
+		return
+	end
 
 	self:_add_to_damage_history_buffer(unit, healer_unit, -heal_amount, nil, "heal", nil, nil, heal_source_name, nil, nil, nil, nil, nil, nil, nil, nil, nil)
 

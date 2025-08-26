@@ -60,6 +60,42 @@ NetworkTransmit.destroy = function (self)
 	GarbageLeakDetector.register_object(self, "NetworkTransmit")
 end
 
+NetworkTransmit.pack_temp_types = function (self, optional_num_args, ...)
+	local arguments = {
+		...,
+	}
+	local contains_boxed = false
+
+	for i = 1, optional_num_args or #arguments do
+		local arg = arguments[i]
+		local type_name = Script.type_name(arg)
+
+		if type_name == "Vector3" then
+			arguments[i] = Vector3Box(arg)
+			contains_boxed = true
+		elseif type_name == "Vector4" then
+			arguments[i] = QuaternionBox(arg)
+			contains_boxed = true
+		end
+	end
+
+	return arguments, contains_boxed
+end
+
+NetworkTransmit.unpack_temp_types = function (self, arguments, optional_offset, optional_num_args)
+	local offset = optional_offset or 0
+
+	for j = 1, optional_num_args or #arguments do
+		local argument_index = offset + j
+		local arg = arguments[argument_index]
+		local type_name = Script.type_name(arg)
+
+		if type_name == "Vector3Box" or type_name == "QuaternionBox" then
+			arguments[argument_index] = arg:unbox()
+		end
+	end
+end
+
 NetworkTransmit.queue_local_rpc = function (self, rpc_name, ...)
 	local local_rpc_buffer_index = self.local_rpc_buffer_index
 	local local_rpc_queue = self.local_rpc_queue[local_rpc_buffer_index]
@@ -70,23 +106,7 @@ NetworkTransmit.queue_local_rpc = function (self, rpc_name, ...)
 	fassert(pack_index[num_varargs + 2], "Could not pack local rpc %q due to too many varargs. Only 20 is currently supported.", rpc_name)
 
 	if self._pack_temp_types then
-		local arguments = {
-			...,
-		}
-		local contains_boxed = false
-
-		for i = 1, num_varargs do
-			local arg = arguments[i]
-			local type_name = Script.type_name(arg)
-
-			if type_name == "Vector3" then
-				arguments[i] = Vector3Box(arg)
-				contains_boxed = true
-			elseif type_name == "Vector4" then
-				arguments[i] = QuaternionBox(arg)
-				contains_boxed = true
-			end
-		end
+		local arguments, contains_boxed = self:pack_temp_types(num_varargs, ...)
 
 		pack_index[num_varargs + 2](local_rpc_queue, local_rpc_queue_n, rpc_name, num_varargs, unpack(arguments, 1, num_varargs))
 
@@ -127,15 +147,7 @@ NetworkTransmit.transmit_local_rpcs = function (self)
 		end
 
 		if local_rpc_queue_contains_boxed[rpc_n] then
-			for j = 1, rpc_num_args do
-				local argument_index = i + 1 + j
-				local arg = local_rpc_queue[argument_index]
-				local type_name = Script.type_name(arg)
-
-				if type_name == "Vector3Box" or type_name == "QuaternionBox" then
-					local_rpc_queue[argument_index] = arg:unbox()
-				end
-			end
+			self:unpack_temp_types(local_rpc_queue, i + 1, rpc_num_args)
 		end
 
 		event_table[rpc_name](nil, channel_to_self, unpack_index[rpc_num_args](local_rpc_queue, i + 2))

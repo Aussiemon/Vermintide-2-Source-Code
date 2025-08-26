@@ -85,6 +85,7 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 	local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
 	blackboard.buff_extension = buff_extension
+	blackboard.health_extension = ScriptUnit.has_extension(unit, "health_system")
 
 	local blackboard_init_data = breed.blackboard_init_data
 
@@ -258,6 +259,12 @@ AISimpleExtension.extensions_ready = function (self, world, unit)
 
 	Managers.state.game_mode:ai_spawned(unit)
 	Unit.flow_event(unit, "lua_trigger_variation")
+
+	local level_settings = LevelSettings[Managers.state.game_mode:level_key()]
+	local climate_type = level_settings.climate_type or "default"
+
+	Unit.set_flow_variable(unit, "climate_type", climate_type)
+	Unit.flow_event(unit, "climate_type_set")
 end
 
 AISimpleExtension.get_overlap_context = function (self)

@@ -531,6 +531,7 @@ local action_data = {
 				range = 2.5,
 				rotation_speed = 2.5,
 				rotation_time = 2,
+				triggers_anim_cb_damage_multiple_times = true,
 				width = 1.5,
 				attack_anim = {
 					"attack_melee_combo",
@@ -574,6 +575,7 @@ local action_data = {
 				range = 2.5,
 				rotation_speed = 5,
 				rotation_time = 1.5,
+				triggers_anim_cb_damage_multiple_times = true,
 				width = 1.5,
 				attack_anim = {
 					"attack_melee_combo_2",
@@ -699,13 +701,13 @@ local action_data = {
 				bot_threats = {
 					{
 						collision_type = "cylinder",
-						duration = 0.9333333333333333,
+						duration = 1.4333333333333333,
 						height = 4,
-						offset_forward = 0,
+						offset_forward = 1,
 						offset_right = 0,
 						offset_up = 0,
-						radius = 4.5,
-						start_time = 0.3333333333333333,
+						radius = 4,
+						start_time = 0.16666666666666666,
 					},
 				},
 			},
@@ -882,12 +884,12 @@ local action_data = {
 				bot_threats = {
 					{
 						collision_type = "cylinder",
-						duration = 0.8333333333333334,
+						duration = 1.0666666666666667,
 						height = 4,
-						offset_forward = 0,
+						offset_forward = 1,
 						offset_right = 0,
 						offset_up = 0,
-						radius = 4.5,
+						radius = 3.75,
 						start_time = 0.16666666666666666,
 					},
 				},

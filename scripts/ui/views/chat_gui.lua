@@ -124,6 +124,12 @@ end
 
 ChatGui.destroy = function (self)
 	rawset(_G, "global_chat_gui", nil)
+
+	if self.chat_focused then
+		self:unblock_input()
+
+		self.chat_focused = false
+	end
 end
 
 ChatGui.ignoring_peer_id = function (self, peer_id)
@@ -228,11 +234,11 @@ ChatGui.update = function (self, dt, menu_active, menu_input_service, no_unblock
 	self.menu_active = menu_active
 
 	local input_manager = self.input_manager
-	local input_service = input_manager:get_service("chat_input")
-	local chat_focused, closed, close_time = self:_update_input(input_service, menu_input_service, dt, no_unblock, chat_enabled)
+	local chat_input_service = input_manager:get_service("chat_input")
+	local chat_focused, wants_close, close_time = self:_update_input(chat_input_service, menu_input_service, dt, no_unblock, chat_enabled)
 
 	if show_new_messages and not menu_active then
-		closed = false
+		wants_close = false
 
 		if not chat_focused and not self.keep_chat_visible then
 			close_time = UISettings.chat.chat_close_delay
@@ -248,13 +254,13 @@ ChatGui.update = function (self, dt, menu_active, menu_input_service, no_unblock
 	end
 
 	if menu_active then
-		if self.chat_closed and not closed then
+		if self.chat_closed and not wants_close then
 			self:menu_open()
-		elseif not self.chat_closed and closed then
+		elseif not self.chat_closed and wants_close then
 			self:menu_close()
 		end
 
-		if closed and show_new_messages then
+		if wants_close and show_new_messages then
 			if self.wwise_world then
 				WwiseWorld.trigger_event(self.wwise_world, "hud_chat_message")
 			end
@@ -267,24 +273,28 @@ ChatGui.update = function (self, dt, menu_active, menu_input_service, no_unblock
 				ui_animations.notification_pulse = self:animate_element_pulse(self.tab_widget.style.button_notification.color, 1, alpha_1, alpha_2, 5)
 			end
 		end
-	elseif show_new_messages or not self.chat_focused and chat_focused or self.chat_closed and not closed then
+	elseif show_new_messages or not self.chat_focused and chat_focused or self.chat_closed and not wants_close then
 		self:clear_current_transition()
 		self:set_menu_transition_fraction(1)
 		self:_set_chat_window_alpha(1)
 	end
 
+	if self.chat_focused ~= chat_focused then
+		if chat_focused then
+			self:block_input()
+		else
+			self:unblock_input()
+		end
+	end
+
 	self.chat_focused = chat_focused
-	self.chat_closed = closed
+	self.chat_closed = wants_close
 	self.chat_close_time = close_time
 
-	local input_service = menu_input_service and menu_input_service or input_manager:get_service("chat_input")
+	local input_service = menu_input_service or chat_input_service
 
-	if menu_active then
-		if self.chat_focused then
-			input_service = input_manager:get_service("chat_input")
-		end
-	elseif self.chat_focused then
-		input_service = input_manager:get_service("chat_input")
+	if self.chat_focused then
+		input_service = chat_input_service
 	end
 
 	self:_update_hud_scale()
@@ -533,7 +543,6 @@ ChatGui.block_chat_input_for_one_frame = function (self)
 end
 
 ChatGui._update_input = function (self, input_service, menu_input_service, dt, no_unblock, chat_enabled)
-	local input_manager = self.input_manager
 	local chat_focused = self.chat_focused
 	local chat_closed = self.chat_closed
 	local chat_close_time = self.chat_close_time
@@ -552,18 +561,18 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 
 	self._block_keystrokes = false
 
+	local wants_close = chat_closed
+
 	if chat_closed then
 		local alt_chat_input = input_service:get("execute_alt_chat_input")
 
 		if tab_hotspot.on_release or (input_service:get("activate_chat_input") or input_service:get("execute_chat_input") or alt_chat_input) and not block_chat_activation and GameSettingsDevelopment.allow_chat_input then
 			if chat_enabled then
-				chat_closed = false
+				wants_close = false
 				chat_close_time = nil
 				chat_focused = true
-
-				self:block_input()
 			else
-				chat_closed = false
+				wants_close = false
 				chat_close_time = UISettings.chat.chat_close_delay
 				chat_focused = false
 				self._refocus_chat_window = true
@@ -633,11 +642,10 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 
 		if tab_hotspot.on_release or input_service:get("deactivate_chat_input") and not block_chat_activation or menu_close_press_outside_area or auto_close then
 			if chat_focused and (tab_hotspot.on_release or input_service:get("deactivate_chat_input") and not block_chat_activation or menu_close_press_outside_area) then
-				self:unblock_input()
 				table.clear(tab_hotspot)
 			end
 
-			chat_closed = true
+			wants_close = true
 			chat_close_time = 0
 			chat_focused = false
 			self.recent_message_index = nil
@@ -648,7 +656,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 
 		if chat_focused and chat_enabled then
 			if GameSettingsDevelopment.allow_chat_input and input_service:get("execute_chat_input") then
-				chat_closed = false
+				wants_close = false
 				chat_focused = false
 
 				if not self.keep_chat_visible then
@@ -671,15 +679,13 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 					self.chat_input_widget.content.text_index = 1
 					self.scrollbar_widget.content.internal_scroll_value = 0
 				else
-					chat_closed = true
+					wants_close = true
 					chat_close_time = 0
 					chat_focused = false
 				end
 
 				self.old_chat_message = nil
 				self.recent_message_index = nil
-
-				self:unblock_input()
 			elseif input_service:get("chat_next_old_message") and GameSettingsDevelopment.allow_chat_input then
 				local recent_chat_messages = Managers.chat:get_recently_sent_messages()
 				local num_recent_chat_messages = #recent_chat_messages
@@ -822,13 +828,11 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 
 			if input_service:get("activate_chat_input") or (input_service:get("execute_chat_input") or alt_chat_input) and GameSettingsDevelopment.allow_chat_input then
 				if chat_enabled then
-					chat_closed = false
+					wants_close = false
 					chat_close_time = nil
 					chat_focused = true
-
-					self:block_input()
 				else
-					chat_closed = false
+					wants_close = false
 					chat_close_time = UISettings.chat.chat_close_delay
 					chat_focused = false
 					self._refocus_chat_window = true
@@ -887,18 +891,15 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 
 		if GameSettingsDevelopment.use_global_chat then
 			if enlarge_hotspot.on_release then
-				self:unblock_input()
 				Managers.ui:handle_transition("chat_view_force", {
 					use_fade = true,
 				})
 
-				chat_closed = true
+				wants_close = true
 				chat_close_time = 0
 				chat_focused = false
 			elseif info_hotspot.on_release and false then
-				self:unblock_input()
-
-				chat_closed = true
+				wants_close = true
 				chat_close_time = 0
 				chat_focused = false
 			elseif filter_hotspot.on_release then
@@ -979,7 +980,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 		end
 	end
 
-	return chat_focused, chat_closed, chat_close_time
+	return chat_focused, wants_close, chat_close_time
 end
 
 ChatGui._draw_widgets = function (self, dt, input_service, chat_enabled)

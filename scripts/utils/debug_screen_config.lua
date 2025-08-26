@@ -132,6 +132,62 @@ local settings = {
 			for key, _ in pairs(portals) do
 				options[#options + 1] = key
 			end
+
+			if Managers.player.is_server then
+				local level_analysis = Managers.state.conflict.level_analysis
+				local main_paths = level_analysis:get_main_paths()
+				local original_order = table.mirror_array(options)
+
+				table.sort(options, function (a, b)
+					local pos_a = portals[a][1]:unbox()
+					local pos_b = portals[b][1]:unbox()
+					local _, best_travel_dist_a = MainPathUtils.closest_pos_at_main_path(main_paths, pos_a)
+					local _, best_travel_dist_b = MainPathUtils.closest_pos_at_main_path(main_paths, pos_b)
+
+					best_travel_dist_a = best_travel_dist_a or math.huge
+					best_travel_dist_b = best_travel_dist_b or math.huge
+
+					if best_travel_dist_a ~= best_travel_dist_b then
+						return best_travel_dist_a < best_travel_dist_b
+					end
+
+					return original_order[a] < original_order[b]
+				end)
+			else
+				local local_player = Managers.player:local_player()
+				local player_unit = local_player and local_player.player_unit
+
+				if not ALIVE[player_unit] then
+					return
+				end
+
+				local units = Managers.state.entity:get_entities("EndZoneExtension")
+				local any_end_zone = next(units)
+
+				if not any_end_zone then
+					return
+				end
+
+				local end_zone_pos = Unit.world_position(any_end_zone, 0)
+				local player_pos = Unit.world_position(player_unit, 0)
+				local to_end_zone = end_zone_pos - player_pos
+				local original_order = table.mirror_array(options)
+
+				table.sort(options, function (a, b)
+					local pos_a = portals[a][1]:unbox()
+					local pos_b = portals[b][1]:unbox()
+					local to_pos_a = pos_a - player_pos
+					local to_pos_b = pos_b - player_pos
+					local pos_a_proj = Vector3.dot(to_pos_a, to_end_zone)
+					local pos_b_proj = Vector3.dot(to_pos_b, to_end_zone)
+
+					if pos_a_proj == pos_b_proj then
+						return original_order[a] < original_order[b]
+					end
+
+					return pos_a_proj < pos_b_proj
+				end)
+			end
 		end,
 		func = function (options, index)
 			local local_player = Managers.player:local_player()
@@ -2213,6 +2269,21 @@ local settings = {
 		setting_name = "draw_patrol_start_positions",
 		func = function ()
 			Managers.state.conflict.level_analysis:draw_patrol_start_positions()
+		end,
+	},
+	{
+		category = "AI",
+		description = "Mulitply number of enemies in hordes",
+		setting_name = "big_hordes",
+		item_source = {
+			1,
+			2,
+			4,
+			8,
+			16,
+		},
+		custom_item_source_order = function (item_source, options)
+			table.append(options, item_source)
 		end,
 	},
 	{
@@ -7698,14 +7769,15 @@ local settings = {
 			local hero_attributes = backend_manager:get_interface("hero_attributes")
 
 			local function cb(result)
-				hero_attributes:set(display_name, "experience", 0)
+				assert(result.FunctionResult.data, result.FunctionResult.reason)
+				hero_attributes:set(display_name, "experience", result.FunctionResult.data[display_name .. "_experience"])
 			end
 
 			local request = {
-				FunctionName = "devAddExperience",
+				FunctionName = "devSetExperience",
 				FunctionParameter = {
+					experience = 1,
 					hero = display_name,
-					experience = hero_attributes:get(display_name, "experience"),
 				},
 			}
 			local backend_mirror = backend_manager._backend_mirror

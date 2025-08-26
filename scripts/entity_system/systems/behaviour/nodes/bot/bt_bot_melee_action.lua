@@ -250,19 +250,6 @@ BTBotMeleeAction._is_in_engage_range = function (self, self_unit, target_unit, n
 	return Vector3.distance_squared(self_position, target_unit_position) < engage_range * engage_range
 end
 
-BTBotMeleeAction._aim_position = function (self, target_unit, blackboard)
-	local node = 0
-	local target_unit_blackboard = BLACKBOARDS[target_unit]
-	local target_breed = target_unit_blackboard and target_unit_blackboard.breed
-	local aim_node = target_breed and (target_breed.bot_melee_aim_node or "j_spine") or "rp_center"
-
-	if Unit.has_node(target_unit, aim_node) then
-		node = Unit.node(target_unit, aim_node)
-	end
-
-	return Unit.world_position(target_unit, node)
-end
-
 BTBotMeleeAction._target_unit_position = function (self, self_position, target_unit, nav_world)
 	local target_unit_position
 
@@ -293,7 +280,6 @@ end
 
 BTBotMeleeAction._is_being_attacked = function (self, self_unit, blackboard, t)
 	local proximite_enemies = blackboard.proximite_enemies
-	local attack_margin = 0.1
 
 	for i = 1, #proximite_enemies do
 		repeat
@@ -310,21 +296,9 @@ BTBotMeleeAction._is_being_attacked = function (self, self_unit, blackboard, t)
 				break
 			end
 
-			local bot_threat_at_t = bb.bot_threat_at_t or bb.create_bot_threat_at_t
-
-			if bot_threat_at_t and t < bot_threat_at_t - attack_margin then
-				break
-			end
-
-			local dodge_window_start = bb.attack_dodge_window_start
-
-			if dodge_window_start and t < dodge_window_start - attack_margin then
-				break
-			end
-
 			local attack_finished_t = bb.attack_finished_t
 
-			if attack_finished_t and attack_finished_t < t then
+			if bb.attack_finished or attack_finished_t and attack_finished_t < t then
 				break
 			end
 
@@ -457,7 +431,7 @@ BTBotMeleeAction._update_melee = function (self, unit, blackboard, dt, t)
 		end
 	end
 
-	local aim_position = self:_aim_position(target_unit, blackboard)
+	local aim_position = AiUtils.bot_melee_aim_pos(unit, target_unit)
 	local input_ext = blackboard.input_extension
 
 	input_ext:set_aim_position(aim_position)

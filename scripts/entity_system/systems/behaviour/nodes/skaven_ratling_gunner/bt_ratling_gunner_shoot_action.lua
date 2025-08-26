@@ -6,7 +6,7 @@ BTRatlingGunnerShootAction = class(BTRatlingGunnerShootAction, BTNode)
 
 local PI = math.pi
 local TWO_PI = PI * 2
-local BOT_THREAT_UPDATE_TIME = 1
+local BOT_THREAT_UPDATE_TIME = 0.25
 
 CLIENT_CONTROLLED_RATLING_GUN = true
 
@@ -243,7 +243,7 @@ BTRatlingGunnerShootAction._update_shooting = function (self, unit, blackboard, 
 	end
 
 	if t > data.update_bot_threat_t then
-		self:_create_bot_threat_box(unit, data, BOT_THREAT_UPDATE_TIME)
+		self:_create_bot_threat_box(unit, data, BOT_THREAT_UPDATE_TIME, blackboard, data)
 
 		data.update_bot_threat_t = t + BOT_THREAT_UPDATE_TIME
 	end
@@ -613,14 +613,14 @@ BTRatlingGunnerShootAction._shoot = function (self, unit, blackboard)
 	projectile_system:create_light_weight_projectile(blackboard.breed.name, unit, from_position, spread_direction, light_weight_projectile_template.projectile_speed, nil, nil, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_effect, peer_id, nil, skip_rpc)
 end
 
-BTRatlingGunnerShootAction._create_bot_threat_box = function (self, unit, attack_data, duration)
+BTRatlingGunnerShootAction._create_bot_threat_box = function (self, unit, attack_data, duration, blackboard, shoot_data)
 	local self_pos = POSITION_LOOKUP[unit]
 	local target_pos = POSITION_LOOKUP[attack_data.target_unit]
 
 	if self_pos and target_pos then
-		local to_target = target_pos - self_pos
-		local distance = Vector3.length(to_target)
-		local obstacle_position, obstacle_rotation, obstacle_size = AiUtils.calculate_oobb(distance * 2, self_pos, Quaternion.look(to_target))
+		local fire_position, fire_direction = self:_fire_from_position_direction(blackboard, shoot_data)
+		local distance = Vector3.length(fire_position - target_pos)
+		local obstacle_position, obstacle_rotation, obstacle_size = AiUtils.calculate_oobb(distance * 2, self_pos, Quaternion.look(fire_direction), nil, 3)
 		local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 
 		ai_bot_group_system:aoe_threat_created(obstacle_position, "oobb", obstacle_size, obstacle_rotation, duration)

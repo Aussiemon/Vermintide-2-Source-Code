@@ -969,15 +969,21 @@ local function add_breeds_from_breed_action(output, breed_name, difficulty)
 	if actions then
 		for _, action in pairs(actions) do
 			if action.difficulty_spawn_list or action.spawn_list then
-				local spawn_list = action.difficulty_spawn_list[difficulty] or action.spawn_list
+				local spawn_list = action.difficulty_spawn_list and action.difficulty_spawn_list[difficulty] or action.spawn_list
 
 				for i = 1, #spawn_list do
 					output[spawn_list[i]] = true
 				end
 			end
 
+			if action.phase_spawn then
+				for _, composition_type in pairs(action.phase_spawn) do
+					add_breeds_from_horde_composition(output, composition_type, difficulty)
+				end
+			end
+
 			if action.difficulty_spawn or action.spawn then
-				local composition_type = action.difficulty_spawn[difficulty] or action.spawn
+				local composition_type = action.difficulty_spawn and action.difficulty_spawn[difficulty] or action.spawn
 
 				add_breeds_from_horde_composition(output, composition_type, difficulty)
 			end

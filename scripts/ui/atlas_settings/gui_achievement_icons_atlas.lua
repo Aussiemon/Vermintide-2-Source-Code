@@ -8,11 +8,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.033203,
-			0.707275,
+			0.748047,
 		},
 		uv11 = {
 			0.041504,
-			0.715576,
+			0.756348,
 		},
 	},
 	achievement_symbol_event_skull = {
@@ -22,11 +22,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.033203,
-			0.696777,
+			0.737549,
 		},
 		uv11 = {
 			0.04126,
-			0.706299,
+			0.74707,
 		},
 	},
 	achievement_symbol_loot = {
@@ -78,11 +78,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.762451,
-			0.912598,
+			0.887695,
 		},
 		uv11 = {
 			0.777832,
-			0.926758,
+			0.901855,
 		},
 	},
 	achievement_symbol_event_summer = {
@@ -91,12 +91,12 @@ achievement_icons_atlas = {
 			58,
 		},
 		uv00 = {
-			0.762451,
-			0.897461,
+			0.778809,
+			0.872559,
 		},
 		uv11 = {
-			0.777832,
-			0.911621,
+			0.794189,
+			0.886719,
 		},
 	},
 	achievement_symbol_book_glow_1 = {
@@ -106,11 +106,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.762451,
-			0.882324,
+			0.872559,
 		},
 		uv11 = {
 			0.777832,
-			0.896484,
+			0.886719,
 		},
 	},
 	achievement_symbol_book_event_summer = {
@@ -119,12 +119,12 @@ achievement_icons_atlas = {
 			58,
 		},
 		uv00 = {
-			0.762451,
-			0.867188,
+			0.778809,
+			0.857422,
 		},
 		uv11 = {
-			0.777832,
-			0.881348,
+			0.794189,
+			0.871582,
 		},
 	},
 	achievement_symbol_event_geheimnisnacht = {
@@ -134,11 +134,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.762451,
-			0.852051,
+			0.857422,
 		},
 		uv11 = {
 			0.777832,
-			0.866211,
+			0.871582,
 		},
 	},
 	achievement_symbol_book = {
@@ -147,12 +147,12 @@ achievement_icons_atlas = {
 			58,
 		},
 		uv00 = {
-			0.762451,
-			0.836914,
+			0.016846,
+			0.983398,
 		},
 		uv11 = {
-			0.777832,
-			0.851074,
+			0.032227,
+			0.997559,
 		},
 	},
 	achievement_symbol_geheimnisnacht = {
@@ -161,12 +161,12 @@ achievement_icons_atlas = {
 			58,
 		},
 		uv00 = {
-			0.762451,
-			0.821777,
+			0.016846,
+			0.968262,
 		},
 		uv11 = {
-			0.777832,
-			0.835938,
+			0.032227,
+			0.982422,
 		},
 	},
 	achievement_symbol_book_event_skull = {
@@ -175,12 +175,12 @@ achievement_icons_atlas = {
 			58,
 		},
 		uv00 = {
-			0.762451,
-			0.806641,
+			0.000488,
+			0.983398,
 		},
 		uv11 = {
-			0.777832,
-			0.820801,
+			0.015869,
+			0.997559,
 		},
 	},
 	achievement_symbol_bogenhafen = {
@@ -189,15 +189,43 @@ achievement_icons_atlas = {
 			58,
 		},
 		uv00 = {
+			0.000488,
+			0.968262,
+		},
+		uv11 = {
+			0.015869,
+			0.982422,
+		},
+	},
+	achievement_trophy_scorpion_complete_skittergate_cataclysm = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.762451,
+			0.824463,
+		},
+		uv11 = {
+			0.794189,
+			0.856445,
+		},
+	},
+	achievement_trophy_penny_bastion_torch = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
 			0.762451,
 			0.791504,
 		},
 		uv11 = {
-			0.777832,
-			0.805664,
+			0.794189,
+			0.823486,
 		},
 	},
-	achievement_trophy_scorpion_complete_skittergate_cataclysm = {
+	achievement_trophy_scorpion_complete_act_two_cataclysm = {
 		size = {
 			130,
 			131,
@@ -208,34 +236,6 @@ achievement_icons_atlas = {
 		},
 		uv11 = {
 			0.990479,
-			0.790527,
-		},
-	},
-	achievement_trophy_penny_bastion_torch = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.926025,
-			0.758545,
-		},
-		uv11 = {
-			0.957764,
-			0.790527,
-		},
-	},
-	achievement_trophy_scorpion_complete_act_two_cataclysm = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.893311,
-			0.758545,
-		},
-		uv11 = {
-			0.925049,
 			0.790527,
 		},
 	},
@@ -245,11 +245,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.860596,
+			0.926025,
 			0.758545,
 		},
 		uv11 = {
-			0.892334,
+			0.957764,
 			0.790527,
 		},
 	},
@@ -259,11 +259,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.827881,
+			0.893311,
 			0.758545,
 		},
 		uv11 = {
-			0.859619,
+			0.925049,
 			0.790527,
 		},
 	},
@@ -273,11 +273,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.795166,
+			0.860596,
 			0.758545,
 		},
 		uv11 = {
-			0.826904,
+			0.892334,
 			0.790527,
 		},
 	},
@@ -287,11 +287,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.762451,
+			0.827881,
 			0.758545,
 		},
 		uv11 = {
-			0.794189,
+			0.859619,
 			0.790527,
 		},
 	},
@@ -301,12 +301,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.729736,
-			0.956299,
+			0.795166,
+			0.758545,
 		},
 		uv11 = {
-			0.761475,
-			0.988281,
+			0.826904,
+			0.790527,
 		},
 	},
 	achievement_trophy_penny_complete_castle_legend = {
@@ -315,12 +315,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.729736,
-			0.92334,
+			0.762451,
+			0.758545,
 		},
 		uv11 = {
-			0.761475,
-			0.955322,
+			0.794189,
+			0.790527,
 		},
 	},
 	achievement_trophy_thornsister_an_offering_of_pain = {
@@ -330,11 +330,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.729736,
-			0.890381,
+			0.956299,
 		},
 		uv11 = {
 			0.761475,
-			0.922363,
+			0.988281,
 		},
 	},
 	achievement_trophy_recruit_es_mercenary = {
@@ -344,11 +344,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.729736,
-			0.857422,
+			0.92334,
 		},
 		uv11 = {
 			0.761475,
-			0.889404,
+			0.955322,
 		},
 	},
 	achievement_trophy_veteran_wh_bountyhunter = {
@@ -358,25 +358,25 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.729736,
-			0.824463,
+			0.890381,
 		},
 		uv11 = {
 			0.761475,
-			0.856445,
+			0.922363,
 		},
 	},
-	achievement_trophy_champion_bw_unchained = {
+	achievement_trophy_scorpion_complete_weaves_8 = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
 			0.729736,
-			0.791504,
+			0.857422,
 		},
 		uv11 = {
 			0.761475,
-			0.823486,
+			0.889404,
 		},
 	},
 	achievement_trophy_complete_all_warrior_priest_challenges = {
@@ -386,6 +386,34 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.729736,
+			0.824463,
+		},
+		uv11 = {
+			0.761475,
+			0.856445,
+		},
+	},
+	achievement_trophy_scorpion_crater_detour = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.729736,
+			0.791504,
+		},
+		uv11 = {
+			0.761475,
+			0.823486,
+		},
+	},
+	achievement_trophy_champion_es_huntsman = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.729736,
 			0.758545,
 		},
 		uv11 = {
@@ -393,7 +421,7 @@ achievement_icons_atlas = {
 			0.790527,
 		},
 	},
-	achievement_trophy_scorpion_crater_detour = {
+	achievement_trophy_scorpion_victor_weapon_skin_1 = {
 		size = {
 			130,
 			131,
@@ -404,34 +432,6 @@ achievement_icons_atlas = {
 		},
 		uv11 = {
 			0.990479,
-			0.757568,
-		},
-	},
-	achievement_trophy_champion_es_huntsman = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.926025,
-			0.725586,
-		},
-		uv11 = {
-			0.957764,
-			0.757568,
-		},
-	},
-	achievement_trophy_scorpion_victor_weapon_skin_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.893311,
-			0.725586,
-		},
-		uv11 = {
-			0.925049,
 			0.757568,
 		},
 	},
@@ -441,11 +441,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.860596,
+			0.926025,
 			0.725586,
 		},
 		uv11 = {
-			0.892334,
+			0.957764,
 			0.757568,
 		},
 	},
@@ -455,11 +455,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.827881,
+			0.893311,
 			0.725586,
 		},
 		uv11 = {
-			0.859619,
+			0.925049,
 			0.757568,
 		},
 	},
@@ -469,11 +469,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.795166,
+			0.860596,
 			0.725586,
 		},
 		uv11 = {
-			0.826904,
+			0.892334,
 			0.757568,
 		},
 	},
@@ -483,11 +483,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.762451,
+			0.827881,
 			0.725586,
 		},
 		uv11 = {
-			0.794189,
+			0.859619,
 			0.757568,
 		},
 	},
@@ -497,11 +497,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.729736,
+			0.795166,
 			0.725586,
 		},
 		uv11 = {
-			0.761475,
+			0.826904,
 			0.757568,
 		},
 	},
@@ -511,12 +511,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.697021,
-			0.956299,
+			0.762451,
+			0.725586,
 		},
 		uv11 = {
-			0.72876,
-			0.988281,
+			0.794189,
+			0.757568,
 		},
 	},
 	achievement_trophy_recruit_dr_slayer = {
@@ -525,12 +525,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.697021,
-			0.92334,
+			0.729736,
+			0.725586,
 		},
 		uv11 = {
-			0.72876,
-			0.955322,
+			0.761475,
+			0.757568,
 		},
 	},
 	achievement_trophy_bless_complete_25_missions_wh_priest = {
@@ -540,11 +540,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.697021,
-			0.890381,
+			0.956299,
 		},
 		uv11 = {
 			0.72876,
-			0.922363,
+			0.988281,
 		},
 	},
 	achievement_trophy_chaos_troll_1 = {
@@ -554,11 +554,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.697021,
-			0.857422,
+			0.92334,
 		},
 		uv11 = {
 			0.72876,
-			0.889404,
+			0.955322,
 		},
 	},
 	achievement_trophy_legend_dr_slayer = {
@@ -568,11 +568,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.697021,
-			0.824463,
+			0.890381,
 		},
 		uv11 = {
 			0.72876,
-			0.856445,
+			0.922363,
 		},
 	},
 	achievement_trophy_penny_bastion_journal = {
@@ -582,11 +582,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.697021,
-			0.791504,
+			0.857422,
 		},
 		uv11 = {
 			0.72876,
-			0.823486,
+			0.889404,
 		},
 	},
 	achievement_trophy_military_kill_chaos_warriors_in_event_cata = {
@@ -596,11 +596,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.697021,
-			0.758545,
+			0.824463,
 		},
 		uv11 = {
 			0.72876,
-			0.790527,
+			0.856445,
 		},
 	},
 	achievement_trophy_cog_chain_headshot = {
@@ -610,6 +610,34 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.697021,
+			0.791504,
+		},
+		uv11 = {
+			0.72876,
+			0.823486,
+		},
+	},
+	achievement_trophy_penny_complete_bastion_cataclysm = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.697021,
+			0.758545,
+		},
+		uv11 = {
+			0.72876,
+			0.790527,
+		},
+	},
+	achievement_trophy_penny_complete_veteran = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.697021,
 			0.725586,
 		},
 		uv11 = {
@@ -617,7 +645,7 @@ achievement_icons_atlas = {
 			0.757568,
 		},
 	},
-	achievement_trophy_penny_complete_bastion_cataclysm = {
+	achievement_trophy_penny_complete_portals_champion = {
 		size = {
 			130,
 			131,
@@ -628,34 +656,6 @@ achievement_icons_atlas = {
 		},
 		uv11 = {
 			0.990479,
-			0.724609,
-		},
-	},
-	achievement_trophy_penny_complete_veteran = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.926025,
-			0.692627,
-		},
-		uv11 = {
-			0.957764,
-			0.724609,
-		},
-	},
-	achievement_trophy_penny_complete_portals_champion = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.893311,
-			0.692627,
-		},
-		uv11 = {
-			0.925049,
 			0.724609,
 		},
 	},
@@ -665,11 +665,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.860596,
+			0.926025,
 			0.692627,
 		},
 		uv11 = {
-			0.892334,
+			0.957764,
 			0.724609,
 		},
 	},
@@ -679,11 +679,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.827881,
+			0.893311,
 			0.692627,
 		},
 		uv11 = {
-			0.859619,
+			0.925049,
 			0.724609,
 		},
 	},
@@ -693,11 +693,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.795166,
+			0.860596,
 			0.692627,
 		},
 		uv11 = {
-			0.826904,
+			0.892334,
 			0.724609,
 		},
 	},
@@ -707,11 +707,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.762451,
+			0.827881,
 			0.692627,
 		},
 		uv11 = {
-			0.794189,
+			0.859619,
 			0.724609,
 		},
 	},
@@ -721,11 +721,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.729736,
+			0.795166,
 			0.692627,
 		},
 		uv11 = {
-			0.761475,
+			0.826904,
 			0.724609,
 		},
 	},
@@ -735,26 +735,26 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.697021,
+			0.762451,
 			0.692627,
 		},
 		uv11 = {
-			0.72876,
+			0.794189,
 			0.724609,
 		},
 	},
-	achievement_trophy_scorpion_complete_weaves_8 = {
+	achievement_trophy_penny_bastion_overstay = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
-			0.664307,
-			0.956299,
+			0.729736,
+			0.692627,
 		},
 		uv11 = {
-			0.696045,
-			0.988281,
+			0.761475,
+			0.724609,
 		},
 	},
 	achievement_trophy_legend_es_huntsman = {
@@ -763,12 +763,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.664307,
-			0.92334,
+			0.697021,
+			0.692627,
 		},
 		uv11 = {
-			0.696045,
-			0.955322,
+			0.72876,
+			0.724609,
 		},
 	},
 	achievement_trophy_legend_we_maidenguard = {
@@ -778,11 +778,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.664307,
-			0.890381,
+			0.956299,
 		},
 		uv11 = {
 			0.696045,
-			0.922363,
+			0.988281,
 		},
 	},
 	achievement_trophy_champion_es_mercenary = {
@@ -792,11 +792,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.664307,
-			0.857422,
+			0.92334,
 		},
 		uv11 = {
 			0.696045,
-			0.889404,
+			0.955322,
 		},
 	},
 	achievement_trophy_champion_we_maidenguard = {
@@ -806,11 +806,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.664307,
-			0.824463,
+			0.890381,
 		},
 		uv11 = {
 			0.696045,
-			0.856445,
+			0.922363,
 		},
 	},
 	achievement_trophy_scorpion_keep_standard_bearer_alive = {
@@ -820,11 +820,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.664307,
-			0.791504,
+			0.857422,
 		},
 		uv11 = {
 			0.696045,
-			0.823486,
+			0.889404,
 		},
 	},
 	achievement_trophy_scorpion_markus_weapon_skin_1 = {
@@ -834,11 +834,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.664307,
-			0.758545,
+			0.824463,
 		},
 		uv11 = {
 			0.696045,
-			0.790527,
+			0.856445,
 		},
 	},
 	achievement_trophy_champion_wh_zealot = {
@@ -848,11 +848,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.664307,
-			0.725586,
+			0.791504,
 		},
 		uv11 = {
 			0.696045,
-			0.757568,
+			0.823486,
 		},
 	},
 	achievement_trophy_chaos_corruptor_sorcerer_2 = {
@@ -862,6 +862,34 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.664307,
+			0.758545,
+		},
+		uv11 = {
+			0.696045,
+			0.790527,
+		},
+	},
+	achievement_trophy_complete_all_career_grudge_challenges_we_maidenguard = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.664307,
+			0.725586,
+		},
+		uv11 = {
+			0.696045,
+			0.757568,
+		},
+	},
+	achievement_trophy_complete_all_career_grudge_challenges_we_thornsister = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.664307,
 			0.692627,
 		},
 		uv11 = {
@@ -869,7 +897,7 @@ achievement_icons_atlas = {
 			0.724609,
 		},
 	},
-	achievement_trophy_complete_all_career_grudge_challenges_we_maidenguard = {
+	achievement_trophy_chaos_vortex_sorcerer_1 = {
 		size = {
 			130,
 			131,
@@ -880,34 +908,6 @@ achievement_icons_atlas = {
 		},
 		uv11 = {
 			0.990479,
-			0.69165,
-		},
-	},
-	achievement_trophy_complete_all_career_grudge_challenges_we_thornsister = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.926025,
-			0.659668,
-		},
-		uv11 = {
-			0.957764,
-			0.69165,
-		},
-	},
-	achievement_trophy_chaos_vortex_sorcerer_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.893311,
-			0.659668,
-		},
-		uv11 = {
-			0.925049,
 			0.69165,
 		},
 	},
@@ -917,11 +917,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.860596,
+			0.926025,
 			0.659668,
 		},
 		uv11 = {
-			0.892334,
+			0.957764,
 			0.69165,
 		},
 	},
@@ -931,11 +931,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.827881,
+			0.893311,
 			0.659668,
 		},
 		uv11 = {
-			0.859619,
+			0.925049,
 			0.69165,
 		},
 	},
@@ -945,11 +945,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.795166,
+			0.860596,
 			0.659668,
 		},
 		uv11 = {
-			0.826904,
+			0.892334,
 			0.69165,
 		},
 	},
@@ -959,11 +959,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.762451,
+			0.827881,
 			0.659668,
 		},
 		uv11 = {
-			0.794189,
+			0.859619,
 			0.69165,
 		},
 	},
@@ -973,11 +973,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.729736,
+			0.795166,
 			0.659668,
 		},
 		uv11 = {
-			0.761475,
+			0.826904,
 			0.69165,
 		},
 	},
@@ -987,11 +987,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.697021,
+			0.762451,
 			0.659668,
 		},
 		uv11 = {
-			0.72876,
+			0.794189,
 			0.69165,
 		},
 	},
@@ -1001,11 +1001,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.664307,
+			0.729736,
 			0.659668,
 		},
 		uv11 = {
-			0.696045,
+			0.761475,
 			0.69165,
 		},
 	},
@@ -1015,12 +1015,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.631592,
-			0.956299,
+			0.697021,
+			0.659668,
 		},
 		uv11 = {
-			0.66333,
-			0.988281,
+			0.72876,
+			0.69165,
 		},
 	},
 	achievement_trophy_cog_hammer_cliff_push = {
@@ -1029,12 +1029,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.631592,
-			0.92334,
+			0.664307,
+			0.659668,
 		},
 		uv11 = {
-			0.66333,
-			0.955322,
+			0.696045,
+			0.69165,
 		},
 	},
 	achievement_trophy_deeds_2 = {
@@ -1044,11 +1044,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.631592,
-			0.890381,
+			0.956299,
 		},
 		uv11 = {
 			0.66333,
-			0.922363,
+			0.988281,
 		},
 	},
 	achievement_trophy_deeds_4 = {
@@ -1058,11 +1058,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.631592,
-			0.857422,
+			0.92334,
 		},
 		uv11 = {
 			0.66333,
-			0.889404,
+			0.955322,
 		},
 	},
 	achievement_trophy_kill_each_monster_grudge_wh_priest = {
@@ -1072,11 +1072,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.631592,
-			0.824463,
+			0.890381,
 		},
 		uv11 = {
 			0.66333,
-			0.856445,
+			0.922363,
 		},
 	},
 	achievement_trophy_legend_bw_unchained = {
@@ -1086,11 +1086,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.631592,
-			0.791504,
+			0.857422,
 		},
 		uv11 = {
 			0.66333,
-			0.823486,
+			0.889404,
 		},
 	},
 	achievement_trophy_scorpion_weaves_life_season_1 = {
@@ -1100,11 +1100,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.631592,
-			0.758545,
+			0.824463,
 		},
 		uv11 = {
 			0.66333,
-			0.790527,
+			0.856445,
 		},
 	},
 	achievement_trophy_scorpion_weaves_rainbow_maidenguard_season_1 = {
@@ -1114,11 +1114,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.631592,
-			0.725586,
+			0.791504,
 		},
 		uv11 = {
 			0.66333,
-			0.757568,
+			0.823486,
 		},
 	},
 	achievement_trophy_legend_wh_captain = {
@@ -1128,11 +1128,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.631592,
-			0.692627,
+			0.758545,
 		},
 		uv11 = {
 			0.66333,
-			0.724609,
+			0.790527,
 		},
 	},
 	achievement_trophy_markus_level_2 = {
@@ -1142,6 +1142,34 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.631592,
+			0.725586,
+		},
+		uv11 = {
+			0.66333,
+			0.757568,
+		},
+	},
+	achievement_trophy_complete_all_career_grudge_challenges_dr_engineer = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.631592,
+			0.692627,
+		},
+		uv11 = {
+			0.66333,
+			0.724609,
+		},
+	},
+	achievement_trophy_complete_all_career_grudge_challenges_dr_ranger = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.631592,
 			0.659668,
 		},
 		uv11 = {
@@ -1149,7 +1177,7 @@ achievement_icons_atlas = {
 			0.69165,
 		},
 	},
-	achievement_trophy_complete_all_career_grudge_challenges_dr_engineer = {
+	achievement_trophy_penny_bastion_yorick = {
 		size = {
 			130,
 			131,
@@ -1160,34 +1188,6 @@ achievement_icons_atlas = {
 		},
 		uv11 = {
 			0.990479,
-			0.658691,
-		},
-	},
-	achievement_trophy_complete_all_career_grudge_challenges_dr_ranger = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.926025,
-			0.626709,
-		},
-		uv11 = {
-			0.957764,
-			0.658691,
-		},
-	},
-	achievement_trophy_penny_bastion_yorick = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.893311,
-			0.626709,
-		},
-		uv11 = {
-			0.925049,
 			0.658691,
 		},
 	},
@@ -1197,11 +1197,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.860596,
+			0.926025,
 			0.626709,
 		},
 		uv11 = {
-			0.892334,
+			0.957764,
 			0.658691,
 		},
 	},
@@ -1211,11 +1211,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.827881,
+			0.893311,
 			0.626709,
 		},
 		uv11 = {
-			0.859619,
+			0.925049,
 			0.658691,
 		},
 	},
@@ -1225,11 +1225,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.795166,
+			0.860596,
 			0.626709,
 		},
 		uv11 = {
-			0.826904,
+			0.892334,
 			0.658691,
 		},
 	},
@@ -1239,11 +1239,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.762451,
+			0.827881,
 			0.626709,
 		},
 		uv11 = {
-			0.794189,
+			0.859619,
 			0.658691,
 		},
 	},
@@ -1253,11 +1253,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.729736,
+			0.795166,
 			0.626709,
 		},
 		uv11 = {
-			0.761475,
+			0.826904,
 			0.658691,
 		},
 	},
@@ -1267,11 +1267,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.697021,
+			0.762451,
 			0.626709,
 		},
 		uv11 = {
-			0.72876,
+			0.794189,
 			0.658691,
 		},
 	},
@@ -1281,11 +1281,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.664307,
+			0.729736,
 			0.626709,
 		},
 		uv11 = {
-			0.696045,
+			0.761475,
 			0.658691,
 		},
 	},
@@ -1295,11 +1295,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.631592,
+			0.697021,
 			0.626709,
 		},
 		uv11 = {
-			0.66333,
+			0.72876,
 			0.658691,
 		},
 	},
@@ -1309,12 +1309,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.598877,
-			0.956299,
+			0.664307,
+			0.626709,
 		},
 		uv11 = {
-			0.630615,
-			0.988281,
+			0.696045,
+			0.658691,
 		},
 	},
 	achievement_trophy_ussingen_no_event_barrels_cata = {
@@ -1323,12 +1323,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.598877,
-			0.92334,
+			0.631592,
+			0.626709,
 		},
 		uv11 = {
-			0.630615,
-			0.955322,
+			0.66333,
+			0.658691,
 		},
 	},
 	achievement_trophy_veteran_es_knight = {
@@ -1338,11 +1338,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.598877,
-			0.890381,
+			0.956299,
 		},
 		uv11 = {
 			0.630615,
-			0.922363,
+			0.988281,
 		},
 	},
 	achievement_trophy_recruit_thornsister = {
@@ -1352,11 +1352,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.598877,
-			0.857422,
+			0.92334,
 		},
 		uv11 = {
 			0.630615,
-			0.889404,
+			0.955322,
 		},
 	},
 	achievement_trophy_recruit_wh_bountyhunter = {
@@ -1366,11 +1366,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.598877,
-			0.824463,
+			0.890381,
 		},
 		uv11 = {
 			0.630615,
-			0.856445,
+			0.922363,
 		},
 	},
 	achievement_trophy_elven_ruins_align_leylines_timed_cata = {
@@ -1380,11 +1380,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.598877,
-			0.791504,
+			0.857422,
 		},
 		uv11 = {
 			0.630615,
-			0.823486,
+			0.889404,
 		},
 	},
 	achievement_trophy_farmlands_rescue_prisoners_timed = {
@@ -1394,11 +1394,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.598877,
-			0.758545,
+			0.824463,
 		},
 		uv11 = {
 			0.630615,
-			0.790527,
+			0.856445,
 		},
 	},
 	achievement_trophy_scorpion_complete_all_helmgart_levels_cataclysm = {
@@ -1408,11 +1408,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.598877,
-			0.725586,
+			0.791504,
 		},
 		uv11 = {
 			0.630615,
-			0.757568,
+			0.823486,
 		},
 	},
 	achievement_trophy_scorpion_complete_crater_champion = {
@@ -1422,11 +1422,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.598877,
-			0.692627,
+			0.758545,
 		},
 		uv11 = {
 			0.630615,
-			0.724609,
+			0.790527,
 		},
 	},
 	achievement_trophy_bless_fast_shield = {
@@ -1436,11 +1436,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.598877,
-			0.659668,
+			0.725586,
 		},
 		uv11 = {
 			0.630615,
-			0.69165,
+			0.757568,
 		},
 	},
 	achievement_trophy_bless_righteous_stagger = {
@@ -1450,6 +1450,34 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.598877,
+			0.692627,
+		},
+		uv11 = {
+			0.630615,
+			0.724609,
+		},
+	},
+	achievement_trophy_scorpion_complete_weaves_5 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.598877,
+			0.659668,
+		},
+		uv11 = {
+			0.630615,
+			0.69165,
+		},
+	},
+	achievement_trophy_scorpion_complete_weaves_9 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.598877,
 			0.626709,
 		},
 		uv11 = {
@@ -1457,7 +1485,7 @@ achievement_icons_atlas = {
 			0.658691,
 		},
 	},
-	achievement_trophy_scorpion_complete_weaves_5 = {
+	achievement_trophy_gecko_scraps_ground_zero = {
 		size = {
 			130,
 			131,
@@ -1471,7 +1499,7 @@ achievement_icons_atlas = {
 			0.625732,
 		},
 	},
-	achievement_trophy_scorpion_complete_weaves_9 = {
+	achievement_trophy_100_missions_champion_wh_zealot = {
 		size = {
 			130,
 			131,
@@ -1482,34 +1510,6 @@ achievement_icons_atlas = {
 		},
 		uv11 = {
 			0.957764,
-			0.625732,
-		},
-	},
-	achievement_trophy_gecko_scraps_ground_zero = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.893311,
-			0.59375,
-		},
-		uv11 = {
-			0.925049,
-			0.625732,
-		},
-	},
-	achievement_trophy_penny_bastion_overstay = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.860596,
-			0.59375,
-		},
-		uv11 = {
-			0.892334,
 			0.625732,
 		},
 	},
@@ -1519,11 +1519,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.827881,
+			0.893311,
 			0.59375,
 		},
 		uv11 = {
-			0.859619,
+			0.925049,
 			0.625732,
 		},
 	},
@@ -1533,11 +1533,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.795166,
+			0.860596,
 			0.59375,
 		},
 		uv11 = {
-			0.826904,
+			0.892334,
 			0.625732,
 		},
 	},
@@ -1547,11 +1547,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.762451,
+			0.827881,
 			0.59375,
 		},
 		uv11 = {
-			0.794189,
+			0.859619,
 			0.625732,
 		},
 	},
@@ -1561,11 +1561,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.729736,
+			0.795166,
 			0.59375,
 		},
 		uv11 = {
-			0.761475,
+			0.826904,
 			0.625732,
 		},
 	},
@@ -1575,11 +1575,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.697021,
+			0.762451,
 			0.59375,
 		},
 		uv11 = {
-			0.72876,
+			0.794189,
 			0.625732,
 		},
 	},
@@ -1589,11 +1589,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.664307,
+			0.729736,
 			0.59375,
 		},
 		uv11 = {
-			0.696045,
+			0.761475,
 			0.625732,
 		},
 	},
@@ -1603,11 +1603,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.631592,
+			0.697021,
 			0.59375,
 		},
 		uv11 = {
-			0.66333,
+			0.72876,
 			0.625732,
 		},
 	},
@@ -1617,11 +1617,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.598877,
+			0.664307,
 			0.59375,
 		},
 		uv11 = {
-			0.630615,
+			0.696045,
 			0.625732,
 		},
 	},
@@ -1631,12 +1631,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.566162,
-			0.956299,
+			0.631592,
+			0.59375,
 		},
 		uv11 = {
-			0.5979,
-			0.988281,
+			0.66333,
+			0.625732,
 		},
 	},
 	achievement_holly_forest_ambush_synchronized_explosives_desc = {
@@ -1645,12 +1645,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.566162,
-			0.92334,
+			0.598877,
+			0.59375,
 		},
 		uv11 = {
-			0.5979,
-			0.955322,
+			0.630615,
+			0.625732,
 		},
 	},
 	achievement_trophy_scorpion_kerillian_weapon_unlock = {
@@ -1660,11 +1660,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.566162,
-			0.890381,
+			0.956299,
 		},
 		uv11 = {
 			0.5979,
-			0.922363,
+			0.988281,
 		},
 	},
 	achievement_trophy_penny_complete_castle_cataclysm = {
@@ -1674,11 +1674,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.566162,
-			0.857422,
+			0.92334,
 		},
 		uv11 = {
 			0.5979,
-			0.889404,
+			0.955322,
 		},
 	},
 	achievement_trophy_17 = {
@@ -1688,11 +1688,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.566162,
-			0.824463,
+			0.890381,
 		},
 		uv11 = {
 			0.5979,
-			0.856445,
+			0.922363,
 		},
 	},
 	achievement_trophy_scorpion_weaves_complete_huntsman_season_1 = {
@@ -1702,11 +1702,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.566162,
-			0.791504,
+			0.857422,
 		},
 		uv11 = {
 			0.5979,
-			0.823486,
+			0.889404,
 		},
 	},
 	achievement_trophy_chaos_corruptor_sorcerer_1 = {
@@ -1716,11 +1716,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.566162,
-			0.758545,
+			0.824463,
 		},
 		uv11 = {
 			0.5979,
-			0.790527,
+			0.856445,
 		},
 	},
 	achievement_trophy_scorpion_weaves_complete_slayer_season_1 = {
@@ -1730,11 +1730,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.566162,
-			0.725586,
+			0.791504,
 		},
 		uv11 = {
 			0.5979,
-			0.757568,
+			0.823486,
 		},
 	},
 	achievement_trophy_19 = {
@@ -1744,11 +1744,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.566162,
-			0.692627,
+			0.758545,
 		},
 		uv11 = {
 			0.5979,
-			0.724609,
+			0.790527,
 		},
 	},
 	achievement_trophy_skaven_pack_master_2 = {
@@ -1758,11 +1758,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.566162,
-			0.659668,
+			0.725586,
 		},
 		uv11 = {
 			0.5979,
-			0.69165,
+			0.757568,
 		},
 	},
 	achievement_trophy_complete_all_career_grudge_challenges_we_shade = {
@@ -1772,11 +1772,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.566162,
-			0.626709,
+			0.692627,
 		},
 		uv11 = {
 			0.5979,
-			0.658691,
+			0.724609,
 		},
 	},
 	achievement_trophy_lake_untouchable = {
@@ -1786,6 +1786,34 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.566162,
+			0.659668,
+		},
+		uv11 = {
+			0.5979,
+			0.69165,
+		},
+	},
+	achievement_trophy_21 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.566162,
+			0.626709,
+		},
+		uv11 = {
+			0.5979,
+			0.658691,
+		},
+	},
+	achievement_trophy_scorpion_weaves_rainbow_witchhunter_season_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.566162,
 			0.59375,
 		},
 		uv11 = {
@@ -1793,7 +1821,7 @@ achievement_icons_atlas = {
 			0.625732,
 		},
 	},
-	achievement_trophy_21 = {
+	achievement_trophy_chaos_vortex_sorcerer_2 = {
 		size = {
 			130,
 			131,
@@ -1804,34 +1832,6 @@ achievement_icons_atlas = {
 		},
 		uv11 = {
 			0.990479,
-			0.592773,
-		},
-	},
-	achievement_trophy_scorpion_weaves_rainbow_witchhunter_season_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.926025,
-			0.560791,
-		},
-		uv11 = {
-			0.957764,
-			0.592773,
-		},
-	},
-	achievement_trophy_chaos_vortex_sorcerer_2 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.893311,
-			0.560791,
-		},
-		uv11 = {
-			0.925049,
 			0.592773,
 		},
 	},
@@ -1841,11 +1841,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.860596,
+			0.926025,
 			0.560791,
 		},
 		uv11 = {
-			0.892334,
+			0.957764,
 			0.592773,
 		},
 	},
@@ -1855,11 +1855,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.827881,
+			0.893311,
 			0.560791,
 		},
 		uv11 = {
-			0.859619,
+			0.925049,
 			0.592773,
 		},
 	},
@@ -1869,11 +1869,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.795166,
+			0.860596,
 			0.560791,
 		},
 		uv11 = {
-			0.826904,
+			0.892334,
 			0.592773,
 		},
 	},
@@ -1883,11 +1883,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.762451,
+			0.827881,
 			0.560791,
 		},
 		uv11 = {
-			0.794189,
+			0.859619,
 			0.592773,
 		},
 	},
@@ -1897,11 +1897,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.729736,
+			0.795166,
 			0.560791,
 		},
 		uv11 = {
-			0.761475,
+			0.826904,
 			0.592773,
 		},
 	},
@@ -1911,11 +1911,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.697021,
+			0.762451,
 			0.560791,
 		},
 		uv11 = {
-			0.72876,
+			0.794189,
 			0.592773,
 		},
 	},
@@ -1925,11 +1925,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.664307,
+			0.729736,
 			0.560791,
 		},
 		uv11 = {
-			0.696045,
+			0.761475,
 			0.592773,
 		},
 	},
@@ -1939,11 +1939,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.631592,
+			0.697021,
 			0.560791,
 		},
 		uv11 = {
-			0.66333,
+			0.72876,
 			0.592773,
 		},
 	},
@@ -1953,11 +1953,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.598877,
+			0.664307,
 			0.560791,
 		},
 		uv11 = {
-			0.630615,
+			0.696045,
 			0.592773,
 		},
 	},
@@ -1967,11 +1967,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.566162,
+			0.631592,
 			0.560791,
 		},
 		uv11 = {
-			0.5979,
+			0.66333,
 			0.592773,
 		},
 	},
@@ -1981,12 +1981,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.533447,
-			0.956299,
+			0.598877,
+			0.560791,
 		},
 		uv11 = {
-			0.565186,
-			0.988281,
+			0.630615,
+			0.592773,
 		},
 	},
 	achievement_trophy_scorpion_weaves_1_season_1 = {
@@ -1995,12 +1995,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.533447,
-			0.92334,
+			0.566162,
+			0.560791,
 		},
 		uv11 = {
-			0.565186,
-			0.955322,
+			0.5979,
+			0.592773,
 		},
 	},
 	achievement_trophy_recruit_es_huntsman = {
@@ -2010,11 +2010,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.533447,
-			0.890381,
+			0.956299,
 		},
 		uv11 = {
 			0.565186,
-			0.922363,
+			0.988281,
 		},
 	},
 	achievement_trophy_all_careers_recruit = {
@@ -2024,11 +2024,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.533447,
-			0.857422,
+			0.92334,
 		},
 		uv11 = {
 			0.565186,
-			0.889404,
+			0.955322,
 		},
 	},
 	achievement_trophy_veteran_wh_witchhunter = {
@@ -2038,11 +2038,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.533447,
-			0.824463,
+			0.890381,
 		},
 		uv11 = {
 			0.565186,
-			0.856445,
+			0.922363,
 		},
 	},
 	achievement_trophy_cog_hammer_axe_kills = {
@@ -2052,11 +2052,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.533447,
-			0.791504,
+			0.857422,
 		},
 		uv11 = {
 			0.565186,
-			0.823486,
+			0.889404,
 		},
 	},
 	achivement_trophy_scorpion_cataclysm_unlock_kill_all_lords = {
@@ -2066,11 +2066,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.533447,
-			0.758545,
+			0.824463,
 		},
 		uv11 = {
 			0.565186,
-			0.790527,
+			0.856445,
 		},
 	},
 	achievement_trophy_bardin_level_1 = {
@@ -2080,11 +2080,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.533447,
-			0.725586,
+			0.791504,
 		},
 		uv11 = {
 			0.565186,
-			0.757568,
+			0.823486,
 		},
 	},
 	achievement_trophy_markus_level_3 = {
@@ -2094,11 +2094,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.533447,
-			0.692627,
+			0.758545,
 		},
 		uv11 = {
 			0.565186,
-			0.724609,
+			0.790527,
 		},
 	},
 	achievement_trophy_deeds_3 = {
@@ -2108,11 +2108,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.533447,
-			0.659668,
+			0.725586,
 		},
 		uv11 = {
 			0.565186,
-			0.69165,
+			0.757568,
 		},
 	},
 	achievement_trophy_penny_castle_chalice = {
@@ -2122,11 +2122,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.533447,
-			0.626709,
+			0.692627,
 		},
 		uv11 = {
 			0.565186,
-			0.658691,
+			0.724609,
 		},
 	},
 	achievement_trophy_bardin_level_3 = {
@@ -2136,11 +2136,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.533447,
-			0.59375,
+			0.659668,
 		},
 		uv11 = {
 			0.565186,
-			0.625732,
+			0.69165,
 		},
 	},
 	achievement_holly_forest_ambush_dragonbane_gem_desc = {
@@ -2150,6 +2150,34 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.533447,
+			0.626709,
+		},
+		uv11 = {
+			0.565186,
+			0.658691,
+		},
+	},
+	achievement_trophy_legend_bw_adept = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.533447,
+			0.59375,
+		},
+		uv11 = {
+			0.565186,
+			0.625732,
+		},
+	},
+	achievement_trophy_cog_mission_streak_act3_legend_dr_engineer = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.533447,
 			0.560791,
 		},
 		uv11 = {
@@ -2157,7 +2185,7 @@ achievement_icons_atlas = {
 			0.592773,
 		},
 	},
-	achievement_trophy_legend_bw_adept = {
+	achievement_trophy_bell_destroy_bell_flee_timed_cata = {
 		size = {
 			130,
 			131,
@@ -2168,34 +2196,6 @@ achievement_icons_atlas = {
 		},
 		uv11 = {
 			0.990479,
-			0.559814,
-		},
-	},
-	achievement_trophy_cog_mission_streak_act3_legend_dr_engineer = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.926025,
-			0.527832,
-		},
-		uv11 = {
-			0.957764,
-			0.559814,
-		},
-	},
-	achievement_trophy_bell_destroy_bell_flee_timed_cata = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.893311,
-			0.527832,
-		},
-		uv11 = {
-			0.925049,
 			0.559814,
 		},
 	},
@@ -2205,11 +2205,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.860596,
+			0.926025,
 			0.527832,
 		},
 		uv11 = {
-			0.892334,
+			0.957764,
 			0.559814,
 		},
 	},
@@ -2219,11 +2219,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.827881,
+			0.893311,
 			0.527832,
 		},
 		uv11 = {
-			0.859619,
+			0.925049,
 			0.559814,
 		},
 	},
@@ -2233,11 +2233,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.795166,
+			0.860596,
 			0.527832,
 		},
 		uv11 = {
-			0.826904,
+			0.892334,
 			0.559814,
 		},
 	},
@@ -2247,11 +2247,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.762451,
+			0.827881,
 			0.527832,
 		},
 		uv11 = {
-			0.794189,
+			0.859619,
 			0.559814,
 		},
 	},
@@ -2261,11 +2261,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.729736,
+			0.795166,
 			0.527832,
 		},
 		uv11 = {
-			0.761475,
+			0.826904,
 			0.559814,
 		},
 	},
@@ -2275,11 +2275,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.697021,
+			0.762451,
 			0.527832,
 		},
 		uv11 = {
-			0.72876,
+			0.794189,
 			0.559814,
 		},
 	},
@@ -2289,11 +2289,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.664307,
+			0.729736,
 			0.527832,
 		},
 		uv11 = {
-			0.696045,
+			0.761475,
 			0.559814,
 		},
 	},
@@ -2303,11 +2303,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.631592,
+			0.697021,
 			0.527832,
 		},
 		uv11 = {
-			0.66333,
+			0.72876,
 			0.559814,
 		},
 	},
@@ -2317,11 +2317,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.598877,
+			0.664307,
 			0.527832,
 		},
 		uv11 = {
-			0.630615,
+			0.696045,
 			0.559814,
 		},
 	},
@@ -2331,11 +2331,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.566162,
+			0.631592,
 			0.527832,
 		},
 		uv11 = {
-			0.5979,
+			0.66333,
 			0.559814,
 		},
 	},
@@ -2345,11 +2345,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.533447,
+			0.598877,
 			0.527832,
 		},
 		uv11 = {
-			0.565186,
+			0.630615,
 			0.559814,
 		},
 	},
@@ -2359,12 +2359,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.500732,
-			0.956299,
+			0.566162,
+			0.527832,
 		},
 		uv11 = {
-			0.532471,
-			0.988281,
+			0.5979,
+			0.559814,
 		},
 	},
 	achievement_trophy_complete_all_career_grudge_challenges_es_huntsman = {
@@ -2373,12 +2373,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.500732,
-			0.92334,
+			0.533447,
+			0.527832,
 		},
 		uv11 = {
-			0.532471,
-			0.955322,
+			0.565186,
+			0.559814,
 		},
 	},
 	achievement_trophy_penny_castle_eruptions = {
@@ -2388,11 +2388,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.500732,
-			0.890381,
+			0.956299,
 		},
 		uv11 = {
 			0.532471,
-			0.922363,
+			0.988281,
 		},
 	},
 	achievement_trophy_complete_all_career_grudge_challenges_es_mercenary = {
@@ -2402,11 +2402,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.500732,
-			0.857422,
+			0.92334,
 		},
 		uv11 = {
 			0.532471,
-			0.889404,
+			0.955322,
 		},
 	},
 	achievement_trophy_bogenhafen_city_torch_not_picked_up = {
@@ -2416,11 +2416,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.500732,
-			0.824463,
+			0.890381,
 		},
 		uv11 = {
 			0.532471,
-			0.856445,
+			0.922363,
 		},
 	},
 	achievement_holly_kerillian_weapon_skin_2_desc = {
@@ -2430,11 +2430,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.500732,
-			0.791504,
+			0.857422,
 		},
 		uv11 = {
 			0.532471,
-			0.823486,
+			0.889404,
 		},
 	},
 	achievement_trophy_skaven_stormfiend_1 = {
@@ -2444,11 +2444,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.500732,
-			0.758545,
+			0.824463,
 		},
 		uv11 = {
 			0.532471,
-			0.790527,
+			0.856445,
 		},
 	},
 	achievement_trophy_scorpion_tier_1_season_3 = {
@@ -2458,11 +2458,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.500732,
-			0.725586,
+			0.791504,
 		},
 		uv11 = {
 			0.532471,
-			0.757568,
+			0.823486,
 		},
 	},
 	achievement_trophy_bogenhafen_collect_all_cosmetics = {
@@ -2472,11 +2472,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.500732,
-			0.692627,
+			0.758545,
 		},
 		uv11 = {
 			0.532471,
-			0.724609,
+			0.790527,
 		},
 	},
 	achievement_trophy_complete_all_career_grudge_challenges_wh_bountyhunter = {
@@ -2486,11 +2486,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.500732,
-			0.659668,
+			0.725586,
 		},
 		uv11 = {
 			0.532471,
-			0.69165,
+			0.757568,
 		},
 	},
 	achievement_trophy_penny_complete_cataclysm = {
@@ -2500,11 +2500,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.500732,
-			0.626709,
+			0.692627,
 		},
 		uv11 = {
 			0.532471,
-			0.658691,
+			0.724609,
 		},
 	},
 	achievement_trophy_complete_all_career_grudge_challenges_wh_zealot = {
@@ -2514,11 +2514,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.500732,
-			0.59375,
+			0.659668,
 		},
 		uv11 = {
 			0.532471,
-			0.625732,
+			0.69165,
 		},
 	},
 	achievement_trophy_bogenhafen_collect_skin = {
@@ -2528,11 +2528,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.500732,
-			0.560791,
+			0.626709,
 		},
 		uv11 = {
 			0.532471,
-			0.592773,
+			0.658691,
 		},
 	},
 	achievement_trophy_bless_book_run = {
@@ -2542,6 +2542,34 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.500732,
+			0.59375,
+		},
+		uv11 = {
+			0.532471,
+			0.625732,
+		},
+	},
+	achievement_trophy_complete_all_helmgart_levels_champion = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.500732,
+			0.560791,
+		},
+		uv11 = {
+			0.532471,
+			0.592773,
+		},
+	},
+	achievement_trophy_legend_wh_witchhunter = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.500732,
 			0.527832,
 		},
 		uv11 = {
@@ -2549,7 +2577,7 @@ achievement_icons_atlas = {
 			0.559814,
 		},
 	},
-	achievement_trophy_complete_all_helmgart_levels_champion = {
+	achievement_trophy_bogenhafen_complete_champion = {
 		size = {
 			130,
 			131,
@@ -2560,34 +2588,6 @@ achievement_icons_atlas = {
 		},
 		uv11 = {
 			0.990479,
-			0.526855,
-		},
-	},
-	achievement_trophy_legend_wh_witchhunter = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.926025,
-			0.494873,
-		},
-		uv11 = {
-			0.957764,
-			0.526855,
-		},
-	},
-	achievement_trophy_bogenhafen_complete_champion = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.893311,
-			0.494873,
-		},
-		uv11 = {
-			0.925049,
 			0.526855,
 		},
 	},
@@ -2597,11 +2597,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.860596,
+			0.926025,
 			0.494873,
 		},
 		uv11 = {
-			0.892334,
+			0.957764,
 			0.526855,
 		},
 	},
@@ -2611,11 +2611,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.827881,
+			0.893311,
 			0.494873,
 		},
 		uv11 = {
-			0.859619,
+			0.925049,
 			0.526855,
 		},
 	},
@@ -2625,11 +2625,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.795166,
+			0.860596,
 			0.494873,
 		},
 		uv11 = {
-			0.826904,
+			0.892334,
 			0.526855,
 		},
 	},
@@ -2639,11 +2639,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.762451,
+			0.827881,
 			0.494873,
 		},
 		uv11 = {
-			0.794189,
+			0.859619,
 			0.526855,
 		},
 	},
@@ -2653,11 +2653,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.729736,
+			0.795166,
 			0.494873,
 		},
 		uv11 = {
-			0.761475,
+			0.826904,
 			0.526855,
 		},
 	},
@@ -2667,11 +2667,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.697021,
+			0.762451,
 			0.494873,
 		},
 		uv11 = {
-			0.72876,
+			0.794189,
 			0.526855,
 		},
 	},
@@ -2681,11 +2681,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.664307,
+			0.729736,
 			0.494873,
 		},
 		uv11 = {
-			0.696045,
+			0.761475,
 			0.526855,
 		},
 	},
@@ -2695,11 +2695,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.631592,
+			0.697021,
 			0.494873,
 		},
 		uv11 = {
-			0.66333,
+			0.72876,
 			0.526855,
 		},
 	},
@@ -2709,11 +2709,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.598877,
+			0.664307,
 			0.494873,
 		},
 		uv11 = {
-			0.630615,
+			0.696045,
 			0.526855,
 		},
 	},
@@ -2723,11 +2723,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.566162,
+			0.631592,
 			0.494873,
 		},
 		uv11 = {
-			0.5979,
+			0.66333,
 			0.526855,
 		},
 	},
@@ -2737,11 +2737,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.533447,
+			0.598877,
 			0.494873,
 		},
 		uv11 = {
-			0.565186,
+			0.630615,
 			0.526855,
 		},
 	},
@@ -2751,11 +2751,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.500732,
+			0.566162,
 			0.494873,
 		},
 		uv11 = {
-			0.532471,
+			0.5979,
 			0.526855,
 		},
 	},
@@ -2765,12 +2765,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.468018,
-			0.956299,
+			0.533447,
+			0.494873,
 		},
 		uv11 = {
-			0.499756,
-			0.988281,
+			0.565186,
+			0.526855,
 		},
 	},
 	achievement_trophy_equip_all_veteran_quality = {
@@ -2779,12 +2779,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.468018,
-			0.92334,
+			0.500732,
+			0.494873,
 		},
 		uv11 = {
-			0.499756,
-			0.955322,
+			0.532471,
+			0.526855,
 		},
 	},
 	achievement_trophy_penny_complete_castle_veteran = {
@@ -2794,11 +2794,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.468018,
-			0.890381,
+			0.956299,
 		},
 		uv11 = {
 			0.499756,
-			0.922363,
+			0.988281,
 		},
 	},
 	achievement_trophy_bogenhafen_slum_legend = {
@@ -2808,11 +2808,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.468018,
-			0.857422,
+			0.92334,
 		},
 		uv11 = {
 			0.499756,
-			0.889404,
+			0.955322,
 		},
 	},
 	achievement_trophy_fort_kill_enemies_cannonball = {
@@ -2822,11 +2822,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.468018,
-			0.824463,
+			0.890381,
 		},
 		uv11 = {
 			0.499756,
-			0.856445,
+			0.922363,
 		},
 	},
 	achievement_trophy_scorpion_complete_bogenhafen_cataclysm = {
@@ -2836,11 +2836,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.468018,
-			0.791504,
+			0.857422,
 		},
 		uv11 = {
 			0.499756,
-			0.823486,
+			0.889404,
 		},
 	},
 	achievement_trophy_gecko_scraps_bell = {
@@ -2850,11 +2850,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.468018,
-			0.758545,
+			0.824463,
 		},
 		uv11 = {
 			0.499756,
-			0.790527,
+			0.856445,
 		},
 	},
 	achievement_trophy_bogenhafen_slum_no_windows_broken = {
@@ -2864,11 +2864,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.468018,
-			0.725586,
+			0.791504,
 		},
 		uv11 = {
 			0.499756,
-			0.757568,
+			0.823486,
 		},
 	},
 	achievement_holly_kruber_complete_all_levels_desc = {
@@ -2878,11 +2878,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.468018,
-			0.692627,
+			0.758545,
 		},
 		uv11 = {
 			0.499756,
-			0.724609,
+			0.790527,
 		},
 	},
 	achievement_trophy_bless_mighty_blow = {
@@ -2892,11 +2892,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.468018,
-			0.659668,
+			0.725586,
 		},
 		uv11 = {
 			0.499756,
-			0.69165,
+			0.757568,
 		},
 	},
 	achievement_trophy_scorpion_weaves_shadow_season_1 = {
@@ -2906,11 +2906,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.468018,
-			0.626709,
+			0.692627,
 		},
 		uv11 = {
 			0.499756,
-			0.658691,
+			0.724609,
 		},
 	},
 	achievement_trophy_bogenhafen_slum_veteran = {
@@ -2920,11 +2920,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.468018,
-			0.59375,
+			0.659668,
 		},
 		uv11 = {
 			0.499756,
-			0.625732,
+			0.69165,
 		},
 	},
 	achievement_trophy_gecko_scraps_farmlands = {
@@ -2934,11 +2934,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.468018,
-			0.560791,
+			0.626709,
 		},
 		uv11 = {
 			0.499756,
-			0.592773,
+			0.658691,
 		},
 	},
 	achievement_trophy_scorpion_complete_weaves_7 = {
@@ -2948,11 +2948,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.468018,
-			0.527832,
+			0.59375,
 		},
 		uv11 = {
 			0.499756,
-			0.559814,
+			0.625732,
 		},
 	},
 	achievement_trophy_gecko_scraps_fort = {
@@ -2962,6 +2962,34 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.468018,
+			0.560791,
+		},
+		uv11 = {
+			0.499756,
+			0.592773,
+		},
+	},
+	achievement_trophy_catacombs_stay_inside_ritual_pool_cata = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.468018,
+			0.527832,
+		},
+		uv11 = {
+			0.499756,
+			0.559814,
+		},
+	},
+	achievement_trophy_scorpion_crater_ambush = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.468018,
 			0.494873,
 		},
 		uv11 = {
@@ -2969,7 +2997,7 @@ achievement_icons_atlas = {
 			0.526855,
 		},
 	},
-	achievement_trophy_catacombs_stay_inside_ritual_pool_cata = {
+	achievement_trophy_champion_bw_adept = {
 		size = {
 			130,
 			131,
@@ -2983,7 +3011,7 @@ achievement_icons_atlas = {
 			0.493896,
 		},
 	},
-	achievement_trophy_scorpion_crater_ambush = {
+	achievement_trophy_champion_bw_scholar = {
 		size = {
 			130,
 			131,
@@ -2997,7 +3025,7 @@ achievement_icons_atlas = {
 			0.493896,
 		},
 	},
-	achievement_trophy_recruit_we_maidenguard = {
+	achievement_trophy_scorpion_crater_dark_tongue_2 = {
 		size = {
 			130,
 			131,
@@ -3008,34 +3036,6 @@ achievement_icons_atlas = {
 		},
 		uv11 = {
 			0.925049,
-			0.493896,
-		},
-	},
-	achievement_trophy_100_missions_champion_wh_zealot = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.860596,
-			0.461914,
-		},
-		uv11 = {
-			0.892334,
-			0.493896,
-		},
-	},
-	achievement_dwarf_veteran = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.827881,
-			0.461914,
-		},
-		uv11 = {
-			0.859619,
 			0.493896,
 		},
 	},
@@ -3045,11 +3045,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.795166,
+			0.860596,
 			0.461914,
 		},
 		uv11 = {
-			0.826904,
+			0.892334,
 			0.493896,
 		},
 	},
@@ -3059,11 +3059,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.762451,
+			0.827881,
 			0.461914,
 		},
 		uv11 = {
-			0.794189,
+			0.859619,
 			0.493896,
 		},
 	},
@@ -3073,11 +3073,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.729736,
+			0.795166,
 			0.461914,
 		},
 		uv11 = {
-			0.761475,
+			0.826904,
 			0.493896,
 		},
 	},
@@ -3087,11 +3087,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.697021,
+			0.762451,
 			0.461914,
 		},
 		uv11 = {
-			0.72876,
+			0.794189,
 			0.493896,
 		},
 	},
@@ -3101,11 +3101,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.664307,
+			0.729736,
 			0.461914,
 		},
 		uv11 = {
-			0.696045,
+			0.761475,
 			0.493896,
 		},
 	},
@@ -3115,11 +3115,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.631592,
+			0.697021,
 			0.461914,
 		},
 		uv11 = {
-			0.66333,
+			0.72876,
 			0.493896,
 		},
 	},
@@ -3129,11 +3129,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.598877,
+			0.664307,
 			0.461914,
 		},
 		uv11 = {
-			0.630615,
+			0.696045,
 			0.493896,
 		},
 	},
@@ -3143,11 +3143,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.566162,
+			0.631592,
 			0.461914,
 		},
 		uv11 = {
-			0.5979,
+			0.66333,
 			0.493896,
 		},
 	},
@@ -3157,11 +3157,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.533447,
+			0.598877,
 			0.461914,
 		},
 		uv11 = {
-			0.565186,
+			0.630615,
 			0.493896,
 		},
 	},
@@ -3171,11 +3171,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.500732,
+			0.566162,
 			0.461914,
 		},
 		uv11 = {
-			0.532471,
+			0.5979,
 			0.493896,
 		},
 	},
@@ -3185,11 +3185,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.468018,
+			0.533447,
 			0.461914,
 		},
 		uv11 = {
-			0.499756,
+			0.565186,
 			0.493896,
 		},
 	},
@@ -3199,12 +3199,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.435303,
-			0.956299,
+			0.500732,
+			0.461914,
 		},
 		uv11 = {
-			0.467041,
-			0.988281,
+			0.532471,
+			0.493896,
 		},
 	},
 	achievement_trophy_scorpion_tier_2_season_1 = {
@@ -3213,12 +3213,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.435303,
-			0.92334,
+			0.468018,
+			0.461914,
 		},
 		uv11 = {
-			0.467041,
-			0.955322,
+			0.499756,
+			0.493896,
 		},
 	},
 	achievement_trophy_14 = {
@@ -3228,11 +3228,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.435303,
-			0.890381,
+			0.956299,
 		},
 		uv11 = {
 			0.467041,
-			0.922363,
+			0.988281,
 		},
 	},
 	achievement_trophy_penny_portals_careful = {
@@ -3242,11 +3242,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.435303,
-			0.857422,
+			0.92334,
 		},
 		uv11 = {
 			0.467041,
-			0.889404,
+			0.955322,
 		},
 	},
 	achievement_trophy_scorpion_tier_4_season_4 = {
@@ -3256,11 +3256,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.435303,
-			0.824463,
+			0.890381,
 		},
 		uv11 = {
 			0.467041,
-			0.856445,
+			0.922363,
 		},
 	},
 	achievement_trophy_champion_we_shade = {
@@ -3270,11 +3270,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.435303,
-			0.791504,
+			0.857422,
 		},
 		uv11 = {
 			0.467041,
-			0.823486,
+			0.889404,
 		},
 	},
 	achievement_holly_sienna_weapon_skin_3_desc = {
@@ -3284,11 +3284,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.435303,
-			0.758545,
+			0.824463,
 		},
 		uv11 = {
 			0.467041,
-			0.790527,
+			0.856445,
 		},
 	},
 	achievement_holly_kruber_weapon_skin_3_desc = {
@@ -3298,11 +3298,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.435303,
-			0.725586,
+			0.791504,
 		},
 		uv11 = {
 			0.467041,
-			0.757568,
+			0.823486,
 		},
 	},
 	achievement_trophy_champion_dr_ranger = {
@@ -3312,11 +3312,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.435303,
-			0.692627,
+			0.758545,
 		},
 		uv11 = {
 			0.467041,
-			0.724609,
+			0.790527,
 		},
 	},
 	achievement_trophy_scorpion_complete_back_to_ubersreik_cataclysm = {
@@ -3326,11 +3326,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.435303,
-			0.659668,
+			0.725586,
 		},
 		uv11 = {
 			0.467041,
-			0.69165,
+			0.757568,
 		},
 	},
 	achievement_trophy_champion_dr_slayer = {
@@ -3340,11 +3340,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.435303,
-			0.626709,
+			0.692627,
 		},
 		uv11 = {
 			0.467041,
-			0.658691,
+			0.724609,
 		},
 	},
 	achievement_trophy_12 = {
@@ -3354,11 +3354,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.435303,
-			0.59375,
+			0.659668,
 		},
 		uv11 = {
 			0.467041,
-			0.625732,
+			0.69165,
 		},
 	},
 	achievement_trophy_scorpion_weaves_9_season_1 = {
@@ -3368,11 +3368,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.435303,
-			0.560791,
+			0.626709,
 		},
 		uv11 = {
 			0.467041,
-			0.592773,
+			0.658691,
 		},
 	},
 	achievement_trophy_champion_wh_witchhunter = {
@@ -3382,11 +3382,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.435303,
-			0.527832,
+			0.59375,
 		},
 		uv11 = {
 			0.467041,
-			0.559814,
+			0.625732,
 		},
 	},
 	achievement_trophy_01 = {
@@ -3396,11 +3396,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.435303,
-			0.494873,
+			0.560791,
 		},
 		uv11 = {
 			0.467041,
-			0.526855,
+			0.592773,
 		},
 	},
 	achievement_trophy_thornsister_the_awakening_of_the_woods = {
@@ -3410,6 +3410,34 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.435303,
+			0.527832,
+		},
+		uv11 = {
+			0.467041,
+			0.559814,
+		},
+	},
+	achievement_trophy_scorpion_tier_2_season_3 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.435303,
+			0.494873,
+		},
+		uv11 = {
+			0.467041,
+			0.526855,
+		},
+	},
+	achievement_trophy_scorpion_weaves_complete_mercenary_season_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.435303,
 			0.461914,
 		},
 		uv11 = {
@@ -3417,7 +3445,7 @@ achievement_icons_atlas = {
 			0.493896,
 		},
 	},
-	achievement_trophy_scorpion_tier_2_season_3 = {
+	achievement_trophy_18 = {
 		size = {
 			130,
 			131,
@@ -3428,34 +3456,6 @@ achievement_icons_atlas = {
 		},
 		uv11 = {
 			0.990479,
-			0.460938,
-		},
-	},
-	achievement_trophy_scorpion_weaves_complete_mercenary_season_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.926025,
-			0.428955,
-		},
-		uv11 = {
-			0.957764,
-			0.460938,
-		},
-	},
-	achievement_trophy_18 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.893311,
-			0.428955,
-		},
-		uv11 = {
-			0.925049,
 			0.460938,
 		},
 	},
@@ -3465,11 +3465,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.860596,
+			0.926025,
 			0.428955,
 		},
 		uv11 = {
-			0.892334,
+			0.957764,
 			0.460938,
 		},
 	},
@@ -3479,11 +3479,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.827881,
+			0.893311,
 			0.428955,
 		},
 		uv11 = {
-			0.859619,
+			0.925049,
 			0.460938,
 		},
 	},
@@ -3493,11 +3493,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.795166,
+			0.860596,
 			0.428955,
 		},
 		uv11 = {
-			0.826904,
+			0.892334,
 			0.460938,
 		},
 	},
@@ -3507,11 +3507,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.762451,
+			0.827881,
 			0.428955,
 		},
 		uv11 = {
-			0.794189,
+			0.859619,
 			0.460938,
 		},
 	},
@@ -3521,11 +3521,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.729736,
+			0.795166,
 			0.428955,
 		},
 		uv11 = {
-			0.761475,
+			0.826904,
 			0.460938,
 		},
 	},
@@ -3535,11 +3535,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.697021,
+			0.762451,
 			0.428955,
 		},
 		uv11 = {
-			0.72876,
+			0.794189,
 			0.460938,
 		},
 	},
@@ -3549,11 +3549,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.664307,
+			0.729736,
 			0.428955,
 		},
 		uv11 = {
-			0.696045,
+			0.761475,
 			0.460938,
 		},
 	},
@@ -3563,11 +3563,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.631592,
+			0.697021,
 			0.428955,
 		},
 		uv11 = {
-			0.66333,
+			0.72876,
 			0.460938,
 		},
 	},
@@ -3577,11 +3577,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.598877,
+			0.664307,
 			0.428955,
 		},
 		uv11 = {
-			0.630615,
+			0.696045,
 			0.460938,
 		},
 	},
@@ -3591,11 +3591,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.566162,
+			0.631592,
 			0.428955,
 		},
 		uv11 = {
-			0.5979,
+			0.66333,
 			0.460938,
 		},
 	},
@@ -3605,11 +3605,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.533447,
+			0.598877,
 			0.428955,
 		},
 		uv11 = {
-			0.565186,
+			0.630615,
 			0.460938,
 		},
 	},
@@ -3619,11 +3619,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.500732,
+			0.566162,
 			0.428955,
 		},
 		uv11 = {
-			0.532471,
+			0.5979,
 			0.460938,
 		},
 	},
@@ -3633,11 +3633,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.468018,
+			0.533447,
 			0.428955,
 		},
 		uv11 = {
-			0.499756,
+			0.565186,
 			0.460938,
 		},
 	},
@@ -3647,11 +3647,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.435303,
+			0.500732,
 			0.428955,
 		},
 		uv11 = {
-			0.467041,
+			0.532471,
 			0.460938,
 		},
 	},
@@ -3661,12 +3661,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.402588,
-			0.956299,
+			0.468018,
+			0.428955,
 		},
 		uv11 = {
-			0.434326,
-			0.988281,
+			0.499756,
+			0.460938,
 		},
 	},
 	achievement_trophy_22 = {
@@ -3675,12 +3675,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.402588,
-			0.92334,
+			0.435303,
+			0.428955,
 		},
 		uv11 = {
-			0.434326,
-			0.955322,
+			0.467041,
+			0.460938,
 		},
 	},
 	achievement_trophy_scorpion_kerillian_weapon_skin_1 = {
@@ -3690,11 +3690,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.402588,
-			0.890381,
+			0.956299,
 		},
 		uv11 = {
 			0.434326,
-			0.922363,
+			0.988281,
 		},
 	},
 	achievement_trophy_skaven_poison_wind_globardier_1 = {
@@ -3704,11 +3704,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.402588,
-			0.857422,
+			0.92334,
 		},
 		uv11 = {
 			0.434326,
-			0.889404,
+			0.955322,
 		},
 	},
 	achievement_trophy_cog_air_bomb = {
@@ -3718,11 +3718,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.402588,
-			0.824463,
+			0.890381,
 		},
 		uv11 = {
 			0.434326,
-			0.856445,
+			0.922363,
 		},
 	},
 	achievement_trophy_04 = {
@@ -3732,11 +3732,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.402588,
-			0.791504,
+			0.857422,
 		},
 		uv11 = {
 			0.434326,
-			0.823486,
+			0.889404,
 		},
 	},
 	achievement_holly_magnus_barrel_relay_race_hardest_desc = {
@@ -3746,11 +3746,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.402588,
-			0.758545,
+			0.824463,
 		},
 		uv11 = {
 			0.434326,
-			0.790527,
+			0.856445,
 		},
 	},
 	achievement_trophy_scorpion_complete_plaza_cataclysm = {
@@ -3760,11 +3760,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.402588,
-			0.725586,
+			0.791504,
 		},
 		uv11 = {
 			0.434326,
-			0.757568,
+			0.823486,
 		},
 	},
 	achievement_trophy_scorpion_bardin_weapon_unlock = {
@@ -3774,11 +3774,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.402588,
-			0.692627,
+			0.758545,
 		},
 		uv11 = {
 			0.434326,
-			0.724609,
+			0.790527,
 		},
 	},
 	achievement_trophy_scorpion_complete_unranked_weaves_season_2 = {
@@ -3788,11 +3788,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.402588,
-			0.659668,
+			0.725586,
 		},
 		uv11 = {
 			0.434326,
-			0.69165,
+			0.757568,
 		},
 	},
 	achievement_trophy_bogenhafen_slum_recruit = {
@@ -3802,11 +3802,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.402588,
-			0.626709,
+			0.692627,
 		},
 		uv11 = {
 			0.434326,
-			0.658691,
+			0.724609,
 		},
 	},
 	achievement_trophy_skittergate_deathrattler_rasknitt_timed_cata = {
@@ -3816,11 +3816,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.402588,
-			0.59375,
+			0.659668,
 		},
 		uv11 = {
 			0.434326,
-			0.625732,
+			0.69165,
 		},
 	},
 	achievement_trophy_cog_climb_kill = {
@@ -3830,11 +3830,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.402588,
-			0.560791,
+			0.626709,
 		},
 		uv11 = {
 			0.434326,
-			0.592773,
+			0.658691,
 		},
 	},
 	achievement_trophy_05 = {
@@ -3844,11 +3844,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.402588,
-			0.527832,
+			0.59375,
 		},
 		uv11 = {
 			0.434326,
-			0.559814,
+			0.625732,
 		},
 	},
 	achievement_trophy_penny_castle_skull = {
@@ -3858,11 +3858,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.402588,
-			0.494873,
+			0.560791,
 		},
 		uv11 = {
 			0.434326,
-			0.526855,
+			0.592773,
 		},
 	},
 	achievement_trophy_skaven_gutter_runner_1 = {
@@ -3872,11 +3872,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.402588,
-			0.461914,
+			0.527832,
 		},
 		uv11 = {
 			0.434326,
-			0.493896,
+			0.559814,
 		},
 	},
 	achievement_trophy_thornsister_hunters_dance = {
@@ -3886,6 +3886,34 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.402588,
+			0.494873,
+		},
+		uv11 = {
+			0.434326,
+			0.526855,
+		},
+	},
+	achievement_trophy_26 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.402588,
+			0.461914,
+		},
+		uv11 = {
+			0.434326,
+			0.493896,
+		},
+	},
+	achievement_trophy_scorpion_weaves_11_season_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.402588,
 			0.428955,
 		},
 		uv11 = {
@@ -3893,7 +3921,7 @@ achievement_icons_atlas = {
 			0.460938,
 		},
 	},
-	achievement_trophy_26 = {
+	achievement_trophy_thornsister_together_we = {
 		size = {
 			130,
 			131,
@@ -3904,34 +3932,6 @@ achievement_icons_atlas = {
 		},
 		uv11 = {
 			0.990479,
-			0.427979,
-		},
-	},
-	achievement_trophy_scorpion_weaves_11_season_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.926025,
-			0.395996,
-		},
-		uv11 = {
-			0.957764,
-			0.427979,
-		},
-	},
-	achievement_trophy_thornsister_together_we = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.893311,
-			0.395996,
-		},
-		uv11 = {
-			0.925049,
 			0.427979,
 		},
 	},
@@ -3941,11 +3941,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.860596,
+			0.926025,
 			0.395996,
 		},
 		uv11 = {
-			0.892334,
+			0.957764,
 			0.427979,
 		},
 	},
@@ -3955,11 +3955,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.827881,
+			0.893311,
 			0.395996,
 		},
 		uv11 = {
-			0.859619,
+			0.925049,
 			0.427979,
 		},
 	},
@@ -3969,11 +3969,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.795166,
+			0.860596,
 			0.395996,
 		},
 		uv11 = {
-			0.826904,
+			0.892334,
 			0.427979,
 		},
 	},
@@ -3983,11 +3983,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.762451,
+			0.827881,
 			0.395996,
 		},
 		uv11 = {
-			0.794189,
+			0.859619,
 			0.427979,
 		},
 	},
@@ -3997,11 +3997,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.729736,
+			0.795166,
 			0.395996,
 		},
 		uv11 = {
-			0.761475,
+			0.826904,
 			0.427979,
 		},
 	},
@@ -4011,11 +4011,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.697021,
+			0.762451,
 			0.395996,
 		},
 		uv11 = {
-			0.72876,
+			0.794189,
 			0.427979,
 		},
 	},
@@ -4025,11 +4025,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.664307,
+			0.729736,
 			0.395996,
 		},
 		uv11 = {
-			0.696045,
+			0.761475,
 			0.427979,
 		},
 	},
@@ -4039,11 +4039,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.631592,
+			0.697021,
 			0.395996,
 		},
 		uv11 = {
-			0.66333,
+			0.72876,
 			0.427979,
 		},
 	},
@@ -4053,11 +4053,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.598877,
+			0.664307,
 			0.395996,
 		},
 		uv11 = {
-			0.630615,
+			0.696045,
 			0.427979,
 		},
 	},
@@ -4067,11 +4067,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.566162,
+			0.631592,
 			0.395996,
 		},
 		uv11 = {
-			0.5979,
+			0.66333,
 			0.427979,
 		},
 	},
@@ -4081,11 +4081,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.533447,
+			0.598877,
 			0.395996,
 		},
 		uv11 = {
-			0.565186,
+			0.630615,
 			0.427979,
 		},
 	},
@@ -4095,11 +4095,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.500732,
+			0.566162,
 			0.395996,
 		},
 		uv11 = {
-			0.532471,
+			0.5979,
 			0.427979,
 		},
 	},
@@ -4109,11 +4109,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.468018,
+			0.533447,
 			0.395996,
 		},
 		uv11 = {
-			0.499756,
+			0.565186,
 			0.427979,
 		},
 	},
@@ -4123,11 +4123,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.435303,
+			0.500732,
 			0.395996,
 		},
 		uv11 = {
-			0.467041,
+			0.532471,
 			0.427979,
 		},
 	},
@@ -4137,11 +4137,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.402588,
+			0.468018,
 			0.395996,
 		},
 		uv11 = {
-			0.434326,
+			0.499756,
 			0.427979,
 		},
 	},
@@ -4151,12 +4151,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.369873,
-			0.956299,
+			0.435303,
+			0.395996,
 		},
 		uv11 = {
-			0.401611,
-			0.988281,
+			0.467041,
+			0.427979,
 		},
 	},
 	achievement_trophy_cog_kill_barrage = {
@@ -4165,12 +4165,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.369873,
-			0.92334,
+			0.402588,
+			0.395996,
 		},
 		uv11 = {
-			0.401611,
-			0.955322,
+			0.434326,
+			0.427979,
 		},
 	},
 	achievement_trophy_08 = {
@@ -4180,11 +4180,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.369873,
-			0.890381,
+			0.956299,
 		},
 		uv11 = {
 			0.401611,
-			0.922363,
+			0.988281,
 		},
 	},
 	achievement_holly_magnus_gutter_runner_treasure_hardest_desc = {
@@ -4194,11 +4194,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.369873,
-			0.857422,
+			0.92334,
 		},
 		uv11 = {
 			0.401611,
-			0.889404,
+			0.955322,
 		},
 	},
 	achievement_trophy_recruit_bw_scholar = {
@@ -4208,11 +4208,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.369873,
-			0.824463,
+			0.890381,
 		},
 		uv11 = {
 			0.401611,
-			0.856445,
+			0.922363,
 		},
 	},
 	achievement_trophy_penny_complete_recruit = {
@@ -4222,11 +4222,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.369873,
-			0.791504,
+			0.857422,
 		},
 		uv11 = {
 			0.401611,
-			0.823486,
+			0.889404,
 		},
 	},
 	achievement_trophy_recruit_dr_ironbreaker = {
@@ -4236,11 +4236,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.369873,
-			0.758545,
+			0.824463,
 		},
 		uv11 = {
 			0.401611,
-			0.790527,
+			0.856445,
 		},
 	},
 	achievement_trophy_bogenhafen_complete_veteran = {
@@ -4250,11 +4250,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.369873,
-			0.725586,
+			0.791504,
 		},
 		uv11 = {
 			0.401611,
-			0.757568,
+			0.823486,
 		},
 	},
 	achievement_trophy_bless_very_righteous = {
@@ -4264,11 +4264,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.369873,
-			0.692627,
+			0.758545,
 		},
 		uv11 = {
 			0.401611,
-			0.724609,
+			0.790527,
 		},
 	},
 	achievement_trophy_cog_mission_streak_act1_legend_dr_engineer = {
@@ -4278,11 +4278,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.369873,
-			0.659668,
+			0.725586,
 		},
 		uv11 = {
 			0.401611,
-			0.69165,
+			0.757568,
 		},
 	},
 	achievement_trophy_09 = {
@@ -4292,11 +4292,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.369873,
-			0.626709,
+			0.692627,
 		},
 		uv11 = {
 			0.401611,
-			0.658691,
+			0.724609,
 		},
 	},
 	achievement_trophy_scorpion_complete_crater_legend = {
@@ -4306,11 +4306,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.369873,
-			0.59375,
+			0.659668,
 		},
 		uv11 = {
 			0.401611,
-			0.625732,
+			0.69165,
 		},
 	},
 	achievement_trophy_warcamp_bodvarr_charge_warriors_cata = {
@@ -4320,11 +4320,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.369873,
-			0.560791,
+			0.626709,
 		},
 		uv11 = {
 			0.401611,
-			0.592773,
+			0.658691,
 		},
 	},
 	achievement_trophy_cog_mission_streak_act2_legend_dr_engineer = {
@@ -4334,11 +4334,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.369873,
-			0.527832,
+			0.59375,
 		},
 		uv11 = {
 			0.401611,
-			0.559814,
+			0.625732,
 		},
 	},
 	achievement_trophy_bell_destroy_bell_flee_timed = {
@@ -4348,11 +4348,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.369873,
-			0.494873,
+			0.560791,
 		},
 		uv11 = {
 			0.401611,
-			0.526855,
+			0.592773,
 		},
 	},
 	achievement_trophy_skaven_rat_ogre_1 = {
@@ -4362,11 +4362,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.369873,
-			0.461914,
+			0.527832,
 		},
 		uv11 = {
 			0.401611,
-			0.493896,
+			0.559814,
 		},
 	},
 	achievement_trophy_cog_only_crank = {
@@ -4376,11 +4376,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.369873,
-			0.428955,
+			0.494873,
 		},
 		uv11 = {
 			0.401611,
-			0.460938,
+			0.526855,
 		},
 	},
 	achievement_trophy_legend_dr_ranger = {
@@ -4390,6 +4390,34 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.369873,
+			0.461914,
+		},
+		uv11 = {
+			0.401611,
+			0.493896,
+		},
+	},
+	achievement_trophy_10 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.369873,
+			0.428955,
+		},
+		uv11 = {
+			0.401611,
+			0.460938,
+		},
+	},
+	achievement_holly_magnus_secret_room_desc = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.369873,
 			0.395996,
 		},
 		uv11 = {
@@ -4397,7 +4425,7 @@ achievement_icons_atlas = {
 			0.427979,
 		},
 	},
-	achievement_trophy_10 = {
+	achievement_trophy_chaos_spawn_1 = {
 		size = {
 			130,
 			131,
@@ -4408,34 +4436,6 @@ achievement_icons_atlas = {
 		},
 		uv11 = {
 			0.990479,
-			0.39502,
-		},
-	},
-	achievement_holly_magnus_secret_room_desc = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.926025,
-			0.363037,
-		},
-		uv11 = {
-			0.957764,
-			0.39502,
-		},
-	},
-	achievement_trophy_chaos_spawn_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.893311,
-			0.363037,
-		},
-		uv11 = {
-			0.925049,
 			0.39502,
 		},
 	},
@@ -4445,11 +4445,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.860596,
+			0.926025,
 			0.363037,
 		},
 		uv11 = {
-			0.892334,
+			0.957764,
 			0.39502,
 		},
 	},
@@ -4459,11 +4459,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.827881,
+			0.893311,
 			0.363037,
 		},
 		uv11 = {
-			0.859619,
+			0.925049,
 			0.39502,
 		},
 	},
@@ -4473,11 +4473,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.795166,
+			0.860596,
 			0.363037,
 		},
 		uv11 = {
-			0.826904,
+			0.892334,
 			0.39502,
 		},
 	},
@@ -4487,11 +4487,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.762451,
+			0.827881,
 			0.363037,
 		},
 		uv11 = {
-			0.794189,
+			0.859619,
 			0.39502,
 		},
 	},
@@ -4501,11 +4501,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.729736,
+			0.795166,
 			0.363037,
 		},
 		uv11 = {
-			0.761475,
+			0.826904,
 			0.39502,
 		},
 	},
@@ -4515,11 +4515,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.697021,
+			0.762451,
 			0.363037,
 		},
 		uv11 = {
-			0.72876,
+			0.794189,
 			0.39502,
 		},
 	},
@@ -4529,11 +4529,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.664307,
+			0.729736,
 			0.363037,
 		},
 		uv11 = {
-			0.696045,
+			0.761475,
 			0.39502,
 		},
 	},
@@ -4543,11 +4543,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.631592,
+			0.697021,
 			0.363037,
 		},
 		uv11 = {
-			0.66333,
+			0.72876,
 			0.39502,
 		},
 	},
@@ -4557,11 +4557,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.598877,
+			0.664307,
 			0.363037,
 		},
 		uv11 = {
-			0.630615,
+			0.696045,
 			0.39502,
 		},
 	},
@@ -4571,11 +4571,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.566162,
+			0.631592,
 			0.363037,
 		},
 		uv11 = {
-			0.5979,
+			0.66333,
 			0.39502,
 		},
 	},
@@ -4585,11 +4585,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.533447,
+			0.598877,
 			0.363037,
 		},
 		uv11 = {
-			0.565186,
+			0.630615,
 			0.39502,
 		},
 	},
@@ -4599,11 +4599,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.500732,
+			0.566162,
 			0.363037,
 		},
 		uv11 = {
-			0.532471,
+			0.5979,
 			0.39502,
 		},
 	},
@@ -4613,11 +4613,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.468018,
+			0.533447,
 			0.363037,
 		},
 		uv11 = {
-			0.499756,
+			0.565186,
 			0.39502,
 		},
 	},
@@ -4627,11 +4627,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.435303,
+			0.500732,
 			0.363037,
 		},
 		uv11 = {
-			0.467041,
+			0.532471,
 			0.39502,
 		},
 	},
@@ -4641,11 +4641,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.402588,
+			0.468018,
 			0.363037,
 		},
 		uv11 = {
-			0.434326,
+			0.499756,
 			0.39502,
 		},
 	},
@@ -4655,11 +4655,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.369873,
+			0.435303,
 			0.363037,
 		},
 		uv11 = {
-			0.401611,
+			0.467041,
 			0.39502,
 		},
 	},
@@ -4669,12 +4669,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.337158,
-			0.956299,
+			0.402588,
+			0.363037,
 		},
 		uv11 = {
-			0.368896,
-			0.988281,
+			0.434326,
+			0.39502,
 		},
 	},
 	achievement_trophy_nurgle_player_showered_in_pus = {
@@ -4683,12 +4683,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.337158,
-			0.92334,
+			0.369873,
+			0.363037,
 		},
 		uv11 = {
-			0.368896,
-			0.955322,
+			0.401611,
+			0.39502,
 		},
 	},
 	achievement_trophy_bogenhafen_city_legend = {
@@ -4698,11 +4698,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.337158,
-			0.890381,
+			0.956299,
 		},
 		uv11 = {
 			0.368896,
-			0.922363,
+			0.988281,
 		},
 	},
 	achievement_trophy_complete_all_career_grudge_challenges_dr_slayer = {
@@ -4712,11 +4712,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.337158,
-			0.857422,
+			0.92334,
 		},
 		uv11 = {
 			0.368896,
-			0.889404,
+			0.955322,
 		},
 	},
 	achievement_trophy_penny_bastion_sprinter = {
@@ -4726,11 +4726,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.337158,
-			0.824463,
+			0.890381,
 		},
 		uv11 = {
 			0.368896,
-			0.856445,
+			0.922363,
 		},
 	},
 	achievement_trophy_100_missions_champion_bw_unchained = {
@@ -4740,11 +4740,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.337158,
-			0.791504,
+			0.857422,
 		},
 		uv11 = {
 			0.368896,
-			0.823486,
+			0.889404,
 		},
 	},
 	achievement_trophy_scorpion_weaves_7_season_1 = {
@@ -4754,11 +4754,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.337158,
-			0.758545,
+			0.824463,
 		},
 		uv11 = {
 			0.368896,
-			0.790527,
+			0.856445,
 		},
 	},
 	achievement_trophy_markus_level_1 = {
@@ -4768,11 +4768,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.337158,
-			0.725586,
+			0.791504,
 		},
 		uv11 = {
 			0.368896,
-			0.757568,
+			0.823486,
 		},
 	},
 	achievement_trophy_complete_all_career_grudge_challenges_es_knight = {
@@ -4782,11 +4782,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.337158,
-			0.692627,
+			0.758545,
 		},
 		uv11 = {
 			0.368896,
-			0.724609,
+			0.790527,
 		},
 	},
 	achievement_trophy_bogenhafen_city_recruit = {
@@ -4796,11 +4796,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.337158,
-			0.659668,
+			0.725586,
 		},
 		uv11 = {
 			0.368896,
-			0.69165,
+			0.757568,
 		},
 	},
 	achievement_trophy_bless_heal_allies = {
@@ -4810,11 +4810,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.337158,
-			0.626709,
+			0.692627,
 		},
 		uv11 = {
 			0.368896,
-			0.658691,
+			0.724609,
 		},
 	},
 	achievement_trophy_complete_all_career_grudge_challenges_es_questingknight = {
@@ -4824,11 +4824,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.337158,
-			0.59375,
+			0.659668,
 		},
 		uv11 = {
 			0.368896,
-			0.625732,
+			0.69165,
 		},
 	},
 	achievement_trophy_penny_complete_bastion = {
@@ -4838,11 +4838,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.337158,
-			0.560791,
+			0.626709,
 		},
 		uv11 = {
 			0.368896,
-			0.592773,
+			0.658691,
 		},
 	},
 	achievement_trophy_100_missions_champion_dr_ironbreaker = {
@@ -4852,11 +4852,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.337158,
-			0.527832,
+			0.59375,
 		},
 		uv11 = {
 			0.368896,
-			0.559814,
+			0.625732,
 		},
 	},
 	achievement_holly_plaza_legend_desc = {
@@ -4866,11 +4866,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.337158,
-			0.494873,
+			0.560791,
 		},
 		uv11 = {
 			0.368896,
-			0.526855,
+			0.592773,
 		},
 	},
 	achievement_trophy_cog_all_kill_barrage = {
@@ -4880,11 +4880,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.337158,
-			0.461914,
+			0.527832,
 		},
 		uv11 = {
 			0.368896,
-			0.493896,
+			0.559814,
 		},
 	},
 	achievement_trophy_scorpion_weaves_rainbow_ironbreaker_season_1 = {
@@ -4894,11 +4894,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.337158,
-			0.428955,
+			0.494873,
 		},
 		uv11 = {
 			0.368896,
-			0.460938,
+			0.526855,
 		},
 	},
 	achievement_trophy_cog_bomb_grind = {
@@ -4908,11 +4908,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.337158,
-			0.395996,
+			0.461914,
 		},
 		uv11 = {
 			0.368896,
-			0.427979,
+			0.493896,
 		},
 	},
 	achievement_trophy_24 = {
@@ -4922,6 +4922,34 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.337158,
+			0.428955,
+		},
+		uv11 = {
+			0.368896,
+			0.460938,
+		},
+	},
+	achievement_trophy_complete_all_career_grudge_challenges_we_waywatcher = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.337158,
+			0.395996,
+		},
+		uv11 = {
+			0.368896,
+			0.427979,
+		},
+	},
+	achievement_trophy_penny_complete_castle_champion = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.337158,
 			0.363037,
 		},
 		uv11 = {
@@ -4929,7 +4957,7 @@ achievement_icons_atlas = {
 			0.39502,
 		},
 	},
-	achievement_trophy_complete_all_career_grudge_challenges_we_waywatcher = {
+	achievement_trophy_100_missions_champion_dr_ranger = {
 		size = {
 			130,
 			131,
@@ -4940,34 +4968,6 @@ achievement_icons_atlas = {
 		},
 		uv11 = {
 			0.990479,
-			0.362061,
-		},
-	},
-	achievement_trophy_penny_complete_castle_champion = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.926025,
-			0.330078,
-		},
-		uv11 = {
-			0.957764,
-			0.362061,
-		},
-	},
-	achievement_trophy_100_missions_champion_dr_ranger = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.893311,
-			0.330078,
-		},
-		uv11 = {
-			0.925049,
 			0.362061,
 		},
 	},
@@ -4977,11 +4977,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.860596,
+			0.926025,
 			0.330078,
 		},
 		uv11 = {
-			0.892334,
+			0.957764,
 			0.362061,
 		},
 	},
@@ -4991,11 +4991,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.827881,
+			0.893311,
 			0.330078,
 		},
 		uv11 = {
-			0.859619,
+			0.925049,
 			0.362061,
 		},
 	},
@@ -5005,11 +5005,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.795166,
+			0.860596,
 			0.330078,
 		},
 		uv11 = {
-			0.826904,
+			0.892334,
 			0.362061,
 		},
 	},
@@ -5019,11 +5019,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.762451,
+			0.827881,
 			0.330078,
 		},
 		uv11 = {
-			0.794189,
+			0.859619,
 			0.362061,
 		},
 	},
@@ -5033,11 +5033,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.729736,
+			0.795166,
 			0.330078,
 		},
 		uv11 = {
-			0.761475,
+			0.826904,
 			0.362061,
 		},
 	},
@@ -5047,11 +5047,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.697021,
+			0.762451,
 			0.330078,
 		},
 		uv11 = {
-			0.72876,
+			0.794189,
 			0.362061,
 		},
 	},
@@ -5061,11 +5061,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.664307,
+			0.729736,
 			0.330078,
 		},
 		uv11 = {
-			0.696045,
+			0.761475,
 			0.362061,
 		},
 	},
@@ -5075,11 +5075,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.631592,
+			0.697021,
 			0.330078,
 		},
 		uv11 = {
-			0.66333,
+			0.72876,
 			0.362061,
 		},
 	},
@@ -5089,11 +5089,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.598877,
+			0.664307,
 			0.330078,
 		},
 		uv11 = {
-			0.630615,
+			0.696045,
 			0.362061,
 		},
 	},
@@ -5103,11 +5103,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.566162,
+			0.631592,
 			0.330078,
 		},
 		uv11 = {
-			0.5979,
+			0.66333,
 			0.362061,
 		},
 	},
@@ -5117,11 +5117,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.533447,
+			0.598877,
 			0.330078,
 		},
 		uv11 = {
-			0.565186,
+			0.630615,
 			0.362061,
 		},
 	},
@@ -5131,11 +5131,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.500732,
+			0.566162,
 			0.330078,
 		},
 		uv11 = {
-			0.532471,
+			0.5979,
 			0.362061,
 		},
 	},
@@ -5145,11 +5145,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.468018,
+			0.533447,
 			0.330078,
 		},
 		uv11 = {
-			0.499756,
+			0.565186,
 			0.362061,
 		},
 	},
@@ -5159,11 +5159,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.435303,
+			0.500732,
 			0.330078,
 		},
 		uv11 = {
-			0.467041,
+			0.532471,
 			0.362061,
 		},
 	},
@@ -5173,11 +5173,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.402588,
+			0.468018,
 			0.330078,
 		},
 		uv11 = {
-			0.434326,
+			0.499756,
 			0.362061,
 		},
 	},
@@ -5187,11 +5187,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.369873,
+			0.435303,
 			0.330078,
 		},
 		uv11 = {
-			0.401611,
+			0.467041,
 			0.362061,
 		},
 	},
@@ -5201,11 +5201,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.337158,
+			0.402588,
 			0.330078,
 		},
 		uv11 = {
-			0.368896,
+			0.434326,
 			0.362061,
 		},
 	},
@@ -5215,12 +5215,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.304443,
-			0.956299,
+			0.369873,
+			0.330078,
 		},
 		uv11 = {
-			0.336182,
-			0.988281,
+			0.401611,
+			0.362061,
 		},
 	},
 	achievement_trophy_complete_all_helmgart_level_achievements = {
@@ -5229,12 +5229,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.304443,
-			0.92334,
+			0.337158,
+			0.330078,
 		},
 		uv11 = {
-			0.336182,
-			0.955322,
+			0.368896,
+			0.362061,
 		},
 	},
 	achievement_trophy_bogenhafen_complete_legend = {
@@ -5244,11 +5244,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.304443,
-			0.890381,
+			0.956299,
 		},
 		uv11 = {
 			0.336182,
-			0.922363,
+			0.988281,
 		},
 	},
 	achievement_trophy_mines_kill_final_troll_timed_cata = {
@@ -5258,11 +5258,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.304443,
-			0.857422,
+			0.92334,
 		},
 		uv11 = {
 			0.336182,
-			0.889404,
+			0.955322,
 		},
 	},
 	achievement_trophy_deeds_1 = {
@@ -5272,11 +5272,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.304443,
-			0.824463,
+			0.890381,
 		},
 		uv11 = {
 			0.336182,
-			0.856445,
+			0.922363,
 		},
 	},
 	achievement_trophy_penny_portals_vintage = {
@@ -5286,11 +5286,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.304443,
-			0.791504,
+			0.857422,
 		},
 		uv11 = {
 			0.336182,
-			0.823486,
+			0.889404,
 		},
 	},
 	achievement_trophy_100_missions_champion_es_knight = {
@@ -5300,11 +5300,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.304443,
-			0.758545,
+			0.824463,
 		},
 		uv11 = {
 			0.336182,
-			0.790527,
+			0.856445,
 		},
 	},
 	achievement_holly_plaza_veteran_desc = {
@@ -5314,11 +5314,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.304443,
-			0.725586,
+			0.791504,
 		},
 		uv11 = {
 			0.336182,
-			0.757568,
+			0.823486,
 		},
 	},
 	achievement_trophy_cog_complete_all_helmgart_levels_recruit_dr_engineer = {
@@ -5328,11 +5328,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.304443,
-			0.692627,
+			0.758545,
 		},
 		uv11 = {
 			0.336182,
-			0.724609,
+			0.790527,
 		},
 	},
 	achievement_trophy_skaven_stronghold_skarrik_kill_skaven = {
@@ -5342,11 +5342,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.304443,
-			0.659668,
+			0.725586,
 		},
 		uv11 = {
 			0.336182,
-			0.69165,
+			0.757568,
 		},
 	},
 	achievement_trophy_cog_complete_all_helmgart_levels_veteran_dr_engineer = {
@@ -5356,11 +5356,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.304443,
-			0.626709,
+			0.692627,
 		},
 		uv11 = {
 			0.336182,
-			0.658691,
+			0.724609,
 		},
 	},
 	achievement_trophy_all_careers_legend = {
@@ -5370,11 +5370,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.304443,
-			0.59375,
+			0.659668,
 		},
 		uv11 = {
 			0.336182,
-			0.625732,
+			0.69165,
 		},
 	},
 	achievement_trophy_deeds_5 = {
@@ -5384,11 +5384,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.304443,
-			0.560791,
+			0.626709,
 		},
 		uv11 = {
 			0.336182,
-			0.592773,
+			0.658691,
 		},
 	},
 	achievement_trophy_recruit_es_knight = {
@@ -5398,11 +5398,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.304443,
-			0.527832,
+			0.59375,
 		},
 		uv11 = {
 			0.336182,
-			0.559814,
+			0.625732,
 		},
 	},
 	achievement_trophy_100_missions_champion_es_mercenary = {
@@ -5412,11 +5412,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.304443,
-			0.494873,
+			0.560791,
 		},
 		uv11 = {
 			0.336182,
-			0.526855,
+			0.592773,
 		},
 	},
 	achievement_trophy_veteran_thornsister = {
@@ -5426,11 +5426,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.304443,
-			0.461914,
+			0.527832,
 		},
 		uv11 = {
 			0.336182,
-			0.493896,
+			0.559814,
 		},
 	},
 	achievement_trophy_penny_portals_portal = {
@@ -5440,11 +5440,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.304443,
-			0.428955,
+			0.494873,
 		},
 		uv11 = {
 			0.336182,
-			0.460938,
+			0.526855,
 		},
 	},
 	achievement_trophy_deeds_7 = {
@@ -5454,11 +5454,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.304443,
-			0.395996,
+			0.461914,
 		},
 		uv11 = {
 			0.336182,
-			0.427979,
+			0.493896,
 		},
 	},
 	achievement_trophy_bogenhafen_slum_event_speedrun = {
@@ -5468,11 +5468,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.304443,
-			0.363037,
+			0.428955,
 		},
 		uv11 = {
 			0.336182,
-			0.39502,
+			0.460938,
 		},
 	},
 	achievement_trophy_penny_complete_bastion_legend = {
@@ -5482,6 +5482,34 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.304443,
+			0.395996,
+		},
+		uv11 = {
+			0.336182,
+			0.427979,
+		},
+	},
+	achievement_trophy_elven_ruins_align_leylines_timed = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.304443,
+			0.363037,
+		},
+		uv11 = {
+			0.336182,
+			0.39502,
+		},
+	},
+	achievement_trophy_recruit_wh_witchhunter = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.304443,
 			0.330078,
 		},
 		uv11 = {
@@ -5489,7 +5517,7 @@ achievement_icons_atlas = {
 			0.362061,
 		},
 	},
-	achievement_trophy_elven_ruins_align_leylines_timed = {
+	achievement_trophy_100_missions_champion_we_maidenguard = {
 		size = {
 			130,
 			131,
@@ -5500,34 +5528,6 @@ achievement_icons_atlas = {
 		},
 		uv11 = {
 			0.990479,
-			0.329102,
-		},
-	},
-	achievement_trophy_recruit_wh_witchhunter = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.926025,
-			0.297119,
-		},
-		uv11 = {
-			0.957764,
-			0.329102,
-		},
-	},
-	achievement_trophy_100_missions_champion_we_maidenguard = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.893311,
-			0.297119,
-		},
-		uv11 = {
-			0.925049,
 			0.329102,
 		},
 	},
@@ -5537,11 +5537,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.860596,
+			0.926025,
 			0.297119,
 		},
 		uv11 = {
-			0.892334,
+			0.957764,
 			0.329102,
 		},
 	},
@@ -5551,11 +5551,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.827881,
+			0.893311,
 			0.297119,
 		},
 		uv11 = {
-			0.859619,
+			0.925049,
 			0.329102,
 		},
 	},
@@ -5565,11 +5565,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.795166,
+			0.860596,
 			0.297119,
 		},
 		uv11 = {
-			0.826904,
+			0.892334,
 			0.329102,
 		},
 	},
@@ -5579,11 +5579,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.762451,
+			0.827881,
 			0.297119,
 		},
 		uv11 = {
-			0.794189,
+			0.859619,
 			0.329102,
 		},
 	},
@@ -5593,11 +5593,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.729736,
+			0.795166,
 			0.297119,
 		},
 		uv11 = {
-			0.761475,
+			0.826904,
 			0.329102,
 		},
 	},
@@ -5607,11 +5607,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.697021,
+			0.762451,
 			0.297119,
 		},
 		uv11 = {
-			0.72876,
+			0.794189,
 			0.329102,
 		},
 	},
@@ -5621,11 +5621,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.664307,
+			0.729736,
 			0.297119,
 		},
 		uv11 = {
-			0.696045,
+			0.761475,
 			0.329102,
 		},
 	},
@@ -5635,11 +5635,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.631592,
+			0.697021,
 			0.297119,
 		},
 		uv11 = {
-			0.66333,
+			0.72876,
 			0.329102,
 		},
 	},
@@ -5649,11 +5649,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.598877,
+			0.664307,
 			0.297119,
 		},
 		uv11 = {
-			0.630615,
+			0.696045,
 			0.329102,
 		},
 	},
@@ -5663,11 +5663,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.566162,
+			0.631592,
 			0.297119,
 		},
 		uv11 = {
-			0.5979,
+			0.66333,
 			0.329102,
 		},
 	},
@@ -5677,11 +5677,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.533447,
+			0.598877,
 			0.297119,
 		},
 		uv11 = {
-			0.565186,
+			0.630615,
 			0.329102,
 		},
 	},
@@ -5691,11 +5691,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.500732,
+			0.566162,
 			0.297119,
 		},
 		uv11 = {
-			0.532471,
+			0.5979,
 			0.329102,
 		},
 	},
@@ -5705,11 +5705,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.468018,
+			0.533447,
 			0.297119,
 		},
 		uv11 = {
-			0.499756,
+			0.565186,
 			0.329102,
 		},
 	},
@@ -5719,11 +5719,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.435303,
+			0.500732,
 			0.297119,
 		},
 		uv11 = {
-			0.467041,
+			0.532471,
 			0.329102,
 		},
 	},
@@ -5733,11 +5733,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.402588,
+			0.468018,
 			0.297119,
 		},
 		uv11 = {
-			0.434326,
+			0.499756,
 			0.329102,
 		},
 	},
@@ -5747,11 +5747,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.369873,
+			0.435303,
 			0.297119,
 		},
 		uv11 = {
-			0.401611,
+			0.467041,
 			0.329102,
 		},
 	},
@@ -5761,11 +5761,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.337158,
+			0.402588,
 			0.297119,
 		},
 		uv11 = {
-			0.368896,
+			0.434326,
 			0.329102,
 		},
 	},
@@ -5775,11 +5775,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.304443,
+			0.369873,
 			0.297119,
 		},
 		uv11 = {
-			0.336182,
+			0.401611,
 			0.329102,
 		},
 	},
@@ -5789,12 +5789,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.271729,
-			0.956299,
+			0.337158,
+			0.297119,
 		},
 		uv11 = {
-			0.303467,
-			0.988281,
+			0.368896,
+			0.329102,
 		},
 	},
 	achievement_trophy_cog_long_crank_fire = {
@@ -5803,12 +5803,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.271729,
-			0.92334,
+			0.304443,
+			0.297119,
 		},
 		uv11 = {
-			0.303467,
-			0.955322,
+			0.336182,
+			0.329102,
 		},
 	},
 	achievement_trophy_bardin_level_2 = {
@@ -5818,11 +5818,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.271729,
-			0.890381,
+			0.956299,
 		},
 		uv11 = {
 			0.303467,
-			0.922363,
+			0.988281,
 		},
 	},
 	achievement_trophy_gecko_scraps_elven_ruins = {
@@ -5832,11 +5832,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.271729,
-			0.857422,
+			0.92334,
 		},
 		uv11 = {
 			0.303467,
-			0.889404,
+			0.955322,
 		},
 	},
 	achievement_trophy_scorpion_complete_weaves_3 = {
@@ -5846,11 +5846,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.271729,
-			0.824463,
+			0.890381,
 		},
 		uv11 = {
 			0.303467,
-			0.856445,
+			0.922363,
 		},
 	},
 	achievement_trophy_100_missions_champion_wh_bountyhunter = {
@@ -5860,11 +5860,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.271729,
-			0.791504,
+			0.857422,
 		},
 		uv11 = {
 			0.303467,
-			0.823486,
+			0.889404,
 		},
 	},
 	achievement_trophy_legend_we_shade = {
@@ -5874,11 +5874,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.271729,
-			0.758545,
+			0.824463,
 		},
 		uv11 = {
 			0.303467,
-			0.790527,
+			0.856445,
 		},
 	},
 	achievement_trophy_scorpion_complete_crater_cataclysm = {
@@ -5888,11 +5888,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.271729,
-			0.725586,
+			0.791504,
 		},
 		uv11 = {
 			0.303467,
-			0.757568,
+			0.823486,
 		},
 	},
 	achievement_trophy_gecko_scraps_forest_ambush = {
@@ -5902,11 +5902,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.271729,
-			0.692627,
+			0.758545,
 		},
 		uv11 = {
 			0.303467,
-			0.724609,
+			0.790527,
 		},
 	},
 	achievement_trophy_catacombs_stay_inside_ritual_pool = {
@@ -5916,11 +5916,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.271729,
-			0.659668,
+			0.725586,
 		},
 		uv11 = {
 			0.303467,
-			0.69165,
+			0.757568,
 		},
 	},
 	achievement_trophy_recruit_bw_unchained = {
@@ -5930,11 +5930,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.271729,
-			0.626709,
+			0.692627,
 		},
 		uv11 = {
 			0.303467,
-			0.658691,
+			0.724609,
 		},
 	},
 	achievement_trophy_gecko_scraps_generic = {
@@ -5944,11 +5944,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.271729,
-			0.59375,
+			0.659668,
 		},
 		uv11 = {
 			0.303467,
-			0.625732,
+			0.69165,
 		},
 	},
 	achievement_trophy_scorpion_crater_dark_tongue_1 = {
@@ -5958,11 +5958,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.271729,
-			0.560791,
+			0.626709,
 		},
 		uv11 = {
 			0.303467,
-			0.592773,
+			0.658691,
 		},
 	},
 	achievement_trophy_100_missions_champion_wh_captain = {
@@ -5972,11 +5972,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.271729,
-			0.527832,
+			0.59375,
 		},
 		uv11 = {
 			0.303467,
-			0.559814,
+			0.625732,
 		},
 	},
 	achievement_holly_saltzpyre_weapon_skin_3_desc = {
@@ -5986,11 +5986,25 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.271729,
-			0.494873,
+			0.560791,
 		},
 		uv11 = {
 			0.303467,
-			0.526855,
+			0.592773,
+		},
+	},
+	achievement_dwarf_veteran = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.271729,
+			0.527832,
+		},
+		uv11 = {
+			0.303467,
+			0.559814,
 		},
 	},
 	achievement_trophy_scorpion_complete_weaves_1 = {
@@ -6000,25 +6014,25 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.271729,
-			0.461914,
+			0.494873,
 		},
 		uv11 = {
 			0.303467,
-			0.493896,
+			0.526855,
 		},
 	},
-	achievement_trophy_champion_bw_adept = {
+	achievement_trophy_recruit_we_maidenguard = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
 			0.271729,
-			0.428955,
+			0.461914,
 		},
 		uv11 = {
 			0.303467,
-			0.460938,
+			0.493896,
 		},
 	},
 	achievement_trophy_scorpion_complete_weaves_4 = {
@@ -6028,25 +6042,25 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.271729,
-			0.395996,
+			0.428955,
 		},
 		uv11 = {
 			0.303467,
-			0.427979,
+			0.460938,
 		},
 	},
-	achievement_trophy_champion_bw_scholar = {
+	achievement_trophy_champion_bw_unchained = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
 			0.271729,
-			0.363037,
+			0.395996,
 		},
 		uv11 = {
 			0.303467,
-			0.39502,
+			0.427979,
 		},
 	},
 	achievement_trophy_scorpion_bardin_weapon_skin_1 = {
@@ -6056,6 +6070,20 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.271729,
+			0.363037,
+		},
+		uv11 = {
+			0.303467,
+			0.39502,
+		},
+	},
+	achievement_trophy_gecko_scraps_magnus = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.271729,
 			0.330078,
 		},
 		uv11 = {
@@ -6063,7 +6091,7 @@ achievement_icons_atlas = {
 			0.362061,
 		},
 	},
-	achievement_trophy_scorpion_crater_dark_tongue_3 = {
+	achievement_trophy_scorpion_crater_pendant = {
 		size = {
 			130,
 			131,
@@ -6077,7 +6105,7 @@ achievement_icons_atlas = {
 			0.329102,
 		},
 	},
-	achievement_trophy_gecko_scraps_magnus = {
+	achievement_trophy_scorpion_weaves_light_season_1 = {
 		size = {
 			130,
 			131,
@@ -6091,7 +6119,7 @@ achievement_icons_atlas = {
 			0.296143,
 		},
 	},
-	achievement_trophy_kill_bodvarr_burblespew_legend = {
+	achievement_trophy_skaven_ratling_gunner_3 = {
 		size = {
 			130,
 			131,
@@ -6105,7 +6133,7 @@ achievement_icons_atlas = {
 			0.296143,
 		},
 	},
-	achievement_trophy_kill_each_monster_grudge_we_thornsister = {
+	achievement_trophy_kill_grudge_each_expedition_we_thornsister = {
 		size = {
 			130,
 			131,
@@ -6116,6 +6144,48 @@ achievement_icons_atlas = {
 		},
 		uv11 = {
 			0.925049,
+			0.296143,
+		},
+	},
+	achievement_trophy_scorpion_weaves_rainbow_zealot_season_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.860596,
+			0.26416,
+		},
+		uv11 = {
+			0.892334,
+			0.296143,
+		},
+	},
+	achievement_dwarf_meta = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.827881,
+			0.26416,
+		},
+		uv11 = {
+			0.859619,
+			0.296143,
+		},
+	},
+	achievement_trophy_scorpion_weaves_complete_unchained_season_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.795166,
+			0.26416,
+		},
+		uv11 = {
+			0.826904,
 			0.296143,
 		},
 	},
@@ -6125,48 +6195,6 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.860596,
-			0.26416,
-		},
-		uv11 = {
-			0.892334,
-			0.296143,
-		},
-	},
-	achievement_trophy_kill_each_monster_grudge_dr_ranger = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.827881,
-			0.26416,
-		},
-		uv11 = {
-			0.859619,
-			0.296143,
-		},
-	},
-	ritual_of_the_dead = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.795166,
-			0.26416,
-		},
-		uv11 = {
-			0.826904,
-			0.296143,
-		},
-	},
-	achievement_trophy_kerillian_level_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
 			0.762451,
 			0.26416,
 		},
@@ -6175,7 +6203,7 @@ achievement_icons_atlas = {
 			0.296143,
 		},
 	},
-	achievement_trophy_kill_grudge_each_expedition_we_shade = {
+	achievement_trophy_scorpion_weaves_rainbow_mercenary_season_1 = {
 		size = {
 			130,
 			131,
@@ -6189,7 +6217,7 @@ achievement_icons_atlas = {
 			0.296143,
 		},
 	},
-	achievement_trophy_kill_each_monster_grudge_bw_scholar = {
+	achievement_trophy_lake_complete_all_helmgart_levels_legend_es_questingknight = {
 		size = {
 			130,
 			131,
@@ -6200,6 +6228,132 @@ achievement_icons_atlas = {
 		},
 		uv11 = {
 			0.72876,
+			0.296143,
+		},
+	},
+	achievement_trophy_skaven_pack_master_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.664307,
+			0.26416,
+		},
+		uv11 = {
+			0.696045,
+			0.296143,
+		},
+	},
+	reaping_time = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.631592,
+			0.26416,
+		},
+		uv11 = {
+			0.66333,
+			0.296143,
+		},
+	},
+	achievement_trophy_skaven_warpfire_thrower_2 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.598877,
+			0.26416,
+		},
+		uv11 = {
+			0.630615,
+			0.296143,
+		},
+	},
+	achievement_trophy_kill_grudge_each_expedition_dr_ranger = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.566162,
+			0.26416,
+		},
+		uv11 = {
+			0.5979,
+			0.296143,
+		},
+	},
+	achievement_trophy_scorpion_weaves_death_season_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.533447,
+			0.26416,
+		},
+		uv11 = {
+			0.565186,
+			0.296143,
+		},
+	},
+	achievement_trophy_scorpion_victor_weapon_skin_2 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.500732,
+			0.26416,
+		},
+		uv11 = {
+			0.532471,
+			0.296143,
+		},
+	},
+	achievement_trophy_scorpion_weaves_rainbow_huntsman_season_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.468018,
+			0.26416,
+		},
+		uv11 = {
+			0.499756,
+			0.296143,
+		},
+	},
+	achievement_trophy_kill_skarrik_rasknitt_recruit = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.435303,
+			0.26416,
+		},
+		uv11 = {
+			0.467041,
+			0.296143,
+		},
+	},
+	achievement_trophy_scorpion_weaves_rainbow_slayer_season_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.402588,
+			0.26416,
+		},
+		uv11 = {
+			0.434326,
 			0.296143,
 		},
 	},
@@ -6209,132 +6363,6 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.664307,
-			0.26416,
-		},
-		uv11 = {
-			0.696045,
-			0.296143,
-		},
-	},
-	achievement_trophy_kill_each_monster_grudge_es_mercenary = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.631592,
-			0.26416,
-		},
-		uv11 = {
-			0.66333,
-			0.296143,
-		},
-	},
-	ripe_harvest = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.598877,
-			0.26416,
-		},
-		uv11 = {
-			0.630615,
-			0.296143,
-		},
-	},
-	achievement_trophy_kill_each_monster_grudge_wh_zealot = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.566162,
-			0.26416,
-		},
-		uv11 = {
-			0.5979,
-			0.296143,
-		},
-	},
-	achievement_trophy_thornsister_handmaiden_of_isha = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.533447,
-			0.26416,
-		},
-		uv11 = {
-			0.565186,
-			0.296143,
-		},
-	},
-	achievement_trophy_kerillian_level_3 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.500732,
-			0.26416,
-		},
-		uv11 = {
-			0.532471,
-			0.296143,
-		},
-	},
-	achievement_trophy_grudge_mark_kills_grind_dr_slayer = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.468018,
-			0.26416,
-		},
-		uv11 = {
-			0.499756,
-			0.296143,
-		},
-	},
-	achievement_trophy_kill_bodvarr_burblespew_veteran = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.435303,
-			0.26416,
-		},
-		uv11 = {
-			0.467041,
-			0.296143,
-		},
-	},
-	achievement_trophy_victor_level_2 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.402588,
-			0.26416,
-		},
-		uv11 = {
-			0.434326,
-			0.296143,
-		},
-	},
-	achievement_trophy_kill_each_monster_grudge_dr_engineer = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
 			0.369873,
 			0.26416,
 		},
@@ -6343,7 +6371,7 @@ achievement_icons_atlas = {
 			0.296143,
 		},
 	},
-	achievement_trophy_lake_complete_all_helmgart_levels_champion_es_questingknight = {
+	achievement_trophy_sienna_level_3 = {
 		size = {
 			130,
 			131,
@@ -6357,7 +6385,7 @@ achievement_icons_atlas = {
 			0.296143,
 		},
 	},
-	achievement_trophy_kill_each_monster_grudge_es_huntsman = {
+	achievement_holly_find_all_runes_desc = {
 		size = {
 			130,
 			131,
@@ -6371,7 +6399,7 @@ achievement_icons_atlas = {
 			0.296143,
 		},
 	},
-	achievement_holly_forest_ambush_bretonnian_dance_desc = {
+	achievement_trophy_skaven_poison_wind_globardier_2 = {
 		size = {
 			130,
 			131,
@@ -6385,7 +6413,7 @@ achievement_icons_atlas = {
 			0.296143,
 		},
 	},
-	achievement_trophy_kill_each_monster_grudge_we_maidenguard = {
+	achievement_trophy_scorpion_weaves_complete_bountyhunter_season_1 = {
 		size = {
 			130,
 			131,
@@ -6399,7 +6427,7 @@ achievement_icons_atlas = {
 			0.988281,
 		},
 	},
-	achievement_trophy_grudge_mark_kills_grind_we_waywatcher = {
+	achievement_trophy_skaven_stormfiend_2 = {
 		size = {
 			130,
 			131,
@@ -6413,7 +6441,7 @@ achievement_icons_atlas = {
 			0.955322,
 		},
 	},
-	achievement_trophy_kill_each_monster_grudge_wh_bountyhunter = {
+	achievement_morris_complete_arena_fast = {
 		size = {
 			130,
 			131,
@@ -6427,7 +6455,7 @@ achievement_icons_atlas = {
 			0.922363,
 		},
 	},
-	achievement_morris_complete_arena_fast = {
+	achievement_trophy_thornsister_away_with_the_faeries = {
 		size = {
 			130,
 			131,
@@ -6441,7 +6469,7 @@ achievement_icons_atlas = {
 			0.889404,
 		},
 	},
-	achievement_trophy_kill_grudge_each_expedition_bw_unchained = {
+	achievement_trophy_thornsister_handmaiden_of_isha = {
 		size = {
 			130,
 			131,
@@ -6455,7 +6483,7 @@ achievement_icons_atlas = {
 			0.856445,
 		},
 	},
-	achievement_trophy_kill_grudge_each_expedition_dr_ironbreaker = {
+	achievement_trophy_kill_grudge_each_expedition_es_huntsman = {
 		size = {
 			130,
 			131,
@@ -6469,7 +6497,7 @@ achievement_icons_atlas = {
 			0.823486,
 		},
 	},
-	achievement_trophy_thornsister_roots_of_ages = {
+	achievement_trophy_kill_grudge_each_expedition_es_mercenary = {
 		size = {
 			130,
 			131,
@@ -6483,7 +6511,7 @@ achievement_icons_atlas = {
 			0.790527,
 		},
 	},
-	achievement_trophy_thornsister_thorny_rescue = {
+	achievement_trophy_gecko_scraps_mines = {
 		size = {
 			130,
 			131,
@@ -6497,7 +6525,7 @@ achievement_icons_atlas = {
 			0.757568,
 		},
 	},
-	achievement_trophy_scorpion_kerillian_reach_level_35 = {
+	achievement_trophy_kill_bodvarr_burblespew_legend = {
 		size = {
 			130,
 			131,
@@ -6511,7 +6539,7 @@ achievement_icons_atlas = {
 			0.724609,
 		},
 	},
-	achievement_trophy_scorpion_weaves_heavens_season_1 = {
+	achievement_trophy_kill_grudge_each_expedition_wh_bountyhunter = {
 		size = {
 			130,
 			131,
@@ -6525,7 +6553,7 @@ achievement_icons_atlas = {
 			0.69165,
 		},
 	},
-	achievement_trophy_veteran_es_huntsman = {
+	achievement_trophy_kill_grudge_each_expedition_wh_zealot = {
 		size = {
 			130,
 			131,
@@ -6539,7 +6567,7 @@ achievement_icons_atlas = {
 			0.658691,
 		},
 	},
-	achievement_trophy_veteran_we_maidenguard = {
+	achievement_trophy_veteran_wh_captain = {
 		size = {
 			130,
 			131,
@@ -6553,7 +6581,7 @@ achievement_icons_atlas = {
 			0.625732,
 		},
 	},
-	achievement_trophy_kill_helmgart_lords_within_time = {
+	achievement_trophy_victor_level_2 = {
 		size = {
 			130,
 			131,
@@ -6567,7 +6595,7 @@ achievement_icons_atlas = {
 			0.592773,
 		},
 	},
-	achievement_trophy_kill_skarrik_rasknitt_legend = {
+	achievement_trophy_lake_bastard_block = {
 		size = {
 			130,
 			131,
@@ -6581,7 +6609,7 @@ achievement_icons_atlas = {
 			0.559814,
 		},
 	},
-	achivement_icons_scorpion_edit = {
+	achievement_trophy_lake_boss_killblow = {
 		size = {
 			130,
 			131,
@@ -6595,7 +6623,7 @@ achievement_icons_atlas = {
 			0.526855,
 		},
 	},
-	achievement_trophy_bless_chaos_warriors = {
+	achievement_trophy_scorpion_kerillian_weapon_skin_2 = {
 		size = {
 			130,
 			131,
@@ -6609,7 +6637,7 @@ achievement_icons_atlas = {
 			0.493896,
 		},
 	},
-	achievement_trophy_gecko_scraps_mines = {
+	achievement_trophy_scorpion_weaves_4_season_1 = {
 		size = {
 			130,
 			131,
@@ -6623,7 +6651,7 @@ achievement_icons_atlas = {
 			0.460938,
 		},
 	},
-	achievement_trophy_grudge_mark_kills_grind_es_questingknight = {
+	achievement_trophy_lake_complete_all_helmgart_levels_veteran_es_questingknight = {
 		size = {
 			130,
 			131,
@@ -6637,7 +6665,7 @@ achievement_icons_atlas = {
 			0.427979,
 		},
 	},
-	achievement_trophy_bless_ranged_raki = {
+	achievement_trophy_lake_mission_streak_act1_legend_es_questingknight = {
 		size = {
 			130,
 			131,
@@ -6651,7 +6679,7 @@ achievement_icons_atlas = {
 			0.39502,
 		},
 	},
-	achievement_trophy_bless_unbreakable_damage_block = {
+	achievement_trophy_grudge_mark_kills_grind_wh_priest = {
 		size = {
 			130,
 			131,
@@ -6665,7 +6693,7 @@ achievement_icons_atlas = {
 			0.362061,
 		},
 	},
-	achievement_trophy_lake_mission_streak_act2_legend_es_questingknight = {
+	achievement_holly_forest_ambush_bretonnian_dance_desc = {
 		size = {
 			130,
 			131,
@@ -6679,7 +6707,7 @@ achievement_icons_atlas = {
 			0.329102,
 		},
 	},
-	achievement_holly_complete_all_veteran_desc = {
+	achievement_holly_bardin_complete_all_levels_desc = {
 		size = {
 			130,
 			131,
@@ -6693,7 +6721,7 @@ achievement_icons_atlas = {
 			0.296143,
 		},
 	},
-	achievement_holly_complete_all_legend_desc = {
+	achievement_holly_cemetery_bones_desc = {
 		size = {
 			130,
 			131,
@@ -6707,7 +6735,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_holly_cemetery_sleep_desc = {
+	achievement_trophy_gecko_scraps_nurgle = {
 		size = {
 			130,
 			131,
@@ -6721,7 +6749,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_trophy_scorpion_kerillian_weapon_skin_2 = {
+	achievement_trophy_kill_each_monster_grudge_we_thornsister = {
 		size = {
 			130,
 			131,
@@ -6735,7 +6763,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_trophy_skaven_ratling_gunner_1 = {
+	achievement_dwarf_legend = {
 		size = {
 			130,
 			131,
@@ -6749,7 +6777,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_dwarf_go_fish = {
+	wins_5 = {
 		size = {
 			130,
 			131,
@@ -6763,7 +6791,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_dwarf_cataclysm = {
+	achievement_dwarf_barrel_kill = {
 		size = {
 			130,
 			131,
@@ -6777,7 +6805,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	wins_5 = {
+	achievement_wizards_tower_all_challenges = {
 		size = {
 			130,
 			131,
@@ -6791,7 +6819,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_wizards_tower_all_challenges = {
+	achievement_trophy_kill_grudge_each_expedition_bw_scholar = {
 		size = {
 			130,
 			131,
@@ -6805,7 +6833,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_trophy_skittergate_deathrattler_rasknitt_timed = {
+	achievement_trophy_scorpion_kill_archers_kill_minotaur = {
 		size = {
 			130,
 			131,
@@ -6819,7 +6847,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_trophy_gecko_scraps_nurgle = {
+	achievement_trophy_thornsister_catch_a_dying_breath = {
 		size = {
 			130,
 			131,
@@ -6833,7 +6861,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_trophy_kill_grudge_each_expedition_dr_engineer = {
+	achievement_trophy_scorpion_tier_3_season_4 = {
 		size = {
 			130,
 			131,
@@ -6847,7 +6875,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_trophy_grudge_mark_kills_grind_dr_ironbreaker = {
+	achievement_trophy_kerillian_level_2 = {
 		size = {
 			130,
 			131,
@@ -6861,7 +6889,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_trophy_scorpion_weaves_complete_unchained_season_1 = {
+	achievement_trophy_thornsister_roots_of_ages = {
 		size = {
 			130,
 			131,
@@ -6875,7 +6903,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_trophy_kill_grudge_each_expedition_dr_slayer = {
+	achievement_trophy_kill_grudge_each_expedition_es_knight = {
 		size = {
 			130,
 			131,
@@ -6889,7 +6917,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_trophy_thornsister_sheltering_thicket = {
+	achievement_trophy_thornsister_thorny_rescue = {
 		size = {
 			130,
 			131,
@@ -6903,7 +6931,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_trophy_kill_grudge_each_expedition_es_knight = {
+	achievement_trophy_kill_bodvarr_burblespew_champion = {
 		size = {
 			130,
 			131,
@@ -6917,7 +6945,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_trophy_scorpion_weaves_death_season_1 = {
+	achievement_trophy_gecko_scraps_skaven_stronghold = {
 		size = {
 			130,
 			131,
@@ -6931,7 +6959,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_trophy_scorpion_kill_archers_kill_minotaur = {
+	achievement_trophy_kill_grudge_each_expedition_we_maidenguard = {
 		size = {
 			130,
 			131,
@@ -6945,7 +6973,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_trophy_ussingen_no_event_barrels = {
+	achievement_trophy_kill_grudge_each_expedition_we_shade = {
 		size = {
 			130,
 			131,
@@ -6959,7 +6987,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_trophy_veteran_bw_adept = {
+	achievement_trophy_kill_bodvarr_burblespew_recruit = {
 		size = {
 			130,
 			131,
@@ -6973,7 +7001,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_trophy_scorpion_weaves_light_season_1 = {
+	achievement_trophy_veteran_es_huntsman = {
 		size = {
 			130,
 			131,
@@ -6987,7 +7015,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_trophy_kill_grudge_each_expedition_we_waywatcher = {
+	achievement_trophy_kill_grudge_each_expedition_wh_captain = {
 		size = {
 			130,
 			131,
@@ -7001,7 +7029,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_trophy_veteran_es_mercenary = {
+	achievement_trophy_veteran_we_maidenguard = {
 		size = {
 			130,
 			131,
@@ -7015,7 +7043,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_trophy_kill_grudge_each_expedition_wh_captain = {
+	achievement_trophy_kill_each_monster_grudge_bw_adept = {
 		size = {
 			130,
 			131,
@@ -7029,7 +7057,7 @@ achievement_icons_atlas = {
 			0.988281,
 		},
 	},
-	achievement_trophy_scorpion_weaves_rainbow_huntsman_season_1 = {
+	achievement_trophy_scorpion_markus_reach_level_35 = {
 		size = {
 			130,
 			131,
@@ -7043,7 +7071,7 @@ achievement_icons_atlas = {
 			0.955322,
 		},
 	},
-	achievement_trophy_gecko_scraps_skaven_stronghold = {
+	achievement_trophy_veteran_wh_zealot = {
 		size = {
 			130,
 			131,
@@ -7057,7 +7085,7 @@ achievement_icons_atlas = {
 			0.922363,
 		},
 	},
-	achievement_trophy_kill_skarrik_rasknitt_champion = {
+	achievement_trophy_scorpion_weaves_12_season_1 = {
 		size = {
 			130,
 			131,
@@ -7071,7 +7099,7 @@ achievement_icons_atlas = {
 			0.889404,
 		},
 	},
-	achievement_trophy_grudge_mark_kills_grind_es_knight = {
+	achievement_trophy_kill_each_monster_grudge_bw_unchained = {
 		size = {
 			130,
 			131,
@@ -7085,7 +7113,7 @@ achievement_icons_atlas = {
 			0.856445,
 		},
 	},
-	achievement_trophy_scorpion_weaves_rainbow_mercenary_season_1 = {
+	achivement_icons_scorpion_edit = {
 		size = {
 			130,
 			131,
@@ -7099,7 +7127,7 @@ achievement_icons_atlas = {
 			0.823486,
 		},
 	},
-	achievement_trophy_kill_skarrik_rasknitt_veteran = {
+	achievement_trophy_lake_big_killblow = {
 		size = {
 			130,
 			131,
@@ -7113,7 +7141,7 @@ achievement_icons_atlas = {
 			0.790527,
 		},
 	},
-	achievement_trophy_bless_block_attacks = {
+	achievement_trophy_bless_chaos_warriors = {
 		size = {
 			130,
 			131,
@@ -7127,7 +7155,7 @@ achievement_icons_atlas = {
 			0.757568,
 		},
 	},
-	achievement_trophy_lake_big_killblow = {
+	achievement_trophy_kill_each_monster_grudge_dr_ironbreaker = {
 		size = {
 			130,
 			131,
@@ -7141,7 +7169,7 @@ achievement_icons_atlas = {
 			0.724609,
 		},
 	},
-	achievement_trophy_scorpion_weaves_rainbow_slayer_season_1 = {
+	achievement_trophy_gecko_scraps_skittergate = {
 		size = {
 			130,
 			131,
@@ -7155,7 +7183,7 @@ achievement_icons_atlas = {
 			0.69165,
 		},
 	},
-	achievement_trophy_scorpion_markus_reach_level_35 = {
+	achievement_trophy_scorpion_weaves_rainbow_waywatcher_season_1 = {
 		size = {
 			130,
 			131,
@@ -7169,7 +7197,7 @@ achievement_icons_atlas = {
 			0.658691,
 		},
 	},
-	achievement_trophy_kill_each_monster_grudge_dr_ironbreaker = {
+	achievement_trophy_kill_each_monster_grudge_dr_ranger = {
 		size = {
 			130,
 			131,
@@ -7183,7 +7211,7 @@ achievement_icons_atlas = {
 			0.625732,
 		},
 	},
-	achievement_trophy_scorpion_weaves_rainbow_waywatcher_season_1 = {
+	achievement_trophy_kill_each_monster_grudge_dr_slayer = {
 		size = {
 			130,
 			131,
@@ -7197,7 +7225,7 @@ achievement_icons_atlas = {
 			0.592773,
 		},
 	},
-	achievement_trophy_scorpion_weaves_rainbow_zealot_season_1 = {
+	achievement_trophy_bless_ranged_raki = {
 		size = {
 			130,
 			131,
@@ -7211,7 +7239,7 @@ achievement_icons_atlas = {
 			0.559814,
 		},
 	},
-	achievement_trophy_lake_complete_all_helmgart_levels_recruit_es_questingknight = {
+	achievement_trophy_lake_elite_killblows = {
 		size = {
 			130,
 			131,
@@ -7225,7 +7253,7 @@ achievement_icons_atlas = {
 			0.526855,
 		},
 	},
-	achievement_trophy_bless_saved_by_perk = {
+	achievement_trophy_bless_unbreakable_damage_block = {
 		size = {
 			130,
 			131,
@@ -7239,7 +7267,7 @@ achievement_icons_atlas = {
 			0.493896,
 		},
 	},
-	achievement_trophy_lake_elite_killblows = {
+	achievement_trophy_kill_each_monster_grudge_es_knight = {
 		size = {
 			130,
 			131,
@@ -7253,7 +7281,7 @@ achievement_icons_atlas = {
 			0.460938,
 		},
 	},
-	achievement_trophy_sienna_level_3 = {
+	achievement_trophy_scorpion_markus_weapon_skin_2 = {
 		size = {
 			130,
 			131,
@@ -7267,7 +7295,7 @@ achievement_icons_atlas = {
 			0.427979,
 		},
 	},
-	achievement_trophy_gecko_scraps_skittergate = {
+	achievement_trophy_kill_grudge_each_expedition_wh_priest = {
 		size = {
 			130,
 			131,
@@ -7281,7 +7309,7 @@ achievement_icons_atlas = {
 			0.39502,
 		},
 	},
-	achievement_trophy_lake_mission_streak_act3_legend_es_questingknight = {
+	achievement_trophy_scorpion_weaves_8_season_1 = {
 		size = {
 			130,
 			131,
@@ -7295,7 +7323,7 @@ achievement_icons_atlas = {
 			0.362061,
 		},
 	},
-	achievement_trophy_grudge_mark_kills_grind_we_shade = {
+	achievement_trophy_kill_each_monster_grudge_es_questingknight = {
 		size = {
 			130,
 			131,
@@ -7309,7 +7337,7 @@ achievement_icons_atlas = {
 			0.329102,
 		},
 	},
-	achievement_trophy_skaven_pack_master_1 = {
+	achievement_holly_complete_all_legend_desc = {
 		size = {
 			130,
 			131,
@@ -7323,7 +7351,7 @@ achievement_icons_atlas = {
 			0.296143,
 		},
 	},
-	achievement_holly_complete_all_recruit_desc = {
+	achievement_holly_cemetery_synchronized_chains_desc = {
 		size = {
 			130,
 			131,
@@ -7337,7 +7365,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	achievement_holly_cemetery_synchronized_chains_hardest_desc = {
+	achievement_holly_cemetery_sleep_desc = {
 		size = {
 			130,
 			131,
@@ -7351,7 +7379,7 @@ achievement_icons_atlas = {
 			0.230225,
 		},
 	},
-	achievement_holly_cemetery_synchronized_chains_desc = {
+	achievement_trophy_kill_each_monster_grudge_we_shade = {
 		size = {
 			130,
 			131,
@@ -7365,7 +7393,7 @@ achievement_icons_atlas = {
 			0.230225,
 		},
 	},
-	achievement_trophy_skaven_poison_wind_globardier_2 = {
+	achievement_trophy_gecko_scraps_ussingen = {
 		size = {
 			130,
 			131,
@@ -7379,7 +7407,7 @@ achievement_icons_atlas = {
 			0.230225,
 		},
 	},
-	achievement_trophy_scorpion_markus_weapon_skin_2 = {
+	achievement_trophy_lake_timing_quest = {
 		size = {
 			130,
 			131,
@@ -7393,7 +7421,7 @@ achievement_icons_atlas = {
 			0.230225,
 		},
 	},
-	achievement_trophy_lake_speed_quest = {
+	ripe_harvest = {
 		size = {
 			130,
 			131,
@@ -7407,7 +7435,7 @@ achievement_icons_atlas = {
 			0.230225,
 		},
 	},
-	achievement_trophy_scorpion_crater_dark_tongue_2 = {
+	achievement_trophy_kill_each_monster_grudge_we_waywatcher = {
 		size = {
 			130,
 			131,
@@ -7421,7 +7449,7 @@ achievement_icons_atlas = {
 			0.230225,
 		},
 	},
-	achievement_trophy_skaven_ratling_gunner_3 = {
+	achievement_dwarf_feculent_buboes = {
 		size = {
 			130,
 			131,
@@ -7435,7 +7463,7 @@ achievement_icons_atlas = {
 			0.230225,
 		},
 	},
-	achievement_dwarf_legend = {
+	achievement_dwarf_cataclysm = {
 		size = {
 			130,
 			131,
@@ -7463,7 +7491,7 @@ achievement_icons_atlas = {
 			0.230225,
 		},
 	},
-	achievement_dwarf_champion = {
+	achievement_trophy_kill_each_monster_grudge_wh_captain = {
 		size = {
 			130,
 			131,
@@ -7474,104 +7502,6 @@ achievement_icons_atlas = {
 		},
 		uv11 = {
 			0.696045,
-			0.230225,
-		},
-	},
-	achievement_trophy_skaven_stormfiend_2 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.631592,
-			0.198242,
-		},
-		uv11 = {
-			0.66333,
-			0.230225,
-		},
-	},
-	achievement_trophy_gecko_scraps_ussingen = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.598877,
-			0.198242,
-		},
-		uv11 = {
-			0.630615,
-			0.230225,
-		},
-	},
-	wins_2 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.566162,
-			0.198242,
-		},
-		uv11 = {
-			0.5979,
-			0.230225,
-		},
-	},
-	achievement_trophy_grudge_mark_kills_grind_wh_captain = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.533447,
-			0.198242,
-		},
-		uv11 = {
-			0.565186,
-			0.230225,
-		},
-	},
-	achievement_trophy_skaven_warpfire_thrower_2 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.500732,
-			0.198242,
-		},
-		uv11 = {
-			0.532471,
-			0.230225,
-		},
-	},
-	achievement_trophy_kill_grudge_each_expedition_bw_adept = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.468018,
-			0.198242,
-		},
-		uv11 = {
-			0.499756,
-			0.230225,
-		},
-	},
-	achievement_trophy_thornsister_ancients_vengeful_embrace = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.435303,
-			0.198242,
-		},
-		uv11 = {
-			0.467041,
 			0.230225,
 		},
 	},
@@ -7581,53 +7511,109 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
+			0.631592,
+			0.198242,
+		},
+		uv11 = {
+			0.66333,
+			0.230225,
+		},
+	},
+	wins_2 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.598877,
+			0.198242,
+		},
+		uv11 = {
+			0.630615,
+			0.230225,
+		},
+	},
+	achievement_trophy_scorpion_weaves_complete_maidenguard_season_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.566162,
+			0.198242,
+		},
+		uv11 = {
+			0.5979,
+			0.230225,
+		},
+	},
+	achievement_trophy_kill_grudge_each_expedition_bw_adept = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.533447,
+			0.198242,
+		},
+		uv11 = {
+			0.565186,
+			0.230225,
+		},
+	},
+	achievement_trophy_skittergate_deathrattler_rasknitt_timed = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.500732,
+			0.198242,
+		},
+		uv11 = {
+			0.532471,
+			0.230225,
+		},
+	},
+	achievement_trophy_kill_grudge_each_expedition_bw_unchained = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.468018,
+			0.198242,
+		},
+		uv11 = {
+			0.499756,
+			0.230225,
+		},
+	},
+	achievement_trophy_gecko_scraps_warcamp = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.435303,
+			0.198242,
+		},
+		uv11 = {
+			0.467041,
+			0.230225,
+		},
+	},
+	achievement_trophy_kill_grudge_each_expedition_dr_engineer = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
 			0.402588,
 			0.198242,
 		},
 		uv11 = {
 			0.434326,
-			0.230225,
-		},
-	},
-	achievement_trophy_thornsister_away_with_the_faeries = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.369873,
-			0.198242,
-		},
-		uv11 = {
-			0.401611,
-			0.230225,
-		},
-	},
-	achievement_trophy_helmgart_lord_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.337158,
-			0.198242,
-		},
-		uv11 = {
-			0.368896,
-			0.230225,
-		},
-	},
-	achievement_trophy_thornsister_catch_a_dying_breath = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.304443,
-			0.198242,
-		},
-		uv11 = {
-			0.336182,
 			0.230225,
 		},
 	},
@@ -7637,25 +7623,39 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.271729,
+			0.369873,
 			0.198242,
 		},
 		uv11 = {
-			0.303467,
+			0.401611,
 			0.230225,
 		},
 	},
-	achievement_trophy_kill_grudge_each_expedition_dr_ranger = {
+	achievement_trophy_kill_grudge_each_expedition_dr_ironbreaker = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
-			0.239014,
+			0.337158,
 			0.198242,
 		},
 		uv11 = {
-			0.270752,
+			0.368896,
+			0.230225,
+		},
+	},
+	achievement_trophy_kerillian_level_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.304443,
+			0.198242,
+		},
+		uv11 = {
+			0.336182,
 			0.230225,
 		},
 	},
@@ -7665,82 +7665,26 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.206299,
+			0.271729,
 			0.198242,
 		},
 		uv11 = {
-			0.238037,
+			0.303467,
 			0.230225,
 		},
 	},
-	achievement_trophy_scorpion_tier_3_season_4 = {
+	achievement_trophy_kill_grudge_each_expedition_dr_slayer = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
-			0.173584,
-			0.956299,
+			0.239014,
+			0.198242,
 		},
 		uv11 = {
-			0.205322,
-			0.988281,
-		},
-	},
-	achievement_trophy_gecko_scraps_warcamp = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.173584,
-			0.92334,
-		},
-		uv11 = {
-			0.205322,
-			0.955322,
-		},
-	},
-	achievement_trophy_kerillian_level_2 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.173584,
-			0.890381,
-		},
-		uv11 = {
-			0.205322,
-			0.922363,
-		},
-	},
-	achievement_trophy_kill_grudge_each_expedition_es_huntsman = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.173584,
-			0.857422,
-		},
-		uv11 = {
-			0.205322,
-			0.889404,
-		},
-	},
-	achievement_trophy_scorpion_weaves_complete_witchhunter_season_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.173584,
-			0.824463,
-		},
-		uv11 = {
-			0.205322,
-			0.856445,
+			0.270752,
+			0.230225,
 		},
 	},
 	achievement_trophy_grudge_mark_kills_grind_dr_ranger = {
@@ -7749,54 +7693,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.173584,
-			0.791504,
+			0.206299,
+			0.198242,
 		},
 		uv11 = {
-			0.205322,
-			0.823486,
-		},
-	},
-	achievement_trophy_kill_grudge_each_expedition_es_mercenary = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.173584,
-			0.758545,
-		},
-		uv11 = {
-			0.205322,
-			0.790527,
-		},
-	},
-	achievement_trophy_thornsister_weaves_bounty = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.173584,
-			0.725586,
-		},
-		uv11 = {
-			0.205322,
-			0.757568,
-		},
-	},
-	achievement_trophy_scorpion_victor_reach_level_35 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.173584,
-			0.692627,
-		},
-		uv11 = {
-			0.205322,
-			0.724609,
+			0.238037,
+			0.230225,
 		},
 	},
 	achievement_trophy_scorpion_sienna_weapon_skin_2 = {
@@ -7806,25 +7708,81 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.173584,
-			0.659668,
+			0.956299,
 		},
 		uv11 = {
 			0.205322,
-			0.69165,
+			0.988281,
 		},
 	},
-	achievement_trophy_scorpion_crater_pendant = {
+	achievement_trophy_scorpion_weaves_complete_witchhunter_season_1 = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
 			0.173584,
-			0.626709,
+			0.92334,
 		},
 		uv11 = {
 			0.205322,
-			0.658691,
+			0.955322,
+		},
+	},
+	achievement_trophy_thornsister_sheltering_thicket = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.173584,
+			0.890381,
+		},
+		uv11 = {
+			0.205322,
+			0.922363,
+		},
+	},
+	achievement_trophy_kerillian_level_3 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.173584,
+			0.857422,
+		},
+		uv11 = {
+			0.205322,
+			0.889404,
+		},
+	},
+	achievement_trophy_scorpion_victor_reach_level_35 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.173584,
+			0.824463,
+		},
+		uv11 = {
+			0.205322,
+			0.856445,
+		},
+	},
+	achievement_trophy_thornsister_weaves_bounty = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.173584,
+			0.791504,
+		},
+		uv11 = {
+			0.205322,
+			0.823486,
 		},
 	},
 	achievement_trophy_kill_grudge_each_expedition_es_questingknight = {
@@ -7834,81 +7792,25 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.173584,
-			0.59375,
+			0.758545,
 		},
 		uv11 = {
 			0.205322,
-			0.625732,
+			0.790527,
 		},
 	},
-	achievement_trophy_kill_bodvarr_burblespew_champion = {
+	achievement_trophy_grudge_mark_kills_grind_dr_slayer = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
 			0.173584,
-			0.560791,
+			0.725586,
 		},
 		uv11 = {
 			0.205322,
-			0.592773,
-		},
-	},
-	achievement_trophy_kill_grudge_each_expedition_we_maidenguard = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.173584,
-			0.527832,
-		},
-		uv11 = {
-			0.205322,
-			0.559814,
-		},
-	},
-	achievement_trophy_kill_grudge_each_expedition_we_thornsister = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.173584,
-			0.494873,
-		},
-		uv11 = {
-			0.205322,
-			0.526855,
-		},
-	},
-	achievement_trophy_veteran_dr_ranger = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.173584,
-			0.461914,
-		},
-		uv11 = {
-			0.205322,
-			0.493896,
-		},
-	},
-	achievement_trophy_scorpion_victor_weapon_skin_2 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.173584,
-			0.428955,
-		},
-		uv11 = {
-			0.205322,
-			0.460938,
+			0.757568,
 		},
 	},
 	achievement_trophy_ground_zero_burblespew_tornado_enemies = {
@@ -7918,53 +7820,95 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.173584,
-			0.395996,
+			0.692627,
 		},
 		uv11 = {
 			0.205322,
-			0.427979,
+			0.724609,
 		},
 	},
-	achievement_trophy_kill_bodvarr_burblespew_recruit = {
+	achievement_trophy_gecko_scraps_military = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
 			0.173584,
-			0.363037,
+			0.659668,
 		},
 		uv11 = {
 			0.205322,
-			0.39502,
+			0.69165,
 		},
 	},
-	achievement_trophy_kill_grudge_each_expedition_wh_bountyhunter = {
+	achievement_trophy_ussingen_no_event_barrels = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
 			0.173584,
-			0.330078,
+			0.626709,
 		},
 		uv11 = {
 			0.205322,
-			0.362061,
+			0.658691,
 		},
 	},
-	achievement_trophy_scorpion_weaves_rainbow_adept_season_1 = {
+	achievement_trophy_scorpion_weaves_heavens_season_1 = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
 			0.173584,
-			0.297119,
+			0.59375,
 		},
 		uv11 = {
 			0.205322,
-			0.329102,
+			0.625732,
+		},
+	},
+	achievement_trophy_veteran_bw_adept = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.173584,
+			0.560791,
+		},
+		uv11 = {
+			0.205322,
+			0.592773,
+		},
+	},
+	achievement_trophy_veteran_dr_ranger = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.173584,
+			0.527832,
+		},
+		uv11 = {
+			0.205322,
+			0.559814,
+		},
+	},
+	achievement_trophy_kill_grudge_each_expedition_we_waywatcher = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.173584,
+			0.494873,
+		},
+		uv11 = {
+			0.205322,
+			0.526855,
 		},
 	},
 	achievement_trophy_grudge_mark_kills_grind_es_huntsman = {
@@ -7974,25 +7918,81 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.173584,
-			0.26416,
+			0.461914,
 		},
 		uv11 = {
 			0.205322,
-			0.296143,
+			0.493896,
 		},
 	},
-	achievement_trophy_kill_grudge_each_expedition_wh_zealot = {
+	achievement_trophy_scorpion_slay_gors_warpfire_damage = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
 			0.173584,
-			0.231201,
+			0.428955,
 		},
 		uv11 = {
 			0.205322,
-			0.263184,
+			0.460938,
+		},
+	},
+	achievement_trophy_scorpion_weaves_rainbow_adept_season_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.173584,
+			0.395996,
+		},
+		uv11 = {
+			0.205322,
+			0.427979,
+		},
+	},
+	achievement_trophy_veteran_es_mercenary = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.173584,
+			0.363037,
+		},
+		uv11 = {
+			0.205322,
+			0.39502,
+		},
+	},
+	achievement_trophy_kill_bodvarr_burblespew_veteran = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.173584,
+			0.330078,
+		},
+		uv11 = {
+			0.205322,
+			0.362061,
+		},
+	},
+	achievement_trophy_scorpion_weaves_10_season_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.173584,
+			0.297119,
+		},
+		uv11 = {
+			0.205322,
+			0.329102,
 		},
 	},
 	achievement_trophy_veteran_we_waywatcher = {
@@ -8002,6 +8002,34 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.173584,
+			0.26416,
+		},
+		uv11 = {
+			0.205322,
+			0.296143,
+		},
+	},
+	achievement_trophy_kill_helmgart_lords_within_time = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.173584,
+			0.231201,
+		},
+		uv11 = {
+			0.205322,
+			0.263184,
+		},
+	},
+	achievement_trophy_grudge_mark_kills_grind_es_knight = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.173584,
 			0.198242,
 		},
 		uv11 = {
@@ -8009,7 +8037,7 @@ achievement_icons_atlas = {
 			0.230225,
 		},
 	},
-	achievement_trophy_scorpion_weaves_10_season_1 = {
+	achievement_trophy_ground_zero_burblespew_tornado_enemies_cata = {
 		size = {
 			130,
 			131,
@@ -8023,7 +8051,7 @@ achievement_icons_atlas = {
 			0.197266,
 		},
 	},
-	achievement_trophy_scorpion_slay_gors_warpfire_damage = {
+	achievement_trophy_kill_skarrik_rasknitt_champion = {
 		size = {
 			130,
 			131,
@@ -8034,48 +8062,6 @@ achievement_icons_atlas = {
 		},
 		uv11 = {
 			0.957764,
-			0.197266,
-		},
-	},
-	achievement_trophy_veteran_wh_captain = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.893311,
-			0.165283,
-		},
-		uv11 = {
-			0.925049,
-			0.197266,
-		},
-	},
-	achievement_trophy_kill_each_monster_grudge_bw_adept = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.860596,
-			0.165283,
-		},
-		uv11 = {
-			0.892334,
-			0.197266,
-		},
-	},
-	achievement_trophy_veteran_wh_zealot = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.827881,
-			0.165283,
-		},
-		uv11 = {
-			0.859619,
 			0.197266,
 		},
 	},
@@ -8085,25 +8071,39 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.795166,
+			0.893311,
 			0.165283,
 		},
 		uv11 = {
-			0.826904,
+			0.925049,
 			0.197266,
 		},
 	},
-	achievement_trophy_kill_skarrik_rasknitt_recruit = {
+	achievement_trophy_kill_skarrik_rasknitt_legend = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
-			0.762451,
+			0.860596,
 			0.165283,
 		},
 		uv11 = {
-			0.794189,
+			0.892334,
+			0.197266,
+		},
+	},
+	achievement_trophy_kill_each_monster_grudge_bw_scholar = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.827881,
+			0.165283,
+		},
+		uv11 = {
+			0.859619,
 			0.197266,
 		},
 	},
@@ -8113,81 +8113,25 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.729736,
+			0.795166,
 			0.165283,
 		},
 		uv11 = {
-			0.761475,
+			0.826904,
 			0.197266,
 		},
 	},
-	achievement_trophy_scorpion_weaves_12_season_1 = {
+	achievement_trophy_kill_skarrik_rasknitt_veteran = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
-			0.697021,
+			0.762451,
 			0.165283,
 		},
 		uv11 = {
-			0.72876,
-			0.197266,
-		},
-	},
-	achievement_trophy_ground_zero_burblespew_tornado_enemies_cata = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.664307,
-			0.165283,
-		},
-		uv11 = {
-			0.696045,
-			0.197266,
-		},
-	},
-	achievement_trophy_kill_each_monster_grudge_bw_unchained = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.631592,
-			0.165283,
-		},
-		uv11 = {
-			0.66333,
-			0.197266,
-		},
-	},
-	achievement_trophy_lake_bastard_block = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.598877,
-			0.165283,
-		},
-		uv11 = {
-			0.630615,
-			0.197266,
-		},
-	},
-	achievement_trophy_scorpion_weaves_rainbow_scholar_season_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.566162,
-			0.165283,
-		},
-		uv11 = {
-			0.5979,
+			0.794189,
 			0.197266,
 		},
 	},
@@ -8197,53 +8141,11 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.533447,
+			0.729736,
 			0.165283,
 		},
 		uv11 = {
-			0.565186,
-			0.197266,
-		},
-	},
-	achievement_trophy_lake_boss_killblow = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.500732,
-			0.165283,
-		},
-		uv11 = {
-			0.532471,
-			0.197266,
-		},
-	},
-	achievement_trophy_bless_cluch_revive = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.468018,
-			0.165283,
-		},
-		uv11 = {
-			0.499756,
-			0.197266,
-		},
-	},
-	achievement_trophy_scorpion_weaves_2_season_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.435303,
-			0.165283,
-		},
-		uv11 = {
-			0.467041,
+			0.761475,
 			0.197266,
 		},
 	},
@@ -8253,11 +8155,81 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.402588,
+			0.697021,
 			0.165283,
 		},
 		uv11 = {
-			0.434326,
+			0.72876,
+			0.197266,
+		},
+	},
+	achievement_trophy_scorpion_weaves_rainbow_scholar_season_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.664307,
+			0.165283,
+		},
+		uv11 = {
+			0.696045,
+			0.197266,
+		},
+	},
+	achievement_trophy_bless_block_attacks = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.631592,
+			0.165283,
+		},
+		uv11 = {
+			0.66333,
+			0.197266,
+		},
+	},
+	achievement_trophy_kill_each_monster_grudge_dr_engineer = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.598877,
+			0.165283,
+		},
+		uv11 = {
+			0.630615,
+			0.197266,
+		},
+	},
+	achievement_trophy_scorpion_weaves_2_season_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.566162,
+			0.165283,
+		},
+		uv11 = {
+			0.5979,
+			0.197266,
+		},
+	},
+	achievement_trophy_bless_cluch_revive = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.533447,
+			0.165283,
+		},
+		uv11 = {
+			0.565186,
 			0.197266,
 		},
 	},
@@ -8267,95 +8239,25 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.369873,
+			0.500732,
 			0.165283,
 		},
 		uv11 = {
-			0.401611,
+			0.532471,
 			0.197266,
 		},
 	},
-	achievement_trophy_bless_complete_all_helmgart_levels_wh_priest = {
+	achievement_trophy_grudge_mark_kills_grind_es_questingknight = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
-			0.337158,
+			0.468018,
 			0.165283,
 		},
 		uv11 = {
-			0.368896,
-			0.197266,
-		},
-	},
-	achievement_trophy_lake_complete_100_missions_es_questingknight = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.304443,
-			0.165283,
-		},
-		uv11 = {
-			0.336182,
-			0.197266,
-		},
-	},
-	achievement_trophy_bless_great_hammer_headshots = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.271729,
-			0.165283,
-		},
-		uv11 = {
-			0.303467,
-			0.197266,
-		},
-	},
-	achievement_trophy_lake_complete_all_helmgart_levels_legend_es_questingknight = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.239014,
-			0.165283,
-		},
-		uv11 = {
-			0.270752,
-			0.197266,
-		},
-	},
-	achievement_trophy_bless_protected_killing = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.206299,
-			0.165283,
-		},
-		uv11 = {
-			0.238037,
-			0.197266,
-		},
-	},
-	achievement_trophy_scorpion_weaves_4_season_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.173584,
-			0.165283,
-		},
-		uv11 = {
-			0.205322,
+			0.499756,
 			0.197266,
 		},
 	},
@@ -8365,40 +8267,124 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.140869,
-			0.956299,
+			0.435303,
+			0.165283,
 		},
 		uv11 = {
-			0.172607,
-			0.988281,
+			0.467041,
+			0.197266,
 		},
 	},
-	achievement_trophy_kill_each_monster_grudge_dr_slayer = {
+	achievement_trophy_bless_complete_all_helmgart_levels_wh_priest = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
-			0.140869,
-			0.92334,
+			0.402588,
+			0.165283,
 		},
 		uv11 = {
-			0.172607,
-			0.955322,
+			0.434326,
+			0.197266,
 		},
 	},
-	achievement_trophy_lake_complete_all_helmgart_levels_veteran_es_questingknight = {
+	achievement_trophy_lake_complete_100_missions_es_questingknight = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
-			0.140869,
-			0.890381,
+			0.369873,
+			0.165283,
 		},
 		uv11 = {
-			0.172607,
-			0.922363,
+			0.401611,
+			0.197266,
+		},
+	},
+	achievement_trophy_bless_great_hammer_headshots = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.337158,
+			0.165283,
+		},
+		uv11 = {
+			0.368896,
+			0.197266,
+		},
+	},
+	achievement_trophy_lake_complete_all_helmgart_levels_champion_es_questingknight = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.304443,
+			0.165283,
+		},
+		uv11 = {
+			0.336182,
+			0.197266,
+		},
+	},
+	achievement_trophy_bless_protected_killing = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.271729,
+			0.165283,
+		},
+		uv11 = {
+			0.303467,
+			0.197266,
+		},
+	},
+	achievement_trophy_lake_complete_all_helmgart_levels_recruit_es_questingknight = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.239014,
+			0.165283,
+		},
+		uv11 = {
+			0.270752,
+			0.197266,
+		},
+	},
+	achievement_trophy_grudge_mark_kills_grind_we_maidenguard = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.206299,
+			0.165283,
+		},
+		uv11 = {
+			0.238037,
+			0.197266,
+		},
+	},
+	achievement_trophy_scorpion_tier_1_season_4 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.173584,
+			0.165283,
+		},
+		uv11 = {
+			0.205322,
+			0.197266,
 		},
 	},
 	achievement_trophy_sienna_level_1 = {
@@ -8408,53 +8394,39 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.140869,
-			0.857422,
+			0.956299,
 		},
 		uv11 = {
 			0.172607,
-			0.889404,
+			0.988281,
 		},
 	},
-	achievement_trophy_grudge_mark_kills_grind_we_maidenguard = {
+	achievement_trophy_bless_saved_by_perk = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
 			0.140869,
-			0.824463,
+			0.92334,
 		},
 		uv11 = {
 			0.172607,
-			0.856445,
+			0.955322,
 		},
 	},
-	achievement_trophy_lake_mission_streak_act1_legend_es_questingknight = {
+	achievement_trophy_kill_each_monster_grudge_es_huntsman = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
 			0.140869,
-			0.791504,
+			0.890381,
 		},
 		uv11 = {
 			0.172607,
-			0.823486,
-		},
-	},
-	achievement_trophy_complete_all_career_grudge_challenges_wh_priest = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.140869,
-			0.758545,
-		},
-		uv11 = {
-			0.172607,
-			0.790527,
+			0.922363,
 		},
 	},
 	achievement_trophy_scorpion_weaves_6_season_1 = {
@@ -8464,123 +8436,53 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.140869,
-			0.725586,
+			0.857422,
 		},
 		uv11 = {
 			0.172607,
-			0.757568,
+			0.889404,
 		},
 	},
-	achievement_trophy_scorpion_tier_1_season_4 = {
+	achievement_trophy_complete_all_career_grudge_challenges_wh_priest = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
 			0.140869,
-			0.692627,
+			0.824463,
 		},
 		uv11 = {
 			0.172607,
-			0.724609,
+			0.856445,
 		},
 	},
-	achievement_trophy_grudge_mark_kills_grind_wh_priest = {
+	achievement_trophy_lake_mission_streak_act2_legend_es_questingknight = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
 			0.140869,
-			0.659668,
+			0.791504,
 		},
 		uv11 = {
 			0.172607,
-			0.69165,
+			0.823486,
 		},
 	},
-	achievement_trophy_kill_each_monster_grudge_es_knight = {
+	achievement_trophy_grudge_mark_kills_grind_we_shade = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
 			0.140869,
-			0.626709,
+			0.758545,
 		},
 		uv11 = {
 			0.172607,
-			0.658691,
-		},
-	},
-	achievement_trophy_kill_grudge_each_expedition_wh_priest = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.140869,
-			0.59375,
-		},
-		uv11 = {
-			0.172607,
-			0.625732,
-		},
-	},
-	achievement_trophy_skaven_gutter_runner_2 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.140869,
-			0.560791,
-		},
-		uv11 = {
-			0.172607,
-			0.592773,
-		},
-	},
-	achievement_holly_find_all_runes_desc = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.140869,
-			0.527832,
-		},
-		uv11 = {
-			0.172607,
-			0.559814,
-		},
-	},
-	achievement_holly_complete_all_champion_desc = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.140869,
-			0.494873,
-		},
-		uv11 = {
-			0.172607,
-			0.526855,
-		},
-	},
-	achievement_trophy_scorpion_weaves_8_season_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.140869,
-			0.461914,
-		},
-		uv11 = {
-			0.172607,
-			0.493896,
+			0.790527,
 		},
 	},
 	achievement_trophy_grudge_mark_kills_grind_bw_scholar = {
@@ -8590,53 +8492,95 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.140869,
-			0.428955,
+			0.725586,
 		},
 		uv11 = {
 			0.172607,
-			0.460938,
+			0.757568,
 		},
 	},
-	achievement_trophy_kill_each_monster_grudge_es_questingknight = {
+	achievement_trophy_lake_mission_streak_act3_legend_es_questingknight = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
 			0.140869,
-			0.395996,
+			0.692627,
 		},
 		uv11 = {
 			0.172607,
-			0.427979,
+			0.724609,
 		},
 	},
-	achievement_holly_bardin_complete_all_levels_desc = {
+	achievement_trophy_skaven_gutter_runner_2 = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
 			0.140869,
-			0.363037,
+			0.659668,
 		},
 		uv11 = {
 			0.172607,
-			0.39502,
+			0.69165,
 		},
 	},
-	achievement_trophy_skaven_pack_master_3 = {
+	achievement_holly_complete_all_veteran_desc = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
 			0.140869,
-			0.330078,
+			0.626709,
 		},
 		uv11 = {
 			0.172607,
-			0.362061,
+			0.658691,
+		},
+	},
+	achievement_trophy_kill_each_monster_grudge_es_mercenary = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.140869,
+			0.59375,
+		},
+		uv11 = {
+			0.172607,
+			0.625732,
+		},
+	},
+	achievement_holly_complete_all_champion_desc = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.140869,
+			0.560791,
+		},
+		uv11 = {
+			0.172607,
+			0.592773,
+		},
+	},
+	achievement_holly_complete_all_recruit_desc = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.140869,
+			0.527832,
+		},
+		uv11 = {
+			0.172607,
+			0.559814,
 		},
 	},
 	achievement_trophy_grudge_mark_kills_grind_we_thornsister = {
@@ -8646,53 +8590,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.140869,
-			0.297119,
+			0.494873,
 		},
 		uv11 = {
 			0.172607,
-			0.329102,
-		},
-	},
-	achievement_holly_cemetery_bones_desc = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.140869,
-			0.26416,
-		},
-		uv11 = {
-			0.172607,
-			0.296143,
-		},
-	},
-	achievement_holly_bardin_weapon_skin_3_desc = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.140869,
-			0.231201,
-		},
-		uv11 = {
-			0.172607,
-			0.263184,
-		},
-	},
-	achievement_trophy_scorpion_weaves_beasts_season_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.140869,
-			0.198242,
-		},
-		uv11 = {
-			0.172607,
-			0.230225,
+			0.526855,
 		},
 	},
 	achievement_trophy_scorpion_tier_2_season_2 = {
@@ -8702,6 +8604,132 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.140869,
+			0.461914,
+		},
+		uv11 = {
+			0.172607,
+			0.493896,
+		},
+	},
+	achievement_trophy_skaven_pack_master_3 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.140869,
+			0.428955,
+		},
+		uv11 = {
+			0.172607,
+			0.460938,
+		},
+	},
+	achievement_holly_cemetery_synchronized_chains_hardest_desc = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.140869,
+			0.395996,
+		},
+		uv11 = {
+			0.172607,
+			0.427979,
+		},
+	},
+	achievement_trophy_kill_each_monster_grudge_we_maidenguard = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.140869,
+			0.363037,
+		},
+		uv11 = {
+			0.172607,
+			0.39502,
+		},
+	},
+	achievement_trophy_scorpion_weaves_beasts_season_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.140869,
+			0.330078,
+		},
+		uv11 = {
+			0.172607,
+			0.362061,
+		},
+	},
+	achievement_holly_bardin_weapon_skin_3_desc = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.140869,
+			0.297119,
+		},
+		uv11 = {
+			0.172607,
+			0.329102,
+		},
+	},
+	achievement_holly_bardin_weapon_skin_2_desc = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.140869,
+			0.26416,
+		},
+		uv11 = {
+			0.172607,
+			0.296143,
+		},
+	},
+	achievement_trophy_grudge_mark_kills_grind_we_waywatcher = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.140869,
+			0.231201,
+		},
+		uv11 = {
+			0.172607,
+			0.263184,
+		},
+	},
+	achievement_trophy_grudge_mark_kills_grind_bw_unchained = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.140869,
+			0.198242,
+		},
+		uv11 = {
+			0.172607,
+			0.230225,
+		},
+	},
+	achievement_trophy_scorpion_kerillian_reach_level_35 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.140869,
 			0.165283,
 		},
 		uv11 = {
@@ -8709,7 +8737,7 @@ achievement_icons_atlas = {
 			0.197266,
 		},
 	},
-	achievement_trophy_gecko_scraps_military = {
+	achievement_trophy_lake_speed_quest = {
 		size = {
 			130,
 			131,
@@ -8723,7 +8751,7 @@ achievement_icons_atlas = {
 			0.164307,
 		},
 	},
-	achievement_holly_bardin_weapon_skin_2_desc = {
+	achievement_trophy_skaven_ratling_gunner_1 = {
 		size = {
 			130,
 			131,
@@ -8737,7 +8765,7 @@ achievement_icons_atlas = {
 			0.164307,
 		},
 	},
-	achievement_trophy_kill_each_monster_grudge_we_shade = {
+	achievement_trophy_scorpion_crater_dark_tongue_3 = {
 		size = {
 			130,
 			131,
@@ -8748,132 +8776,6 @@ achievement_icons_atlas = {
 		},
 		uv11 = {
 			0.925049,
-			0.164307,
-		},
-	},
-	achievement_trophy_lake_timing_quest = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.860596,
-			0.132324,
-		},
-		uv11 = {
-			0.892334,
-			0.164307,
-		},
-	},
-	reaping_time = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.827881,
-			0.132324,
-		},
-		uv11 = {
-			0.859619,
-			0.164307,
-		},
-	},
-	achievement_dwarf_meta = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.795166,
-			0.132324,
-		},
-		uv11 = {
-			0.826904,
-			0.164307,
-		},
-	},
-	achievement_trophy_scorpion_weaves_complete_bountyhunter_season_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.762451,
-			0.132324,
-		},
-		uv11 = {
-			0.794189,
-			0.164307,
-		},
-	},
-	achievement_trophy_grudge_mark_kills_grind_bw_unchained = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.729736,
-			0.132324,
-		},
-		uv11 = {
-			0.761475,
-			0.164307,
-		},
-	},
-	achievement_trophy_kill_each_monster_grudge_we_waywatcher = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.697021,
-			0.132324,
-		},
-		uv11 = {
-			0.72876,
-			0.164307,
-		},
-	},
-	achievement_dwarf_feculent_buboes = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.664307,
-			0.132324,
-		},
-		uv11 = {
-			0.696045,
-			0.164307,
-		},
-	},
-	achievement_trophy_skaven_rat_ogre_2 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.631592,
-			0.132324,
-		},
-		uv11 = {
-			0.66333,
-			0.164307,
-		},
-	},
-	achievement_trophy_grudge_mark_kills_grind_wh_bountyhunter = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.598877,
-			0.132324,
-		},
-		uv11 = {
-			0.630615,
 			0.164307,
 		},
 	},
@@ -8883,39 +8785,39 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.566162,
+			0.860596,
 			0.132324,
 		},
 		uv11 = {
-			0.5979,
+			0.892334,
 			0.164307,
 		},
 	},
-	achievement_dwarf_barrel_kill = {
+	achievement_dwarf_go_fish = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
-			0.533447,
+			0.827881,
 			0.132324,
 		},
 		uv11 = {
-			0.565186,
+			0.859619,
 			0.164307,
 		},
 	},
-	achievement_trophy_scorpion_weaves_complete_ironbreaker_season_1 = {
+	achievement_trophy_grudge_mark_kills_grind_wh_bountyhunter = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
-			0.500732,
+			0.795166,
 			0.132324,
 		},
 		uv11 = {
-			0.532471,
+			0.826904,
 			0.164307,
 		},
 	},
@@ -8925,11 +8827,67 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.468018,
+			0.762451,
 			0.132324,
 		},
 		uv11 = {
-			0.499756,
+			0.794189,
+			0.164307,
+		},
+	},
+	achievement_trophy_skaven_rat_ogre_2 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.729736,
+			0.132324,
+		},
+		uv11 = {
+			0.761475,
+			0.164307,
+		},
+	},
+	achievement_dwarf_champion = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.697021,
+			0.132324,
+		},
+		uv11 = {
+			0.72876,
+			0.164307,
+		},
+	},
+	achievement_trophy_kill_each_monster_grudge_wh_bountyhunter = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.664307,
+			0.132324,
+		},
+		uv11 = {
+			0.696045,
+			0.164307,
+		},
+	},
+	achievement_trophy_scorpion_weaves_complete_ironbreaker_season_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.631592,
+			0.132324,
+		},
+		uv11 = {
+			0.66333,
 			0.164307,
 		},
 	},
@@ -8939,1426 +8897,12 @@ achievement_icons_atlas = {
 			131,
 		},
 		uv00 = {
-			0.435303,
-			0.132324,
-		},
-		uv11 = {
-			0.467041,
-			0.164307,
-		},
-	},
-	achievement_trophy_kill_each_monster_grudge_wh_captain = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.402588,
-			0.132324,
-		},
-		uv11 = {
-			0.434326,
-			0.164307,
-		},
-	},
-	wins_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.369873,
-			0.132324,
-		},
-		uv11 = {
-			0.401611,
-			0.164307,
-		},
-	},
-	achievement_trophy_skaven_stronghold_skarrik_kill_skaven_cata = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.337158,
-			0.132324,
-		},
-		uv11 = {
-			0.368896,
-			0.164307,
-		},
-	},
-	drained = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.304443,
-			0.132324,
-		},
-		uv11 = {
-			0.336182,
-			0.164307,
-		},
-	},
-	achievement_wizards_tower_barrels = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.271729,
-			0.132324,
-		},
-		uv11 = {
-			0.303467,
-			0.164307,
-		},
-	},
-	achievement_trophy_scorpion_weaves_complete_maidenguard_season_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.239014,
-			0.132324,
-		},
-		uv11 = {
-			0.270752,
-			0.164307,
-		},
-	},
-	achievement_trophy_grudge_mark_kills_grind_dr_engineer = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.206299,
-			0.132324,
-		},
-		uv11 = {
-			0.238037,
-			0.164307,
-		},
-	},
-	achievement_trophy_grudge_mark_kills_grind_wh_zealot = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.173584,
-			0.132324,
-		},
-		uv11 = {
-			0.205322,
-			0.164307,
-		},
-	},
-	achievement_trophy_kill_grudge_each_expedition_bw_scholar = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.140869,
-			0.132324,
-		},
-		uv11 = {
-			0.172607,
-			0.164307,
-		},
-	},
-	achievement_trophy_scorpion_weaves_complete_ranger_season_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.956299,
-		},
-		uv11 = {
-			0.139893,
-			0.988281,
-		},
-	},
-	achievement_trophy_scorpion_tier_3_season_2 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.92334,
-		},
-		uv11 = {
-			0.139893,
-			0.955322,
-		},
-	},
-	achievement_morris_sienna_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.890381,
-		},
-		uv11 = {
-			0.139893,
-			0.922363,
-		},
-	},
-	achievement_wizards_tower_cataclysm = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.857422,
-		},
-		uv11 = {
-			0.139893,
-			0.889404,
-		},
-	},
-	achievement_wizards_trail_complete_recruit = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.824463,
-		},
-		uv11 = {
-			0.139893,
-			0.856445,
-		},
-	},
-	achievement_beacons_meta = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.791504,
-		},
-		uv11 = {
-			0.139893,
-			0.823486,
-		},
-	},
-	achievement_morris_markus_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.758545,
-		},
-		uv11 = {
-			0.139893,
-			0.790527,
-		},
-	},
-	achievement_wizards_trail_push_enemies_with_cog = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.725586,
-		},
-		uv11 = {
-			0.139893,
-			0.757568,
-		},
-	},
-	contribute_x_to_payloads = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.692627,
-		},
-		uv11 = {
-			0.139893,
-			0.724609,
-		},
-	},
-	achievement_wizards_trail_complete_champion = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.659668,
-		},
-		uv11 = {
-			0.139893,
-			0.69165,
-		},
-	},
-	achievement_dwarf_jump_puzzle = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.626709,
-		},
-		uv11 = {
-			0.139893,
-			0.658691,
-		},
-	},
-	achievement_wizards_trail_kill_enemies_with_sleigh = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.59375,
-		},
-		uv11 = {
-			0.139893,
-			0.625732,
-		},
-	},
-	achievement_trophy_kill_grudge_each_expedition_bw_necromancer = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.560791,
-		},
-		uv11 = {
-			0.139893,
-			0.592773,
-		},
-	},
-	achievement_beacons_champion = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.527832,
-		},
-		uv11 = {
-			0.139893,
-			0.559814,
-		},
-	},
-	achv_termite3_complete_cataclysm_icon = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.494873,
-		},
-		uv11 = {
-			0.139893,
-			0.526855,
-		},
-	},
-	achievement_morris_complete_arena_totems_alive = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.461914,
-		},
-		uv11 = {
-			0.139893,
-			0.493896,
-		},
-	},
-	achievement_morris_complete_arena_totems_destroyed = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.428955,
-		},
-		uv11 = {
-			0.139893,
-			0.460938,
-		},
-	},
-	achievement_interior_recruit = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.395996,
-		},
-		uv11 = {
-			0.139893,
-			0.427979,
-		},
-	},
-	achievement_wizards_tower_skulls = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.363037,
-		},
-		uv11 = {
-			0.139893,
-			0.39502,
-		},
-	},
-	achievement_morris_shadow_champions_active = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.330078,
-		},
-		uv11 = {
-			0.139893,
-			0.362061,
-		},
-	},
-	achievement_morris_slaanesh = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.297119,
-		},
-		uv11 = {
-			0.139893,
-			0.329102,
-		},
-	},
-	achievement_dwarf_speedrun = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.26416,
-		},
-		uv11 = {
-			0.139893,
-			0.296143,
-		},
-	},
-	achievement_dwarf_valaya_emote = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.231201,
-		},
-		uv11 = {
-			0.139893,
-			0.263184,
-		},
-	},
-	deaths_company = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.198242,
-		},
-		uv11 = {
-			0.139893,
-			0.230225,
-		},
-	},
-	mistress_of_necromancy = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.165283,
-		},
-		uv11 = {
-			0.139893,
-			0.197266,
-		},
-	},
-	achievement_wizards_tower_champion = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.132324,
-		},
-		uv11 = {
-			0.139893,
-			0.164307,
-		},
-	},
-	achievement_wizards_trail_break_icicles = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.95874,
-			0.099365,
-		},
-		uv11 = {
-			0.990479,
-			0.131348,
-		},
-	},
-	achv_termite2_timer_icon = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.926025,
-			0.099365,
-		},
-		uv11 = {
-			0.957764,
-			0.131348,
-		},
-	},
-	achievement_morris_citadel = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.893311,
-			0.099365,
-		},
-		uv11 = {
-			0.925049,
-			0.131348,
-		},
-	},
-	achievement_morris_complete_arena_no_upgrades = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.860596,
-			0.099365,
-		},
-		uv11 = {
-			0.892334,
-			0.131348,
-		},
-	},
-	achievement_dwarf_big_jump = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.827881,
-			0.099365,
-		},
-		uv11 = {
-			0.859619,
-			0.131348,
-		},
-	},
-	achievement_morris_khorne = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.795166,
-			0.099365,
-		},
-		uv11 = {
-			0.826904,
-			0.131348,
-		},
-	},
-	achievement_morris_kerillian_2 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.762451,
-			0.099365,
-		},
-		uv11 = {
-			0.794189,
-			0.131348,
-		},
-	},
-	achievement_wizards_trail_complete_legend = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.729736,
-			0.099365,
-		},
-		uv11 = {
-			0.761475,
-			0.131348,
-		},
-	},
-	achievement_morris_nurgle = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.697021,
-			0.099365,
-		},
-		uv11 = {
-			0.72876,
-			0.131348,
-		},
-	},
-	achievement_morris_sienna_3 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.664307,
-			0.099365,
-		},
-		uv11 = {
-			0.696045,
-			0.131348,
-		},
-	},
-	achievement_dwarf_pressure = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.631592,
-			0.099365,
-		},
-		uv11 = {
-			0.66333,
-			0.131348,
-		},
-	},
-	achievement_morris_sienna_2 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
 			0.598877,
-			0.099365,
+			0.132324,
 		},
 		uv11 = {
 			0.630615,
-			0.131348,
-		},
-	},
-	achievement_dwarf_push = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.566162,
-			0.099365,
-		},
-		uv11 = {
-			0.5979,
-			0.131348,
-		},
-	},
-	achievement_trophy_kill_each_monster_grudge_bw_necromancer = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.533447,
-			0.099365,
-		},
-		uv11 = {
-			0.565186,
-			0.131348,
-		},
-	},
-	achievement_wizards_tower_created_all_potions = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.500732,
-			0.099365,
-		},
-		uv11 = {
-			0.532471,
-			0.131348,
-		},
-	},
-	achievement_dwarf_towers = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.468018,
-			0.099365,
-		},
-		uv11 = {
-			0.499756,
-			0.131348,
-		},
-	},
-	achievement_wizards_tower_veteran = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.435303,
-			0.099365,
-		},
-		uv11 = {
-			0.467041,
-			0.131348,
-		},
-	},
-	flames_forever = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.402588,
-			0.099365,
-		},
-		uv11 = {
-			0.434326,
-			0.131348,
-		},
-	},
-	achievement_exterior_cataclysm = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.369873,
-			0.099365,
-		},
-		uv11 = {
-			0.401611,
-			0.131348,
-		},
-	},
-	easy_come_easy_go = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.337158,
-			0.099365,
-		},
-		uv11 = {
-			0.368896,
-			0.131348,
-		},
-	},
-	achievement_exterior_legend = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.304443,
-			0.099365,
-		},
-		uv11 = {
-			0.336182,
-			0.131348,
-		},
-	},
-	achievement_interior_champion = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.271729,
-			0.099365,
-		},
-		uv11 = {
-			0.303467,
-			0.131348,
-		},
-	},
-	achievement_trophy_complete_all_career_grudge_challenges_bw_necromancer = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.239014,
-			0.099365,
-		},
-		uv11 = {
-			0.270752,
-			0.131348,
-		},
-	},
-	achievement_beacons_legend = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.206299,
-			0.099365,
-		},
-		uv11 = {
-			0.238037,
-			0.131348,
-		},
-	},
-	achievement_interior_meta = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.173584,
-			0.099365,
-		},
-		uv11 = {
-			0.205322,
-			0.131348,
-		},
-	},
-	achievement_interior_veteran = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.140869,
-			0.099365,
-		},
-		uv11 = {
-			0.172607,
-			0.131348,
-		},
-	},
-	the_soul_of_the_party = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.108154,
-			0.099365,
-		},
-		uv11 = {
-			0.139893,
-			0.131348,
-		},
-	},
-	achv_termite3_complete_veteran_icon = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.956299,
-		},
-		uv11 = {
-			0.107178,
-			0.988281,
-		},
-	},
-	achievement_beacons_veteran = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.92334,
-		},
-		uv11 = {
-			0.107178,
-			0.955322,
-		},
-	},
-	achievement_dwarf_barrel_carry = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.890381,
-		},
-		uv11 = {
-			0.107178,
-			0.922363,
-		},
-	},
-	achievement_dwarf_bells = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.857422,
-		},
-		uv11 = {
-			0.107178,
-			0.889404,
-		},
-	},
-	achievement_morris_destroy_skulls_within_time = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.824463,
-		},
-		uv11 = {
-			0.107178,
-			0.856445,
-		},
-	},
-	achievement_wizards_tower_recruit = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.791504,
-		},
-		uv11 = {
-			0.107178,
-			0.823486,
-		},
-	},
-	achievement_dwarf_chain_speed = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.758545,
-		},
-		uv11 = {
-			0.107178,
-			0.790527,
-		},
-	},
-	achievement_morris_destroy_skulls_before_hit = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.725586,
-		},
-		uv11 = {
-			0.107178,
-			0.757568,
-		},
-	},
-	achievement_morris_tzeentch = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.692627,
-		},
-		uv11 = {
-			0.107178,
-			0.724609,
-		},
-	},
-	achievement_interior_cataclysm = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.659668,
-		},
-		uv11 = {
-			0.107178,
-			0.69165,
-		},
-	},
-	achievement_dwarf_crows = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.626709,
-		},
-		uv11 = {
-			0.107178,
-			0.658691,
-		},
-	},
-	achievement_morris_kerillian_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.59375,
-		},
-		uv11 = {
-			0.107178,
-			0.625732,
-		},
-	},
-	achievement_dwarf_fireplace = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.560791,
-		},
-		uv11 = {
-			0.107178,
-			0.592773,
-		},
-	},
-	achievement_morris_kerillian_3 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.527832,
-		},
-		uv11 = {
-			0.107178,
-			0.559814,
-		},
-	},
-	achievement_dwarf_no_survivors = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.494873,
-		},
-		uv11 = {
-			0.107178,
-			0.526855,
-		},
-	},
-	achievement_morris_markus_3 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.461914,
-		},
-		uv11 = {
-			0.107178,
-			0.493896,
-		},
-	},
-	assistive_sacrifice = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.428955,
-		},
-		uv11 = {
-			0.107178,
-			0.460938,
-		},
-	},
-	achievement_wizards_tower_invisible_bridge = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.395996,
-		},
-		uv11 = {
-			0.107178,
-			0.427979,
-		},
-	},
-	achievement_wizards_trail_complete_veteran = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.363037,
-		},
-		uv11 = {
-			0.107178,
-			0.39502,
-		},
-	},
-	achievement_dwarf_pressure_pad = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.330078,
-		},
-		uv11 = {
-			0.107178,
-			0.362061,
-		},
-	},
-	achievement_morris_victor_2 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.297119,
-		},
-		uv11 = {
-			0.107178,
-			0.329102,
-		},
-	},
-	achievement_wizards_tower_time_challenge = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.26416,
-		},
-		uv11 = {
-			0.107178,
-			0.296143,
-		},
-	},
-	achievement_dwarf_rune = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.231201,
-		},
-		uv11 = {
-			0.107178,
-			0.263184,
-		},
-	},
-	achievement_morris_victor_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.198242,
-		},
-		uv11 = {
-			0.107178,
-			0.230225,
-		},
-	},
-	mistress_of_the_stave = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.165283,
-		},
-		uv11 = {
-			0.107178,
-			0.197266,
-		},
-	},
-	achievement_morris_bardin_3 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.132324,
-		},
-		uv11 = {
-			0.107178,
 			0.164307,
-		},
-	},
-	achievement_morris_victor_3 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.075439,
-			0.099365,
-		},
-		uv11 = {
-			0.107178,
-			0.131348,
-		},
-	},
-	achievement_wizards_trail_light_bonfires = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.95874,
-			0.066406,
-		},
-		uv11 = {
-			0.990479,
-			0.098389,
-		},
-	},
-	achievement_trophy_grudge_mark_kills_grind_bw_necromancer = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.926025,
-			0.066406,
-		},
-		uv11 = {
-			0.957764,
-			0.098389,
-		},
-	},
-	dead_reckoning = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.893311,
-			0.066406,
-		},
-		uv11 = {
-			0.925049,
-			0.098389,
-		},
-	},
-	achievement_dwarf_water = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.860596,
-			0.066406,
-		},
-		uv11 = {
-			0.892334,
-			0.098389,
-		},
-	},
-	creeping_death = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.827881,
-			0.066406,
-		},
-		uv11 = {
-			0.859619,
-			0.098389,
-		},
-	},
-	achievement_interior_legend = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.795166,
-			0.066406,
-		},
-		uv11 = {
-			0.826904,
-			0.098389,
-		},
-	},
-	achievement_wizards_tower_legend = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.762451,
-			0.066406,
-		},
-		uv11 = {
-			0.794189,
-			0.098389,
-		},
-	},
-	achievement_beacons_cataclysm = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.729736,
-			0.066406,
-		},
-		uv11 = {
-			0.761475,
-			0.098389,
-		},
-	},
-	achievement_exterior_champion = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.697021,
-			0.066406,
-		},
-		uv11 = {
-			0.72876,
-			0.098389,
-		},
-	},
-	achievement_exterior_veteran = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.664307,
-			0.066406,
-		},
-		uv11 = {
-			0.696045,
-			0.098389,
-		},
-	},
-	achievement_wizards_tower_wall_illusions = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.631592,
-			0.066406,
-		},
-		uv11 = {
-			0.66333,
-			0.098389,
-		},
-	},
-	achievement_exterior_meta = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.598877,
-			0.066406,
-		},
-		uv11 = {
-			0.630615,
-			0.098389,
 		},
 	},
 	wins_4 = {
@@ -10368,6 +8912,1490 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.566162,
+			0.132324,
+		},
+		uv11 = {
+			0.5979,
+			0.164307,
+		},
+	},
+	achievement_trophy_grudge_mark_kills_grind_wh_captain = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.533447,
+			0.132324,
+		},
+		uv11 = {
+			0.565186,
+			0.164307,
+		},
+	},
+	achievement_trophy_grudge_mark_kills_grind_dr_engineer = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.500732,
+			0.132324,
+		},
+		uv11 = {
+			0.532471,
+			0.164307,
+		},
+	},
+	ritual_of_the_dead = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.468018,
+			0.132324,
+		},
+		uv11 = {
+			0.499756,
+			0.164307,
+		},
+	},
+	achievement_trophy_skaven_stronghold_skarrik_kill_skaven_cata = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.435303,
+			0.132324,
+		},
+		uv11 = {
+			0.467041,
+			0.164307,
+		},
+	},
+	wins_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.402588,
+			0.132324,
+		},
+		uv11 = {
+			0.434326,
+			0.164307,
+		},
+	},
+	achievement_trophy_kill_each_monster_grudge_wh_zealot = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.369873,
+			0.132324,
+		},
+		uv11 = {
+			0.401611,
+			0.164307,
+		},
+	},
+	drained = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.337158,
+			0.132324,
+		},
+		uv11 = {
+			0.368896,
+			0.164307,
+		},
+	},
+	achievement_wizards_tower_barrels = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.304443,
+			0.132324,
+		},
+		uv11 = {
+			0.336182,
+			0.164307,
+		},
+	},
+	achievement_trophy_grudge_mark_kills_grind_wh_zealot = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.271729,
+			0.132324,
+		},
+		uv11 = {
+			0.303467,
+			0.164307,
+		},
+	},
+	achievement_trophy_scorpion_tier_3_season_2 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.239014,
+			0.132324,
+		},
+		uv11 = {
+			0.270752,
+			0.164307,
+		},
+	},
+	achievement_trophy_scorpion_weaves_complete_ranger_season_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.206299,
+			0.132324,
+		},
+		uv11 = {
+			0.238037,
+			0.164307,
+		},
+	},
+	achievement_trophy_thornsister_ancients_vengeful_embrace = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.173584,
+			0.132324,
+		},
+		uv11 = {
+			0.205322,
+			0.164307,
+		},
+	},
+	achievement_trophy_helmgart_lord_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.140869,
+			0.132324,
+		},
+		uv11 = {
+			0.172607,
+			0.164307,
+		},
+	},
+	achievement_trophy_grudge_mark_kills_grind_dr_ironbreaker = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.956299,
+		},
+		uv11 = {
+			0.139893,
+			0.988281,
+		},
+	},
+	achievement_morris_sienna_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.92334,
+		},
+		uv11 = {
+			0.139893,
+			0.955322,
+		},
+	},
+	achievement_wizards_tower_cataclysm = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.890381,
+		},
+		uv11 = {
+			0.139893,
+			0.922363,
+		},
+	},
+	achievement_wizards_trail_complete_recruit = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.857422,
+		},
+		uv11 = {
+			0.139893,
+			0.889404,
+		},
+	},
+	achievement_beacons_meta = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.824463,
+		},
+		uv11 = {
+			0.139893,
+			0.856445,
+		},
+	},
+	achievement_morris_markus_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.791504,
+		},
+		uv11 = {
+			0.139893,
+			0.823486,
+		},
+	},
+	achievement_wizards_trail_push_enemies_with_cog = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.758545,
+		},
+		uv11 = {
+			0.139893,
+			0.790527,
+		},
+	},
+	contribute_x_to_payloads = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.725586,
+		},
+		uv11 = {
+			0.139893,
+			0.757568,
+		},
+	},
+	achievement_wizards_trail_complete_champion = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.692627,
+		},
+		uv11 = {
+			0.139893,
+			0.724609,
+		},
+	},
+	achievement_dwarf_jump_puzzle = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.659668,
+		},
+		uv11 = {
+			0.139893,
+			0.69165,
+		},
+	},
+	achievement_wizards_trail_kill_enemies_with_sleigh = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.626709,
+		},
+		uv11 = {
+			0.139893,
+			0.658691,
+		},
+	},
+	achievement_trophy_kill_grudge_each_expedition_bw_necromancer = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.59375,
+		},
+		uv11 = {
+			0.139893,
+			0.625732,
+		},
+	},
+	achievement_beacons_champion = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.560791,
+		},
+		uv11 = {
+			0.139893,
+			0.592773,
+		},
+	},
+	achv_termite3_complete_cataclysm_icon = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.527832,
+		},
+		uv11 = {
+			0.139893,
+			0.559814,
+		},
+	},
+	achievement_morris_complete_arena_totems_alive = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.494873,
+		},
+		uv11 = {
+			0.139893,
+			0.526855,
+		},
+	},
+	achievement_morris_complete_arena_totems_destroyed = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.461914,
+		},
+		uv11 = {
+			0.139893,
+			0.493896,
+		},
+	},
+	achievement_interior_recruit = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.428955,
+		},
+		uv11 = {
+			0.139893,
+			0.460938,
+		},
+	},
+	achievement_wizards_tower_skulls = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.395996,
+		},
+		uv11 = {
+			0.139893,
+			0.427979,
+		},
+	},
+	achievement_morris_shadow_champions_active = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.363037,
+		},
+		uv11 = {
+			0.139893,
+			0.39502,
+		},
+	},
+	achievement_morris_slaanesh = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.330078,
+		},
+		uv11 = {
+			0.139893,
+			0.362061,
+		},
+	},
+	achievement_dwarf_speedrun = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.297119,
+		},
+		uv11 = {
+			0.139893,
+			0.329102,
+		},
+	},
+	achievement_dwarf_valaya_emote = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.26416,
+		},
+		uv11 = {
+			0.139893,
+			0.296143,
+		},
+	},
+	deaths_company = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.231201,
+		},
+		uv11 = {
+			0.139893,
+			0.263184,
+		},
+	},
+	mistress_of_necromancy = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.198242,
+		},
+		uv11 = {
+			0.139893,
+			0.230225,
+		},
+	},
+	achievement_wizards_tower_champion = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.165283,
+		},
+		uv11 = {
+			0.139893,
+			0.197266,
+		},
+	},
+	achievement_wizards_trail_break_icicles = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.132324,
+		},
+		uv11 = {
+			0.139893,
+			0.164307,
+		},
+	},
+	achv_termite2_timer_icon = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.95874,
+			0.099365,
+		},
+		uv11 = {
+			0.990479,
+			0.131348,
+		},
+	},
+	achievement_morris_citadel = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.926025,
+			0.099365,
+		},
+		uv11 = {
+			0.957764,
+			0.131348,
+		},
+	},
+	achievement_morris_complete_arena_no_upgrades = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.893311,
+			0.099365,
+		},
+		uv11 = {
+			0.925049,
+			0.131348,
+		},
+	},
+	achievement_dwarf_big_jump = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.860596,
+			0.099365,
+		},
+		uv11 = {
+			0.892334,
+			0.131348,
+		},
+	},
+	achievement_morris_khorne = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.827881,
+			0.099365,
+		},
+		uv11 = {
+			0.859619,
+			0.131348,
+		},
+	},
+	achievement_morris_kerillian_2 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.795166,
+			0.099365,
+		},
+		uv11 = {
+			0.826904,
+			0.131348,
+		},
+	},
+	achievement_wizards_trail_complete_legend = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.762451,
+			0.099365,
+		},
+		uv11 = {
+			0.794189,
+			0.131348,
+		},
+	},
+	achievement_morris_nurgle = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.729736,
+			0.099365,
+		},
+		uv11 = {
+			0.761475,
+			0.131348,
+		},
+	},
+	achievement_morris_sienna_3 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.697021,
+			0.099365,
+		},
+		uv11 = {
+			0.72876,
+			0.131348,
+		},
+	},
+	achievement_dwarf_pressure = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.664307,
+			0.099365,
+		},
+		uv11 = {
+			0.696045,
+			0.131348,
+		},
+	},
+	achievement_morris_sienna_2 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.631592,
+			0.099365,
+		},
+		uv11 = {
+			0.66333,
+			0.131348,
+		},
+	},
+	achievement_dwarf_push = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.598877,
+			0.099365,
+		},
+		uv11 = {
+			0.630615,
+			0.131348,
+		},
+	},
+	achievement_trophy_kill_each_monster_grudge_bw_necromancer = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.566162,
+			0.099365,
+		},
+		uv11 = {
+			0.5979,
+			0.131348,
+		},
+	},
+	achievement_wizards_tower_created_all_potions = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.533447,
+			0.099365,
+		},
+		uv11 = {
+			0.565186,
+			0.131348,
+		},
+	},
+	achievement_dwarf_towers = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.500732,
+			0.099365,
+		},
+		uv11 = {
+			0.532471,
+			0.131348,
+		},
+	},
+	achievement_wizards_tower_veteran = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.468018,
+			0.099365,
+		},
+		uv11 = {
+			0.499756,
+			0.131348,
+		},
+	},
+	flames_forever = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.435303,
+			0.099365,
+		},
+		uv11 = {
+			0.467041,
+			0.131348,
+		},
+	},
+	achievement_exterior_cataclysm = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.402588,
+			0.099365,
+		},
+		uv11 = {
+			0.434326,
+			0.131348,
+		},
+	},
+	easy_come_easy_go = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.369873,
+			0.099365,
+		},
+		uv11 = {
+			0.401611,
+			0.131348,
+		},
+	},
+	achievement_exterior_legend = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.337158,
+			0.099365,
+		},
+		uv11 = {
+			0.368896,
+			0.131348,
+		},
+	},
+	achievement_interior_champion = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.304443,
+			0.099365,
+		},
+		uv11 = {
+			0.336182,
+			0.131348,
+		},
+	},
+	achievement_trophy_complete_all_career_grudge_challenges_bw_necromancer = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.271729,
+			0.099365,
+		},
+		uv11 = {
+			0.303467,
+			0.131348,
+		},
+	},
+	achievement_beacons_legend = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.239014,
+			0.099365,
+		},
+		uv11 = {
+			0.270752,
+			0.131348,
+		},
+	},
+	achievement_interior_meta = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.206299,
+			0.099365,
+		},
+		uv11 = {
+			0.238037,
+			0.131348,
+		},
+	},
+	achievement_interior_veteran = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.173584,
+			0.099365,
+		},
+		uv11 = {
+			0.205322,
+			0.131348,
+		},
+	},
+	the_soul_of_the_party = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.140869,
+			0.099365,
+		},
+		uv11 = {
+			0.172607,
+			0.131348,
+		},
+	},
+	achv_termite3_complete_veteran_icon = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.108154,
+			0.099365,
+		},
+		uv11 = {
+			0.139893,
+			0.131348,
+		},
+	},
+	achievement_beacons_veteran = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.956299,
+		},
+		uv11 = {
+			0.107178,
+			0.988281,
+		},
+	},
+	achievement_dwarf_barrel_carry = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.92334,
+		},
+		uv11 = {
+			0.107178,
+			0.955322,
+		},
+	},
+	achievement_dwarf_bells = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.890381,
+		},
+		uv11 = {
+			0.107178,
+			0.922363,
+		},
+	},
+	achievement_morris_destroy_skulls_within_time = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.857422,
+		},
+		uv11 = {
+			0.107178,
+			0.889404,
+		},
+	},
+	achievement_wizards_tower_recruit = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.824463,
+		},
+		uv11 = {
+			0.107178,
+			0.856445,
+		},
+	},
+	achievement_dwarf_chain_speed = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.791504,
+		},
+		uv11 = {
+			0.107178,
+			0.823486,
+		},
+	},
+	achievement_morris_destroy_skulls_before_hit = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.758545,
+		},
+		uv11 = {
+			0.107178,
+			0.790527,
+		},
+	},
+	achievement_morris_tzeentch = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.725586,
+		},
+		uv11 = {
+			0.107178,
+			0.757568,
+		},
+	},
+	achievement_interior_cataclysm = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.692627,
+		},
+		uv11 = {
+			0.107178,
+			0.724609,
+		},
+	},
+	achievement_dwarf_crows = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.659668,
+		},
+		uv11 = {
+			0.107178,
+			0.69165,
+		},
+	},
+	achievement_morris_kerillian_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.626709,
+		},
+		uv11 = {
+			0.107178,
+			0.658691,
+		},
+	},
+	achievement_dwarf_fireplace = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.59375,
+		},
+		uv11 = {
+			0.107178,
+			0.625732,
+		},
+	},
+	achievement_morris_kerillian_3 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.560791,
+		},
+		uv11 = {
+			0.107178,
+			0.592773,
+		},
+	},
+	achievement_dwarf_no_survivors = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.527832,
+		},
+		uv11 = {
+			0.107178,
+			0.559814,
+		},
+	},
+	achievement_morris_markus_3 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.494873,
+		},
+		uv11 = {
+			0.107178,
+			0.526855,
+		},
+	},
+	assistive_sacrifice = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.461914,
+		},
+		uv11 = {
+			0.107178,
+			0.493896,
+		},
+	},
+	achievement_wizards_tower_invisible_bridge = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.428955,
+		},
+		uv11 = {
+			0.107178,
+			0.460938,
+		},
+	},
+	achievement_wizards_trail_complete_veteran = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.395996,
+		},
+		uv11 = {
+			0.107178,
+			0.427979,
+		},
+	},
+	achievement_dwarf_pressure_pad = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.363037,
+		},
+		uv11 = {
+			0.107178,
+			0.39502,
+		},
+	},
+	achievement_morris_victor_2 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.330078,
+		},
+		uv11 = {
+			0.107178,
+			0.362061,
+		},
+	},
+	achievement_wizards_tower_time_challenge = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.297119,
+		},
+		uv11 = {
+			0.107178,
+			0.329102,
+		},
+	},
+	achievement_dwarf_rune = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.26416,
+		},
+		uv11 = {
+			0.107178,
+			0.296143,
+		},
+	},
+	achievement_morris_victor_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.231201,
+		},
+		uv11 = {
+			0.107178,
+			0.263184,
+		},
+	},
+	mistress_of_the_stave = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.198242,
+		},
+		uv11 = {
+			0.107178,
+			0.230225,
+		},
+	},
+	achievement_morris_bardin_3 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.165283,
+		},
+		uv11 = {
+			0.107178,
+			0.197266,
+		},
+	},
+	achievement_morris_victor_3 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.132324,
+		},
+		uv11 = {
+			0.107178,
+			0.164307,
+		},
+	},
+	achievement_wizards_trail_light_bonfires = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.075439,
+			0.099365,
+		},
+		uv11 = {
+			0.107178,
+			0.131348,
+		},
+	},
+	achievement_trophy_grudge_mark_kills_grind_bw_necromancer = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.95874,
+			0.066406,
+		},
+		uv11 = {
+			0.990479,
+			0.098389,
+		},
+	},
+	dead_reckoning = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.926025,
+			0.066406,
+		},
+		uv11 = {
+			0.957764,
+			0.098389,
+		},
+	},
+	achievement_dwarf_water = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.893311,
+			0.066406,
+		},
+		uv11 = {
+			0.925049,
+			0.098389,
+		},
+	},
+	creeping_death = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.860596,
+			0.066406,
+		},
+		uv11 = {
+			0.892334,
+			0.098389,
+		},
+	},
+	achievement_interior_legend = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.827881,
+			0.066406,
+		},
+		uv11 = {
+			0.859619,
+			0.098389,
+		},
+	},
+	achievement_wizards_tower_legend = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.795166,
+			0.066406,
+		},
+		uv11 = {
+			0.826904,
+			0.098389,
+		},
+	},
+	achievement_beacons_cataclysm = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.762451,
+			0.066406,
+		},
+		uv11 = {
+			0.794189,
+			0.098389,
+		},
+	},
+	achievement_exterior_champion = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.729736,
+			0.066406,
+		},
+		uv11 = {
+			0.761475,
+			0.098389,
+		},
+	},
+	achievement_exterior_veteran = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.697021,
+			0.066406,
+		},
+		uv11 = {
+			0.72876,
+			0.098389,
+		},
+	},
+	achievement_wizards_tower_wall_illusions = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.664307,
+			0.066406,
+		},
+		uv11 = {
+			0.696045,
+			0.098389,
+		},
+	},
+	achievement_exterior_meta = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.631592,
+			0.066406,
+		},
+		uv11 = {
+			0.66333,
+			0.098389,
+		},
+	},
+	achievement_exterior_recruit = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.598877,
+			0.066406,
+		},
+		uv11 = {
+			0.630615,
+			0.098389,
+		},
+	},
+	achievement_morris_bardin_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.566162,
 			0.066406,
 		},
 		uv11 = {
@@ -10375,7 +10403,7 @@ achievement_icons_atlas = {
 			0.098389,
 		},
 	},
-	achievement_morris_bardin_1 = {
+	achievement_morris_destroy_locis = {
 		size = {
 			130,
 			131,
@@ -10389,7 +10417,7 @@ achievement_icons_atlas = {
 			0.098389,
 		},
 	},
-	achievement_morris_destroy_locis = {
+	wins_3 = {
 		size = {
 			130,
 			131,
@@ -10403,7 +10431,7 @@ achievement_icons_atlas = {
 			0.098389,
 		},
 	},
-	achievement_exterior_recruit = {
+	drag_heroes = {
 		size = {
 			130,
 			131,
@@ -10417,7 +10445,7 @@ achievement_icons_atlas = {
 			0.098389,
 		},
 	},
-	wins_3 = {
+	destroy_x_chains_as_team = {
 		size = {
 			130,
 			131,
@@ -10431,7 +10459,7 @@ achievement_icons_atlas = {
 			0.098389,
 		},
 	},
-	drag_heroes = {
+	sally_forth = {
 		size = {
 			130,
 			131,
@@ -10445,7 +10473,7 @@ achievement_icons_atlas = {
 			0.098389,
 		},
 	},
-	sally_forth = {
+	still_fiery_darlings = {
 		size = {
 			130,
 			131,
@@ -10459,7 +10487,7 @@ achievement_icons_atlas = {
 			0.098389,
 		},
 	},
-	still_fiery_darlings = {
+	air_gutter_runner = {
 		size = {
 			130,
 			131,
@@ -10473,7 +10501,7 @@ achievement_icons_atlas = {
 			0.098389,
 		},
 	},
-	air_gutter_runner = {
+	achievement_morris_complete_all_challenges = {
 		size = {
 			130,
 			131,
@@ -10487,7 +10515,7 @@ achievement_icons_atlas = {
 			0.098389,
 		},
 	},
-	achievement_morris_complete_all_challenges = {
+	achievement_wizards_tower_note_puzzle = {
 		size = {
 			130,
 			131,
@@ -10501,7 +10529,7 @@ achievement_icons_atlas = {
 			0.098389,
 		},
 	},
-	achievement_wizards_tower_note_puzzle = {
+	achievement_beacons_recruit = {
 		size = {
 			130,
 			131,
@@ -10515,7 +10543,7 @@ achievement_icons_atlas = {
 			0.098389,
 		},
 	},
-	achievement_beacons_recruit = {
+	unexpected_saviour = {
 		size = {
 			130,
 			131,
@@ -10529,7 +10557,7 @@ achievement_icons_atlas = {
 			0.098389,
 		},
 	},
-	unexpected_saviour = {
+	achievement_morris_bardin_2 = {
 		size = {
 			130,
 			131,
@@ -10543,7 +10571,7 @@ achievement_icons_atlas = {
 			0.098389,
 		},
 	},
-	achievement_morris_bardin_2 = {
+	achievement_wizards_trail_complete_all_challenges = {
 		size = {
 			130,
 			131,
@@ -10557,7 +10585,7 @@ achievement_icons_atlas = {
 			0.098389,
 		},
 	},
-	achievement_wizards_trail_complete_all_challenges = {
+	achievement_morris_markus_2 = {
 		size = {
 			130,
 			131,
@@ -10571,7 +10599,7 @@ achievement_icons_atlas = {
 			0.098389,
 		},
 	},
-	achievement_morris_markus_2 = {
+	achievement_wizards_tower_guardian_of_lustria = {
 		size = {
 			130,
 			131,
@@ -10585,7 +10613,7 @@ achievement_icons_atlas = {
 			0.098389,
 		},
 	},
-	achievement_wizards_tower_guardian_of_lustria = {
+	achievement_morris_complete_arena = {
 		size = {
 			130,
 			131,
@@ -10599,7 +10627,7 @@ achievement_icons_atlas = {
 			0.988281,
 		},
 	},
-	achievement_morris_complete_arena = {
+	achievement_wizards_trail_complete_cataclysm = {
 		size = {
 			130,
 			131,
@@ -10613,7 +10641,7 @@ achievement_icons_atlas = {
 			0.955322,
 		},
 	},
-	achievement_wizards_trail_complete_cataclysm = {
+	unlimited_power = {
 		size = {
 			130,
 			131,
@@ -10627,7 +10655,7 @@ achievement_icons_atlas = {
 			0.922363,
 		},
 	},
-	unlimited_power = {
+	bile_troll_vomit = {
 		size = {
 			130,
 			131,
@@ -10641,7 +10669,7 @@ achievement_icons_atlas = {
 			0.889404,
 		},
 	},
-	bile_troll_vomit = {
+	achv_termite2_water_icon = {
 		size = {
 			130,
 			131,
@@ -10655,7 +10683,7 @@ achievement_icons_atlas = {
 			0.856445,
 		},
 	},
-	achv_termite2_water_icon = {
+	achv_termite1_towers_icon = {
 		size = {
 			130,
 			131,
@@ -10669,7 +10697,7 @@ achievement_icons_atlas = {
 			0.823486,
 		},
 	},
-	achv_termite1_towers_icon = {
+	achv_termite2_complete_champion_icon = {
 		size = {
 			130,
 			131,
@@ -10683,7 +10711,7 @@ achievement_icons_atlas = {
 			0.790527,
 		},
 	},
-	achv_termite2_complete_champion_icon = {
+	achv_termite3_complete_champion_icon = {
 		size = {
 			130,
 			131,
@@ -10697,7 +10725,7 @@ achievement_icons_atlas = {
 			0.757568,
 		},
 	},
-	achv_termite3_complete_champion_icon = {
+	achv_termite3_generator = {
 		size = {
 			130,
 			131,
@@ -10711,7 +10739,7 @@ achievement_icons_atlas = {
 			0.724609,
 		},
 	},
-	achv_termite3_generator = {
+	bile_troll_3 = {
 		size = {
 			130,
 			131,
@@ -10725,7 +10753,7 @@ achievement_icons_atlas = {
 			0.69165,
 		},
 	},
-	bile_troll_3 = {
+	contribute_x_to_capture_points = {
 		size = {
 			130,
 			131,
@@ -10739,7 +10767,7 @@ achievement_icons_atlas = {
 			0.658691,
 		},
 	},
-	contribute_x_to_capture_points = {
+	gas_combo = {
 		size = {
 			130,
 			131,
@@ -10753,7 +10781,7 @@ achievement_icons_atlas = {
 			0.625732,
 		},
 	},
-	packmaster_2 = {
+	kill_hoisted_hero = {
 		size = {
 			130,
 			131,
@@ -10767,7 +10795,7 @@ achievement_icons_atlas = {
 			0.592773,
 		},
 	},
-	globadier_1 = {
+	globadier_2 = {
 		size = {
 			130,
 			131,
@@ -10781,7 +10809,7 @@ achievement_icons_atlas = {
 			0.559814,
 		},
 	},
-	hero_eliminations_3 = {
+	globadier_4 = {
 		size = {
 			130,
 			131,
@@ -10795,7 +10823,7 @@ achievement_icons_atlas = {
 			0.526855,
 		},
 	},
-	kill_x_monsters = {
+	achv_termite1_waystone_timer_hard_icon = {
 		size = {
 			130,
 			131,
@@ -10809,7 +10837,7 @@ achievement_icons_atlas = {
 			0.493896,
 		},
 	},
-	achv_termite1_waystone_timer_hard_icon = {
+	unrestful_bonefire = {
 		size = {
 			130,
 			131,
@@ -10823,7 +10851,7 @@ achievement_icons_atlas = {
 			0.460938,
 		},
 	},
-	unrestful_bonefire = {
+	break_hero_shield = {
 		size = {
 			130,
 			131,
@@ -10837,7 +10865,7 @@ achievement_icons_atlas = {
 			0.427979,
 		},
 	},
-	break_hero_shield = {
+	achv_termite3_portal_icon = {
 		size = {
 			130,
 			131,
@@ -10851,7 +10879,7 @@ achievement_icons_atlas = {
 			0.39502,
 		},
 	},
-	achv_termite3_portal_icon = {
+	achv_termite1_complete_recruit_icon = {
 		size = {
 			130,
 			131,
@@ -10865,7 +10893,7 @@ achievement_icons_atlas = {
 			0.362061,
 		},
 	},
-	achv_termite1_complete_recruit_icon = {
+	warpfire_thrower_5 = {
 		size = {
 			130,
 			131,
@@ -10879,7 +10907,7 @@ achievement_icons_atlas = {
 			0.329102,
 		},
 	},
-	gas_combo = {
+	gutter_runner_5 = {
 		size = {
 			130,
 			131,
@@ -10893,7 +10921,7 @@ achievement_icons_atlas = {
 			0.296143,
 		},
 	},
-	hero_eliminations_5 = {
+	gas_combo_pounce = {
 		size = {
 			130,
 			131,
@@ -10907,7 +10935,7 @@ achievement_icons_atlas = {
 			0.263184,
 		},
 	},
-	hero_eliminations_1 = {
+	achv_termite1_skaven_markings_icon = {
 		size = {
 			130,
 			131,
@@ -10921,7 +10949,7 @@ achievement_icons_atlas = {
 			0.230225,
 		},
 	},
-	achv_termite1_skaven_markings_icon = {
+	achv_termite2_complete_veteran_icon = {
 		size = {
 			130,
 			131,
@@ -10935,7 +10963,7 @@ achievement_icons_atlas = {
 			0.197266,
 		},
 	},
-	achv_termite2_complete_veteran_icon = {
+	globadier_3 = {
 		size = {
 			130,
 			131,
@@ -10949,7 +10977,7 @@ achievement_icons_atlas = {
 			0.164307,
 		},
 	},
-	hoist_heroes = {
+	clutch_revive = {
 		size = {
 			130,
 			131,
@@ -10963,7 +10991,7 @@ achievement_icons_atlas = {
 			0.131348,
 		},
 	},
-	clutch_revive = {
+	achv_termite3_searchlight_icon = {
 		size = {
 			130,
 			131,
@@ -10977,7 +11005,7 @@ achievement_icons_atlas = {
 			0.098389,
 		},
 	},
-	achv_termite3_searchlight_icon = {
+	bile_troll_1 = {
 		size = {
 			130,
 			131,
@@ -10991,7 +11019,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	bile_troll_1 = {
+	achv_dwarf_cataclysm_icon = {
 		size = {
 			130,
 			131,
@@ -11005,7 +11033,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	achv_dwarf_cataclysm_icon = {
+	wall_of_bone = {
 		size = {
 			130,
 			131,
@@ -11019,7 +11047,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	wall_of_bone = {
+	achv_termite2_all_challenges_icon = {
 		size = {
 			130,
 			131,
@@ -11033,7 +11061,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	achv_termite2_all_challenges_icon = {
+	achv_termite2_mushrooms_icon = {
 		size = {
 			130,
 			131,
@@ -11047,7 +11075,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	achv_termite2_mushrooms_icon = {
+	achv_termite2_complete_cataclysm_icon = {
 		size = {
 			130,
 			131,
@@ -11061,7 +11089,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	achv_termite2_complete_cataclysm_icon = {
+	achv_termite1_complete_legend_icon = {
 		size = {
 			130,
 			131,
@@ -11075,7 +11103,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	achv_termite1_complete_legend_icon = {
+	warpfire_thrower_4 = {
 		size = {
 			130,
 			131,
@@ -11089,7 +11117,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	destroy_x_chains_as_team = {
+	achv_termite2_complete_legend_icon = {
 		size = {
 			130,
 			131,
@@ -11103,7 +11131,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	achv_termite2_complete_legend_icon = {
+	achv_termite1_bell_icon = {
 		size = {
 			130,
 			131,
@@ -11117,7 +11145,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	achv_termite1_bell_icon = {
+	achv_termite3_collectibles = {
 		size = {
 			130,
 			131,
@@ -11131,7 +11159,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	achv_termite3_collectibles = {
+	achv_termite3_complete_all_icon = {
 		size = {
 			130,
 			131,
@@ -11145,7 +11173,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	achv_termite3_complete_all_icon = {
+	hero_eliminations_4 = {
 		size = {
 			130,
 			131,
@@ -11159,7 +11187,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	gas_combo_pounce = {
+	achv_termite1_complete_veteran_icon = {
 		size = {
 			130,
 			131,
@@ -11173,7 +11201,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	achv_termite1_complete_veteran_icon = {
+	bile_troll_2 = {
 		size = {
 			130,
 			131,
@@ -11187,7 +11215,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	bile_troll_2 = {
+	globadier_1 = {
 		size = {
 			130,
 			131,
@@ -11201,7 +11229,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	kill_invisible = {
+	hero_eliminations_2 = {
 		size = {
 			130,
 			131,
@@ -11215,7 +11243,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	globadier_2 = {
+	achv_termite1_complete_all_icon = {
 		size = {
 			130,
 			131,
@@ -11229,7 +11257,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	achv_termite1_complete_all_icon = {
+	whoosh_clang = {
 		size = {
 			130,
 			131,
@@ -11243,7 +11271,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	whoosh_clang = {
+	hero_objective_reach = {
 		size = {
 			130,
 			131,
@@ -11257,7 +11285,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	globadier_3 = {
+	achv_termite3_complete_recruit_icon = {
 		size = {
 			130,
 			131,
@@ -11271,7 +11299,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	achv_termite3_complete_recruit_icon = {
+	kill_ko_hero = {
 		size = {
 			130,
 			131,
@@ -11285,7 +11313,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	globadier_4 = {
+	achv_termite1_time_challenge_icon = {
 		size = {
 			130,
 			131,
@@ -11299,7 +11327,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	achv_termite1_time_challenge_icon = {
+	achv_termite1_complete_cataclysm_icon = {
 		size = {
 			130,
 			131,
@@ -11313,7 +11341,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	achv_termite1_complete_cataclysm_icon = {
+	achv_termite3_complete_legend_icon = {
 		size = {
 			130,
 			131,
@@ -11327,7 +11355,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	achv_termite3_complete_legend_icon = {
+	achv_termite1_waystone_timer_easy_icon = {
 		size = {
 			130,
 			131,
@@ -11341,7 +11369,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	achv_termite1_waystone_timer_easy_icon = {
+	achv_termite2_complete_recruit_icon = {
 		size = {
 			130,
 			131,
@@ -11355,7 +11383,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	achv_termite2_complete_recruit_icon = {
+	achv_termite1_complete_champion_icon = {
 		size = {
 			130,
 			131,
@@ -11369,7 +11397,7 @@ achievement_icons_atlas = {
 			0.06543,
 		},
 	},
-	achv_termite1_complete_champion_icon = {
+	hero_eliminations_1 = {
 		size = {
 			130,
 			131,
@@ -11397,7 +11425,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	hero_eliminations_2 = {
+	gutter_runner_4 = {
 		size = {
 			130,
 			131,
@@ -11411,7 +11439,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	packmaster_1 = {
+	hero_eliminations_3 = {
 		size = {
 			130,
 			131,
@@ -11425,7 +11453,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	globadier_damage = {
+	pounce_heroes = {
 		size = {
 			130,
 			131,
@@ -11439,7 +11467,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	push_hero_off_map = {
+	rat_ogre_3 = {
 		size = {
 			130,
 			131,
@@ -11453,7 +11481,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	rat_ogre_attack = {
+	hero_eliminations_5 = {
 		size = {
 			130,
 			131,
@@ -11467,7 +11495,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	gutter_runner_1 = {
+	packmaster_5 = {
 		size = {
 			130,
 			131,
@@ -11481,7 +11509,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	pounce_heroes = {
+	ratling_gunner_4 = {
 		size = {
 			130,
 			131,
@@ -11495,7 +11523,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	ratling_gunner_4 = {
+	packmaster_1 = {
 		size = {
 			130,
 			131,
@@ -11509,7 +11537,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	gutter_runner_5 = {
+	rat_ogre_2 = {
 		size = {
 			130,
 			131,
@@ -11523,7 +11551,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	ratling_gunner_2 = {
+	gutter_runner_2 = {
 		size = {
 			130,
 			131,
@@ -11537,7 +11565,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	kill_hoisted_hero = {
+	kill_invisible = {
 		size = {
 			130,
 			131,
@@ -11565,7 +11593,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	kill_ko_hero = {
+	ratling_gunner_2 = {
 		size = {
 			130,
 			131,
@@ -11579,7 +11607,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	rat_ogre_2 = {
+	kill_x_monsters = {
 		size = {
 			130,
 			131,
@@ -11593,7 +11621,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	gutter_runner_4 = {
+	gutter_runner_1 = {
 		size = {
 			130,
 			131,
@@ -11607,7 +11635,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	hero_objective_reach = {
+	rat_ogre_1 = {
 		size = {
 			130,
 			131,
@@ -11621,7 +11649,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	rat_ogre_1 = {
+	push_hero_off_map = {
 		size = {
 			130,
 			131,
@@ -11635,7 +11663,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	ratling_gunner_1 = {
+	hoist_heroes = {
 		size = {
 			130,
 			131,
@@ -11649,7 +11677,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	gutter_runner_2 = {
+	globadier_damage = {
 		size = {
 			130,
 			131,
@@ -11663,7 +11691,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	hero_eliminations_4 = {
+	packmaster_2 = {
 		size = {
 			130,
 			131,
@@ -11677,7 +11705,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	packmaster_3 = {
+	ratling_gunner_3 = {
 		size = {
 			130,
 			131,
@@ -11691,7 +11719,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	rat_ogre_3 = {
+	ratling_gunner_1 = {
 		size = {
 			130,
 			131,
@@ -11705,7 +11733,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	packmaster_4 = {
+	packmaster_3 = {
 		size = {
 			130,
 			131,
@@ -11733,7 +11761,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	ratling_gunner_3 = {
+	packmaster_4 = {
 		size = {
 			130,
 			131,
@@ -11747,7 +11775,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	packmaster_5 = {
+	revive = {
 		size = {
 			130,
 			131,
@@ -11761,7 +11789,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	socket_x_items = {
+	rescue_prisoners = {
 		size = {
 			130,
 			131,
@@ -11775,7 +11803,7 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	rat_ogre_leap = {
+	rat_ogre_attack = {
 		size = {
 			130,
 			131,
@@ -11789,88 +11817,18 @@ achievement_icons_atlas = {
 			0.032471,
 		},
 	},
-	warpfire_thrower_3 = {
+	rat_ogre_leap = {
 		size = {
 			130,
 			131,
 		},
 		uv00 = {
 			0.000488,
-			0.960449,
+			0.935303,
 		},
 		uv11 = {
 			0.032227,
-			0.992432,
-		},
-	},
-	warpfire_thrower_1 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.000488,
-			0.92749,
-		},
-		uv11 = {
-			0.032227,
-			0.959473,
-		},
-	},
-	rescue_prisoners = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.000488,
-			0.894531,
-		},
-		uv11 = {
-			0.032227,
-			0.926514,
-		},
-	},
-	warpfire_thrower_5 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.000488,
-			0.861572,
-		},
-		uv11 = {
-			0.032227,
-			0.893555,
-		},
-	},
-	revive = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.000488,
-			0.828613,
-		},
-		uv11 = {
-			0.032227,
-			0.860596,
-		},
-	},
-	warpfire_thrower_2 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.000488,
-			0.795654,
-		},
-		uv11 = {
-			0.032227,
-			0.827637,
+			0.967285,
 		},
 	},
 	revive_interrupt = {
@@ -11880,25 +11838,11 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.000488,
-			0.762695,
+			0.902344,
 		},
 		uv11 = {
 			0.032227,
-			0.794678,
-		},
-	},
-	warpfire_thrower_4 = {
-		size = {
-			130,
-			131,
-		},
-		uv00 = {
-			0.000488,
-			0.729736,
-		},
-		uv11 = {
-			0.032227,
-			0.761719,
+			0.934326,
 		},
 	},
 	safe_zone = {
@@ -11908,14 +11852,84 @@ achievement_icons_atlas = {
 		},
 		uv00 = {
 			0.000488,
-			0.696777,
+			0.869385,
 		},
 		uv11 = {
 			0.032227,
-			0.72876,
+			0.901367,
 		},
 	},
-	quest_book_year_of_the_rat = {
+	socket_x_items = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.000488,
+			0.836426,
+		},
+		uv11 = {
+			0.032227,
+			0.868408,
+		},
+	},
+	warpfire_thrower_1 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.000488,
+			0.803467,
+		},
+		uv11 = {
+			0.032227,
+			0.835449,
+		},
+	},
+	warpfire_thrower_2 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.000488,
+			0.770508,
+		},
+		uv11 = {
+			0.032227,
+			0.80249,
+		},
+	},
+	warpfire_thrower_3 = {
+		size = {
+			130,
+			131,
+		},
+		uv00 = {
+			0.000488,
+			0.737549,
+		},
+		uv11 = {
+			0.032227,
+			0.769531,
+		},
+	},
+	quest_book_mondstille = {
+		size = {
+			165,
+			163,
+		},
+		uv00 = {
+			0.000488,
+			0.696777,
+		},
+		uv11 = {
+			0.040771,
+			0.736572,
+		},
+	},
+	quest_book_tome = {
 		size = {
 			165,
 			163,
@@ -11929,7 +11943,7 @@ achievement_icons_atlas = {
 			0.695801,
 		},
 	},
-	quest_book_tome = {
+	quest_book_saltzpyre = {
 		size = {
 			165,
 			163,
@@ -11943,7 +11957,7 @@ achievement_icons_atlas = {
 			0.655029,
 		},
 	},
-	quest_book_saltzpyre = {
+	quest_book_year_of_the_rat = {
 		size = {
 			165,
 			163,
@@ -11985,7 +11999,7 @@ achievement_icons_atlas = {
 			0.532715,
 		},
 	},
-	quest_book_mondstille = {
+	quest_book_grimoire = {
 		size = {
 			165,
 			163,
@@ -12027,7 +12041,7 @@ achievement_icons_atlas = {
 			0.4104,
 		},
 	},
-	quest_book_grimoire = {
+	quest_book_event_summer = {
 		size = {
 			165,
 			163,
@@ -12069,7 +12083,7 @@ achievement_icons_atlas = {
 			0.288086,
 		},
 	},
-	quest_book_event_summer = {
+	quest_book_event_celebration = {
 		size = {
 			165,
 			163,
@@ -12097,7 +12111,7 @@ achievement_icons_atlas = {
 			0.206543,
 		},
 	},
-	quest_book_bardin = {
+	quest_book_event_dwarf_fest = {
 		size = {
 			165,
 			163,
@@ -12111,7 +12125,7 @@ achievement_icons_atlas = {
 			0.165771,
 		},
 	},
-	quest_book_event_celebration = {
+	quest_book_bardin = {
 		size = {
 			165,
 			163,

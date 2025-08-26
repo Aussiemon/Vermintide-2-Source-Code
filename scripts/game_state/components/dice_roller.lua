@@ -220,48 +220,6 @@ DiceRoller._request_from_backend = function (self, hero_name)
 	backend_items:generate_item_server_loot(dice, difficulty, level_start, level_end, hero_name, dlc_name)
 end
 
-DiceRoller._check_for_achievement = function (self, reward_backend_id)
-	local backend_items = Managers.backend:get_interface("items")
-	local hero_trinkets = backend_items:get_filtered_items("trinket_as_hero and equipped_by == current_hero")
-
-	fassert(#hero_trinkets < 2, "There are more than two items")
-
-	local trinket = hero_trinkets[1]
-
-	if trinket then
-		local item = backend_items:get_item_from_id(reward_backend_id)
-		local item_data = ItemMasterList[item.key]
-		local can_wield = item_data.can_wield
-
-		if #can_wield > 1 then
-			return
-		end
-
-		local trinket_traits = trinket.traits
-		local trinket_as_hero
-
-		for _, trait_name in pairs(trinket_traits) do
-			local trait = BuffUtils.get_buff_template(trait_name)
-			local trinket_hero = trait.roll_dice_as_hero
-
-			if trinket_hero then
-				trinket_as_hero = trinket_hero
-
-				break
-			end
-		end
-
-		if table.find(can_wield, trinket_as_hero) then
-			local player_manager = Managers.player
-			local player = player_manager:local_player()
-			local stats_id = player:stats_id()
-			local statistics_db = player_manager:statistics_db()
-
-			statistics_db:set_stat(stats_id, "win_item_as_" .. trinket_as_hero, 1)
-		end
-	end
-end
-
 DiceRoller.poll_for_backend_result = function (self)
 	if self._got_backend_result then
 		return true
@@ -271,8 +229,6 @@ DiceRoller.poll_for_backend_result = function (self)
 	local successes, win_list, reward_backend_id, level_rewards = backend_items:check_for_loot()
 
 	if successes then
-		self:_check_for_achievement(reward_backend_id)
-
 		self._successes = successes
 		self._reward_backend_id = reward_backend_id
 		self._win_list = win_list

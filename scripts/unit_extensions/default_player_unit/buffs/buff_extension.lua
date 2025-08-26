@@ -177,11 +177,6 @@ BuffExtension.add_buff = function (self, template_name, params)
 	local id = self:claim_buff_id(template_name)
 	local world = self.world
 	local is_server = self.is_server
-
-	if self._num_buffs == 0 then
-		Managers.state.entity:system("buff_system"):set_buff_ext_active(unit, true)
-	end
-
 	local first_buff
 	local parent_buff_shared_table = buff_template.create_parent_buff_shared_table and {}
 	local sub_buffs_added = 0
@@ -494,6 +489,10 @@ BuffExtension.add_buff = function (self, template_name, params)
 	end
 
 	if sub_buffs_added > 0 then
+		if self._num_buffs == sub_buffs_added then
+			Managers.state.entity:system("buff_system"):set_buff_ext_active(unit, true)
+		end
+
 		self._buff_id_refs[id] = sub_buffs_added
 
 		local deactivation_effect = buff_template.deactivation_effect
@@ -887,7 +886,7 @@ end
 
 BuffExtension.remove_buff = function (self, id, skip_net_sync)
 	if not id then
-		return
+		return 0
 	end
 
 	local buffs = self._buffs
@@ -897,6 +896,8 @@ BuffExtension.remove_buff = function (self, id, skip_net_sync)
 
 	buff_extension_function_params.t = end_time
 	buff_extension_function_params.end_time = end_time
+
+	local num_buffs_removed = 0
 
 	for i = 1, self._num_buffs do
 		local buff = buffs[i]
@@ -909,6 +910,8 @@ BuffExtension.remove_buff = function (self, id, skip_net_sync)
 			buff_extension_function_params.source_attacker_unit = buff.source_attacker_unit
 
 			self:_remove_sub_buff(buff, i, buff_extension_function_params, false)
+
+			num_buffs_removed = num_buffs_removed + 1
 		end
 	end
 
@@ -921,6 +924,8 @@ BuffExtension.remove_buff = function (self, id, skip_net_sync)
 	end
 
 	self:_free_sync_id(id)
+
+	return num_buffs_removed
 end
 
 BuffExtension.queue_remove_buff = function (self, id)

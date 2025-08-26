@@ -112,8 +112,8 @@ local skins = {
 	{
 		name = "we_dual_sword_skin_02_runed_05",
 		data = {
-			description = "we_dual_sword_skin_02_runed_01_description",
-			display_name = "we_dual_sword_skin_02_runed_01_name",
+			description = "we_dual_sword_skin_02_runed_05_description",
+			display_name = "we_dual_sword_skin_02_runed_05_name",
 			display_unit = "units/weapons/weapon_display/display_dual_weapons",
 			hud_icon = "weapon_generic_icon_staff_3",
 			inventory_icon = "icon_we_dual_sword_skin_02_runed_05",

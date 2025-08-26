@@ -1637,7 +1637,7 @@ Game._init_backend = function (self)
 		backend = "ScriptBackendPlayFabDedicated"
 		mirror = "PlayFabMirrorDedicated"
 	else
-		local mechanism_name = Development.parameter("mechanism") or SaveData.last_mechanism or "adventure"
+		local mechanism_name = Development.parameter("mechanism") or "adventure"
 		local mechanism_settings = MechanismSettings[mechanism_name]
 
 		backend = "ScriptBackendPlayFab"
@@ -1652,7 +1652,7 @@ end
 
 Game._init_backend_xbox = function (self)
 	local backend = "ScriptBackendPlayFabXbox"
-	local mechanism_name = Development.parameter("mechanism") or SaveData.last_mechanism or "adventure"
+	local mechanism_name = Development.parameter("mechanism") or "adventure"
 	local mechanism_settings = MechanismSettings[mechanism_name]
 	local playfab_mirror = mechanism_settings and mechanism_settings.playfab_mirror
 	local mirror = playfab_mirror or "PlayFabMirrorAdventure"
@@ -1662,7 +1662,7 @@ end
 
 Game._init_backend_ps4 = function (self)
 	local backend = "ScriptBackendPlayFabPS4"
-	local mechanism_name = Development.parameter("mechanism") or SaveData.last_mechanism or "adventure"
+	local mechanism_name = Development.parameter("mechanism") or "adventure"
 	local mechanism_settings = MechanismSettings[mechanism_name]
 	local playfab_mirror = mechanism_settings and mechanism_settings.playfab_mirror
 	local mirror = playfab_mirror or "PlayFabMirrorAdventure"

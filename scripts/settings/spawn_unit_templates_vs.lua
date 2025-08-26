@@ -3,11 +3,11 @@
 local spawn_unit_templates_vs = {
 	troll_puke = {
 		spawn_func = function (source_unit, position, rotation, state_int)
-			local nav_world = Managers.state.entity:system("ai_system"):nav_world()
-			local above, below = 1, 2.5
+			rotation = QuaternionBox(rotation)
+			position = Vector3Box(position)
 
 			local function safe_navigation_callback()
-				local dir = Quaternion.forward(rotation)
+				local dir = Quaternion.forward(rotation:unbox())
 				local extension_init_data = {
 					area_damage_system = {
 						flow_dir = dir,
@@ -16,7 +16,7 @@ local spawn_unit_templates_vs = {
 					},
 				}
 				local aoe_unit_name = "units/hub_elements/empty"
-				local liquid_aoe_unit = Managers.state.unit_spawner:spawn_network_unit(aoe_unit_name, "liquid_aoe_unit", extension_init_data, position)
+				local liquid_aoe_unit = Managers.state.unit_spawner:spawn_network_unit(aoe_unit_name, "liquid_aoe_unit", extension_init_data, position:unbox())
 				local liquid_area_damage_extension = ScriptUnit.extension(liquid_aoe_unit, "area_damage_system")
 
 				liquid_area_damage_extension:ready()
@@ -112,7 +112,7 @@ local spawn_unit_templates_vs = {
 			local summon_position = vortex_data.summon_position and vortex_data.summon_position:unbox() or POSITION_LOOKUP[source_unit]
 			local summon_direction = Quaternion.forward(summon_rotation)
 
-			BTChaosSorcererSummoningAction._launch_vortex_dummy_missile(nil, source_unit, action, vortex_data, hand_position, summon_position, summon_direction)
+			return BTChaosSorcererSummoningAction._launch_vortex_dummy_missile(nil, source_unit, action, vortex_data, hand_position, summon_position, summon_direction)
 		end,
 	},
 }

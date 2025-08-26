@@ -13,6 +13,8 @@ local bot_threat_queue_shape = 2
 local bot_threat_queue_size = 3
 local bot_threat_queue_rotation = 4
 local bot_threat_queue_threat_duration = 5
+local BOT_RADIUS = 1.25
+local BOT_HEIGHT = 1.8
 
 AIBotGroupExtension = class(AIBotGroupExtension)
 
@@ -104,6 +106,7 @@ AIBotGroupSystem.init = function (self, context, system_name)
 			self._num_bots[i] = 0
 		end
 
+		self._existing_bot_threats = {}
 		self._urgent_targets = {}
 		self._ally_needs_aid_priority = {}
 		self._timestamped_positions = {}
@@ -239,6 +242,49 @@ AIBotGroupSystem.on_add_extension = function (self, world, unit, extension_name,
 	end
 end
 
+local function is_inside_existing_threat(threats, to, bot_radius)
+	for i = 1, #threats do
+		local threat = threats[i]
+		local threat_pos = threat.pos:unbox()
+		local threat_rot = threat.rot and threat.rot:unbox()
+		local shape = threat.shape
+		local size, extents
+
+		if shape == "sphere" then
+			size = threat.size
+			extents = size + bot_radius
+		elseif shape == "cylinder" then
+			size = threat.size:unbox()
+			extents = Vector3(math.max(size[1] - bot_radius, 0), size[2] + bot_radius, size[3] + bot_radius)
+		else
+			size = threat.size:unbox()
+			extents = size + Vector3(bot_radius, bot_radius, bot_radius)
+		end
+
+		local inside
+
+		if shape == "oobb" then
+			local pose = Matrix4x4.from_quaternion_position(threat_rot, threat_pos)
+
+			inside = math.point_is_inside_oobb(to, pose, extents)
+		elseif shape == "cylinder" then
+			inside = math.point_is_inside_cylinder(to, threat_pos, size[1], size[2], size[3])
+		elseif shape == "sphere" then
+			inside = Vector3.distance_squared(to, threat_pos) < size^2
+		end
+
+		if inside then
+			return true
+		end
+	end
+
+	return false
+end
+
+AIBotGroupSystem.is_inside_aoe_threat = function (self, position)
+	return is_inside_existing_threat(self._existing_bot_threats, position, BOT_RADIUS)
+end
+
 AIBotGroupSystem.extensions_ready = function (self, world, unit, extension_name)
 	if extension_name ~= "BotBreakableExtension" then
 		local data = self._bot_ai_data_lookup[unit]
@@ -280,6 +326,14 @@ AIBotGroupSystem.update = function (self, context, t)
 	self._t = t
 
 	local dt = context.dt
+	local bot_threats = self._existing_bot_threats
+
+	for i = #bot_threats, 1, -1 do
+		if t > bot_threats[i].expires then
+			self:remove_threat(bot_threats[i])
+		end
+	end
+
 	local bot_threat_queue = self._bot_threat_queue
 
 	for i = 1, #bot_threat_queue do
@@ -2715,46 +2769,77 @@ AIBotGroupSystem.in_cover = function (self, cover_unit)
 	return nil
 end
 
+local cylinder_tries = 6
 local EPSILON = 0.01
 
-local function detect_cylinder(nav_world, traverse_logic, bot_position, bot_height, bot_radius, x, y, z, rotation, size)
+local function detect_cylinder(nav_world, traverse_logic, bot_position, bot_height, bot_radius, x, y, z, rotation, size, bot_blackboard, existing_threats)
 	local bot_x = bot_position.x
 	local bot_y = bot_position.y
 	local bot_z = bot_position.z
 	local offset_x = bot_x - x
 	local offset_y = bot_y - y
 	local flat_dist_from_center = math.sqrt(offset_x * offset_x + offset_y * offset_y)
-	local radius = math.max(size.x, size.y)
+	local radius_min, radius_max = size.x, size.y
 	local half_height = size.z
 
-	if flat_dist_from_center <= radius + bot_radius and bot_z > z - bot_height - half_height and bot_z < z + half_height then
-		local escape_dist = radius - flat_dist_from_center
-		local escape_dir
+	if radius_min < bot_radius then
+		radius_min = 0
+	end
 
-		if flat_dist_from_center < EPSILON then
-			escape_dir = Vector3(0, 1, 0)
+	local stop_at, stop_at_fallback
+
+	if flat_dist_from_center >= radius_min - bot_radius and flat_dist_from_center <= radius_max + bot_radius and bot_z > z - bot_height - half_height and bot_z < z + half_height then
+		local escape_dist
+
+		if radius_min > 0 and flat_dist_from_center < (radius_min + radius_max) * 0.5 then
+			escape_dist = radius_min - bot_radius
 		else
-			escape_dir = Vector3(offset_x / flat_dist_from_center, offset_y / flat_dist_from_center, 0)
+			escape_dist = radius_max + bot_radius
 		end
 
-		local to = bot_position + escape_dir * escape_dist
-		local above, below = 2, 2
-		local success, z = GwNavQueries.triangle_from_position(nav_world, to, above, below)
+		local cylinder_position = Vector3(x, y, bot_position[3])
+		local escape_dir, length_to_target = Vector3.direction_length(bot_position - cylinder_position)
 
-		if not success then
-			return
+		if length_to_target < EPSILON then
+			escape_dir = Vector3(0, 1, 0)
 		end
 
-		to.z = z
-		success = GwNavQueries.raycango(nav_world, bot_position, to, traverse_logic)
+		local proximite_enemies = bot_blackboard.proximite_enemies
 
-		if success then
-			return to
+		for i = 0, cylinder_tries - 1 do
+			local num_directions = (i == 0 or i == cylinder_tries - 1) and 1 or 2
+			local sign = 1
+
+			for j = 1, num_directions do
+				local angle = math.pi * (i / (cylinder_tries - 1)) * sign
+				local dir = Quaternion.rotate(Quaternion.axis_angle(Vector3.up(), angle), escape_dir)
+				local to = cylinder_position + dir * escape_dist
+				local above, below = 2, 2
+				local success, z = GwNavQueries.triangle_from_position(nav_world, to, above, below)
+
+				if success then
+					to.z = z
+					success = GwNavQueries.raycango(nav_world, bot_position, to, traverse_logic)
+
+					if success then
+						stop_at = to
+						stop_at_fallback = to
+					end
+
+					sign = sign * -1
+				end
+
+				if stop_at then
+					return stop_at
+				end
+			end
 		end
 	end
+
+	return stop_at_fallback
 end
 
-local function detect_sphere(nav_world, traverse_logic, bot_position, bot_height, bot_radius, sphere_x, sphere_y, sphere_z, rotation, sphere_radius)
+local function detect_sphere(nav_world, traverse_logic, bot_position, bot_height, bot_radius, sphere_x, sphere_y, sphere_z, rotation, sphere_radius, bot_blackboard, existing_threats)
 	local bot_x = bot_position.x
 	local bot_y = bot_position.y
 	local bot_z = bot_position.z
@@ -2765,7 +2850,8 @@ local function detect_sphere(nav_world, traverse_logic, bot_position, bot_height
 	if flat_dist_from_center > sphere_radius + bot_radius then
 		return
 	elseif bot_z < sphere_z + sphere_radius and bot_z > sphere_z - bot_height - sphere_radius then
-		local escape_dist = sphere_radius - flat_dist_from_center
+		local stop_at, stop_at_fallback
+		local escape_dist = sphere_radius + bot_radius
 		local escape_dir
 
 		if flat_dist_from_center < EPSILON then
@@ -2774,24 +2860,49 @@ local function detect_sphere(nav_world, traverse_logic, bot_position, bot_height
 			escape_dir = Vector3(offset_x / flat_dist_from_center, offset_y / flat_dist_from_center, 0)
 		end
 
-		local to = bot_position + escape_dir * escape_dist
-		local above, below = 2, 2
-		local success, z = GwNavQueries.triangle_from_position(nav_world, to, above, below)
+		local proximite_enemies = bot_blackboard.proximite_enemies
 
-		if not success then
-			return
+		for i = 0, cylinder_tries - 1 do
+			local num_directions = (i == 0 or i == cylinder_tries - 1) and 1 or 2
+			local sign = 1
+
+			for j = 1, num_directions do
+				local angle = math.pi * (i / (cylinder_tries - 1)) * sign
+				local dir = Quaternion.rotate(Quaternion.axis_angle(Vector3.up(), angle), escape_dir)
+				local cylinder_position = Vector3(sphere_x, sphere_y, bot_z)
+				local to = cylinder_position + dir * escape_dist
+				local above, below = 2, 2
+				local success, z = GwNavQueries.triangle_from_position(nav_world, to, above, below)
+
+				if success then
+					to.z = z
+					success = GwNavQueries.raycango(nav_world, bot_position, to, traverse_logic)
+
+					if success then
+						stop_at = to
+						stop_at_fallback = to
+					end
+
+					sign = sign * -1
+				end
+
+				if stop_at then
+					return stop_at
+				end
+			end
 		end
 
-		to.z = z
-		success = GwNavQueries.raycango(nav_world, bot_position, to, traverse_logic)
-
-		if success then
-			return to
-		end
+		return stop_at_fallback
 	end
 end
 
-local function detect_oobb(nav_world, traverse_logic, bot_position, bot_height, bot_radius, x, y, z, rotation, extents)
+local detection_rotation_order = {
+	0,
+	-1,
+	1,
+}
+
+local function detect_oobb(nav_world, traverse_logic, bot_position, bot_height, bot_radius, x, y, z, rotation, extents, bot_blackboard, existing_threats)
 	local half_bot_height = bot_height * 0.5
 	local offset = bot_position - Vector3(x, y, z - half_bot_height)
 	local right_vector = Quaternion.right(rotation)
@@ -2809,41 +2920,51 @@ local function detect_oobb(nav_world, traverse_logic, bot_position, bot_height, 
 	local area_damage_system = Managers.state.entity:system("area_damage_system")
 	local above, below = 2, 2
 	local sign = x_offset == 0 and 1 - math.random(0, 1) * 2 or math.sign(x_offset)
-	local stop_at
-	local right_offset = x_offset * right_vector
-	local right_extent = (bot_radius + extents_x) * right_vector
+	local stop_at, fallback_stop_at
+	local distance = extents_x
+	local proximite_enemies = bot_blackboard.proximite_enemies
 
-	for i = 1, 2 do
-		local to = bot_position - right_offset + sign * right_extent
-		local on_nav_mesh, z = GwNavQueries.triangle_from_position(nav_world, to, above, below)
+	for _ = 1, 2 do
+		for i = 1, #detection_rotation_order do
+			local angle = detection_rotation_order[i] * math.pi * 0.25
+			local projected_distance = 1 / math.cos(angle)
+			local ray_offset = Quaternion.rotate(Quaternion.axis_angle(Vector3.up(), angle), right_vector) * projected_distance
+			local to = bot_position + ray_offset * (sign * distance)
+			local on_nav_mesh, z = GwNavQueries.triangle_from_position(nav_world, to, above, below)
 
-		if on_nav_mesh then
-			to.z = z
-		end
+			if on_nav_mesh then
+				to.z = z
+			end
 
-		local raycango = on_nav_mesh and GwNavQueries.raycango(nav_world, bot_position, to, traverse_logic)
+			local raycango = on_nav_mesh and GwNavQueries.raycango(nav_world, bot_position, to, traverse_logic)
 
-		if raycango then
-			local in_liquid = area_damage_system:is_position_in_liquid(to, BotNavTransitionManager.NAV_COST_MAP_LAYERS)
+			if raycango then
+				fallback_stop_at = to
 
-			if not in_liquid or stop_at == nil then
-				stop_at = to
+				local in_liquid = area_damage_system:is_position_in_liquid(to, BotNavTransitionManager.NAV_COST_MAP_LAYERS)
 
 				if not in_liquid then
-					break
+					stop_at = to
+					fallback_stop_at = to
 				end
 			end
+
+			if stop_at then
+				break
+			end
+		end
+
+		if stop_at then
+			break
 		end
 
 		sign = -sign
 	end
 
-	return stop_at
+	return stop_at or fallback_stop_at
 end
 
 AIBotGroupSystem.aoe_threat_created = function (self, position, shape, size, rotation, duration)
-	local bot_radius = 1.25
-	local bot_height = 1.8
 	local t = Managers.time:time("game")
 	local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 	local traverse_logic = Managers.state.bot_nav_transition:traverse_logic()
@@ -2857,6 +2978,15 @@ AIBotGroupSystem.aoe_threat_created = function (self, position, shape, size, rot
 		detect_func = detect_sphere
 	end
 
+	local expires = t + duration
+	local threat = {
+		pos = Vector3Box(position),
+		rot = rotation and QuaternionBox(rotation) or nil,
+		size = type(size) == "number" and size or Vector3Box(size),
+		shape = shape,
+		expires = expires,
+	}
+	local existing_threats = self._existing_bot_threats
 	local pos_x, pos_y, pos_z = position.x, position.y, position.z
 	local bot_ai_data = self._bot_ai_data
 
@@ -2865,16 +2995,51 @@ AIBotGroupSystem.aoe_threat_created = function (self, position, shape, size, rot
 
 		for unit, data in pairs(side_bot_data) do
 			local threat_data = data.aoe_threat
-			local expires = t + duration
+			local escape_to = detect_func(nav_world, traverse_logic, Unit.local_position(unit, 0), BOT_HEIGHT, BOT_RADIUS, pos_x, pos_y, pos_z, rotation, size, BLACKBOARDS[unit], existing_threats)
 
-			if expires > threat_data.expires then
-				local escape_to = detect_func(nav_world, traverse_logic, POSITION_LOOKUP[unit], bot_height, bot_radius, pos_x, pos_y, pos_z, rotation, size)
+			if escape_to then
+				threat_data.expires = math.max(threat_data.expires, expires)
 
-				if escape_to then
-					threat_data.expires = expires
+				threat_data.escape_to:store(escape_to)
+			end
+		end
+	end
 
-					threat_data.escape_to:store(escape_to)
-				end
+	table.insert(existing_threats, threat)
+
+	return threat
+end
+
+AIBotGroupSystem.remove_threat = function (self, threat)
+	local existing_threats = self._existing_bot_threats
+	local idx = table.find(existing_threats, threat)
+
+	if idx then
+		table.swap_delete(existing_threats, idx)
+	end
+
+	local longest_expire = 0
+
+	for i = 1, #existing_threats do
+		local expires = existing_threats[i].expires
+
+		if expires ~= math.huge then
+			longest_expire = math.max(longest_expire, expires)
+		end
+	end
+
+	local bot_ai_data = self._bot_ai_data
+
+	for side_id = 1, #bot_ai_data do
+		local side_bot_data = bot_ai_data[side_id]
+
+		for unit, data in pairs(side_bot_data) do
+			local threat_data = data.aoe_threat
+
+			if threat_data.expires > 0 then
+				threat_data.expires = longest_expire
+			elseif next(existing_threats) then
+				threat_data.expires = math.huge
 			end
 		end
 	end

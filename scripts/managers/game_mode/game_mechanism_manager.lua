@@ -533,9 +533,6 @@ GameMechanismManager._init_mechanism = function (self)
 	end
 
 	self:_register_mechanism_rpcs()
-
-	SaveData.last_mechanism = mechanism_key
-
 	self:reset_party_data(false)
 	self:clear_stored_challenge_progression_status()
 end

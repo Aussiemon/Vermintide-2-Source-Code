@@ -67,6 +67,8 @@ BTSpawningAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.spawn_last_pos = Vector3Box(POSITION_LOOKUP[unit])
 	blackboard.spawn_immovable_time = 0
+
+	self:_play_spawning_effect(unit)
 end
 
 BTSpawningAction.leave = function (self, unit, blackboard, t, reason, destroy)
@@ -257,5 +259,19 @@ BTSpawningAction._apply_anim_varations = function (self, unit)
 				end
 			end
 		end
+	end
+end
+
+BTSpawningAction._play_spawning_effect = function (self, unit)
+	local action_data = self._tree_node.action_data
+	local effect_name = action_data and action_data.spawning_effect
+
+	if effect_name then
+		local effect_name_id = NetworkLookup.effects[effect_name]
+		local network_manager = Managers.state.network
+		local node_id = 0
+		local rotation_offset = Quaternion.identity()
+
+		network_manager:rpc_play_particle_effect(nil, effect_name_id, NetworkConstants.invalid_game_object_id, node_id, Unit.local_position(unit, 0), rotation_offset, false)
 	end
 end

@@ -6,6 +6,7 @@ require("scripts/tests/testify_expect")
 local SIGNALS = {
 	current_request = "current_request",
 	end_suite = "end_suite",
+	last_request = "last_request",
 	ready = "ready",
 	reply = "reply",
 	request = "request",
@@ -169,6 +170,7 @@ Testify.respond_to_request = function (self, request_name, responses, num_respon
 	self:_print("Responding to %s", request_name)
 
 	self._requests[request_name] = nil
+	self._last_request = request_name
 	self._responses[request_name] = responses
 end
 
@@ -238,4 +240,11 @@ Testify.current_request_name = function (self)
 
 	self:_print("Current request name: %s", request_name)
 	self:_signal(SIGNALS.current_request, request_name)
+end
+
+Testify.last_request_name = function (self)
+	local last_request = self._last_request
+
+	self:_print("Last request name: %s", last_request)
+	self:_signal(SIGNALS.last_request, last_request)
 end

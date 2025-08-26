@@ -111,7 +111,7 @@ StartGameWindowVersusPlayerHostedLobby._create_ui_elements = function (self)
 	self._host_widgets = host_widgets
 	self._widgets_by_name = widgets_by_name
 
-	local lobby = Managers.lobby:query_lobby("matchmaking_join_lobby") or Managers.matchmaking.lobby
+	local lobby = Managers.lobby:query_lobby("matchmaking_join_lobby") or Managers.lobby:query_lobby("matchmaking_join_lobby") or Managers.matchmaking.lobby
 	local custom_server_name = lobby and lobby:lobby_data("custom_server_name") or ""
 	local valid_custom_server_name = rawget(_G, "Steam") and Steam.user_name() ~= custom_server_name and custom_server_name ~= "n/a" and custom_server_name ~= ""
 
@@ -690,7 +690,7 @@ StartGameWindowVersusPlayerHostedLobby._update_mission_option = function (self)
 	if is_match_host then
 		selected_level_id = self._parent:get_selected_level_id()
 	else
-		local lobby = Managers.lobby:query_lobby("matchmaking_join_lobby") or Managers.matchmaking.lobby
+		local lobby = Managers.lobby:query_lobby("matchmaking_join_lobby") or Managers.lobby:query_lobby("matchmaking_join_lobby") or Managers.matchmaking.lobby
 
 		selected_level_id = lobby and lobby:lobby_data("selected_mission_id")
 	end
@@ -903,7 +903,7 @@ end
 StartGameWindowVersusPlayerHostedLobby._update_server_name = function (self)
 	local widget = self._widgets_by_name.lobby_name
 	local input = widget.content.input
-	local lobby = Managers.lobby:query_lobby("matchmaking_join_lobby") or Managers.matchmaking.lobby
+	local lobby = Managers.lobby:query_lobby("matchmaking_join_lobby") or Managers.lobby:query_lobby("matchmaking_join_lobby") or Managers.matchmaking.lobby
 	local is_match_host = self._match_handler:query_peer_data(self._peer_id, "is_match_owner")
 
 	if not is_match_host then

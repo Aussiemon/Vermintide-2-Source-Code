@@ -22,7 +22,7 @@ local function lean_towards_position(unit, dt, data, target_position, lerp_speed
 	target_lean = math.clamp(target_lean, -1, 1)
 
 	local current_lean = data.current_lean or 0
-	local lean = math.lerp(current_lean, target_lean, lerp_speed * dt)
+	local lean = math.max(math.lerp(current_lean, target_lean, lerp_speed * dt), 1e-05)
 	local animation_variable_lean = data.animation_variable_lean
 
 	animation_set_variable(unit, animation_variable_lean, lean)

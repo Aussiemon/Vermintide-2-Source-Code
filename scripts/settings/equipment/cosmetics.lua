@@ -3485,6 +3485,16 @@ Cosmetics.frame_celebration_07 = {
 Cosmetics.frame_apology_2025 = {
 	icon = "unit_frame_02",
 }
+Cosmetics.frame_dwarf_fest = {
+	icon = "unit_frame_02",
+	texture_package_name = "resource_packages/store/item_icons/store_item_icon_frame_dwarf_fest",
+	material_settings = {
+		portrait_frame = {
+			texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_dwarf_fest/store_item_icon_frame_dwarf_fest",
+			type = "texture",
+		},
+	},
+}
 
 DLCUtils.map_list("cosmetics_files", function (file_name)
 	local cosmetics_templates = require(file_name)

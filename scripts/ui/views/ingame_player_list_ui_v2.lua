@@ -56,7 +56,6 @@ IngamePlayerListUI.init = function (self, parent, ingame_ui_context)
 		snap_pixel_positions = true,
 	}
 	self._active = false
-	self._client_duplicate_removed = false
 
 	local mission_system = Managers.state.entity:system("mission_system")
 
@@ -1282,38 +1281,37 @@ IngamePlayerListUI._update_fade_in_duration = function (self, dt)
 	end
 end
 
-local temp_players = {}
+local players_with_ui = {}
+local player_by_ui_id = {}
 
 IngamePlayerListUI._update_player_list = function (self, dt, t)
 	local game_session = Managers.state.network:game()
-	local player_manager = self._player_manager
 
-	table.clear(temp_players)
+	table.clear(players_with_ui)
+	table.clear(player_by_ui_id)
+
+	local human_and_bot_players = Managers.player:human_and_bot_players()
+
+	for _, player in pairs(human_and_bot_players) do
+		player_by_ui_id[player:ui_id()] = player
+	end
 
 	local update_widgets = false
 	local players = self._players
 	local num_players = self._num_players
-	local removed_players = 0
 	local should_reset_cooldown = false
 
 	for i = num_players, 1, -1 do
 		local data = players[i]
 		local peer_id = data.peer_id
 		local ui_id = data.ui_id
-		local player = player_manager:player_from_peer_id(peer_id, data.local_player_id)
-		local has_client_duplicate, duplicate_index = self:_has_client_duplicate(players, peer_id)
+		local player = player_by_ui_id[ui_id]
 
-		if not player or has_client_duplicate or temp_players[ui_id] then
-			if duplicate_index then
-				table.remove(players, duplicate_index)
-
-				self._client_duplicate_removed = true
-			else
-				table.remove(players, i)
-			end
+		if not player then
+			table.remove(players, i)
 
 			update_widgets = true
-			removed_players = removed_players + 1
+			num_players = num_players - 1
 		else
 			local is_local_player = data.is_local_player
 			local is_bot_player = data.is_bot_player
@@ -1321,7 +1319,7 @@ IngamePlayerListUI._update_player_list = function (self, dt, t)
 			local widget = data.widget
 			local game_object_id = player.game_object_id
 
-			temp_players[ui_id] = true
+			players_with_ui[ui_id] = true
 
 			if not is_server and not is_bot_player and game_session and game_object_id then
 				local ping = GameSession.game_object_field(game_session, game_object_id, "ping")
@@ -1393,21 +1391,18 @@ IngamePlayerListUI._update_player_list = function (self, dt, t)
 				should_reset_cooldown = true
 			end
 
-			for i = num_players, 1, -1 do
-				local data = players[i]
+			for other_player_i = num_players, 1, -1 do
+				local other_data = players[other_player_i]
+				local widget = other_data.widget
+				local is_local_player = other_data.is_local_player
+				local is_bot_player = other_data.is_bot_player
+				local is_server = other_data.is_server
 
-				if data then
-					local widget = data.widget
-					local is_local_player = data.is_local_player
-					local is_bot_player = data.is_bot_player
-					local is_server = data.is_server
+				if not is_local_player and not is_server and not is_bot_player then
+					local kick_button_hotspot = widget.content.kick_button_hotspot
 
-					if not is_local_player and not is_server and not is_bot_player then
-						local kick_button_hotspot = widget.content.kick_button_hotspot
-
-						kick_button_hotspot.disable_button = not should_reset_cooldown
-						widget.content.show_kick_button = should_reset_cooldown
-					end
+					kick_button_hotspot.disable_button = not should_reset_cooldown
+					widget.content.show_kick_button = should_reset_cooldown
 				end
 			end
 
@@ -1417,17 +1412,16 @@ IngamePlayerListUI._update_player_list = function (self, dt, t)
 		end
 	end
 
-	self._num_players = num_players - removed_players
+	self._num_players = num_players
 
 	local game_mode_key = Managers.state.game_mode:game_mode_key()
 	local game_mode_settings = GameModeSettings[game_mode_key]
-	local human_and_bot_players = Managers.player:human_and_bot_players()
 
 	for _, player in pairs(human_and_bot_players) do
 		local player_unit = player.player_unit
 		local add_player_allowed = game_mode_settings.allow_unspawned_players_in_tab_menu or ALIVE[player_unit]
 
-		if add_player_allowed and not temp_players[player:ui_id()] then
+		if add_player_allowed and not players_with_ui[player:ui_id()] then
 			self:_add_player(player)
 
 			update_widgets = true
@@ -1820,40 +1814,6 @@ end
 
 IngamePlayerListUI.event_weave_objective_synced = function (self)
 	self:_setup_weave_display_info()
-end
-
-IngamePlayerListUI._has_client_duplicate = function (self, player_list, peer_id)
-	local occurences = 0
-	local duplicate_index = 0
-	local duplicate_found = false
-
-	if self._client_duplicate_removed then
-		return false
-	end
-
-	for i = 1, #player_list do
-		local data = player_list[i]
-
-		if not data.is_server and not data.is_bot_player and not duplicate_found then
-			if data.peer_id == peer_id then
-				occurences = occurences + 1
-			end
-
-			if occurences >= 2 then
-				duplicate_found = true
-
-				break
-			end
-		end
-
-		duplicate_index = occurences < 2 and i or 1
-	end
-
-	if duplicate_found then
-		return true, duplicate_index
-	else
-		return false
-	end
 end
 
 IngamePlayerListUI._is_in_deus_map_view = function (self)

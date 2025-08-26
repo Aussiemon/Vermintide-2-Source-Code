@@ -187,6 +187,8 @@ ProcEvents = {
 	"on_hit",
 	"on_melee_hit",
 	"on_ranged_hit",
+	"on_hit_by_ranged",
+	"on_hit_by_other",
 	"on_kill",
 	"on_kill_elite_special",
 	"on_boss_killed",
@@ -251,7 +253,6 @@ ProcEvents = {
 	"on_push_used",
 	"on_backstab",
 	"on_sweep",
-	"on_ranged_hit",
 	"on_critical_sweep",
 	"on_critical_shot",
 	"on_critical_action",
@@ -296,6 +297,7 @@ ProcEventParams = {
 	on_damage_dealt = make_proc_param_lookup("attacked_unit", "attacker_unit", "damage_amount", "hit_zone_name", "no_crit_headshot_damage", "is_critical_strike", "buff_attack_type", "target_index", "damage_source", "damage_type", "first_hit", "PROC_MODIFIABLE"),
 	on_critical_hit = make_proc_param_lookup("hit_unit", "attack_type", "hit_zone_name", "target_number", "buff_type"),
 	on_ranged_hit = make_proc_param_lookup("hit_unit", "attack_type", "hit_zone_name", "target_number", "buff_type", "is_critical", "unmodified"),
+	on_ranged_hit = make_proc_param_lookup("attaker_unit", "attack_type", "hit_zone_name", "target_number", "buff_type", "is_critical", "unmodified"),
 	on_hit = make_proc_param_lookup("hit_unit", "attack_type", "hit_zone_name", "target_number", "buff_type", "is_critical", "unmodified"),
 	on_staggered = make_proc_param_lookup("target_unit", "damage_profile", "attacker_unit", "stagger_type", "stagger_duration", "stagger_value", "buff_type", "target_index"),
 }
@@ -4354,6 +4356,9 @@ PotionSpreadTrinketTemplates = {
 	},
 }
 TrinketSpreadDistance = 10
+
+local troll_chief_rage_duration = 30
+
 BuffTemplates = {
 	end_zone_invincibility = {
 		buffs = {
@@ -6141,6 +6146,9 @@ BuffTemplates = {
 				time_between_dot_damages = 1,
 				update_func = "apply_dot_damage",
 				update_start_delay = 1,
+				perks = {
+					buff_perks.burning,
+				},
 			},
 		},
 	},
@@ -7055,46 +7063,6 @@ BuffTemplates = {
 			},
 		},
 	},
-	trinket_roll_dice_as_witch_hunter = {
-		description = "dlc1_1_trinket_roll_dice_as_witch_hunter_description",
-		display_name = "dlc1_1_trinket_roll_dice_as_witch_hunter",
-		icon = "trait_icon_loot_trinket_witch_hunter",
-		roll_dice_as_hero = "witch_hunter",
-		unique_id = "trinket_roll_dice_as_hero",
-		buffs = {},
-	},
-	trinket_roll_dice_as_bright_wizard = {
-		description = "dlc1_1_trinket_roll_dice_as_bright_wizard_description",
-		display_name = "dlc1_1_trinket_roll_dice_as_bright_wizard",
-		icon = "trait_icon_loot_trinket_bright_wizard",
-		roll_dice_as_hero = "bright_wizard",
-		unique_id = "trinket_roll_dice_as_hero",
-		buffs = {},
-	},
-	trinket_roll_dice_as_dwarf_ranger = {
-		description = "dlc1_1_trinket_roll_dice_as_dwarf_ranger_description",
-		display_name = "dlc1_1_trinket_roll_dice_as_dwarf_ranger",
-		icon = "trait_icon_loot_trinket_dwarf_ranger",
-		roll_dice_as_hero = "dwarf_ranger",
-		unique_id = "trinket_roll_dice_as_hero",
-		buffs = {},
-	},
-	trinket_roll_dice_as_wood_elf = {
-		description = "dlc1_1_trinket_roll_dice_as_wood_elf_description",
-		display_name = "dlc1_1_trinket_roll_dice_as_wood_elf",
-		icon = "trait_icon_loot_trinket_waywatcher",
-		roll_dice_as_hero = "wood_elf",
-		unique_id = "trinket_roll_dice_as_hero",
-		buffs = {},
-	},
-	trinket_roll_dice_as_empire_soldier = {
-		description = "dlc1_1_trinket_roll_dice_as_empire_soldier_description",
-		display_name = "dlc1_1_trinket_roll_dice_as_empire_soldier",
-		icon = "trait_icon_loot_trinket_empire_soldier",
-		roll_dice_as_hero = "empire_soldier",
-		unique_id = "trinket_roll_dice_as_hero",
-		buffs = {},
-	},
 	trinket_increase_luck_halloween = {
 		description = "trinket_increase_luck_tier1_description",
 		display_name = "trinket_increase_luck_tier1",
@@ -7707,6 +7675,89 @@ BuffTemplates = {
 			},
 		},
 	},
+	bile_troll_vomit_ground_downed = {
+		buffs = {
+			{
+				apply_buff_func = "apply_moving_through_vomit",
+				damage_type = "vomit_ground",
+				debuff = true,
+				fatigue_type = "vomit_ground",
+				icon = "troll_vomit_debuff",
+				max_stacks = 1,
+				name = "troll_bile_ground",
+				refresh_durations = true,
+				remove_buff_func = "remove_moving_through_vomit",
+				slowdown_buff_name = "lesser_bile_troll_vomit_ground_slowdown",
+				time_between_dot_damages = 0.75,
+				update_func = "update_moving_through_vomit",
+				difficulty_damage = {
+					easy = {
+						1,
+						1,
+						0,
+						0.5,
+						1,
+					},
+					normal = {
+						1,
+						1,
+						0,
+						1,
+						1,
+					},
+					hard = {
+						1,
+						1,
+						0,
+						1,
+						1,
+					},
+					harder = {
+						1,
+						1,
+						0,
+						2,
+						1,
+					},
+					hardest = {
+						1,
+						1,
+						0,
+						4,
+						1,
+					},
+					cataclysm = {
+						1,
+						1,
+						0,
+						4,
+						1,
+					},
+					cataclysm_2 = {
+						1,
+						1,
+						0,
+						4,
+						1,
+					},
+					cataclysm_3 = {
+						1,
+						1,
+						0,
+						4,
+						1,
+					},
+					versus_base = {
+						1,
+						1,
+						0,
+						1,
+						1,
+					},
+				},
+			},
+		},
+	},
 	corpse_pit_slowdown = {
 		buffs = {
 			{
@@ -8053,6 +8104,68 @@ BuffTemplates = {
 				path_to_movement_setting_to_modify = {
 					"dodging",
 					"distance_modifier",
+				},
+			},
+		},
+	},
+	lesser_bile_troll_vomit_ground_slowdown = {
+		buffs = {
+			{
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 1,
+				lerp_time = 0.1,
+				max_stacks = 1,
+				multiplier = 0.95,
+				name = "decrease_speed_bile_troll",
+				refresh_durations = true,
+				remove_buff_func = "remove_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_movement",
+				update_func = "update_action_lerp_movement_buff",
+				path_to_movement_setting_to_modify = {
+					"move_speed",
+				},
+			},
+			{
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 1,
+				lerp_time = 0.1,
+				max_stacks = 1,
+				multiplier = 0.95,
+				name = "decrease_crouch_speed_bile_troll",
+				refresh_durations = true,
+				remove_buff_func = "remove_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_crouch_movement",
+				update_func = "update_charging_action_lerp_movement_buff",
+				path_to_movement_setting_to_modify = {
+					"crouch_move_speed",
+				},
+			},
+			{
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 1,
+				lerp_time = 0.1,
+				max_stacks = 1,
+				multiplier = 0.95,
+				name = "decrease_walk_speed_bile_troll",
+				refresh_durations = true,
+				remove_buff_func = "remove_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_walk_movement",
+				update_func = "update_charging_action_lerp_movement_buff",
+				path_to_movement_setting_to_modify = {
+					"walk_move_speed",
+				},
+			},
+			{
+				apply_buff_func = "apply_movement_buff",
+				duration = 1,
+				max_stacks = 1,
+				multiplier = 0.95,
+				name = "decrease_jump_speed_bile_troll",
+				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
+				path_to_movement_setting_to_modify = {
+					"jump",
+					"initial_vertical_speed",
 				},
 			},
 		},
@@ -9282,6 +9395,118 @@ BuffTemplates = {
 				icon = "markus_mercenary_increased_damage_on_enemy_proximity",
 				name = "twitch_vote_buff_pulsating_waves",
 				update_func = "update_twitch_pulsating_waves",
+			},
+		},
+	},
+	troll_chief_downed = {
+		buffs = {
+			{
+				apply_buff_func = "health_regen_start",
+				heal_percent = 0.005,
+				heal_type = "health_regen",
+				name = "troll_chief_downed_regen",
+				update_func = "health_regen_update",
+				time_between_heal = {
+					1,
+					1,
+					1,
+					0.5,
+					0.25,
+					0.25,
+					0.25,
+				},
+				particles = {
+					{
+						continuous = true,
+						destroy_policy = "stop",
+						effect = "fx/chr_chaos_troll_chief_healing",
+						first_person = false,
+						orphaned_policy = "stop",
+						third_person = true,
+					},
+				},
+			},
+		},
+	},
+	troll_chief_phase_one_damage_reduction = {
+		buffs = {
+			{
+				multiplier = 0,
+				name = "troll_chief_downed",
+				stat_buff = "damage_taken",
+				total_multiplier = -0.6,
+			},
+		},
+	},
+	troll_chief_barrel_exploded = {
+		buffs = {
+			{
+				multiplier = 0,
+				name = "troll_chief_barrel_exploded",
+				stat_buff = "healing_received",
+				total_part_of_chunk = 0.5,
+				max_stacks = math.huge,
+			},
+		},
+	},
+	troll_chief_on_downed_wounded = {
+		buffs = {
+			{
+				activation_sound = "enemy_grudge_raging",
+				activation_sound_3p = true,
+				apply_buff_func = "make_stagger_immune",
+				max_stacks = 1,
+				multiplier = 0.35,
+				name = "troll_chief_on_downed_wounded",
+				refresh_durations = true,
+				remove_buff_func = "remove_stagger_immunity",
+				stat_buff = "damage_dealt",
+				duration = troll_chief_rage_duration,
+				particles = {
+					{
+						continuous = true,
+						destroy_policy = "stop",
+						effect = "fx/cw_khorne_boss_large",
+						first_person = false,
+						orphaned_policy = "stop",
+						third_person = true,
+					},
+				},
+			},
+			{
+				max_stacks = 1,
+				multiplier = -0.75,
+				name = "troll_chief_on_leave_downed_damage_reduction",
+				refresh_durations = true,
+				stat_buff = "damage_taken",
+				duration = troll_chief_rage_duration,
+			},
+		},
+	},
+	troll_chief_healing_immune = {
+		buffs = {
+			{
+				name = "troll_chief_healing_immune",
+				perks = {
+					buff_perks.healing_immune,
+				},
+			},
+		},
+	},
+	sorcerer_tether_buff_invulnerability = {
+		buffs = {
+			{
+				apply_buff_func = "sorcerer_tether_buff_apply_visuals",
+				event = "on_hit_by_other",
+				multiplier = 0,
+				name = "sorcerer_tether_buff_invulnerability",
+				remove_buff_func = "sorcerer_tether_buff_remove_visuals",
+				stat_buff = "damage_taken",
+				update_func = "sorcerer_tether_buff_invulnerability_update",
+				perks = {
+					buff_perks.invulnerable,
+				},
+				max_stacks = math.huge,
 			},
 		},
 	},

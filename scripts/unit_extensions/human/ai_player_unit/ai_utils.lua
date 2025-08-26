@@ -835,6 +835,18 @@ AiUtils.unit_breed = function (unit)
 	return unit_get_data(unit, "breed")
 end
 
+AiUtils.downed_duration = function (action)
+	local downed_duration = action.downed_duration
+
+	if type(downed_duration) == "table" then
+		local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+
+		return downed_duration[difficulty_rank]
+	end
+
+	return downed_duration
+end
+
 AiUtils.client_predicted_unit_alive = function (unit)
 	if not unit_alive(unit) then
 		return false
@@ -2015,4 +2027,41 @@ AiUtils.line_of_sight_from_random_point = function (from_pos, target_unit, optio
 	end
 
 	return false, index
+end
+
+AiUtils.bot_melee_aim_pos = function (targeting_unit, target, optional_aim_position)
+	local target_unit_blackboard = BLACKBOARDS[target]
+	local target_breed = target_unit_blackboard and target_unit_blackboard.breed
+	local aim_node = target_breed and (target_breed.bot_melee_aim_node or "j_spine") or "rp_center"
+	local targeting_unit_pos = Unit.local_position(targeting_unit, 0)
+	local aim_pos
+
+	if type(aim_node) == "table" then
+		local closest_dist = math.huge
+		local closest_pos
+
+		for i = 1, #aim_node do
+			local node = aim_node[i]
+
+			if Unit.has_node(target, node) then
+				local node_pos = Unit.world_position(target, Unit.node(target, node))
+				local dist_sq = Vector3.distance_squared(targeting_unit_pos, node_pos)
+
+				if dist_sq < closest_dist then
+					closest_pos = node_pos
+					closest_dist = dist_sq
+				end
+			end
+		end
+
+		aim_pos = closest_pos or Unit.world_position(target, 0)
+	else
+		aim_pos = Unit.has_node(target, aim_node) and Unit.world_position(target, Unit.node(target, aim_node)) or Unit.world_position(target, 0)
+	end
+
+	if optional_aim_position then
+		optional_aim_position:store(aim_pos)
+	end
+
+	return aim_pos
 end

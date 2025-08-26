@@ -2606,7 +2606,7 @@ AttachmentNodeLinking.vs_ratling_gunner_gun = {
 			unwielded = {
 				{
 					source = "j_hips",
-					target = "rp_ratlinggun",
+					target = 0,
 				},
 			},
 		},
@@ -2614,7 +2614,7 @@ AttachmentNodeLinking.vs_ratling_gunner_gun = {
 			display = {
 				{
 					source = "j_leftweaponattach",
-					target = "rp_ratlinggun",
+					target = 0,
 				},
 			},
 			wielded = {

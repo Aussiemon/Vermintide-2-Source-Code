@@ -649,6 +649,26 @@ function flow_query_wielded_weapon(params)
 	return flow_return_table
 end
 
+function flow_query_ai_wielded_weapons(params)
+	local ai_unit = params.ai_unit
+	local inventory_extension = ScriptUnit.has_extension(ai_unit, "ai_inventory_system")
+
+	if not inventory_extension then
+		flow_return_table.weapon_1 = Unit.null_reference()
+		flow_return_table.weapon_2 = Unit.null_reference()
+
+		return flow_return_table
+	end
+
+	local inventory_item_units = inventory_extension.inventory_item_units
+
+	for i = 1, 2 do
+		flow_return_table["weapon" .. i] = inventory_item_units[i] or Unit.null_reference()
+	end
+
+	return flow_return_table
+end
+
 function flow_query_wielded_weapon_rarity(params)
 	flow_return_table.rarity = ""
 
@@ -1060,6 +1080,14 @@ function flow_callback_play_surface_material_effect(params)
 	local rotation = Quaternion.look(params.normal, Vector3.up())
 
 	EffectHelper.flow_cb_play_surface_material_effect(params.effect_name, hit_unit, params.position, rotation, normal, sound_character, params.husk, offset, range)
+end
+
+function flow_callback_play_move_particle(params)
+	local particle_id = params.particle_id
+	local position = params.position
+	local world = Application.flow_callback_context_world()
+
+	World.move_particles(world, particle_id, position)
 end
 
 function flow_callback_play_voice(params)
@@ -1863,6 +1891,39 @@ function flow_callback_register_sound_environment(params)
 	local sound_environment_system = Managers.state.entity:system("sound_environment_system")
 
 	sound_environment_system:register_sound_environment(volume_name, prio, ambient_sound_event, fade_time, aux_bus_name, environment_state)
+end
+
+function flow_callback_trigger_wwise_event_for_target_player(params)
+	if not params.ai_unit then
+		return
+	end
+
+	local blackboard = BLACKBOARDS[params.ai_unit]
+	local target_unit = blackboard and blackboard.target_unit
+	local player_manager = Managers.player
+	local local_player = player_manager:local_player()
+	local local_player_unit = local_player and local_player.player_unit
+	local local_player_is_target = target_unit and target_unit == local_player_unit
+
+	if not local_player_is_target then
+		return
+	end
+
+	if DEDICATED_SERVER or not Managers.state.entity then
+		flow_return_table.playing_id = 1
+		flow_return_table.source_id = 1
+
+		return flow_return_table
+	end
+
+	local event = params.name
+	local sound_environment_system = Managers.state.entity:system("sound_environment_system")
+	local wwise_world = sound_environment_system.wwise_world
+	local id = WwiseWorld.trigger_event(wwise_world, event)
+
+	flow_return_table.playing_id = id
+
+	return flow_return_table
 end
 
 function flow_callback_wwise_trigger_event_with_environment(params)
@@ -2681,11 +2742,11 @@ end
 
 function flow_callback_blood_collision(params)
 	if Managers.state.decal ~= nil then
-		local actor = params.actor
-		local my_unit = Actor.unit(actor)
+		local blood_ball_actor = params.blood_ball_actor
+		local my_unit = Actor.unit(blood_ball_actor)
 		local position = params.position
 		local normal = params.normal
-		local velocity = Actor.velocity(actor)
+		local velocity = Actor.velocity(blood_ball_actor)
 		local MAX_VELOCITY = 1000
 
 		if MAX_VELOCITY < velocity.x or velocity.x < -MAX_VELOCITY or MAX_VELOCITY < velocity.y or velocity.y < -MAX_VELOCITY or MAX_VELOCITY < velocity.z or velocity.z < -MAX_VELOCITY then
@@ -2695,11 +2756,32 @@ function flow_callback_blood_collision(params)
 		local dot_value = Vector3.dot(normal, Vector3.normalize(velocity))
 		local tangent = Vector3.normalize(Vector3.normalize(velocity) - dot_value * normal)
 		local tangent_rotation = Quaternion.look(tangent, normal)
+		local hit_unit = params.hit_unit
+		local hit_actor = params.hit_actor
+
+		if Unit.alive(hit_unit) then
+			local _, is_level_unit = Managers.state.network:game_object_or_level_id(hit_unit)
+
+			if not is_level_unit then
+				hit_unit = nil
+				hit_actor = nil
+			end
+		end
+
 		local blood_unit_name = "units/decals/projection_blood_" .. string.format("%02d", tostring(Math.random(1, 17)))
 		local extents = Vector3(BloodSettings.blood_decals.scale, BloodSettings.blood_decals.scale, 1)
 
-		Managers.state.decal:add_projection_decal(blood_unit_name, nil, nil, position, tangent_rotation, extents, normal)
+		Managers.state.decal:add_projection_decal(blood_unit_name, hit_unit, hit_actor, position, tangent_rotation, extents, normal)
 		Managers.state.blood:despawn_blood_ball(my_unit)
+	end
+end
+
+function flow_callback_move_decals(params)
+	if Managers.state.decal then
+		local from_unit = params.from_unit
+		local to_unit = params.to_unit
+
+		Managers.state.decal:move_decals(from_unit, to_unit)
 	end
 end
 
@@ -3140,6 +3222,12 @@ function flow_callback_material_dissolve_chr(params)
 
 			flow_callback_material_dissolve(params)
 		end
+
+		if unit_inventory_extension.inventory_item_skin_unit ~= nil then
+			params.unit = unit_inventory_extension.inventory_item_skin_unit
+
+			flow_callback_material_dissolve(params)
+		end
 	end
 end
 
@@ -3176,6 +3264,10 @@ function flow_callback_material_dissolve_chr_inventory(params)
 
 				flow_callback_material_dissolve(params)
 			end
+		elseif params.inventory_type == "skin" and unit_inventory_extension.inventory_item_skin_unit ~= nil then
+			params.unit = unit_inventory_extension.inventory_item_skin_unit
+
+			flow_callback_material_dissolve(params)
 		end
 	end
 end
@@ -3274,6 +3366,12 @@ function flow_callback_material_fade_chr(params)
 
 			flow_callback_material_fade(params)
 		end
+
+		if unit_inventory_extension.inventory_item_skin_unit ~= nil then
+			params.unit = unit_inventory_extension.inventory_item_skin_unit
+
+			flow_callback_material_fade(params)
+		end
 	end
 end
 
@@ -3313,6 +3411,10 @@ function flow_callback_material_fade_chr_inventory(params)
 
 				flow_callback_material_fade(params)
 			end
+		elseif params.inventory_type == "skin" and unit_inventory_extension.inventory_item_skin_unit ~= nil then
+			params.unit = unit_inventory_extension.inventory_item_skin_unit
+
+			flow_callback_material_fade(params)
 		end
 	end
 end
@@ -3352,7 +3454,31 @@ function flow_callback_visibility_chr_inventory(params)
 			Unit.set_unit_visibility(unit, visibility)
 			print("Hide " .. Unit.debug_name(unit))
 		end
+
+		if unit_inventory_extension.inventory_item_skin_unit ~= nil then
+			unit = unit_inventory_extension.inventory_item_skin_unit
+
+			Unit.set_unit_visibility(unit, visibility)
+		end
 	end
+end
+
+function flow_callback_get_chr_inventory_skin_unit(params)
+	fassert(params.unit, "[flow_callback_get_chr_inventory_skin_unit] You need to specify the Unit")
+
+	local unit = params.unit
+	local unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
+	local skin_item
+
+	if unit_inventory_extension ~= nil and unit_inventory_extension.inventory_item_skin_unit ~= nil then
+		skin_item = unit_inventory_extension.inventory_item_skin_unit
+	end
+
+	fassert(skin_item, "[flow_callback_get_chr_inventory_skin_unit] No skin found for unit ", tostring(unit))
+
+	flow_return_table.skin_unit = skin_item
+
+	return flow_return_table
 end
 
 function start_material_fade(material, fade_switch_name, fade_switch, start_end_time_name, start_end_time, start_fade_name, start_fade_value, end_fade_name, end_fade_value)
@@ -3558,9 +3684,16 @@ function flow_callback_increment_player_stat(params)
 	local statistics_db = Managers.player:statistics_db()
 	local stats_id = player:stats_id()
 	local stat_name = params.stat_name
+	local parts = string.split(stat_name, "|")
 
-	statistics_db:increment_stat(stats_id, stat_name)
+	statistics_db:increment_stat(stats_id, unpack(parts))
 end
+
+local rpc_increment_stat_per_num_arguments = {
+	"rpc_increment_stat",
+	"rpc_increment_stat_2",
+	"rpc_increment_stat_3",
+}
 
 function flow_callback_increment_all_players_stats(params)
 	local player = Managers.player:local_player()
@@ -3572,10 +3705,19 @@ function flow_callback_increment_all_players_stats(params)
 	local statistics_db = Managers.player:statistics_db()
 	local stats_id = player:stats_id()
 	local stat_name = params.stat_name
-	local stat_name_index = NetworkLookup.statistics[stat_name]
+	local parts, n = string.split(stat_name, "|")
 
-	statistics_db:increment_stat(stats_id, stat_name)
-	Managers.state.network.network_transmit:send_rpc_clients("rpc_increment_stat", stat_name_index)
+	statistics_db:increment_stat(stats_id, unpack(parts))
+
+	local rpc = rpc_increment_stat_per_num_arguments[n]
+
+	fassert(rpc, "Syncing incrementing stat with %s number of arguments is not supported")
+
+	for i = 1, n do
+		parts[i] = NetworkLookup.statistics[stat_name]
+	end
+
+	Managers.state.network.network_transmit:send_rpc_clients("rpc_increment_stat", unpack(parts))
 end
 
 function flow_callback_set_player_stat(params)
@@ -3589,8 +3731,11 @@ function flow_callback_set_player_stat(params)
 	local stats_id = player:stats_id()
 	local stat_name = params.stat_name
 	local value = params.stat_value
+	local parts, n = string.split(stat_name, "|")
 
-	statistics_db:set_stat(stats_id, stat_name, value)
+	parts[n + 1] = value
+
+	statistics_db:set_stat(stats_id, unpack(parts))
 end
 
 function flow_callback_add_subtitle(params)
@@ -5640,6 +5785,17 @@ function flow_callback_set_global_context(params)
 	dialogue_system:set_global_context(params.key, params.value)
 end
 
+function flow_callback_run_faction_op(params)
+	local unit = params.unit
+	local faction = params.faction
+	local argument_name = params.argument_name
+	local op = params.op
+	local optional_argument_value = params.optional_argument_value
+	local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+	dialogue_system:force_faction_op(unit, faction, argument_name, op, optional_argument_value)
+end
+
 function flow_callback_lock_available_hero(params)
 	local locked_profile_index = Managers.state.game_mode:lock_available_hero()
 
@@ -5974,6 +6130,56 @@ function flow_query_global_listener(params)
 	else
 		flow_return_table.unit = Unit.null_reference()
 	end
+
+	return flow_return_table
+end
+
+function flow_callbacks_set_story_trigger_frozen(params)
+	local freeze = params.frozen
+	local entity_manager = Managers.state.entity
+
+	if entity_manager then
+		local dialogue_system = entity_manager:system("dialogue_system")
+
+		if freeze then
+			dialogue_system:freeze_story_trigger()
+		else
+			dialogue_system:unfreeze_story_trigger()
+		end
+	end
+end
+
+function flow_callbacks_teleport_non_character_elevator_units(params)
+	local transporter_unit = params.transporter_unit
+	local transportation_extension = ScriptUnit.has_extension(transporter_unit, "transportation_system")
+
+	if transportation_extension then
+		local to_reference_unit = params.to_reference_unit
+
+		if Unit.alive(to_reference_unit) then
+			transportation_extension:teleport_non_character_elevator_units(to_reference_unit)
+		end
+	end
+end
+
+function flow_query_is_level_unit(params)
+	local unit = params.unit
+	local world = Application.flow_callback_context_world()
+	local level = LevelHelper:current_level(world)
+	local level_index = Level.unit_index(level, unit)
+
+	flow_return_table.is_level_unit = not not level_index
+
+	return flow_return_table
+end
+
+function flow_query_is_game_object_unit(params)
+	local unit = params.unit
+	local world = Application.flow_callback_context_world()
+	local level = LevelHelper:current_level(world)
+	local level_index = Level.unit_index(level, unit)
+
+	flow_return_table.is_game_object_unit = not level_index
 
 	return flow_return_table
 end

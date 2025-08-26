@@ -471,24 +471,7 @@ CraftPageSalvageConsole._set_reward_material_alpha_fraction = function (self, fr
 	local alpha = 255 * fraction
 	local widgets_by_name = self._widgets_by_name
 
-	for i = 1, 6 do
-		local widget = widgets_by_name["material_text_" .. i]
-		local style = widget.style
-		local text_style = style.text
-		local text_shadow_style = style.text_shadow
-		local icon_style = style.icon
-
-		text_style.text_color[1] = alpha
-		text_shadow_style.text_color[1] = alpha
-		icon_style.color[1] = alpha
-	end
-end
-
-CraftPageSalvageConsole._set_reward_material_alpha_fraction = function (self, fraction)
-	local alpha = 255 * fraction
-	local widgets_by_name = self._widgets_by_name
-
-	for i = 1, 6 do
+	for i = 1, #UISettings.crafting_material_order do
 		local widget = widgets_by_name["material_text_" .. i]
 		local style = widget.style
 		local text_style = style.text

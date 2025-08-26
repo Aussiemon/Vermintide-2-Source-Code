@@ -449,7 +449,7 @@ ChaosTrollStateVomiting.spawn_vomit = function (self, unit)
 		local puke_rot = Quaternion.look(dir)
 		local state_int = self._near_vomit and 1 or 2
 
-		Managers.state.unit_spawner:request_spawn_network_unit("troll_puke", puke_pos, puke_rot, unit, state_int)
+		Managers.state.unit_spawner:request_spawn_template_unit("troll_puke", puke_pos, puke_rot, unit, state_int)
 	end
 end
 

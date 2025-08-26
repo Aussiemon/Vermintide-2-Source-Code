@@ -76,10 +76,10 @@ end
 BuffUtils.buffs_to_rpc_params = function (buffs)
 	local lookup_templates = NetworkLookup.buff_templates
 	local lookup_data_types = NetworkLookup.buff_data_types
-	local num_buffs = 0
 	local buff_ids = {}
 	local buff_data_type_ids = {}
 	local buff_values = {}
+	local num_buffs = 0
 
 	for name, data in pairs(buffs) do
 		num_buffs = num_buffs + 1

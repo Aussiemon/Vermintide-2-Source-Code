@@ -488,6 +488,10 @@ SpawnerSystem.spawn_horde_from_terror_event_ids = function (self, event_ids, var
 			num_to_spawn = amount
 		end
 
+		if script_data.big_hordes then
+			num_to_spawn = math.round(num_to_spawn * (tonumber(script_data.big_hordes) or 1))
+		end
+
 		temp_spawn_list_per_breed[breed_name] = num_to_spawn
 	end
 
@@ -596,6 +600,10 @@ SpawnerSystem.get_raw_spawner_unit = function (self, terror_id)
 
 		return spawner_unit, idle_animation
 	end
+end
+
+SpawnerSystem.get_raw_spawner_units = function (self, terror_id)
+	return self._raw_id_lookup[terror_id] or self._id_lookup[terror_id]
 end
 
 SpawnerSystem.deactivate_spawner = function (self, spawner)

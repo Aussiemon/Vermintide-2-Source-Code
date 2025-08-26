@@ -405,6 +405,10 @@ GameModeBase.get_active_respawn_units = function (self)
 	return empty_table
 end
 
+GameModeBase.get_available_and_active_respawn_units = function (self)
+	return empty_table
+end
+
 GameModeBase.get_player_wounds = function (self, profile)
 	return 5
 end

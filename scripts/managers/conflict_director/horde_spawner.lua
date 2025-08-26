@@ -215,6 +215,11 @@ HordeSpawner.compose_horde_spawn_list = function (self, variant)
 		local breed_name = breeds[i]
 		local amount = breeds[i + 1]
 		local num_to_spawn = ConflictUtils.random_interval(amount)
+
+		if script_data.big_hordes then
+			num_to_spawn = math.round(num_to_spawn * (tonumber(script_data.big_hordes) or 1))
+		end
+
 		local spawn_list = ok_spawner_breeds[breed_name] and spawn_list_a or spawn_list_b
 		local start = #spawn_list
 
@@ -248,6 +253,11 @@ HordeSpawner.compose_blob_horde_spawn_list = function (self, composition_type)
 		local breed_name = breeds[i]
 		local amount = breeds[i + 1]
 		local num_to_spawn = ConflictUtils.random_interval(amount)
+
+		if script_data.big_hordes then
+			num_to_spawn = math.round(num_to_spawn * (tonumber(script_data.big_hordes) or 1))
+		end
+
 		local start = #spawn_list + 1
 
 		for j = start, start + num_to_spawn do
@@ -1273,6 +1283,10 @@ HordeSpawner.create_event_horde_no_horde_spawners = function (self, horde, varia
 				local breed_name = breed_list[i]
 				local amount = breed_list[i + 1]
 				local num_to_spawn = type(amount) == "table" and Math.random(amount[1], amount[2]) or amount
+
+				if script_data.big_hordes then
+					num_to_spawn = math.round(num_to_spawn * (tonumber(script_data.big_hordes) or 1))
+				end
 
 				for j = 1, num_to_spawn do
 					spawn_list[#spawn_list + 1] = breed_name

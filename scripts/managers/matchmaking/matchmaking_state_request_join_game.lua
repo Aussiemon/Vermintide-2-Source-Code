@@ -22,6 +22,12 @@ MatchmakingStateRequestJoinGame.destroy = function (self)
 	end
 end
 
+MatchmakingStateRequestJoinGame.terminate = function (self)
+	if Managers.lobby:query_lobby("matchmaking_join_lobby") then
+		Managers.lobby:destroy_lobby("matchmaking_join_lobby")
+	end
+end
+
 MatchmakingStateRequestJoinGame.on_enter = function (self, state_context)
 	self.state_context = state_context
 	self._join_lobby_data = state_context.join_lobby_data
@@ -31,7 +37,7 @@ MatchmakingStateRequestJoinGame.on_enter = function (self, state_context)
 	self._join_timeout = nil
 
 	if state_context.reserved_lobby then
-		Managers.lobby:register_existing_lobby(state_context.reserved_lobby, "matchmaking_join_lobby")
+		Managers.lobby:register_existing_lobby(state_context.reserved_lobby, "matchmaking_join_lobby", "MatchmakingStateRequestJoinGame (on_enter)")
 	end
 
 	self._pre_verification_error = nil
@@ -91,10 +97,10 @@ MatchmakingStateRequestJoinGame._setup_lobby_connection = function (self, join_l
 
 			self._user_data = user_data
 		else
-			self.lobby_client = Managers.lobby:make_lobby(GameServerLobbyClient, "matchmaking_join_lobby", network_options, join_lobby_data, password)
+			Managers.lobby:make_lobby(GameServerLobbyClient, "matchmaking_join_lobby", "MatchmakingStateRequestJoinGame (_setup_lobby_connection, GameServerLobbyClient)", network_options, join_lobby_data, password)
 		end
 	else
-		self.lobby_client = Managers.lobby:make_lobby(LobbyClient, "matchmaking_join_lobby", network_options, join_lobby_data)
+		Managers.lobby:make_lobby(LobbyClient, "matchmaking_join_lobby", "MatchmakingStateRequestJoinGame (_setup_lobby_connection, LobbyClient)", network_options, join_lobby_data)
 	end
 end
 
@@ -137,7 +143,8 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 
 		if action ~= nil then
 			if action == "join" then
-				self.lobby_client = Managers.lobby:make_lobby(GameServerLobbyClient, "matchmaking_join_lobby", user_data.network_options, user_data.game_server_data, password)
+				Managers.lobby:make_lobby(GameServerLobbyClient, "matchmaking_join_lobby", "MatchmakingStateRequestJoinGame (update)", user_data.network_options, user_data.game_server_data, password)
+
 				self._state = "waiting_to_join_lobby"
 			else
 				return self:_join_game_failed("cancelled", t, false)
@@ -362,8 +369,6 @@ MatchmakingStateRequestJoinGame._join_game_success = function (self, t)
 	if join_method == "party" then
 		return MatchmakingStatePartyJoins, self.state_context
 	else
-		self.state_context.lobby_client = Managers.lobby:free_lobby("matchmaking_join_lobby")
-
 		return MatchmakingStateRequestProfiles, self.state_context
 	end
 end

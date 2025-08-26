@@ -15,7 +15,6 @@ MatchmakingStateRequestProfiles.on_enter = function (self, state_context)
 	self.state_context = state_context
 	self.search_config = state_context.search_config
 	self._matchmaking_manager.debug.profiles_data = {}
-	self.lobby_client = state_context.lobby_client
 
 	self:_request_profiles_data()
 
@@ -25,6 +24,10 @@ MatchmakingStateRequestProfiles.on_enter = function (self, state_context)
 	local pop_chat = true
 
 	Managers.chat:add_local_system_message(1, Localize("matchmaking_status_requesting_profiles"), pop_chat)
+end
+
+MatchmakingStateRequestJoinGame.terminate = function (self)
+	Managers.lobby:destroy_lobby("matchmaking_join_lobby")
 end
 
 MatchmakingStateRequestProfiles.on_exit = function (self)
@@ -41,6 +44,8 @@ MatchmakingStateRequestProfiles.update = function (self, dt, t)
 			if self.search_config == nil then
 				self._matchmaking_manager:cancel_matchmaking()
 			else
+				Managers.lobby:destroy_lobby("matchmaking_join_lobby")
+
 				local search_config = self.search_config
 
 				if search_config and search_config.dedicated_server and search_config.join_method == "party" then
@@ -64,7 +69,8 @@ MatchmakingStateRequestProfiles.update = function (self, dt, t)
 end
 
 MatchmakingStateRequestProfiles._request_profiles_data = function (self)
-	local host = self.lobby_client:lobby_host()
+	local lobby_client = Managers.lobby:get_lobby("matchmaking_join_lobby")
+	local host = lobby_client:lobby_host()
 
 	RPC.rpc_matchmaking_request_profiles_data(PEER_ID_TO_CHANNEL[host])
 
@@ -77,6 +83,7 @@ MatchmakingStateRequestProfiles.rpc_matchmaking_request_profiles_data_reply = fu
 
 	self:_update_profiles_data(peer_ids_by_party, profile_indices_by_party, party_id)
 
+	self.state_context.lobby_client = Managers.lobby:free_lobby("matchmaking_join_lobby")
 	self._next_state = MatchmakingStateJoinGame
 	self._matchmaking_manager.debug.text = "profiles_data_received"
 end

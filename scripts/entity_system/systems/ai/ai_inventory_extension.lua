@@ -106,6 +106,12 @@ AIInventoryExtension._setup_configuration = function (self, unit, start_n, inven
 			self.inventory_item_shield_unit = item_unit
 
 			table.insert(self.inventory_item_weapon_units, item_unit)
+		elseif item_unit_template_name == "ai_skin_unit" then
+			self.inventory_item_skin_unit = item_unit
+
+			if Unit.has_animation_event(item_unit, "enable") then
+				Unit.animation_event(item_unit, "enable")
+			end
 		elseif item_unit_template_name == "ai_helmet_unit" then
 			table.insert(self.inventory_item_helmet_units, item_unit)
 		elseif item_unit_template_name == "ai_outfit_unit" then
@@ -139,6 +145,7 @@ AIInventoryExtension.init = function (self, unit, extension_init_data)
 	self.inventory_item_outfit_units = {}
 	self.inventory_item_helmet_units = {}
 	self.inventory_item_weapon_units = {}
+	self.inventory_item_skin_unit = nil
 	self.dropped_items = {}
 	self.gib_items = {}
 	self.stump_items = {}
@@ -239,6 +246,10 @@ AIInventoryExtension.destroy_dropped_items = function (self, inventory_item_inde
 	else
 		World.destroy_unit(world, dropped_item)
 	end
+end
+
+AIInventoryExtension.get_skin_unit = function (self)
+	return self.inventory_item_skin_unit
 end
 
 AIInventoryExtension.freeze = function (self)
@@ -380,7 +391,7 @@ AIInventoryExtension.drop_single_item = function (self, item_inventory_index, re
 	local item = self.inventory_item_definitions[item_inventory_index]
 	local item_unit_template_name = item.unit_extension_template or "ai_inventory_item"
 
-	if item_extension and not item_extension.dropped and item.drop_reasons[reason] and item_unit_template_name ~= "ai_helmet_unit" and item_unit_template_name ~= "ai_outfit_unit" then
+	if item_extension and not item_extension.dropped and item.drop_reasons[reason] and item_unit_template_name ~= "ai_helmet_unit" and item_unit_template_name ~= "ai_outfit_unit" and item_unit_template_name ~= "ai_skin_unit" then
 		if item.drop_unit_name ~= nil then
 			self:_drop_unit(item.drop_unit_name, item_unit, item, item_inventory_index, reason, false, optional_drop_direction)
 			self:disable_inventory_item(item, item_unit)

@@ -329,7 +329,7 @@ BTSpawnAllies._spawn = function (self, unit, data, blackboard, t)
 	local difficulty = Managers.state.difficulty:get_difficulty()
 
 	if action.difficulty_spawn_list or action.spawn_list then
-		local spawn_list = action.difficulty_spawn_list[difficulty] or action.spawn_list
+		local spawn_list = action.difficulty_spawn_list or action.difficulty_spawn_list[difficulty] or action.spawn_list
 		local spawners = data.spawners
 
 		Managers.state.entity:system("surrounding_aware_system"):add_system_event(unit, "enemy_attack", DialogueSettings.enemy_spawn_allies, "attack_tag", "spawn_allies")
@@ -345,10 +345,20 @@ BTSpawnAllies._spawn = function (self, unit, data, blackboard, t)
 		end
 	end
 
-	if action.difficulty_spawn or action.spawn then
+	local spawn
+
+	if action.phase_spawn then
+		local _, _, _, _, phase = blackboard.health_extension:respawn_thresholds()
+
+		spawn = action.phase_spawn[phase]
+	else
+		spawn = action.difficulty_spawn and action.difficulty_spawn[difficulty] or action.spawn
+	end
+
+	if spawn then
 		local strictly_not_close_to_players = true
 		local silent = true
-		local composition_type = action.difficulty_spawn[difficulty] or action.spawn
+		local composition_type = spawn
 		local limit_spawners = action.limit_spawners
 		local use_closest_spawners = action.use_closest_spawners
 		local source_unit = unit

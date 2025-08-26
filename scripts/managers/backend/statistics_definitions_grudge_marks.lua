@@ -24,6 +24,7 @@ local relevant_bosses = {
 	"chaos_spawn",
 	"beastmen_minotaur",
 	"chaos_troll",
+	"chaos_troll_chief",
 }
 local expeditions = {
 	"journey_ruin",

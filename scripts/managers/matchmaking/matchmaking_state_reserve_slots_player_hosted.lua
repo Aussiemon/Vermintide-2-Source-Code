@@ -33,7 +33,7 @@ MatchmakingStateReserveSlotsPlayerHosted.on_enter = function (self, state_contex
 	local lobby_client = Managers.lobby:query_lobby("matchmaking_join_lobby")
 
 	if not lobby_client then
-		Managers.lobby:make_lobby(LobbyClient, "matchmaking_join_lobby", self._network_options, join_lobby_data)
+		Managers.lobby:make_lobby(LobbyClient, "matchmaking_join_lobby", "MatchmakingStateReserveSlotsPlayerHosted (on_enter)", self._network_options, join_lobby_data)
 	end
 
 	self._matchmaking_manager.debug.text = "Joining lobby"

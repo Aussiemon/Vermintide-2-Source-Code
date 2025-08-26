@@ -185,7 +185,9 @@ VersusPartyCharSelectionView._update_hero_picking_progress = function (self, par
 		else
 			local peer_id = player_data.status.peer_id
 
-			profile_index, career_index = self._profile_synchronizer:get_persistent_profile_index_reservation(peer_id)
+			if peer_id then
+				profile_index, career_index = self._profile_synchronizer:get_persistent_profile_index_reservation(peer_id)
+			end
 		end
 
 		local careers = self._hero_group_widgets_lookup[profile_index]

@@ -320,7 +320,11 @@ local game_object_templates = {
 		syncs_position = true,
 		syncs_rotation = true,
 	},
-	pickup_torch_unit_init = {
+	explosive_barrel_socket = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false,
+		syncs_position = true,
 		syncs_rotation = true,
 	},
 	weave_kill_enemies_unit = {

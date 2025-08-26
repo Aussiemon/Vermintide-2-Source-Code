@@ -858,7 +858,7 @@ local action_data = {
 		action_weight = 4,
 		attack_anim = "attack_push_back",
 		attack_intensity_type = "aoe",
-		bot_threat_duration = 0.75,
+		bot_threat_duration = 1.2,
 		collision_type = "cylinder",
 		damage = 20,
 		damage_type = "cutting",
@@ -1083,7 +1083,6 @@ local action_data = {
 		bot_threats = {
 			attack_fire_left_arm = {
 				{
-					duration = 1.5333333333333334,
 					height = 2,
 					offset_forward = 1,
 					offset_up = 0,
@@ -1093,7 +1092,6 @@ local action_data = {
 			},
 			attack_fire_right_arm = {
 				{
-					duration = 1.5333333333333334,
 					height = 2,
 					offset_forward = 1,
 					offset_up = 0,
@@ -1103,7 +1101,6 @@ local action_data = {
 			},
 			attack_fire_turn_bwd = {
 				{
-					duration = 1.8666666666666667,
 					height = 2,
 					offset_forward = 1,
 					offset_up = 0,
@@ -1113,7 +1110,6 @@ local action_data = {
 			},
 			attack_fire_turn_left = {
 				{
-					duration = 1.8666666666666667,
 					height = 2,
 					offset_forward = 1,
 					offset_up = 0,
@@ -1123,7 +1119,6 @@ local action_data = {
 			},
 			attack_fire_turn_right = {
 				{
-					duration = 1.8666666666666667,
 					height = 2,
 					offset_forward = 1,
 					offset_up = 0,

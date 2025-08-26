@@ -3272,6 +3272,18 @@ UIPlayerPortraitFrameSettings = {
 			},
 		},
 	},
+	frame_dwarf_fest = {
+		{
+			layer = 10,
+			texture = "portrait_frame_dwarf_fest",
+			color = {
+				255,
+				255,
+				255,
+				255,
+			},
+		},
+	},
 }
 
 local function get_current_stat()

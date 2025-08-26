@@ -92,14 +92,16 @@ HitReactions.templates = {
 
 				local attacker = hit[DamageDataIndex.ATTACKER]
 
-				trigger_player_friendly_fire_dialogue(unit, attacker)
+				if not dot_hit_types[damage_type] then
+					trigger_player_friendly_fire_dialogue(unit, attacker)
+				end
 			end
 		end,
 		husk = function (unit, dt, context, t, hit)
 			local attacker = hit[DamageDataIndex.ATTACKER]
 			local damage_type = hit[DamageDataIndex.DAMAGE_TYPE]
 
-			if not ignored_damage_types[damage_type] then
+			if not ignored_damage_types[damage_type] and not dot_hit_types[damage_type] then
 				trigger_player_friendly_fire_dialogue(unit, attacker)
 			end
 		end,

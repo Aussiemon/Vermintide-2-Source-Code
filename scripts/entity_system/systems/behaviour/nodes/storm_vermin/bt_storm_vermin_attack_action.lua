@@ -284,7 +284,7 @@ BTStormVerminAttackAction._create_bot_threat = function (self, unit, blackboard)
 		if action.collision_type == "cylinder" then
 			local rot = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.attacking_target)
 			local pos = self:_calculate_cylinder_collision(action, POSITION_LOOKUP[unit], rot)
-			local size = Vector3(action.radius, action.radius, action.height * 0.5)
+			local size = Vector3(0, action.radius, action.height * 0.5)
 
 			Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(pos, "cylinder", size, nil, bot_threat_duration)
 		elseif action.collision_type == "oobb" or not action.collision_type then

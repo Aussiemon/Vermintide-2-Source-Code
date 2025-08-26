@@ -238,6 +238,10 @@ GameModeTutorial.get_active_respawn_units = function (self)
 	return self._adventure_spawning:get_active_respawn_units()
 end
 
+GameModeTutorial.get_available_and_active_respawn_units = function (self)
+	return self._adventure_spawning:get_available_and_active_respawn_units()
+end
+
 GameModeTutorial.get_end_screen_config = function (self, game_won, game_lost, player)
 	local screen_name, screen_config = nil, {}
 

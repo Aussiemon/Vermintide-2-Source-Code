@@ -463,6 +463,9 @@ ActionUtils.spawn_pickup_projectile = function (world, weapon_unit, projectile_u
 	local network_angular_velocity = AiAnimUtils.velocity_network_scale(angular_velocity, true)
 	local pickup_name_id = NetworkLookup.pickup_names[pickup_name]
 	local spawn_type_id = NetworkLookup.pickup_spawn_types[spawn_type]
+	local tutorial_extension = ScriptUnit.has_extension(weapon_unit, "tutorial_system")
+	local always_show = tutorial_extension and tutorial_extension.always_show or false
+	local objective_active = tutorial_extension and (tutorial_extension.proxy_active or tutorial_extension.active) or false
 	local has_death_extension = ScriptUnit.has_extension(weapon_unit, "death_system")
 
 	if has_death_extension then
@@ -499,9 +502,9 @@ ActionUtils.spawn_pickup_projectile = function (world, weapon_unit, projectile_u
 
 			projectile_unit_template_name_id = NetworkLookup.go_types.explosive_pickup_projectile_unit_limited
 
-			Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_explosive_pickup_projectile_limited", projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, spawner_unit_id, limited_item_id, damage, explode_time, fuse_time, attacker_unit_id, item_name_id, spawn_type_id)
+			Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_explosive_pickup_projectile_limited", projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, spawner_unit_id, limited_item_id, damage, explode_time, fuse_time, attacker_unit_id, item_name_id, spawn_type_id, always_show, objective_active)
 		else
-			Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_explosive_pickup_projectile", projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, damage, explode_time, fuse_time, attacker_unit_id, item_name_id, spawn_type_id)
+			Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_explosive_pickup_projectile", projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, damage, explode_time, fuse_time, attacker_unit_id, item_name_id, spawn_type_id, always_show, objective_active)
 		end
 	elseif ScriptUnit.has_extension(weapon_unit, "limited_item_track_system") then
 		local limited_item_extension = ScriptUnit.extension(weapon_unit, "limited_item_track_system")
@@ -515,12 +518,12 @@ ActionUtils.spawn_pickup_projectile = function (world, weapon_unit, projectile_u
 
 		projectile_unit_template_name_id = NetworkLookup.go_types.pickup_projectile_unit_limited
 
-		Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_pickup_projectile_limited", projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, spawner_unit_id, limited_item_id, spawn_type_id)
+		Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_pickup_projectile_limited", projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, spawner_unit_id, limited_item_id, spawn_type_id, always_show, objective_active)
 	else
 		local ammo_extension = ScriptUnit.has_extension(weapon_unit, "ammo_system")
 		local spawn_limit = ammo_extension and ammo_extension:max_ammo() or 1
 
-		Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_pickup_projectile", projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, spawn_type_id, spawn_limit)
+		Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_pickup_projectile", projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, spawn_type_id, spawn_limit, always_show, objective_active)
 	end
 end
 

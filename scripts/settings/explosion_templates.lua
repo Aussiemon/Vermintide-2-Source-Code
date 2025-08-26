@@ -456,6 +456,64 @@ ExplosionTemplates.huge_boss_explosion = {
 		},
 	},
 }
+ExplosionTemplates.troll_chief_rage_explosion = {
+	explosion = {
+		allow_friendly_fire_override = true,
+		attack_template = "loot_rat_explosion",
+		catapult_force = 12,
+		catapult_force_z = 4,
+		catapult_players = true,
+		damage_profile = "standard_bearer_explosion",
+		effect_name = "fx/chr_beastmen_standard_bearer_start_01",
+		max_damage_radius = 12,
+		radius = 24,
+		difficulty_power_level = {
+			easy = {
+				power_level = 800,
+				power_level_glance = 800,
+			},
+			normal = {
+				power_level = 800,
+				power_level_glance = 800,
+			},
+			hard = {
+				power_level = 800,
+				power_level_glance = 800,
+			},
+			harder = {
+				power_level = 800,
+				power_level_glance = 800,
+			},
+			hardest = {
+				power_level = 800,
+				power_level_glance = 800,
+			},
+			cataclysm = {
+				power_level = 800,
+				power_level_glance = 800,
+			},
+			cataclysm_2 = {
+				power_level = 800,
+				power_level_glance = 800,
+			},
+			cataclysm_3 = {
+				power_level = 800,
+				power_level_glance = 800,
+			},
+			versus_base = {
+				power_level = 800,
+				power_level_glance = 800,
+			},
+		},
+		camera_effect = {
+			far_distance = 24,
+			far_scale = 0.5,
+			near_distance = 12,
+			near_scale = 1,
+			shake_name = "troll_chief_rage_explosion",
+		},
+	},
+}
 ExplosionTemplates.overcharge_explosion_dwarf = {
 	explosion = {
 		alert_enemies = true,

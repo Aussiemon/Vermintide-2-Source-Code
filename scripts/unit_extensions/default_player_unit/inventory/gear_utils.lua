@@ -104,32 +104,6 @@ GearUtils.create_equipment = function (world, slot_name, item_data, unit_1p, uni
 	return slot_data
 end
 
-GearUtils.apply_properties_to_item_template = function (template, backend_id)
-	local backend_items = Managers.backend:get_interface("items")
-	local item = backend_items:get_item_from_id(backend_id)
-	local properties = item and item.properties
-
-	if properties then
-		local template_clone = table.clone(template)
-		local properties_data = item.rarity == "magic" and WeaveProperties.properties or WeaponProperties.properties
-
-		for property_key, _ in pairs(properties) do
-			local property_data = properties_data[property_key]
-			local template_function = property_data.template_function
-
-			if template_function and template_clone[template_function] then
-				local property_quality = 1
-
-				template_clone[template_function](template_clone, property_quality)
-			end
-		end
-
-		return template_clone
-	end
-
-	return template
-end
-
 GearUtils.apply_material_settings = function (unit, material_settings)
 	for variable_name, data in pairs(material_settings) do
 		if data.type == "color" then
@@ -659,16 +633,10 @@ GearUtils.get_property_and_trait_buffs = function (backend_items, backend_id, bu
 			local buffer = trait_data.buffer or "client"
 			local no_wield_required = traits_data.no_wield_required
 
-			if BuffTemplates[buff_name] then
-				if only_no_wield_required and no_wield_required then
-					buffs_table[buffer][buff_name] = {
-						variable_value = 1,
-					}
-				elseif not only_no_wield_required and not no_wield_required then
-					buffs_table[buffer][buff_name] = {
-						variable_value = 1,
-					}
-				end
+			if BuffTemplates[buff_name] and (only_no_wield_required and no_wield_required or not only_no_wield_required and not no_wield_required) then
+				buffs_table[buffer][buff_name] = {
+					variable_value = 1,
+				}
 			end
 		end
 	end

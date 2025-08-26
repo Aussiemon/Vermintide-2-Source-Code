@@ -654,6 +654,10 @@ DialogueSystem.get_global_context = function (self, key)
 	return self._global_context[key]
 end
 
+DialogueSystem.force_faction_op = function (self, unit, faction, argument_name, op, optional_argument_value)
+	self._faction_memories[faction][argument_name] = DialogueSystem.function_by_op[TagQuery.OP[op]](self._faction_memories[faction][argument_name], optional_argument_value)
+end
+
 DialogueSystem._cleanup_extension = function (self, unit, extension_name)
 	local extension = self._unit_extension_data[unit]
 

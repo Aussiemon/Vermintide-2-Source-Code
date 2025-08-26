@@ -523,4 +523,20 @@ BTEnterHooks.activate_slot_system = function (unit, blackboard, t)
 	ai_slot_system:do_slot_search(unit, true)
 end
 
+BTEnterHooks.troll_chief_on_downed = function (unit, blackboard, t)
+	local data = {
+		stay_still = true,
+		end_time = math.huge,
+	}
+	local fwd = Quaternion.forward(Quaternion.flat_no_roll(Unit.local_rotation(unit, 0)))
+
+	data.spawn_forward = Vector3Box(fwd)
+	blackboard.spawning_allies = data
+	blackboard.spawned_allies_wave = 0
+
+	local _, _, _, _, phase = blackboard.health_extension:respawn_thresholds()
+
+	blackboard.downed_phase = phase
+end
+
 DLCUtils.merge("bt_enter_hooks", BTEnterHooks)

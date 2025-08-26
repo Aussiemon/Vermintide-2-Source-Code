@@ -497,7 +497,7 @@ EffectHelper.flow_cb_play_surface_material_effect = function (effect_name, unit,
 
 		hit_rotation = Quaternion.look(forward, up)
 
-		EffectHelper.play_surface_material_effects(effect_name, world, hit_unit, hit_position, hit_rotation, hit_normal, sound_character, husk, unit)
+		EffectHelper.play_surface_material_effects(effect_name, world, hit_unit, hit_position, hit_rotation, hit_normal, sound_character, husk, unit, actor)
 	end
 end
 

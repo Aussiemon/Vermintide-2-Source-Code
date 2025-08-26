@@ -194,7 +194,7 @@ WeaponSystem.send_rpc_attack_hit = function (self, damage_source_id, attacker_un
 			local attributes = ai_system:get_attributes(hit_unit)
 
 			if breed and breed.show_health_bar or attributes.grudge_marked then
-				Managers.state.event:trigger("boss_health_bar_set_prioritized_unit", hit_unit, "damage_done")
+				Managers.state.event:trigger("boss_health_bar_register_unit", hit_unit, "damage_done")
 			end
 		end
 	end

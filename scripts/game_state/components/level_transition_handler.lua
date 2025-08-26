@@ -649,7 +649,7 @@ LevelTransitionHandler.apply_defaults_to_level_data = function (self, level_key,
 		end
 	end
 
-	mechanism = mechanism or SaveData.last_mechanism or "adventure"
+	mechanism = mechanism or "adventure"
 
 	if not level_key then
 		local mechanism_settings = MechanismSettings[mechanism]

@@ -86,11 +86,8 @@ StateIngame.on_enter = function (self)
 	end
 
 	local loading_context = self.parent.loading_context
-
-	self._lobby_host = loading_context.lobby_host
-	self._lobby_client = loading_context.lobby_client
-
-	local is_server = not not self._lobby_host
+	local lobby = Managers.lobby:get_lobby("matchmaking_session_lobby")
+	local is_server = lobby.is_host
 
 	self.is_server = is_server
 
@@ -166,12 +163,12 @@ StateIngame.on_enter = function (self)
 	self._max_local_players = PlayerManager.MAX_PLAYERS
 
 	if self.is_server then
-		local lobby_data = self._lobby_host:get_stored_lobby_data()
+		local lobby_data = lobby:get_stored_lobby_data()
 
 		if lobby_data.mechanism == "adventure" then
 			lobby_data.selected_mission_id = self.level_key
 
-			self._lobby_host:set_lobby_data(lobby_data)
+			lobby:set_lobby_data(lobby_data)
 		end
 	end
 
@@ -243,7 +240,7 @@ StateIngame.on_enter = function (self)
 		difficulty_tweak = 0
 	end
 
-	Managers.state.difficulty = DifficultyManager:new(world, is_server, network_event_delegate, self._lobby_host)
+	Managers.state.difficulty = DifficultyManager:new(world, is_server, network_event_delegate, lobby)
 
 	Managers.state.difficulty:set_difficulty(difficulty, difficulty_tweak)
 
@@ -259,7 +256,7 @@ StateIngame.on_enter = function (self)
 		local matchmaking_params = {
 			network_transmit = self.network_transmit,
 			network_server = self.network_server,
-			lobby = self._lobby_host or self._lobby_client,
+			lobby = lobby,
 			peer_id = self.peer_id,
 			is_server = is_server,
 			profile_synchronizer = self.profile_synchronizer,
@@ -366,8 +363,7 @@ StateIngame.on_enter = function (self)
 			input_manager = self.input_manager,
 			world_name = self.world_name,
 			free_flight_manager = self.free_flight_manager,
-			lobby_host = loading_context.lobby_host,
-			lobby_client = loading_context.lobby_client,
+			lobby = Managers.lobby:get_lobby("matchmaking_session_lobby"),
 			profile_synchronizer = self.profile_synchronizer,
 			network_event_delegate = self.network_event_delegate,
 			statistics_db = self.statistics_db,
@@ -460,7 +456,7 @@ StateIngame.on_enter = function (self)
 
 	local network_manager = Managers.state.network
 	local network_game = network_manager:game()
-	local is_spawn_owner = self._lobby_host and network_game
+	local is_spawn_owner = lobby.is_host and network_game
 
 	if is_spawn_owner or LEVEL_EDITOR_TEST then
 		Managers.state.conflict:ai_ready(level_seed)
@@ -903,15 +899,9 @@ StateIngame.update = function (self, dt, main_t)
 	Managers.level_transition_handler:update()
 
 	local t = Managers.time:time("game")
+	local lobby = Managers.lobby:get_lobby("matchmaking_session_lobby")
 
-	if self._lobby_host then
-		self._lobby_host:update(dt)
-	end
-
-	if self._lobby_client then
-		self._lobby_client:update(dt)
-	end
-
+	lobby:update(dt)
 	Managers.state.voting:update(dt, t)
 
 	if Managers.matchmaking then
@@ -955,7 +945,7 @@ StateIngame.update = function (self, dt, main_t)
 	if is_server then
 		Managers.state.conflict:reset_data()
 
-		if self._lobby_host:is_joined() and Managers.state.network:game() then
+		if lobby:is_joined() and Managers.state.network:game() then
 			Managers.state.conflict:update(dt, t)
 		end
 	elseif Managers.state.network:game() then
@@ -1068,7 +1058,7 @@ end
 
 StateIngame._check_exit = function (self, t)
 	local network_manager = Managers.state.network
-	local lobby = self._lobby_host or self._lobby_client
+	local lobby = Managers.lobby:query_lobby("matchmaking_session_lobby")
 	local platform = PLATFORM
 	local game_mode_key = self.game_mode_key
 	local difficulty, difficulty_tweak = Managers.state.difficulty:get_difficulty()
@@ -1247,8 +1237,8 @@ StateIngame._check_exit = function (self, t)
 			self.kicked_by_server = nil
 			self.exit_type = "kicked_by_server"
 
-			if self._lobby_client and self._lobby_client.state == LobbyState.JOINED then
-				Managers.matchmaking:add_broken_lobby_client(self._lobby_client, t, true)
+			if not lobby.is_host and lobby.state == LobbyState.JOINED then
+				Managers.matchmaking:add_broken_lobby_client(lobby, t, true)
 			end
 
 			if network_manager:in_game_session() then
@@ -1332,9 +1322,9 @@ StateIngame._check_exit = function (self, t)
 
 			if self.network_server then
 				self.network_server:disconnect_all_peers("host_left_game")
-			elseif self._lobby_client and self._lobby_client.state == LobbyState.JOINED then
+			elseif not lobby.is_host and lobby.state == LobbyState.JOINED then
 				print("Leaving lobby, noting it as one I don't want to matchmake back into soon")
-				Managers.matchmaking:add_broken_lobby_client(self._lobby_client, t, true)
+				Managers.matchmaking:add_broken_lobby_client(lobby, t, true)
 			end
 
 			if network_manager:in_game_session() then
@@ -1356,9 +1346,9 @@ StateIngame._check_exit = function (self, t)
 
 				if self.network_server then
 					self.network_server:disconnect_all_peers("host_left_game")
-				elseif self._lobby_client and self._lobby_client.state == LobbyState.JOINED then
+				elseif not lobby.is_host and lobby.state == LobbyState.JOINED then
 					print("Leaving lobby, noting it as one I don't want to matchmake back into soon")
-					Managers.matchmaking:add_broken_lobby_client(self._lobby_client, t, true)
+					Managers.matchmaking:add_broken_lobby_client(lobby, t, true)
 				end
 
 				if network_manager:in_game_session() then
@@ -1731,8 +1721,6 @@ StateIngame._check_exit = function (self, t)
 			return StateTitleScreen
 		elseif exit_type == "load_next_level" or exit_type == "reload_level" then
 			self.parent.loading_context.checkpoint_data = self.is_server and Managers.level_transition_handler:get_checkpoint_data() or nil
-			self.parent.loading_context.lobby_host = self._lobby_host
-			self.parent.loading_context.lobby_client = self._lobby_client
 			self.parent.loading_context.matchmaking_loading_context = Managers.matchmaking:loading_context()
 			self.parent.loading_context.wanted_profile_index = self:wanted_profile_index()
 			self.parent.loading_context.wanted_party_index = self:wanted_party_index()
@@ -1800,6 +1788,7 @@ StateIngame.post_update = function (self, dt)
 
 	Managers.state.game_mode:update_flow_object_set_enable(dt)
 	Managers.state.game_mode:post_update(dt, t)
+	Managers.state.unit_spawner:spawn_queued_units()
 
 	local network_manager = Managers.state.network
 
@@ -1983,6 +1972,8 @@ StateIngame.on_exit = function (self, application_shutdown)
 
 	Managers.deed:unregister_rpcs()
 
+	local lobby = Managers.lobby:get_lobby("matchmaking_session_lobby")
+
 	if application_shutdown or self.leave_lobby then
 		if Managers.matchmaking then
 			Managers.matchmaking:destroy()
@@ -2019,30 +2010,18 @@ StateIngame.on_exit = function (self, application_shutdown)
 			end
 		end
 
-		local loading_context = self.parent.loading_context
 		local join_data = loading_context.start_lobby_data or loading_context.join_lobby_data or loading_context.join_server_data
 		local party_join = join_data ~= nil and join_data.join_method == "party"
 
-		if self._lobby_host then
+		if lobby.is_host then
 			if self.network_server then
 				self.network_server:destroy()
 
 				self.network_server = nil
 			end
-
-			self._lobby_host:destroy()
-
-			self._lobby_host = nil
-
-			Network.update(0, setmetatable({}, network_event_meta_table))
-			Managers.account:set_current_lobby(nil)
-
-			self.parent.loading_context.lobby_host = nil
-		end
-
-		if self._lobby_client then
+		else
 			if party_join then
-				Managers.party:store_lobby(self._lobby_client:get_stored_lobby_data())
+				Managers.party:store_lobby(lobby:get_stored_lobby_data())
 			end
 
 			if self.network_client then
@@ -2050,16 +2029,11 @@ StateIngame.on_exit = function (self, application_shutdown)
 
 				self.network_client = nil
 			end
-
-			self._lobby_client:destroy()
-
-			self._lobby_client = nil
-
-			Network.update(0, setmetatable({}, network_event_meta_table))
-			Managers.account:set_current_lobby(nil)
-
-			self.parent.loading_context.lobby_client = nil
 		end
+
+		Managers.lobby:destroy_lobby("matchmaking_session_lobby")
+		Network.update(0, setmetatable({}, network_event_meta_table))
+		Managers.account:set_current_lobby(nil)
 
 		if application_shutdown and rawget(_G, "LobbyInternal") then
 			if Managers.party:has_party_lobby() then
@@ -2090,7 +2064,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 
 			if level_setting.hub_level or level_key == "prologue" then
 				Application.warning("Cancelling matchmaking")
-				self._lobby_host:enable_matchmaking(false)
+				lobby:enable_matchmaking(false)
 			end
 		end
 	end
@@ -2209,7 +2183,8 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 
 	network_clock:register_rpcs(network_event_delegate)
 
-	local network_manager = GameNetworkManager:new(world, self._lobby_host or self._lobby_client, is_server, network_event_delegate)
+	local lobby = Managers.lobby:get_lobby("matchmaking_session_lobby")
+	local network_manager = GameNetworkManager:new(world, lobby, is_server, network_event_delegate)
 
 	Managers.state.network = network_manager
 
@@ -2249,7 +2224,7 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 
 	Managers.weave:initiate(world, network_event_delegate, is_server, game_mode_key)
 
-	Managers.state.game_mode = GameModeManager:new(world, self._lobby_host, self._lobby_client, network_event_delegate, self.statistics_db, game_mode_key, self.network_server or self.network_client, self.network_transmit, self.profile_synchronizer, game_mode_settings)
+	Managers.state.game_mode = GameModeManager:new(world, lobby, network_event_delegate, self.statistics_db, game_mode_key, self.network_server or self.network_client, self.network_transmit, self.profile_synchronizer, game_mode_settings)
 
 	local level_key = level_transition_handler:get_current_level_keys()
 	local level_seed = level_transition_handler:get_current_level_seed()
@@ -2261,9 +2236,6 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 	Managers.level_transition_handler:create_queued_networked_flow_states(self.level)
 	GarbageLeakDetector.register_object(Managers.state.game_mode, "GameModeManager")
 	GarbageLeakDetector.register_object(Managers.state.conflict, "ConflictDirector")
-
-	local is_server = self._lobby_host and true or false
-	local is_client = self._lobby_client and true or false
 
 	Managers.state.camera = CameraManager:new(world)
 
@@ -2281,18 +2253,18 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 
 	local function extension_extractor_function(unit, unit_template_name)
 		if not unit_template_name then
-			local extensions = ScriptUnit.extension_definitions(unit)
-			local num_extensions = #extensions
+			local extensions, num_extensions = ScriptUnit.extension_definitions(unit)
 
 			return extensions, num_extensions
 		end
 
 		local is_network_unit = NetworkUnit.is_network_unit(unit)
 		local is_husk = is_network_unit and NetworkUnit.is_husk_unit(unit)
-
-		assert(is_server or is_client)
-
 		local extensions, num_extensions = unit_templates.get_extensions(unit_template_name, is_husk, is_server)
+
+		if not extensions then
+			extensions, num_extensions = ScriptUnit.extension_definitions(unit)
+		end
 
 		return extensions, num_extensions
 	end
@@ -2392,7 +2364,7 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 		entity_system_bag = self.entity_system_bag,
 		network_clock = self.network_clock,
 		network_manager = Managers.state.network,
-		network_lobby = self._lobby_host or self._lobby_client,
+		network_lobby = lobby,
 		network_transmit = self.network_transmit,
 		network_server = self.network_server,
 		profile_synchronizer = self.profile_synchronizer,

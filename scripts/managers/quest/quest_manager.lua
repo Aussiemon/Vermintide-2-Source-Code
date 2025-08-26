@@ -246,12 +246,38 @@ QuestManager.get_quest_outline = function (self)
 					end
 
 					local category_entries = quest_type_category.entries
+					local quest_template = quest_templates.quests[quest_key]
+					local order = quest_template.custom_order
+					local insert_idx
 
-					category_entries[#category_entries + 1] = quest_key
+					if order then
+						for i = 1, #category_entries do
+							if order < (quest_templates.quests[category_entries[i]].custom_order or math.huge) then
+								insert_idx = i
+
+								break
+							end
+						end
+					end
+
+					table.insert(category_entries, insert_idx or #category_entries + 1, quest_key)
 				else
 					local entries = category_table.entries
+					local quest_template = quest_templates.quests[quest_key]
+					local order = quest_template.custom_order
+					local insert_idx
 
-					entries[#entries + 1] = quest_key
+					if order then
+						for i = 1, #entries do
+							if order < (quest_templates.quests[entries[i]].custom_order or math.huge) then
+								insert_idx = i
+
+								break
+							end
+						end
+					end
+
+					table.insert(entries, insert_idx or #entries + 1, quest_key)
 				end
 			end
 		end

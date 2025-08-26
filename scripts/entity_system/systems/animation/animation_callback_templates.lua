@@ -797,6 +797,24 @@ AnimationCallbackTemplates.server.anim_cb_downed_end_finished = function (unit, 
 	blackboard.downed_end_finished = true
 end
 
+AnimationCallbackTemplates.server.anim_cb_rage_finished = function (unit, param)
+	local blackboard = BLACKBOARDS[unit]
+
+	blackboard.rage_end_finished = true
+end
+
+AnimationCallbackTemplates.server.anim_cb_roar_begin = function (unit, param)
+	local blackboard = BLACKBOARDS[unit]
+
+	blackboard.anim_cb_roar_begin = true
+end
+
+AnimationCallbackTemplates.server.anim_cb_roar_end = function (unit, param)
+	local blackboard = BLACKBOARDS[unit]
+
+	blackboard.anim_cb_roar_end = true
+end
+
 AnimationCallbackTemplates.server.anim_cb_landing_finished = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
 

@@ -1584,6 +1584,29 @@ CameraEffectSettings = {
 			octaves = 8,
 			persistance = 1,
 		},
+		boat_impact_large = {
+			amplitude = 3,
+			duration = 0.5,
+			fade_in = 0.1,
+			fade_out = 3,
+			octaves = 6,
+			persistance = 0.9,
+		},
+		thunderstorm_ambience = {
+			amplitude = 0.65,
+			duration = 10000,
+			fade_in = 2,
+			fade_out = 2,
+			octaves = 6,
+			persistance = 0.5,
+		},
+		troll_chief_rage_explosion = {
+			amplitude = 0.55,
+			duration = 0.5,
+			fade_out = 0.8,
+			octaves = 12,
+			persistance = 1,
+		},
 	},
 }
 

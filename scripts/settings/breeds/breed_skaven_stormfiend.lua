@@ -729,7 +729,7 @@ local action_data = {
 							offset_right = 0,
 							offset_up = 0,
 							radius = 3.5,
-							start_time = 0.26666666666666666,
+							start_time = 0.16666666666666666,
 						},
 					},
 					attack_melee_bwd = {

@@ -227,7 +227,7 @@ WeaveTutorialPopupUI.populate_message = function (self, title_text, sub_title_te
 
 	local localized_body_text = disable_body_localization and body_text or Localize(body_text)
 
-	self.body_paragraphs = self:break_paragraphs(localized_body_text)
+	self.body_paragraphs = UIRenderer.break_paragraphs(localized_body_text, {})
 
 	self:resize_to_fit()
 
@@ -303,18 +303,6 @@ WeaveTutorialPopupUI.calculate_base_window_height = function (self)
 	local window_height = self.button_height - self.body_start_y - title_offset + 50
 
 	return window_height
-end
-
-WeaveTutorialPopupUI.break_paragraphs = function (self, text)
-	local paragraphs = {}
-	local i = 1
-
-	for line in text:gmatch("[^\r\n]+") do
-		paragraphs[i] = line
-		i = i + 1
-	end
-
-	return paragraphs
 end
 
 WeaveTutorialPopupUI.draw_body = function (self, renderer)

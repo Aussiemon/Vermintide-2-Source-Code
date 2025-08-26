@@ -59,6 +59,12 @@ AiHuskBaseExtension.extensions_ready = function (self, world, unit)
 	end
 
 	Unit.flow_event(unit, "lua_trigger_variation")
+
+	local level_settings = LevelSettings[Managers.state.game_mode:level_key()]
+	local climate_type = level_settings.climate_type or "default"
+
+	Unit.set_flow_variable(unit, "climate_type", climate_type)
+	Unit.flow_event(unit, "climate_type_set")
 end
 
 AiHuskBaseExtension.freeze = function (self)

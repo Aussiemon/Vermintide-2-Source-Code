@@ -309,7 +309,7 @@ ActionCareerWEThornsisterTargetWall._check_segment = function (self, prev_positi
 
 		local normalized_direction = Vector3.down()
 		local distance = 2 * WALL_MAX_HEIGHT_OFFSET
-		local result, hit_position, length = PhysicsWorld.immediate_raycast(physics_world, from, normalized_direction, distance, "closest", "types", "statics", "collision_filter", "filter_player_mover")
+		local result, hit_position, length = PhysicsWorld.immediate_raycast(physics_world, from, normalized_direction, distance, "closest", "collision_filter", "filter_player_mover")
 
 		if result then
 			if prev_position and math.abs(hit_position.z - prev_position.z) > WALL_MAX_HEIGHT_OFFSET then
@@ -323,13 +323,13 @@ ActionCareerWEThornsisterTargetWall._check_segment = function (self, prev_positi
 
 			if prev_position then
 				local sweep_from = prev_position + Vector3.up() * WALL_OVERLAP_HEIGHT_OFFSET
-				local sweep_results = PhysicsWorld.linear_obb_sweep(physics_world, sweep_from, overlap_pos, overlap_size, overlap_rot, 5, "collision_filter", "filter_player_mover", "types", "statics", "report_initial_overlap")
+				local sweep_results = PhysicsWorld.linear_obb_sweep(physics_world, sweep_from, overlap_pos, overlap_size, overlap_rot, 5, "collision_filter", "filter_player_mover", "report_initial_overlap")
 
 				actor_count = sweep_results and #sweep_results or 0
 			else
 				local hit_actors
 
-				hit_actors, actor_count = PhysicsWorld.immediate_overlap(physics_world, "position", overlap_pos, "rotation", overlap_rot, "size", overlap_size, "shape", "oobb", "types", "statics", "collision_filter", "filter_player_mover")
+				hit_actors, actor_count = PhysicsWorld.immediate_overlap(physics_world, "position", overlap_pos, "rotation", overlap_rot, "size", overlap_size, "shape", "oobb", "collision_filter", "filter_player_mover")
 			end
 
 			if actor_count > 0 then

@@ -1709,6 +1709,10 @@ GameModeVersus.get_active_respawn_units = function (self)
 	return self._adventure_spawning:get_active_respawn_units()
 end
 
+GameModeVersus.get_available_and_active_respawn_units = function (self)
+	return self._adventure_spawning:get_available_and_active_respawn_units()
+end
+
 GameModeVersus.adventure_spawning = function (self)
 	return self._adventure_spawning
 end

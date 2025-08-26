@@ -597,6 +597,10 @@ DeusSpawning.get_active_respawn_units = function (self)
 	return self._respawn_handler:get_active_respawn_units()
 end
 
+DeusSpawning.get_available_and_active_respawn_units = function (self)
+	return self._respawn_handler:get_available_and_active_respawn_units()
+end
+
 DeusSpawning.get_respawn_handler = function (self)
 	return self._respawn_handler
 end

@@ -211,7 +211,7 @@ BTGreySeerGroundCombatAction.spawn_allies = function (self, unit, blackboard, t)
 	local action = blackboard.action
 	local strictly_not_close_to_players = true
 	local silent = true
-	local composition_type = action.difficulty_spawn[difficulty] or action.spawn
+	local composition_type = action.difficulty_spawn and action.difficulty_spawn[difficulty] or action.spawn
 	local limit_spawners
 	local terror_event_id = action.terror_event_id
 	local conflict_director = Managers.state.conflict

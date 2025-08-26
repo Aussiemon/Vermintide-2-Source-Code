@@ -34,12 +34,13 @@ end
 
 GameModeManager = class(GameModeManager)
 
-GameModeManager.init = function (self, world, lobby_host, lobby_client, network_event_delegate, statistics_db, game_mode_key, network_handler, network_transmit, profile_synchronizer, game_mode_settings)
+GameModeManager.init = function (self, world, lobby, network_event_delegate, statistics_db, game_mode_key, network_handler, network_transmit, profile_synchronizer, game_mode_settings)
 	local level_key = Managers.level_transition_handler:get_current_level_keys()
+	local is_host = lobby.is_host
 
-	self._lobby_host = lobby_host
-	self._lobby_client = lobby_client
-	self.is_server = not not lobby_host
+	self._lobby_host = is_host and lobby
+	self._lobby_client = is_host and lobby
+	self.is_server = is_host
 	self._world = world
 	self._game_mode_key = game_mode_key
 	self._level_key = level_key

@@ -16,9 +16,8 @@ BTChaosSorcererPlagueSkulkAction.name = "BTChaosSorcererPlagueSkulkAction"
 BTChaosSorcererPlagueSkulkAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	local breed = blackboard.breed
-	local target_dist = blackboard.target_dist
 
-	Managers.state.entity:system("surrounding_aware_system"):add_system_event(unit, "heard_enemy", DialogueSettings.hear_chaos_corruptor_sorcerer, "enemy_tag", "chaos_corruptor_sorcerer")
+	Managers.state.entity:system("surrounding_aware_system"):add_system_event(unit, "heard_enemy", DialogueSettings.hear_chaos_corruptor_sorcerer, "enemy_tag", breed.name)
 
 	local skulk_data = blackboard.skulk_data or {}
 
@@ -213,7 +212,7 @@ BTChaosSorcererPlagueSkulkAction.run = function (self, unit, blackboard, t, dt)
 		return "running"
 	end
 
-	local position = self:get_skulk_target(unit, blackboard)
+	position = self:get_skulk_target(unit, blackboard)
 
 	if position then
 		self:move_to(position, unit, blackboard)
@@ -229,9 +228,6 @@ BTChaosSorcererPlagueSkulkAction.run = function (self, unit, blackboard, t, dt)
 end
 
 BTChaosSorcererPlagueSkulkAction.at_goal = function (self, unit, blackboard)
-	local action = blackboard.action
-	local dist = blackboard.target_dist
-	local skulk_data = blackboard.skulk_data
 	local position_boxed = blackboard.move_pos
 	local unit_position = POSITION_LOOKUP[unit]
 
@@ -248,9 +244,7 @@ BTChaosSorcererPlagueSkulkAction.at_goal = function (self, unit, blackboard)
 end
 
 BTChaosSorcererPlagueSkulkAction.move_to = function (self, position, unit, blackboard)
-	local action = blackboard.action
 	local ai_navigation = blackboard.navigation_extension
-	local breed = blackboard.breed
 
 	ai_navigation:move_to(position)
 
@@ -309,7 +303,6 @@ BTChaosSorcererPlagueSkulkAction.get_plague_wave_cast_position = function (self,
 	local action = blackboard.action
 	local nav_world = blackboard.nav_world
 	local target_unit = blackboard.target_unit
-	local unit_position = POSITION_LOOKUP[unit]
 	local target_position = POSITION_LOOKUP[target_unit]
 	local projected_start_pos = LocomotionUtils.pos_on_mesh(nav_world, target_position, 1, 1)
 	local Vector3_dist = Vector3.distance
@@ -341,7 +334,7 @@ BTChaosSorcererPlagueSkulkAction.get_plague_wave_cast_position = function (self,
 		local projected_end_pos = target_position + direction * max_dist
 
 		if projected_end_pos then
-			local success, hit_position = GwNavQueries.raycast(nav_world, target_start_pos, projected_end_pos)
+			local _, hit_position = GwNavQueries.raycast(nav_world, target_start_pos, projected_end_pos)
 
 			if hit_position then
 				local distance = Vector3_dist(hit_position, target_position)

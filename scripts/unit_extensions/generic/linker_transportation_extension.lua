@@ -51,6 +51,7 @@ LinkerTransportationExtension.init = function (self, extension_init_context, uni
 	self.return_to_start = Unit.get_data(unit, "transportation_data", "return_to_start")
 	self.transported_units = {}
 	self.transported_ai_units = {}
+	self._transported_generic_units = {}
 	self.has_nav_obstacles = false
 
 	local bounding_box_mesh_name = Unit.get_data(unit, "transportation_data", "bounding_box_mesh")
@@ -80,11 +81,19 @@ LinkerTransportationExtension.init = function (self, extension_init_context, uni
 	end
 
 	self._transporting = false
-	self._disable_spawning = false
 	self._movement_delta = Vector3Box(0, 0, 0)
-	self._old_position = Vector3Box(Unit.local_position(unit, 0))
+	self._rotation_delta = QuaternionBox(Quaternion.identity())
+	self._old_position = Vector3Box(Unit.world_position(unit, 0))
+	self._old_rotation = QuaternionBox(Unit.world_rotation(unit, 0))
 	self._unlink_after_update = false
 	self._side = Managers.state.side:get_side_from_name("heroes")
+
+	Managers.state.event:register(self, "new_player_unit", "on_player_unit_spawned")
+	Managers.state.event:register(self, "pickup_spawned", "on_pickup_spawned")
+	Managers.state.event:register(self, "sister_wall_spawned", "on_sister_wall_spawned")
+
+	self._queued_ai_units_to_remove = {}
+	self._nearby_pickup_cache = {}
 end
 
 LinkerTransportationExtension.extensions_ready = function (self)
@@ -92,7 +101,7 @@ LinkerTransportationExtension.extensions_ready = function (self)
 end
 
 LinkerTransportationExtension.movement_delta = function (self)
-	return self._movement_delta:unbox()
+	return self._movement_delta:unbox(), self._rotation_delta:unbox()
 end
 
 LinkerTransportationExtension.register_navmesh_units = function (self, start_unit, end_unit)
@@ -159,6 +168,55 @@ LinkerTransportationExtension.hot_join_sync = function (self, peer)
 	end
 
 	RPC.rpc_hot_join_sync_linker_transport_state(channel_id, level_id, STORY_STATES[state], story_time)
+
+	local transported_generic_units = self._transported_generic_units
+
+	if not table.is_empty(transported_generic_units) then
+		local all_go_ids, all_matrices, all_is_level_unit_arr = {}, {}, {}
+		local num_transported_generic_units = 0
+
+		for generic_unit, matrix in pairs(transported_generic_units) do
+			local go_id, is_level_unit = network_manager:game_object_or_level_id(generic_unit)
+
+			if go_id then
+				num_transported_generic_units = num_transported_generic_units + 1
+				all_go_ids[num_transported_generic_units] = go_id
+				all_matrices[num_transported_generic_units] = matrix:unbox()
+				all_is_level_unit_arr[num_transported_generic_units] = is_level_unit
+			end
+		end
+
+		local rpc_limit = table.min({
+			Network.type_info("game_object_id_array").max_size,
+			Network.type_info("position_array").max_size,
+			Network.type_info("rotation_array").max_size,
+			Network.type_info("bool_array").max_size,
+		})
+		local num_rpcs = math.ceil(num_transported_generic_units / rpc_limit)
+
+		for rpc_i = 1, num_rpcs do
+			local game_object_ids = {}
+			local positions = {}
+			local rotations = {}
+			local is_level_unit_arr = {}
+			local from_index, to_index = (rpc_i - 1) * rpc_limit + 1, math.min(rpc_i * rpc_limit, num_transported_generic_units)
+			local idx = 0
+
+			for i = from_index, to_index do
+				local go_id = all_go_ids[i]
+				local is_level_unit = all_is_level_unit_arr[i]
+				local matrix = all_matrices[i]
+
+				idx = idx + 1
+				game_object_ids[idx] = go_id
+				is_level_unit_arr[idx] = is_level_unit
+				positions[idx] = Matrix4x4.translation(matrix)
+				rotations[idx] = Matrix4x4.rotation(matrix)
+			end
+
+			RPC.rpc_hot_join_sync_linker_transport_generic_units(channel_id, level_id, game_object_ids, is_level_unit_arr, positions, rotations)
+		end
+	end
 end
 
 LinkerTransportationExtension.rpc_hot_join_sync_linker_transporting = function (self, interactor_unit_id)
@@ -178,19 +236,18 @@ LinkerTransportationExtension._link_all_transported_units = function (self, inte
 	assert(not self._transporting, "Trying to link units before unlinking.")
 
 	self._transporting = true
-	self._disable_spawning = true
 
 	if self.is_server then
-		Managers.state.game_mode:disable_player_spawning(true, self.unit)
 		Managers.state.event:trigger("event_delay_pacing", true)
 	end
 
-	local num_transported_units = 1
 	local transported_units = self.transported_units
 
-	transported_units[1] = interactor_unit
+	if Unit.alive(interactor_unit) then
+		transported_units[1] = interactor_unit
 
-	self:_link_transported_unit(interactor_unit)
+		self:_link_transported_unit(interactor_unit)
+	end
 
 	if self.takes_party then
 		local player_and_bot_units = self._side.PLAYER_AND_BOT_UNITS
@@ -202,28 +259,7 @@ LinkerTransportationExtension._link_all_transported_units = function (self, inte
 
 			if unit_alive(unit) then
 				if unit ~= interactor_unit then
-					local status_ext = ScriptUnit.extension(unit, "status_system")
-					local player = Managers.player:owner(unit)
-					local is_dead = status_ext:is_dead()
-					local is_inside_transportation_unit = self:_is_inside_transportation_unit(unit)
-					local is_disabled = status_ext:is_disabled()
-
-					if not is_dead and is_inside_transportation_unit then
-						num_transported_units = num_transported_units + 1
-						transported_units[num_transported_units] = unit
-
-						self:_link_transported_unit(unit)
-					elseif self:_is_bot(player) and not is_disabled then
-						num_transported_units = num_transported_units + 1
-						transported_units[num_transported_units] = player.player_unit
-
-						self:_link_transported_unit(player.player_unit, true)
-					elseif player.local_player and not is_dead and not is_disabled and not is_inside_transportation_unit then
-						num_transported_units = num_transported_units + 1
-						transported_units[num_transported_units] = player.player_unit
-
-						self:_link_transported_unit(player.player_unit, true)
-					end
+					self:_try_link_player(unit, false)
 				end
 
 				if self.is_server then
@@ -261,7 +297,36 @@ LinkerTransportationExtension._link_all_transported_units = function (self, inte
 		end
 	end
 
+	local units, n = self:_get_inside_generic_units()
+
+	for i = 1, n do
+		self:add_transporting_generic_unit(units[i], nil, true)
+	end
+
 	Unit.flow_event(self.unit, "activate_collision")
+end
+
+LinkerTransportationExtension._try_link_player = function (self, unit, skip_inside_check)
+	local status_ext = ScriptUnit.extension(unit, "status_system")
+	local player = Managers.player:owner(unit)
+	local is_dead = status_ext:is_dead()
+	local is_inside_transportation_unit = self:_is_inside_transportation_unit(unit)
+	local is_disabled = status_ext:is_disabled()
+	local transported_units = self.transported_units
+
+	if not is_dead and (is_inside_transportation_unit or skip_inside_check) then
+		transported_units[#transported_units + 1] = unit
+
+		self:_link_transported_unit(unit)
+	elseif self:_is_bot(player) and not is_disabled then
+		transported_units[#transported_units + 1] = player.player_unit
+
+		self:_link_transported_unit(player.player_unit, true)
+	elseif player.local_player and not is_dead and not is_disabled and not is_inside_transportation_unit then
+		transported_units[#transported_units + 1] = player.player_unit
+
+		self:_link_transported_unit(player.player_unit, true)
+	end
 end
 
 LinkerTransportationExtension._is_inside_transportation_unit = function (self, unit, size_modifier)
@@ -431,9 +496,6 @@ LinkerTransportationExtension.update = function (self, unit, input, dt, context,
 		end
 	end
 
-	local old_pos = Unit.world_position(unit, 0)
-
-	self._old_position:store(old_pos)
 	story_teller:set_time(story_id, new_time)
 
 	self.current_story_time = new_time
@@ -446,28 +508,25 @@ LinkerTransportationExtension.update = function (self, unit, input, dt, context,
 		local update_interval = units_inside_oobb.human.count > 0 and UPDATE_INTERVAL_OOBB_HUMANS_INSIDE or UPDATE_INTERVAL_OOBB_NO_HUMANS_INSIDE
 
 		self.oobb_next_update = t + update_interval
-
-		if self._disable_spawning and units_inside_oobb.human.count == 0 and not self._transporting then
-			self._disable_spawning = false
-
-			if self.is_server then
-				local safe_node = "elevator_slot_01"
-				local node = Unit.node(unit, safe_node)
-				local position = Unit.world_position(self.unit, node)
-				local rotation = Unit.world_rotation(self.unit, node)
-
-				Managers.state.game_mode:disable_player_spawning(false, self.unit, position + Vector3(0, 0, 1), rotation)
-			end
-		end
 	end
+
+	self:_update_queued_removals(t)
 end
 
 LinkerTransportationExtension.post_update = function (self, unit, input, dt, context, t)
-	local new_pos = Unit.world_position(unit, 0)
 	local old_pos = self._old_position:unbox()
+	local new_pos = Unit.world_position(unit, 0)
 	local delta = new_pos - old_pos
 
 	self._movement_delta:store(delta)
+
+	local new_rot = Unit.world_rotation(unit, 0)
+	local old_rot = self._old_rotation:unbox()
+	local rot_delta = Quaternion.multiply(new_rot, Quaternion.inverse(old_rot))
+
+	self._rotation_delta:store(rot_delta)
+	self._old_position:store(new_pos)
+	self._old_rotation:store(new_rot)
 
 	if self._unlink_after_update then
 		self._unlink_after_update = false
@@ -483,6 +542,7 @@ LinkerTransportationExtension.post_update = function (self, unit, input, dt, con
 
 	if self.story_state == "moving_forward" then
 		self:_update_transported_ai_positions()
+		self:_update_transported_generic_unit_positions()
 	end
 end
 
@@ -539,14 +599,12 @@ LinkerTransportationExtension.can_interact = function (self, interactor_unit)
 end
 
 LinkerTransportationExtension.destroy = function (self)
-	if self._transporting and self.is_server then
-		local unit = self.unit
-		local safe_node = "elevator_slot_01"
-		local node = Unit.node(unit, safe_node)
-		local position = Unit.world_position(unit, node)
-		local rotation = Unit.world_rotation(unit, node)
+	if Managers.state.event then
+		Managers.state.event:unregister("new_player_unit", self)
+		Managers.state.event:unregister("pickup_spawned", self)
+	end
 
-		Managers.state.game_mode:disable_player_spawning(false, unit, position + Vector3(0, 0, 1), rotation)
+	if self._transporting and self.is_server then
 		Managers.state.event:trigger("event_delay_pacing", false)
 	end
 
@@ -583,6 +641,9 @@ LinkerTransportationExtension._unlink_all_transported_units = function (self)
 
 	self._transporting = false
 
+	self:_update_transported_ai_positions()
+	self:_update_transported_generic_unit_positions()
+
 	if self.is_server then
 		Managers.state.event:trigger("event_delay_pacing", false)
 	end
@@ -602,11 +663,12 @@ LinkerTransportationExtension._unlink_all_transported_units = function (self)
 
 	for ai_unit in pairs(self.transported_ai_units) do
 		if unit_alive(ai_unit) then
-			self:remove_transporting_ai_unit(ai_unit)
+			self:queue_ai_transport_unit_for_removal(ai_unit)
 		end
 	end
 
 	table.clear(self.transported_ai_units)
+	table.clear(self._transported_generic_units)
 	Unit.flow_event(self.unit, "deactivate_collision")
 end
 
@@ -692,44 +754,83 @@ LinkerTransportationExtension.get_ai_slot = function (self, slot_id)
 	local unit = self.unit
 
 	if not self._ai_slot_offsets then
-		local min, max
+		local groups = {}
+		local max_group_size_sq = 100
+		local max_z_diff = 0.1
+		local node_i = 1
 
-		for i = 1, 3 do
-			if Unit.has_node(unit, "elevator_slot_0" .. i) then
-				local node = Unit.node(unit, "elevator_slot_0" .. i)
-				local position = Unit.local_position(unit, node)
+		while Unit.has_node(unit, "elevator_slot_0" .. node_i) do
+			local node = Unit.node(unit, "elevator_slot_0" .. node_i)
+			local position = Unit.local_position(unit, node)
+			local selected_group_index
 
-				if not min then
-					min = position
-					max = position
-				else
-					min = Vector3.min(min, position)
-					max = Vector3.max(max, position)
+			for group_i = 1, #groups do
+				local group_pos = groups[group_i].center:unbox()
+
+				if max_z_diff > math.abs(group_pos[3] - position[3]) and max_group_size_sq > Vector3.distance_squared(Vector3.flat(group_pos), Vector3.flat(position)) then
+					selected_group_index = group_i
+
+					break
 				end
 			end
+
+			selected_group_index = selected_group_index or #groups + 1
+
+			local group = groups[selected_group_index]
+
+			if group then
+				table.insert(group.positions, Vector3Box(position))
+
+				local center = Vector3.zero()
+
+				for i = 1, #group.positions do
+					center = center + group.positions[i]:unbox()
+				end
+
+				group.center:store(center / #group.positions)
+				group.min:store(Vector3.min(group.min:unbox(), position))
+				group.max:store(Vector3.max(group.max:unbox(), position))
+			else
+				group = {
+					positions = {
+						Vector3Box(position),
+					},
+					center = Vector3Box(position),
+					min = Vector3Box(position),
+					max = Vector3Box(position),
+				}
+				groups[selected_group_index] = group
+			end
+
+			node_i = node_i + 1
 		end
 
-		local box_shrink = 0.7
-		local center = Vector3.lerp(min, max, 0.5)
-		local from_center = Vector3.normalize(max - center) * box_shrink
+		self._ai_slot_offsets = groups
 
-		min = min + from_center
-		max = max - from_center
+		for i = 1, #groups do
+			local group = groups[i]
+			local min, max = group.min:unbox(), group.max:unbox()
+			local box_shrink = 0.7
+			local center = Vector3.lerp(min, max, 0.5)
+			local from_center = Vector3.normalize(max - center) * box_shrink
 
-		local size = max - min
-		local slots_x = math.ceil(size.x / AI_SLOT_SIZE)
-		local slots_y = math.ceil(size.y / AI_SLOT_SIZE)
+			min = min + from_center
+			max = max - from_center
 
-		self._ai_slot_offsets = {
-			offset_start = Vector3Box(min),
-			num_slots_x = slots_x,
-			num_slots_y = slots_y,
-		}
+			local size = max - min
+			local slots_x = size.x > 0 and math.ceil(size.x / AI_SLOT_SIZE) or 1
+			local slots_y = size.y > 0 and math.ceil(size.y / AI_SLOT_SIZE) or 1
+
+			group.num_slots_x = slots_x
+			group.num_slots_y = slots_y
+			group.offset_start = Vector3Box(min)
+		end
 	end
 
-	local offset_start = self._ai_slot_offsets.offset_start:unbox()
-	local slot_x = slot_id % self._ai_slot_offsets.num_slots_x
-	local slot_y = math.floor(slot_id / self._ai_slot_offsets.num_slots_x) % self._ai_slot_offsets.num_slots_y
+	local group = self._ai_slot_offsets[math.index_wrapper(slot_id, #self._ai_slot_offsets)]
+	local offset_start = group.offset_start:unbox()
+	local slot_x = math.ceil(slot_id / #self._ai_slot_offsets) % group.num_slots_x
+	local slot_y = math.floor(slot_id / group.num_slots_x) % group.num_slots_y
 	local pose = Unit.world_pose(unit, 0)
 	local position = Matrix4x4.transform(pose, offset_start + Vector3(slot_x * AI_SLOT_SIZE, slot_y * AI_SLOT_SIZE, 0))
 
@@ -737,10 +838,6 @@ LinkerTransportationExtension.get_ai_slot = function (self, slot_id)
 end
 
 LinkerTransportationExtension.add_transporting_ai_unit = function (self, unit, slot_id)
-	if not self._transporting then
-		return
-	end
-
 	if self.is_server then
 		local blackboard = BLACKBOARDS[unit]
 
@@ -751,6 +848,62 @@ LinkerTransportationExtension.add_transporting_ai_unit = function (self, unit, s
 	end
 
 	self.transported_ai_units[unit] = slot_id
+	self._queued_ai_units_to_remove[unit] = nil
+end
+
+LinkerTransportationExtension.add_transporting_generic_unit = function (self, generic_unit, optional_pose, skip_sync)
+	local relative_pose = optional_pose or Matrix4x4.multiply(Unit.world_pose(generic_unit, 0), Matrix4x4.inverse(Unit.world_pose(self.unit, 0)))
+
+	self._transported_generic_units[generic_unit] = Matrix4x4Box(relative_pose)
+
+	if self.is_server then
+		local level_id = Level.unit_index(LevelHelper:current_level(self.world), self.unit)
+		local generic_unit_id, is_level_unit = Managers.state.network:game_object_or_level_id(generic_unit)
+
+		Managers.state.network.network_transmit:send_rpc_clients("rpc_add_transporting_generic_unit", level_id, generic_unit_id, is_level_unit, Matrix4x4.translation(relative_pose), Matrix4x4.rotation(relative_pose))
+	end
+end
+
+LinkerTransportationExtension._client_predict_transport_generic_unit = function (self, unit)
+	if not self._transported_generic_units[unit] then
+		self:add_transporting_generic_unit(unit, nil, true)
+	end
+end
+
+LinkerTransportationExtension.queue_ai_transport_unit_for_removal = function (self, unit)
+	if self.is_server then
+		self._queued_ai_units_to_remove[unit] = true
+	else
+		self:remove_transporting_ai_unit(unit)
+	end
+end
+
+LinkerTransportationExtension._update_queued_removals = function (self, t)
+	local next_unit = next(self._queued_ai_units_to_remove, self._last_checked_queued_removal)
+
+	self._last_checked_queued_removal = next_unit
+
+	if next_unit then
+		if not ALIVE[next_unit] then
+			self:remove_transporting_ai_unit(next_unit)
+
+			self._queued_ai_units_to_remove[next_unit] = nil
+
+			return
+		end
+
+		local blackboard = BLACKBOARDS[next_unit]
+		local slot_pos = self:get_ai_slot(blackboard.transport_slot_id)
+		local success = GwNavQueries.triangle_from_position(GLOBAL_AI_NAVWORLD, slot_pos, 1, 1)
+
+		if success then
+			self:remove_transporting_ai_unit(next_unit)
+
+			self._queued_ai_units_to_remove[next_unit] = nil
+
+			return
+		end
+	end
 end
 
 LinkerTransportationExtension.remove_transporting_ai_unit = function (self, unit)
@@ -784,4 +937,196 @@ LinkerTransportationExtension._update_transported_ai_positions = function (self)
 			self.transported_ai_units[ai_unit] = nil
 		end
 	end
+end
+
+LinkerTransportationExtension._update_transported_generic_unit_positions = function (self)
+	local boat_pose = Unit.world_pose(self.unit, 0)
+
+	for generic_unit, relative_pose_boxed in pairs(self._transported_generic_units) do
+		if Unit.alive(generic_unit) then
+			local wanted_pose = Matrix4x4.multiply(relative_pose_boxed:unbox(), boat_pose)
+
+			self:_move_generic_unit(generic_unit, wanted_pose)
+		else
+			self._transported_generic_units[generic_unit] = nil
+		end
+	end
+end
+
+LinkerTransportationExtension._move_generic_unit = function (self, generic_unit, wanted_pose)
+	local is_pickup = ScriptUnit.has_extension(generic_unit, "pickup_system")
+
+	if is_pickup then
+		local pickup_system = Managers.state.entity:system("pickup_system")
+
+		pickup_system:move_pickup_local_pose(generic_unit, wanted_pose)
+
+		return
+	end
+
+	local prop_extension = ScriptUnit.has_extension(generic_unit, "props_system")
+
+	if prop_extension then
+		if prop_extension.move_prop then
+			prop_extension:move_prop(wanted_pose)
+		end
+
+		return
+	end
+
+	local wanted_position = Matrix4x4.translation(wanted_pose)
+	local wanted_rotation = Matrix4x4.rotation(wanted_pose)
+
+	Unit.set_local_position(generic_unit, 0, wanted_position)
+	Unit.set_local_rotation(generic_unit, 0, wanted_rotation)
+end
+
+LinkerTransportationExtension.on_player_unit_spawned = function (self, player, unit, unique_id)
+	local unit_side = Managers.state.side.side_by_unit[unit]
+
+	if unit_side ~= self._side then
+		return
+	end
+
+	if self._transporting then
+		local skip_inside_check = player.remote
+
+		self:_try_link_player(unit, skip_inside_check)
+	end
+end
+
+LinkerTransportationExtension.on_pickup_spawned = function (self, pickup_unit)
+	if self._reference_teleport_unit then
+		self:teleport_non_character_elevator_units(self._reference_teleport_unit)
+
+		return
+	end
+
+	if self._transporting then
+		local is_inside = self:_is_inside_transportation_unit(pickup_unit)
+
+		if is_inside then
+			if self.is_server then
+				self:add_transporting_generic_unit(pickup_unit, nil, false)
+			else
+				self:_client_predict_transport_generic_unit(pickup_unit)
+			end
+		end
+	end
+end
+
+LinkerTransportationExtension.on_sister_wall_spawned = function (self, sister_wall_unit)
+	if self._reference_teleport_unit then
+		self:teleport_non_character_elevator_units(self._reference_teleport_unit)
+
+		return
+	end
+
+	if self._transporting then
+		local is_inside = self:_is_inside_transportation_unit(sister_wall_unit)
+
+		if is_inside then
+			if self.is_server then
+				self:add_transporting_generic_unit(sister_wall_unit, nil, false)
+			else
+				self:_client_predict_transport_generic_unit(sister_wall_unit)
+			end
+		end
+	end
+end
+
+local _get_inside_generic_units_scratch = {}
+
+LinkerTransportationExtension._get_inside_generic_units = function (self)
+	table.clear(_get_inside_generic_units_scratch)
+
+	local num_units = 0
+	local pickup_system = Managers.state.entity:system("pickup_system")
+	local boat_pos = Unit.world_position(self.unit, 0)
+	local nearby_pickups = self._nearby_pickup_cache
+	local num_nearby_pickups = pickup_system:get_pickups(boat_pos, self.oobb_mesh_max_extent + 1, nearby_pickups)
+
+	for i = 1, num_nearby_pickups do
+		local pickup_unit = nearby_pickups[i]
+		local is_inside = self:_is_inside_transportation_unit(pickup_unit)
+
+		if is_inside then
+			num_units = num_units + 1
+			_get_inside_generic_units_scratch[num_units] = pickup_unit
+		end
+	end
+
+	local thorn_sister_walls = Managers.state.entity:get_entities("ThornSisterWallExtension")
+
+	for wall_unit, extension in pairs(thorn_sister_walls) do
+		local is_inside = self:_is_inside_transportation_unit(wall_unit)
+
+		if is_inside then
+			num_units = num_units + 1
+			_get_inside_generic_units_scratch[num_units] = wall_unit
+		end
+	end
+
+	local active_respawn_datas = Managers.state.game_mode:game_mode():get_available_and_active_respawn_units()
+
+	for i = 1, #active_respawn_datas do
+		local respawn_unit = active_respawn_datas[i].unit
+		local is_inside = self:_is_inside_transportation_unit(respawn_unit)
+
+		if is_inside then
+			num_units = num_units + 1
+			_get_inside_generic_units_scratch[num_units] = respawn_unit
+		end
+	end
+
+	return _get_inside_generic_units_scratch, num_units
+end
+
+LinkerTransportationExtension.teleport_non_character_elevator_units = function (self, reference_unit)
+	self._reference_teleport_unit = reference_unit
+	self._reference_teleport_seed = self._reference_teleport_seed or Managers.mechanism:get_level_seed()
+
+	local function safe_navigation_callback()
+		local reference_pos = Unit.local_position(reference_unit, 0)
+		local radius = 3
+		local max_tries = 3
+		local units, n = self:_get_inside_generic_units()
+
+		table.sort(units, function (a, b)
+			local go_id_a = Managers.state.unit_storage:go_id(a) or HashUtils.fnv32_hash(tostring(a))
+			local go_id_b = Managers.state.unit_storage:go_id(b) or HashUtils.fnv32_hash(tostring(b))
+
+			return go_id_a < go_id_b
+		end)
+
+		for i = 1, n do
+			local unit = units[i]
+			local tries = 1
+
+			while tries <= max_tries do
+				local seed, x, y = math.get_uniformly_random_point_inside_sector_seeded(self._reference_teleport_seed, 0, radius, 0, math.tau)
+
+				self._reference_teleport_seed = seed
+
+				local pos = reference_pos + Vector3(x, y)
+				local success, altitude = GwNavQueries.triangle_from_position(GLOBAL_AI_NAVWORLD, pos, 1, 1)
+
+				if success then
+					pos = Vector3(pos.x, pos.y, altitude)
+				else
+					pos = reference_pos
+				end
+
+				local pose = Matrix4x4.from_quaternion_position_scale(pos, Unit.local_rotation(unit, 0), Unit.local_scale(unit, 0))
+
+				self:_move_generic_unit(unit, pose)
+
+				self._transported_generic_units[unit] = nil
+			end
+		end
+	end
+
+	local ai_navigation_system = Managers.state.entity:system("ai_navigation_system")
+
+	ai_navigation_system:add_safe_navigation_callback(safe_navigation_callback)
 end

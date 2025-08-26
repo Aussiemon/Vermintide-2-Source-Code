@@ -28,6 +28,31 @@ BreedEnhancements = BreedEnhancements or {
 	termite3_stormfiend = {
 		display_name = "display_name_termite3_stormfiend",
 	},
+	dwarf_fest_chaos_troll_waterflow_1 = {
+		"grudge_mark_unstaggerable",
+		display_name = "display_name_unstaggerable",
+	},
+	dwarf_fest_chaos_troll_waterflow_2 = {
+		"grudge_mark_periodic_curse_aura",
+		display_name = "display_name_periodic_curse",
+	},
+	dwarf_fest_chaos_troll_waterwheel_1 = {
+		"grudge_mark_warping",
+		display_name = "display_name_warping",
+	},
+	dwarf_fest_chaos_troll_waterwheel_2 = {
+		"grudge_mark_vampiric",
+		display_name = "display_name_vampiric",
+	},
+	dwarf_fest_chaos_troll_cog_1 = {
+		"grudge_mark_intangible",
+		display_name = "display_name_intangible",
+	},
+	dwarf_fest_chaos_troll_cog_2 = {
+		"grudge_mark_ranged_immune",
+		display_name = "display_name_ranged_immune",
+	},
+	dwarf_fest_troll_boss = {},
 	warping = {
 		"grudge_mark_warping",
 		display_name = "display_name_warping",
@@ -302,5 +327,14 @@ GrudgeMarkedNames = {
 	},
 	termite3_stormfiend = {
 		"name_grudge_termite3_stormfiend",
+	},
+	dwarf_fest_chaos_troll_waterflow_1 = {
+		"name_dwarf_fest_troll_001",
+	},
+	dwarf_fest_chaos_troll_waterwheel_1 = {
+		"name_dwarf_fest_troll_002",
+	},
+	dwarf_fest_chaos_troll_cog_1 = {
+		"name_dwarf_fest_troll_003",
 	},
 }

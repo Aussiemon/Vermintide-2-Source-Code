@@ -364,6 +364,10 @@ function flow_callback_math_ceil(params)
 	}
 end
 
+function flow_query_ghost_mode_active(params)
+	return
+end
+
 function flow_callback_set_simple_animation_speed(params)
 	Unit.set_simple_animation_speed(params.unit, params.speed, params.group)
 end
@@ -1203,6 +1207,7 @@ function flow_callback_material_scalar_set_chr_inventory(params)
 		"outfit",
 		"stump",
 		"helmet",
+		"skin",
 		"other",
 	}) do
 		items = Unit.get_data(unit, v .. "_items") or {}
@@ -1287,6 +1292,7 @@ function flow_callback_material_dissolve_chr(params)
 	for _, v in ipairs({
 		"outfit",
 		"stump",
+		"skin",
 		"helmet",
 	}) do
 		items = Unit.get_data(unit, v .. "_items") or {}
@@ -1397,6 +1403,7 @@ function flow_callback_material_fade_chr(params)
 	for _, v in ipairs({
 		"outfit",
 		"stump",
+		"skin",
 		"helmet",
 	}) do
 		items = Unit.get_data(unit, v .. "_items") or {}
@@ -1441,6 +1448,7 @@ function flow_callback_visibility_chr_inventory(params)
 		"outfit",
 		"stump",
 		"helmet",
+		"skin",
 		"other",
 	}) do
 		items = Unit.get_data(parent_unit, v .. "_items") or {}
@@ -1449,6 +1457,24 @@ function flow_callback_visibility_chr_inventory(params)
 			Unit.set_unit_visibility(items[i], visibility)
 		end
 	end
+end
+
+function flow_callback_get_chr_inventory_skin_unit(params)
+	assert(params.unit, "[flow_callback_get_chr_inventory_skin_unit] You need to specify the Unit")
+
+	local parent_unit = params.unit
+	local skin_item
+	local skin_items = Unit.get_data(parent_unit, "skin_items") or {}
+
+	for i = 1, #skin_items do
+		skin_item = skin_items[i]
+	end
+
+	assert(skin_item, "[flow_callback_get_chr_inventory_skin_unit] No skin found for unit ", tostring(parent_unit))
+
+	return {
+		skin_unit = skin_item,
+	}
 end
 
 function start_material_fade(material, fade_switch_name, fade_switch, start_end_time_name, fade_duration, start_fade_name, start_fade_value, end_fade_name, end_fade_value)
@@ -1545,6 +1571,7 @@ function flow_callback_chr_editor_inventory_spawn(params)
 	if inventory_configuration ~= nil then
 		local outfit_items = Unit.get_data(unit, "outfit_items") or {}
 		local helmet_items = Unit.get_data(unit, "helmet_items") or {}
+		local skin_items = Unit.get_data(unit, "skin_items") or {}
 		local other_items = Unit.get_data(unit, "other_items") or {}
 
 		for i = 1, #inventory_configuration.items do
@@ -1580,8 +1607,14 @@ function flow_callback_chr_editor_inventory_spawn(params)
 			link_attachment(node_linking_data, world, item_unit, unit)
 			Unit.set_data(item_unit, "node_linking_data", node_linking_data)
 
-			if Unit.has_animation_state_machine(item_unit) and Unit.has_animation_event(item_unit, "linked") then
-				Unit.animation_event(item_unit, "linked")
+			if Unit.has_animation_state_machine(item_unit) then
+				if Unit.has_animation_event(item_unit, "linked") then
+					Unit.animation_event(item_unit, "linked")
+				end
+
+				if Unit.has_animation_event(item_unit, "enable") then
+					Unit.animation_event(item_unit, "enable")
+				end
 			end
 
 			local item_unit_template_name = item.unit_extension_template or "ai_inventory_item"
@@ -1590,6 +1623,8 @@ function flow_callback_chr_editor_inventory_spawn(params)
 				table.insert(helmet_items, item_unit)
 			elseif item_unit_template_name == "ai_outfit_unit" then
 				table.insert(outfit_items, item_unit)
+			elseif item_unit_template_name == "ai_skin_unit" then
+				table.insert(skin_items, item_unit)
 			else
 				table.insert(other_items, item_unit)
 			end
@@ -1605,6 +1640,7 @@ function flow_callback_chr_editor_inventory_spawn(params)
 
 		Unit.set_data(unit, "outfit_items", outfit_items)
 		Unit.set_data(unit, "helmet_items", helmet_items)
+		Unit.set_data(unit, "skin_items", skin_items)
 		Unit.set_data(unit, "other_items", other_items)
 	end
 
@@ -1618,6 +1654,7 @@ function flow_callback_chr_editor_inventory_unspawn(params)
 	local world = Unit.world(unit)
 	local outfit_items = Unit.get_data(unit, "outfit_items") or {}
 	local helmet_items = Unit.get_data(unit, "helmet_items") or {}
+	local skin_items = Unit.get_data(unit, "skin_items") or {}
 	local other_items = Unit.get_data(unit, "other_items") or {}
 
 	for i = 1, #outfit_items do
@@ -1628,12 +1665,17 @@ function flow_callback_chr_editor_inventory_unspawn(params)
 		World.destroy_unit(world, helmet_items[i])
 	end
 
+	for i = 1, #skin_items do
+		World.destroy_unit(world, skin_items[i])
+	end
+
 	for i = 1, #other_items do
 		World.destroy_unit(world, other_items[i])
 	end
 
 	Unit.set_data(unit, "outfit_items", {})
 	Unit.set_data(unit, "helmet_items", {})
+	Unit.set_data(unit, "skin_items", {})
 	Unit.set_data(unit, "other_items", {})
 
 	return {
@@ -1682,6 +1724,12 @@ function flow_callback_chr_enemy_inventory_send_event(params)
 
 	for i = 1, #helmet_items do
 		Unit.flow_event(helmet_items[i], event)
+	end
+
+	local skin_items = Unit.get_data(unit, "skin_items") or {}
+
+	for i = 1, #skin_items do
+		Unit.flow_event(skin_items[i], event)
 	end
 
 	local stump_items = Unit.get_data(unit, "stump_items") or {}

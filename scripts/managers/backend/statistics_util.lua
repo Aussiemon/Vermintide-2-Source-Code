@@ -199,8 +199,14 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 			local killed_race_name = breed_killed.race
 
 			if Breeds[breed_killed_name] or PlayerBreeds[breed_killed_name] and Managers.state.side:is_enemy_by_side(attacker_side, victim_side) then
+				local difficulty_manager = Managers.state.difficulty
+				local difficulty_name = difficulty_manager:get_difficulty()
+
 				statistics_db:increment_stat(stats_id, "kills_per_breed", breed_killed_name)
+				statistics_db:increment_stat(stats_id, "kills_per_breed_difficulty", breed_killed_name, difficulty_name)
 			end
+
+			statistics_db:increment_stat(stats_id, "kills_per_breed_persistent", breed_killed_name)
 
 			if killed_race_name then
 				statistics_db:increment_stat(stats_id, "kills_per_race", killed_race_name)
@@ -289,7 +295,11 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 					local stats_id = player:stats_id()
 
 					if statistics_db:is_registered(stats_id) then
+						local difficulty_manager = Managers.state.difficulty
+						local difficulty_name = difficulty_manager:get_difficulty()
+
 						statistics_db:increment_stat(stats_id, "kill_assists_per_breed", breed_killed_name)
+						statistics_db:increment_stat(stats_id, "kill_assists_per_breed_difficulty", breed_killed_name, difficulty_name)
 					end
 				end
 			end

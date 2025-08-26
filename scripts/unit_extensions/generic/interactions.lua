@@ -860,7 +860,7 @@ local function _replaceable_item_filter(pickup_item_name)
 	return filter
 end
 
-local function _drop_pickup_position_rotation(item_data, position, rotation)
+local function _drop_item_name(item_data)
 	local item_template = BackendUtils.get_item_template(item_data)
 	local pickup_data = item_template.pickup_data
 
@@ -868,12 +868,7 @@ local function _drop_pickup_position_rotation(item_data, position, rotation)
 		local pickup_name = pickup_data.pickup_name
 
 		if pickup_name then
-			local pickup_spawn_type = "dropped"
-			local pickup_name_id = NetworkLookup.pickup_names[pickup_name]
-			local pickup_spawn_type_id = NetworkLookup.pickup_spawn_types[pickup_spawn_type]
-			local network_manager = Managers.state.network
-
-			network_manager.network_transmit:send_rpc_server("rpc_spawn_pickup", pickup_name_id, position, rotation, pickup_spawn_type_id)
+			return pickup_name
 		end
 	end
 end
@@ -904,7 +899,7 @@ InteractionDefinitions.pickup_object = {
 				return InteractionResult.FAILURE
 			end
 
-			if t > data.done_time then
+			if t >= data.done_time then
 				return InteractionResult.SUCCESS
 			end
 
@@ -912,25 +907,13 @@ InteractionDefinitions.pickup_object = {
 		end,
 		stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
 			if result == InteractionResult.SUCCESS then
-				if Unit.get_data(interactable_unit, "interaction_data", "only_once") then
-					if ScriptUnit.has_extension(interactable_unit, "limited_item_track_system") then
-						local limited_item_extension = ScriptUnit.extension(interactable_unit, "limited_item_track_system")
+				if Unit.get_data(interactable_unit, "interaction_data", "only_once") and ScriptUnit.has_extension(interactable_unit, "limited_item_track_system") then
+					local limited_item_extension = ScriptUnit.extension(interactable_unit, "limited_item_track_system")
 
-						limited_item_extension:mark_for_transformation()
-					end
-
-					local individual_pickup = Unit.get_data(interactable_unit, "interaction_data", "individual_pickup")
-
-					if not individual_pickup then
-						local blackboard = BLACKBOARDS[interactable_unit]
-
-						if blackboard then
-							Managers.state.conflict:destroy_unit(interactable_unit, blackboard, "picked_up_interactable")
-						else
-							Managers.state.unit_spawner:mark_for_deletion(interactable_unit)
-						end
-					end
+					limited_item_extension:mark_for_transformation()
 				end
+
+				Managers.state.entity:system("pickup_system"):mark_for_consumption(interactable_unit, interactor_unit)
 
 				local interactor_buff_extension = ScriptUnit.extension(interactor_unit, "buff_system")
 				local pickup_extension = ScriptUnit.extension(interactable_unit, "pickup_system")
@@ -975,7 +958,9 @@ InteractionDefinitions.pickup_object = {
 			end
 		end,
 		can_interact = function (interactor_unit, interactable_unit)
-			return true
+			local pickup_system = Managers.state.entity:system("pickup_system")
+
+			return not pickup_system:marked_for_consumption(interactable_unit)
 		end,
 	},
 	client = {
@@ -1157,6 +1142,9 @@ InteractionDefinitions.pickup_object = {
 						network_transmit:send_rpc_server("rpc_request_mission_update", mission_name_id, true)
 					end
 
+					local success = true
+					local drop_pickup_name
+
 					if pickup_settings.type == "inventory_item" then
 						local slot_name = pickup_settings.slot_name
 						local item_name = pickup_settings.item_name
@@ -1197,7 +1185,7 @@ InteractionDefinitions.pickup_object = {
 							local has_droppable, is_stored, drop_item_data = inventory_extension:has_droppable_item(slot_name, _replaceable_item_filter(item_name))
 
 							if has_droppable then
-								_drop_pickup_position_rotation(drop_item_data, pickup_position, pickup_rotation)
+								drop_pickup_name = _drop_item_name(drop_item_data)
 
 								if is_stored then
 									if should_wield then
@@ -1216,11 +1204,8 @@ InteractionDefinitions.pickup_object = {
 
 									sync_equipment = true
 								end
-							elseif pickup_name then
-								local pickup_name_id = NetworkLookup.pickup_names[pickup_name]
-								local pickup_spawn_type_id = NetworkLookup.pickup_spawn_types.dropped
-
-								network_manager.network_transmit:send_rpc_server("rpc_spawn_pickup", pickup_name_id, pickup_position, pickup_rotation, pickup_spawn_type_id)
+							else
+								success = false
 							end
 						elseif current_item_data then
 							if should_wield then
@@ -1278,6 +1263,7 @@ InteractionDefinitions.pickup_object = {
 						local item_name = pickup_settings.item_name
 						local health_extension = ScriptUnit.extension(interactable_unit, "health_system")
 						local death_extension = ScriptUnit.extension(interactable_unit, "death_system")
+						local tutorial_extension = ScriptUnit.extension(interactable_unit, "tutorial_system")
 						local unit_template = "explosive_weapon_unit_ammo"
 						local extra_extension_init_data = {
 							health_system = {
@@ -1301,6 +1287,10 @@ InteractionDefinitions.pickup_object = {
 							},
 							death_system = {
 								death_reaction_template = death_extension.death_reaction_template,
+							},
+							tutorial_system = {
+								always_show = tutorial_extension.always_show,
+								proxy_active = tutorial_extension.active,
 							},
 						}
 
@@ -1433,6 +1423,10 @@ InteractionDefinitions.pickup_object = {
 							statistics_db:set_stat(stats_id, "scorpion_crater_dark_tongue_3", 1)
 						end
 					end
+
+					local pickup_system = Managers.state.entity:system("pickup_system")
+
+					pickup_system:finalize_consumption(interactable_unit, success, drop_pickup_name)
 				end
 			end
 		end,
@@ -1456,6 +1450,12 @@ InteractionDefinitions.pickup_object = {
 
 			if return_value and pickup_settings.can_interact_func then
 				return_value = pickup_settings.can_interact_func(interactor_unit, interactable_unit, data)
+			end
+
+			if return_value then
+				local pickup_system = Managers.state.entity:system("pickup_system")
+
+				return_value = not pickup_system:marked_for_consumption(interactable_unit)
 			end
 
 			local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")

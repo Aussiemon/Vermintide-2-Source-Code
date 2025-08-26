@@ -456,11 +456,7 @@ settings.game_object_extractors = {
 		return unit_template_name, extension_init_data
 	end,
 	belakor_crystal_socket = function (game_session, game_object_id, owner_id, unit, gameobject_functor_context)
-		local extension_init_data = {
-			objective_socket_system = {
-				use_game_object_id = true,
-			},
-		}
+		local extension_init_data = {}
 		local unit_template_name = "belakor_crystal_socket"
 
 		return unit_template_name, extension_init_data

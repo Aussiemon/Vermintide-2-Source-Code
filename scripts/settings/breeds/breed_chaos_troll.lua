@@ -46,7 +46,7 @@ local breed_data = {
 	aim_template = "chaos_warrior",
 	always_look_at_target = true,
 	animation_movement_template = "chaos_troll",
-	animation_sync_rpc = "rpc_sync_anim_state_9",
+	animation_sync_rpc = "rpc_sync_anim_state_6",
 	aoe_height = 2.4,
 	aoe_radius = 1,
 	armor_category = 3,
@@ -189,6 +189,18 @@ local breed_data = {
 		ignored_statuses = table.set({
 			StatusEffectNames.burning_warpfire,
 		}),
+	},
+	name_pool_by_level = {
+		dlc_dwarf_fest = {
+			"name_dwarf_fest_troll_004",
+			"name_dwarf_fest_troll_005",
+			"name_dwarf_fest_troll_007",
+			"name_dwarf_fest_troll_008",
+			"name_dwarf_fest_troll_009",
+			"name_dwarf_fest_troll_010",
+			"name_dwarf_fest_troll_011",
+			"name_dwarf_fest_troll_012",
+		},
 	},
 	debug_color = {
 		255,
@@ -616,7 +628,7 @@ local action_data = {
 			{
 				anim_driven = true,
 				attack_time = 2.6666666666666665,
-				damage_done_time = 1.4333333333333333,
+				damage_done_time = 1,
 				height = 2.5,
 				hit_multiple_targets = true,
 				ignores_dodging = false,
@@ -635,7 +647,7 @@ local action_data = {
 				bot_threats = {
 					{
 						duration = 0.6666666666666666,
-						start_time = 0.9,
+						start_time = 1,
 					},
 				},
 			},
@@ -804,7 +816,7 @@ local action_data = {
 				bot_threats = {
 					{
 						collision_type = "cylinder",
-						duration = 0.9333333333333333,
+						duration = 0.7333333333333333,
 						height = 3.5,
 						offset_forward = 0,
 						offset_right = 0,
@@ -953,7 +965,7 @@ local action_data = {
 						offset_forward = 0,
 						offset_right = 0,
 						offset_up = 0,
-						radius = 3,
+						radius = 3.5,
 						start_time = 0.3333333333333333,
 					},
 				},
@@ -1012,13 +1024,13 @@ local action_data = {
 				bot_threats = {
 					{
 						collision_type = "cylinder",
-						duration = 0.9333333333333333,
+						duration = 1,
 						height = 3.7,
-						offset_forward = 2,
-						offset_right = 0,
+						offset_forward = 2.6,
+						offset_right = -0.4,
 						offset_up = 0,
-						radius = 3,
-						start_time = 0.16666666666666666,
+						radius = 4.25,
+						start_time = 0,
 					},
 				},
 			},
@@ -1090,6 +1102,7 @@ local action_data = {
 	downed = {
 		become_downed_hp_percent = 0.4,
 		downed_duration = 7,
+		freeze_healing = true,
 		min_downed_duration = 3,
 		reduce_hp_permanently = true,
 		reset_duration = 5,

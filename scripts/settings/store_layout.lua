@@ -653,9 +653,31 @@ StoreLayoutConfig.make_sort_key = function (item)
 	local prio = item.prio or 0
 	local price = 0
 	local rarity = item.rarity or "plentiful"
+	local part_of_active_event = ""
 	local owned = (backend_items:has_item(key) or backend_items:has_weapon_illusion(key)) and 2 or 0
 
 	if data then
+		local live_events_interface = Managers.backend:get_interface("live_events")
+		local live_events = live_events_interface and live_events_interface:get_active_events()
+
+		if live_events then
+			local best_event
+
+			if data and data.events then
+				live_events = table.mirror_array_inplace(live_events)
+
+				for i = 1, #data.events do
+					local event = data.events[i]
+
+					if table.contains(live_events, event) then
+						best_event = math.min(best_event or math.huge, live_events[event])
+					end
+				end
+			end
+
+			part_of_active_event = (best_event or #live_events + 1) .. ".event"
+		end
+
 		item_type = data.item_type or item.item_type
 
 		if item_type == "weapon_skin" then
@@ -684,7 +706,7 @@ StoreLayoutConfig.make_sort_key = function (item)
 		prio = 1
 	end
 
-	local sort_key = string.format("%01x%-16.16s%03x%04x%01x", owned, item_type, prio, price, ORDER_RARITY[rarity] or 0)
+	local sort_key = string.format("%01x%s%-16.16s%03x%04x%01x", owned, part_of_active_event, item_type, prio, price, ORDER_RARITY[rarity] or 0)
 
 	return sort_key
 end

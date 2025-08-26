@@ -663,6 +663,7 @@ local action_data = {
 				range = 2.5,
 				rotation_speed = 2.5,
 				rotation_time = 2,
+				triggers_anim_cb_damage_multiple_times = true,
 				width = 1.5,
 				attack_anim = {
 					"attack_combo_fwd",

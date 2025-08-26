@@ -296,7 +296,7 @@ BTVomitAction.create_aoe = function (self, unit, blackboard, action)
 		local extension_init_data = {
 			area_damage_system = {
 				flow_dir = dir,
-				liquid_template = blackboard.near_vomit and "bile_troll_vomit_near" or "bile_troll_vomit",
+				liquid_template = blackboard.near_vomit and (blackboard.breed.near_vomit or "bile_troll_vomit_near") or blackboard.breed.far_vomit or "bile_troll_vomit",
 				source_unit = unit,
 			},
 		}

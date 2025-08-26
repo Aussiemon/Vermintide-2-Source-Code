@@ -19,7 +19,6 @@ BTChaosSorcererSkulkApproachAction.name = "BTChaosSorcererSkulkApproachAction"
 BTChaosSorcererSkulkApproachAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	local breed = blackboard.breed
-	local target_dist = blackboard.target_dist
 	local skulk_data = blackboard.skulk_data or {}
 
 	blackboard.skulk_data = skulk_data
@@ -141,14 +140,6 @@ BTChaosSorcererSkulkApproachAction.run = function (self, unit, blackboard, t, dt
 
 	if current_health_percent < blackboard.teleport_health_percent then
 		local unit_pos = POSITION_LOOKUP[unit]
-		local target_pos = POSITION_LOOKUP[blackboard.target_unit]
-		local center_pos = unit_pos
-		local target_dist_sq = Vector3.distance_squared(unit_pos, target_pos)
-
-		if target_dist_sq > action.far_away_from_target_sq then
-			center_pos = target_pos
-		end
-
 		local spread = math.random() * 5 + math.random() * 5 + math.random() * 5
 		local dist = spread * 0.5 + action.preferred_distance
 		local tries = 5
@@ -187,7 +178,7 @@ BTChaosSorcererSkulkApproachAction.run = function (self, unit, blackboard, t, dt
 		return "running"
 	end
 
-	local position = self:get_skulk_target(unit, blackboard)
+	position = self:get_skulk_target(unit, blackboard)
 
 	if position then
 		self:move_to(position, unit, blackboard)
@@ -203,7 +194,6 @@ BTChaosSorcererSkulkApproachAction.run = function (self, unit, blackboard, t, dt
 end
 
 BTChaosSorcererSkulkApproachAction.at_goal = function (self, unit, blackboard)
-	local skulk_data = blackboard.skulk_data
 	local position_boxed = blackboard.move_pos
 
 	if not position_boxed then
@@ -305,9 +295,7 @@ BTChaosSorcererSkulkApproachAction.get_skulk_target = function (self, unit, blac
 end
 
 BTChaosSorcererSkulkApproachAction.debug_show_skulk_circle = function (self, unit, blackboard)
-	local action = blackboard.action
 	local skulk_data = blackboard.skulk_data
-	local radius = skulk_data.radius
 	local target_unit = blackboard.target_unit
 	local target_position = POSITION_LOOKUP[target_unit]
 	local offset = Vector3.up() * 0.2
@@ -351,7 +339,7 @@ BTChaosSorcererSkulkApproachAction._update_vortex_search = function (self, unit,
 			local target_node = Unit.node(target_unit, "j_head")
 			local target_node_position = Unit.world_position(target_unit, target_node)
 			local physics_world = vortex_data.physics_world
-			local target_line_of_sight, hit_position = PerceptionUtils.is_position_in_line_of_sight(unit, head_position, target_node_position, physics_world)
+			local target_line_of_sight = PerceptionUtils.is_position_in_line_of_sight(unit, head_position, target_node_position, physics_world)
 
 			if not target_line_of_sight then
 				vortex_data.spawn_timer = t + action.vortex_check_timer
@@ -463,14 +451,12 @@ BTChaosSorcererSkulkApproachAction.get_portal_location_list = function (portal_d
 
 			return true
 		end
-	else
-		portal_data.floor_search_count = 0
-		portal_data.placement = "floor"
-
-		return true
 	end
 
-	return false
+	portal_data.floor_search_count = 0
+	portal_data.placement = "floor"
+
+	return true
 end
 
 BTChaosSorcererSkulkApproachAction.prepare_wall_search = function (portal_data, center_position)
@@ -525,10 +511,10 @@ end
 
 BTChaosSorcererSkulkApproachAction.evaluate_floor = function (portal_data, nav_world, center_pos, num_tries)
 	local pos = get_random_pos_on_circle(center_pos, mean_spawn_distance, 10)
-	local result, hit_pos, disk_pos, spawn_pos_found, floor_normal
+	local hit_pos, disk_pos, spawn_pos_found, floor_normal, _
 
 	if pos then
-		result, hit_pos = GwNavQueries.raycast(nav_world, center_pos, pos)
+		_, hit_pos = GwNavQueries.raycast(nav_world, center_pos, pos)
 		disk_pos = GwNavQueries.inside_position_from_outside_position(nav_world, hit_pos, 1, 1, 5, portal_radius)
 
 		if disk_pos then
@@ -586,7 +572,6 @@ BTChaosSorcererSkulkApproachAction.evaluate_wall = function (portal_data, nav_wo
 	local cover_units = portal_data.cover_units
 	local unit_local_rotation = Unit.local_rotation
 	local unit_local_position = Unit.local_position
-	local traverse_logic
 
 	while index < exit_index do
 		if num_cover_points < index then
@@ -604,7 +589,7 @@ BTChaosSorcererSkulkApproachAction.evaluate_wall = function (portal_data, nav_wo
 			local result = true
 
 			if result then
-				local hit_wall, hit_position, dist, normal, actor = PhysicsWorld.immediate_raycast(portal_data.physics_world, pos + Vector3(0, 0, 1), wall_normal, 1.5, "closest", "collision_filter", "filter_ai_mover")
+				local hit_wall, hit_position, _, normal = PhysicsWorld.immediate_raycast(portal_data.physics_world, pos + Vector3(0, 0, 1), wall_normal, 1.5, "closest", "collision_filter", "filter_ai_mover")
 
 				if hit_wall then
 					if portal_data.portal_spawn_pos then
@@ -642,8 +627,6 @@ BTChaosSorcererSkulkApproachAction.try_next_portal_location = function (portal_d
 
 		Vector3.set_z(center_pos, altitude)
 	end
-
-	local success
 
 	if placement == "floor" then
 		local num_tries = 3

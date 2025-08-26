@@ -418,7 +418,7 @@ DeusRunController.rpc_deus_grant_end_of_level_power_ups = function (self, sender
 	local career_name = profile.careers[career_index].name
 	local new_power_ups
 
-	_, new_power_ups = DeusPowerUpUtils.generate_random_power_ups(power_up_seed, granted_random_power_up_count, existing_power_ups, self._run_state:get_run_difficulty(), run_progress, DeusPowerUpAvailabilityTypes.weapon_chest, career_name, power_up_rarity)
+	power_up_seed, new_power_ups = DeusPowerUpUtils.generate_random_power_ups(power_up_seed, granted_random_power_up_count, existing_power_ups, self._run_state:get_run_difficulty(), run_progress, DeusPowerUpAvailabilityTypes.weapon_chest, career_name, power_up_rarity)
 
 	local skip_metatable = true
 
@@ -1159,15 +1159,12 @@ DeusRunController.add_power_ups = function (self, new_power_ups, local_player_id
 		end
 	end
 
-	local player = Managers.player:player(local_peer_id, local_player_id)
 	local player_unit = player and player.player_unit
 
 	if player_unit then
 		local buff_system = Managers.state.entity:system("buff_system")
 		local talent_interface = Managers.backend:get_talents_interface()
 		local deus_backend = Managers.backend:get_interface("deus")
-		local profile_index = player and player:profile_index()
-		local career_index = player and player:career_index()
 
 		for i = 1, #new_power_ups do
 			local power_up = new_power_ups[i]
@@ -2117,10 +2114,7 @@ DeusRunController.unlock_arena_belakor = function (self)
 
 	if possible_arena_belakor_nodes then
 		local seed = current_node.level_seed
-		local next_index
-
-		seed, next_index = Math.next_random(seed, 1, #possible_arena_belakor_nodes)
-
+		local _, next_index = Math.next_random(seed, 1, #possible_arena_belakor_nodes)
 		local arena_belakor_node = possible_arena_belakor_nodes[next_index]
 
 		self._run_state:set_arena_belakor_node(arena_belakor_node)
@@ -2251,12 +2245,12 @@ DeusRunController.remove_weapon_from_pool = function (self, rarity, weapon_key)
 	self:_remove_weapon_from_pool(rarity, weapon_key)
 end
 
-DeusRunController._remove_weapon_from_pool = function (self, rarity, weapon_key)
+DeusRunController._remove_weapon_from_pool = function (self, weapon_rarity, weapon_key)
 	local pool_excludes = self._run_state:get_own_weapon_pool_excludes()
 	local weapon_group_name = DeusWeapons[weapon_key].base_item
-	local rarities = RarityUtils.get_lower_rarities(rarity)
+	local rarities = RarityUtils.get_lower_rarities(weapon_rarity)
 
-	table.insert(rarities, rarity)
+	table.insert(rarities, weapon_rarity)
 
 	for _, rarity in ipairs(rarities) do
 		pool_excludes[rarity] = pool_excludes[rarity] or {}

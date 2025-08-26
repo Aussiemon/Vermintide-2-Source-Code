@@ -101,6 +101,7 @@ UnitVariationSettings.skaven_warpfire_thrower.material_variations.cloth_tint = {
 	min = 0,
 	materials = {
 		"mtr_outfit",
+		"mtr_outfit_ds",
 	},
 	variables = {
 		"tint_color_variation",

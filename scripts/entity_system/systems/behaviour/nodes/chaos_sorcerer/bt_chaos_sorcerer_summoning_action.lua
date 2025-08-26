@@ -321,9 +321,11 @@ BTChaosSorcererSummoningAction._launch_vortex_dummy_missile = function (self, ow
 	}
 	local rotation = Quaternion.look(target_dir)
 	local projectile_unit_name = action.missile_effect_unit_name
-	local projectile_unit = Managers.state.unit_spawner:spawn_network_unit(projectile_unit_name, "ai_true_flight_projectile_unit_without_raycast", extension_init_data, spawn_position, rotation)
+	local projectile_unit, go_id = Managers.state.unit_spawner:spawn_network_unit(projectile_unit_name, "ai_true_flight_projectile_unit_without_raycast", extension_init_data, spawn_position, rotation)
 
 	vortex_data.num_dummy_missiles = vortex_data.num_dummy_missiles + 1
+
+	return projectile_unit, go_id
 end
 
 BTChaosSorcererSummoningAction._spawn_boss_vortex = function (self, unit, blackboard, t, dt, target_position)
@@ -816,6 +818,7 @@ BTChaosSorcererSummoningAction.update_boss_rings = function (self, unit, blackbo
 		Color(255, 0, 0),
 		Color(255, 0, 0),
 	}
+	local bot_reaction_time = 0.5
 
 	for i, ring in ipairs(ring_sequence) do
 		local done = ring.done
@@ -856,6 +859,19 @@ BTChaosSorcererSummoningAction.update_boss_rings = function (self, unit, blackbo
 				fassert(premonition_type, "No or invalid premonition type")
 
 				ring.damage_effect_time = t + premonition_time
+				ring.bot_avoid_time = ring.damage_effect_time - bot_reaction_time
+			elseif ring.bot_avoid_time and t >= ring.bot_avoid_time then
+				ring.bot_avoid_time = nil
+
+				local ring_position = ring.position
+				local ring_info = action.ring_info
+				local origin_pos = blackboard.ring_center_position:unbox()
+				local inner_radius = ring_info[ring_position].min_radius
+				local outer_radius = ring_info[ring_position].max_radius
+				local size = Vector3(inner_radius, outer_radius, 1)
+				local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
+
+				ai_bot_group_system:aoe_threat_created(origin_pos, "cylinder", size, Quaternion.identity(), bot_reaction_time)
 			elseif ring.damage_effect_time and t >= ring.damage_effect_time and not ring.premonition_time then
 				local ring_info = action.ring_info
 				local ring_position = ring.position

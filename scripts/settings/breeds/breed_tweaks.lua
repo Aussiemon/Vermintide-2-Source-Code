@@ -180,6 +180,7 @@ BreedTweaks.max_health = {
 	chaos_bulwark = health_steps(56, elite_health_step_multipliers),
 	chaos_spawn = health_steps(800, boss_health_step_multipliers),
 	chaos_troll = health_steps(600, boss_health_step_multipliers),
+	chaos_troll_chief = health_steps(1200, boss_health_step_multipliers),
 	rat_ogre = health_steps(800, boss_health_step_multipliers),
 	stormfiend = health_steps(600, boss_health_step_multipliers),
 	corruptor_sorcerer = health_steps(20, health_step_multipliers),

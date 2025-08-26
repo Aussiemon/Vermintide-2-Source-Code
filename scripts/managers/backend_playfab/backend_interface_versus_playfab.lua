@@ -384,7 +384,7 @@ end
 BackendInterfaceVersusPlayFab.matchmaking_enabled = function (self, matchmaking_type)
 	local backend_manager = Managers.backend
 	local title_settings = backend_manager:get_title_settings()
-	local matchmaking_settings = title_settings.versus.matchmaking_settings
+	local matchmaking_settings = title_settings.versus and title_settings.versus.matchmaking_settings
 
 	if not matchmaking_settings then
 		return true

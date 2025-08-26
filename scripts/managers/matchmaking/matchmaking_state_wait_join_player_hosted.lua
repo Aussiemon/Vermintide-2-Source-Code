@@ -22,7 +22,7 @@ MatchmakingStateWaitJoinPlayerHosted.on_enter = function (self, state_context)
 	self._state_context = state_context
 	self._search_config = state_context.search_config
 
-	local lobby_client = Managers.lobby:query_lobby("matchmaking_join_lobby")
+	local lobby_client = Managers.lobby:get_lobby("matchmaking_join_lobby")
 	local match_started = lobby_client:lobby_data("match_started") == "true"
 
 	self._next_transition_state = match_started and "start_lobby" or nil

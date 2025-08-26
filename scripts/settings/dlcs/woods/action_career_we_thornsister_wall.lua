@@ -106,6 +106,6 @@ ActionCareerWEThornsisterWall._spawn_wall = function (self, num_segments, segmen
 		local rotation = wall_rotation
 		local spawn_position = position + forward * (math.random() * WALL_FORWARD_OFFSET_RANGE * 2 - WALL_FORWARD_OFFSET_RANGE) + right * (math.random() * WALL_RIGHT_OFFSET_RANGE * 2 - WALL_RIGHT_OFFSET_RANGE)
 
-		Managers.state.unit_spawner:request_spawn_network_unit(UNIT_TEMPLATE_NAME, spawn_position, rotation, owner_unit, wall_index, i)
+		Managers.state.unit_spawner:request_spawn_template_unit(UNIT_TEMPLATE_NAME, spawn_position, rotation, owner_unit, wall_index, i)
 	end
 end

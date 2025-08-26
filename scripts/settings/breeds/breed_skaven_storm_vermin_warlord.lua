@@ -1848,6 +1848,7 @@ local action_data = {
 				range = 2.5,
 				rotation_speed = 10,
 				rotation_time = 3,
+				triggers_anim_cb_damage_multiple_times = true,
 				width = 2,
 				attack_anim = {
 					"attack_combo_2",

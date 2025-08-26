@@ -475,6 +475,12 @@ BTConditions.troll_downed = function (blackboard)
 	return blackboard.can_get_downed and blackboard.downed_state
 end
 
+BTConditions.troll_chief_phase_success = function (blackboard)
+	local _, _, _, _, phase = blackboard.health_extension:respawn_thresholds()
+
+	return phase > blackboard.downed_phase
+end
+
 BTConditions.needs_to_crouch = function (blackboard)
 	return blackboard.needs_to_crouch and BTConditions.ratogre_target_reachable(blackboard)
 end

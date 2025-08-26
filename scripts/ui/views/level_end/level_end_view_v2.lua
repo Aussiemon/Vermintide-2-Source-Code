@@ -158,8 +158,9 @@ LevelEndView.show_team = function (self)
 		self:_destroy_team_previewer()
 	end
 
+	self:_setup_team_heroes(self.context.players_session_score)
+
 	if self.game_won then
-		self:_setup_team_heroes(self.context.players_session_score)
 		self:_setup_team_previewer()
 	end
 end
@@ -228,8 +229,8 @@ end
 LevelEndView._setup_team_heroes = function (self, players_session_scores)
 	local sorted_stat_ids = {}
 
-	for stats_id in pairs(players_session_scores) do
-		table.insert(sorted_stat_ids, stats_id)
+	for unique_id in pairs(players_session_scores) do
+		table.insert(sorted_stat_ids, unique_id)
 	end
 
 	table.sort(sorted_stat_ids)
@@ -242,16 +243,13 @@ LevelEndView._setup_team_heroes = function (self, players_session_scores)
 	table.clear(players_with_score)
 
 	for i = 1, num_players do
-		local player_stat_id = sorted_stat_ids[i]
+		local unique_id = sorted_stat_ids[i]
 
-		if player_stat_id then
-			local player_data = players_session_scores[player_stat_id]
+		if unique_id then
+			local player_data = players_session_scores[unique_id]
 
 			team_heroes[#team_heroes + 1] = self:_get_hero_from_score(player_data)
-
-			local peer_id = player_data.peer_id
-
-			players_with_score[peer_id] = true
+			players_with_score[unique_id] = true
 		end
 	end
 end
@@ -695,7 +693,7 @@ LevelEndView.update_force_shutdown = function (self, dt)
 			for i = 1, #members do
 				local peer_id = members[i]
 
-				if not self._done_peers[peer_id] and (not peers_with_score or peers_with_score[peer_id]) then
+				if not self._done_peers[peer_id] and (not peers_with_score or peers_with_score[peer_id .. ":1"]) then
 					all_done = false
 
 					break

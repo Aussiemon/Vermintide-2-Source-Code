@@ -85,7 +85,7 @@ NetworkMatchHandler.poll_propagation_peer = function (self)
 	assert(self._is_server, "[NetworkMatchHandler] Only lobby hosts may propagate to another lobby host")
 
 	local propagation_peer
-	local joining_lobby = Managers.lobby:query_lobby("matchmaking_join_lobby") or Managers.lobby:query_lobby("matchmaking_game_server_client")
+	local joining_lobby = Managers.lobby:query_lobby("matchmaking_join_lobby")
 
 	if joining_lobby then
 		propagation_peer = joining_lobby:lobby_host()

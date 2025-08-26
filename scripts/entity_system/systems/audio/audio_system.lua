@@ -90,6 +90,14 @@ AudioSystem.play_sound_local = function (self, event)
 	WwiseWorld.trigger_event(wwise_world, event)
 end
 
+AudioSystem.player_unit_sound_local = function (self, event, unit, object)
+	local object_id = object and Unit.node(unit, object) or 0
+
+	if not DEDICATED_SERVER then
+		self:_play_event(event, unit, object_id)
+	end
+end
+
 AudioSystem.play_2d_audio_event = function (self, event)
 	if not DEDICATED_SERVER then
 		local wwise_world = Managers.world:wwise_world(self.world)

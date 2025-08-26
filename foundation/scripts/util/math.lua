@@ -63,7 +63,7 @@ math.inv_lerp = function (a, b, v)
 end
 
 math.inv_lerp_clamped = function (a, b, v)
-	v = math.clamp(v, a, b)
+	v = a < b and math.clamp(v, a, b) or math.clamp(v, b, a)
 
 	return math.inv_lerp(a, b, v)
 end
@@ -233,6 +233,21 @@ math.point_is_inside_view = function (pos, view_position, view_rotation, vertica
 	end
 
 	return false
+end
+
+math.point_is_inside_cylinder = function (point, cylinder_pos, min_radius, radius, half_height)
+	local pz = point[3]
+	local cz = cylinder_pos[3]
+
+	if pz > cz + half_height or pz < cz - half_height then
+		return false
+	end
+
+	local px, py = point[1], point[2]
+	local cx, cy = cylinder_pos[1], cylinder_pos[2]
+	local dist = (px - cx)^2 + (py - cy)^2
+
+	return min_radius < dist and dist < radius^2
 end
 
 math.cartesian_to_polar = function (x, y)
@@ -582,16 +597,18 @@ Intersect.ray_circle = function (ray_from, ray_direction, circle_position, circl
 
 	local sqrt_discriminant = math.sqrt(discriminant)
 	local t1 = (-b + sqrt_discriminant) / a2
-	local pos1 = ray_from + Vector3(dx * t1, dy * t1, 0)
+	local pos1_diff = Vector3(dx * t1, dy * t1, 0)
+	local pos1 = ray_from + pos1_diff
 
 	if sqrt_discriminant < math.epsilon then
-		return pos1, pos1
+		return pos1, pos1, pos1_diff, pos1_diff
 	end
 
 	local t2 = (-b - sqrt_discriminant) / a2
-	local pos2 = ray_from + Vector3(dx * t2, dy * t2, 0)
+	local pos2_diff = Vector3(dx * t2, dy * t2, 0)
+	local pos2 = ray_from + pos2_diff
 
-	return pos1, pos2
+	return pos1, pos2, pos1_diff, pos2_diff
 end
 
 math.ease_exp = function (t)
@@ -716,7 +733,7 @@ math.easeInQuint = function (t)
 end
 
 math.bounce = function (t)
-	return math.abs(math_sin(6.28 * (t + 1) * (t + 1)) * (1 - t))
+	return math.abs(math_sin(math.tau * (t + 1) * (t + 1)) * (1 - t))
 end
 
 math.ease_out_elastic = function (t)

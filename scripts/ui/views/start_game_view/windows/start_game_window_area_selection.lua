@@ -235,10 +235,13 @@ StartGameWindowAreaSelection._set_area_presentation_info = function (self, area_
 	end
 
 	local video_settings = settings.video_settings
-	local material_name = video_settings.material_name
-	local resource = video_settings.resource
 
-	self:_setup_video_player(material_name, resource)
+	if video_settings then
+		local material_name = video_settings.material_name
+		local resource = video_settings.resource
+
+		self:_setup_video_player(material_name, resource)
+	end
 
 	local menu_sound_event = settings.menu_sound_event
 

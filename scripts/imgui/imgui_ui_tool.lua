@@ -55,6 +55,7 @@ ImguiUITool.init = function (self)
 	self._cursor = {
 		0,
 		0,
+		0,
 	}
 	self._scale = 1
 	self._offset = {
@@ -533,6 +534,7 @@ ImguiUITool.do_asset_browser = function (self)
 	if not texture_registry then
 		texture_registry = table.values(UIAtlasHelper._ui_atlas_settings)
 		self._texture_registry = texture_registry
+		self._asset_browser_offset = 0
 	end
 
 	self:_set_columns(3, true)
@@ -547,15 +549,31 @@ ImguiUITool.do_asset_browser = function (self)
 	Imgui.next_column()
 	Imgui.separator()
 
+	local cell_size = Vector2(50, 50)
+	local cursor = self._cursor
+	local w, h = Gui.resolution()
+	local cols = math.floor(w / cell_size[1])
+	local needle = self._search
+	local scroll_sense = 50
+	local wheel_axis = Mouse.axis_index("wheel")
+
+	if Vector3.y(Mouse.axis(wheel_axis)) > 0 then
+		self._asset_browser_offset = math.min(cell_size[2], self._asset_browser_offset + scroll_sense)
+	elseif Vector3.y(Mouse.axis(wheel_axis)) < 0 then
+		self._asset_browser_offset = self._asset_browser_offset - scroll_sense
+	elseif Mouse.button(Mouse.button_index("middle")) > 0.5 then
+		self._scroll_hold_pos = self._scroll_hold_pos or Vector3Box(Vector3Aux.unbox(cursor))
+		self._asset_browser_offset = self._asset_browser_offset + (Vector3Aux.unbox(cursor)[2] - self._scroll_hold_pos:unbox()[2])
+		self._asset_browser_offset = math.clamp(self._asset_browser_offset, cell_size[2] * (-math.ceil(#table.select_array(texture_registry, function (_, data)
+			return do_search(needle, data.texture_name, data.material_name)
+		end) / cols) - 1) + h, cell_size[2])
+	elseif self._scroll_hold_pos then
+		self._scroll_hold_pos = nil
+	end
+
 	local ingame_ui = Managers.ui._ingame_ui
 	local gui = ingame_ui and ingame_ui.ui_top_renderer.gui
-	local w, h = Gui.resolution()
-	local needle = self._search
-	local cursor = self._cursor
-	local cell_size = Vector2(50, 50)
-	local cols = math.floor(w / cell_size[1])
-	local rows = math.floor(h / cell_size[2])
-	local cell_index = cols * rows
+	local cell_index = 0
 
 	for i = 1, #texture_registry do
 		local texture_settings = texture_registry[i]
@@ -566,12 +584,12 @@ ImguiUITool.do_asset_browser = function (self)
 			local size = texture_settings.size
 			local is_hover = false
 
-			if gui and cell_index > 0 then
-				cell_index = cell_index - 1
+			if gui then
+				cell_index = cell_index + 1
 
 				local cell_i = cols - 1 - cell_index % cols
-				local cell_j = math.floor(cell_index / cols)
-				local cell_pos = Vector3(cell_size[1] * cell_i, cell_size[2] * cell_j, 950)
+				local cell_j = math.ceil(cell_index / cols)
+				local cell_pos = Vector3(cell_size[1] * cell_i, h - cell_size[2] * cell_j - self._asset_browser_offset, 950)
 
 				is_hover = math.point_is_inside_2d_box(cursor, cell_pos, cell_size)
 
@@ -594,33 +612,52 @@ ImguiUITool.do_asset_browser = function (self)
 
 			if is_hover then
 				Imgui.text_colored(texture_name, 255, 0, 0, 255)
+				Imgui.set_scroll_here()
 
-				if Mouse.button(Mouse.button_id("right")) > 0.5 then
-					Imgui.set_scroll_here()
+				local y = math.min((h - size[2]) * 0.5, 100)
 
-					local y = math.min((h - size[2]) * 0.5, 100)
-
-					if cursor[2] < h * 0.25 then
-						y = math.max((h - size[2]) * 0.5, h - size[2] - 100)
-					end
-
-					local big_pos = Vector3((w - size[1]) * 0.5, y, 960)
-					local big_size = tab2vec2(size)
-					local border = Vector2(10, 10)
-
-					Gui.bitmap(gui, "marching_ants", big_pos - border - Vector3(0, 0, 1), big_size + 2 * border, Color(255, 0, 0))
-					Gui.rect(gui, big_pos - border - Vector3(0, 0, 2), big_size + 2 * border, Color(0, 0, 0))
-					Gui.rect(gui, big_pos, big_size, Color(127, 127, 127))
-
-					if Gui.material(gui, material_name) then
-						Gui.bitmap_uv(gui, material_name, tab2vec2(texture_settings.uv00), tab2vec2(texture_settings.uv11), big_pos, big_size)
-					else
-						Gui.rect(gui, big_pos, big_size, Color(255, 192, 203))
-						Gui.text(gui, "No material", "materials/fonts/arial", 7.5, nil, big_pos + Vector2(0, 0.5 * (big_size[2] - 18)), big_size, Color(0, 0, 0))
-					end
+				if cursor[2] < h * 0.25 then
+					y = math.max((h - size[2]) * 0.5, h - size[2] - 100)
 				end
-			else
-				Imgui.text(texture_name)
+
+				local big_pos = Vector3((w - size[1]) * 0.5, y, 960)
+				local big_size = tab2vec2(size)
+				local border = Vector2(10, 10)
+
+				Gui.bitmap(gui, "marching_ants", big_pos - border - Vector3(0, 0, 1), big_size + 2 * border, Color(255, 0, 0))
+				Gui.rect(gui, big_pos - border - Vector3(0, 0, 2), big_size + 2 * border, Color(0, 0, 0))
+				Gui.rect(gui, big_pos, big_size, Color(127, 127, 127))
+
+				if Gui.material(gui, material_name) then
+					Gui.bitmap_uv(gui, material_name, tab2vec2(texture_settings.uv00), tab2vec2(texture_settings.uv11), big_pos, big_size)
+				else
+					Gui.rect(gui, big_pos, big_size, Color(255, 192, 203))
+					Gui.text(gui, "No material", "materials/fonts/arial", 7.5, nil, big_pos + Vector2(0, 0.5 * (big_size[2] - 18)), big_size, Color(0, 0, 0))
+				end
+
+				local display_text = texture_name
+				local t = Managers.time:time("main")
+
+				if t < (self._copied_t or 0) and self._copied_text == texture_name then
+					display_text = display_text .. " (Copied!)           "
+				else
+					display_text = display_text .. " (Left click to copy)"
+				end
+
+				local text_width = Imgui.calculate_text_size(display_text)
+				local name_offset = Vector3(text_width * 0.5 - size[1] * 0.5, 25, 0)
+				local name_pos = big_pos - name_offset
+
+				Gui.rect(gui, name_pos - Vector2(5, 7), Vector2(text_width, 22), Color(0, 0, 0))
+				Gui.text(gui, display_text, "materials/fonts/arial", 14, nil, name_pos, Color(255, 255, 255, 255))
+
+				if Mouse.pressed(Mouse.button_index("left")) then
+					printf("[ImguiUITool] Copied %s to clipboard", texture_name)
+					Clipboard.put(texture_name)
+
+					self._copied_t = t + 1.5
+					self._copied_text = texture_name
+				end
 			end
 
 			Imgui.next_column()

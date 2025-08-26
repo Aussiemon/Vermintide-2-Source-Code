@@ -66,7 +66,7 @@ GameNetworkManager.init = function (self, world, lobby, is_server, event_delegat
 
 	self._event_delegate = event_delegate
 
-	event_delegate:register(self, "rpc_play_particle_effect_no_rotation", "rpc_play_particle_effect", "rpc_play_particle_effect_with_variable", "rpc_play_particle_effect_spline", "rpc_gm_event_end_conditions_met", "rpc_gm_event_round_started", "rpc_gm_event_initial_peers_spawned", "rpc_surface_mtr_fx", "rpc_surface_mtr_fx_lvl_unit", "rpc_skinned_surface_mtr_fx", "rpc_play_melee_hit_effects", "game_object_created", "game_session_disconnect", "game_object_destroyed", "rpc_enemy_is_alerted", "rpc_assist", "rpc_coop_feedback", "rpc_ladder_shake", "rpc_request_spawn_network_unit", "rpc_flow_event")
+	event_delegate:register(self, "rpc_play_particle_effect_no_rotation", "rpc_play_particle_effect", "rpc_play_particle_effect_with_variable", "rpc_play_particle_effect_spline", "rpc_gm_event_end_conditions_met", "rpc_gm_event_round_started", "rpc_gm_event_initial_peers_spawned", "rpc_surface_mtr_fx", "rpc_surface_mtr_fx_lvl_unit", "rpc_skinned_surface_mtr_fx", "rpc_play_melee_hit_effects", "game_object_created", "game_session_disconnect", "game_object_destroyed", "rpc_enemy_is_alerted", "rpc_assist", "rpc_coop_feedback", "rpc_ladder_shake", "rpc_request_spawn_template_unit", "rpc_flow_event")
 end
 
 GameNetworkManager.lobby = function (self)
@@ -319,6 +319,10 @@ GameNetworkManager.game_object_or_level_unit = function (self, unit_id, is_level
 end
 
 GameNetworkManager.game_object_or_level_id = function (self, unit)
+	if not Unit.alive(unit) then
+		return nil, false
+	end
+
 	local go_id = Managers.state.unit_storage:go_id(unit)
 
 	if go_id ~= nil then
@@ -577,7 +581,7 @@ GameNetworkManager.game_object_created = function (self, go_id, owner_id)
 end
 
 GameNetworkManager.game_object_created_network_unit = function (self, game_object_id, owner_id, go_template)
-	self.unit_spawner:spawn_unit_from_game_object(game_object_id, owner_id, go_template)
+	return self.unit_spawner:spawn_unit_from_game_object(game_object_id, owner_id, go_template)
 end
 
 GameNetworkManager.game_object_created_music_states = function (self, game_object_id, owner_id, go_template)
@@ -687,7 +691,10 @@ GameNetworkManager.game_object_created_player_unit = function (self, go_id, owne
 		self.network_server:peer_spawned_player(owner_id)
 	end
 
-	self:game_object_created_network_unit(go_id, owner_id, go_template)
+	local unit = self:game_object_created_network_unit(go_id, owner_id, go_template)
+	local player = Managers.player:owner(unit)
+
+	Managers.state.event:trigger("new_player_unit", player, unit, player:unique_id())
 end
 
 GameNetworkManager.game_object_destroyed_player_unit = function (self, go_id, owner_id, go_template)
@@ -1023,14 +1030,12 @@ GameNetworkManager.rpc_play_melee_hit_effects = function (self, channel_id, soun
 	EffectHelper.play_melee_hit_effects(sound_event, self._world, hit_position, sound_type, true, hit_unit)
 end
 
-GameNetworkManager.rpc_request_spawn_network_unit = function (self, channel_id, request_spawn_template_id, position, rotation, source_unit_go_id, state_int)
+GameNetworkManager.rpc_request_spawn_template_unit = function (self, channel_id, request_spawn_template_id, position, rotation, source_unit_go_id, state_int, handle)
 	local source_unit = self.unit_storage:unit(source_unit_go_id)
 	local template_name = NetworkLookup.spawn_unit_templates[request_spawn_template_id]
 	local spawn_template = SpawnUnitTemplates[template_name]
 
 	spawn_template.spawn_func(source_unit, position, rotation, state_int)
-
-	local players = Managers.player:human_players()
 end
 
 GameNetworkManager.rpc_surface_mtr_fx = function (self, channel_id, effect_name_id, unit_game_object_id, position, rotation, normal, actor_index)

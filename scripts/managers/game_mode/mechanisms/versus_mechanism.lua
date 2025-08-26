@@ -1160,10 +1160,6 @@ VersusMechanism.using_player_hosted = function (self)
 end
 
 local function is_player_hosting(network_handler)
-	if not network_handler then
-		return false
-	end
-
 	local server_peer_id = network_handler.server_peer_id
 	local server_has_player = Managers.player:player_from_peer_id(server_peer_id)
 
@@ -1206,7 +1202,7 @@ VersusMechanism._get_chat_members = function (self, party_id)
 	local match_handler = self._network_handler:get_match_handler()
 	local reservation_handler = self:get_slot_reservation_handler(match_handler:get_match_owner(), ReservationHandlerTypes.pending_custom_game) or self:get_slot_reservation_handler(match_handler:get_match_owner(), ReservationHandlerTypes.session)
 
-	if reservation_handler and self._network_handler and is_player_hosting(self._network_handler) then
+	if self._network_handler and is_player_hosting(self._network_handler) then
 		local peers = reservation_handler:peers_by_party(party_id)
 
 		table.append(_members_list, peers)

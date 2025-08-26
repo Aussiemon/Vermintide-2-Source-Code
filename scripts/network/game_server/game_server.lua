@@ -28,6 +28,7 @@ GameServer.init = function (self, network_options, server_name)
 	self._data_table = {}
 	self._server_name = server_name
 	self._network_initialized = false
+	self.is_host = true
 end
 
 GameServer.kick_all_except = function (self, ignored_peers)
@@ -77,6 +78,12 @@ GameServer.update = function (self, dt, t)
 			end
 
 			self._members = self._members or LobbyMembers:new(game_server)
+
+			if not GameServer._peer_id_property_set then
+				GameServer._peer_id_property_set = true
+
+				Crashify.print_property("peer_id", Network.peer_id())
+			end
 		end
 
 		if old_state == "connected" and self._members then

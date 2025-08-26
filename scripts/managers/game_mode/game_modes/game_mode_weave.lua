@@ -293,6 +293,10 @@ GameModeWeave.get_active_respawn_units = function (self)
 	return self._weave_spawning:get_active_respawn_units()
 end
 
+GameModeWeave.get_available_and_active_respawn_units = function (self)
+	return self._weave_spawning:get_available_and_active_respawn_units()
+end
+
 GameModeWeave.get_player_wounds = function (self, profile)
 	if Managers.state.game_mode:has_activated_mutator("instant_death") then
 		return 1
