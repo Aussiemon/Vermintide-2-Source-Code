@@ -132,7 +132,8 @@ AnimationSystem.anim_event = function (self, unit, event_name, skip_sync)
 	end
 
 	self:_init_networked_variables(unit, event_name)
-	Unit.animation_event(unit, event_name)
+
+	return Unit.animation_event(unit, event_name)
 end
 
 AnimationSystem.anim_event_with_variable_float = function (self, unit, event_name, variable_name, variable_value, skip_sync)

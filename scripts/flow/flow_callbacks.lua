@@ -6183,3 +6183,26 @@ function flow_query_is_game_object_unit(params)
 
 	return flow_return_table
 end
+
+function flow_wwise_set_state_synced(params)
+	if Managers.music then
+		local music_player = params.music_player
+		local group = params.group
+		local state = params.state
+
+		Managers.music:set_music_group_state(music_player, group, state)
+	end
+end
+
+function flow_callback_string_or_default(params)
+	local str = params.string
+	local default = params.default
+
+	if not str or str == "" then
+		flow_return_table.string = default
+	else
+		flow_return_table.string = str
+	end
+
+	return flow_return_table
+end

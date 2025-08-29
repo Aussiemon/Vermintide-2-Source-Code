@@ -45,7 +45,7 @@ return function ()
 			},
 			{
 				"query_context",
-				"item_tag",
+				"dialogue_name",
 				OP.EQ,
 				"dal_finale_hall_of_heroes_leave_a",
 			},
@@ -54,6 +54,59 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"wood_elf",
+			},
+			{
+				"faction_memory",
+				"dal_finale_hall_of_heroes_leave_a",
+				OP.EQ,
+				0,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"dal_finale_hall_of_heroes_leave_a",
+				OP.ADD,
+				1,
+			},
+		},
+	})
+	define_rule({
+		name = "pwe_dal_finale_hall_of_heroes_leave_a_heard",
+		probability = 1,
+		response = "pwe_dal_finale_hall_of_heroes_leave_a_heard",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"dialogue_name",
+				OP.EQ,
+				"npcr1_dal_finale_hall_of_heroes_troll_slain_c",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"faction_memory",
+				"dal_finale_hall_of_heroes_leave_a",
+				OP.EQ,
+				0,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"dal_finale_hall_of_heroes_leave_a",
+				OP.ADD,
+				1,
 			},
 		},
 	})
@@ -1270,7 +1323,36 @@ return function ()
 			},
 		},
 		pwe_dal_finale_hall_of_heroes_leave_a = {
-			category = "level_talk_must_play",
+			category = "level_talk",
+			database = "wood_elf_dlc_dwarf_fest",
+			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+				[2] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pwe_dal_finale_hall_of_heroes_leave_a_01",
+				[2] = "pwe_dal_finale_hall_of_heroes_leave_a_02",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1] = "pwe_dal_finale_hall_of_heroes_leave_a_01",
+				[2] = "pwe_dal_finale_hall_of_heroes_leave_a_02",
+			},
+			sound_events_duration = {
+				[1] = 2.0593750476837,
+				[2] = 2.9158959388733,
+			},
+		},
+		pwe_dal_finale_hall_of_heroes_leave_a_heard = {
+			category = "level_talk",
 			database = "wood_elf_dlc_dwarf_fest",
 			dialogue_animations_n = 2,
 			face_animations_n = 2,

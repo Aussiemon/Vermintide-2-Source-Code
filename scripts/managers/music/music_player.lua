@@ -78,7 +78,7 @@ MusicPlayer.post_trigger = function (self, event)
 	end
 end
 
-MusicPlayer.update = function (self, flags, game_object_id)
+MusicPlayer.update = function (self, flags, game_object_id, is_ingame)
 	local should_play = self:_should_play(flags)
 
 	if not self._playing and should_play then
@@ -91,10 +91,11 @@ MusicPlayer.update = function (self, flags, game_object_id)
 		self._playing = false
 	end
 
-	if self._playing and game_object_id and not DEDICATED_SERVER then
+	if self._playing and game_object_id and not DEDICATED_SERVER and is_ingame and self._playing and self._playing:has_game_faction() then
 		local session = Managers.state.network:game()
 
-		for group, _ in pairs(SyncedMusicGroupFlags) do
+		for i = 1, #SyncedMusicGroupFlags do
+			local group = SyncedMusicGroupFlags[i]
 			local state_id = GameSession.game_object_field(session, game_object_id, group)
 
 			if type(state_id) == "table" then

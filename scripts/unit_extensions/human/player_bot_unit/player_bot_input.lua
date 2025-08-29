@@ -565,11 +565,15 @@ PlayerBotInput._update_movement = function (self, dt, t)
 			end
 		end
 
-		Debug.text("avoiding: %s", self._avoiding_aoe_threat)
-
 		if self._avoiding_aoe_threat and (not flat_goal_vector or Vector3.length_squared(flat_goal_vector) < 0.0001) then
 			if not player_bot_navigation:destination_reached() then
-				player_bot_navigation:stop()
+				local function safe_navigation_callback()
+					player_bot_navigation:stop()
+				end
+
+				local ai_navigation_system = Managers.state.entity:system("ai_navigation_system")
+
+				ai_navigation_system:add_safe_navigation_callback(safe_navigation_callback)
 			end
 		elseif not self._avoiding_aoe_threat and self._ai_bot_group_system:is_inside_aoe_threat(bot_position + goal_direction * move_scale) then
 			move.x = 0

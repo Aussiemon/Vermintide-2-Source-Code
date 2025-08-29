@@ -1183,6 +1183,7 @@ local action_data = {
 					blackboard.chunk_event_socket_handles = unit_handles
 					blackboard.chunk_event_socket_units = {}
 					blackboard.chunk_event_fused_units = {}
+					blackboard.phase_one_buffs = blackboard.phase_one_buffs or {}
 
 					local difficulty = Managers.state.difficulty:get_difficulty()
 					local num_sockets_per_difficulty = {
@@ -1324,7 +1325,6 @@ local action_data = {
 							local multiplier = total_damage_reduction / num_sockets
 							local buff_system = Managers.state.entity:system("buff_system")
 
-							blackboard.phase_one_buffs = blackboard.phase_one_buffs or {}
 							blackboard.phase_one_buffs[spawned_unit] = buff_system:add_buff_synced(unit, "troll_chief_phase_one_damage_reduction", BuffSyncType.All, {
 								external_optional_multiplier = multiplier,
 							})

@@ -20,6 +20,10 @@ local function is_bot(unit)
 	return player and player.bot_player
 end
 
+local function is_local_human(unit)
+	return is_local(unit) and not is_bot(unit)
+end
+
 local function is_server()
 	return Managers.state.network.is_server
 end
@@ -916,28 +920,28 @@ dlc_settings.buff_function_templates = {
 		end
 	end,
 	on_extra_shot_buff_apply = function (unit, buff, params, world)
-		local local_unit = is_local(unit)
+		local local_unit = is_local_human(unit)
 
 		if local_unit then
 			WwiseUtils.trigger_unit_event(world, "hud_gameplay_stance_linesman_buff", unit, 0)
 		end
 	end,
 	on_extra_shot_buff_remove = function (unit, buff, params, world)
-		local local_unit = is_local(unit)
+		local local_unit = is_local_human(unit)
 
 		if local_unit then
 			WwiseUtils.trigger_unit_event(world, "Play_potion_morris_effect_end", unit, 0)
 		end
 	end,
 	apply_second_wind = function (unit, buff, params, world)
-		local local_unit = is_local(unit)
+		local local_unit = is_local_human(unit)
 
 		if local_unit then
 			WwiseUtils.trigger_unit_event(world, "Play_magic_shield_activate", unit, 0)
 		end
 	end,
 	remove_second_wind = function (unit, buff, params, world)
-		local local_unit = is_local(unit)
+		local local_unit = is_local_human(unit)
 
 		if local_unit then
 			WwiseUtils.trigger_unit_event(world, "Play_potion_morris_effect_end", unit, 0)
@@ -946,7 +950,7 @@ dlc_settings.buff_function_templates = {
 	apply_active_ability_movement_buff = function (unit, buff, params, world)
 		BuffFunctionTemplates.functions.apply_movement_buff(unit, buff, params, world)
 
-		local local_unit = is_local(unit)
+		local local_unit = is_local_human(unit)
 
 		if local_unit then
 			WwiseUtils.trigger_unit_event(world, "hud_gameplay_stance_ninjafencer_buff", unit, 0)
@@ -955,42 +959,42 @@ dlc_settings.buff_function_templates = {
 	remove_active_ability_movement_buff = function (unit, buff, params, world)
 		BuffFunctionTemplates.functions.remove_movement_buff(unit, buff, params, world)
 
-		local local_unit = is_local(unit)
+		local local_unit = is_local_human(unit)
 
 		if local_unit then
 			WwiseUtils.trigger_unit_event(world, "Play_potion_morris_effect_end", unit, 0)
 		end
 	end,
 	apply_ammo_reload_speed_buff = function (unit, buff, params, world)
-		local local_unit = is_local(unit)
+		local local_unit = is_local_human(unit)
 
 		if local_unit then
 			WwiseUtils.trigger_unit_event(world, "hud_gameplay_stance_linesman_buff", unit, 0)
 		end
 	end,
 	remove_ammo_reload_speed_buff = function (unit, buff, params, world)
-		local local_unit = is_local(unit)
+		local local_unit = is_local_human(unit)
 
 		if local_unit then
 			WwiseUtils.trigger_unit_event(world, "Play_potion_morris_effect_end", unit, 0)
 		end
 	end,
 	apply_damage_reduction_on_incapacitated = function (unit, buff, params, world)
-		local local_unit = is_local(unit)
+		local local_unit = is_local_human(unit)
 
 		if local_unit then
 			WwiseUtils.trigger_unit_event(world, "Play_magic_shield_activate", unit, 0)
 		end
 	end,
 	remove_damage_reduction_on_incapacitated = function (unit, buff, params, world)
-		local local_unit = is_local(unit)
+		local local_unit = is_local_human(unit)
 
 		if local_unit then
 			WwiseUtils.trigger_unit_event(world, "Play_potion_morris_effect_end", unit, 0)
 		end
 	end,
 	apply_parry_damage_immune = function (unit, buff, params, world)
-		local local_unit = is_local(unit)
+		local local_unit = is_local_human(unit)
 
 		if local_unit then
 			WwiseUtils.trigger_unit_event(world, "magic_shield_activate_fast", unit, 0)

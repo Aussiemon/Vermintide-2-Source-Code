@@ -219,6 +219,9 @@ BTMeleeOverlapAttackAction._init_attack = function (self, unit, target_unit, bla
 	end
 
 	locomotion_extension:use_lerp_rotation(not anim_driven)
+
+	blackboard.chosen_attack_anim = attack_anim
+
 	Managers.state.network:anim_event(unit, attack_anim)
 
 	local continious_overlap = attack.continious_overlap
@@ -379,6 +382,7 @@ BTMeleeOverlapAttackAction.leave = function (self, unit, blackboard, t, reason, 
 	blackboard.backstab_attack_trigger = nil
 	blackboard.attack_blend_end_t = nil
 	blackboard.anim_cb_damage_triggered_this_attack = nil
+	blackboard.chosen_attack_anim = nil
 
 	if blackboard.continous_overlap_data then
 		table.clear(blackboard.continous_overlap_data)

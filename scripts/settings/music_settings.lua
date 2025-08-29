@@ -46,12 +46,13 @@ IntensityThresholds = {
 	},
 }
 SyncedMusicFlags = {}
-SyncedMusicGroupFlags = {
-	boss_state = true,
-	combat_intensity = true,
-	game_state = true,
-	override = true,
-}
+SyncedMusicGroupFlags = table.mirror_array_inplace({
+	"combat_intensity",
+	"game_state",
+	"boss_state",
+	"override",
+	"dlc_dwarf_fest",
+})
 BossFightMusicIntensity = {
 	{
 		max_distance = 6,

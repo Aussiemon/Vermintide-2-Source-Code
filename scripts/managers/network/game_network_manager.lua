@@ -1230,7 +1230,7 @@ end
 GameNetworkManager.anim_event = function (self, unit, event)
 	local anim_system = Managers.state.entity:system("animation_system")
 
-	anim_system:anim_event(unit, event)
+	return anim_system:anim_event(unit, event)
 end
 
 GameNetworkManager.anim_event_with_variable_float = function (self, unit, event, variable_name, variable_value)

@@ -25,6 +25,8 @@ end
 
 PlayerBotNavigation.destroy = function (self)
 	GwNavAStar.destroy(self._astar)
+
+	self._astar = nil
 end
 
 PlayerBotNavigation.reset = function (self)
@@ -105,6 +107,10 @@ PlayerBotNavigation.move_to = function (self, target_position, callback)
 end
 
 PlayerBotNavigation.teleport = function (self, destination)
+	if not self._astar then
+		return
+	end
+
 	if self._running_astar and not GwNavAStar.processing_finished(self._astar) then
 		GwNavAStar.cancel(self._astar)
 

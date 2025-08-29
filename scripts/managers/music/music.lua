@@ -72,6 +72,10 @@ Music.set_group_state = function (self, state, value)
 	end
 end
 
+Music.has_game_faction = function (self)
+	return self._group_states.game_faction and self._group_states.game_faction ~= "undecided"
+end
+
 Music._trigger_event = function (self, event)
 	dprint("trigger event", event)
 

@@ -250,6 +250,7 @@ StateInGameRunning.on_enter = function (self, params)
 
 	Managers.level_transition_handler.transient_package_loader:signal_in_game()
 	Managers.mechanism:store_challenge_progression_status(self.is_in_inn)
+	Managers.music:on_enter_game()
 end
 
 StateInGameRunning._setup_end_of_level_UI = function (self)
@@ -994,6 +995,8 @@ StateInGameRunning.trigger_xbox_multiplayer_round_end_events = function (self)
 end
 
 StateInGameRunning.on_exit = function (self)
+	Managers.music:on_exit_game()
+
 	local network_manager = Managers.state.network
 	local profile_synchronizer = network_manager.profile_synchronizer
 

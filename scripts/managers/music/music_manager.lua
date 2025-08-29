@@ -185,7 +185,7 @@ MusicManager.update = function (self, dt, t)
 	local flags = self._flags
 
 	for _, player in pairs(self._music_players) do
-		player:update(flags, self._game_object_id)
+		player:update(flags, self._game_object_id, self._is_ingame)
 	end
 end
 
@@ -260,6 +260,7 @@ MusicManager.on_enter_level = function (self, network_event_delegate, is_server)
 		local intensity_state_id = NetworkLookup.music_group_states.low_battle
 		local game_state_id = NetworkLookup.music_group_states.explore
 		local boss_state_id = NetworkLookup.music_group_states.no_boss
+		local dwarf_fest_dlc_state_id = NetworkLookup.music_group_states.None
 		local is_weave = Managers.mechanism:game_mechanism():get_state() == "weave"
 		local override_state_id = is_weave and NetworkLookup.music_group_states.winds or NetworkLookup.music_group_states["false"]
 		local init_data = {
@@ -267,7 +268,19 @@ MusicManager.on_enter_level = function (self, network_event_delegate, is_server)
 			combat_intensity = intensity_state_id,
 			boss_state = boss_state_id,
 			override = override_state_id,
+			dlc_dwarf_fest = dwarf_fest_dlc_state_id,
 		}
+
+		if self._override_init_fields then
+			for group, state in pairs(self._override_init_fields) do
+				local state_id = type(state) == "table" and state or NetworkLookup.music_group_states[state]
+
+				init_data[group] = state_id
+			end
+
+			self._override_init_fields = nil
+		end
+
 		local parties = Managers.party:parties()
 		local game_states = {}
 
@@ -982,11 +995,16 @@ end
 MusicManager.set_music_group_state = function (self, music_player, group, state)
 	local game_object_id = self._game_object_id
 
-	if self._is_server and game_object_id then
-		local state_id = type(state) == "table" and state or NetworkLookup.music_group_states[state]
-		local session = Managers.state.network:game()
+	if self._is_server then
+		if game_object_id then
+			local state_id = type(state) == "table" and state or NetworkLookup.music_group_states[state]
+			local session = Managers.state.network:game()
 
-		GameSession.set_game_object_field(session, game_object_id, group, state_id)
+			GameSession.set_game_object_field(session, game_object_id, group, state_id)
+		else
+			self._override_init_fields = self._override_init_fields or {}
+			self._override_init_fields[group] = state
+		end
 	end
 end
 
@@ -1096,4 +1114,12 @@ MusicManager.versus_update_sides = function (self)
 
 	self._side_manager = Managers.state.side
 	self._side = self._side_manager.side_by_party[self._party]
+end
+
+MusicManager.on_enter_game = function (self)
+	self._is_ingame = true
+end
+
+MusicManager.on_exit_game = function (self)
+	self._is_ingame = false
 end
