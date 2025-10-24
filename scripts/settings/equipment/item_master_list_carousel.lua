@@ -1505,6 +1505,9 @@ ItemMasterList.vs_dr_shield_axe = {
 		"dr_ranger",
 		"dr_engineer",
 	},
+	left_hand_unit_override = {
+		dr_engineer = "units/weapons/player/wpn_dw_shield_01_t1/wpn_dw_e_shield_01",
+	},
 	mechanisms = {
 		"versus",
 	},
@@ -1528,6 +1531,9 @@ ItemMasterList.vs_dr_shield_hammer = {
 		"dr_ironbreaker",
 		"dr_ranger",
 		"dr_engineer",
+	},
+	left_hand_unit_override = {
+		dr_engineer = "units/weapons/player/wpn_dw_shield_01_t1/wpn_dw_e_shield_01",
 	},
 	mechanisms = {
 		"versus",

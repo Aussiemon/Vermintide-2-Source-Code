@@ -363,7 +363,9 @@ Geheimnisnacht2021AltarExtension.spawn_nurglings = function (self)
 	for i = 1, num_nurglings do
 		local spawn_pos = ConflictUtils.get_spawn_pos_on_circle(nav_world, altar_pos, spawn_radius, spread, tries)
 
-		conflict_director:spawn_queued_unit(breed_data, Vector3Box(spawn_pos), QuaternionBox(spawn_rot), spawn_category, spawn_animation, spawn_type, optional_data, group_data)
+		if spawn_pos then
+			conflict_director:spawn_queued_unit(breed_data, Vector3Box(spawn_pos), QuaternionBox(spawn_rot), spawn_category, spawn_animation, spawn_type, optional_data, group_data)
+		end
 	end
 
 	self.nurglings_spawned = true

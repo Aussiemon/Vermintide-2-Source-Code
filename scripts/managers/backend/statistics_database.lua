@@ -298,6 +298,12 @@ StatisticsDatabase._create_stat = function (self, stats, arg_n, ...)
 
 	definition = definition[last_arg]
 
+	if not definition then
+		ferror("[StatisticsDatabase] No statistics definition found with path 'StatisticsDefinitions.%s.%s'", CATEGORY, table.concat({
+			...,
+		}, ""))
+	end
+
 	local initiated_stat = self:_init_stat(definition)
 
 	stat[last_arg] = initiated_stat

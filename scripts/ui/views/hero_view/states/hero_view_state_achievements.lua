@@ -946,7 +946,15 @@ HeroViewStateAchievements._set_widget_bar_progress = function (self, widget, cur
 	local texture_size = progress_bar_style.texture_size
 
 	texture_size[1] = default_size[1] * (current / required)
-	content.progress_text = string.format("%d/%d", current, required)
+
+	local achievement_id = widget.content and widget.content.achievement_id
+	local achievement_template = AchievementTemplates.achievements[achievement_id]
+
+	if achievement_template and achievement_template.progress_text_format_func then
+		content.progress_text = achievement_template.progress_text_format_func(current, required)
+	else
+		content.progress_text = string.format("%d/%d", current, required)
+	end
 end
 
 HeroViewStateAchievements._set_requirements = function (self, widget, requirements)

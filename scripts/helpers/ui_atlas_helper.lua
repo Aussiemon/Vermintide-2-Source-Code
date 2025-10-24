@@ -99,6 +99,7 @@ local standalone_texture = {
 	event_upsell_anniversary = true,
 	event_upsell_background_fade = true,
 	event_upsell_default = true,
+	event_upsell_geheimnisnacht = true,
 	event_upsell_skulls = true,
 	fade_bg = true,
 	fatigue_icon_glow = true,

@@ -3485,6 +3485,9 @@ Cosmetics.frame_celebration_07 = {
 Cosmetics.frame_apology_2025 = {
 	icon = "unit_frame_02",
 }
+Cosmetics.frame_geheimnisnacht_2025 = {
+	icon = "unit_frame_02",
+}
 Cosmetics.frame_dwarf_fest = {
 	icon = "unit_frame_02",
 	texture_package_name = "resource_packages/store/item_icons/store_item_icon_frame_dwarf_fest",

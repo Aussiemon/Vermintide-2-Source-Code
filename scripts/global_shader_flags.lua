@@ -27,6 +27,12 @@ local PARTICLE_LIGHTING_REMAP_VALUES = {
 		0,
 		0,
 	},
+	EVENT_GEHEIMNISNACHT = {
+		125,
+		0,
+		217,
+		116,
+	},
 }
 
 local function find(t, element)

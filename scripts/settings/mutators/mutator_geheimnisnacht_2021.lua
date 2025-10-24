@@ -1,5 +1,7 @@
 ﻿-- chunkname: @scripts/settings/mutators/mutator_geheimnisnacht_2021.lua
 
+local GeheimnisnachtUtils = require("scripts/settings/dlcs/geheimnisnacht_2025/geheimnisnacht_utils")
+local map_settings = require("scripts/settings/dlcs/geheimnisnacht_2025/geheimnisnacht_map_settings")
 local spawn_lists = {
 	skaven = {
 		"skaven_plague_monk",

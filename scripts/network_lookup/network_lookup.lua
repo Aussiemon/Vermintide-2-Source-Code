@@ -2359,6 +2359,7 @@ NetworkLookup.dialogue_profiles = {
 	"vs_heroes_mission_giver",
 	"npc_cousin",
 	"npc_dwarf_revellers",
+	"npc_empire_soldier",
 }
 
 table.append_unique(NetworkLookup.dialogue_profiles, table.values(table.select_map(SPProfiles, function (_, profile)

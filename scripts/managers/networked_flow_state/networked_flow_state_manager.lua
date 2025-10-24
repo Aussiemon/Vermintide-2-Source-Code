@@ -352,21 +352,21 @@ NetworkedFlowStateManager._sync_states = function (self, peer)
 	local network_manager = Managers.state.network
 
 	for unit, unit_states in pairs(self._object_states) do
-		fassert(Unit.alive(unit), "[NetworkedFlowStateManager] Trying to hot join sync state variable for destroyed unit %s.", unit_states.unit_debug_name)
+		if Unit.alive(unit) then
+			local unit_id, is_level_id = network_manager:game_object_or_level_id(unit)
+			local channel_id = PEER_ID_TO_CHANNEL[peer]
 
-		local unit_id, is_level_id = network_manager:game_object_or_level_id(unit)
-		local channel_id = PEER_ID_TO_CHANNEL[peer]
+			for state_name, state_table in pairs(unit_states.states) do
+				local value = state_table.value
 
-		for state_name, state_table in pairs(unit_states.states) do
-			local value = state_table.value
+				if value ~= state_table.default_value then
+					local state_network_id = unit_states.lookup[state_name]
+					local type_data = FLOW_STATE_TYPES[type(value)]
 
-			if value ~= state_table.default_value then
-				local state_network_id = unit_states.lookup[state_name]
-				local type_data = FLOW_STATE_TYPES[type(value)]
+					value = self:_clamp_state(state_name, type_data, value, unit)
 
-				value = self:_clamp_state(state_name, type_data, value, unit)
-
-				RPC[type_data.rpcs.change](channel_id, unit_id, state_network_id, value, true, not is_level_id)
+					RPC[type_data.rpcs.change](channel_id, unit_id, state_network_id, value, true, not is_level_id)
+				end
 			end
 		end
 	end

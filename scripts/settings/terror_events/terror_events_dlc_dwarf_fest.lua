@@ -575,7 +575,7 @@ local terror_event_blueprints = {
 		{
 			"spawn_at_raw",
 			amount = 1,
-			spawner_id = "waterwheel_gate_manual",
+			spawner_id = "waterwheel_gate_manual_02",
 			breed_name = {
 				"skaven_warpfire_thrower",
 				"skaven_poison_wind_globadier",

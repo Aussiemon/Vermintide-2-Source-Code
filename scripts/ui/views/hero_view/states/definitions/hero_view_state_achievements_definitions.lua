@@ -63,7 +63,7 @@ local category_tab_info = {
 	tab_list_entry_size = tab_list_entry_size,
 	tab_list_entry_spacing = tab_list_entry_spacing,
 }
-local CATEGORY_LIST_LIMIT = 10
+local CATEGORY_LIST_LIMIT = 11
 local scenegraph_definition = {
 	root = {
 		is_root = true,

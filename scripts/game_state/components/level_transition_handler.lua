@@ -485,7 +485,7 @@ LevelTransitionHandler._append_event_packages = function (self, level_key, extra
 		local special_event_data = special_events[i]
 		local valid_levels = special_event_data.level_keys
 
-		if not valid_levels or table.is_empty(valid_levels) or table.contains(valid_levels, self._level_key) then
+		if not valid_levels or table.is_empty(valid_levels) or table.contains(valid_levels, level_key) then
 			local weekly_override_type = special_event_data.weekly_event
 
 			if weekly_override_type then

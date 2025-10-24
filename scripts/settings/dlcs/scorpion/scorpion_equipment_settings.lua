@@ -61,6 +61,8 @@ settings.inventory_package_list = {
 	"units/weapons/player/wpn_dw_pick_01_t2/wpn_dw_pick_01_t2_magic_01_3p",
 	"units/weapons/player/wpn_dw_shield_04_t1/wpn_dw_shield_04_magic_01",
 	"units/weapons/player/wpn_dw_shield_04_t1/wpn_dw_shield_04_magic_01_3p",
+	"units/weapons/player/wpn_dw_shield_04_t1/wpn_dw_e_shield_04_magic_01",
+	"units/weapons/player/wpn_dw_shield_04_t1/wpn_dw_e_shield_04_magic_01_3p",
 	"units/weapons/player/wpn_emp_handgun_repeater_t1/wpn_emp_handgun_repeater_t1_magic_01",
 	"units/weapons/player/wpn_emp_handgun_repeater_t1/wpn_emp_handgun_repeater_t1_magic_01_3p",
 	"units/weapons/player/wpn_emp_pistol_03_t2/wpn_emp_pistol_03_t2_magic_01",

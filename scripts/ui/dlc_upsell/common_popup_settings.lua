@@ -175,6 +175,87 @@ CommonPopupSettings.anniversary = {
 		},
 	},
 }
+CommonPopupSettings.geheimnisnacht = {
+	background_texture = "event_upsell_geheimnisnacht",
+	body_text = "popup_active_event_flavour_text",
+	button_text = "menu_close",
+	class_name = "ActiveEventPopup",
+	definitions_path = "scripts/ui/active_event/active_event_popup_definitions",
+	event_name = "Geheimnisnacht",
+	popup_type = "active_event",
+	logo_data = {
+		logo_texture = "geheimnisnacht_logo",
+		size = {
+			418.59999999999997,
+			275.79999999999995,
+		},
+		offset = {
+			-209.29999999999998,
+			-275.79999999999995,
+			1,
+		},
+	},
+	action_buttons = {
+		{
+			button_text = "popup_button_open_store_event_tab",
+			on_pressed = function ()
+				Managers.ui:handle_transition("hero_view_force", {
+					menu_state_name = "store",
+					use_fade = true,
+					menu_sub_state_name = {
+						"cosmetics",
+						"event",
+					},
+				})
+			end,
+		},
+		{
+			button_text = "popup_button_open_weekly_challenges",
+			on_pressed = function ()
+				Managers.ui:handle_transition("hero_view_force", {
+					menu_state_name = "achievements",
+					use_fade = true,
+					menu_sub_state_name = {
+						{
+							layout_name = "quest",
+						},
+						{
+							tab_index = 3,
+						},
+					},
+				})
+			end,
+		},
+		{
+			button_text = "popup_button_open_mission_selection_event_tab",
+			on_pressed = function ()
+				local GeheimnisnachtUtils = require("scripts/settings/dlcs/geheimnisnacht_2025/geheimnisnacht_utils")
+				local levels = GeheimnisnachtUtils.maps_by_live_event(true)
+
+				if PlayerData then
+					PlayerData.mission_selection = PlayerData.mission_selection or {}
+					PlayerData.mission_selection.custom = PlayerData.mission_selection.custom or {}
+					PlayerData.mission_selection.custom.level_id = table.random(levels)
+				end
+
+				Managers.ui:handle_transition("start_game_view_force", {
+					menu_state_name = "play",
+					menu_sub_state_name = "custom_game",
+					use_fade = true,
+				})
+			end,
+		},
+	},
+	input_desc = {
+		actions = {
+			{
+				description_text = "menu_close",
+				input_action = "back",
+				priority = 1,
+			},
+		},
+	},
+}
 CommonPopupSettings.default_event = {
 	background_texture = "event_upsell_default",
 	body_text = "popup_weekly_event_flavour_text",

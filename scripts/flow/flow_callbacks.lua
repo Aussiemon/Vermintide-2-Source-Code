@@ -2336,6 +2336,14 @@ function flow_callback_teleport_unit(params)
 		return
 	end
 
+	if not Managers.state.network.is_server then
+		local breed = Unit.get_data(unit, "breed")
+
+		if not breed or not breed.is_player then
+			return
+		end
+	end
+
 	local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 
 	if locomotion_extension.teleport_to then
@@ -6150,8 +6158,8 @@ function flow_callbacks_set_story_trigger_frozen(params)
 end
 
 function flow_callbacks_teleport_non_character_elevator_units(params)
-	local transporter_unit = params.transporter_unit
-	local transportation_extension = ScriptUnit.has_extension(transporter_unit, "transportation_system")
+	local transport_unit = params.transport_unit
+	local transportation_extension = ScriptUnit.has_extension(transport_unit, "transportation_system")
 
 	if transportation_extension then
 		local to_reference_unit = params.to_reference_unit
@@ -6203,6 +6211,30 @@ function flow_callback_string_or_default(params)
 	else
 		flow_return_table.string = str
 	end
+
+	return flow_return_table
+end
+
+local once_by_unit = {}
+
+function flow_callback_once_by_unit(params)
+	local unit = params.unit
+	local level = Application.flow_callback_context_level()
+
+	if not level then
+		flow_return_table.out = false
+
+		return flow_return_table
+	end
+
+	if not once_by_unit[level] then
+		table.clear(once_by_unit)
+
+		once_by_unit[level] = {}
+	end
+
+	flow_return_table.out = not once_by_unit[level][unit]
+	once_by_unit[level][unit] = true
 
 	return flow_return_table
 end

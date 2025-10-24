@@ -7365,6 +7365,9 @@ ItemMasterList.dr_shield_axe = {
 		"dr_ironbreaker",
 		"dr_ranger",
 	},
+	left_hand_unit_override = {
+		dr_engineer = "units/weapons/player/wpn_dw_shield_01_t1/wpn_dw_e_shield_01",
+	},
 }
 ItemMasterList.dr_shield_hammer = {
 	description = "dw_1h_hammer_shield_skin_01_description",
@@ -7384,6 +7387,9 @@ ItemMasterList.dr_shield_hammer = {
 	can_wield = {
 		"dr_ironbreaker",
 		"dr_ranger",
+	},
+	left_hand_unit_override = {
+		dr_engineer = "units/weapons/player/wpn_dw_shield_01_t1/wpn_dw_e_shield_01",
 	},
 }
 ItemMasterList.dr_crossbow = {

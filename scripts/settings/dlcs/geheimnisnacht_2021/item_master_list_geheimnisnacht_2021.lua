@@ -149,6 +149,9 @@ ItemMasterList.dw_1h_axe_shield_skin_05_runed_03 = {
 	events = {
 		"geheimnisnacht",
 	},
+	left_hand_unit_override = {
+		dr_engineer = "units/weapons/player/wpn_dw_shield_05_t1/wpn_dw_e_shield_05_runed_01",
+	},
 }
 ItemMasterList.bw_1h_flaming_sword_skin_01_runed_03 = {
 	description = "bw_1h_flaming_sword_skin_01_runed_03_description",

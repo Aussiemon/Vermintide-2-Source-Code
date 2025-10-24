@@ -1090,6 +1090,41 @@ LinkerTransportationExtension.teleport_non_character_elevator_units = function (
 		local reference_pos = Unit.local_position(reference_unit, 0)
 		local radius = 3
 		local max_tries = 3
+
+		local function _move(unit, optional_teleport_extension)
+			local pos
+			local tries = 1
+
+			while tries <= max_tries do
+				local seed, x, y = math.get_uniformly_random_point_inside_sector_seeded(self._reference_teleport_seed, 0, radius, 0, math.tau)
+
+				self._reference_teleport_seed = seed
+				pos = reference_pos + Vector3(x, y, 0)
+
+				local success, altitude = GwNavQueries.triangle_from_position(GLOBAL_AI_NAVWORLD, pos, 1, 1)
+
+				if success then
+					pos = Vector3(pos.x, pos.y, altitude)
+
+					break
+				end
+
+				tries = tries + 1
+			end
+
+			pos = pos or reference_pos
+
+			if optional_teleport_extension then
+				optional_teleport_extension:teleport_to(pos)
+			else
+				local pose = Matrix4x4.from_quaternion_position_scale(Unit.local_rotation(unit, 0), pos, Unit.local_scale(unit, 0))
+
+				self:_move_generic_unit(unit, pose)
+
+				self._transported_generic_units[unit] = nil
+			end
+		end
+
 		local units, n = self:_get_inside_generic_units()
 
 		table.sort(units, function (a, b)
@@ -1101,27 +1136,17 @@ LinkerTransportationExtension.teleport_non_character_elevator_units = function (
 
 		for i = 1, n do
 			local unit = units[i]
-			local tries = 1
 
-			while tries <= max_tries do
-				local seed, x, y = math.get_uniformly_random_point_inside_sector_seeded(self._reference_teleport_seed, 0, radius, 0, math.tau)
+			_move(unit)
+		end
 
-				self._reference_teleport_seed = seed
+		for _, player in pairs(Managers.player:players()) do
+			local unit = player.player_unit
 
-				local pos = reference_pos + Vector3(x, y)
-				local success, altitude = GwNavQueries.triangle_from_position(GLOBAL_AI_NAVWORLD, pos, 1, 1)
+			if Unit.alive(unit) and self:_is_inside_transportation_unit(unit) then
+				local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 
-				if success then
-					pos = Vector3(pos.x, pos.y, altitude)
-				else
-					pos = reference_pos
-				end
-
-				local pose = Matrix4x4.from_quaternion_position_scale(pos, Unit.local_rotation(unit, 0), Unit.local_scale(unit, 0))
-
-				self:_move_generic_unit(unit, pose)
-
-				self._transported_generic_units[unit] = nil
+				_move(unit, locomotion_extension)
 			end
 		end
 	end

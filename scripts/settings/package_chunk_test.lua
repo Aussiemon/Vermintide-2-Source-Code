@@ -231,6 +231,7 @@ PackageChunkPackages = {
 	"resource_packages/dlcs/termite_part_3",
 	"resource_packages/pose_cosmetics",
 	"resource_packages/dlcs/anniversary_2025",
+	"resource_packages/dlcs/geheimnisnacht_2025",
 	"resource_packages/dlcs/skulls_2025",
 	"resource_packages/dlcs/versus_rewards",
 	"resource_packages/dlcs/dwarf_fest",

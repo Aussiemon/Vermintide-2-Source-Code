@@ -1,9 +1,12 @@
 ﻿-- chunkname: @scripts/settings/dlcs/geheimnisnacht_2021/geheimnisnacht_2021_quest_settings.lua
 
+local generate_geheimnisnacht_quests = require("scripts/settings/dlcs/geheimnisnacht_2025/generate_geheimnisnacht_quests")
 local settings = DLCSettings.geheimnisnacht_2021
 local geheim_quest_templates = {}
 
 settings.quest_templates = geheim_quest_templates
+
+generate_geheimnisnacht_quests(2025)
 
 local quest_meta_mapping = {
 	event_geheimnisnacht_2024_disrupt_all = {

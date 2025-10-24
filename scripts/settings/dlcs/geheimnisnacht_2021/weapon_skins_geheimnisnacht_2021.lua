@@ -194,6 +194,9 @@ local skins = {
 			rarity = "unique",
 			right_hand_unit = "units/weapons/player/wpn_dw_axe_03_t2/wpn_dw_axe_03_t2_runed_01",
 			template = "one_hand_axe_shield_template_1",
+			left_hand_unit_override = {
+				dr_engineer = "units/weapons/player/wpn_dw_shield_05_t1/wpn_dw_e_shield_05_runed_01",
+			},
 			material_settings = WeaponMaterialSettingsTemplates.golden_glow,
 			action_anim_overrides = {
 				animation_variation_id = 1,

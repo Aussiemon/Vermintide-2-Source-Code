@@ -96,6 +96,10 @@ end
 local broadphase_query_result = {}
 
 BTCritterNurglingRoamAction.has_overlap = function (self, unit, blackboard, action)
+	if not blackboard.move_pos then
+		return true
+	end
+
 	local num_results = Broadphase.query(blackboard.group_blackboard.broadphase, blackboard.move_pos:unbox(), action.check_overlap_radius, broadphase_query_result)
 
 	return num_results > 1

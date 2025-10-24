@@ -564,4 +564,11 @@ DLCSettings = DLCSettings or {
 			quest = "scripts/settings/dlcs/skulls_2025/skulls_2025_quest_settings",
 		},
 	},
+	geheimnisnacht_2025 = {
+		localization = "localization/geheimnisnacht_2025",
+		package_name = "resource_packages/dlcs/geheimnisnacht_2025",
+		additional_settings = {
+			common = "scripts/settings/dlcs/geheimnisnacht_2025/geheimnisnacht_2025_common_settings",
+		},
+	},
 }

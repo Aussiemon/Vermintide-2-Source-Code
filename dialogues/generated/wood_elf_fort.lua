@@ -855,7 +855,7 @@ return function ()
 				[2] = "pwe_fort_intro_c_02",
 			},
 			sound_events_duration = {
-				[1] = 3.8120646476746,
+				[1] = 4.0269165039063,
 				[2] = 2.7456042766571,
 			},
 		},
