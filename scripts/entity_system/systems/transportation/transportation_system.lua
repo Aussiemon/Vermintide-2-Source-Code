@@ -53,7 +53,7 @@ TransportationSystem.clear_transporter_by_linked_unit = function (self, unit)
 	self._transporting_extension_by_unit[unit] = nil
 end
 
-TransportationSystem.try_claim_unit = function (self, unit, transportation_extension)
+TransportationSystem.try_claim_unit = function (self, unit, transportation_extension, force)
 	local other_extension = self._transporting_extension_by_unit[unit]
 
 	if not other_extension then
@@ -62,15 +62,22 @@ TransportationSystem.try_claim_unit = function (self, unit, transportation_exten
 		return true
 	end
 
-	if other_extension:transporting() then
-		return false
-	end
+	if not force then
+		if other_extension:transporting() then
+			return false
+		end
 
-	local at_beginning = transportation_extension:beginning()
-	local other_at_beginning = other_extension:beginning()
+		local at_beginning = transportation_extension:beginning()
+		local other_at_beginning = other_extension:beginning()
 
-	if at_beginning == other_at_beginning then
-		fassert(transportation_extension:transporting(), "[TransportationSystem] Two overlapping elevators at %s", tostring(POSITION_LOOKUP[unit]))
+		if at_beginning == other_at_beginning and not transportation_extension:transporting() then
+			local level_id = Level.unit_index(LevelHelper:current_level(self.world), transportation_extension.unit)
+			local other_level_id = Level.unit_index(LevelHelper:current_level(self.world), other_extension.unit)
+
+			if other_level_id < level_id then
+				return
+			end
+		end
 	end
 
 	other_extension:force_unlink_unit(unit)

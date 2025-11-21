@@ -812,7 +812,9 @@ LinkerTransportationExtension._link_player_unit = function (self, unit_to_link, 
 		return
 	end
 
-	if not self._transportation_system:try_claim_unit(unit_to_link, self) then
+	local force = not soft_link
+
+	if not self._transportation_system:try_claim_unit(unit_to_link, self, force) then
 		return
 	end
 
