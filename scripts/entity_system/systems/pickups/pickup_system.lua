@@ -211,6 +211,14 @@ end
 PickupSystem.move_pickup_local_pose = function (self, unit, new_pose)
 	Unit.set_local_pose(unit, 0, new_pose)
 
+	for i = 1, Unit.num_actors(unit) do
+		local actor = Unit.actor(unit, i - 1)
+
+		if actor then
+			Actor.teleport_pose(actor, new_pose)
+		end
+	end
+
 	local id = self._broadphase_ids[unit]
 	local position = Matrix4x4.translation(new_pose)
 

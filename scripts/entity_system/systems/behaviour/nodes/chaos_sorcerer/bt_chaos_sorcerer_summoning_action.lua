@@ -871,7 +871,7 @@ BTChaosSorcererSummoningAction.update_boss_rings = function (self, unit, blackbo
 				local size = Vector3(inner_radius, outer_radius, 1)
 				local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 
-				ai_bot_group_system:aoe_threat_created(origin_pos, "cylinder", size, Quaternion.identity(), bot_reaction_time)
+				ai_bot_group_system:aoe_threat_created(origin_pos, "cylinder", size, Quaternion.identity(), bot_reaction_time, "Chaos Sorcerer")
 			elseif ring.damage_effect_time and t >= ring.damage_effect_time and not ring.premonition_time then
 				local ring_info = action.ring_info
 				local ring_position = ring.position

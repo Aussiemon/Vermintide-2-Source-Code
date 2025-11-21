@@ -623,6 +623,6 @@ BTRatlingGunnerShootAction._create_bot_threat_box = function (self, unit, attack
 		local obstacle_position, obstacle_rotation, obstacle_size = AiUtils.calculate_oobb(distance * 2, self_pos, Quaternion.look(fire_direction), nil, 3)
 		local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 
-		ai_bot_group_system:aoe_threat_created(obstacle_position, "oobb", obstacle_size, obstacle_rotation, duration)
+		ai_bot_group_system:aoe_threat_created(obstacle_position, "oobb", obstacle_size, obstacle_rotation, duration, "Ratling Gunner")
 	end
 end

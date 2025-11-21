@@ -221,12 +221,9 @@ T.update_network = function (data, dt)
 
 			position = position - platform_pos
 
-			local movement_delta, rotation_delta = platform_extension:movement_delta()
-			local position_after_rotation = Quaternion.rotate(rotation_delta, position)
+			local local_pos_delta = platform_extension:visual_delta()
 
-			movement_delta = movement_delta + (position_after_rotation - position)
-			position = position_after_rotation
-			velocity = velocity + movement_delta / dt
+			position = position - local_pos_delta
 		end
 
 		GameSession_set_game_object_field(game, go_id, "position", Vector3.clamp(position, min, max))

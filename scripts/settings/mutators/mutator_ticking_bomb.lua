@@ -92,7 +92,7 @@ return {
 				local size = 4
 				local duration = 5
 
-				ai_bot_group_system:aoe_threat_created(position, "sphere", size, nil, duration)
+				ai_bot_group_system:aoe_threat_created(position, "sphere", size, nil, duration, "Ticking Bomb")
 
 				bomb_data.applied_bot_threat = true
 			end

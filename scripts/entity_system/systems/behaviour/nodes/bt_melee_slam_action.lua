@@ -134,7 +134,7 @@ BTMeleeSlamAction._create_bot_aoe_threat = function (self, unit, attack_rotation
 	local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 	local obstacle_position, _, obstacle_size = self:_calculate_cylinder_collision(action, bot_threat, unit_position, attack_rotation)
 
-	ai_bot_group_system:aoe_threat_created(obstacle_position, "cylinder", obstacle_size, nil, bot_threat_duration)
+	ai_bot_group_system:aoe_threat_created(obstacle_position, "cylinder", obstacle_size, nil, bot_threat_duration, "Melee Slam")
 end
 
 BTMeleeSlamAction.anim_cb_damage = function (self, unit, blackboard)

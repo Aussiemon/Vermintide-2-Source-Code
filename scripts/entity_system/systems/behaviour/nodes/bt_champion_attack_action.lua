@@ -206,12 +206,12 @@ BTChampionAttackAction._init_attack = function (self, unit, blackboard, action, 
 			local pos = self:_calculate_cylinder_collision(action, POSITION_LOOKUP[unit], rot)
 			local size = Vector3(0, action.radius, action.height * 0.5)
 
-			Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(pos, "cylinder", size, nil, bot_threat_duration)
+			Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(pos, "cylinder", size, nil, bot_threat_duration, "Champion Attack")
 		elseif action.collision_type == "oobb" or not action.collision_type then
 			local rot = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.attacking_target)
 			local pos, rot, size = self:_calculate_oobb_collision(action, POSITION_LOOKUP[unit], rot)
 
-			Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(pos, "oobb", size, rot, bot_threat_duration)
+			Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(pos, "oobb", size, rot, bot_threat_duration, "Champion Attack")
 		end
 	end
 end

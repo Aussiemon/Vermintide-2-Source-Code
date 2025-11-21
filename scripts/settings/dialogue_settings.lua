@@ -192,6 +192,15 @@ DialogueSettings.level_specific_load_files = {
 		"dialogues/generated/hero_conversations_dlc_dwarf_fest",
 		"dialogues/generated/npc_dlc_dwarf_fest",
 	},
+	dlc_reikwald_river = {
+		"dialogues/generated/wood_elf_dlc_reikwald_river",
+		"dialogues/generated/empire_soldier_dlc_reikwald_river",
+		"dialogues/generated/bright_wizard_dlc_reikwald_river",
+		"dialogues/generated/dwarf_ranger_dlc_reikwald_river",
+		"dialogues/generated/witch_hunter_dlc_reikwald_river",
+		"dialogues/generated/hero_conversations_dlc_reikwald_river",
+		"dialogues/generated/npces_dlc_reikwald_river",
+	},
 }
 DialogueSettings.blocked_auto_load_files = {
 	inn_level = true,

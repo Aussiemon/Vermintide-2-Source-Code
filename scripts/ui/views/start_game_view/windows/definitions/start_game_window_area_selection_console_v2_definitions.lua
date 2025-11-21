@@ -46,7 +46,7 @@ local animation_definitions = {
 	},
 }
 local grid_settings = {
-	4,
+	5,
 	3,
 }
 local scenegraph_definition = {

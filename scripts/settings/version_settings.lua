@@ -1,6 +1,6 @@
 ﻿-- chunkname: @scripts/settings/version_settings.lua
 
-local version = "6.8.1"
+local version = "6.9.0"
 
 VersionSettings = {
 	version = version,

@@ -86,6 +86,12 @@ StoreWindowCategoryItemList.update = function (self, dt, t)
 		force_update = self._selected_product ~= nil
 	end
 
+	if self._create_widgets then
+		local not_done = self:_create_product_widgets(self._layout, false)
+
+		self._create_widgets = not_done
+	end
+
 	self:_sync_layout_path(force_update)
 	self:_update_animations(dt)
 	self:_draw(dt)
@@ -369,8 +375,7 @@ StoreWindowCategoryItemList._update_item_list = function (self)
 	table.sort(layout, StoreLayoutConfig.compare_sort_key)
 
 	self._layout = layout
-
-	self:_create_product_widgets(layout)
+	self._create_widgets = self:_create_product_widgets(layout, true)
 
 	local current_page_name = path[#path]
 	local current_page = pages[current_page_name] or self._parent:get_temporary_page(current_page_name)
@@ -483,13 +488,25 @@ StoreWindowCategoryItemList._on_list_index_pressed = function (self, index)
 	end
 end
 
-StoreWindowCategoryItemList._create_product_widgets = function (self, layout)
-	local widgets = {}
+StoreWindowCategoryItemList._create_product_widgets = function (self, layout, reset)
+	local create_widget_index = self._create_widget_index
+	local widgets = self._list_widgets
+	local num_per_frame = 12
+
+	if reset then
+		create_widget_index = 1
+		widgets = {}
+		self._list_widgets = widgets
+	end
+
 	local parent = self._parent
 	local scenegraph_id = "item_root"
 	local masked = true
 
-	for i, entry in ipairs(layout) do
+	for i = create_widget_index, math.min(#layout, create_widget_index + num_per_frame) do
+		create_widget_index = create_widget_index + 1
+
+		local entry = layout[i]
 		local widget = parent:create_item_widget(entry, scenegraph_id, masked)
 
 		parent:populate_product_widget(widget, entry)
@@ -497,10 +514,12 @@ StoreWindowCategoryItemList._create_product_widgets = function (self, layout)
 		widgets[i] = widget
 	end
 
-	self._list_widgets = widgets
+	self._create_widget_index = create_widget_index
 
 	self:_align_item_widgets()
 	self:_initialize_scrollbar()
+
+	return create_widget_index <= #layout
 end
 
 StoreWindowCategoryItemList._destroy_product_widgets = function (self, force_unload)
@@ -509,8 +528,8 @@ StoreWindowCategoryItemList._destroy_product_widgets = function (self, force_unl
 	local widgets = self._list_widgets
 
 	if widgets and layout then
-		for i, entry in ipairs(layout) do
-			local widget = widgets[i]
+		for i, widget in ipairs(widgets) do
+			local entry = layout[i]
 
 			parent:destroy_product_widget(widget, entry, force_unload)
 		end
@@ -541,8 +560,6 @@ StoreWindowCategoryItemList._align_item_widgets = function (self)
 			widget_position_x = 0
 			widget_position_y = widget_position_y - (height + LIST_SPACING)
 		end
-
-		local empty_width_on_row = LIST_MAX_WIDTH - (widget_position_x + width)
 
 		offset[1] = widget_position_x
 		offset[2] = widget_position_y

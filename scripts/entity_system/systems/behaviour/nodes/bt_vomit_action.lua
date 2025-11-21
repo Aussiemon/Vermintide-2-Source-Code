@@ -227,7 +227,7 @@ BTVomitAction.run = function (self, unit, blackboard, t, dt)
 			local attack_rotation = blackboard.attack_rotation:unbox()
 			local obstacle_position, obstacle_rotation, obstacle_size = self:_calculate_oobb_collision(current_bot_threat, unit_position, attack_rotation)
 
-			Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(obstacle_position, "oobb", obstacle_size, obstacle_rotation, bot_threat_duration)
+			Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(obstacle_position, "oobb", obstacle_size, obstacle_rotation, bot_threat_duration, "Vomit")
 
 			local next_bot_threat_index = current_bot_threat_index + 1
 			local next_bot_threat = bot_threats[next_bot_threat_index]

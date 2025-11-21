@@ -662,6 +662,11 @@ StateIngame._setup_world = function (self)
 	Managers.world:set_scene_update_callback(self.world, function ()
 		self:physics_async_update(self.dt)
 	end)
+	Managers.world:set_update_done_callback(self.world, function (world, dt, t)
+		local transportation_system = Managers.state.entity:system("transportation_system")
+
+		transportation_system:world_updated(world, dt, t)
+	end)
 
 	if Managers.splitscreen then
 		Managers.splitscreen:add_splitscreen_viewport(self.world)

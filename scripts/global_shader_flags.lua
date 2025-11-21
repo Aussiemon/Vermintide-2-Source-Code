@@ -33,6 +33,12 @@ local PARTICLE_LIGHTING_REMAP_VALUES = {
 		217,
 		116,
 	},
+	EVENT_GOTWF = {
+		125,
+		0,
+		207,
+		244,
+	},
 }
 
 local function find(t, element)

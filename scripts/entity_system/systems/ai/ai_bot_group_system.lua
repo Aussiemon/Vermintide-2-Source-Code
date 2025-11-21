@@ -13,6 +13,7 @@ local bot_threat_queue_shape = 2
 local bot_threat_queue_size = 3
 local bot_threat_queue_rotation = 4
 local bot_threat_queue_threat_duration = 5
+local bot_threat_source = 6
 local BOT_RADIUS = 1.25
 local BOT_HEIGHT = 1.8
 
@@ -343,8 +344,9 @@ AIBotGroupSystem.update = function (self, context, t)
 		local threat_size = threat[bot_threat_queue_size]:unbox()
 		local threat_rotation = threat[bot_threat_queue_rotation]:unbox()
 		local threat_duration = threat[bot_threat_queue_threat_duration]
+		local source = threat[bot_threat_source]
 
-		self:aoe_threat_created(threat_position, shape, threat_size, threat_rotation, threat_duration)
+		self:aoe_threat_created(threat_position, shape, threat_size, threat_rotation, threat_duration, source)
 
 		bot_threat_queue[i] = nil
 	end
@@ -448,7 +450,7 @@ AIBotGroupSystem.rpc_bot_lookup_order = function (self, channel_id, order_type_i
 	end
 end
 
-AIBotGroupSystem.queue_aoe_threat = function (self, position, shape, size, rotation, duration)
+AIBotGroupSystem.queue_aoe_threat = function (self, position, shape, size, rotation, duration, source)
 	if position and shape and size and rotation and duration then
 		local bot_threat_queue = self._bot_threat_queue
 		local new_threat = {
@@ -457,6 +459,7 @@ AIBotGroupSystem.queue_aoe_threat = function (self, position, shape, size, rotat
 			Vector3Box(size),
 			QuaternionBox(rotation),
 			duration,
+			source,
 		}
 
 		bot_threat_queue[#bot_threat_queue + 1] = new_threat
@@ -464,7 +467,7 @@ AIBotGroupSystem.queue_aoe_threat = function (self, position, shape, size, rotat
 end
 
 AIBotGroupSystem.rpc_bot_create_threat_oobb = function (self, channel_id, threat_position, threat_rotation, threat_size, threat_duration)
-	self:queue_aoe_threat(threat_position, "oobb", threat_size, threat_rotation, threat_duration)
+	self:queue_aoe_threat(threat_position, "oobb", threat_size, threat_rotation, threat_duration, "RPC")
 end
 
 AIBotGroupSystem._order_ammo_pickup = function (self, bot_unit, pickup_unit, ordering_player)
@@ -2769,6 +2772,26 @@ AIBotGroupSystem.in_cover = function (self, cover_unit)
 	return nil
 end
 
+local function dodges_into_enemies(bot_blackboard, bot_position, to, bot_radius, proximite_enemies)
+	local direction, length = Vector3.direction_length(to - bot_position)
+	local dist_to_target_sq = (length + bot_radius)^2
+	local collides_with_enemy = false
+
+	for enemy_i = 1, #proximite_enemies do
+		if Unit.alive(proximite_enemies[enemy_i]) then
+			local _, _, delta_1, delta_2 = Intersect.ray_circle(bot_position, direction, Unit.local_position(proximite_enemies[enemy_i], 0), 0.75)
+
+			if delta_1 and Vector3.dot(delta_1, to - bot_position) > 0 and (dist_to_target_sq > Vector3.length_squared(delta_1) or dist_to_target_sq > Vector3.length_squared(delta_2)) then
+				collides_with_enemy = true
+
+				break
+			end
+		end
+	end
+
+	return collides_with_enemy
+end
+
 local cylinder_tries = 6
 local EPSILON = 0.01
 
@@ -2822,7 +2845,16 @@ local function detect_cylinder(nav_world, traverse_logic, bot_position, bot_heig
 					success = GwNavQueries.raycango(nav_world, bot_position, to, traverse_logic)
 
 					if success then
-						stop_at = to
+						local collides_with_enemy = dodges_into_enemies(bot_blackboard, bot_position, to, bot_radius, proximite_enemies)
+
+						if not collides_with_enemy then
+							local in_existing_threat = is_inside_existing_threat(existing_threats, to, bot_radius)
+
+							if not in_existing_threat then
+								stop_at = to
+							end
+						end
+
 						stop_at_fallback = to
 					end
 
@@ -2879,7 +2911,16 @@ local function detect_sphere(nav_world, traverse_logic, bot_position, bot_height
 					success = GwNavQueries.raycango(nav_world, bot_position, to, traverse_logic)
 
 					if success then
-						stop_at = to
+						local collides_with_enemy = dodges_into_enemies(bot_blackboard, bot_position, to, bot_radius, proximite_enemies)
+
+						if not collides_with_enemy then
+							local in_existing_threat = is_inside_existing_threat(existing_threats, to, bot_radius)
+
+							if not in_existing_threat then
+								stop_at = to
+							end
+						end
+
 						stop_at_fallback = to
 					end
 
@@ -2944,7 +2985,16 @@ local function detect_oobb(nav_world, traverse_logic, bot_position, bot_height, 
 				local in_liquid = area_damage_system:is_position_in_liquid(to, BotNavTransitionManager.NAV_COST_MAP_LAYERS)
 
 				if not in_liquid then
-					stop_at = to
+					local collides_with_enemy = dodges_into_enemies(bot_blackboard, bot_position, to, bot_radius, proximite_enemies)
+
+					if not collides_with_enemy then
+						local in_existing_threat = is_inside_existing_threat(existing_threats, to, bot_radius)
+
+						if not in_existing_threat then
+							stop_at = to
+						end
+					end
+
 					fallback_stop_at = to
 				end
 			end
@@ -2964,7 +3014,7 @@ local function detect_oobb(nav_world, traverse_logic, bot_position, bot_height, 
 	return stop_at or fallback_stop_at
 end
 
-AIBotGroupSystem.aoe_threat_created = function (self, position, shape, size, rotation, duration)
+AIBotGroupSystem.aoe_threat_created = function (self, position, shape, size, rotation, duration, source)
 	local t = Managers.time:time("game")
 	local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 	local traverse_logic = Managers.state.bot_nav_transition:traverse_logic()
@@ -2985,6 +3035,7 @@ AIBotGroupSystem.aoe_threat_created = function (self, position, shape, size, rot
 		size = type(size) == "number" and size or Vector3Box(size),
 		shape = shape,
 		expires = expires,
+		source = source,
 	}
 	local existing_threats = self._existing_bot_threats
 	local pos_x, pos_y, pos_z = position.x, position.y, position.z

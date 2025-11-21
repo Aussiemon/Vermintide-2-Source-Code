@@ -2746,5 +2746,6 @@ UISettings.default_loadout_settings = {
 UISettings.event_global_shader_flags_override_lookup = {
 	anniversary = "EVENT_ANNIVERSARY",
 	geheimnisnacht = "EVENT_GEHEIMNISNACHT",
+	gotwf = "EVENT_GOTWF",
 	skulls = "EVENT_SKULLS",
 }

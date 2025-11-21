@@ -313,7 +313,7 @@ ScriptWorld._run_safe_animation_callbacks = function ()
 	end
 end
 
-ScriptWorld.update = function (world, dt, anim_callback, scene_callback)
+ScriptWorld.update = function (world, dt, t, anim_callback, scene_callback, update_done_callback)
 	if World.get_data(world, "active") then
 		if World.get_data(world, "paused") then
 			dt = 0
@@ -331,6 +331,10 @@ ScriptWorld.update = function (world, dt, anim_callback, scene_callback)
 			World.update_scene_with_callback(world, dt, scene_callback)
 		else
 			World.update_scene(world, dt)
+		end
+
+		if update_done_callback then
+			update_done_callback(world, dt, t)
 		end
 	else
 		World.update_timer(world, dt)

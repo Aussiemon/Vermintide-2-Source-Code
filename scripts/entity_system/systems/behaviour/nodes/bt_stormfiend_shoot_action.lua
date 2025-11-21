@@ -537,7 +537,7 @@ BTStormfiendShootAction._create_bot_aoe_threat = function (self, unit, attack_ro
 
 	local obstacle_position, obstacle_rotation, obstacle_size = self:_calculate_oobb_collision(bot_threat, bot_threat_range, unit_position, attack_rotation)
 
-	shoot_threat_data.handle = ai_bot_group_system:aoe_threat_created(obstacle_position, "oobb", obstacle_size, obstacle_rotation, math.huge)
+	shoot_threat_data.handle = ai_bot_group_system:aoe_threat_created(obstacle_position, "oobb", obstacle_size, obstacle_rotation, math.huge, "Stormfiend")
 
 	shoot_threat_data.rotation:store(attack_rotation)
 

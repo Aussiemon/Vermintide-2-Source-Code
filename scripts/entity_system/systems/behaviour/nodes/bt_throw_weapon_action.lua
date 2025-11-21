@@ -110,7 +110,7 @@ BTThrowWeaponAction.anim_cb_throw_weapon = function (self, unit, blackboard)
 		local bot_threat_duration = distance * 0.25
 		local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 
-		ai_bot_group_system:aoe_threat_created(obstacle_position, "oobb", obstacle_size, obstacle_rotation, bot_threat_duration)
+		ai_bot_group_system:aoe_threat_created(obstacle_position, "oobb", obstacle_size, obstacle_rotation, bot_threat_duration, "Throw Weapon")
 	else
 		blackboard.throw_finished = true
 	end

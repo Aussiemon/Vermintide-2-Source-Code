@@ -210,7 +210,7 @@ BTComboAttackAction._start_attack = function (self, unit, blackboard, t, action,
 		local forward = Quaternion.rotate(rot, Vector3.forward()) * half_range
 		local oobb_pos = POSITION_LOOKUP[unit] + forward + Vector3.up() * 0.5
 
-		Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(oobb_pos, "oobb", Vector3(width, range, 0.5), rot, attack_data.bot_threat_duration)
+		Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(oobb_pos, "oobb", Vector3(width, range, 0.5), rot, attack_data.bot_threat_duration, "Combo Attack")
 	end
 
 	local damage_done_time = attack_data.damage_done_time

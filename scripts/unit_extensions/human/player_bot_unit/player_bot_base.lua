@@ -324,10 +324,10 @@ PlayerBotBase.update = function (self, unit, input, dt, context, t)
 		self:_update_reload()
 		self._brain:update(unit, t, dt)
 
-		local moving_platform = locomotion_extension:get_moving_platform()
+		local moving_platform, _, soft_platform = locomotion_extension:get_moving_platform()
 		local is_disabled = status_extension:is_disabled()
 
-		if is_disabled or moving_platform then
+		if is_disabled or moving_platform and not soft_platform then
 			self._navigation_extension:teleport(POSITION_LOOKUP[unit])
 		elseif locomotion_extension:is_on_ground() then
 			self:_update_movement_target(dt, t)
@@ -347,7 +347,10 @@ PlayerBotBase._update_blackboard = function (self, dt, t)
 	bb.is_pounced_down = status_extension:is_pounced_down()
 	bb.is_hanging_from_hook = status_extension:is_hanging_from_hook()
 	bb.is_ledge_hanging = status_extension:get_is_ledge_hanging()
-	bb.is_transported = status_extension:is_using_transport() or locomotion_extension:get_moving_platform()
+
+	local on_platform, _, on_soft_platform = locomotion_extension:get_moving_platform()
+
+	bb.is_transported = status_extension:is_using_transport() or on_platform and not on_soft_platform
 	bb.is_grabbed_by_chaos_spawn = status_extension:is_grabbed_by_chaos_spawn()
 
 	local unit = self._unit

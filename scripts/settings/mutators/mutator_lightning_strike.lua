@@ -110,7 +110,7 @@ return {
 						if Unit.alive(unit) then
 							local position = POSITION_LOOKUP[unit]
 
-							bot_group_system:aoe_threat_created(position, "cylinder", aoe_thread_size, nil, 3)
+							bot_group_system:aoe_threat_created(position, "cylinder", aoe_thread_size, nil, 3, "Lightning Strike")
 						end
 					end
 

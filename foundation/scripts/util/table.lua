@@ -830,9 +830,12 @@ end
 
 table.swap_delete = function (t, index)
 	local table_length = #t
+	local orig = t[index]
 
 	t[index] = t[table_length]
 	t[table_length] = nil
+
+	return orig
 end
 
 table.array_remove_if = function (t, predicate)
@@ -1276,4 +1279,20 @@ table.shallow_equal = function (t1, t2)
 	end
 
 	return true
+end
+
+table.safe_get = function (t, ...)
+	local val = t
+
+	for i = 1, select("#", ...) do
+		local key = select(i, ...)
+
+		val = val[key]
+
+		if not val then
+			return nil
+		end
+	end
+
+	return val
 end

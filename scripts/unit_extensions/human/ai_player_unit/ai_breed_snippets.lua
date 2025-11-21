@@ -1292,7 +1292,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_update = function (unit, blackboard, t
 
 		bot_threat_position = bot_threat_position - Vector3.up() * half_height
 
-		Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(bot_threat_position, "cylinder", size, nil, 1)
+		Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(bot_threat_position, "cylinder", size, nil, 1, "Exalted Sorcerer")
 
 		blackboard.missle_bot_threat_unit = nil
 	end
@@ -2015,7 +2015,7 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 
 		bot_threat_position = bot_threat_position - Vector3.up() * half_height
 
-		Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(bot_threat_position, "cylinder", size, nil, 1)
+		Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(bot_threat_position, "cylinder", size, nil, 1, "Gray Seer")
 
 		blackboard.missile_bot_threat_unit = nil
 	end

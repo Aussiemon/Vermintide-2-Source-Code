@@ -5902,6 +5902,42 @@ function flow_callback_termite_part_3_portal_challenge(params)
 	achievement_manager:trigger_event("termite3_portal_challenge")
 end
 
+function flow_callback_divine_sink_ships_challenge(params)
+	local achievement_manager = Managers.state.achievement
+
+	achievement_manager:trigger_event("divine_sink_ships_challenge", params.challenge_start)
+end
+
+function flow_callback_divine_anchor_attached(params)
+	local achievement_manager = Managers.state.achievement
+
+	achievement_manager:trigger_event("divine_anchor_attached")
+end
+
+function flow_callback_divine_anchor_destroyed(params)
+	local achievement_manager = Managers.state.achievement
+
+	achievement_manager:trigger_event("divine_anchor_destroyed")
+end
+
+function flow_callback_divine_anchor_completed(params)
+	local achievement_manager = Managers.state.achievement
+
+	achievement_manager:trigger_event("divine_anchor_challenge_completed")
+end
+
+function flow_callback_divine_nautical_miles_challenge(params)
+	local achievement_manager = Managers.state.achievement
+
+	achievement_manager:trigger_event("divine_nautical_miles_challenge")
+end
+
+function flow_callback_divine_cannon_challenge(params)
+	local achievement_manager = Managers.state.achievement
+
+	achievement_manager:trigger_event("divine_cannon_challenge")
+end
+
 function flow_callback_register_combination_puzzle(params)
 	local group_name_id = params.puzzle_group
 	local puzzle_id = params.puzzle_name or ""
@@ -6207,9 +6243,9 @@ function flow_callback_string_or_default(params)
 	local default = params.default
 
 	if not str or str == "" then
-		flow_return_table.string = default
+		flow_return_table.out_string = default
 	else
-		flow_return_table.string = str
+		flow_return_table.out_string = str
 	end
 
 	return flow_return_table
@@ -6233,8 +6269,12 @@ function flow_callback_once_by_unit(params)
 		once_by_unit[level] = {}
 	end
 
-	flow_return_table.out = not once_by_unit[level][unit]
-	once_by_unit[level][unit] = true
+	if unit == Unit.null_reference() then
+		flow_return_table.out = false
+	else
+		flow_return_table.out = not once_by_unit[level][unit]
+		once_by_unit[level][unit] = true
+	end
 
 	return flow_return_table
 end

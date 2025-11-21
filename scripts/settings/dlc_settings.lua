@@ -538,6 +538,15 @@ DLCSettings = DLCSettings or {
 			level = "scripts/settings/dlcs/dwarf_fest/dwarf_fest_level_settings",
 		},
 	},
+	divine = {
+		localization = "localization/divine",
+		package_name = "resource_packages/dlcs/divine",
+		additional_settings = {
+			achievements = "scripts/settings/dlcs/divine/dlc_reikwald_river_achievements_settings",
+			common = "scripts/settings/dlcs/divine/dlc_reikwald_river_common_settings",
+			level = "scripts/settings/dlcs/divine/dlc_reikwald_river_level_settings",
+		},
+	},
 	termite_part_3 = {
 		localization = "localization/termite_3",
 		package_name = "resource_packages/dlcs/termite_part_3",
@@ -569,6 +578,13 @@ DLCSettings = DLCSettings or {
 		package_name = "resource_packages/dlcs/geheimnisnacht_2025",
 		additional_settings = {
 			common = "scripts/settings/dlcs/geheimnisnacht_2025/geheimnisnacht_2025_common_settings",
+		},
+	},
+	gotwf_2025 = {
+		localization = "localization/gotwf_2025",
+		package_name = "resource_packages/dlcs/gotwf_2025",
+		additional_settings = {
+			common = "scripts/settings/dlcs/gotwf/gotwf_2025_common_settings",
 		},
 	},
 }

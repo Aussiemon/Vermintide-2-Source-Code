@@ -175,6 +175,13 @@ LocomotionSystem.unfreeze = function (self, unit, extension_name)
 	end
 end
 
+LocomotionSystem.post_update = function (self, context, t)
+	local dt = context.dt
+
+	self:post_update_extension("PlayerUnitLocomotionExtension", dt, context, t)
+	LocomotionSystem.super.post_update(self, context, t)
+end
+
 LocomotionSystem.update = function (self, context, t)
 	self:update_extensions(context, t)
 	self:update_animation_lods()

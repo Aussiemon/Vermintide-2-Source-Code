@@ -197,6 +197,7 @@ DamageWaveExtension.launch_wave = function (self, target_unit, optional_target_p
 	local create_bot_aoe_threat = template.create_bot_aoe_threat
 
 	if create_bot_aoe_threat then
+		local source = "DamageWaveExtension"
 		local threat_duration = start_speed > 0 and initial_dist / start_speed or initial_dist
 		local width = self.player_query_distance * 2
 		local range = initial_dist + self.overflow_dist
@@ -204,7 +205,7 @@ DamageWaveExtension.launch_wave = function (self, target_unit, optional_target_p
 		local offset_forward, offset_up = 0, 0
 		local obstacle_position, obstacle_rotation, obstacle_size = self:_calculate_oobb_collision(width, range, height, offset_forward, offset_up, position, effect_rotation)
 
-		Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(obstacle_position, "oobb", obstacle_size, obstacle_rotation, threat_duration)
+		Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(obstacle_position, "oobb", obstacle_size, obstacle_rotation, threat_duration, source)
 	end
 
 	self.last_dist = initial_dist

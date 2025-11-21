@@ -24,6 +24,60 @@ TransportationSystem.init = function (self, context, system_name)
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
+
+	self._transporting_extension_by_unit = {}
+	self._extension_lut = {}
+end
+
+TransportationSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
+	local extension = TransportationSystem.super.on_add_extension(self, world, unit, extension_name, extension_init_data)
+
+	self._extension_lut[unit] = extension
+
+	return extension
+end
+
+TransportationSystem.on_remove_extension = function (self, unit, extension_name)
+	self._extension_lut[unit] = nil
+
+	return TransportationSystem.super.on_remove_extension(self, unit, extension_name)
+end
+
+TransportationSystem.world_updated = function (self, world, dt, t)
+	for _, extension in pairs(self._extension_lut) do
+		extension:world_updated(world, dt, t)
+	end
+end
+
+TransportationSystem.clear_transporter_by_linked_unit = function (self, unit)
+	self._transporting_extension_by_unit[unit] = nil
+end
+
+TransportationSystem.try_claim_unit = function (self, unit, transportation_extension)
+	local other_extension = self._transporting_extension_by_unit[unit]
+
+	if not other_extension then
+		self._transporting_extension_by_unit[unit] = transportation_extension
+
+		return true
+	end
+
+	if other_extension:transporting() then
+		return false
+	end
+
+	local at_beginning = transportation_extension:beginning()
+	local other_at_beginning = other_extension:beginning()
+
+	if at_beginning == other_at_beginning then
+		fassert(transportation_extension:transporting(), "[TransportationSystem] Two overlapping elevators at %s", tostring(POSITION_LOOKUP[unit]))
+	end
+
+	other_extension:force_unlink_unit(unit)
+
+	self._transporting_extension_by_unit[unit] = transportation_extension
+
+	return true
 end
 
 TransportationSystem.destroy = function (self)

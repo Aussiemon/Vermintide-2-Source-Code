@@ -183,6 +183,13 @@ if not DialogueLookup then
 		"dialogues/generated/lookup_dwarf_ranger_dlc_dwarf_fest",
 		"dialogues/generated/lookup_empire_soldier_dlc_dwarf_fest",
 		"dialogues/generated/lookup_bright_wizard_dlc_dwarf_fest",
+		"dialogues/generated/lookup_wood_elf_dlc_reikwald_river",
+		"dialogues/generated/lookup_npces_dlc_reikwald_river",
+		"dialogues/generated/lookup_witch_hunter_dlc_reikwald_river",
+		"dialogues/generated/lookup_hero_conversations_dlc_reikwald_river",
+		"dialogues/generated/lookup_dwarf_ranger_dlc_reikwald_river",
+		"dialogues/generated/lookup_empire_soldier_dlc_reikwald_river",
+		"dialogues/generated/lookup_bright_wizard_dlc_reikwald_river",
 	}
 
 	DLCUtils.append("dialogue_lookup", dialogue_lookup_tables)

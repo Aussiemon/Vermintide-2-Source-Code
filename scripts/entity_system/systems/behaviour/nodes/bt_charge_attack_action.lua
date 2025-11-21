@@ -908,7 +908,7 @@ BTChargeAttackAction._run_lunge = function (self, unit, blackboard, lunge_data, 
 			local rot = Quaternion.look(target_position - own_position, Vector3.up())
 			local size = Vector3(2.5, lunge_data.get_position_at_distance + 4, 2)
 
-			Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(target_position + (target_position - own_position) * 0.5, "oobb", size, rot, 1)
+			Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(target_position + (target_position - own_position) * 0.5, "oobb", size, rot, 1, "Charge Attack")
 
 			if lunge_data.get_position_duration then
 				blackboard.get_lunge_position_duration = t + lunge_data.get_position_duration

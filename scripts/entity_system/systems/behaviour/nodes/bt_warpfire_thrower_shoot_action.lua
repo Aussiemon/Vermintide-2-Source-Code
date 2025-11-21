@@ -581,5 +581,5 @@ BTWarpfireThrowerShootAction._create_bot_aoe_threat = function (self, unit, acti
 	local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 	local obstacle_position, obstacle_size = self:_calculate_cylinder_collision(action, unit_position, unit_rotation)
 
-	ai_bot_group_system:aoe_threat_created(obstacle_position, "cylinder", obstacle_size, nil, bot_threat_duration)
+	ai_bot_group_system:aoe_threat_created(obstacle_position, "cylinder", obstacle_size, nil, bot_threat_duration, "Warpfire Shoot")
 end

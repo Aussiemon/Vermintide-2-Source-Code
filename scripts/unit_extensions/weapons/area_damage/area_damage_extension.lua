@@ -287,10 +287,11 @@ AreaDamageExtension.start_area_damage = function (self)
 		end
 
 		if self.threat_duration and self.threat_duration > 0 then
+			local source = "AreaDamageExtension"
 			local unit_pos = Unit.world_position(self.unit, 0)
 			local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 
-			ai_bot_group_system:aoe_threat_created(unit_pos, "sphere", self.radius + approx_player_radius, nil, self.threat_duration)
+			ai_bot_group_system:aoe_threat_created(unit_pos, "sphere", self.radius + approx_player_radius, nil, self.threat_duration, source)
 		end
 	end
 end

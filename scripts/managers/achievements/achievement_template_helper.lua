@@ -44,6 +44,18 @@ AchievementTemplateHelper.rpc_increment_stat = function (unit, stat_name)
 	end
 end
 
+AchievementTemplateHelper.rpc_increment_stat_unique_id = function (unique_id, stat_name)
+	local player = Managers.player:player_from_unique_id(unique_id)
+
+	if player and not player.bot_player then
+		local peer_id = player:network_id()
+		local network_manager = Managers.state.network
+		local stat_id = NetworkLookup.statistics[stat_name]
+
+		network_manager.network_transmit:send_rpc("rpc_increment_stat", peer_id, stat_id)
+	end
+end
+
 AchievementTemplateHelper.rpc_modify_stat = function (unit, stat_name, amount)
 	local player = Managers.player:unit_owner(unit)
 

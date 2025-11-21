@@ -161,7 +161,7 @@ BTPackMasterAttackAction.create_bot_threat = function (self, unit, blackboard, t
 			local bot_threat_duration = blackboard.attack_time_ends - t
 			local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 
-			ai_bot_group_system:aoe_threat_created(obstacle_position, "oobb", obstacle_size, obstacle_rotation, bot_threat_duration)
+			ai_bot_group_system:aoe_threat_created(obstacle_position, "oobb", obstacle_size, obstacle_rotation, bot_threat_duration, "Packmaster")
 		end
 	end
 end

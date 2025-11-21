@@ -124,17 +124,29 @@ PlayerHuskLocomotionExtension.set_disabled = function (self, disabled, run_func,
 	end
 end
 
+PlayerHuskLocomotionExtension.post_update = function (self, unit, input, dt, context, t)
+	if self._disabled then
+		return
+	end
+
+	local game = Managers.state.network:game()
+
+	if game and GameSession.game_object_exists(game, self.id) then
+		if HEALTH_ALIVE[unit] then
+			local movement_state = "onground"
+
+			self:update_movement(dt, unit, movement_state)
+		end
+
+		self:_update_last_position_on_navmesh()
+	end
+end
+
 PlayerHuskLocomotionExtension.update = function (self, unit, input, dt, context, t)
 	if self._disabled then
 		self._run_func(unit, dt, self)
 
 		return
-	end
-
-	if self.game and self.id and HEALTH_ALIVE[unit] then
-		local movement_state = "onground"
-
-		self:update_movement(dt, unit, movement_state)
 	end
 
 	local is_on_ladder, ladder_unit = self.status_extension:get_is_on_ladder()
@@ -143,7 +155,6 @@ PlayerHuskLocomotionExtension.update = function (self, unit, input, dt, context,
 		self:update_ladder_animation_position(ladder_unit)
 	end
 
-	self:_update_last_position_on_navmesh()
 	self.third_person_idle_fullbody_animation_control:update(t)
 end
 
@@ -187,12 +198,6 @@ PlayerHuskLocomotionExtension.update_movement = function (self, dt, unit, moveme
 		else
 			new_pos = GameSession.game_object_field(self.game, self.id, "position")
 		end
-	elseif moving_platform ~= 0 then
-		local moving_platform_unit = Managers.state.network:game_object_or_level_unit(moving_platform, true)
-		local moving_platform_pos = Unit.local_position(moving_platform_unit, 0)
-		local player_local_pos = GameSession.game_object_field(self.game, self.id, "position")
-
-		new_pos = moving_platform_pos + player_local_pos
 	else
 		new_pos = GameSession.game_object_field(self.game, self.id, "position")
 	end
@@ -210,10 +215,27 @@ PlayerHuskLocomotionExtension.update_movement = function (self, dt, unit, moveme
 
 	self.has_moved_from_start_position = GameSession.game_object_field(self.game, self.id, "has_moved_from_start_position")
 
-	self:_extrapolation_movement(unit, dt, old_pos, new_pos, new_rot, movement_state, velocity, linked_movement)
+	self:_extrapolation_movement(unit, dt, old_pos, new_pos, new_rot, movement_state, velocity, linked_movement, moving_platform)
 	self.velocity_current:store(velocity)
 	self._current_rotation:store(new_rot)
 	self:_update_speed_variable(dt)
+end
+
+PlayerHuskLocomotionExtension.get_moving_platform = function (self)
+	if not Managers.state.network:game() then
+		return
+	end
+
+	if GameSession.game_object_exists(self.game, self.id) then
+		local moving_platform = GameSession.game_object_field(self.game, self.id, "moving_platform")
+		local platform_unit = moving_platform ~= 0 and Managers.state.network:game_object_or_level_unit(moving_platform, true) or nil
+		local platform_extension = ScriptUnit.has_extension(platform_unit, "transportation_system")
+		local soft_platform = platform_unit and GameSession.game_object_field(self.game, self.id, "moving_platform_soft_linked") or nil
+
+		return platform_unit, platform_extension, soft_platform
+	end
+
+	return nil, nil, nil
 end
 
 PlayerHuskLocomotionExtension.update_ladder_animation_position = function (self, ladder_unit)
@@ -225,10 +247,37 @@ PlayerHuskLocomotionExtension.update_ladder_animation_position = function (self,
 	Unit.animation_set_variable(unit, variable_index, time_in_move_animation)
 end
 
-PlayerHuskLocomotionExtension._extrapolation_movement = function (self, unit, dt, old_pos, new_pos, new_rot, movement_state, velocity, linked_movement)
+PlayerHuskLocomotionExtension._extrapolation_movement = function (self, unit, dt, old_pos, new_pos, new_rot, movement_state, velocity, linked_movement, moving_platform)
 	local last_pos = Unit.get_data(unit, "last_lerp_position") or old_pos
 	local last_pos_offset = Unit.get_data(unit, "last_lerp_position_offset") or Vector3(0, 0, 0)
 	local accumulated_movement = Unit.get_data(unit, "accumulated_movement") or Vector3(0, 0, 0)
+
+	if self._moving_platform ~= moving_platform then
+		local last_platform_unit = (self._moving_platform or 0) ~= 0 and Managers.state.network:game_object_or_level_unit(self._moving_platform, true)
+		local new_platform_unit = moving_platform ~= 0 and Managers.state.network:game_object_or_level_unit(moving_platform, true)
+
+		if last_platform_unit and new_platform_unit then
+			local last_platform_extension = ScriptUnit.extension(last_platform_unit, "transportation_system")
+			local last_moving_platform_pos = Unit.local_position(last_platform_unit, 0) + last_platform_extension:visual_delta()
+
+			last_pos = last_pos + last_moving_platform_pos
+
+			local platform_extension = ScriptUnit.extension(new_platform_unit, "transportation_system")
+			local moving_platform_pos = Unit.local_position(new_platform_unit, 0) + platform_extension:visual_delta()
+
+			last_pos = last_pos - moving_platform_pos
+		end
+
+		self._moving_platform = moving_platform
+	end
+
+	if moving_platform ~= 0 and not linked_movement then
+		local moving_platform_unit = Managers.state.network:game_object_or_level_unit(moving_platform, true)
+		local moving_platform_pos = Unit.local_position(moving_platform_unit, 0)
+		local platform_extension = ScriptUnit.extension(moving_platform_unit, "transportation_system")
+
+		new_pos = new_pos + moving_platform_pos + platform_extension:visual_delta()
+	end
 
 	self._pos_lerp_time = (self._pos_lerp_time or 0) + dt
 	self._velocity_lerp_time = (self._velocity_lerp_time or 0) + dt

@@ -136,6 +136,18 @@ CosmeticUtils.generate_frame_template = function (name)
 	if Application.can_get("package", texture_package_name) then
 		template.texture_package_name = texture_package_name
 		template.material_settings.portrait_frame.texture = string.format("gui/1080p/single_textures/store_item_icons/store_item_icon_%s/store_item_icon_%s", name, name)
+	elseif Cosmetics[name] then
+		local cosmetic = Cosmetics[name]
+
+		if cosmetic.texture_package_name then
+			template.texture_package_name = cosmetic.texture_package_name
+		end
+
+		local texture = table.safe_get(cosmetic, "material_settings", "portrait_frame", "texture")
+
+		if texture then
+			template.material_settings.portrait_frame.texture = texture
+		end
 	end
 
 	template.name = name

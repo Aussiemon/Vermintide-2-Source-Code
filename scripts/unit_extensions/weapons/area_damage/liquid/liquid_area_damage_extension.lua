@@ -216,6 +216,15 @@ LiquidAreaDamageExtension._set_active = function (self, real_index)
 	self._inactive_flow[real_index] = nil
 	self._num_liquid = self._num_liquid + 1
 
+	local source = "LiquidAreaDamageExtension"
+
+	if self._do_direct_damage_player or self._apply_buff_to_player then
+		local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
+		local threat_radius = self._cell_radius * threat_padding
+
+		liquid.threat = ai_bot_group_system:aoe_threat_created(position, "sphere", threat_radius, nil, math.huge, source)
+	end
+
 	if self._use_nav_cost_map_volumes then
 		local ai_system = self._ai_system
 		local cost_map_id = self._nav_cost_map_id
@@ -386,6 +395,16 @@ LiquidAreaDamageExtension.destroy = function (self)
 		end
 
 		ai_system:destroy_nav_cost_map(cost_map_id)
+	end
+
+	for real_index, liquid in pairs(self._flow) do
+		local threat = liquid.threat
+
+		if threat then
+			local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
+
+			ai_bot_group_system:remove_threat(threat)
+		end
 	end
 
 	table.clear(self._affected_player_units)

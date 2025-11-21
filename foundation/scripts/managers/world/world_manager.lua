@@ -10,6 +10,7 @@ WorldManager.init = function (self)
 	self._update_queue = {}
 	self._anim_update_callbacks = {}
 	self._scene_update_callbacks = {}
+	self._update_done_callbacks = {}
 	self._queued_worlds_to_release = {}
 	self._wwise_worlds = {}
 end
@@ -97,6 +98,7 @@ WorldManager.destroy_world = function (self, world_or_name)
 	self._disabled_worlds[name] = nil
 	self._anim_update_callbacks[world] = nil
 	self._scene_update_callbacks[world] = nil
+	self._update_done_callbacks[world] = nil
 	self._wwise_worlds[world] = nil
 
 	self:_sort_update_queue()
@@ -116,7 +118,7 @@ WorldManager.update = function (self, dt, t)
 	self.locked = true
 
 	for _, world in ipairs(self._update_queue) do
-		ScriptWorld.update(world, dt, self._anim_update_callbacks[world], self._scene_update_callbacks[world])
+		ScriptWorld.update(world, dt, t, self._anim_update_callbacks[world], self._scene_update_callbacks[world], self._update_done_callbacks[world])
 	end
 
 	self.locked = false
@@ -180,4 +182,8 @@ end
 
 WorldManager.set_scene_update_callback = function (self, world, callback)
 	self._scene_update_callbacks[world] = callback
+end
+
+WorldManager.set_update_done_callback = function (self, world, callback)
+	self._update_done_callbacks[world] = callback
 end

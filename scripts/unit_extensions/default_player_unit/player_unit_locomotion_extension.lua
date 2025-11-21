@@ -130,7 +130,7 @@ PlayerUnitLocomotionExtension.destroy = function (self)
 	system_data.all_update_units[unit] = nil
 end
 
-PlayerUnitLocomotionExtension.set_on_moving_platform = function (self, platform_unit)
+PlayerUnitLocomotionExtension.set_on_moving_platform = function (self, platform_unit, soft)
 	local level_unit_id
 
 	if platform_unit then
@@ -138,10 +138,12 @@ PlayerUnitLocomotionExtension.set_on_moving_platform = function (self, platform_
 
 		self._platform_extension = platform_extension
 		self._platform_unit = platform_unit
+		self._soft_platform = soft
 		level_unit_id = Managers.state.network:level_object_id(platform_unit)
 	else
 		self._platform_extension = nil
 		self._platform_unit = nil
+		self._soft_platform = nil
 		level_unit_id = 0
 	end
 
@@ -149,11 +151,12 @@ PlayerUnitLocomotionExtension.set_on_moving_platform = function (self, platform_
 	local go_id = Managers.state.unit_storage:go_id(self.unit)
 
 	GameSession.set_game_object_field(game, go_id, "moving_platform", level_unit_id)
+	GameSession.set_game_object_field(game, go_id, "moving_platform_soft_linked", soft or false)
 	self:sync_network_position(game, go_id)
 end
 
 PlayerUnitLocomotionExtension.get_moving_platform = function (self)
-	return self._platform_unit, self._platform_extension
+	return self._platform_unit, self._platform_extension, self._soft_platform
 end
 
 PlayerUnitLocomotionExtension.hot_join_sync = function (self, sender)
@@ -282,21 +285,6 @@ PlayerUnitLocomotionExtension.set_active_mover = function (self, active_mover)
 end
 
 PlayerUnitLocomotionExtension.post_update = function (self, unit, input, dt, context, t)
-	if self._platform_extension then
-		local mover = Unit.mover(unit)
-		local parent_pos = Unit.local_position(self._platform_unit, 0)
-		local old_pos = Mover.position(mover)
-		local movement_delta, rotation_delta = self._platform_extension:movement_delta()
-		local new_pos = old_pos + movement_delta
-		local middle_pos_relative = old_pos + (new_pos - old_pos) * 0.5 - parent_pos
-		local affected_by_rotation = Quaternion.rotate(rotation_delta, middle_pos_relative) - middle_pos_relative
-
-		new_pos = new_pos + affected_by_rotation
-
-		Mover.set_position(mover, new_pos)
-		Unit.set_local_position(unit, 0, new_pos)
-	end
-
 	local move_speed = self.on_ground and Vector3.length(self.velocity_current:unbox()) or 0
 	local move_speed_lerp_val = self.anim_move_speed
 	local speed_difference = math.abs(move_speed_lerp_val - move_speed)
@@ -554,8 +542,13 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 
 	local final_position = Mover.position(mover)
 	local final_velocity = (final_position - current_position) / dt
+	local velocity_to_sync = Vector3.copy(final_velocity)
 
-	self.velocity_network:store(final_velocity)
+	if self._platform_extension and Mover.flying_frames(mover) <= 1 then
+		velocity_to_sync[3] = 0
+	end
+
+	self.velocity_network:store(velocity_to_sync)
 	Unit.set_local_position(unit, 0, final_position)
 
 	if self:moving_on_slope(calculate_fall_velocity, unit, mover, final_position) then
@@ -779,19 +772,6 @@ end
 
 PlayerUnitLocomotionExtension.sync_network_velocity = function (self, game, go_id, dt)
 	local velocity = self.velocity_network:unbox()
-	local platform_ext = self._platform_extension
-
-	if platform_ext then
-		local movement_delta, rotation_delta = platform_ext:movement_delta()
-		local mover = Unit.mover(self.unit)
-		local parent_pos = Unit.local_position(self._platform_unit, 0)
-		local relative_pos = Mover.position(mover) - parent_pos
-		local movement_by_rotation = Quaternion.rotate(rotation_delta, relative_pos) - relative_pos
-		local platform_movement = movement_delta + movement_by_rotation
-
-		velocity = velocity + platform_movement / dt
-	end
-
 	local min = NetworkConstants.velocity.min
 	local max = NetworkConstants.velocity.max
 

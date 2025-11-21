@@ -9540,6 +9540,12 @@ local settings = {
 			return true
 		end,
 	},
+	{
+		category = "Allround useful stuff!",
+		description = "Displays elevator context on screen",
+		is_boolean = true,
+		setting_name = "debug_elevators",
+	},
 }
 
 local function add_melee_preset(rarity)

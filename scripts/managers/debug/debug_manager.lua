@@ -273,6 +273,8 @@ DebugManager.unregister_update = function (self, name)
 end
 
 DebugManager.update_time_scale = function (self, dt)
+	local time_scale_index = self.time_scale_index
+
 	if not not self._disable_time_travel ~= not not script_data.disable_time_travel then
 		self._disable_time_travel = not not script_data.disable_time_travel
 		time_scale_index = table.index_of(time_scale_list, 100)
@@ -281,7 +283,6 @@ DebugManager.update_time_scale = function (self, dt)
 	end
 
 	local time_paused = self.time_paused
-	local time_scale_index = self.time_scale_index
 	local input_manager = Managers.input
 
 	if not script_data.disable_time_travel and Keyboard.button(Keyboard.button_index("left shift")) > 0.5 then

@@ -138,7 +138,7 @@ BTJumpSlamAction._create_bot_aoe_threat = function (self, jump_data, attack_rota
 	local obstacle_position, obstacle_size = self:_calculate_sphere_collision(action, bot_threat, hit_position, attack_rotation)
 	local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 
-	ai_bot_group_system:aoe_threat_created(obstacle_position, "sphere", obstacle_size, nil, bot_threat_duration)
+	ai_bot_group_system:aoe_threat_created(obstacle_position, "sphere", obstacle_size, nil, bot_threat_duration, "Jump Slam")
 end
 
 BTJumpSlamAction.progress_to_landing = function (blackboard, unit, data)

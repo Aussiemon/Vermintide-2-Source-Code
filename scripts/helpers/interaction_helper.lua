@@ -78,7 +78,7 @@ InteractionHelper.request = function (self, interaction_type, interactor_unit, i
 	InteractionHelper.printf("InteractionHelper:request(%s, %s, %s, %s)", interaction_type, interactor_go_id, interactable_go_id, is_level_unit)
 
 	if interactor_go_id == nil or interactable_go_id == nil then
-		ferror("[GenericUnitInteractorExtension] start_interaction failed due to no id for interactor=%s or interactable=%s", tostring(self.unit), tostring(self.interaction_context.interactable_unit))
+		InteractionHelper:request_denied(interactor_unit)
 
 		return
 	end

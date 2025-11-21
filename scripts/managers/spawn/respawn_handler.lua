@@ -385,24 +385,30 @@ RespawnHandler.server_update = function (self, dt, t, slots)
 			local current_respawn_data = self:find_respawn_data_from_unit(current_respawn_unit)
 
 			if current_respawn_data and not self:_is_respawn_reachable(current_respawn_data) or self._force_move then
-				local peer_id = status.peer_id
-				local local_player_id = status.local_player_id
+				local new_respawn_unit, new_respawn = self:find_best_respawn_point(false, false)
 
-				if peer_id and local_player_id then
-					local player = Managers.player:player(peer_id, local_player_id)
-					local player_unit = player.player_unit
-					local player_unit_id = Managers.state.network:unit_game_object_id(player_unit)
-					local locomotion_extension = ScriptUnit.extension(player_unit, "locomotion_system")
-					local new_respawn_unit = self:find_best_respawn_point(true, false)
-					local position = Unit.local_position(new_respawn_unit, 0)
-					local rotation = Unit.local_rotation(new_respawn_unit, 0)
+				if new_respawn and (new_respawn.group_id == "" or new_respawn.group_id ~= current_respawn_data.group_id) then
+					local peer_id = status.peer_id
+					local local_player_id = status.local_player_id
 
-					LocomotionUtils.enable_linked_movement(self._world, player_unit, new_respawn_unit, 0, Vector3.zero())
-					locomotion_extension:teleport_to(position, rotation)
-					Managers.state.network.network_transmit:send_rpc_clients("rpc_teleport_unit_to", player_unit_id, position, rotation)
-					self:set_respawn_unit_available(current_respawn_unit)
+					if peer_id and local_player_id then
+						local player = Managers.player:player(peer_id, local_player_id)
+						local player_unit = player.player_unit
+						local player_unit_id = Managers.state.network:unit_game_object_id(player_unit)
+						local locomotion_extension = ScriptUnit.extension(player_unit, "locomotion_system")
 
-					data.respawn_unit = new_respawn_unit
+						new_respawn.available = false
+
+						local position = Unit.local_position(new_respawn_unit, 0)
+						local rotation = Unit.local_rotation(new_respawn_unit, 0)
+
+						LocomotionUtils.enable_linked_movement(self._world, player_unit, new_respawn_unit, 0, Vector3.zero())
+						locomotion_extension:teleport_to(position, rotation)
+						Managers.state.network.network_transmit:send_rpc_clients("rpc_teleport_unit_to", player_unit_id, position, rotation)
+						self:set_respawn_unit_available(current_respawn_unit)
+
+						data.respawn_unit = new_respawn_unit
+					end
 				end
 			end
 		end
@@ -736,8 +742,8 @@ RespawnHandler.find_best_respawn_point = function (self, reserve_best, evaluate_
 			print("[RespawnHandler] Ahead player position", POSITION_LOOKUP[ahead_unit])
 		end
 
-		return best_respawn_unit
+		return best_respawn_unit, best_respawn
 	end
 
-	return nil
+	return nil, nil
 end

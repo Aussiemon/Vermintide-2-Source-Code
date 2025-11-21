@@ -294,7 +294,7 @@ ActionMinigun._update_bot_avoidance = function (self, t)
 		local threat_position, threat_rotation, threat_size = AiUtils.calculate_oobb(BOT_THREAT_AREA_D, current_position, current_rotation, BOT_THREAT_AREA_H, BOT_THREAT_AREA_W)
 
 		if self.is_server then
-			self.ai_bot_group_system:queue_aoe_threat(threat_position, "oobb", threat_size, threat_rotation, BOT_THREAT_DURATION)
+			self.ai_bot_group_system:queue_aoe_threat(threat_position, "oobb", threat_size, threat_rotation, BOT_THREAT_DURATION, "Minigun")
 		else
 			local network_manager = Managers.state.network
 			local network_transmit = network_manager.network_transmit

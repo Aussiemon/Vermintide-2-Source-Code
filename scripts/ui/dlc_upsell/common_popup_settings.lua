@@ -256,6 +256,54 @@ CommonPopupSettings.geheimnisnacht = {
 		},
 	},
 }
+CommonPopupSettings.gotwf = {
+	background_texture = "event_upsell_gotwf",
+	body_text = "popup_active_event_flavour_text",
+	button_text = "menu_close",
+	class_name = "ActiveEventPopup",
+	definitions_path = "scripts/ui/active_event/active_event_popup_definitions",
+	event_name = "Gifts of the Wolf Father",
+	popup_type = "active_event",
+	action_buttons = {
+		{
+			button_text = "popup_button_open_store_event_tab",
+			on_pressed = function ()
+				Managers.ui:handle_transition("hero_view_force", {
+					menu_state_name = "store",
+					use_fade = true,
+					menu_sub_state_name = {
+						"cosmetics",
+						"event",
+					},
+				})
+			end,
+		},
+		{
+			button_text = "popup_button_open_store_event_tab",
+			on_pressed = function ()
+				Managers.ui:handle_transition("hero_view_force", {
+					menu_state_name = "store",
+					use_fade = true,
+					menu_sub_state_name = {
+						layout_name = "gotwf_overview",
+						store_path = {
+							"featured",
+						},
+					},
+				})
+			end,
+		},
+	},
+	input_desc = {
+		actions = {
+			{
+				description_text = "menu_close",
+				input_action = "back",
+				priority = 1,
+			},
+		},
+	},
+}
 CommonPopupSettings.default_event = {
 	background_texture = "event_upsell_default",
 	body_text = "popup_weekly_event_flavour_text",

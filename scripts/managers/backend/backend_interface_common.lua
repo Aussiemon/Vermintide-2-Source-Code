@@ -642,6 +642,8 @@ local filter_macros = {
 BackendInterfaceCommon.filter_postfix_cache = BackendInterfaceCommon.filter_postfix_cache or {}
 
 local empty_params = {}
+local _filter_items_stack = {}
+local _filter_items_macro_cache = {}
 
 BackendInterfaceCommon.filter_items = function (self, items, filter_infix, params)
 	local filter_postfix = BackendInterfaceCommon.filter_postfix_cache[filter_infix]
@@ -651,15 +653,16 @@ BackendInterfaceCommon.filter_items = function (self, items, filter_infix, param
 		BackendInterfaceCommon.filter_postfix_cache[filter_infix] = filter_postfix
 	end
 
-	local item_master_list = ItemMasterList
-	local stack = {}
 	local passed = {}
+	local passed_n = 0
+	local stack = _filter_items_stack
+	local cache = _filter_items_macro_cache
 
 	for backend_id, item in pairs(items) do
-		local key = item.key
-		local item_data = item_master_list[key]
-
 		table.clear(stack)
+		table.clear(cache)
+
+		local stack_n = 0
 
 		for i = 1, #filter_postfix do
 			local token = filter_postfix[i]
@@ -667,30 +670,57 @@ BackendInterfaceCommon.filter_items = function (self, items, filter_infix, param
 			if filter_operators[token] then
 				local num_params = filter_operators[token][2]
 				local op_func = filter_operators[token][3]
-				local op1 = table.remove(stack)
+				local op1 = stack[stack_n]
+
+				stack[stack_n] = nil
+				stack_n = stack_n - 1
 
 				if num_params == 1 then
-					stack[#stack + 1] = op_func(op1)
-				else
-					local op2 = table.remove(stack)
+					local result = op_func(op1)
 
-					stack[#stack + 1] = op_func(op1, op2)
+					if result ~= nil then
+						stack_n = stack_n + 1
+						stack[stack_n] = result
+					end
+				else
+					local op2 = stack[stack_n]
+					local result = op_func(op1, op2)
+
+					if result ~= nil then
+						stack[stack_n] = result
+					else
+						stack[stack_n] = nil
+						stack_n = stack_n - 1
+					end
 				end
 			else
 				local macro_func = filter_macros[token]
 
 				if macro_func then
-					stack[#stack + 1] = macro_func(item, backend_id, params or empty_params)
-				else
-					stack[#stack + 1] = token
+					local cached = cache[token]
+
+					if cached ~= nil then
+						stack_n = stack_n + 1
+						stack[stack_n] = cached
+					else
+						cached = macro_func(item, backend_id, params or empty_params)
+
+						if cached ~= nil then
+							cache[token] = cached
+							stack_n = stack_n + 1
+							stack[stack_n] = cached
+						end
+					end
+				elseif token ~= nil then
+					stack_n = stack_n + 1
+					stack[stack_n] = token
 				end
 			end
 		end
 
 		if stack[1] == true then
-			local item = table.clone(item)
-
-			passed[#passed + 1] = item
+			passed_n = passed_n + 1
+			passed[passed_n] = table.clone(item)
 		end
 	end
 
