@@ -1,0 +1,46 @@
+﻿-- chunkname: @dialogues/generated/lookup_npces_dlc_reikwald_river.lua
+
+assert(DialogueLookup[DialogueLookup_n + 1] == nil)
+assert(DialogueLookup[DialogueLookup_n + 2] == nil)
+assert(DialogueLookup[DialogueLookup_n + 3] == nil)
+assert(DialogueLookup[DialogueLookup_n + 4] == nil)
+assert(DialogueLookup[DialogueLookup_n + 5] == nil)
+assert(DialogueLookup[DialogueLookup_n + 6] == nil)
+assert(DialogueLookup[DialogueLookup_n + 7] == nil)
+assert(DialogueLookup[DialogueLookup_n + 8] == nil)
+assert(DialogueLookup[DialogueLookup_n + 9] == nil)
+assert(DialogueLookup[DialogueLookup_n + 10] == nil)
+assert(DialogueLookup[DialogueLookup_n + 11] == nil)
+assert(DialogueLookup[DialogueLookup_n + 12] == nil)
+assert(DialogueLookup[DialogueLookup_n + 13] == nil)
+assert(DialogueLookup[DialogueLookup_n + 14] == nil)
+assert(DialogueLookup[DialogueLookup_n + 15] == nil)
+assert(DialogueLookup[DialogueLookup_n + 16] == nil)
+assert(DialogueLookup[DialogueLookup_n + 17] == nil)
+assert(DialogueLookup[DialogueLookup_n + 18] == nil)
+assert(DialogueLookup[DialogueLookup_n + 19] == nil)
+assert(DialogueLookup[DialogueLookup_n + 20] == nil)
+assert(DialogueLookup[DialogueLookup_n + 21] == nil)
+
+DialogueLookup[DialogueLookup_n + 1] = "npc_reik2_barricade_a"
+DialogueLookup[DialogueLookup_n + 2] = "npc_reik2_barricade_complete_a"
+DialogueLookup[DialogueLookup_n + 3] = "npc_reik2_beached_skaven_ship_b"
+DialogueLookup[DialogueLookup_n + 4] = "npc_reik2_clear_the_decks_a"
+DialogueLookup[DialogueLookup_n + 5] = "npc_reik2_get_out_a"
+DialogueLookup[DialogueLookup_n + 6] = "npc_reik2_light_beacon_a"
+DialogueLookup[DialogueLookup_n + 7] = "npc_reik2_mission_end_a"
+DialogueLookup[DialogueLookup_n + 8] = "npc_reik2_player_has_found_sword_b"
+DialogueLookup[DialogueLookup_n + 9] = "npc_reik2_ship_arrived_a"
+DialogueLookup[DialogueLookup_n + 10] = "npc_reik2_side_path_cave_a"
+DialogueLookup[DialogueLookup_n + 11] = "npc_reik2_side_path_end_a"
+DialogueLookup[DialogueLookup_n + 12] = "npc_reik2_side_path_start_a"
+DialogueLookup[DialogueLookup_n + 13] = "npc_reik2_side_path_start_b"
+DialogueLookup[DialogueLookup_n + 14] = "npc_reik2_skaven_outpost_b"
+DialogueLookup[DialogueLookup_n + 15] = "npc_reik2_start_banter_a"
+DialogueLookup[DialogueLookup_n + 16] = "npc_reik2_start_banter_c"
+DialogueLookup[DialogueLookup_n + 17] = "npc_reik2_start_sailing_a"
+DialogueLookup[DialogueLookup_n + 18] = "npc_reik2_start_search_a"
+DialogueLookup[DialogueLookup_n + 19] = "npc_reik2_war_camp_event_complete_a"
+DialogueLookup[DialogueLookup_n + 20] = "npc_reik2_war_camp_event_complete_b"
+DialogueLookup[DialogueLookup_n + 21] = "npc_reik2_war_camp_event_start_a"
+DialogueLookup_n = DialogueLookup_n + 21
