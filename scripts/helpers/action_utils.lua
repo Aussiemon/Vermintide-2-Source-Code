@@ -522,8 +522,9 @@ ActionUtils.spawn_pickup_projectile = function (world, weapon_unit, projectile_u
 	else
 		local ammo_extension = ScriptUnit.has_extension(weapon_unit, "ammo_system")
 		local spawn_limit = ammo_extension and ammo_extension:max_ammo() or 1
+		local material_settings_name_id = NetworkLookup.material_settings_templates["n/a"]
 
-		Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_pickup_projectile", projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, spawn_type_id, spawn_limit, always_show, objective_active)
+		Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_pickup_projectile", projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, spawn_type_id, spawn_limit, always_show, objective_active, material_settings_name_id)
 	end
 end
 

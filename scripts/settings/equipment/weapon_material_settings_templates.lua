@@ -1,7 +1,7 @@
 ﻿-- chunkname: @scripts/settings/equipment/weapon_material_settings_templates.lua
 
-WeaponMaterialSettingsTemplates = WeaponMaterialSettingsTemplates or {}
-WeaponMaterialSettingsTemplates.purple_glow = {
+MaterialSettingsTemplates = MaterialSettingsTemplates or {}
+MaterialSettingsTemplates.purple_glow = {
 	rune_emissive_color = {
 		type = "vector3",
 		x = 3,
@@ -9,7 +9,7 @@ WeaponMaterialSettingsTemplates.purple_glow = {
 		z = 9,
 	},
 }
-WeaponMaterialSettingsTemplates.golden_glow = {
+MaterialSettingsTemplates.golden_glow = {
 	rune_emissive_color = {
 		type = "vector3",
 		x = 8,
@@ -17,7 +17,7 @@ WeaponMaterialSettingsTemplates.golden_glow = {
 		z = 1.5,
 	},
 }
-WeaponMaterialSettingsTemplates.deep_crimson = {
+MaterialSettingsTemplates.deep_crimson = {
 	rune_emissive_color = {
 		type = "vector3",
 		x = 7,
@@ -25,7 +25,7 @@ WeaponMaterialSettingsTemplates.deep_crimson = {
 		z = 0.1,
 	},
 }
-WeaponMaterialSettingsTemplates.life_green = {
+MaterialSettingsTemplates.life_green = {
 	rune_emissive_color = {
 		type = "vector3",
 		x = 7,
@@ -33,7 +33,7 @@ WeaponMaterialSettingsTemplates.life_green = {
 		z = 0.1,
 	},
 }
-WeaponMaterialSettingsTemplates.lileath = {
+MaterialSettingsTemplates.lileath = {
 	rune_emissive_color = {
 		type = "vector3",
 		x = 5.8,
@@ -41,7 +41,7 @@ WeaponMaterialSettingsTemplates.lileath = {
 		z = 9,
 	},
 }
-WeaponMaterialSettingsTemplates.versus = {
+MaterialSettingsTemplates.versus = {
 	color_glow_high = {
 		type = "vector3",
 		x = 2.5,

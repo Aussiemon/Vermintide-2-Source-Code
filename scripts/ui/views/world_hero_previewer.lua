@@ -561,10 +561,10 @@ HeroPreviewer._spawn_hero_unit = function (self, skin_data, optional_scale, care
 		end
 	end
 
-	local material_settings = skin_data.material_settings
+	local material_settings_name = skin_data.material_settings_name
 
-	if material_settings then
-		CosmeticUtils.apply_material_settings(mesh_unit, material_settings)
+	if material_settings_name then
+		CosmeticUtils.apply_material_settings(mesh_unit, material_settings_name)
 	end
 
 	local tint_data = skin_data.color_tint
@@ -680,7 +680,7 @@ HeroPreviewer.equip_item = function (self, item_name, slot, backend_id, skin, sk
 	if item_slot_type == "melee" or item_slot_type == "ranged" then
 		local left_hand_unit = item_units.left_hand_unit
 		local right_hand_unit = item_units.right_hand_unit
-		local material_settings = item_units.material_settings
+		local material_settings_name = item_units.material_settings_name
 		local despawn_both_hands_units = right_hand_unit == nil or left_hand_unit == nil
 
 		if left_hand_unit then
@@ -703,7 +703,7 @@ HeroPreviewer.equip_item = function (self, item_name, slot, backend_id, skin, sk
 				item_slot_type = item_slot_type,
 				slot_index = slot_index,
 				unit_attachment_node_linking = unit_attachment_node_linking,
-				material_settings = material_settings,
+				material_settings_name = material_settings_name,
 				is_ammo_unit = item_units.ammo_unit ~= nil,
 				skip_wield_anim = skip_wield_anim,
 			}
@@ -727,7 +727,7 @@ HeroPreviewer.equip_item = function (self, item_name, slot, backend_id, skin, sk
 				item_slot_type = item_slot_type,
 				slot_index = slot_index,
 				unit_attachment_node_linking = unit_attachment_node_linking,
-				material_settings = material_settings,
+				material_settings_name = material_settings_name,
 				is_ammo_unit = item_units.ammo_unit ~= nil,
 				skip_wield_anim = skip_wield_anim,
 			}
@@ -908,13 +908,13 @@ HeroPreviewer._spawn_item = function (self, item_name, spawn_data)
 		local slot_index = unit_spawn_data.slot_index
 		local unit_attachment_node_linking = unit_spawn_data.unit_attachment_node_linking
 		local character_material_changes = unit_spawn_data.character_material_changes
-		local material_settings = unit_spawn_data.material_settings
+		local material_settings_name = unit_spawn_data.material_settings_name
 		local skip_wield_anim = unit_spawn_data.skip_wield_anim
 
 		if item_slot_type == "melee" or item_slot_type == "ranged" then
 			local unit = World.spawn_unit(world, unit_name)
 
-			self:_spawn_item_unit(unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links, material_settings, skip_wield_anim)
+			self:_spawn_item_unit(unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links, material_settings_name, skip_wield_anim)
 
 			local should_wield = self._wielded_slot_type == item_slot_type
 
@@ -1047,7 +1047,7 @@ HeroPreviewer.trigger_pose_animation = function (self)
 	self._delayed_pose_animation = false
 end
 
-HeroPreviewer._spawn_item_unit = function (self, unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links, material_settings, skip_wield_anim)
+HeroPreviewer._spawn_item_unit = function (self, unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links, material_settings_name, skip_wield_anim)
 	local world = self.world
 	local character_unit = self.character_unit
 	local character_visible = self:character_visible()
@@ -1100,8 +1100,8 @@ HeroPreviewer._spawn_item_unit = function (self, unit, item_slot_type, item_temp
 
 	GearUtils.link(world, unit_attachment_node_linking, scene_graph_links, parent_unit, unit)
 
-	if material_settings then
-		GearUtils.apply_material_settings(unit, material_settings)
+	if material_settings_name then
+		GearUtils.apply_material_settings(unit, material_settings_name)
 	end
 end
 

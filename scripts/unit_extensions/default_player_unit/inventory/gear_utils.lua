@@ -10,11 +10,11 @@ GearUtils.create_equipment = function (world, slot_name, item_data, unit_1p, uni
 	local item_units = override_item_units or BackendUtils.get_item_units(item_data, nil, nil, career_name)
 
 	if item_units.right_hand_unit then
-		right_hand_weapon_unit_3p, right_hand_ammo_unit_3p, right_hand_weapon_unit_1p, right_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "right", item_template, item_units, slot_name, item_data, unit_1p, unit_3p, unit_template, extra_extension_data, ammo_percent, item_units.material_settings)
+		right_hand_weapon_unit_3p, right_hand_ammo_unit_3p, right_hand_weapon_unit_1p, right_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "right", item_template, item_units, slot_name, item_data, unit_1p, unit_3p, unit_template, extra_extension_data, ammo_percent, item_units.material_settings_name)
 	end
 
 	if item_units.left_hand_unit then
-		left_hand_weapon_unit_3p, left_hand_ammo_unit_3p, left_hand_weapon_unit_1p, left_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "left", item_template, item_units, slot_name, item_data, unit_1p, unit_3p, unit_template, extra_extension_data, ammo_percent, item_units.material_settings)
+		left_hand_weapon_unit_3p, left_hand_ammo_unit_3p, left_hand_weapon_unit_1p, left_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "left", item_template, item_units, slot_name, item_data, unit_1p, unit_3p, unit_template, extra_extension_data, ammo_percent, item_units.material_settings_name)
 	end
 
 	if right_hand_weapon_unit_3p then
@@ -56,24 +56,24 @@ GearUtils.create_equipment = function (world, slot_name, item_data, unit_1p, uni
 	local is_ammo_weapon = item_units.is_ammo_weapon
 
 	if is_ammo_weapon then
-		local material_settings = item_units.material_settings or item_template.material_settings
+		local material_settings_name = item_units.material_settings_name or item_template.material_settings_name
 
-		if material_settings then
+		if material_settings_name then
 			if right_hand_ammo_unit_3p then
-				GearUtils.apply_material_settings(right_hand_ammo_unit_3p, material_settings)
+				GearUtils.apply_material_settings(right_hand_ammo_unit_3p, material_settings_name)
 			end
 
 			if left_hand_ammo_unit_3p then
-				GearUtils.apply_material_settings(left_hand_ammo_unit_3p, material_settings)
+				GearUtils.apply_material_settings(left_hand_ammo_unit_3p, material_settings_name)
 			end
 
 			if unit_1p then
 				if right_hand_ammo_unit_1p then
-					GearUtils.apply_material_settings(right_hand_ammo_unit_1p, material_settings)
+					GearUtils.apply_material_settings(right_hand_ammo_unit_1p, material_settings_name)
 				end
 
 				if left_hand_ammo_unit_1p then
-					GearUtils.apply_material_settings(left_hand_ammo_unit_1p, material_settings)
+					GearUtils.apply_material_settings(left_hand_ammo_unit_1p, material_settings_name)
 				end
 			end
 		end
@@ -104,7 +104,9 @@ GearUtils.create_equipment = function (world, slot_name, item_data, unit_1p, uni
 	return slot_data
 end
 
-GearUtils.apply_material_settings = function (unit, material_settings)
+GearUtils.apply_material_settings = function (unit, material_settings_name)
+	local material_settings = MaterialSettingsTemplates[material_settings_name]
+
 	for variable_name, data in pairs(material_settings) do
 		if data.type == "color" then
 			if data.apply_to_children then
@@ -150,7 +152,7 @@ GearUtils.apply_material_settings = function (unit, material_settings)
 	end
 end
 
-GearUtils.spawn_inventory_unit = function (world, hand, item_template, item_units, slot_name, item_data, owner_unit_1p, owner_unit_3p, unit_template, extra_extension_data, ammo_percent, material_settings)
+GearUtils.spawn_inventory_unit = function (world, hand, item_template, item_units, slot_name, item_data, owner_unit_1p, owner_unit_3p, unit_template, extra_extension_data, ammo_percent, material_settings_name)
 	local ammo_data = item_template.ammo_data
 	local item_name = item_data.name
 	local node_linking_settings = item_template[hand .. "_hand_attachment_node_linking"]
@@ -190,10 +192,10 @@ GearUtils.spawn_inventory_unit = function (world, hand, item_template, item_unit
 
 	GearUtils.link(world, attachment_node_linking_3p, scene_graph_links_3p, owner_unit_3p, weapon_unit_3p)
 
-	material_settings = material_settings or item_template.material_settings
+	material_settings_name = material_settings_name or item_template.material_settings_name
 
-	if material_settings then
-		GearUtils.apply_material_settings(weapon_unit_3p, material_settings)
+	if material_settings_name then
+		GearUtils.apply_material_settings(weapon_unit_3p, material_settings_name)
 	end
 
 	if owner_unit_1p then
@@ -264,8 +266,8 @@ GearUtils.spawn_inventory_unit = function (world, hand, item_template, item_unit
 
 		GearUtils.link(world, attachment_node_linking_1p, scene_graph_links, owner_unit_1p, weapon_unit_1p)
 
-		if material_settings then
-			GearUtils.apply_material_settings(weapon_unit_1p, material_settings)
+		if material_settings_name then
+			GearUtils.apply_material_settings(weapon_unit_1p, material_settings_name)
 		end
 
 		return weapon_unit_3p, ammo_unit_3p, weapon_unit_1p, ammo_unit_1p

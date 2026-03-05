@@ -23,6 +23,7 @@ PickupUnitExtension.init = function (self, extension_init_context, unit, extensi
 
 	local pickup_settings = AllPickups[pickup_name]
 
+	self.material_settings_name = extension_init_data.material_settings_name ~= "n/a" and extension_init_data.material_settings_name or pickup_settings.material_settings_name or nil
 	self.hide_func = pickup_settings.hide_func
 	self.hidden = false
 
@@ -43,6 +44,10 @@ PickupUnitExtension.init = function (self, extension_init_context, unit, extensi
 		local position = POSITION_LOOKUP[unit]
 
 		Managers.telemetry_events:pickup_spawned(pickup_name, spawn_type, position)
+	end
+
+	if self.material_settings_name then
+		GearUtils.apply_material_settings(unit, self.material_settings_name)
 	end
 end
 
@@ -71,12 +76,6 @@ PickupUnitExtension.extensions_ready = function (self)
 				}, 0)
 			end
 		end
-	end
-
-	local material_settings = pickup_settings.material_settings
-
-	if material_settings then
-		GearUtils.apply_material_settings(unit, material_settings)
 	end
 end
 

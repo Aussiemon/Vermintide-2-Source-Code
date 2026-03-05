@@ -61,10 +61,10 @@ local skins = {
 			display_unit = "units/weapons/weapon_display/display_2h_swords",
 			hud_icon = "weapon_generic_icon_staff_3",
 			inventory_icon = "icon_wpn_emp_gk_sword_02_t1_runed_02",
+			material_settings_name = "purple_glow",
 			rarity = "unique",
 			right_hand_unit = "units/weapons/player/wpn_emp_gk_sword_02_t1/wpn_emp_gk_sword_02_t1_runed_01",
 			template = "bastard_sword_template",
-			material_settings = WeaponMaterialSettingsTemplates.purple_glow,
 		},
 	},
 	{
@@ -158,10 +158,10 @@ local skins = {
 			hud_icon = "weapon_generic_icon_staff_3",
 			inventory_icon = "icon_wpn_emp_gk_sword_02_t1_runed_01_wpn_emp_gk_shield_02_runed_02",
 			left_hand_unit = "units/weapons/player/wpn_emp_gk_shield_02/wpn_emp_gk_shield_02_runed_01",
+			material_settings_name = "purple_glow",
 			rarity = "unique",
 			right_hand_unit = "units/weapons/player/wpn_emp_gk_sword_02_t1/wpn_emp_gk_sword_02_t1_runed_01",
 			template = "one_handed_sword_shield_template_2",
-			material_settings = WeaponMaterialSettingsTemplates.purple_glow,
 		},
 	},
 	{

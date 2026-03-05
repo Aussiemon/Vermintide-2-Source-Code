@@ -78,10 +78,10 @@ PlayerUnitCosmeticExtension.extensions_ready = function (self, world, unit)
 		self:change_skin_materials(material_changes)
 	end
 
-	local material_settings = skin_data.material_settings
+	local material_settings_name = skin_data.material_settings_name
 
-	if material_settings then
-		self:change_skin_material_settings(material_settings)
+	if material_settings_name then
+		self:change_skin_material_settings(material_settings_name)
 	end
 
 	local tint_data = skin_data.color_tint
@@ -137,18 +137,18 @@ PlayerUnitCosmeticExtension.change_skin_materials = function (self, material_cha
 	end
 end
 
-PlayerUnitCosmeticExtension.change_skin_material_settings = function (self, material_settings)
+PlayerUnitCosmeticExtension.change_skin_material_settings = function (self, material_settings_name)
 	local unit = self._unit
 	local third_person_unit = self._tp_unit_mesh
 
-	CosmeticUtils.apply_material_settings(third_person_unit, material_settings)
+	CosmeticUtils.apply_material_settings(third_person_unit, material_settings_name)
 
 	local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 
 	if first_person_extension then
 		local first_person_unit = first_person_extension:get_first_person_mesh_unit()
 
-		CosmeticUtils.apply_material_settings(first_person_unit, material_settings)
+		CosmeticUtils.apply_material_settings(first_person_unit, material_settings_name)
 	end
 end
 

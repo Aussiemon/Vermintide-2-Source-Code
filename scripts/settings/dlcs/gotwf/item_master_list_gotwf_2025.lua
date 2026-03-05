@@ -31,6 +31,9 @@ ItemMasterList.dr_deus_01_skin_03_runed_05 = {
 	can_wield = {
 		"dr_ironbreaker",
 	},
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.dw_1h_hammer_shield_skin_04_runed_05 = {
 	description = "dw_1h_hammer_shield_skin_04_runed_05_description",
@@ -46,6 +49,9 @@ ItemMasterList.dw_1h_hammer_shield_skin_04_runed_05 = {
 	can_wield = {
 		"dr_ironbreaker",
 		"dr_ranger",
+	},
+	events = {
+		"gotwf",
 	},
 }
 ItemMasterList.we_deus_01_skin_02_runed_05 = {
@@ -65,6 +71,9 @@ ItemMasterList.we_deus_01_skin_02_runed_05 = {
 		"we_maidenguard",
 		"we_waywatcher",
 	},
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.we_sword_skin_05_runed_05 = {
 	description = "we_sword_skin_05_runed_05_description",
@@ -81,6 +90,9 @@ ItemMasterList.we_sword_skin_05_runed_05 = {
 		"we_shade",
 		"we_maidenguard",
 		"we_waywatcher",
+	},
+	events = {
+		"gotwf",
 	},
 }
 ItemMasterList.es_deus_01_skin_01_runed_05 = {
@@ -100,6 +112,9 @@ ItemMasterList.es_deus_01_skin_01_runed_05 = {
 		"es_knight",
 		"es_mercenary",
 	},
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.es_longbow_skin_04_runed_05 = {
 	description = "es_longbow_skin_04_runed_05_description",
@@ -115,6 +130,9 @@ ItemMasterList.es_longbow_skin_04_runed_05 = {
 	can_wield = {
 		"es_huntsman",
 	},
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.bw_ghost_scythe_skin_02_runed_05 = {
 	description = "bw_ghost_scythe_skin_02_runed_05_description",
@@ -125,11 +143,14 @@ ItemMasterList.bw_ghost_scythe_skin_02_runed_05 = {
 	item_type = "weapon_skin",
 	matching_item_key = "bw_ghost_scythe",
 	rarity = "unique",
-	required_dlc = "shovel_upgrade",
+	required_dlc = "shovel",
 	slot_type = "weapon_skin",
 	template = "staff_scythe",
 	can_wield = {
 		"bw_necromancer",
+	},
+	events = {
+		"gotwf",
 	},
 }
 ItemMasterList.bw_beam_staff_skin_04_runed_05 = {
@@ -148,6 +169,9 @@ ItemMasterList.bw_beam_staff_skin_04_runed_05 = {
 		"bw_adept",
 		"bw_unchained",
 	},
+	events = {
+		"gotwf",
+	},
 }
 ItemMasterList.wh_hammer_book_skin_02_runed_05 = {
 	description = "wh_hammer_book_skin_02_runed_05_description",
@@ -163,6 +187,9 @@ ItemMasterList.wh_hammer_book_skin_02_runed_05 = {
 	template = "one_handed_hammer_book_priest_template",
 	can_wield = {
 		"wh_priest",
+	},
+	events = {
+		"gotwf",
 	},
 }
 ItemMasterList.wh_2h_sword_skin_05_runed_05 = {
@@ -180,5 +207,8 @@ ItemMasterList.wh_2h_sword_skin_05_runed_05 = {
 		"wh_zealot",
 		"wh_bountyhunter",
 		"wh_captain",
+	},
+	events = {
+		"gotwf",
 	},
 }

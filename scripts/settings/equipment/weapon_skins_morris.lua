@@ -9,10 +9,10 @@ local skins = {
 			display_unit = "units/weapons/weapon_display/display_1h_weapon",
 			hud_icon = "weapon_generic_icon_staff_3",
 			inventory_icon = "icon_wpn_dw_axe_03_t2",
+			material_settings_name = "white_glow",
 			rarity = "unique",
 			right_hand_unit = "units/weapons/player/wpn_dw_axe_03_t2/wpn_dw_axe_03_t2_runed_01",
 			template = "one_hand_axe_shield_template_1",
-			material_settings = WeaponMaterialSettingsTemplates.white_glow,
 		},
 	},
 	{

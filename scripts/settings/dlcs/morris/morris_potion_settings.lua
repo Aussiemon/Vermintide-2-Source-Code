@@ -100,7 +100,7 @@ local function generate_non_refreshable_potion_template(potion_name)
 	weapon_template.pickup_data = {
 		pickup_name = potion_name .. "_potion",
 	}
-	weapon_template.material_settings = deus_potions_settings[potion_name .. "_potion"].material_settings
+	weapon_template.material_settings_name = deus_potions_settings[potion_name .. "_potion"].material_settings_name
 
 	return weapon_template
 end

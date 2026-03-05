@@ -1,7 +1,7 @@
 ﻿-- chunkname: @scripts/settings/equipment/skin_material_settings_templates.lua
 
-SkinMaterialSettingsTemplates = SkinMaterialSettingsTemplates or {}
-SkinMaterialSettingsTemplates.ektrik = {
+MaterialSettingsTemplates = MaterialSettingsTemplates or {}
+MaterialSettingsTemplates.ektrik = {
 	tint_64 = {
 		type = "vector3",
 		x = 0,
@@ -39,7 +39,7 @@ SkinMaterialSettingsTemplates.ektrik = {
 		z = 0.6,
 	},
 }
-SkinMaterialSettingsTemplates.kreepus = {
+MaterialSettingsTemplates.kreepus = {
 	tint_64 = {
 		type = "vector3",
 		x = 0.8,
@@ -77,7 +77,7 @@ SkinMaterialSettingsTemplates.kreepus = {
 		z = 0.5,
 	},
 }
-SkinMaterialSettingsTemplates.krizzor = {
+MaterialSettingsTemplates.krizzor = {
 	tint_64 = {
 		type = "vector3",
 		x = 0.12,

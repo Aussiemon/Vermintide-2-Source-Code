@@ -576,8 +576,8 @@ function flow_callback_attach_weapon_display(params)
 					if show_right and right_unit_type ~= nil then
 						item_unit = attach_player_item(display_unit, right_unit_type, weapon_template.right_hand_attachment_node_linking.third_person, "display", false)
 
-						if weapon_skin ~= nil and weapon_skin.material_settings ~= nil then
-							apply_material_settings(item_unit, weapon_skin.material_settings)
+						if weapon_skin ~= nil and weapon_skin.material_settings_name ~= nil then
+							apply_material_settings(item_unit, weapon_skin.material_settings_name)
 						end
 
 						Unit.flow_event(item_unit, "spawn_display")
@@ -597,8 +597,8 @@ function flow_callback_attach_weapon_display(params)
 						if node_link ~= nil then
 							item_unit = attach_player_item(display_unit, left_unit_type, node_link, "display", false)
 
-							if weapon_skin ~= nil and weapon_skin.material_settings ~= nil then
-								apply_material_settings(item_unit, weapon_skin.material_settings)
+							if weapon_skin ~= nil and weapon_skin.material_settings_name ~= nil then
+								apply_material_settings(item_unit, weapon_skin.material_settings_name)
 							end
 
 							Unit.flow_event(item_unit, "spawn_display")
@@ -613,8 +613,8 @@ function flow_callback_attach_weapon_display(params)
 						if projectile_units[weapon_template.actions.action_one.default.projectile_info.projectile_units_template].dummy_linker_unit_name ~= nil then
 							item_unit = attach_player_item(display_unit, projectile_units[weapon_template.actions.action_one.default.projectile_info.projectile_units_template].dummy_linker_unit_name, weapon_template.ammo_data.ammo_unit_attachment_node_linking.third_person, "display", false)
 
-							if weapon_skin ~= nil and weapon_skin.material_settings ~= nil then
-								apply_material_settings(item_unit, weapon_skin.material_settings)
+							if weapon_skin ~= nil and weapon_skin.material_settings_name ~= nil then
+								apply_material_settings(item_unit, weapon_skin.material_settings_name)
 							end
 
 							Unit.flow_event(item_unit, "spawn_display")
@@ -696,8 +696,8 @@ function flow_callback_attach_player_item(params)
 					if right_unit ~= nil then
 						item_unit = attach_player_item(parent_unit, right_unit .. unit_suffix, weapon_template.right_hand_attachment_node_linking.third_person, node_link_type, false)
 
-						if weapon_skin ~= nil and weapon_skin.material_settings ~= nil then
-							apply_material_settings(item_unit, weapon_skin.material_settings)
+						if weapon_skin ~= nil and weapon_skin.material_settings_name ~= nil then
+							apply_material_settings(item_unit, weapon_skin.material_settings_name)
 						end
 					end
 
@@ -713,8 +713,8 @@ function flow_callback_attach_player_item(params)
 						if node_link ~= nil then
 							item_unit = attach_player_item(parent_unit, left_unit .. unit_suffix, node_link, node_link_type, false)
 
-							if weapon_skin ~= nil and weapon_skin.material_settings ~= nil then
-								apply_material_settings(item_unit, weapon_skin.material_settings)
+							if weapon_skin ~= nil and weapon_skin.material_settings_name ~= nil then
+								apply_material_settings(item_unit, weapon_skin.material_settings_name)
 							end
 						end
 					end
@@ -725,8 +725,8 @@ function flow_callback_attach_player_item(params)
 						if projectile_units[weapon_template.actions.action_one.default.projectile_info.projectile_units_template].dummy_linker_unit_name ~= nil then
 							item_unit = attach_player_item(parent_unit, projectile_units[weapon_template.actions.action_one.default.projectile_info.projectile_units_template].dummy_linker_unit_name, weapon_template.ammo_data.ammo_unit_attachment_node_linking.third_person, node_link_type, false)
 
-							if weapon_skin ~= nil and weapon_skin.material_settings ~= nil then
-								apply_material_settings(item_unit, weapon_skin.material_settings)
+							if weapon_skin ~= nil and weapon_skin.material_settings_name ~= nil then
+								apply_material_settings(item_unit, weapon_skin.material_settings_name)
 							end
 						end
 					end
@@ -800,8 +800,8 @@ function flow_callback_attach_player_item(params)
 							end
 						end
 
-						if skin_template.material_settings ~= nil then
-							apply_material_settings(item_unit, skin_template.material_settings)
+						if skin_template.material_settings_name ~= nil then
+							apply_material_settings(item_unit, skin_template.material_settings_name)
 						end
 
 						local skin_equip_event = skin_template.equip_skin_event or "using_skin_default"
@@ -893,7 +893,9 @@ function attach_player_item(parent_unit, child_unit_name, node_link_template, no
 	return child_unit
 end
 
-function apply_material_settings(unit, material_settings)
+function apply_material_settings(unit, material_settings_name)
+	local material_settings = MaterialSettingsTemplates[material_settings_name]
+
 	for variable_name, data in pairs(material_settings) do
 		if data.type == "color" then
 			if data.apply_to_children then

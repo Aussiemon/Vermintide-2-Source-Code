@@ -433,7 +433,7 @@ ProjectileSystem.rpc_projectile_event = function (self, channel_id, go_id, event
 	end
 end
 
-ProjectileSystem.rpc_spawn_pickup_projectile = function (self, channel_id, projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, pickup_spawn_type_id, spawn_limit, always_show, objective_active)
+ProjectileSystem.rpc_spawn_pickup_projectile = function (self, channel_id, projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, pickup_spawn_type_id, spawn_limit, always_show, objective_active, material_settings_name_id)
 	if not Managers.state.network:game() then
 		return
 	end
@@ -443,6 +443,7 @@ ProjectileSystem.rpc_spawn_pickup_projectile = function (self, channel_id, proje
 	local projectile_unit_template_name = NetworkLookup.go_types[projectile_unit_template_name_id]
 	local pickup_name = NetworkLookup.pickup_names[pickup_name_id]
 	local pickup_spawn_type = NetworkLookup.pickup_spawn_types[pickup_spawn_type_id]
+	local material_settings_name = NetworkLookup.material_settings_templates[material_settings_name_id]
 	local extension_init_data = {
 		projectile_locomotion_system = {
 			network_position = network_position,

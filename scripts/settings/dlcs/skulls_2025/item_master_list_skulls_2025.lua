@@ -17,6 +17,9 @@ ItemMasterList.dw_dual_axe_skin_06_runed_04 = {
 	can_wield = {
 		"dr_slayer",
 	},
+	events = {
+		"skulls",
+	},
 }
 ItemMasterList.we_spear_skin_03_runed_04 = {
 	description = "we_spear_skin_03_runed_04_description",
@@ -36,6 +39,9 @@ ItemMasterList.we_spear_skin_03_runed_04 = {
 		"we_maidenguard",
 		"we_waywatcher",
 	},
+	events = {
+		"skulls",
+	},
 }
 ItemMasterList.es_halberd_skin_04_runed_04 = {
 	description = "es_halberd_skin_04_runed_04_description",
@@ -54,6 +60,9 @@ ItemMasterList.es_halberd_skin_04_runed_04 = {
 		"es_huntsman",
 		"es_knight",
 		"es_mercenary",
+	},
+	events = {
+		"skulls",
 	},
 }
 ItemMasterList.bw_flamethrower_staff_skin_02_runed_04 = {
@@ -75,6 +84,9 @@ ItemMasterList.bw_flamethrower_staff_skin_02_runed_04 = {
 		"bw_adept",
 		"bw_unchained",
 	},
+	events = {
+		"skulls",
+	},
 }
 ItemMasterList.wh_repeating_crossbow_skin_03_runed_04 = {
 	description = "wh_repeating_crossbow_skin_03_runed_04_description",
@@ -93,6 +105,9 @@ ItemMasterList.wh_repeating_crossbow_skin_03_runed_04 = {
 		"wh_zealot",
 		"wh_bountyhunter",
 		"wh_captain",
+	},
+	events = {
+		"skulls",
 	},
 }
 ItemMasterList.frame_skulls_2025 = {

@@ -663,34 +663,34 @@ SimpleHuskInventoryExtension._wield_slot = function (self, world, equipment, slo
 	local right_hand_weapon_unit_3p, right_hand_weapon_unit_1p, left_hand_weapon_unit_3p, left_hand_weapon_unit_1p, right_hand_ammo_unit_3p, right_hand_ammo_unit_1p, left_hand_ammo_unit_3p, left_hand_ammo_unit_1p
 
 	if item_units.right_hand_unit then
-		right_hand_weapon_unit_3p, right_hand_ammo_unit_3p, right_hand_weapon_unit_1p, right_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "right", item_template, item_units, slot_name, item_data, unit_1p, unit_3p, nil, nil, nil, item_units.material_settings)
+		right_hand_weapon_unit_3p, right_hand_ammo_unit_3p, right_hand_weapon_unit_1p, right_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "right", item_template, item_units, slot_name, item_data, unit_1p, unit_3p, nil, nil, nil, item_units.material_settings_name)
 	end
 
 	if item_units.left_hand_unit then
-		left_hand_weapon_unit_3p, left_hand_ammo_unit_3p, left_hand_weapon_unit_1p, left_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "left", item_template, item_units, slot_name, item_data, unit_1p, unit_3p, nil, nil, nil, item_units.material_settings)
+		left_hand_weapon_unit_3p, left_hand_ammo_unit_3p, left_hand_weapon_unit_1p, left_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "left", item_template, item_units, slot_name, item_data, unit_1p, unit_3p, nil, nil, nil, item_units.material_settings_name)
 	end
 
 	local is_ammo_weapon = item_units.is_ammo_weapon
 
 	if is_ammo_weapon then
-		local material_settings = item_units.material_settings or item_template.material_settings
+		local material_settings_name = item_units.material_settings_name or item_template.material_settings_name
 
-		if material_settings then
+		if material_settings_name then
 			if right_hand_ammo_unit_3p then
-				GearUtils.apply_material_settings(right_hand_ammo_unit_3p, material_settings)
+				GearUtils.apply_material_settings(right_hand_ammo_unit_3p, material_settings_name)
 			end
 
 			if left_hand_ammo_unit_3p then
-				GearUtils.apply_material_settings(left_hand_ammo_unit_3p, material_settings)
+				GearUtils.apply_material_settings(left_hand_ammo_unit_3p, material_settings_name)
 			end
 
 			if unit_1p then
 				if right_hand_ammo_unit_1p then
-					GearUtils.apply_material_settings(right_hand_ammo_unit_1p, material_settings)
+					GearUtils.apply_material_settings(right_hand_ammo_unit_1p, material_settings_name)
 				end
 
 				if left_hand_ammo_unit_1p then
-					GearUtils.apply_material_settings(left_hand_ammo_unit_1p, material_settings)
+					GearUtils.apply_material_settings(left_hand_ammo_unit_1p, material_settings_name)
 				end
 			end
 		end

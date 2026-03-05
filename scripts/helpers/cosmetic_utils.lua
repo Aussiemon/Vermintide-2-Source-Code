@@ -26,7 +26,9 @@ CosmeticUtils.color_tint_unit = function (unit, hero_name, gradient_variation, g
 	end
 end
 
-CosmeticUtils.apply_material_settings = function (unit, material_settings)
+CosmeticUtils.apply_material_settings = function (unit, material_settings_name)
+	local material_settings = MaterialSettingsTemplates[material_settings_name]
+
 	for variable_name, data in pairs(material_settings) do
 		if data.type == "color" then
 			if data.apply_to_children then
@@ -115,17 +117,12 @@ end
 
 local generic_frame_template = {
 	icon = "unit_frame_02",
+	material_settings_name = "generated_portrait_frame",
 	name = "",
 	unit = "",
 	attachment_node = {
 		unit = "units/ui/ui_portrait_frame",
 		attachment_node = AttachmentNodeLinking.ui_portrait_frame,
-	},
-	material_settings = {
-		portrait_frame = {
-			texture = "gui/1080p/single_textures/generic/transparent_placeholder_texture",
-			type = "texture",
-		},
 	},
 }
 
@@ -135,7 +132,7 @@ CosmeticUtils.generate_frame_template = function (name)
 
 	if Application.can_get("package", texture_package_name) then
 		template.texture_package_name = texture_package_name
-		template.material_settings.portrait_frame.texture = string.format("gui/1080p/single_textures/store_item_icons/store_item_icon_%s/store_item_icon_%s", name, name)
+		MaterialSettingsTemplates.generated_portrait_frame.portrait_frame.texture = string.format("gui/1080p/single_textures/store_item_icons/store_item_icon_%s/store_item_icon_%s", name, name)
 	elseif Cosmetics[name] then
 		local cosmetic = Cosmetics[name]
 
@@ -143,10 +140,11 @@ CosmeticUtils.generate_frame_template = function (name)
 			template.texture_package_name = cosmetic.texture_package_name
 		end
 
-		local texture = table.safe_get(cosmetic, "material_settings", "portrait_frame", "texture")
+		local material_settings_name = cosmetic.material_settings_name
+		local texture = table.safe_get(MaterialSettingsTemplates, material_settings_name, "portrait_frame", "texture")
 
 		if texture then
-			template.material_settings.portrait_frame.texture = texture
+			MaterialSettingsTemplates.generated_portrait_frame.portrait_frame.texture = texture
 		end
 	end
 

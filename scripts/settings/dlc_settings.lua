@@ -587,4 +587,11 @@ DLCSettings = DLCSettings or {
 			common = "scripts/settings/dlcs/gotwf/gotwf_2025_common_settings",
 		},
 	},
+	anniversary_2026 = {
+		localization = "localization/anniversary_2026",
+		package_name = "resource_packages/dlcs/anniversary_2026",
+		additional_settings = {
+			common = "scripts/settings/dlcs/anniversary_2026/anniversary_2026_common_settings",
+		},
+	},
 }

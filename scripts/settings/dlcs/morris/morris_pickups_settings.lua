@@ -19,57 +19,6 @@ local function can_spawn_deus_pickup(params, is_debug_spawn)
 	return true
 end
 
-local material_settings_templates = {
-	friendly_murderer_potion = {
-		theme_index_01 = {
-			type = "scalar",
-			value = 1,
-		},
-	},
-	killer_in_the_shadows_potion = {
-		theme_index_01 = {
-			type = "scalar",
-			value = 2,
-		},
-	},
-	pockets_full_of_bombs_potion = {
-		theme_index_01 = {
-			type = "scalar",
-			value = 3,
-		},
-	},
-	liquid_bravado_potion = {
-		theme_index_01 = {
-			type = "scalar",
-			value = 4,
-		},
-	},
-	poison_proof_potion = {
-		theme_index_01 = {
-			type = "scalar",
-			value = 6,
-		},
-	},
-	vampiric_draught_potion = {
-		theme_index_01 = {
-			type = "scalar",
-			value = 7,
-		},
-	},
-	hold_my_beer_potion = {
-		theme_index_01 = {
-			type = "scalar",
-			value = 8,
-		},
-	},
-	moot_milk_potion = {
-		theme_index_01 = {
-			type = "scalar",
-			value = 9,
-		},
-	},
-}
-
 settings.pickups = {
 	deus_weapon_chest = {
 		deus_weapon_chest = {
@@ -185,6 +134,7 @@ settings.pickups = {
 			item_description = "potion_liquid_bravado_01_item_desc",
 			item_name = "potion_liquid_bravado_01",
 			local_pickup_sound = true,
+			material_settings_name = "liquid_bravado_potion",
 			only_once = true,
 			pickup_sound_event = "pickup_potion",
 			slot_name = "slot_potion",
@@ -192,7 +142,6 @@ settings.pickups = {
 			type = "inventory_item",
 			unit_name = "units/weapons/player/pup_deus_potion_01/pup_deus_potion_01",
 			can_spawn_func = can_spawn_deus_pickup,
-			material_settings = material_settings_templates.liquid_bravado_potion,
 		},
 		vampiric_draught_potion = {
 			bots_mule_pickup = true,
@@ -204,6 +153,7 @@ settings.pickups = {
 			item_description = "potion_vampiric_draught_01_item_desc",
 			item_name = "potion_vampiric_draught_01",
 			local_pickup_sound = true,
+			material_settings_name = "vampiric_draught_potion",
 			only_once = true,
 			pickup_sound_event = "pickup_potion",
 			slot_name = "slot_potion",
@@ -211,7 +161,6 @@ settings.pickups = {
 			type = "inventory_item",
 			unit_name = "units/weapons/player/pup_deus_potion_01/pup_deus_potion_01",
 			can_spawn_func = can_spawn_deus_pickup,
-			material_settings = material_settings_templates.vampiric_draught_potion,
 		},
 		moot_milk_potion = {
 			bots_mule_pickup = true,
@@ -223,6 +172,7 @@ settings.pickups = {
 			item_description = "potion_moot_milk_01_item_desc",
 			item_name = "potion_moot_milk_01",
 			local_pickup_sound = true,
+			material_settings_name = "moot_milk_potion",
 			only_once = true,
 			pickup_sound_event = "pickup_potion",
 			slot_name = "slot_potion",
@@ -230,7 +180,6 @@ settings.pickups = {
 			type = "inventory_item",
 			unit_name = "units/weapons/player/pup_deus_potion_01/pup_deus_potion_01",
 			can_spawn_func = can_spawn_deus_pickup,
-			material_settings = material_settings_templates.moot_milk_potion,
 		},
 		friendly_murderer_potion = {
 			bots_mule_pickup = true,
@@ -242,6 +191,7 @@ settings.pickups = {
 			item_description = "potion_friendly_murderer_01_item_desc",
 			item_name = "potion_friendly_murderer_01",
 			local_pickup_sound = true,
+			material_settings_name = "friendly_murderer_potion",
 			only_once = true,
 			pickup_sound_event = "pickup_potion",
 			slot_name = "slot_potion",
@@ -249,7 +199,6 @@ settings.pickups = {
 			type = "inventory_item",
 			unit_name = "units/weapons/player/pup_deus_potion_01/pup_deus_potion_01",
 			can_spawn_func = can_spawn_deus_pickup,
-			material_settings = material_settings_templates.friendly_murderer_potion,
 		},
 		killer_in_the_shadows_potion = {
 			bots_mule_pickup = true,
@@ -261,6 +210,7 @@ settings.pickups = {
 			item_description = "potion_killer_in_the_shadows_01_item_desc",
 			item_name = "potion_killer_in_the_shadows_01",
 			local_pickup_sound = true,
+			material_settings_name = "killer_in_the_shadows_potion",
 			only_once = true,
 			pickup_sound_event = "pickup_potion",
 			slot_name = "slot_potion",
@@ -268,7 +218,6 @@ settings.pickups = {
 			type = "inventory_item",
 			unit_name = "units/weapons/player/pup_deus_potion_01/pup_deus_potion_01",
 			can_spawn_func = can_spawn_deus_pickup,
-			material_settings = material_settings_templates.killer_in_the_shadows_potion,
 		},
 		pockets_full_of_bombs_potion = {
 			bots_mule_pickup = true,
@@ -280,6 +229,7 @@ settings.pickups = {
 			item_description = "potion_pockets_full_of_bombs_01_item_desc",
 			item_name = "potion_pockets_full_of_bombs_01",
 			local_pickup_sound = true,
+			material_settings_name = "pockets_full_of_bombs_potion",
 			only_once = true,
 			pickup_sound_event = "pickup_potion",
 			slot_name = "slot_potion",
@@ -287,7 +237,6 @@ settings.pickups = {
 			type = "inventory_item",
 			unit_name = "units/weapons/player/pup_deus_potion_01/pup_deus_potion_01",
 			can_spawn_func = can_spawn_deus_pickup,
-			material_settings = material_settings_templates.pockets_full_of_bombs_potion,
 		},
 		hold_my_beer_potion = {
 			bots_mule_pickup = true,
@@ -299,6 +248,7 @@ settings.pickups = {
 			item_description = "potion_hold_my_beer_01_item_desc",
 			item_name = "potion_hold_my_beer_01",
 			local_pickup_sound = true,
+			material_settings_name = "hold_my_beer_potion",
 			only_once = true,
 			pickup_sound_event = "pickup_potion",
 			slot_name = "slot_potion",
@@ -306,7 +256,6 @@ settings.pickups = {
 			type = "inventory_item",
 			unit_name = "units/weapons/player/pup_deus_potion_01/pup_deus_potion_01",
 			can_spawn_func = can_spawn_deus_pickup,
-			material_settings = material_settings_templates.hold_my_beer_potion,
 		},
 		poison_proof_potion = {
 			bots_mule_pickup = true,
@@ -318,6 +267,7 @@ settings.pickups = {
 			item_description = "potion_poison_proof_01_item_desc",
 			item_name = "potion_poison_proof_01",
 			local_pickup_sound = true,
+			material_settings_name = "poison_proof_potion",
 			only_once = true,
 			pickup_sound_event = "pickup_potion",
 			slot_name = "slot_potion",
@@ -325,7 +275,6 @@ settings.pickups = {
 			type = "inventory_item",
 			unit_name = "units/weapons/player/pup_deus_potion_01/pup_deus_potion_01",
 			can_spawn_func = can_spawn_deus_pickup,
-			material_settings = material_settings_templates.poison_proof_potion,
 		},
 	},
 	grenades = {

@@ -1246,7 +1246,7 @@ PickupSystem._spawn_pickup = function (self, pickup_settings, pickup_name, posit
 	}
 
 	if optional_extension_init_data then
-		table.merge(extension_init_data, optional_extension_init_data)
+		table.merge_recursive(extension_init_data, optional_extension_init_data)
 	end
 
 	self._next_index = next_index + 1
@@ -1412,11 +1412,12 @@ PickupSystem.rpc_finalize_consumption = function (self, channel_id, interactable
 	self:finalize_consumption(unit, confirmed, drop_pickup_name)
 end
 
-PickupSystem.rpc_spawn_linked_pickup = function (self, channel_id, pickup_name_id, link_position, link_rotation, spawn_type_id, hit_unit_go_id, node_index, is_level_unit, spawn_limit)
+PickupSystem.rpc_spawn_linked_pickup = function (self, channel_id, pickup_name_id, link_position, link_rotation, spawn_type_id, hit_unit_go_id, node_index, is_level_unit, spawn_limit, material_settings_name_id)
 	fassert(self.is_server, "Can only spawn linked pickups on the server!")
 
 	local pickup_name = NetworkLookup.pickup_names[pickup_name_id]
 	local spawn_type = NetworkLookup.pickup_spawn_types[spawn_type_id]
+	local material_settings_name = NetworkLookup.material_settings_templates[material_settings_name_id]
 
 	fassert(AllPickups[pickup_name], "pickup name %s does not exist in Pickups table", pickup_name)
 
@@ -1430,9 +1431,14 @@ PickupSystem.rpc_spawn_linked_pickup = function (self, channel_id, pickup_name_i
 		with_physics = false
 	end
 
+	local extension_init_data = {
+		pickup_system = {
+			material_settings_name = material_settings_name,
+		},
+	}
 	local owner_peer_id = CHANNEL_TO_PEER_ID[channel_id or Network.peer_id()]
 	local pickup_settings = AllPickups[pickup_name]
-	local pickup_unit, pickup_unit_go_id = self:_spawn_pickup(pickup_settings, pickup_name, link_position, link_rotation, with_physics, spawn_type, owner_peer_id, spawn_limit)
+	local pickup_unit, pickup_unit_go_id = self:_spawn_pickup(pickup_settings, pickup_name, link_position, link_rotation, with_physics, spawn_type, owner_peer_id, spawn_limit, nil, nil, extension_init_data)
 
 	if link_pickup then
 		local projectile_linker_system = Managers.state.entity:system("projectile_linker_system")

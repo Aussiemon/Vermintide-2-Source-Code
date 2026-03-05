@@ -276,7 +276,7 @@ LootItemUnitPreviewer._load_item_units = function (self, item)
 		local right_hand_unit = item_units.right_hand_unit
 		local ammo_unit = item_units.ammo_unit
 		local is_ammo_weapon = item_units.is_ammo_weapon
-		local material_settings = item_units.material_settings
+		local material_settings_name = item_units.material_settings_name
 
 		if left_hand_unit then
 			if is_ammo_weapon then
@@ -290,7 +290,7 @@ LootItemUnitPreviewer._load_item_units = function (self, item)
 			units_to_spawn_data[#units_to_spawn_data + 1] = {
 				unit_name = left_unit,
 				unit_attachment_node_linking = item_template.left_hand_attachment_node_linking.third_person.display,
-				material_settings = material_settings,
+				material_settings_name = material_settings_name,
 			}
 		end
 
@@ -308,7 +308,7 @@ LootItemUnitPreviewer._load_item_units = function (self, item)
 			units_to_spawn_data[#units_to_spawn_data + 1] = {
 				unit_name = right_unit,
 				unit_attachment_node_linking = item_template.right_hand_attachment_node_linking.third_person.display,
-				material_settings = material_settings,
+				material_settings_name = material_settings_name,
 			}
 		end
 	elseif slot_type == "frame" or slot_type == "chips" then
@@ -326,12 +326,12 @@ LootItemUnitPreviewer._load_item_units = function (self, item)
 			end
 		end
 
-		local material_settings = item_template.material_settings
+		local material_settings_name = item_template.material_settings_name
 
 		units_to_spawn_data[#units_to_spawn_data + 1] = {
 			unit_name = unit,
 			unit_attachment_node_linking = item_template.attachment_node.attachment_node,
-			material_settings = material_settings,
+			material_settings_name = material_settings_name,
 			additional_packages = {
 				item_template.texture_package_name,
 			},
@@ -547,7 +547,7 @@ LootItemUnitPreviewer.spawn_units = function (self, spawn_data)
 			local spawn_unit_data = spawn_data[i]
 			local unit_name = spawn_unit_data.unit_name
 			local unit_attachment_node_linking = spawn_unit_data.unit_attachment_node_linking
-			local material_settings = spawn_unit_data.material_settings
+			local material_settings_name = spawn_unit_data.material_settings_name
 			local unit = World.spawn_unit(world, unit_name)
 
 			Unit.set_unit_visibility(unit, false)
@@ -556,8 +556,8 @@ LootItemUnitPreviewer.spawn_units = function (self, spawn_data)
 
 			GearUtils.link(world, unit_attachment_node_linking, scene_graph_links, link_unit, unit)
 
-			if material_settings then
-				GearUtils.apply_material_settings(unit, material_settings)
+			if material_settings_name then
+				GearUtils.apply_material_settings(unit, material_settings_name)
 			end
 		end
 

@@ -23,6 +23,7 @@ require("scripts/settings/spawn_unit_templates")
 require("scripts/settings/unlock_settings")
 require("scripts/entity_system/systems/projectile/drone_templates")
 require("scripts/settings/objective_lists")
+require("scripts/settings/equipment/material_settings_templates")
 DLCUtils.require_list("statistics_database")
 require("scripts/settings/twitch_settings")
 require("scripts/unit_extensions/weapons/area_damage/liquid/damage_blob_templates")
@@ -2211,6 +2212,9 @@ NetworkLookup.weapon_skins = create_lookup({
 NetworkLookup.performance_titles = create_lookup({
 	"n/a",
 }, PerformanceTitles.titles)
+NetworkLookup.material_settings_templates = create_lookup({
+	"n/a",
+}, MaterialSettingsTemplates)
 
 if not SocialWheelEventLookup then
 	local base_social_wheel_lookup_table = table.clone(SocialWheelSettingsNetworkLookupBase)

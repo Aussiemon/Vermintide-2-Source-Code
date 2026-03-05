@@ -22,7 +22,7 @@ PlayerProjectileHuskExtension.init = function (self, extension_init_context, uni
 			local wielded_item_data = equipment.wielded
 
 			if wielded_item_data then
-				local skin_material_settings
+				local skin_material_settings_name
 
 				self._skin_projectile_units_template = wielded_item_data.projectile_units_template
 
@@ -33,7 +33,7 @@ PlayerProjectileHuskExtension.init = function (self, extension_init_context, uni
 					local weapon_skin_data = WeaponSkins.skins[skin]
 
 					if weapon_skin_data then
-						skin_material_settings = weapon_skin_data.material_settings
+						skin_material_settings_name = weapon_skin_data.material_settings_name
 						self._skin_projectile_units_template = weapon_skin_data.projectile_units_template
 					end
 				end
@@ -43,12 +43,12 @@ PlayerProjectileHuskExtension.init = function (self, extension_init_context, uni
 
 				if is_ammo_weapon then
 					local wielded_item_template = BackendUtils.get_item_template(wielded_item_data)
-					local material_settings = skin_material_settings or item_units.material_settings or wielded_item_template.material_settings
+					local material_settings_name = skin_material_settings_name or item_units.material_settings_name or wielded_item_template.material_settings_name
 
-					if material_settings then
-						GearUtils.apply_material_settings(unit, material_settings)
+					if material_settings_name then
+						GearUtils.apply_material_settings(unit, material_settings_name)
 
-						self._material_settings = material_settings
+						self._material_settings_name = material_settings_name
 					end
 				end
 			end
@@ -842,8 +842,8 @@ PlayerProjectileHuskExtension._link_projectile = function (self, hit_unit, hit_a
 		end
 	end
 
-	if self._material_settings then
-		GearUtils.apply_material_settings(projectile_dummy, self._material_settings)
+	if self._material_settings_name then
+		GearUtils.apply_material_settings(projectile_dummy, self._material_settings_name)
 	end
 end
 

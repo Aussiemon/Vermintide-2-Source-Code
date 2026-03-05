@@ -11,6 +11,9 @@ ItemMasterList.frame_geheimnisnacht_2025 = {
 	slot_type = "frame",
 	temporary_template = "frame_geheimnisnacht_2025",
 	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.dw_2h_pick_skin_04_runed_03 = {
 	description = "dw_2h_pick_skin_04_runed_03_description",
@@ -29,6 +32,9 @@ ItemMasterList.dw_2h_pick_skin_04_runed_03 = {
 		"dr_ironbreaker",
 		"dr_slayer",
 		"dr_ranger",
+	},
+	events = {
+		"geheimnisnacht",
 	},
 }
 ItemMasterList.we_2h_sword_skin_06_runed_03 = {
@@ -49,6 +55,9 @@ ItemMasterList.we_2h_sword_skin_06_runed_03 = {
 		"we_maidenguard",
 		"we_waywatcher",
 	},
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.es_1h_sword_skin_02_runed_03 = {
 	description = "es_1h_sword_skin_02_runed_03_description",
@@ -67,6 +76,9 @@ ItemMasterList.es_1h_sword_skin_02_runed_03 = {
 		"es_huntsman",
 		"es_knight",
 		"es_mercenary",
+	},
+	events = {
+		"geheimnisnacht",
 	},
 }
 ItemMasterList.bw_conflagration_staff_skin_02_runed_03 = {
@@ -88,6 +100,9 @@ ItemMasterList.bw_conflagration_staff_skin_02_runed_03 = {
 		"bw_adept",
 		"bw_unchained",
 	},
+	events = {
+		"geheimnisnacht",
+	},
 }
 ItemMasterList.wh_1h_axe_skin_04_runed_03 = {
 	description = "wh_1h_axe_skin_04_runed_03_description",
@@ -106,5 +121,8 @@ ItemMasterList.wh_1h_axe_skin_04_runed_03 = {
 		"wh_zealot",
 		"wh_bountyhunter",
 		"wh_captain",
+	},
+	events = {
+		"geheimnisnacht",
 	},
 }

@@ -11,6 +11,9 @@ ItemMasterList.frame_celebration_07 = {
 	slot_type = "frame",
 	temporary_template = "frame_celebration_07",
 	can_wield = CanWieldAllItemTemplates,
+	events = {
+		"anniversary",
+	},
 }
 ItemMasterList.frame_apology_2025 = {
 	description = "portrait_frame_apology_description",

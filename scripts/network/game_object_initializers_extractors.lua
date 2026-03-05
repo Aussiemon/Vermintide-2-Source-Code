@@ -1809,6 +1809,7 @@ go_type_table = {
 			local spawn_type = pickup_extension.spawn_type
 			local owner_peer_id = pickup_extension.owner_peer_id
 			local spawn_limit = pickup_extension.spawn_limit
+			local material_settings_name = pickup_extension.material_settings_name or "n/a"
 			local data_table = {
 				go_type = NetworkLookup.go_types.limited_owned_pickup_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
@@ -1819,6 +1820,7 @@ go_type_table = {
 				rotation = Unit.local_rotation(unit, 0),
 				owner_peer_id = owner_peer_id,
 				spawn_limit = spawn_limit,
+				material_settings_id = NetworkLookup.material_settings_templates[material_settings_name],
 			}
 
 			return data_table
@@ -4400,6 +4402,7 @@ go_type_table = {
 			local spawn_type = GameSession.game_object_field(game_session, go_id, "spawn_type")
 			local owner_peer_id = GameSession.game_object_field(game_session, go_id, "owner_peer_id")
 			local spawn_limit = GameSession.game_object_field(game_session, go_id, "spawn_limit")
+			local material_settings_id = GameSession.game_object_field(game_session, go_id, "material_settings_id")
 			local extension_init_data = {
 				pickup_system = {
 					pickup_name = NetworkLookup.pickup_names[pickup_name],
@@ -4407,6 +4410,7 @@ go_type_table = {
 					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
 					owner_peer_id = owner_peer_id,
 					spawn_limit = spawn_limit,
+					material_settings_name = NetworkLookup.material_settings_templates[material_settings_id],
 				},
 			}
 			local unit_template_name = "limited_owned_pickup_unit"

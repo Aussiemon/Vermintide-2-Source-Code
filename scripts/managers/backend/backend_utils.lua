@@ -154,7 +154,7 @@ BackendUtils.get_item_units = function (item_data, backend_id, skin, career_name
 	local material = item_data.material
 	local icon = item_data.hud_icon
 	local backend_id = item_data.backend_id or backend_id
-	local skin_name, material_settings
+	local skin_name, material_settings_name
 
 	if career_name then
 		left_hand_unit = item_data.left_hand_unit_override and item_data.left_hand_unit_override[career_name] or left_hand_unit
@@ -180,7 +180,7 @@ BackendUtils.get_item_units = function (item_data, backend_id, skin, career_name
 			link_pickup_template_name = skin_template.link_pickup_template_name
 			icon = skin_template.hud_icon
 			skin_name = skin
-			material_settings = skin_template.material_settings
+			material_settings_name = skin_template.material_settings_name
 
 			if career_name then
 				left_hand_unit = skin_template.left_hand_unit_override and skin_template.left_hand_unit_override[career_name] or left_hand_unit
@@ -203,7 +203,7 @@ BackendUtils.get_item_units = function (item_data, backend_id, skin, career_name
 			material = material,
 			icon = icon,
 			skin = skin_name,
-			material_settings = material_settings,
+			material_settings_name = material_settings_name,
 		}
 
 		return units

@@ -426,7 +426,7 @@ ItemMasterList.kerillian_waywatcher_career_skill_weapon = {
 	},
 	item_units_to_replace = {
 		left_hand_unit = true,
-		material_settings = true,
+		material_settings_name = true,
 		right_hand_unit = true,
 	},
 }
@@ -448,7 +448,7 @@ ItemMasterList.kerillian_waywatcher_career_skill_weapon_piercing_shot = {
 	},
 	item_units_to_replace = {
 		left_hand_unit = true,
-		material_settings = true,
+		material_settings_name = true,
 		right_hand_unit = true,
 	},
 }

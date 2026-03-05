@@ -635,6 +635,10 @@ ActionSweep._send_attack_hit = function (self, t, damage_source_id, attacker_uni
 	end
 end
 
+function _revalidate_actor_and_get_unit(actor)
+	return Script.type_name(actor) == "Actor" and Actor.unit(actor) or nil
+end
+
 ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_action, physics_world, is_within_damage_window, current_position, current_rotation)
 	if self._attack_aborted then
 		return
@@ -825,7 +829,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 		local has_hit_precision_target_and_has_last_hit_result = has_potential_result and (has_hit_precision_target or lost_precision_target)
 		local result = SWEEP_RESULTS[i]
 		local hit_actor = result.actor
-		local hit_unit = Script.type_name(hit_actor) == "Actor" and Actor.unit(hit_actor) or nil
+		local hit_unit = _revalidate_actor_and_get_unit(hit_actor)
 		local hit_position = result.position
 		local hit_normal = result.normal
 		local use_saved_target_instead = false
@@ -844,18 +848,23 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 				local last_potential_actor = self._last_potential_hit_result[last_potential_result_index].actor:unbox()
 
 				if last_potential_actor then
-					hit_actor = last_potential_actor
-					hit_unit = Actor.unit(hit_actor)
-					hit_position = self._last_potential_hit_result[last_potential_result_index].hit_position:unbox()
-					hit_normal = self._last_potential_hit_result[last_potential_result_index].hit_normal:unbox()
-					result.actor = hit_actor
-					result.position = hit_position
-					result.normal = hit_normal
+					local potential_hit_actor = last_potential_actor
+					local potential_hit_unit = _revalidate_actor_and_get_unit(potential_hit_actor)
 
-					local potential_unit = self._last_potential_hit_result[last_potential_result_index].hit_unit
+					if unit_alive(potential_hit_unit) then
+						hit_actor = potential_hit_actor
+						hit_unit = potential_hit_unit
+						hit_position = self._last_potential_hit_result[last_potential_result_index].hit_position:unbox()
+						hit_normal = self._last_potential_hit_result[last_potential_result_index].hit_normal:unbox()
+						result.actor = hit_actor
+						result.position = hit_position
+						result.normal = hit_normal
 
-					hit_units[potential_unit] = nil
-					self._last_potential_hit_result[last_potential_result_index].already_hit = true
+						local potential_unit = self._last_potential_hit_result[last_potential_result_index].hit_unit
+
+						hit_units[potential_unit] = nil
+						self._last_potential_hit_result[last_potential_result_index].already_hit = true
+					end
 				end
 			end
 
@@ -1141,12 +1150,9 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 
 		local result = SWEEP_RESULTS[environment_unit_hit]
 		local hit_actor = result.actor
-		local hit_unit = Actor.unit(hit_actor)
+		local hit_unit = _revalidate_actor_and_get_unit(hit_actor)
 
-		assert(hit_unit, "hit unit is nil")
-		fassert(hit_unit, "hit unit is nil")
-
-		if unit ~= hit_unit then
+		if unit_alive(hit_unit) and unit ~= hit_unit then
 			local hit_position = result.position
 			local hit_normal = result.normal
 			local hit_direction = attack_direction

@@ -24,8 +24,9 @@ PlayerProjectileUnitExtension.init = function (self, extension_init_context, uni
 	local owner_buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
 
 	self.item_name = item_name
+	self._material_settings_name = nil
 
-	local owner_inventory_extension = ScriptUnit.has_extension(owner_unit, "inventory_system")
+	local owner_inventory_extension = ScriptUnit.has_extension(self._owner_unit, "inventory_system")
 
 	if owner_inventory_extension then
 		local equipment = owner_inventory_extension:equipment()
@@ -39,14 +40,18 @@ PlayerProjectileUnitExtension.init = function (self, extension_init_context, uni
 
 				if is_ammo_weapon then
 					local wielded_item_template = BackendUtils.get_item_template(wielded_item_data)
-					local material_settings = item_units.material_settings or wielded_item_template.material_settings
+					local material_settings_name = item_units.material_settings_name or wielded_item_template.material_settings_name
 
-					if material_settings then
-						GearUtils.apply_material_settings(unit, material_settings)
+					if material_settings_name then
+						self._material_settings_name = material_settings_name
 					end
 				end
 			end
 		end
+	end
+
+	if self._material_settings_name then
+		GearUtils.apply_material_settings(unit, self._material_settings_name)
 	end
 
 	local item_data = ItemMasterList[item_name]
@@ -1314,28 +1319,8 @@ PlayerProjectileUnitExtension._link_projectile = function (self, hit_unit, hit_a
 		end
 	end
 
-	local owner_inventory_extension = ScriptUnit.has_extension(self._owner_unit, "inventory_system")
-
-	if owner_inventory_extension then
-		local equipment = owner_inventory_extension:equipment()
-
-		if equipment then
-			local wielded_item_data = equipment.wielded
-
-			if wielded_item_data then
-				local item_units = BackendUtils.get_item_units(wielded_item_data)
-				local is_ammo_weapon = item_units and item_units.is_ammo_weapon
-
-				if is_ammo_weapon then
-					local wielded_item_template = BackendUtils.get_item_template(wielded_item_data)
-					local material_settings = item_units.material_settings or wielded_item_template.material_settings
-
-					if material_settings then
-						GearUtils.apply_material_settings(projectile_dummy, material_settings)
-					end
-				end
-			end
-		end
+	if self._material_settings_name then
+		GearUtils.apply_material_settings(projectile_dummy, self._material_settings_name)
 	end
 end
 
@@ -1369,8 +1354,9 @@ PlayerProjectileUnitExtension._spawn_linked_pickup_projectile = function (self, 
 	local pickup_name_id = NetworkLookup.pickup_names[pickup_name]
 	local pickup_spawn_type = "dropped"
 	local pickup_spawn_type_id = NetworkLookup.pickup_spawn_types[pickup_spawn_type]
+	local material_settings_name_id = NetworkLookup.material_settings_templates[self._material_settings_name or "n/a"]
 
-	Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_linked_pickup", pickup_name_id, link_position, link_rotation, pickup_spawn_type_id, hit_unit_id, node_index, is_level_unit, spawn_limit)
+	Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_linked_pickup", pickup_name_id, link_position, link_rotation, pickup_spawn_type_id, hit_unit_id, node_index, is_level_unit, spawn_limit, material_settings_name_id)
 end
 
 PlayerProjectileUnitExtension._spawn_pickup_projectile = function (self, pickup_name, hit_position, hit_direction, hit_normal, hit_enemy_or_player)
@@ -1404,8 +1390,9 @@ PlayerProjectileUnitExtension._spawn_pickup_projectile = function (self, pickup_
 	local network_rotation = AiAnimUtils.rotation_network_scale(rotation, true)
 	local network_velocity = AiAnimUtils.velocity_network_scale(velocity, true)
 	local network_angular_velocity = AiAnimUtils.velocity_network_scale(angular_velocity_transformed, true)
+	local material_settings_name_id = NetworkLookup.material_settings_templates[self._material_settings_name or "n/a"]
 
-	Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_pickup_projectile", pickup_unit_name_id, pickup_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, pickup_spawn_type_id, spawn_limit, false, false)
+	Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_pickup_projectile", pickup_unit_name_id, pickup_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, pickup_spawn_type_id, spawn_limit, false, false, material_settings_name_id)
 end
 
 PlayerProjectileUnitExtension.do_aoe = function (self, aoe_data, position, network_sync)
