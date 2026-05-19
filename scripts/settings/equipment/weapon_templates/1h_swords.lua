@@ -494,7 +494,7 @@ weapon_template.actions = {
 				{
 					buff_name = "planted_decrease_movement",
 					end_time = 0.5,
-					external_multiplier = 0.9,
+					external_multiplier = 0.95,
 					start_time = 0,
 				},
 			},
@@ -624,7 +624,7 @@ weapon_template.actions = {
 				{
 					buff_name = "planted_decrease_movement",
 					end_time = 0.5,
-					external_multiplier = 0.9,
+					external_multiplier = 0.95,
 					start_time = 0,
 				},
 			},
@@ -736,7 +736,7 @@ weapon_template.actions = {
 			aim_assist_ramp_multiplier = 0.5,
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_down",
-			damage_profile = "light_slashing_smiter_finesse",
+			damage_profile = "sword_1h_light_smiter_vertical",
 			damage_window_end = 0.47,
 			damage_window_start = 0.38,
 			dedicated_target_range = 2.5,
@@ -757,7 +757,7 @@ weapon_template.actions = {
 				{
 					buff_name = "planted_fast_decrease_movement",
 					end_time = 0.2,
-					external_multiplier = 0.7,
+					external_multiplier = 0.85,
 					start_time = 0,
 				},
 				{
@@ -907,15 +907,13 @@ weapon_template.actions = {
 					end_time = 1.2,
 					input = "action_one",
 					release_required = "action_two_hold",
-					start_time = 0.55,
-					sub_action = "default",
+					start_time = 0.5,
+					sub_action = "default_left",
 				},
 				{
-					action = "action_one",
-					end_time = 1.2,
-					input = "action_one_hold",
-					release_required = "action_two_hold",
-					start_time = 0.55,
+					action = "action_two",
+					input = "action_two_hold",
+					start_time = 0.45,
 					sub_action = "default",
 				},
 				{
@@ -1153,17 +1151,17 @@ weapon_template.state_machine = "units/beings/player/first_person_base/state_mac
 weapon_template.buff_type = "MELEE_1H"
 weapon_template.weapon_type = "SWORD_1H"
 weapon_template.max_fatigue_points = 8
-weapon_template.dodge_count = 3
+weapon_template.dodge_count = 6
 weapon_template.block_angle = 90
 weapon_template.outer_block_angle = 360
 weapon_template.block_fatigue_point_multiplier = 0.5
 weapon_template.outer_block_fatigue_point_multiplier = 2
 weapon_template.buffs = {
 	change_dodge_distance = {
-		external_optional_multiplier = 1.2,
+		external_optional_multiplier = 1.3,
 	},
 	change_dodge_speed = {
-		external_optional_multiplier = 1.2,
+		external_optional_multiplier = 1.3,
 	},
 }
 weapon_template.attack_meta_data = {

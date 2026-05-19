@@ -1016,8 +1016,10 @@ local damage_templates = {
 		default_target = {
 			attack_template = "drakegun",
 			damage_type = "drakegun",
+			dot_balefire_variant = true,
+			dot_template_name = "burning_dot_scythe_special",
 			power_distribution = {
-				attack = 0.07,
+				attack = 0.015,
 				impact = 0.5,
 			},
 		},

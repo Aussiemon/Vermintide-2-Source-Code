@@ -719,7 +719,7 @@ function flow_callback_attach_player_item(params)
 						end
 					end
 
-					if weapon_template.ammo_data ~= nil and weapon_template.actions.action_one.default.projectile_info ~= nil then
+					if weapon_template.ammo_data ~= nil and weapon_template.actions.action_one ~= nil and weapon_template.actions.action_one.default.projectile_info ~= nil then
 						local projectile_units = ProjectileUnits
 
 						if projectile_units[weapon_template.actions.action_one.default.projectile_info.projectile_units_template].dummy_linker_unit_name ~= nil then

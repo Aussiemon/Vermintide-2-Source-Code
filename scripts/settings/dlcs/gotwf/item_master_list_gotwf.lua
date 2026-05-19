@@ -18,6 +18,7 @@ ItemMasterList.wh_brace_of_pistols_skin_03_runed_05 = {
 	},
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.dr_steam_pistol_skin_02_runed_05 = {
@@ -38,6 +39,7 @@ ItemMasterList.dr_steam_pistol_skin_02_runed_05 = {
 	},
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.we_javelin_skin_02_runed_05 = {
@@ -57,6 +59,7 @@ ItemMasterList.we_javelin_skin_02_runed_05 = {
 	},
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.bw_deus_01_skin_02_runed_05 = {
@@ -78,6 +81,7 @@ ItemMasterList.bw_deus_01_skin_02_runed_05 = {
 	},
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.es_dual_wield_hammer_sword_skin_02_runed_05 = {
@@ -98,6 +102,7 @@ ItemMasterList.es_dual_wield_hammer_sword_skin_02_runed_05 = {
 	},
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.wh_deus_01_skin_03_runed_05 = {
@@ -119,6 +124,7 @@ ItemMasterList.wh_deus_01_skin_03_runed_05 = {
 	},
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.dw_2h_hammer_skin_01_runed_05 = {
@@ -139,6 +145,7 @@ ItemMasterList.dw_2h_hammer_skin_01_runed_05 = {
 	},
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.es_handgun_skin_02_runed_05 = {
@@ -159,6 +166,7 @@ ItemMasterList.es_handgun_skin_02_runed_05 = {
 	},
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.we_dual_dagger_skin_02_runed_05 = {
@@ -179,6 +187,7 @@ ItemMasterList.we_dual_dagger_skin_02_runed_05 = {
 	},
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.bw_1h_flaming_sword_skin_01_runed_05 = {
@@ -199,6 +208,7 @@ ItemMasterList.bw_1h_flaming_sword_skin_01_runed_05 = {
 	},
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.frame_gotwf_01 = {
@@ -215,5 +225,6 @@ ItemMasterList.frame_gotwf_01 = {
 	can_wield = CanWieldAllItemTemplates,
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }

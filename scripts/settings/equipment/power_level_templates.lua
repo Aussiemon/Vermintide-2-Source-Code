@@ -2180,7 +2180,7 @@ PowerLevelTemplates = {
 			0.75,
 		},
 	},
-	armor_modifier_smiter_pick_H = {
+	armor_modifier_smiter_pick_H_charged = {
 		attack = {
 			1,
 			0.85,
@@ -3241,7 +3241,7 @@ PowerLevelTemplates = {
 				attack = {
 					1,
 					0.6,
-					1,
+					1.75,
 					1,
 					0.75,
 				},
@@ -3576,6 +3576,2332 @@ PowerLevelTemplates = {
 		power_distribution = {
 			attack = 0,
 			impact = 10,
+		},
+	},
+	sword_1h_light_smiter_vertical_critical_strike = {
+		attack_armor_power_modifer = {
+			1.25,
+			0.75,
+			2.75,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+		},
+	},
+	sword_1h_light_smiter_vertical_cleave_distribution = {
+		attack = 0.075,
+		impact = 0.075,
+	},
+	sword_1h_light_smiter_vertical_armor_modifier = {
+		attack = {
+			1,
+			0.25,
+			1,
+			1,
+			0.75,
+		},
+		impact = {
+			0.75,
+			0.25,
+			1,
+			1,
+			0.75,
+		},
+	},
+	sword_1h_light_smiter_vertical_default_target = {
+		attack_template = "slashing_smiter",
+		boost_curve_coefficient_headshot = 3,
+		boost_curve_type = "smiter_curve",
+		power_distribution = {
+			attack = 0.075,
+			impact = 0.075,
+		},
+	},
+	sword_1h_light_smiter_vertical_targets = {
+		{
+			attack_template = "slashing_smiter",
+			boost_curve_coefficient_headshot = 3,
+			boost_curve_type = "smiter_curve",
+			armor_modifier = {
+				attack = {
+					1.25,
+					0.65,
+					2.5,
+					1,
+					0.75,
+					0.6,
+				},
+				impact = {
+					1,
+					0.5,
+					1,
+					1,
+					0.75,
+					0.25,
+				},
+			},
+			power_distribution = {
+				attack = 0.25,
+				impact = 0.175,
+			},
+		},
+	},
+	axe_1h_light_smiter_critical_strike = {
+		attack_armor_power_modifer = {
+			1.25,
+			0.75,
+			2.75,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+		},
+	},
+	axe_1h_light_smiter_diag_cleave_distribution = {
+		attack = 0.15,
+		impact = 0.15,
+	},
+	axe_1h_light_smiter_horizontal_cleave_distribution = {
+		attack = 0.3,
+		impact = 0.3,
+	},
+	axe_1h_light_smiter_armor_modifier = {
+		attack = {
+			1,
+			0.25,
+			1,
+			1,
+			0.75,
+		},
+		impact = {
+			0.75,
+			0.25,
+			1,
+			1,
+			0.75,
+		},
+	},
+	axe_1h_light_smiter_default_target = {
+		attack_template = "slashing_smiter",
+		boost_curve_type = "smiter_curve",
+		power_distribution = {
+			attack = 0.075,
+			impact = 0.075,
+		},
+	},
+	axe_1h_light_smiter_targets = {
+		{
+			attack_template = "slashing_smiter",
+			boost_curve_type = "smiter_curve",
+			armor_modifier = {
+				attack = {
+					1.25,
+					0.65,
+					2.5,
+					1,
+					0.75,
+					0.8,
+				},
+				impact = {
+					1,
+					0.5,
+					1,
+					1,
+					0.75,
+					0.25,
+				},
+			},
+			power_distribution = {
+				attack = 0.25,
+				impact = 0.175,
+			},
+		},
+		{
+			attack_template = "slashing_smiter",
+			boost_curve_type = "smiter_curve",
+			armor_modifier = {
+				attack = {
+					1.25,
+					0.45,
+					2,
+					1,
+					0.75,
+				},
+				impact = {
+					0.9,
+					0.4,
+					1,
+					1,
+					0.75,
+				},
+			},
+			power_distribution = {
+				attack = 0.15,
+				impact = 0.125,
+			},
+		},
+	},
+	axe_1h_heavy_smiter_vertical_critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.8,
+			2.5,
+			1,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+		},
+	},
+	axe_1h_heavy_smiter_vertical_cleave_distribution = {
+		attack = 0.075,
+		impact = 0.075,
+	},
+	axe_1h_heavy_smiter_vertical_armor_modifier = {
+		attack = {
+			1,
+			0.95,
+			2.5,
+			1,
+			0.75,
+			1.1,
+		},
+		impact = {
+			1,
+			0.95,
+			1,
+			1,
+			0.75,
+		},
+	},
+	axe_1h_heavy_smiter_vertical_default_target = {
+		attack_template = "slashing_smiter",
+		boost_curve_coefficient = 2,
+		boost_curve_coefficient_headshot = 1.5,
+		boost_curve_type = "smiter_curve",
+		power_distribution = {
+			attack = 0.4,
+			impact = 0.25,
+		},
+	},
+	axe_1h_heavy_smiter_vertical_targets = {
+		[2] = {
+			attack_template = "light_blunt_tank",
+			boost_curve_type = "tank_curve",
+			power_distribution = {
+				attack = 0.1,
+				impact = 0.1,
+			},
+		},
+	},
+	axe_1h_light_smiter_vertical_critical_strike = {
+		attack_armor_power_modifer = {
+			1.25,
+			0.75,
+			2.75,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+		},
+	},
+	axe_1h_light_smiter_vertical_cleave_distribution = {
+		attack = 0.075,
+		impact = 0.075,
+	},
+	axe_1h_light_smiter_vertical_armor_modifier = {
+		attack = {
+			1.25,
+			0.65,
+			2.5,
+			1,
+			0.75,
+			0.6,
+		},
+		impact = {
+			1,
+			0.5,
+			1,
+			1,
+			0.75,
+			0.25,
+		},
+	},
+	axe_1h_light_smiter_vertical_default_target = {
+		attack_template = "slashing_smiter",
+		boost_curve_coefficient_headshot = 1.75,
+		boost_curve_type = "smiter_curve",
+		power_distribution = {
+			attack = 0.3,
+			impact = 0.175,
+		},
+	},
+	axe_1h_light_smiter_vertical_targets = {
+		[2] = {
+			attack_template = "slashing_smiter",
+			boost_curve_type = "smiter_curve",
+			armor_modifier = {
+				attack = {
+					1,
+					0.25,
+					1,
+					1,
+					0.75,
+				},
+				impact = {
+					0.75,
+					0.25,
+					1,
+					1,
+					0.75,
+				},
+			},
+			power_distribution = {
+				attack = 0.075,
+				impact = 0.075,
+			},
+		},
+	},
+	axe_shield_light_smiter_diag_critical_strike = {
+		attack_armor_power_modifer = {
+			1.25,
+			0.75,
+			2.75,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+		},
+	},
+	axe_shield_light_smiter_diag_cleave_distribution = {
+		attack = 0.15,
+		impact = 0.15,
+	},
+	axe_shield_light_smiter_diag_armor_modifier = {
+		attack = {
+			1,
+			0.25,
+			1,
+			1,
+			0.75,
+		},
+		impact = {
+			0.75,
+			0.25,
+			1,
+			1,
+			0.75,
+		},
+	},
+	axe_shield_light_smiter_diag_default_target = {
+		attack_template = "slashing_smiter",
+		boost_curve_type = "smiter_curve",
+		power_distribution = {
+			attack = 0.075,
+			impact = 0.075,
+		},
+	},
+	axe_shield_light_smiter_diag_targets_smiter = {
+		{
+			attack_template = "slashing_smiter",
+			boost_curve_type = "smiter_curve",
+			armor_modifier = {
+				attack = {
+					1.25,
+					0.65,
+					2.5,
+					1,
+					0.75,
+					0.6,
+				},
+				impact = {
+					1,
+					0.5,
+					1,
+					1,
+					0.75,
+					0.25,
+				},
+			},
+			power_distribution = {
+				attack = 0.25,
+				impact = 0.175,
+			},
+		},
+		{
+			attack_template = "slashing_smiter",
+			boost_curve_type = "smiter_curve",
+			armor_modifier = {
+				attack = {
+					1.25,
+					0.45,
+					2,
+					1,
+					0.75,
+				},
+				impact = {
+					0.9,
+					0.4,
+					1,
+					1,
+					0.75,
+				},
+			},
+			power_distribution = {
+				attack = 0.15,
+				impact = 0.125,
+			},
+		},
+	},
+	axe_shield_light_smiter_vertical_critical_strike = {
+		attack_armor_power_modifer = {
+			1.25,
+			0.75,
+			2.75,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+		},
+	},
+	axe_shield_light_smiter_vertical_cleave_distribution = {
+		attack = 0.075,
+		impact = 0.075,
+	},
+	axe_shield_light_smiter_vertical_armor_modifier = {
+		attack = {
+			1.25,
+			0.65,
+			2.5,
+			1,
+			0.75,
+			0.6,
+		},
+		impact = {
+			1,
+			0.5,
+			1,
+			1,
+			0.75,
+			0.25,
+		},
+	},
+	axe_shield_light_smiter_vertical_default_target = {
+		attack_template = "slashing_smiter",
+		boost_curve_coefficient_headshot = 1.5,
+		boost_curve_type = "smiter_curve",
+		power_distribution = {
+			attack = 0.25,
+			impact = 0.175,
+		},
+	},
+	axe_shield_light_smiter_vertical_targets_smiter = {
+		[2] = {
+			attack_template = "slashing_smiter",
+			boost_curve_type = "smiter_curve",
+			armor_modifier = {
+				attack = {
+					1,
+					0.25,
+					1,
+					1,
+					0.75,
+				},
+				impact = {
+					0.75,
+					0.25,
+					1,
+					1,
+					0.75,
+				},
+			},
+			power_distribution = {
+				attack = 0.075,
+				impact = 0.075,
+			},
+		},
+	},
+	axe_shield_heavy_smiter_vertical_critical_strike = {
+		attack_armor_power_modifer = {
+			1.25,
+			0.8,
+			2.5,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+		},
+	},
+	axe_shield_heavy_smiter_vertical_cleave_distribution = {
+		attack = 0.075,
+		impact = 0.075,
+	},
+	axe_shield_heavy_smiter_vertical_armor_modifier = {
+		attack = {
+			1,
+			0.95,
+			1.75,
+			1,
+			0.75,
+		},
+		impact = {
+			1,
+			0.95,
+			1,
+			1,
+			0.75,
+		},
+	},
+	axe_shield_heavy_smiter_vertical_default_target = {
+		attack_template = "slashing_smiter",
+		boost_curve_coefficient = 2,
+		boost_curve_coefficient_headshot = 1.5,
+		boost_curve_type = "smiter_curve",
+		power_distribution = {
+			attack = 0.4,
+			impact = 0.25,
+		},
+	},
+	aaxe_shield_heavy_smiter_vertical_targets = {
+		[2] = {
+			attack_template = "light_blunt_tank",
+			boost_curve_type = "tank_curve",
+			power_distribution = {
+				attack = 0.1,
+				impact = 0.1,
+			},
+		},
+	},
+	pickaxe_medium_tank_diag_critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.5,
+			1,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			0.5,
+			1,
+			1,
+		},
+	},
+	pickaxe_medium_tank_diag_cleave_distribution = {
+		attack = 0.3,
+		impact = 0.8,
+	},
+	pickaxe_medium_tank_diag_armor_modifier = {
+		attack = {
+			1,
+			0.6,
+			1,
+			1,
+			0.75,
+		},
+		impact = {
+			1,
+			1,
+			0.5,
+			1,
+			0.75,
+		},
+	},
+	pickaxe_medium_tank_diag_default_target = {
+		attack_template = "light_blunt_tank",
+		boost_curve_type = "tank_curve",
+		power_distribution = {
+			attack = 0.05,
+			impact = 0.05,
+		},
+	},
+	pickaxe_medium_tank_diag_targets = {
+		{
+			attack_template = "blunt_tank",
+			boost_curve_coefficient_headshot = 1,
+			boost_curve_type = "tank_curve",
+			power_distribution = {
+				attack = 0.2,
+				impact = 0.2,
+			},
+		},
+		{
+			attack_template = "blunt_tank",
+			boost_curve_type = "tank_curve",
+			power_distribution = {
+				attack = 0.1,
+				impact = 0.15,
+			},
+		},
+		{
+			attack_template = "light_blunt_tank",
+			boost_curve_type = "tank_curve",
+			power_distribution = {
+				attack = 0.075,
+				impact = 0.1,
+			},
+		},
+	},
+	pickaxe_heavy_smiter_vertical_critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.5,
+			1.5,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+		},
+	},
+	pickaxe_heavy_smiter_vertical_cleave_distribution = {
+		attack = 0.075,
+		impact = 0.075,
+	},
+	pickaxe_heavy_smiter_vertical_armor_modifier = {
+		attack = {
+			1,
+			0.75,
+			1.5,
+			1,
+			0.75,
+			0.9,
+		},
+		impact = {
+			1,
+			1,
+			1,
+			1,
+			0.75,
+			0.9,
+		},
+	},
+	pickaxe_heavy_smiter_vertical_default_target = {
+		attack_template = "heavy_blunt_smiter",
+		boost_curve_coefficient = 0.75,
+		boost_curve_coefficient_headshot = 0.75,
+		boost_curve_type = "smiter_curve",
+		power_distribution = {
+			attack = 0.65,
+			impact = 0.35,
+		},
+	},
+	pickaxe_heavy_smiter_vertical_targets = {
+		[2] = {
+			attack_template = "heavy_blunt_smiter",
+			boost_curve_type = "smiter_curve",
+			power_distribution = {
+				attack = 0.2,
+				impact = 0.1,
+			},
+		},
+	},
+	pickaxe_heavy_linesman_horizontal_critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.5,
+			1,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			0.5,
+			1,
+			1,
+		},
+	},
+	pickaxe_heavy_linesman_horizontal_cleave_distribution = {
+		attack = 0.35,
+		impact = 0.35,
+	},
+	pickaxe_heavy_linesman_horizontal_armor_modifier = {
+		attack = {
+			1,
+			0.6,
+			1,
+			1,
+			0.75,
+		},
+		impact = {
+			1,
+			1,
+			0.5,
+			1,
+			0.75,
+		},
+	},
+	pickaxe_heavy_linesman_horizontal_default_target = {
+		attack_template = "light_blunt_tank",
+		boost_curve_type = "linesman_curve",
+		power_distribution = {
+			attack = 0.05,
+			impact = 0.08,
+		},
+	},
+	pickaxe_heavy_linesman_horizontal_targets = {
+		{
+			attack_template = "blunt_tank",
+			boost_curve_coefficient_headshot = 1,
+			boost_curve_type = "linesman_curve",
+			power_distribution = {
+				attack = 0.2,
+				impact = 0.3,
+			},
+		},
+		{
+			attack_template = "blunt_tank",
+			boost_curve_type = "linesman_curve",
+			power_distribution = {
+				attack = 0.1,
+				impact = 0.2,
+			},
+		},
+		{
+			attack_template = "light_blunt_tank",
+			boost_curve_type = "linesman_curve",
+			power_distribution = {
+				attack = 0.075,
+				impact = 0.15,
+			},
+		},
+	},
+	pickaxe_heavy_smiter_vertical_charged_critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.5,
+			1.5,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+		},
+	},
+	pickaxe_heavy_smiter_vertical_charged_cleave_distribution = {
+		attack = 0.075,
+		impact = 0.075,
+	},
+	pickaxe_heavy_smiter_vertical_charged_armor_modifier = {
+		attack = {
+			1,
+			0.95,
+			1.5,
+			1,
+			0.75,
+		},
+		impact = {
+			1,
+			1,
+			1,
+			1,
+			0.75,
+		},
+	},
+	pickaxe_heavy_smiter_vertical_charged_default_target = {
+		attack_template = "heavy_blunt_smiter",
+		boost_curve_coefficient = 0.5,
+		boost_curve_coefficient_headshot = 1,
+		boost_curve_type = "smiter_curve",
+		power_distribution = {
+			attack = 1.2,
+			impact = 0.5,
+		},
+	},
+	pickaxe_heavy_smiter_vertical_charged_targets_smiter = {
+		[2] = {
+			attack_template = "stab_smiter",
+			boost_curve_type = "smiter_curve",
+			power_distribution = {
+				attack = 0.2,
+				impact = 0.1,
+			},
+		},
+	},
+	pickaxe_medium_smiter_horizontal_critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.8,
+			2.5,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.8,
+			1,
+			1,
+			1,
+			0.5,
+		},
+	},
+	pickaxe_medium_smiter_horizontal_cleave_distribution = {
+		attack = 0.2,
+		impact = 0.2,
+	},
+	pickaxe_medium_smiter_horizontal_armor_modifier = {
+		attack = {
+			1,
+			0.8,
+			1.75,
+			1,
+			0.75,
+		},
+		impact = {
+			1,
+			0.6,
+			1,
+			1,
+			0.75,
+		},
+	},
+	pickaxe_medium_smiter_horizontal_default_target = {
+		attack_template = "blunt_tank",
+		boost_curve_type = "smiter_curve",
+		power_distribution = {
+			attack = 0.1,
+			impact = 0.1,
+		},
+	},
+	pickaxe_medium_smiter_horizontal_targets = {
+		{
+			attack_template = "blunt_tank",
+			boost_curve_coefficient = 2,
+			boost_curve_type = "tank_curve",
+			armor_modifier = {
+				attack = {
+					1,
+					0.8,
+					1.75,
+					1,
+					0.75,
+				},
+				impact = {
+					1,
+					0.6,
+					1,
+					1,
+					0.75,
+				},
+			},
+			power_distribution = {
+				attack = 0.5,
+				impact = 0.25,
+			},
+		},
+		{
+			attack_template = "blunt_tank",
+			boost_curve_type = "tank_curve",
+			armor_modifier = {
+				attack = {
+					1,
+					0.8,
+					1.75,
+					1,
+					0.75,
+				},
+				impact = {
+					1,
+					0.6,
+					1,
+					1,
+					0.75,
+				},
+			},
+			power_distribution = {
+				attack = 0.2,
+				impact = 0.2,
+			},
+		},
+	},
+	elven_axe_light_smiter_horizontal_critical_strike = {
+		attack_armor_power_modifer = {
+			1.25,
+			0.75,
+			2.75,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+		},
+	},
+	elven_axe_light_smiter_horizontal_cleave_distribution = {
+		attack = 0.15,
+		impact = 0.15,
+	},
+	elven_axe_light_smiter_horizontal_armor_modifier = {
+		attack = {
+			1,
+			0.25,
+			1,
+			1,
+			0.75,
+		},
+		impact = {
+			0.75,
+			0.25,
+			1,
+			1,
+			0.75,
+		},
+	},
+	elven_axe_light_smiter_horizontal_default_target = {
+		attack_template = "slashing_smiter",
+		boost_curve_type = "smiter_curve",
+		power_distribution = {
+			attack = 0.075,
+			impact = 0.075,
+		},
+	},
+	elven_axe_light_smiter_horizontal_targets = {
+		{
+			attack_template = "slashing_smiter",
+			boost_curve_type = "smiter_curve",
+			armor_modifier = {
+				attack = {
+					1.25,
+					0.65,
+					2.5,
+					1,
+					0.75,
+					0.6,
+				},
+				impact = {
+					1,
+					0.5,
+					1,
+					1,
+					0.75,
+					0.25,
+				},
+			},
+			power_distribution = {
+				attack = 0.25,
+				impact = 0.175,
+			},
+		},
+		{
+			attack_template = "slashing_smiter",
+			boost_curve_type = "smiter_curve",
+			armor_modifier = {
+				attack = {
+					1.25,
+					0.45,
+					2,
+					1,
+					0.75,
+				},
+				impact = {
+					0.9,
+					0.4,
+					1,
+					1,
+					0.75,
+				},
+			},
+			power_distribution = {
+				attack = 0.1,
+				impact = 0.125,
+			},
+		},
+	},
+	elven_axe_light_smiter_vertical_critical_strike = {
+		attack_armor_power_modifer = {
+			1.25,
+			0.75,
+			2.75,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+		},
+	},
+	elven_axe_light_smiter_vertical_cleave_distribution = {
+		attack = 0.075,
+		impact = 0.075,
+	},
+	elven_axe_light_smiter_vertical_armor_modifier = {
+		attack = {
+			1.25,
+			0.85,
+			2.5,
+			1,
+			0.75,
+			0.9,
+		},
+		impact = {
+			1,
+			0.5,
+			1,
+			1,
+			0.75,
+			0.25,
+		},
+	},
+	elven_axe_light_smiter_vertical_default_target = {
+		attack_template = "slashing_smiter",
+		boost_curve_coefficient_headshot = 2,
+		boost_curve_type = "smiter_curve",
+		power_distribution = {
+			attack = 0.25,
+			impact = 0.175,
+		},
+	},
+	elven_axe_light_smiter_vertical_targets = {
+		[2] = {
+			attack_template = "slashing_smiter",
+			boost_curve_coefficient_headshot = 2,
+			boost_curve_type = "smiter_curve",
+			armor_modifier = {
+				attack = {
+					1,
+					0.25,
+					1,
+					1,
+					0.75,
+				},
+				impact = {
+					0.75,
+					0.25,
+					1,
+					1,
+					0.75,
+				},
+			},
+			power_distribution = {
+				attack = 0.075,
+				impact = 0.075,
+			},
+		},
+	},
+	elven_axe_heavy_smiter_vertical_critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.8,
+			2.5,
+			1,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+		},
+	},
+	elven_axe_heavy_smiter_vertical_cleave_distribution = {
+		attack = 0.075,
+		impact = 0.075,
+	},
+	elven_axe_heavy_smiter_vertical_armor_modifier = {
+		attack = {
+			1,
+			0.95,
+			2.5,
+			1,
+			0.75,
+			1.1,
+		},
+		impact = {
+			1,
+			0.95,
+			1,
+			1,
+			0.75,
+		},
+	},
+	elven_axe_heavy_smiter_vertical_default_target = {
+		attack_template = "slashing_smiter",
+		boost_curve_coefficient = 2,
+		boost_curve_coefficient_headshot = 1.5,
+		boost_curve_type = "smiter_curve",
+		power_distribution = {
+			attack = 0.4,
+			impact = 0.25,
+		},
+	},
+	elven_axe_heavy_smiter_vertical_targets = {
+		[2] = {
+			attack_template = "light_blunt_tank",
+			boost_curve_type = "tank_curve",
+			power_distribution = {
+				attack = 0.1,
+				impact = 0.1,
+			},
+		},
+	},
+	elven_axe_light_tank_diag_critical_strike = {
+		attack_armor_power_modifer = {
+			1.25,
+			0.75,
+			2.75,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+		},
+	},
+	elven_axe_light_tank_diag_cleave_distribution = {
+		attack = 0.3,
+		impact = 0.3,
+	},
+	elven_axe_light_tank_diag_armor_modifier = {
+		attack = {
+			1,
+			0.25,
+			1,
+			1,
+			0.75,
+		},
+		impact = {
+			0.75,
+			0.25,
+			1,
+			1,
+			0.75,
+		},
+	},
+	elven_axe_light_tank_diag_default_target = {
+		attack_template = "slashing_smiter",
+		boost_curve_coefficient_headshot = 1,
+		boost_curve_type = "smiter_curve",
+		power_distribution = {
+			attack = 0.075,
+			impact = 0.075,
+		},
+	},
+	elven_axe_light_tank_diag_targets = {
+		{
+			attack_template = "slashing_smiter",
+			boost_curve_coefficient_headshot = 1,
+			boost_curve_type = "smiter_curve",
+			armor_modifier = {
+				attack = {
+					1.25,
+					0.65,
+					2.5,
+					1,
+					0.75,
+					0.6,
+				},
+				impact = {
+					1,
+					0.5,
+					1,
+					1,
+					0.75,
+					0.25,
+				},
+			},
+			power_distribution = {
+				attack = 0.1,
+				impact = 0.175,
+			},
+		},
+		{
+			attack_template = "slashing_smiter",
+			boost_curve_coefficient_headshot = 1,
+			boost_curve_type = "smiter_curve",
+			armor_modifier = {
+				attack = {
+					1.15,
+					0.45,
+					2,
+					1,
+					0.75,
+					0.6,
+				},
+				impact = {
+					0.9,
+					0.4,
+					1,
+					1,
+					0.75,
+					0.25,
+				},
+			},
+			power_distribution = {
+				attack = 0.085,
+				impact = 0.125,
+			},
+		},
+	},
+	elven_2h_sword_heavy_linesman_horizontal_critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.5,
+			2.5,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.5,
+			0.5,
+			1,
+			1,
+		},
+	},
+	elven_2h_sword_heavy_linesman_horizontal_cleave_distribution = {
+		attack = 0.75,
+		impact = 0.4,
+	},
+	elven_2h_sword_heavy_linesman_horizontal_armor_modifier = {
+		attack = {
+			1,
+			0.3,
+			2,
+			1,
+			1,
+		},
+		impact = {
+			1,
+			0.5,
+			0.5,
+			1,
+			1,
+		},
+	},
+	elven_2h_sword_heavy_linesman_horizontal_default_target = {
+		attack_template = "light_slashing_linesman",
+		boost_curve_type = "linesman_curve",
+		power_distribution = {
+			attack = 0.075,
+			impact = 0.05,
+		},
+	},
+	elven_2h_sword_heavy_linesman_horizontal_targets_linesman = {
+		{
+			attack_template = "slashing_linesman",
+			boost_curve_coefficient = 0.75,
+			boost_curve_type = "linesman_curve",
+			power_distribution = {
+				attack = 0.35,
+				impact = 0.25,
+			},
+		},
+		{
+			attack_template = "slashing_linesman",
+			boost_curve_type = "linesman_curve",
+			power_distribution = {
+				attack = 0.275,
+				impact = 0.125,
+			},
+		},
+		{
+			attack_template = "light_slashing_linesman",
+			boost_curve_type = "linesman_curve",
+			power_distribution = {
+				attack = 0.2,
+				impact = 0.1,
+			},
+		},
+		{
+			attack_template = "light_slashing_linesman",
+			boost_curve_type = "linesman_curve",
+			power_distribution = {
+				attack = 0.125,
+				impact = 0.075,
+			},
+		},
+	},
+	axe_falchion_light_smiter_horizontal_critical_strike = {
+		attack_armor_power_modifer = {
+			1.25,
+			0.75,
+			2.75,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+		},
+	},
+	axe_falchion_light_smiter_horizontal_cleave_distribution = {
+		attack = 0.15,
+		impact = 0.15,
+	},
+	axe_falchion_light_smiter_horizontal_armor_modifier = {
+		attack = {
+			1,
+			0.25,
+			1,
+			1,
+			0.75,
+		},
+		impact = {
+			0.75,
+			0.25,
+			1,
+			1,
+			0.75,
+		},
+	},
+	axe_falchion_light_smiter_horizontal_default_target = {
+		attack_template = "slashing_smiter",
+		boost_curve_type = "smiter_curve",
+		power_distribution = {
+			attack = 0.075,
+			impact = 0.075,
+		},
+	},
+	axe_falchion_light_smiter_horizontal_targets = {
+		{
+			attack_template = "slashing_smiter",
+			boost_curve_type = "smiter_curve",
+			armor_modifier = {
+				attack = {
+					1.25,
+					0.65,
+					2.5,
+					1,
+					0.75,
+					0.6,
+				},
+				impact = {
+					1,
+					0.5,
+					1,
+					1,
+					0.75,
+					0.25,
+				},
+			},
+			power_distribution = {
+				attack = 0.25,
+				impact = 0.175,
+			},
+		},
+		{
+			attack_template = "slashing_smiter",
+			boost_curve_type = "smiter_curve",
+			armor_modifier = {
+				attack = {
+					1,
+					0.25,
+					1,
+					1,
+					0.75,
+				},
+				impact = {
+					0.75,
+					0.25,
+					1,
+					1,
+					0.75,
+				},
+			},
+			power_distribution = {
+				attack = 0.15,
+				impact = 0.125,
+			},
+		},
+	},
+	axe_falcion_heavy_smiter_vertical_right_critical_strike = {
+		attack_armor_power_modifer = {
+			1.25,
+			0.75,
+			2.75,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+		},
+	},
+	axe_falcion_heavy_smiter_vertical_right_cleave_distribution = {
+		attack = 0.075,
+		impact = 0.075,
+	},
+	axe_falcion_heavy_smiter_vertical_right_armor_modifier = {
+		attack = {
+			1.25,
+			0.45,
+			2.5,
+			1,
+			0.75,
+			0.6,
+		},
+		impact = {
+			1,
+			0.5,
+			1,
+			1,
+			0.75,
+			0.25,
+		},
+	},
+	axe_falcion_heavy_smiter_vertical_right_default_target = {
+		attack_template = "slashing_smiter",
+		boost_curve_coefficient_headshot = 1.6,
+		boost_curve_type = "smiter_curve",
+		power_distribution = {
+			attack = 0.225,
+			impact = 0.15,
+		},
+	},
+	axe_falcion_heavy_smiter_vertical_right_targets_smiter = {
+		[2] = {
+			attack_template = "slashing_smiter",
+			boost_curve_type = "smiter_curve",
+			armor_modifier = {
+				attack = {
+					1,
+					0.25,
+					1,
+					1,
+					0.75,
+				},
+				impact = {
+					0.75,
+					0.25,
+					1,
+					1,
+					0.75,
+				},
+			},
+			power_distribution = {
+				attack = 0.075,
+				impact = 0.075,
+			},
+		},
+	},
+	dagger_1h_light_linesman_critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.5,
+			2,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.1,
+			0.5,
+			1,
+			1,
+		},
+	},
+	dagger_1h_light_linesman_cleave_distribution = {
+		attack = 0.26,
+		impact = 0.2,
+	},
+	dagger_1h_light_linesman_armor_modifier = {
+		attack = {
+			1,
+			0,
+			1.5,
+			1,
+			1,
+		},
+		impact = {
+			1,
+			0.1,
+			0.5,
+			1,
+			1,
+		},
+	},
+	dagger_1h_light_linesman_default_target = {
+		attack_template = "light_slashing_linesman_hs",
+		boost_curve_type = "ninja_curve",
+		power_distribution = {
+			attack = 0.075,
+			impact = 0.05,
+		},
+	},
+	dagger_1h_light_linesman_targets = {
+		{
+			attack_template = "light_slashing_linesman_hs",
+			boost_curve_coefficient_headshot = 2.5,
+			boost_curve_type = "ninja_curve",
+			power_distribution = {
+				attack = 0.125,
+				impact = 0.05,
+			},
+		},
+	},
+	dagger_1h_light_smiter_stab_critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.5,
+			2,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.5,
+			0.5,
+			1,
+			1,
+		},
+	},
+	dagger_1h_light_smiter_stab_cleave_distribution = {
+		attack = 0.075,
+		impact = 0.075,
+	},
+	dagger_1h_light_smiter_stab_armor_modifier = {
+		attack = {
+			1,
+			0.25,
+			1.5,
+			1,
+			0.75,
+		},
+		impact = {
+			1,
+			0.1,
+			0.5,
+			1,
+			0.75,
+		},
+	},
+	dagger_1h_light_smiter_stab_default_target = {
+		attack_template = "light_stab_smiter",
+		boost_curve_coefficient_headshot = 3,
+		boost_curve_type = "ninja_curve",
+		power_distribution = {
+			attack = 0.075,
+			impact = 0.075,
+		},
+	},
+	dagger_1h_light_smiter_stab_targets = {
+		{
+			attack_template = "light_stab_smiter",
+			boost_curve_coefficient_headshot = 3,
+			boost_curve_type = "ninja_curve",
+			dot_balefire_variant = true,
+			dot_template_name = "weapon_bleed_dot_dagger",
+			power_distribution = {
+				attack = 0.12,
+				impact = 0.08,
+			},
+		},
+	},
+	dagger_h1_medium_smiter_diag_critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.8,
+			2.5,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.8,
+			1,
+			1,
+			1,
+			0.5,
+		},
+	},
+	dagger_h1_medium_smiter_diag_cleave_distribution = {
+		attack = 0.075,
+		impact = 0.075,
+	},
+	dagger_h1_medium_smiter_diag_armor_modifier = {
+		attack = {
+			1,
+			0.8,
+			1.75,
+			1,
+			0.75,
+		},
+		impact = {
+			1,
+			0.6,
+			1,
+			1,
+			0.75,
+		},
+	},
+	dagger_h1_medium_smiter_diag_default_target = {
+		attack_template = "flame_blast",
+		boost_curve_coefficient_headshot = 1.5,
+		boost_curve_type = "ninja_curve",
+		dot_balefire_variant = true,
+		dot_template_name = "burning_dot_3tick",
+		power_distribution = {
+			attack = 0.275,
+			impact = 0.125,
+		},
+	},
+	dagger_h1_medium_smiter_diag_targets = {
+		[2] = {
+			attack_template = "light_blunt_tank",
+			boost_curve_type = "tank_curve",
+			power_distribution = {
+				attack = 0.1,
+				impact = 0.1,
+			},
+		},
+	},
+	crowbill_1h_light_smiter_flat_critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			1,
+			2,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+		},
+	},
+	crowbill_1h_light_smiter_flat_cleave_distribution = {
+		attack = 0.15,
+		impact = 0.15,
+	},
+	crowbill_1h_light_smiter_flat_armor_modifier = {
+		attack = {
+			1,
+			0.25,
+			1,
+			1,
+			0.75,
+		},
+		impact = {
+			0.75,
+			0.25,
+			1,
+			1,
+			0.75,
+		},
+	},
+	crowbill_1h_light_smiter_flat_default_target = {
+		attack_template = "blunt_tank",
+		boost_curve_coefficient_headshot = 1.5,
+		boost_curve_type = "smiter_curve",
+		power_distribution = {
+			attack = 0.075,
+			impact = 0.075,
+		},
+	},
+	crowbill_1h_light_smiter_flat_targets = {
+		{
+			attack_template = "blunt_tank",
+			boost_curve_type = "smiter_curve",
+			armor_modifier = {
+				attack = {
+					1,
+					1,
+					2,
+					1,
+					1,
+					0.5,
+				},
+				impact = {
+					1,
+					0.5,
+					1,
+					1,
+					1,
+					0.5,
+				},
+			},
+			power_distribution = {
+				attack = 0.175,
+				impact = 0.1,
+			},
+		},
+		{
+			attack_template = "blunt_tank",
+			boost_curve_type = "smiter_curve",
+			armor_modifier = {
+				attack = {
+					1,
+					1,
+					2,
+					1,
+					1,
+					0.5,
+				},
+				impact = {
+					1,
+					0.5,
+					1,
+					1,
+					1,
+					0.5,
+				},
+			},
+			power_distribution = {
+				attack = 0.1,
+				impact = 0.1,
+			},
+		},
+	},
+	crowbill_1h_light_smiter_diag_critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			1,
+			2,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+		},
+	},
+	crowbill_1h_light_smiter_diag_cleave_distribution = {
+		attack = 0.15,
+		impact = 0.15,
+	},
+	crowbill_1h_light_smiter_diag_armor_modifier = {
+		attack = {
+			1,
+			0.25,
+			1,
+			1,
+			0.75,
+		},
+		impact = {
+			0.75,
+			0.25,
+			1,
+			1,
+			0.75,
+		},
+	},
+	crowbill_1h_light_smiter_diag_default_target = {
+		attack_template = "slashing_smiter",
+		boost_curve_coefficient_headshot = 1.5,
+		boost_curve_type = "smiter_curve",
+		power_distribution = {
+			attack = 0.075,
+			impact = 0.075,
+		},
+	},
+	crowbill_1h_light_smiter_diag_targets = {
+		{
+			attack_template = "slashing_smiter",
+			boost_curve_type = "smiter_curve",
+			armor_modifier = {
+				attack = {
+					1,
+					1,
+					2,
+					1,
+					1,
+					0.5,
+				},
+				impact = {
+					1,
+					0.5,
+					1,
+					1,
+					1,
+					0.5,
+				},
+			},
+			power_distribution = {
+				attack = 0.175,
+				impact = 0.1,
+			},
+		},
+		{
+			attack_template = "slashing_smiter",
+			boost_curve_type = "smiter_curve",
+			armor_modifier = {
+				attack = {
+					1,
+					1,
+					2,
+					1,
+					1,
+					0.5,
+				},
+				impact = {
+					1,
+					0.5,
+					1,
+					1,
+					1,
+					0.5,
+				},
+			},
+			power_distribution = {
+				attack = 0.1,
+				impact = 0.1,
+			},
+		},
+	},
+	crowbill_1h_heavy_smiter_critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			1,
+			2,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+		},
+	},
+	crowbill_1h_heavy_smiter_cleave_distribution = {
+		attack = 0.3,
+		impact = 0.3,
+	},
+	crowbill_1h_heavy_smiter_armor_modifier = {
+		attack = {
+			1,
+			0.9,
+			2,
+			1,
+			1,
+			0.9,
+		},
+		impact = {
+			1,
+			1,
+			1,
+			1,
+			1,
+			0.5,
+		},
+	},
+	crowbill_1h_heavy_smiter_default_target = {
+		attack_template = "light_blunt_tank",
+		boost_curve_type = "tank_curve",
+		power_distribution = {
+			attack = 0.1,
+			impact = 0.1,
+		},
+	},
+	crowbill_1h_heavy_smiter_default_targets = {
+		{
+			attack_template = "slashing_smiter",
+			boost_curve_coefficient = 2,
+			boost_curve_type = "smiter_curve",
+			power_distribution = {
+				attack = 0.35,
+				impact = 0.25,
+			},
+		},
+		{
+			attack_template = "light_blunt_tank",
+			boost_curve_type = "tank_curve",
+			power_distribution = {
+				attack = 0.2,
+				impact = 0.15,
+			},
+		},
+	},
+	crowbill_1h_heavy_smiter_diag_critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.8,
+			2.5,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.8,
+			1,
+			1,
+			1,
+			0.5,
+		},
+	},
+	crowbill_1h_heavy_smiter_diag_cleave_distribution = {
+		attack = 0.075,
+		impact = 0.075,
+	},
+	crowbill_1h_heavy_smiter_diag_armor_modifier = {
+		attack = {
+			1,
+			0.8,
+			1.75,
+			1,
+			0.75,
+		},
+		impact = {
+			1,
+			0.6,
+			1,
+			1,
+			0.75,
+		},
+	},
+	crowbill_1h_heavy_smiter_diag_default_target = {
+		attack_template = "slashing_smiter",
+		boost_curve_coefficient = 2,
+		boost_curve_coefficient_headshot = 1.5,
+		boost_curve_type = "smiter_curve",
+		power_distribution = {
+			attack = 0.4,
+			impact = 0.25,
+		},
+	},
+	crowbill_1h_heavy_smiter_diag_targets = {
+		[2] = {
+			attack_template = "light_blunt_tank",
+			boost_curve_type = "tank_curve",
+			power_distribution = {
+				attack = 0.1,
+				impact = 0.1,
+			},
+		},
+	},
+	crowbill_1h_light_smiter_upper_critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			1,
+			2,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+		},
+	},
+	crowbill_1h_light_smiter_upper_cleave_distribution = {
+		attack = 0.15,
+		impact = 0.15,
+	},
+	crowbill_1h_light_smiter_upper_armor_modifier = {
+		attack = {
+			1,
+			0.25,
+			1,
+			1,
+			0.75,
+		},
+		impact = {
+			0.75,
+			0.25,
+			1,
+			1,
+			0.75,
+		},
+	},
+	crowbill_1h_light_smiter_upper_default_target = {
+		attack_template = "slashing_upper",
+		boost_curve_coefficient_headshot = 1.5,
+		boost_curve_type = "smiter_curve",
+		power_distribution = {
+			attack = 0.075,
+			impact = 0.075,
+		},
+	},
+	crowbill_1h_light_smiter_upper_targets = {
+		{
+			attack_template = "slashing_upper",
+			boost_curve_type = "smiter_curve",
+			armor_modifier = {
+				attack = {
+					1,
+					1,
+					2,
+					1,
+					1,
+					0.5,
+				},
+				impact = {
+					1,
+					0.5,
+					1,
+					1,
+					1,
+					0.5,
+				},
+			},
+			power_distribution = {
+				attack = 0.175,
+				impact = 0.1,
+			},
+		},
+		{
+			attack_template = "slashing_upper",
+			boost_curve_type = "smiter_curve",
+			armor_modifier = {
+				attack = {
+					1,
+					1,
+					2,
+					1,
+					1,
+					0.5,
+				},
+				impact = {
+					1,
+					0.5,
+					1,
+					1,
+					1,
+					0.5,
+				},
+			},
+			power_distribution = {
+				attack = 0.1,
+				impact = 0.1,
+			},
+		},
+	},
+	mace_1h_light_smiter_vertical_critical_strike = {
+		attack_armor_power_modifer = {
+			1.25,
+			0.75,
+			2.75,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+		},
+	},
+	mace_1h_light_smiter_vertical_cleave_distribution = {
+		attack = 0.075,
+		impact = 0.075,
+	},
+	mace_1h_light_smiter_vertical_armor_modifier = {
+		attack = {
+			1.25,
+			0.65,
+			2.5,
+			1,
+			0.75,
+			0.6,
+		},
+		impact = {
+			1,
+			0.5,
+			1,
+			1,
+			0.75,
+			0.25,
+		},
+	},
+	mace_1h_light_smiter_vertical_default_target = {
+		attack_template = "slashing_smiter",
+		boost_curve_type = "smiter_curve",
+		dot_template_name = "burning_dot_1tick",
+		power_distribution = {
+			attack = 0.2,
+			impact = 0.175,
+		},
+	},
+	mace_1h_light_smiter_vertical_targets = {
+		[2] = {
+			attack_template = "light_blunt_tank",
+			boost_curve_type = "tank_curve",
+			power_distribution = {
+				attack = 0.1,
+				impact = 0.1,
+			},
+		},
+	},
+	mace_1h_heavy_smiter_vertical_critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.8,
+			2.5,
+			1,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+		},
+	},
+	mace_1h_heavy_smiter_vertical_cleave_distribution = {
+		attack = 0.075,
+		impact = 0.075,
+	},
+	mace_1h_heavy_smiter_vertical_armor_modifier = {
+		attack = {
+			1,
+			0.8,
+			2,
+			1,
+			0.75,
+			1,
+		},
+		impact = {
+			1,
+			0.8,
+			1,
+			1,
+			0.75,
+		},
+	},
+	mace_1h_heavy_smiter_vertical_default_target = {
+		attack_template = "slashing_smiter",
+		boost_curve_coefficient = 2,
+		boost_curve_type = "smiter_curve",
+		dot_balefire_variant = true,
+		dot_template_name = "burning_dot_3tick",
+		power_distribution = {
+			attack = 0.3,
+			impact = 0.3,
+		},
+	},
+	mace_1h_heavy_smiter_vertical_targets = {
+		[2] = {
+			attack_template = "light_blunt_tank",
+			boost_curve_type = "tank_curve",
+			power_distribution = {
+				attack = 0.1,
+				impact = 0.1,
+			},
+		},
+	},
+	mace_1h_heavy_tank_diag_critical_strike = {
+		attack_armor_power_modifer = {
+			1.3,
+			1,
+			1.3,
+			1.3,
+			1.3,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			0.5,
+			1,
+			1,
+		},
+	},
+	mace_1h_heavy_tank_diag_cleave_distribution = {
+		attack = 0.6,
+		impact = 0.7,
+	},
+	mace_1h_heavy_tank_diag_armor_modifier = {
+		attack = {
+			1,
+			0,
+			1.5,
+			1,
+			0.75,
+		},
+		impact = {
+			1,
+			1,
+			1,
+			1,
+			0.75,
+		},
+	},
+	mace_1h_heavy_tank_diag_default_target = {
+		attack_template = "light_blunt_tank",
+		boost_curve_type = "tank_curve",
+		dot_balefire_variant = true,
+		dot_template_name = "burning_dot_2tick_slow_unstackable",
+		stagger_duration_modifier = 1.5,
+		power_distribution = {
+			attack = 0.05,
+			impact = 0.1,
+		},
+	},
+	mace_1h_heavy_tank_diag_targets = {
+		{
+			attack_template = "heavy_blunt_tank",
+			boost_curve_type = "tank_curve",
+			dot_balefire_variant = true,
+			dot_template_name = "burning_dot_2tick_slow_unstackable",
+			stagger_duration_modifier = 1.5,
+			power_distribution = {
+				attack = 0.15,
+				impact = 0.3,
+			},
+			armor_modifier = {
+				attack = {
+					1,
+					0.4,
+					1.5,
+					1,
+					0.75,
+				},
+				impact = {
+					1.5,
+					1,
+					1,
+					1,
+					0.75,
+				},
+			},
+		},
+		{
+			attack_template = "heavy_blunt_tank",
+			boost_curve_type = "tank_curve",
+			dot_balefire_variant = true,
+			dot_template_name = "burning_dot_2tick_slow_unstackable",
+			stagger_duration_modifier = 1.5,
+			power_distribution = {
+				attack = 0.075,
+				impact = 0.2,
+			},
+		},
+		{
+			attack_template = "light_blunt_tank",
+			boost_curve_type = "tank_curve",
+			dot_balefire_variant = true,
+			dot_template_name = "burning_dot_2tick_slow_unstackable",
+			stagger_duration_modifier = 1.5,
+			power_distribution = {
+				attack = 0.05,
+				impact = 0.15,
+			},
+		},
+	},
+	mace_1h_light_tank_horizontal_critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.25,
+			1.5,
+			1,
+			1,
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			0.5,
+			1,
+			1,
+		},
+	},
+	mace_1h_light_tank_horizontal_cleave_distribution = {
+		attack = 0.2,
+		impact = 0.6,
+	},
+	mace_1h_light_tank_horizontal_armor_modifier = {
+		attack = {
+			1,
+			0,
+			1,
+			1,
+			1,
+		},
+		impact = {
+			1,
+			1,
+			0.5,
+			1,
+			1,
+		},
+	},
+	mace_1h_light_tank_horizontal_default_target = {
+		attack_template = "light_blunt_tank",
+		boost_curve_type = "tank_curve",
+		power_distribution = {
+			attack = 0.05,
+			impact = 0.15,
+		},
+	},
+	mace_1h_light_tank_horizontal_targets = {
+		{
+			attack_template = "blunt_tank",
+			boost_curve_coefficient_headshot = 1.5,
+			boost_curve_type = "tank_curve",
+			power_distribution = {
+				attack = 0.175,
+				impact = 0.25,
+			},
+		},
+		{
+			attack_template = "light_blunt_tank",
+			boost_curve_type = "tank_curve",
+			power_distribution = {
+				attack = 0.075,
+				impact = 0.175,
+			},
 		},
 	},
 }

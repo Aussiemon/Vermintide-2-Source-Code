@@ -5537,7 +5537,7 @@ BuffTemplates = {
 				apply_buff_func = "start_dot_damage",
 				damage_profile = "burning_dot",
 				damage_type = "burninating",
-				duration = 6,
+				duration = 6.5,
 				max_stacks = 1,
 				name = "burning_dot_unchained_push",
 				refresh_durations = true,
@@ -5575,9 +5575,65 @@ BuffTemplates = {
 				apply_buff_func = "start_dot_damage",
 				damage_profile = "burning_dot",
 				damage_type = "burninating",
-				duration = 3,
+				duration = 3.5,
 				name = "burning_dot_3tick",
 				time_between_dot_damages = 1,
+				update_func = "apply_dot_damage",
+				update_start_delay = 1,
+				perks = {
+					buff_perks.burning,
+				},
+			},
+		},
+	},
+	burning_dot_2tick = {
+		buffs = {
+			{
+				apply_buff_func = "start_dot_damage",
+				damage_profile = "burning_dot",
+				damage_type = "burninating",
+				duration = 2.5,
+				name = "burning_dot_2tick_slow_unstackable",
+				refresh_durations = true,
+				time_between_dot_damages = 1,
+				update_func = "apply_dot_damage",
+				update_start_delay = 1,
+				perks = {
+					buff_perks.burning,
+				},
+			},
+		},
+	},
+	burning_dot_2tick_slow_unstackable = {
+		buffs = {
+			{
+				apply_buff_func = "start_dot_damage",
+				damage_profile = "burning_dot",
+				damage_type = "burninating",
+				duration = 5.5,
+				max_stacks = 1,
+				name = "burning_dot_2tick_slow_unstackable",
+				refresh_durations = true,
+				time_between_dot_damages = 2,
+				update_func = "apply_dot_damage",
+				update_start_delay = 1,
+				perks = {
+					buff_perks.burning,
+				},
+			},
+		},
+	},
+	burning_dot_scythe_special = {
+		buffs = {
+			{
+				apply_buff_func = "start_dot_damage",
+				damage_profile = "scythe_special_dot_damage",
+				damage_type = "burninating",
+				duration = 5.5,
+				max_stacks = 1,
+				name = "burning_dot_scythe_special",
+				refresh_durations = true,
+				time_between_dot_damages = 2,
 				update_func = "apply_dot_damage",
 				update_start_delay = 1,
 				perks = {

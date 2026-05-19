@@ -176,20 +176,22 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 		end
 	end
 
-	if Unit.alive(unit) then
-		local world_interaction = effect_settings.world_interaction and effect_settings.world_interaction[material]
+	local world_interaction = effect_settings.world_interaction and effect_settings.world_interaction[material]
 
+	if Unit.alive(unit) then
 		if world_interaction then
-			Managers.state.world_interaction:add_world_interaction(material, unit)
+			local world_interaction_material_settings = WorldInteractionSettings[material]
+
+			if world_interaction_material_settings.use_simple_effects then
+				Managers.state.world_interaction:add_simple_effect(material, hit_unit, position, unit)
+			else
+				Managers.state.world_interaction:add_world_interaction(material, unit)
+			end
 		else
 			Managers.state.world_interaction:remove_world_interaction(unit)
 		end
-	else
-		local world_interaction = effect_settings.world_interaction and effect_settings.world_interaction[material]
-
-		if world_interaction then
-			Managers.state.world_interaction:add_simple_effect(material, hit_unit, position)
-		end
+	elseif world_interaction then
+		Managers.state.world_interaction:add_simple_effect(material, hit_unit, position)
 	end
 end
 

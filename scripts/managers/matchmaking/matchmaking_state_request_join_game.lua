@@ -191,10 +191,13 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 	elseif state == "verify_not_blocked" then
 		if not DEDICATED_SERVER and IS_WINDOWS then
 			local host_peer_id = lobby_client:lobby_host()
-			local relationship = Friends.relationship(host_peer_id)
 
-			if relationship == Friends.IGNORED or relationship == Friends.IGNORED_FRIEND then
-				return self:_join_game_failed("user_blocked", t, false)
+			if rawget(_G, "Friends") then
+				local relationship = Friends.relationship(host_peer_id)
+
+				if relationship == Friends.IGNORED or relationship == Friends.IGNORED_FRIEND then
+					return self:_join_game_failed("user_blocked", t, false)
+				end
 			end
 		end
 

@@ -260,7 +260,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					buff_name = "planted_fast_decrease_movement",
-					external_multiplier = 0.85,
+					external_multiplier = 0.95,
 					start_time = 0,
 					end_time = math.huge,
 				},
@@ -279,7 +279,7 @@ weapon_template.actions = {
 				{
 					action = "weapon_reload",
 					auto_chain = true,
-					start_time = 1.5,
+					start_time = 1.2,
 					sub_action = "catch",
 				},
 			},
@@ -348,7 +348,7 @@ weapon_template.ammo_data = {
 	ammo_per_reload = 1,
 	ammo_type = "throwing_axe",
 	has_wield_reload_anim = true,
-	max_ammo = 3,
+	max_ammo = 4,
 	play_reload_anim_on_wield_reload = true,
 	reload_on_ammo_pickup = true,
 	reload_time = 0,
@@ -419,11 +419,11 @@ weapon_template.aim_assist_settings = {
 }
 weapon_template.weapon_diagram = {
 	light_attack = {
-		[DamageTypes.ARMOR_PIERCING] = 5,
+		[DamageTypes.ARMOR_PIERCING] = 6,
 		[DamageTypes.CLEAVE] = 0,
 		[DamageTypes.SPEED] = 4,
-		[DamageTypes.STAGGER] = 5,
-		[DamageTypes.DAMAGE] = 5,
+		[DamageTypes.STAGGER] = 6,
+		[DamageTypes.DAMAGE] = 6,
 	},
 	heavy_attack = {
 		[DamageTypes.ARMOR_PIERCING] = 6,

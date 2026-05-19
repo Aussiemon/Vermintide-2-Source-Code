@@ -50,20 +50,20 @@ SpreadTemplates.default = {
 SpreadTemplates.repeating_pistol = {
 	continuous = {
 		still = {
-			max_pitch = 0.8,
-			max_yaw = 0.8,
+			max_pitch = 0.4,
+			max_yaw = 0.4,
 		},
 		moving = {
-			max_pitch = 1.05,
-			max_yaw = 1.05,
+			max_pitch = 0.5,
+			max_yaw = 0.5,
 		},
 		crouch_still = {
-			max_pitch = 0.8,
-			max_yaw = 0.8,
+			max_pitch = 0.3,
+			max_yaw = 0.3,
 		},
 		crouch_moving = {
-			max_pitch = 2,
-			max_yaw = 2,
+			max_pitch = 1,
+			max_yaw = 1,
 		},
 		zoomed_still = {
 			max_pitch = 0,
@@ -88,8 +88,8 @@ SpreadTemplates.repeating_pistol = {
 			immediate_yaw = 1.4,
 		},
 		shooting = {
-			immediate_pitch = 0.35,
-			immediate_yaw = 0.35,
+			immediate_pitch = 3,
+			immediate_yaw = 3,
 		},
 	},
 }

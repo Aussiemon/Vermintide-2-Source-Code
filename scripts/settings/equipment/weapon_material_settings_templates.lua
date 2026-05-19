@@ -1,6 +1,14 @@
 ﻿-- chunkname: @scripts/settings/equipment/weapon_material_settings_templates.lua
 
 MaterialSettingsTemplates = MaterialSettingsTemplates or {}
+MaterialSettingsTemplates.blue_glow = {
+	rune_emissive_color = {
+		type = "vector3",
+		x = 3,
+		y = 9,
+		z = 10,
+	},
+}
 MaterialSettingsTemplates.purple_glow = {
 	rune_emissive_color = {
 		type = "vector3",
@@ -39,6 +47,38 @@ MaterialSettingsTemplates.lileath = {
 		x = 5.8,
 		y = 6.3,
 		z = 9,
+	},
+}
+MaterialSettingsTemplates.weaves = {
+	color_glow_high = {
+		type = "vector3",
+		x = 10,
+		y = 2,
+		z = 1,
+	},
+	color_glow_low = {
+		type = "vector3",
+		x = 0.732,
+		y = 0.172,
+		z = 0.051,
+	},
+	color_smoke_high = {
+		type = "vector3",
+		x = 0.135,
+		y = 0.275,
+		z = 0.45,
+	},
+	color_smoke_low = {
+		type = "vector3",
+		x = 0.024,
+		y = 0.004,
+		z = 0.026,
+	},
+	color_dots = {
+		type = "vector3",
+		x = 15,
+		y = 4,
+		z = 1,
 	},
 }
 MaterialSettingsTemplates.versus = {

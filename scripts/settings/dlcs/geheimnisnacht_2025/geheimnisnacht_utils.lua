@@ -1,5 +1,7 @@
 ﻿-- chunkname: @scripts/settings/dlcs/geheimnisnacht_2025/geheimnisnacht_utils.lua
 
+require("scripts/utils/hash_utils")
+
 local map_settings = require("scripts/settings/dlcs/geheimnisnacht_2025/geheimnisnacht_map_settings")
 local GeheimnisnachtUtils = {}
 local maps_by_year = {
@@ -37,6 +39,13 @@ local maps_by_year = {
 		"mines",
 		"warcamp",
 		"dlc_portals",
+	},
+	[2026] = {
+		"farmlands",
+		"dlc_wizards_tower",
+		"catacombs",
+		"bell",
+		"ussingen",
 	},
 }
 

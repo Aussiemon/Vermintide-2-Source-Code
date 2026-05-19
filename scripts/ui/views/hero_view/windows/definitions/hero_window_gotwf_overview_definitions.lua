@@ -849,34 +849,16 @@ local function create_simple_item(scenegraph_id, texture_name, size, offset, mas
 	}
 	content[item_icon_name] = texture_name
 
-	local slot_background_frame_name = "item_frame"
-
-	passes[#passes + 1] = {
-		pass_type = "texture",
-		texture_id = slot_background_frame_name,
-		style_id = slot_background_frame_name,
-		content_check_function = function (content)
-			return content[item_icon_name]
-		end,
-	}
-	style[slot_background_frame_name] = {
+	UIWidgets.append_item_frame_pass("item_frame", passes, content, style, size, {
+		0,
+		0,
+		4,
+	}, masked, nil, {
 		horizontal_alignment = "center",
 		vertical_alignment = "center",
-		masked = masked,
-		texture_size = size,
-		color = {
-			255,
-			255,
-			255,
-			255,
-		},
-		offset = {
-			0,
-			0,
-			4,
-		},
-	}
-	content[slot_background_frame_name] = "item_frame"
+	}, nil, function (runtime_content)
+		return runtime_content[item_icon_name]
+	end)
 
 	local rarity_texture_name = "rarity_texture"
 

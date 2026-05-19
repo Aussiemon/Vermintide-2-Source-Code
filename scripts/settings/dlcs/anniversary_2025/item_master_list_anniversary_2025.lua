@@ -13,6 +13,7 @@ ItemMasterList.frame_celebration_07 = {
 	can_wield = CanWieldAllItemTemplates,
 	events = {
 		"anniversary",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.frame_apology_2025 = {

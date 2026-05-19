@@ -1,6 +1,6 @@
 ﻿-- chunkname: @scripts/settings/equipment/weapon_templates/1h_hammers_wizard.lua
 
-local push_radius = 2
+local push_radius = 2.5
 local time_mod = 0.9
 local weapon_template = {}
 
@@ -233,7 +233,7 @@ weapon_template.actions = {
 			aim_assist_ramp_multiplier = 0.4,
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_heavy_down",
-			damage_profile = "medium_blunt_smiter_heavy",
+			damage_profile = "mace_1h_heavy_smiter_vertical",
 			damage_window_end = 0.28,
 			damage_window_start = 0.2,
 			dedicated_target_range = 3,
@@ -257,7 +257,7 @@ weapon_template.actions = {
 				{
 					buff_name = "planted_charging_decrease_movement",
 					end_time = 0.2,
-					external_multiplier = 1,
+					external_multiplier = 0.5,
 					start_time = 0,
 				},
 			},
@@ -371,18 +371,19 @@ weapon_template.actions = {
 			aim_assist_ramp_multiplier = 0.4,
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_heavy_right_up",
-			damage_profile = "medium_blunt_tank_upper_1h",
+			damage_profile = "mace_1h_heavy_tank_diag",
 			damage_window_end = 0.6,
 			damage_window_start = 0.45,
 			dedicated_target_range = 3,
 			first_person_hit_anim = "shake_hit",
 			hit_effect = "melee_hit_hammers_1h",
 			hit_stop_anim = "attack_hit",
-			impact_sound_event = "blunt_hit",
+			impact_sound_event = "hammer_2h_hit",
 			kind = "sweep",
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			range_mod = 1.37,
 			reset_aim_on_attack = true,
+			slide_armour_hit = true,
 			total_time = 1.2,
 			uninterruptible = true,
 			use_precision_sweep = false,
@@ -395,7 +396,7 @@ weapon_template.actions = {
 				{
 					buff_name = "planted_charging_decrease_movement",
 					end_time = 0.2,
-					external_multiplier = 1,
+					external_multiplier = 0.7,
 					start_time = 0,
 				},
 			},
@@ -510,18 +511,19 @@ weapon_template.actions = {
 			aim_assist_ramp_multiplier = 0.4,
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_heavy_left_up",
-			damage_profile = "medium_blunt_tank_upper_1h",
+			damage_profile = "mace_1h_heavy_tank_diag",
 			damage_window_end = 0.48,
 			damage_window_start = 0.35,
 			dedicated_target_range = 3,
 			first_person_hit_anim = "shake_hit",
 			hit_effect = "melee_hit_hammers_1h",
 			hit_stop_anim = "attack_hit",
-			impact_sound_event = "blunt_hit",
+			impact_sound_event = "hammer_2h_hit",
 			kind = "sweep",
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			range_mod = 1.37,
 			reset_aim_on_attack = true,
+			slide_armour_hit = true,
 			total_time = 1.2,
 			uninterruptible = true,
 			use_precision_sweep = false,
@@ -534,7 +536,7 @@ weapon_template.actions = {
 				{
 					buff_name = "planted_charging_decrease_movement",
 					end_time = 0.2,
-					external_multiplier = 1,
+					external_multiplier = 0.7,
 					start_time = 0,
 				},
 			},
@@ -909,7 +911,7 @@ weapon_template.actions = {
 			aim_assist_ramp_multiplier = 0.6,
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_down",
-			damage_profile = "light_blunt_smiter",
+			damage_profile = "mace_1h_light_smiter_vertical",
 			damage_window_end = 0.5,
 			damage_window_start = 0.35,
 			dedicated_target_range = 2,
@@ -1048,7 +1050,7 @@ weapon_template.actions = {
 			aim_assist_ramp_multiplier = 0.4,
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_left_diagonal_last",
-			damage_profile = "light_blunt_smiter",
+			damage_profile = "mace_1h_light_smiter_vertical",
 			damage_window_end = 0.52,
 			damage_window_start = 0.38,
 			dedicated_target_range = 2,
@@ -1179,7 +1181,7 @@ weapon_template.actions = {
 		light_attack_bopp = {
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_left",
-			damage_profile = "light_blunt_tank",
+			damage_profile = "mace_1h_light_tank_horizontal",
 			damage_window_end = 0.47,
 			damage_window_start = 0.31,
 			dedicated_target_range = 2,
@@ -1190,6 +1192,7 @@ weapon_template.actions = {
 			kind = "sweep",
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			range_mod = 1.37,
+			slide_armour_hit = true,
 			total_time = 1.5,
 			use_precision_sweep = false,
 			width_mod = 25,
@@ -1517,18 +1520,18 @@ weapon_template.wield_anim = "to_brw_hammer"
 weapon_template.state_machine = "units/beings/player/first_person_base/state_machines/melee/brw_hammer"
 weapon_template.buff_type = "MELEE_1H"
 weapon_template.weapon_type = "MACE_1H"
-weapon_template.max_fatigue_points = 6
-weapon_template.dodge_count = 4
-weapon_template.block_angle = 90
+weapon_template.max_fatigue_points = 8
+weapon_template.dodge_count = 3
+weapon_template.block_angle = 120
 weapon_template.outer_block_angle = 360
 weapon_template.block_fatigue_point_multiplier = 0.5
 weapon_template.outer_block_fatigue_point_multiplier = 2
 weapon_template.buffs = {
 	change_dodge_distance = {
-		external_optional_multiplier = 1.2,
+		external_optional_multiplier = 1.1,
 	},
 	change_dodge_speed = {
-		external_optional_multiplier = 1.2,
+		external_optional_multiplier = 1.1,
 	},
 }
 weapon_template.wwise_dep_right_hand = {

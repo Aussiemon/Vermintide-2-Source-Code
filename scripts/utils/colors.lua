@@ -1619,8 +1619,19 @@ Colors.get_color_with_alpha = function (name, alpha)
 	return Color(alpha, color[2], color[3], color[4])
 end
 
-Colors.get_table = function (name)
+local _table_scratch = {}
+
+Colors.get_table = function (name, reuse_global_table)
 	local color = Colors.color_definitions[name]
+
+	if reuse_global_table then
+		_table_scratch[1] = color[1]
+		_table_scratch[2] = color[2]
+		_table_scratch[3] = color[3]
+		_table_scratch[4] = color[4]
+
+		return _table_scratch
+	end
 
 	return {
 		color[1],
@@ -1641,8 +1652,17 @@ Colors.get_table_rgba = function (name)
 	}
 end
 
-Colors.get_color_table_with_alpha = function (name, alpha)
+Colors.get_color_table_with_alpha = function (name, alpha, reuse_global_table)
 	local color = Colors.color_definitions[name]
+
+	if reuse_global_table then
+		_table_scratch[1] = alpha
+		_table_scratch[2] = color[2]
+		_table_scratch[3] = color[3]
+		_table_scratch[4] = color[4]
+
+		return _table_scratch
+	end
 
 	return {
 		alpha,

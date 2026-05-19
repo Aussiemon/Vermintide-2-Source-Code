@@ -64,7 +64,7 @@ local function _make_meta_requirements(meta_quest_map)
 end
 
 local function generate_geheimnisnacht_quests(year)
-	local maps = table.mirror_array(GeheimnisnachtUtils.maps_by_year(year))
+	local maps = table.mirror_array(GeheimnisnachtUtils.maps_by_year(year, true))
 	local meta_disrupt_all = {
 		"event_geheimnisnacht_" .. year .. "_disrupt_1",
 		"event_geheimnisnacht_" .. year .. "_disrupt_2",

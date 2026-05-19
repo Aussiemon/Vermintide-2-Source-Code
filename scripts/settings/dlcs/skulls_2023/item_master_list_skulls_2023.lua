@@ -14,6 +14,7 @@ ItemMasterList.frame_skulls_2023 = {
 	can_wield = CanWieldAllItemTemplates,
 	events = {
 		"skulls",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.es_2h_sword_exe_skin_05_runed_04 = {
@@ -37,6 +38,7 @@ ItemMasterList.es_2h_sword_exe_skin_05_runed_04 = {
 	},
 	events = {
 		"skulls",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.bw_fireball_staff_skin_01_runed_04 = {
@@ -61,6 +63,7 @@ ItemMasterList.bw_fireball_staff_skin_01_runed_04 = {
 	},
 	events = {
 		"skulls",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.wh_brace_of_pistols_skin_05_runed_04 = {
@@ -85,6 +88,7 @@ ItemMasterList.wh_brace_of_pistols_skin_05_runed_04 = {
 	},
 	events = {
 		"skulls",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.we_dual_dagger_skin_01_runed_04 = {
@@ -109,6 +113,7 @@ ItemMasterList.we_dual_dagger_skin_01_runed_04 = {
 	},
 	events = {
 		"skulls",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.dw_handgun_skin_02_runed_04 = {
@@ -131,6 +136,7 @@ ItemMasterList.dw_handgun_skin_02_runed_04 = {
 	},
 	events = {
 		"skulls",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.bw_beam_staff_skin_05_runed_04 = {
@@ -154,6 +160,7 @@ ItemMasterList.bw_beam_staff_skin_05_runed_04 = {
 	},
 	events = {
 		"skulls",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.es_2h_hammer_skin_04_runed_04 = {
@@ -176,6 +183,7 @@ ItemMasterList.es_2h_hammer_skin_04_runed_04 = {
 	},
 	events = {
 		"skulls",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.wh_1h_falchion_skin_02_runed_04 = {
@@ -198,6 +206,7 @@ ItemMasterList.wh_1h_falchion_skin_02_runed_04 = {
 	},
 	events = {
 		"skulls",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.we_shortbow_skin_04_runed_04 = {
@@ -220,6 +229,7 @@ ItemMasterList.we_shortbow_skin_04_runed_04 = {
 	},
 	events = {
 		"skulls",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.dw_grudge_raker_skin_02_runed_04 = {
@@ -241,6 +251,7 @@ ItemMasterList.dw_grudge_raker_skin_02_runed_04 = {
 	},
 	events = {
 		"skulls",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.frame_skulls_2024 = {
@@ -257,5 +268,6 @@ ItemMasterList.frame_skulls_2024 = {
 	can_wield = CanWieldAllItemTemplates,
 	events = {
 		"skulls",
+		"dwarf_fest",
 	},
 }

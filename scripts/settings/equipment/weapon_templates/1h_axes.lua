@@ -188,7 +188,7 @@ weapon_template.actions = {
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_heavy_down",
 			charge_value = "heavy_attack",
-			damage_profile = "medium_slashing_smiter_1h_axe",
+			damage_profile = "axe_1h_heavy_smiter_vertical",
 			damage_window_end = 0.32,
 			damage_window_start = 0.22,
 			dedicated_target_range = 2.75,
@@ -325,7 +325,7 @@ weapon_template.actions = {
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_heavy_down_right",
 			charge_value = "heavy_attack",
-			damage_profile = "medium_slashing_smiter_1h_axe",
+			damage_profile = "axe_1h_heavy_smiter_vertical",
 			damage_window_end = 0.28,
 			damage_window_start = 0.2,
 			dedicated_target_range = 2.75,
@@ -459,7 +459,7 @@ weapon_template.actions = {
 			additional_critical_strike_chance = 0.1,
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_left_diagonal",
-			damage_profile = "light_slashing_smiter_diag",
+			damage_profile = "axe_1h_light_smiter_diag",
 			damage_window_end = 0.47,
 			damage_window_start = 0.38,
 			dedicated_target_range = 2,
@@ -479,10 +479,16 @@ weapon_template.actions = {
 			anim_time_scale = time_mod * 1.15,
 			buff_data = {
 				{
-					buff_name = "planted_decrease_movement",
+					buff_name = "planted_fast_decrease_movement",
+					end_time = 0.2,
+					external_multiplier = 1.1,
+					start_time = 0,
+				},
+				{
+					buff_name = "planted_fast_decrease_movement",
 					end_time = 0.5,
 					external_multiplier = 0.8,
-					start_time = 0,
+					start_time = 0.3,
 				},
 			},
 			allowed_chain_actions = {
@@ -596,7 +602,7 @@ weapon_template.actions = {
 			additional_critical_strike_chance = 0.1,
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_right_diagonal",
-			damage_profile = "light_slashing_smiter_diag",
+			damage_profile = "axe_1h_light_smiter_diag",
 			damage_window_end = 0.47,
 			damage_window_start = 0.38,
 			dedicated_target_range = 3,
@@ -616,10 +622,16 @@ weapon_template.actions = {
 			anim_time_scale = time_mod * 1.15,
 			buff_data = {
 				{
-					buff_name = "planted_decrease_movement",
+					buff_name = "planted_fast_decrease_movement",
+					end_time = 0.2,
+					external_multiplier = 1.1,
+					start_time = 0,
+				},
+				{
+					buff_name = "planted_fast_decrease_movement",
 					end_time = 0.5,
 					external_multiplier = 0.8,
-					start_time = 0,
+					start_time = 0.3,
 				},
 			},
 			allowed_chain_actions = {
@@ -733,7 +745,7 @@ weapon_template.actions = {
 			additional_critical_strike_chance = 0.1,
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_left",
-			damage_profile = "light_slashing_smiter_diag",
+			damage_profile = "axe_1h_light_smiter_horizontal",
 			damage_window_end = 0.5,
 			damage_window_start = 0.38,
 			dedicated_target_range = 3,
@@ -752,10 +764,16 @@ weapon_template.actions = {
 			anim_time_scale = time_mod * 1.15,
 			buff_data = {
 				{
-					buff_name = "planted_decrease_movement",
+					buff_name = "planted_fast_decrease_movement",
+					end_time = 0.2,
+					external_multiplier = 1.1,
+					start_time = 0,
+				},
+				{
+					buff_name = "planted_fast_decrease_movement",
 					end_time = 0.5,
 					external_multiplier = 0.8,
-					start_time = 0,
+					start_time = 0.3,
 				},
 			},
 			allowed_chain_actions = {
@@ -872,7 +890,7 @@ weapon_template.actions = {
 			aim_assist_ramp_multiplier = 0.4,
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_down_right",
-			damage_profile = "light_slashing_smiter",
+			damage_profile = "axe_1h_light_smiter_vertical",
 			damage_window_end = 0.47,
 			damage_window_start = 0.38,
 			dedicated_target_range = 2.75,
@@ -1149,10 +1167,10 @@ weapon_template.outer_block_fatigue_point_multiplier = 2
 weapon_template.sound_event_block_within_arc = "weapon_foley_blunt_1h_block_wood"
 weapon_template.buffs = {
 	change_dodge_distance = {
-		external_optional_multiplier = 1.2,
+		external_optional_multiplier = 1.3,
 	},
 	change_dodge_speed = {
-		external_optional_multiplier = 1.2,
+		external_optional_multiplier = 1.3,
 	},
 }
 weapon_template.attack_meta_data = {

@@ -59,7 +59,7 @@ weapon_template.actions = {
 			},
 			projectile_info = Projectiles.repeating_crossbow_bolt,
 			impact_data = {
-				damage_profile = "crossbow_bolt_repeating",
+				damage_profile = "crossbow_bolt_repeating_elf",
 				depth = 0.025,
 				depth_offset = -0.2,
 				link = true,
@@ -139,7 +139,7 @@ weapon_template.actions = {
 			},
 			projectile_info = Projectiles.repeating_crossbow_bolt,
 			impact_data = {
-				damage_profile = "crossbow_bolt_repeating",
+				damage_profile = "crossbow_bolt_repeating_elf",
 				depth = 0.025,
 				depth_offset = -0.2,
 				link = true,
@@ -150,7 +150,7 @@ weapon_template.actions = {
 				climb_duration = 0.075,
 				horizontal_climb = 0,
 				restore_duration = 0.3,
-				vertical_climb = 0.05,
+				vertical_climb = 0.3,
 				climb_function = math.ease_out_quad,
 				restore_function = math.ease_out_quad,
 			},
@@ -158,7 +158,7 @@ weapon_template.actions = {
 				climb_duration = 0.075,
 				horizontal_climb = 0,
 				restore_duration = 0.3,
-				vertical_climb = 1,
+				vertical_climb = 0.3,
 				climb_function = math.ease_out_quad,
 				restore_function = math.ease_out_quad,
 			},
@@ -249,7 +249,7 @@ weapon_template.attack_meta_data = {
 	minimum_charge_time = 0.45,
 	effective_against = bit.bor(BreedCategory.Berserker, BreedCategory.Special, BreedCategory.Armored),
 }
-weapon_template.default_spread_template = "repeating_handgun"
+weapon_template.default_spread_template = "brace_of_pistols"
 weapon_template.spread_lerp_speed = 2
 weapon_template.left_hand_unit = ""
 weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.wood_elf_repeating_crossbow

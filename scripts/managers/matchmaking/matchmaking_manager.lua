@@ -1436,7 +1436,7 @@ MatchmakingManager.rpc_matchmaking_request_join_lobby = function (self, channel_
 
 	local user_blocked
 
-	if not DEDICATED_SERVER and IS_WINDOWS then
+	if not DEDICATED_SERVER and IS_WINDOWS and rawget(_G, "Friends") then
 		local relationship = Friends.relationship(peer_id)
 
 		user_blocked = relationship == 5 or relationship == 6
@@ -1598,7 +1598,7 @@ MatchmakingManager.lobby_match = function (self, lobby_data, act_key, mission_id
 
 			for i = 1, #peer_datas do
 				local peer_id = peer_datas[i].peer_id
-				local relationship = Friends.relationship(peer_id)
+				local relationship = rawget(_G, "Friends") and Friends.relationship(peer_id)
 				local user_blocked = relationship == 5 or relationship == 6
 
 				if user_blocked then

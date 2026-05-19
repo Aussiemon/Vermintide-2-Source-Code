@@ -317,10 +317,10 @@ HordeSpawner.execute_ambush_horde = function (self, extra_data, side_id, fallbac
 	local start_delay = settings.start_delay
 	local composition_type, override_composition
 	local override_composition_type = extra_data and extra_data.override_composition_type
+	local current_difficulty_rank, difficulty_tweak = Managers.state.difficulty:get_difficulty_rank()
 
 	if override_composition_type and CurrentHordeSettings.compositions[override_composition_type] then
 		local override_composition_table = CurrentHordeSettings.compositions[override_composition_type]
-		local current_difficulty_rank, difficulty_tweak = Managers.state.difficulty:get_difficulty_rank()
 		local composition_difficulty_rank = DifficultyTweak.converters.composition_rank(current_difficulty_rank, difficulty_tweak)
 
 		override_composition = override_composition_table[composition_difficulty_rank - 1]

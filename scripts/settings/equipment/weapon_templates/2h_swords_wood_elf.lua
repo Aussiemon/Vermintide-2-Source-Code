@@ -513,14 +513,26 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					buff_name = "planted_fast_decrease_movement",
-					end_time = 0.4,
-					external_multiplier = 1.75,
+					end_time = 0.3,
+					external_multiplier = 1.7,
 					start_time = 0,
 				},
 				{
 					buff_name = "planted_fast_decrease_movement",
+					end_time = 0.4,
+					external_multiplier = 1.3,
+					start_time = 0.3,
+				},
+				{
+					buff_name = "planted_fast_decrease_movement",
+					end_time = 0.5,
+					external_multiplier = 0.9,
+					start_time = 0.4,
+				},
+				{
+					buff_name = "planted_fast_decrease_movement",
 					end_time = 0.7,
-					external_multiplier = 0.25,
+					external_multiplier = 0.5,
 					start_time = 0.5,
 				},
 			},
@@ -529,7 +541,7 @@ weapon_template.actions = {
 					action = "action_one",
 					input = "action_one_hold",
 					release_required = "action_one_hold",
-					start_time = 1.15,
+					start_time = 0.9,
 					sub_action = "default_right",
 				},
 				{
@@ -647,7 +659,7 @@ weapon_template.actions = {
 			additional_critical_strike_chance = 0,
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_heavy_right",
-			damage_profile = "heavy_slashing_linesman_executioner",
+			damage_profile = "elven_2h_sword_heavy_linesman_horizontal",
 			damage_window_end = 0.68,
 			damage_window_start = 0.55,
 			dedicated_target_range = 3,
@@ -657,6 +669,7 @@ weapon_template.actions = {
 			kind = "sweep",
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			range_mod = 1.45,
+			slide_armour_hit = true,
 			sweep_z_offset = -0.05,
 			total_time = 2.5,
 			uninterruptible = true,
@@ -713,7 +726,7 @@ weapon_template.actions = {
 					sub_action = "default",
 				},
 			},
-			hit_mass_count = LINESMAN_HIT_MASS_COUNT,
+			hit_mass_count = HEAVY_LINESMAN_HIT_MASS_COUNT,
 			baked_sweep = {
 				{
 					0.5166666666666667,

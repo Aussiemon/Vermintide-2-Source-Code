@@ -27,6 +27,7 @@ ItemMasterList.frame_celebration_01 = {
 	can_wield = CanWieldAllItemTemplates,
 	events = {
 		"anniversary",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.frame_celebration_02 = {
@@ -43,6 +44,7 @@ ItemMasterList.frame_celebration_02 = {
 	can_wield = CanWieldAllItemTemplates,
 	events = {
 		"anniversary",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.frame_celebration_03 = {
@@ -59,6 +61,7 @@ ItemMasterList.frame_celebration_03 = {
 	can_wield = CanWieldAllItemTemplates,
 	events = {
 		"anniversary",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.frame_celebration_05 = {
@@ -75,6 +78,7 @@ ItemMasterList.frame_celebration_05 = {
 	can_wield = CanWieldAllItemTemplates,
 	events = {
 		"anniversary",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.frame_celebration_06 = {
@@ -91,5 +95,6 @@ ItemMasterList.frame_celebration_06 = {
 	can_wield = CanWieldAllItemTemplates,
 	events = {
 		"anniversary",
+		"dwarf_fest",
 	},
 }

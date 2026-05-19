@@ -169,7 +169,11 @@ end
 local DO_RELOAD = true
 
 ImguiGeneratePowerLevelPivots.update = function (self, t, dt)
-	if DO_RELOAD then
+	if not Managers.state.game_mode then
+		return
+	end
+
+	if DO_RELOAD or self._run_lazy_init then
 		self:_lazy_init()
 
 		DO_RELOAD = false
@@ -195,7 +199,7 @@ ImguiGeneratePowerLevelPivots.update = function (self, t, dt)
 end
 
 ImguiGeneratePowerLevelPivots.on_show = function (self)
-	self:_lazy_init()
+	self._run_lazy_init = true
 end
 
 ImguiGeneratePowerLevelPivots.draw = function (self)
@@ -203,6 +207,13 @@ ImguiGeneratePowerLevelPivots.draw = function (self)
 
 	if not is_open then
 		return do_close
+	end
+
+	if not Managers.state.game_mode then
+		Imgui.text("Disabled outside game state.")
+		Imgui.end_window()
+
+		return
 	end
 
 	self:_reset_control_id()

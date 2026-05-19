@@ -101,6 +101,8 @@ ImguiStoreRotation._filter_item_keys_list = function (self)
 	local featured_items = {}
 	local discount_item_keys = {}
 
+	self._name_to_key = {}
+
 	for i = 1, #self._item_keys_list do
 		local key = self._item_keys_list[i]
 		local is_dlc = self:_is_a_dlc(key)
@@ -109,15 +111,20 @@ ImguiStoreRotation._filter_item_keys_list = function (self)
 		if not item or item.item_type == "deed" then
 			-- Nothing
 		else
+			local localized_name = string.gsub(Localize(item.display_name or item.name), LocalizationDebug.TAG, "")
+
 			if item.item_type == "bundle" or is_dlc then
 				slideshow_items[#slideshow_items + 1] = key
-				featured_items[#featured_items + 1] = key
-			else
-				featured_items[#featured_items + 1] = key
+				slideshow_items[#slideshow_items + 1] = localized_name
 			end
+
+			featured_items[#featured_items + 1] = key
+			featured_items[#featured_items + 1] = localized_name
+			self._name_to_key[localized_name] = key
 
 			if item.steam_itemdefid or item.current_prices then
 				discount_item_keys[#discount_item_keys + 1] = key
+				discount_item_keys[#discount_item_keys + 1] = localized_name
 			end
 		end
 	end
@@ -473,6 +480,8 @@ ImguiStoreRotation._is_a_dlc = function (self, key)
 end
 
 ImguiStoreRotation._get_layout_item = function (self, key)
+	key = self._name_to_key[key] or key
+
 	local layout_item = {}
 	local is_dlc = self:_is_a_dlc(key)
 
@@ -498,6 +507,8 @@ ImguiStoreRotation._get_layout_item = function (self, key)
 end
 
 ImguiStoreRotation._get_slideshow_item = function (self, key)
+	key = self._name_to_key[key] or key
+
 	local slideshow_item = {}
 	local product_type, header, texture, product_id, description, prio
 	local is_dlc = self:_is_a_dlc(key)
@@ -582,7 +593,7 @@ ImguiStoreRotation._draw_selcted_layout_items = function (self, items_list)
 
 		if self._localize then
 			local item = rawget(ItemMasterList, item_id)
-			local name = Localize(item.display_name)
+			local name = string.gsub(Localize(item.display_name), LocalizationDebug.TAG, "")
 
 			Imgui.text_colored("Featured Item: " .. name, 245, 245, 207, 255)
 		else
@@ -618,9 +629,11 @@ ImguiStoreRotation._draw_selcted_slideshow_items = function (self, items_list)
 			if item.error_text then
 				Imgui.text_colored(key .. " : " .. value, 255, 0, 0, 255)
 			elseif self._localize and (key == "header" or key == "description") then
+				local loc_value = string.gsub(Localize(value), LocalizationDebug.TAG, "")
+
 				Imgui.text_colored(key .. " : ", 0, 186, 112, 255)
 				Imgui.same_line()
-				Imgui.text_colored(Localize(value), 0, 193, 212, 255)
+				Imgui.text_colored(loc_value, 0, 193, 212, 255)
 			else
 				Imgui.text_colored(key .. " : ", 0, 186, 112, 255)
 				Imgui.same_line()
@@ -889,6 +902,8 @@ end
 ImguiStoreRotation._make_item_def = function (self, key, item, discount)
 	local steam_id = item.steam_itemdefid
 	local original_price = SteamInventory.get_item_definition_property(steam_id, "price")
+	local loc_display_name = string.gsub(Localize(item.display_name), LocalizationDebug.TAG, "")
+	local loc_description = string.gsub(Localize(item.description), LocalizationDebug.TAG, "")
 
 	return {
 		hidden = false,
@@ -900,9 +915,9 @@ ImguiStoreRotation._make_item_def = function (self, key, item, discount)
 		type = "item",
 		itemdefid = item.steam_itemdefid,
 		display_type = SteamInventory.get_item_definition_property(steam_id, "display_type"),
-		name = Localize(item.display_name),
+		name = loc_display_name,
 		price = self:_calculate_discount(original_price, discount),
-		description = Localize(item.description),
+		description = loc_description,
 		name_color = SteamInventory.get_item_definition_property(steam_id, "name_color"),
 		background_color = SteamInventory.get_item_definition_property(steam_id, "background_color"),
 		icon_url = SteamInventory.get_item_definition_property(steam_id, "icon_url"),
@@ -912,6 +927,8 @@ end
 ImguiStoreRotation._make_bundle_def = function (self, key, item, discount)
 	local steam_id = item.steam_itemdefid
 	local original_price = SteamInventory.get_item_definition_property(steam_id, "price")
+	local loc_name = string.gsub(Localize(item and item.display_name or "not_assigned"), LocalizationDebug.TAG, "")
+	local loc_description = string.gsub(Localize(item and item.description or "not_assigned"), LocalizationDebug.TAG, "")
 
 	return {
 		hidden = false,
@@ -924,9 +941,9 @@ ImguiStoreRotation._make_bundle_def = function (self, key, item, discount)
 		itemdefid = item.steam_itemdefid,
 		display_type = SteamInventory.get_item_definition_property(steam_id, "display_type"),
 		bundle = SteamInventory.get_item_definition_property(steam_id, "bundle"),
-		name = Localize(item and item.display_name or "not_assigned"),
+		name = loc_name,
 		price = self:_calculate_discount(original_price, discount),
-		description = Localize(item and item.description or "not_assigned"),
+		description = loc_description,
 		name_color = SteamInventory.get_item_definition_property(steam_id, "name_color"),
 		background_color = SteamInventory.get_item_definition_property(steam_id, "background_color"),
 		icon_url = SteamInventory.get_item_definition_property(steam_id, "icon_url"),
@@ -1065,6 +1082,9 @@ ImguiStoreRotation._do_discount_item_selection = function (self, is_valid_end_da
 
 			if is_valid_discount and is_valid_end_date then
 				local selected_item_key = self._item_search_results[self._selected_item_index]
+
+				selected_item_key = self._name_to_key[selected_item_key] or selected_item_key
+
 				local item = rawget(ItemMasterList, selected_item_key)
 
 				fassert(item, "Item %s is not in the ItemMasterList", selected_item_key)
@@ -1295,10 +1315,12 @@ ImguiStoreRotation._create_cosmetics_item_list_file = function (self)
 		local can_wield_string = ""
 
 		for i = 1, #can_wield do
+			local loc_can_wield = string.gsub(Localize(can_wield[i]), LocalizationDebug.TAG, "")
+
 			if i == #can_wield then
-				can_wield_string = can_wield_string .. Localize(can_wield[i])
+				can_wield_string = can_wield_string .. loc_can_wield
 			else
-				can_wield_string = can_wield_string .. Localize(can_wield[i]) .. " , "
+				can_wield_string = can_wield_string .. loc_can_wield .. " , "
 			end
 		end
 
@@ -1308,16 +1330,23 @@ ImguiStoreRotation._create_cosmetics_item_list_file = function (self)
 	end
 
 	for profile_name, profile_cosmetics_data in pairs(self._cosmetic_items) do
+		local loc_profile_name = string.gsub(Localize(profile_name), LocalizationDebug.TAG, "")
+
 		if profile_name == "frame" then
 			for item_name, item_data in pairs(profile_cosmetics_data) do
+				local loc_item_name = string.gsub(Localize(item_name), LocalizationDebug.TAG, "")
 				local item_key = item_data.item_key
 
-				str = str .. "\" \"" .. "," .. Localize(profile_name) .. "," .. "\"" .. Localize(item_name) .. "\"" .. ", " .. item_key .. ", All" .. "\n"
+				str = str .. "\" \"" .. "," .. loc_profile_name .. "," .. "\"" .. loc_item_name .. "\"" .. ", " .. item_key .. ", All" .. "\n"
 			end
 		else
 			for item_type, item_type_data in pairs(profile_cosmetics_data) do
+				local loc_item_type = string.gsub(Localize(item_type), LocalizationDebug.TAG, "")
+
 				for item_name, item_data in pairs(item_type_data) do
-					str = str .. Localize(profile_name) .. "," .. Localize(item_type) .. ","
+					local loc_item_name = string.gsub(Localize(item_name), LocalizationDebug.TAG, "")
+
+					str = str .. loc_profile_name .. "," .. loc_item_type .. ","
 
 					local can_wield_string = ""
 
@@ -1325,9 +1354,7 @@ ImguiStoreRotation._create_cosmetics_item_list_file = function (self)
 						can_wield_string = get_can_wield_career_names(item_data.can_wield)
 					end
 
-					local item_key = item_data.item_key
-
-					str = str .. "\"" .. Localize(item_name) .. "\"" .. ", " .. item_data.item_key .. ", " .. can_wield_string .. "\n"
+					str = str .. "\"" .. loc_item_name .. "\"" .. ", " .. item_data.item_key .. ", " .. can_wield_string .. "\n"
 				end
 			end
 		end

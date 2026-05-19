@@ -1219,7 +1219,7 @@ AchievementTemplates.achievements.fort_kill_enemies_cannonball_cata = {
 }
 AchievementTemplates.achievements.nurgle_player_showered_in_pus_cata = {
 	display_completion_ui = true,
-	icon = "achievement_trophy_nurgle_player_showered_in_pus",
+	icon = "achievement_trophy_nurgle_player_showered_in_pus_cata",
 	name = "achv_nurgle_player_showered_in_pus_cata_name",
 	required_dlc = "scorpion",
 	desc = function ()

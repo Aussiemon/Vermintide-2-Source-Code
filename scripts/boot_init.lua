@@ -1,6 +1,8 @@
 ﻿-- chunkname: @scripts/boot_init.lua
 
-jit.off()
+if rawget(_G, "jit") then
+	jit.off()
+end
 
 MODE = {}
 
@@ -228,6 +230,12 @@ if BUILD ~= "dev" and BUILD ~= "debug" and LAUNCH_MODE ~= "attract_benchmark" th
 
 	scrub_library("ffi")
 	scrub_library("io")
+
+	if rawget(_G, "jit") then
+		jit.on = nil
+		jit.off = nil
+		jit.flush = nil
+	end
 
 	os = {
 		clock = os.clock,

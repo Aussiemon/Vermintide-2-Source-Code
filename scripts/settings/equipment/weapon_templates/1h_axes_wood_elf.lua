@@ -2,6 +2,11 @@
 
 local push_radius = 2
 local time_mod = 1
+local light_cleave_speed_up = 0.9
+local light_smiter_speed_up = 1.4
+local light_smiter_slow_down = 0.7
+local light_bopp_speed_up = 2
+local light_bopp_slow_down = 0.7
 local weapon_template = {}
 
 weapon_template.actions = {
@@ -245,7 +250,7 @@ weapon_template.actions = {
 			aim_assist_ramp_multiplier = 0.4,
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_heavy_down",
-			damage_profile = "medium_slashing_smiter_1h_axe",
+			damage_profile = "elven_axe_heavy_smiter_vertical",
 			damage_window_end = 0.32,
 			damage_window_start = 0.22,
 			dedicated_target_range = 2.75,
@@ -381,7 +386,7 @@ weapon_template.actions = {
 			aim_assist_ramp_multiplier = 0.4,
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_heavy_down_right",
-			damage_profile = "medium_slashing_smiter_1h_axe",
+			damage_profile = "elven_axe_heavy_smiter_vertical",
 			damage_window_end = 0.28,
 			damage_window_start = 0.2,
 			dedicated_target_range = 2.75,
@@ -514,7 +519,7 @@ weapon_template.actions = {
 		light_attack_left = {
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_left",
-			damage_profile = "light_slashing_smiter_diag_1h",
+			damage_profile = "elven_axe_light_smiter_horizontal",
 			damage_window_end = 0.49,
 			damage_window_start = 0.38,
 			dedicated_target_range = 2,
@@ -536,8 +541,8 @@ weapon_template.actions = {
 				{
 					buff_name = "planted_decrease_movement",
 					end_time = 0.5,
-					external_multiplier = 0.75,
 					start_time = 0,
+					external_multiplier = light_cleave_speed_up,
 				},
 			},
 			allowed_chain_actions = {
@@ -650,7 +655,7 @@ weapon_template.actions = {
 		light_attack_right = {
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_right",
-			damage_profile = "light_slashing_smiter_diag",
+			damage_profile = "elven_axe_light_smiter_horizontal",
 			damage_window_end = 0.46,
 			damage_window_start = 0.33,
 			dedicated_target_range = 3,
@@ -672,8 +677,8 @@ weapon_template.actions = {
 				{
 					buff_name = "planted_decrease_movement",
 					end_time = 0.5,
-					external_multiplier = 0.75,
 					start_time = 0,
+					external_multiplier = light_cleave_speed_up,
 				},
 			},
 			allowed_chain_actions = {
@@ -786,7 +791,7 @@ weapon_template.actions = {
 		light_attack_right_last = {
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_down_right",
-			damage_profile = "light_slashing_smiter_finesse",
+			damage_profile = "elven_axe_light_smiter_vertical",
 			damage_window_end = 0.44,
 			damage_window_start = 0.38,
 			dedicated_target_range = 3,
@@ -807,9 +812,15 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					buff_name = "planted_decrease_movement",
-					end_time = 0.5,
-					external_multiplier = 0.75,
+					end_time = 0.3,
 					start_time = 0,
+					external_multiplier = light_smiter_speed_up,
+				},
+				{
+					buff_name = "planted_decrease_movement",
+					end_time = 0.5,
+					start_time = 0.3,
+					external_multiplier = light_smiter_slow_down,
 				},
 			},
 			allowed_chain_actions = {
@@ -922,7 +933,7 @@ weapon_template.actions = {
 		light_attack_last = {
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_down",
-			damage_profile = "light_slashing_smiter_finesse",
+			damage_profile = "elven_axe_light_smiter_vertical",
 			damage_window_end = 0.48,
 			damage_window_start = 0.37,
 			dedicated_target_range = 3,
@@ -942,9 +953,15 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					buff_name = "planted_decrease_movement",
-					end_time = 0.5,
-					external_multiplier = 0.75,
+					end_time = 0.3,
 					start_time = 0,
+					external_multiplier = light_smiter_speed_up,
+				},
+				{
+					buff_name = "planted_decrease_movement",
+					end_time = 0.5,
+					start_time = 0.3,
+					external_multiplier = light_smiter_slow_down,
 				},
 			},
 			allowed_chain_actions = {
@@ -1045,14 +1062,13 @@ weapon_template.actions = {
 			},
 		},
 		light_attack_bopp = {
-			additional_critical_strike_chance = 0.2,
 			aim_assist_max_ramp_multiplier = 0.8,
 			aim_assist_ramp_decay_delay = 0,
 			aim_assist_ramp_multiplier = 0.4,
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_up",
 			anim_event_3p = "attack_swing_up_left",
-			damage_profile = "light_slashing_smiter",
+			damage_profile = "elven_axe_light_tank_diag",
 			damage_window_end = 0.47,
 			damage_window_start = 0.32,
 			dedicated_target_range = 2.75,
@@ -1073,9 +1089,21 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					buff_name = "planted_decrease_movement",
-					end_time = 0.5,
-					external_multiplier = 0.6,
+					end_time = 0.15,
 					start_time = 0,
+					external_multiplier = light_bopp_speed_up,
+				},
+				{
+					buff_name = "planted_decrease_movement",
+					end_time = 0.25,
+					external_multiplier = 1.2,
+					start_time = 0.15,
+				},
+				{
+					buff_name = "planted_decrease_movement",
+					end_time = 0.4,
+					start_time = 0.25,
+					external_multiplier = light_bopp_slow_down,
 				},
 			},
 			allowed_chain_actions = {
@@ -1329,10 +1357,10 @@ weapon_template.outer_block_fatigue_point_multiplier = 2
 weapon_template.sound_event_block_within_arc = "weapon_foley_blunt_1h_block_wood"
 weapon_template.buffs = {
 	change_dodge_distance = {
-		external_optional_multiplier = 1.2,
+		external_optional_multiplier = 1.3,
 	},
 	change_dodge_speed = {
-		external_optional_multiplier = 1.2,
+		external_optional_multiplier = 1.3,
 	},
 }
 weapon_template.attack_meta_data = {

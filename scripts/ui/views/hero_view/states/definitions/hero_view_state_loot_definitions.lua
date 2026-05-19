@@ -1382,6 +1382,10 @@ end
 
 local function create_loot_widget(index, size)
 	local frame_settings = UIFrameSettings.menu_frame_09
+	local texture_size = {
+		80,
+		80,
+	}
 	local widget = {
 		element = {},
 	}
@@ -1443,11 +1447,6 @@ local function create_loot_widget(index, size)
 			pass_type = "texture",
 			style_id = "item_icon",
 			texture_id = "item_icon",
-		},
-		{
-			pass_type = "texture",
-			style_id = "item_icon_frame",
-			texture_id = "item_icon_frame",
 		},
 		{
 			pass_type = "texture",
@@ -1600,7 +1599,6 @@ local function create_loot_widget(index, size)
 		illusion_icon = "item_applied_illusion_icon",
 		illusion_overlay = "item_frame_illusion",
 		item_icon = "icons_placeholder",
-		item_icon_frame = "item_frame",
 		item_icon_rarity = "icon_bg_plentiful",
 		item_name = "n/a",
 		item_type = "n/a",
@@ -2009,10 +2007,7 @@ local function create_loot_widget(index, size)
 		illusion_overlay = {
 			horizontal_alignment = "center",
 			vertical_alignment = "top",
-			texture_size = {
-				80,
-				80,
-			},
+			texture_size = texture_size,
 			offset = {
 				0,
 				40,
@@ -2039,30 +2034,8 @@ local function create_loot_widget(index, size)
 			},
 			color = Colors.get_color_table_with_alpha("promo", 255),
 		},
-		item_icon_frame = {
-			horizontal_alignment = "center",
-			vertical_alignment = "top",
-			texture_size = {
-				80,
-				80,
-			},
-			offset = {
-				0,
-				40,
-				17,
-			},
-			color = {
-				255,
-				255,
-				255,
-				255,
-			},
-		},
 		item_icon = {
-			size = {
-				80,
-				80,
-			},
+			size = texture_size,
 			offset = {
 				size[1] / 2 - 40,
 				-40,
@@ -2078,10 +2051,7 @@ local function create_loot_widget(index, size)
 		item_icon_rarity = {
 			horizontal_alignment = "center",
 			vertical_alignment = "top",
-			texture_size = {
-				80,
-				80,
-			},
+			texture_size = texture_size,
 			offset = {
 				0,
 				40,
@@ -2178,10 +2148,7 @@ local function create_loot_widget(index, size)
 				Colors.get_color_table_with_alpha("font_title", 255),
 				Colors.get_color_table_with_alpha("white", 255),
 			},
-			size = {
-				80,
-				80,
-			},
+			size = texture_size,
 			offset = {
 				size[1] / 2 - 40,
 				-40,
@@ -2189,6 +2156,15 @@ local function create_loot_widget(index, size)
 			},
 		},
 	}
+
+	UIWidgets.append_item_frame_pass("item_icon_frame", passes, content, style, texture_size, {
+		0,
+		40,
+		17,
+	}, false, nil, {
+		horizontal_alignment = "center",
+		vertical_alignment = "top",
+	}, nil, nil)
 
 	widget.element.passes = passes
 	widget.content = content

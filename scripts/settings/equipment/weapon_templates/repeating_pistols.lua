@@ -208,6 +208,7 @@ weapon_template.ammo_data = {
 	should_update_anim_ammo = true,
 }
 weapon_template.default_spread_template = "repeating_pistol"
+weapon_template.spread_lerp_speed = 5
 weapon_template.right_hand_unit = "units/weapons/player/wpn_emp_pistol_01_t1/wpn_emp_pistol_01_t1"
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.repeater_pistol
 weapon_template.display_unit = "units/weapons/weapon_display/display_repeating_pistols"

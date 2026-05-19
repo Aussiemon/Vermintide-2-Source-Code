@@ -1,35 +1,35 @@
 ﻿-- chunkname: @scripts/unit_extensions/generic/generic_health_extension.lua
 
-local data_fields = {
-	"DAMAGE_AMOUNT",
-	"DAMAGE_TYPE",
-	"ATTACKER",
-	"HIT_ZONE",
-	"POSITION",
-	"DIRECTION",
-	"DAMAGE_SOURCE_NAME",
-	"HIT_RAGDOLL_ACTOR_NAME",
-	"SOURCE_ATTACKER_UNIT",
-	"HIT_REACT_TYPE",
-	"CRITICAL_HIT",
-	"FIRST_HIT",
-	"TOTAL_HITS",
-	"ATTACK_TYPE",
-	"BACKSTAB_MULTIPLIER",
-	"TARGET_INDEX",
-}
-
 DamageDataIndex = {}
 
-local DamageDataIndex = DamageDataIndex
+do
+	local data_fields = {
+		"DAMAGE_AMOUNT",
+		"DAMAGE_TYPE",
+		"ATTACKER",
+		"HIT_ZONE",
+		"POSITION",
+		"DIRECTION",
+		"DAMAGE_SOURCE_NAME",
+		"HIT_RAGDOLL_ACTOR_NAME",
+		"SOURCE_ATTACKER_UNIT",
+		"HIT_REACT_TYPE",
+		"CRITICAL_HIT",
+		"FIRST_HIT",
+		"TOTAL_HITS",
+		"ATTACK_TYPE",
+		"BACKSTAB_MULTIPLIER",
+		"TARGET_INDEX",
+	}
 
-for index, field_name in ipairs(data_fields) do
-	DamageDataIndex[field_name] = index
+	for index, field_name in ipairs(data_fields) do
+		DamageDataIndex[field_name] = index
+	end
+
+	DamageDataIndex.STRIDE = #data_fields
 end
 
-DamageDataIndex.STRIDE = #data_fields
-data_fields = nil
-
+local DamageDataIndex = DamageDataIndex
 local RECENT_ATTACKER_DAMAGE_WINDOW = 5
 
 GenericHealthExtension = class(GenericHealthExtension)
@@ -519,7 +519,7 @@ GenericHealthExtension.save_kill_feed_data = function (self, attacker_unit, dama
 	local current_health = self:current_health()
 
 	if damage_type ~= "temporary_health_degen" and damage_type ~= "knockdown_bleed" and current_health > 0 then
-		local attacker_unit = source_attacker_unit or AiUtils.get_actual_attacker_unit(attacker_unit)
+		attacker_unit = source_attacker_unit or AiUtils.get_actual_attacker_unit(attacker_unit)
 
 		if HEALTH_ALIVE[attacker_unit] then
 			local breed = Unit.get_data(attacker_unit, "breed")

@@ -7,6 +7,7 @@ local geheim_quest_templates = {}
 settings.quest_templates = geheim_quest_templates
 
 generate_geheimnisnacht_quests(2025)
+generate_geheimnisnacht_quests(2026)
 
 local quest_meta_mapping = {
 	event_geheimnisnacht_2024_disrupt_all = {

@@ -370,10 +370,11 @@ local function create_reward_item_widget(day_index, reward_index)
 	local cursor_frame_settings = UIFrameSettings.frame_outer_glow_04_big
 	local shadow_settings = UIFrameSettings.frame_outer_glow_01
 	local shadow_width = shadow_settings.texture_sizes.vertical[1]
-	local selection_frame_settings = UIFrameSettings.frame_outer_glow_01_white
-	local selection_frame_width = selection_frame_settings.texture_sizes.vertical[1]
-
-	return {
+	local texture_size = {
+		80,
+		80,
+	}
+	local widget = {
 		scenegraph_id = "reward_pivot",
 		offset = {
 			(day_index - 1) * (DAY_X + DAY_PAD) + 0.5 * DAY_PAD,
@@ -404,11 +405,6 @@ local function create_reward_item_widget(day_index, reward_index)
 					content_check_function = function (content)
 						return content.is_illusion
 					end,
-				},
-				{
-					pass_type = "texture",
-					style_id = "item_frame",
-					texture_id = "item_frame",
 				},
 				{
 					pass_type = "hover",
@@ -443,7 +439,6 @@ local function create_reward_item_widget(day_index, reward_index)
 		content = {
 			is_hover = false,
 			is_illusion = false,
-			item_frame = "item_frame",
 			item_icon = "icons_placeholder",
 			item_illusion = "item_frame_illusion",
 			item_rarity = "icons_placeholder",
@@ -478,10 +473,7 @@ local function create_reward_item_widget(day_index, reward_index)
 					0,
 					1,
 				},
-				texture_size = {
-					80,
-					80,
-				},
+				texture_size = texture_size,
 			},
 			item_icon = {
 				offset = {
@@ -489,10 +481,7 @@ local function create_reward_item_widget(day_index, reward_index)
 					0,
 					2,
 				},
-				texture_size = {
-					80,
-					80,
-				},
+				texture_size = texture_size,
 			},
 			item_illusion = {
 				offset = {
@@ -500,21 +489,7 @@ local function create_reward_item_widget(day_index, reward_index)
 					0,
 					3,
 				},
-				texture_size = {
-					80,
-					80,
-				},
-			},
-			item_frame = {
-				offset = {
-					0,
-					0,
-					4,
-				},
-				texture_size = {
-					80,
-					80,
-				},
+				texture_size = texture_size,
 			},
 			item_tooltip = {
 				font_size = 18,
@@ -526,10 +501,7 @@ local function create_reward_item_widget(day_index, reward_index)
 					0,
 					5,
 				},
-				size = {
-					80,
-					80,
-				},
+				size = texture_size,
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				line_colors = {
 					Colors.get_color_table_with_alpha("font_title", 255),
@@ -537,10 +509,7 @@ local function create_reward_item_widget(day_index, reward_index)
 				},
 			},
 			cursor = {
-				size = {
-					80,
-					80,
-				},
+				size = texture_size,
 				texture_size = cursor_frame_settings.texture_size,
 				texture_sizes = cursor_frame_settings.texture_sizes,
 				frame_margins = {
@@ -561,6 +530,14 @@ local function create_reward_item_widget(day_index, reward_index)
 			},
 		},
 	}
+
+	UIWidgets.append_item_frame_pass("item_frame", widget.element.passes, widget.content, widget.style, texture_size, {
+		0,
+		0,
+		4,
+	}, false, nil, nil, nil, nil)
+
+	return widget
 end
 
 local function create_day_widget(day_index)

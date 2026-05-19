@@ -1207,7 +1207,7 @@ quest_templates.quests.quest_event_rat_kill_skaven_lords_2020 = {
 	end,
 }
 
-local function _generate_troll_quests(repeatable)
+local function _generate_troll_quests(repeatable, year)
 	local _next_troll_fest_order = 0
 
 	local function get_next_troll_fest_order()
@@ -1216,7 +1216,7 @@ local function _generate_troll_quests(repeatable)
 		return _next_troll_fest_order
 	end
 
-	quest_templates.quests["quest_event_dwarf_fest_trollkiller" .. (repeatable and "_repeatable" or "")] = {
+	quest_templates.quests["quest_event_dwarf_fest_trollkiller" .. year .. (repeatable and "_repeatable" or "")] = {
 		icon = "quest_book_event_dwarf_fest",
 		name = "quest_event_dwarf_fest_trollkiller_name",
 		desc = repeatable and function ()
@@ -1283,7 +1283,7 @@ local function _generate_troll_quests(repeatable)
 		}
 		local num_trolls = #secret_trolls_stat_mappings
 
-		quest_templates.quests.quest_event_dwarf_fest_secret_trolls = {
+		quest_templates.quests["quest_event_dwarf_fest_secret_trolls" .. year] = {
 			icon = "quest_book_event_dwarf_fest",
 			name = "quest_event_dwarf_fest_secret_trolls_name",
 			desc = function ()
@@ -1354,7 +1354,7 @@ local function _generate_troll_quests(repeatable)
 			end
 		end
 
-		quest_templates.quests["quest_event_" .. id .. (repeatable and "_repeatable" or "")] = {
+		quest_templates.quests["quest_event_" .. id .. year .. (repeatable and "_repeatable" or "")] = {
 			icon = "quest_book_event_dwarf_fest",
 			name = "quest_event_" .. id .. "_name",
 			desc = repeatable and function ()
@@ -1390,8 +1390,10 @@ local function _generate_troll_quests(repeatable)
 	end
 end
 
-_generate_troll_quests(false)
-_generate_troll_quests(true)
+_generate_troll_quests(false, "")
+_generate_troll_quests(true, "")
+_generate_troll_quests(false, "_2026")
+_generate_troll_quests(true, "_2026")
 
 local weekly_complete_quickplay_missions_mappings = {
 	{

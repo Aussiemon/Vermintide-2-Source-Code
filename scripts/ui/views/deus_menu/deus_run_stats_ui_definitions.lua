@@ -500,8 +500,8 @@ local no_active_items_text = {
 	use_shadow = true,
 	vertical_alignment = "top",
 	word_wrap = false,
-	text_color = color or Colors.get_color_table_with_alpha("white", 255),
-	rect_color = rect_color or Colors.get_color_table_with_alpha("black", 150),
+	text_color = Colors.get_color_table_with_alpha("white", 255),
+	rect_color = Colors.get_color_table_with_alpha("black", 150),
 	line_colors = {},
 	offset = {
 		0,

@@ -946,7 +946,7 @@ weapon_template.actions = {
 					action = "action_one",
 					input = "action_one",
 					release_required = "action_two_hold",
-					start_time = 0.75,
+					start_time = 0.55,
 					sub_action = "default",
 				},
 				{
@@ -1185,17 +1185,18 @@ weapon_template.state_machine = "units/beings/player/first_person_base/state_mac
 weapon_template.buff_type = "MELEE_1H"
 weapon_template.weapon_type = "SWORD_1H"
 weapon_template.max_fatigue_points = 6
-weapon_template.dodge_count = 4
+weapon_template.dodge_count = 6
+weapon_template.block_angle = 90
 weapon_template.block_angle = 90
 weapon_template.outer_block_angle = 360
 weapon_template.block_fatigue_point_multiplier = 0.5
 weapon_template.outer_block_fatigue_point_multiplier = 2
 weapon_template.buffs = {
 	change_dodge_distance = {
-		external_optional_multiplier = 1.25,
+		external_optional_multiplier = 1.3,
 	},
 	change_dodge_speed = {
-		external_optional_multiplier = 1.25,
+		external_optional_multiplier = 1.3,
 	},
 }
 weapon_template.attack_meta_data = {

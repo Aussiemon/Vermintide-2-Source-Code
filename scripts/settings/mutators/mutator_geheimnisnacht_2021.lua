@@ -63,7 +63,7 @@ return {
 			for i = 1, #live_events do
 				local live_event = live_events[i]
 
-				event_levels = GeheimnisnachtUtils.maps_by_event(live_event)
+				event_levels = GeheimnisnachtUtils.maps_by_event(live_event, true)
 
 				if not fallback_event_name and string.find(live_event, "geheimnisnacht_%d+") then
 					fallback_event_name = live_event

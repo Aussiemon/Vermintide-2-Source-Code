@@ -38,7 +38,7 @@ PlayerUnitEnergyExtension._update_game_object = function (self)
 	if game and go_id then
 		local current_value_percentage = self:get_fraction()
 		local max_energy = self:get_max()
-		local is_on_depletion_cooldown = self:_is_on_depletion_cooldown()
+		local is_on_depletion_cooldown = self:is_on_depletion_cooldown()
 
 		fassert(max_energy >= NetworkConstants.max_energy.min and max_energy <= NetworkConstants.max_energy.max, "Max energy outside value bounds allowed by network variable!")
 		GameSession.set_game_object_field(game, go_id, "energy_percentage", current_value_percentage)
@@ -120,7 +120,7 @@ end
 
 PlayerUnitEnergyExtension.is_drainable = function (self)
 	local is_depleted = self:is_depleted()
-	local is_on_depletion_cooldown = self:_is_on_depletion_cooldown()
+	local is_on_depletion_cooldown = self:is_on_depletion_cooldown()
 
 	if is_depleted or is_on_depletion_cooldown then
 		return false
@@ -145,7 +145,7 @@ PlayerUnitEnergyExtension._process_recharge = function (self, dt, t)
 	self._energy = math.clamp(self._energy + self._recharge_rate * dt, 0, self._max_energy)
 end
 
-PlayerUnitEnergyExtension._is_on_depletion_cooldown = function (self)
+PlayerUnitEnergyExtension.is_on_depletion_cooldown = function (self)
 	return self._depletion_cooldown_timer > Managers.time:time("game")
 end
 

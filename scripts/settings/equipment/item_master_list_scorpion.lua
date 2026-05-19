@@ -1358,6 +1358,7 @@ ItemMasterList.frame_scorpion_complete_all_helmgart_level_achievements_cataclysm
 	can_wield = CanWieldAllItemTemplates,
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.frame_scorpion_complete_bogenhafen_cataclysm = {

@@ -276,7 +276,7 @@ local damage_templates = {
 			dot_template_name = "we_deus_01_dot",
 			power_distribution = {
 				attack = 0.25,
-				impact = 0.5,
+				impact = 2.5,
 			},
 		},
 	},

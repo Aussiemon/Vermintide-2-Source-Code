@@ -259,7 +259,7 @@ PassiveAbilitySettings = {
 		},
 	},
 	dr_2 = {
-		description = "career_passive_desc_dr_2a_2",
+		description = "career_passive_desc_dr_2a_3",
 		display_name = "career_passive_name_dr_2",
 		icon = "bardin_slayer_passive",
 		buffs = {

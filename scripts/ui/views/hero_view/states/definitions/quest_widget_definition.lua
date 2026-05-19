@@ -13,6 +13,10 @@ local function create_quest_entry(scenegraph_id, size)
 	local side_detail_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(side_detail_texture)
 	local side_detail_texture_size = side_detail_texture_settings.size
 	local masked = true
+	local texture_size = {
+		80,
+		80,
+	}
 	local progress_bar_size = {
 		500,
 		42,
@@ -430,11 +434,6 @@ local function create_quest_entry(scenegraph_id, size)
 			end,
 		},
 		{
-			pass_type = "texture",
-			style_id = "reward_frame",
-			texture_id = "reward_frame",
-		},
-		{
 			content_id = "reward_button_hotspot",
 			pass_type = "hotspot",
 			style_id = "reward_icon",
@@ -596,7 +595,6 @@ local function create_quest_entry(scenegraph_id, size)
 		progress_text = "n/a",
 		rect_masked = "rect_masked",
 		reward_background = "quest_right",
-		reward_frame = "item_frame",
 		reward_hover = "item_icon_hover",
 		reward_icon = "icons_placeholder",
 		reward_icon_claimed = "achievement_banner",
@@ -1240,10 +1238,7 @@ local function create_quest_entry(scenegraph_id, size)
 		reward_icon = {
 			masked = true,
 			saturated = false,
-			size = {
-				80,
-				80,
-			},
+			size = texture_size,
 			color = {
 				255,
 				255,
@@ -1254,26 +1249,6 @@ local function create_quest_entry(scenegraph_id, size)
 				size[1] - 80 - 3,
 				size[2] / 2 - 40 + 3,
 				11,
-			},
-		},
-		reward_frame = {
-			horizontal_alignment = "right",
-			masked = true,
-			vertical_alignment = "center",
-			texture_size = {
-				80,
-				80,
-			},
-			color = {
-				255,
-				255,
-				255,
-				255,
-			},
-			offset = {
-				-3,
-				3,
-				15,
 			},
 		},
 		reward_hover = {
@@ -1537,6 +1512,15 @@ local function create_quest_entry(scenegraph_id, size)
 			},
 		},
 	}
+
+	UIWidgets.append_item_frame_pass("reward_frame", passes, content, style, texture_size, {
+		-3,
+		3,
+		15,
+	}, masked, nil, {
+		horizontal_alignment = "right",
+		vertical_alignment = "center",
+	}, nil, nil)
 
 	widget.element.passes = passes
 	widget.content = content

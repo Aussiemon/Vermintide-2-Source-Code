@@ -461,6 +461,7 @@ weapon_template.tooltip_detail = {
 		custom_chain = true,
 	},
 }
+weapon_template.tooltip_special_action_description = "special_action_billhook"
 
 return {
 	we_deus_01_template_1 = table.clone(weapon_template),

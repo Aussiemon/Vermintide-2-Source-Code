@@ -6,6 +6,7 @@ ImguiProfiler.init = function (self)
 	self._filter = ""
 	self._filter_applied = false
 	self._auto_update_filter = false
+	self._pause_on_frame_spike = false
 end
 
 ImguiProfiler.is_persistent = function (self)
@@ -21,7 +22,7 @@ ImguiProfiler.on_hide = function (self)
 end
 
 ImguiProfiler.update = function (self, t, dt)
-	return
+	CALCULATE_AVERAGE = true
 end
 
 ImguiProfiler.draw = function (self)
@@ -58,11 +59,30 @@ ImguiProfiler.post_draw = function (self)
 	if update_filter or self._auto_update_filter then
 		FILTERED_SCOPES_INDEX = 1
 
-		local SCOPES = PROFILER_SCOPE_LOOKUP
+		local SCOPES = self._paused_scope or PROFILER_SCOPE_LOOKUP
 
 		if self._filter ~= "" then
 			self:_apply_filter(SCOPES, false)
 		end
+	end
+
+	self._pause_on_frame_spike = Imgui.checkbox("Pause on frame spike", self._pause_on_frame_spike)
+
+	if self._pause_on_frame_spike then
+		self._pause_on_frame_time_text = Imgui.input_text("Pause At Frametime (ms)", self._pause_on_frame_time_text or "200")
+
+		local last_time = self._pause_on_frame_time
+
+		self._pause_on_frame_time = tonumber(self._pause_on_frame_time_text)
+
+		if self._pause_on_frame_time ~= last_time then
+			self._paused_scope = nil
+			self._paused_frame_index = nil
+		end
+	else
+		self._pause_on_frame_time = nil
+		self._paused_scope = nil
+		self._paused_frame_index = nil
 	end
 
 	Imgui.begin_child_window("Profiler Tree", 0, 0, true)
@@ -72,7 +92,7 @@ ImguiProfiler.post_draw = function (self)
 	if self._filter_applied then
 		self:_draw_filtered_scopes()
 	else
-		self:_draw_lookup_table(PROFILER_SCOPE_LOOKUP, false)
+		self:_draw_lookup_table(self._paused_scope or PROFILER_SCOPE_LOOKUP, false)
 	end
 
 	Imgui.end_child_window()
@@ -100,13 +120,14 @@ end
 ImguiProfiler._draw_lookup_table = function (self, in_scope, is_top_scope)
 	local parent = in_scope.name
 
-	if in_scope.frame_index and in_scope.frame_index < CURRENT_FRAME_INDEX then
+	if in_scope.frame_index and in_scope.frame_index < (self._paused_frame_index or CURRENT_FRAME_INDEX) then
 		return
 	end
 
 	local is_root = false
 	local is_leaf = in_scope.is_leaf ~= false
-	local profiler_suffix = in_scope.average_profiler_scope and string.format("%.3f", in_scope.average_profiler_scope) or ""
+	local scope_time = self._paused_scope and in_scope.profiler_scope or in_scope.average_profiler_scope
+	local profiler_suffix = scope_time and string.format("%.3f", scope_time) or ""
 	local header
 
 	if is_leaf then
@@ -149,19 +170,22 @@ ImguiProfiler._draw_lookup_table = function (self, in_scope, is_top_scope)
 	if is_open then
 		local top_value = -1
 		local top_scope = ""
+		local total_frame_time = 0
 		local SORTED_SCOPES = {}
 
 		for _, scope in pairs(in_scope) do
 			if type(scope) == "table" then
-				if scope.parent == parent and scope.frame_index == CURRENT_FRAME_INDEX then
+				if scope.parent == parent and scope.frame_index == (self._paused_frame_index or CURRENT_FRAME_INDEX) then
 					SORTED_SCOPES[#SORTED_SCOPES + 1] = scope
 
-					local value = scope.average_profiler_scope or 0
+					local value = self._paused_scope and scope.profiler_scope or scope.average_profiler_scope or 0
 
 					if top_value < value then
 						top_value = value
 						top_scope = scope
 					end
+
+					total_frame_time = total_frame_time + scope.profiler_scope
 				end
 
 				local stack = scope.stack
@@ -172,7 +196,7 @@ ImguiProfiler._draw_lookup_table = function (self, in_scope, is_top_scope)
 
 						SORTED_SCOPES[#SORTED_SCOPES + 1] = entry
 
-						local value = entry.average_profiler_scope or 0
+						local value = self._paused_scope and entry.profiler_scope or entry.average_profiler_scope or 0
 
 						if top_value < value then
 							top_value = value
@@ -196,6 +220,11 @@ ImguiProfiler._draw_lookup_table = function (self, in_scope, is_top_scope)
 			self:_draw_lookup_table(scope, scope == top_scope)
 		end
 
+		if is_root and not self._paused_scope and total_frame_time >= (self._pause_on_frame_time or math.huge) then
+			self._paused_scope = table.clone(in_scope)
+			self._paused_frame_index = CURRENT_FRAME_INDEX
+		end
+
 		Imgui.tree_pop()
 	end
 end
@@ -203,7 +232,7 @@ end
 ImguiProfiler._apply_filter = function (self, in_scope)
 	local parent = in_scope.name
 
-	if in_scope.frame_index and in_scope.frame_index < CURRENT_FRAME_INDEX then
+	if in_scope.frame_index and in_scope.frame_index < (self._paused_frame_index or CURRENT_FRAME_INDEX) then
 		return
 	end
 
@@ -220,7 +249,7 @@ ImguiProfiler._apply_filter = function (self, in_scope)
 
 	for _, scope in pairs(in_scope) do
 		if type(scope) == "table" then
-			if scope.parent == parent and scope.frame_index == CURRENT_FRAME_INDEX then
+			if scope.parent == parent and scope.frame_index == (self._paused_frame_index or CURRENT_FRAME_INDEX) then
 				SORTED_SCOPES[#SORTED_SCOPES + 1] = scope
 			end
 

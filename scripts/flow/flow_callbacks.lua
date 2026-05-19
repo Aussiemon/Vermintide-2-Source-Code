@@ -6251,6 +6251,15 @@ function flow_callback_string_or_default(params)
 	return flow_return_table
 end
 
+function flow_callback_actor_has_collision_filter(params)
+	local actor = params.actor
+	local collision_filter = params.collision_filter
+
+	flow_return_table.result = Actor.has_collision_filter(actor, collision_filter)
+
+	return flow_return_table
+end
+
 local once_by_unit = {}
 
 function flow_callback_once_by_unit(params)

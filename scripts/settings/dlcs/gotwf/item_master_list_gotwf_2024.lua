@@ -17,6 +17,7 @@ ItemMasterList.bw_necromancy_staff_skin_02_runed_05 = {
 	},
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.bw_1h_sword_skin_01_runed_05 = {
@@ -37,6 +38,7 @@ ItemMasterList.bw_1h_sword_skin_01_runed_05 = {
 	},
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.dr_2h_cog_hammer_skin_02_runed_05 = {
@@ -59,6 +61,7 @@ ItemMasterList.dr_2h_cog_hammer_skin_02_runed_05 = {
 	},
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.dw_drakegun_skin_03_runed_05 = {
@@ -77,6 +80,7 @@ ItemMasterList.dw_drakegun_skin_03_runed_05 = {
 	},
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.es_bastard_sword_skin_03_runed_05 = {
@@ -99,6 +103,7 @@ ItemMasterList.es_bastard_sword_skin_03_runed_05 = {
 	},
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.es_blunderbuss_skin_02_runed_05 = {
@@ -119,6 +124,7 @@ ItemMasterList.es_blunderbuss_skin_02_runed_05 = {
 	},
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.we_life_staff_skin_02_runed_05 = {
@@ -138,6 +144,7 @@ ItemMasterList.we_life_staff_skin_02_runed_05 = {
 	},
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.we_dual_sword_skin_02_runed_05 = {
@@ -158,6 +165,7 @@ ItemMasterList.we_dual_sword_skin_02_runed_05 = {
 	},
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.wh_2h_hammer_skin_02_runed_05 = {
@@ -178,6 +186,7 @@ ItemMasterList.wh_2h_hammer_skin_02_runed_05 = {
 	},
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.wh_crossbow_skin_02_runed_05 = {
@@ -198,6 +207,7 @@ ItemMasterList.wh_crossbow_skin_02_runed_05 = {
 	},
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.frame_gotwf_2024 = {
@@ -214,6 +224,7 @@ ItemMasterList.frame_gotwf_2024 = {
 	can_wield = CanWieldAllItemTemplates,
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.cosmetic_bundle_hat_1010 = {

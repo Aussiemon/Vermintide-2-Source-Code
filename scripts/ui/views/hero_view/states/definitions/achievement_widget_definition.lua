@@ -13,6 +13,10 @@ local function create_achievement_entry(scenegraph_id, size)
 	local side_detail_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(side_detail_texture)
 	local side_detail_texture_size = side_detail_texture_settings.size
 	local masked = true
+	local texture_size = {
+		80,
+		80,
+	}
 	local progress_bar_size = {
 		500,
 		42,
@@ -82,8 +86,8 @@ local function create_achievement_entry(scenegraph_id, size)
 			},
 			checkbox = {
 				horizontal_alignment = "left",
-				masked = true,
 				vertical_alignment = "center",
+				masked = masked,
 				texture_size = {
 					25,
 					25,
@@ -102,8 +106,8 @@ local function create_achievement_entry(scenegraph_id, size)
 			},
 			checkbox_marker = {
 				horizontal_alignment = "left",
-				masked = true,
 				vertical_alignment = "center",
+				masked = masked,
 				texture_size = {
 					37,
 					31,
@@ -503,11 +507,6 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		{
 			pass_type = "texture",
-			style_id = "reward_frame",
-			texture_id = "reward_frame",
-		},
-		{
-			pass_type = "texture",
 			style_id = "reward_illusion_frame",
 			texture_id = "reward_illusion_frame",
 			content_check_function = function (content)
@@ -660,7 +659,6 @@ local function create_achievement_entry(scenegraph_id, size)
 		progress_text = "n/a",
 		rect_masked = "rect_masked",
 		reward_background = "achievement_right",
-		reward_frame = "item_frame",
 		reward_hover = "item_icon_hover",
 		reward_icon = "icons_placeholder",
 		reward_icon_claimed = "achievement_banner",
@@ -771,8 +769,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		expand_background = {
 			horizontal_alignment = "center",
-			masked = true,
 			vertical_alignment = "top",
+			masked = masked,
 			color = {
 				255,
 				255,
@@ -792,8 +790,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		expand_background_edge = {
 			horizontal_alignment = "center",
-			masked = true,
 			vertical_alignment = "bottom",
+			masked = masked,
 			color = {
 				255,
 				255,
@@ -812,9 +810,9 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		expand_background_shadow = {
 			horizontal_alignment = "center",
-			masked = true,
 			vertical_alignment = "bottom",
 			angle = math.pi,
+			masked = masked,
 			color = {
 				255,
 				255,
@@ -838,8 +836,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		arrow = {
 			angle = 0,
 			horizontal_alignment = "center",
-			masked = true,
 			vertical_alignment = "bottom",
+			masked = masked,
 			color = {
 				255,
 				255,
@@ -862,8 +860,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		progress_frame = {
 			horizontal_alignment = "center",
-			masked = true,
 			vertical_alignment = "bottom",
+			masked = masked,
 			area_size = progress_bar_size,
 			texture_size = progress_frame_settings.texture_size,
 			texture_sizes = progress_frame_settings.texture_sizes,
@@ -881,8 +879,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		progress_bar = {
 			horizontal_alignment = "left",
-			masked = true,
 			vertical_alignment = "bottom",
+			masked = masked,
 			default_size = progress_bar_size,
 			texture_size = progress_bar_size,
 			color = {
@@ -916,8 +914,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		progress_button_background = {
 			horizontal_alignment = "center",
-			masked = true,
 			vertical_alignment = "bottom",
+			masked = masked,
 			texture_size = {
 				progress_bar_size[1],
 				progress_bar_size[2],
@@ -936,8 +934,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		progress_button_background_fade = {
 			horizontal_alignment = "center",
-			masked = true,
 			vertical_alignment = "bottom",
+			masked = masked,
 			texture_size = {
 				progress_bar_size[1] - 10,
 				progress_bar_size[2] - 10,
@@ -956,8 +954,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		progress_button_glass_top = {
 			horizontal_alignment = "center",
-			masked = true,
 			vertical_alignment = "bottom",
+			masked = masked,
 			texture_size = {
 				progress_bar_size[1] - 10,
 				11,
@@ -976,8 +974,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		progress_button_glass_bottom = {
 			horizontal_alignment = "center",
-			masked = true,
 			vertical_alignment = "bottom",
+			masked = masked,
 			texture_size = {
 				progress_bar_size[1] - 10,
 				11,
@@ -996,8 +994,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		progress_button_hover_glow = {
 			horizontal_alignment = "center",
-			masked = true,
 			vertical_alignment = "bottom",
+			masked = masked,
 			texture_size = {
 				progress_bar_size[1] - 10,
 				progress_bar_size[2] - 10,
@@ -1024,9 +1022,9 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		progress_button_claim_glow = {
 			horizontal_alignment = "center",
-			masked = true,
 			vertical_alignment = "bottom",
 			area_size = progress_bar_size,
+			masked = masked,
 			texture_size = hover_frame_settings.texture_size,
 			texture_sizes = hover_frame_settings.texture_sizes,
 			color = {
@@ -1047,8 +1045,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		side_detail_left = {
 			horizontal_alignment = "center",
-			masked = true,
 			vertical_alignment = "bottom",
+			masked = masked,
 			color = {
 				255,
 				255,
@@ -1064,8 +1062,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		side_detail_right = {
 			horizontal_alignment = "center",
-			masked = true,
 			vertical_alignment = "bottom",
+			masked = masked,
 			color = {
 				255,
 				255,
@@ -1080,7 +1078,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			texture_size = side_detail_texture_size,
 		},
 		hover_glow = {
-			masked = true,
+			masked = masked,
 			color = {
 				255,
 				255,
@@ -1094,7 +1092,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			},
 		},
 		frame = {
-			masked = true,
+			masked = masked,
 			texture_size = frame_settings.texture_size,
 			texture_sizes = frame_settings.texture_sizes,
 			color = {
@@ -1111,8 +1109,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		background = {
 			horizontal_alignment = "center",
-			masked = true,
 			vertical_alignment = "center",
+			masked = masked,
 			color = {
 				255,
 				255,
@@ -1132,8 +1130,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		background_completed = {
 			horizontal_alignment = "center",
-			masked = true,
 			vertical_alignment = "center",
+			masked = masked,
 			color = {
 				255,
 				255,
@@ -1153,8 +1151,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		background_fade = {
 			horizontal_alignment = "center",
-			masked = true,
 			vertical_alignment = "center",
+			masked = masked,
 			color = {
 				255,
 				255,
@@ -1170,8 +1168,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		title_divider = {
 			horizontal_alignment = "center",
-			masked = true,
 			vertical_alignment = "top",
+			masked = masked,
 			color = {
 				255,
 				255,
@@ -1190,8 +1188,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		icon_background = {
 			horizontal_alignment = "left",
-			masked = true,
 			vertical_alignment = "center",
+			masked = masked,
 			texture_size = {
 				172,
 				181,
@@ -1210,8 +1208,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		icon_swirl = {
 			horizontal_alignment = "left",
-			masked = true,
 			vertical_alignment = "top",
+			masked = masked,
 			texture_size = {
 				111,
 				45,
@@ -1230,8 +1228,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		icon = {
 			horizontal_alignment = "left",
-			masked = true,
 			vertical_alignment = "center",
+			masked = masked,
 			texture_size = {
 				130,
 				131,
@@ -1264,8 +1262,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		dlc_lock = {
 			angle = 0,
 			horizontal_alignment = "right",
-			masked = true,
 			vertical_alignment = "center",
+			masked = masked,
 			texture_size = {
 				45.6,
 				52.199999999999996,
@@ -1328,8 +1326,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		reward_background = {
 			horizontal_alignment = "right",
-			masked = true,
 			vertical_alignment = "center",
+			masked = masked,
 			texture_size = {
 				172,
 				181,
@@ -1348,8 +1346,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		reward_swirl = {
 			horizontal_alignment = "right",
-			masked = true,
 			vertical_alignment = "top",
+			masked = masked,
 			texture_size = {
 				111,
 				45,
@@ -1367,12 +1365,9 @@ local function create_achievement_entry(scenegraph_id, size)
 			},
 		},
 		reward_icon = {
-			masked = true,
 			saturated = false,
-			size = {
-				80,
-				80,
-			},
+			masked = masked,
+			size = texture_size,
 			color = {
 				255,
 				255,
@@ -1386,12 +1381,9 @@ local function create_achievement_entry(scenegraph_id, size)
 			},
 		},
 		reward_icon_background = {
-			masked = true,
 			saturated = false,
-			size = {
-				80,
-				80,
-			},
+			masked = masked,
+			size = texture_size,
 			color = {
 				255,
 				255,
@@ -1406,12 +1398,9 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		reward_illusion_frame = {
 			horizontal_alignment = "right",
-			masked = true,
 			vertical_alignment = "center",
-			texture_size = {
-				80,
-				80,
-			},
+			masked = masked,
+			texture_size = texture_size,
 			color = {
 				255,
 				255,
@@ -1424,30 +1413,10 @@ local function create_achievement_entry(scenegraph_id, size)
 				14,
 			},
 		},
-		reward_frame = {
-			horizontal_alignment = "right",
-			masked = true,
-			vertical_alignment = "center",
-			texture_size = {
-				80,
-				80,
-			},
-			color = {
-				255,
-				255,
-				255,
-				255,
-			},
-			offset = {
-				-2,
-				0,
-				15,
-			},
-		},
 		reward_hover = {
 			horizontal_alignment = "right",
-			masked = true,
 			vertical_alignment = "center",
+			masked = masked,
 			texture_size = {
 				128,
 				128,
@@ -1466,8 +1435,8 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		reward_icon_claimed = {
 			horizontal_alignment = "center",
-			masked = true,
 			vertical_alignment = "bottom",
+			masked = masked,
 			texture_size = {
 				438,
 				54,
@@ -1695,6 +1664,15 @@ local function create_achievement_entry(scenegraph_id, size)
 			},
 		},
 	}
+
+	UIWidgets.append_item_frame_pass("reward_frame", passes, content, style, texture_size, {
+		-2,
+		0,
+		15,
+	}, masked, nil, {
+		horizontal_alignment = "right",
+		vertical_alignment = "center",
+	}, nil, nil)
 
 	widget.element.passes = passes
 	widget.content = content

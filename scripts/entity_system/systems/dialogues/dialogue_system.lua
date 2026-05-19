@@ -1083,11 +1083,11 @@ DialogueSystem.physics_async_update = function (self, context, t)
 							target_extension.input:trigger_dialogue_event(additional_trigger, event_data)
 						end
 					else
-						local source_wp = POSITION_LOOKUP[source] or Unit.local_position(source, 0)
+						local source_wp = Unit.local_position(source, 0)
 						local sound_distance = DialogueSettings.default_hear_distance
 
 						for unit, target_extension in pairs(self._unit_extension_data) do
-							local target_world_pos = POSITION_LOOKUP[unit] or Unit.local_position(unit, 0)
+							local target_world_pos = Unit.local_position(unit, 0)
 							local distance = Vector3.distance(source_wp, target_world_pos)
 
 							if distance <= sound_distance then

@@ -2837,28 +2837,35 @@ local function detect_cylinder(nav_world, traverse_logic, bot_position, bot_heig
 				local angle = math.pi * (i / (cylinder_tries - 1)) * sign
 				local dir = Quaternion.rotate(Quaternion.axis_angle(Vector3.up(), angle), escape_dir)
 				local to = cylinder_position + dir * escape_dist
-				local above, below = 2, 2
-				local success, z = GwNavQueries.triangle_from_position(nav_world, to, above, below)
+				local dist_sq = Vector3.distance_squared(bot_position, to)
+				local success = false
 
-				if success then
-					to.z = z
-					success = GwNavQueries.raycango(nav_world, bot_position, to, traverse_logic)
+				if dist_sq > 1e-06 then
+					local above, below = 2, 2
+					local tri_z
+
+					success, tri_z = GwNavQueries.triangle_from_position(nav_world, to, above, below)
 
 					if success then
-						local collides_with_enemy = dodges_into_enemies(bot_blackboard, bot_position, to, bot_radius, proximite_enemies)
+						to.z = tri_z
+						success = GwNavQueries.raycango(nav_world, bot_position, to, traverse_logic)
 
-						if not collides_with_enemy then
-							local in_existing_threat = is_inside_existing_threat(existing_threats, to, bot_radius)
+						if success then
+							local collides_with_enemy = dodges_into_enemies(bot_blackboard, bot_position, to, bot_radius, proximite_enemies)
 
-							if not in_existing_threat then
-								stop_at = to
+							if not collides_with_enemy then
+								local in_existing_threat = is_inside_existing_threat(existing_threats, to, bot_radius)
+
+								if not in_existing_threat then
+									stop_at = to
+								end
 							end
+
+							stop_at_fallback = to
 						end
 
-						stop_at_fallback = to
+						sign = sign * -1
 					end
-
-					sign = sign * -1
 				end
 
 				if stop_at then
@@ -2903,28 +2910,35 @@ local function detect_sphere(nav_world, traverse_logic, bot_position, bot_height
 				local dir = Quaternion.rotate(Quaternion.axis_angle(Vector3.up(), angle), escape_dir)
 				local cylinder_position = Vector3(sphere_x, sphere_y, bot_z)
 				local to = cylinder_position + dir * escape_dist
-				local above, below = 2, 2
-				local success, z = GwNavQueries.triangle_from_position(nav_world, to, above, below)
+				local dist_sq = Vector3.distance_squared(bot_position, to)
+				local success = false
 
-				if success then
-					to.z = z
-					success = GwNavQueries.raycango(nav_world, bot_position, to, traverse_logic)
+				if dist_sq > 1e-06 then
+					local above, below = 2, 2
+					local z
+
+					success, z = GwNavQueries.triangle_from_position(nav_world, to, above, below)
 
 					if success then
-						local collides_with_enemy = dodges_into_enemies(bot_blackboard, bot_position, to, bot_radius, proximite_enemies)
+						to.z = z
+						success = GwNavQueries.raycango(nav_world, bot_position, to, traverse_logic)
 
-						if not collides_with_enemy then
-							local in_existing_threat = is_inside_existing_threat(existing_threats, to, bot_radius)
+						if success then
+							local collides_with_enemy = dodges_into_enemies(bot_blackboard, bot_position, to, bot_radius, proximite_enemies)
 
-							if not in_existing_threat then
-								stop_at = to
+							if not collides_with_enemy then
+								local in_existing_threat = is_inside_existing_threat(existing_threats, to, bot_radius)
+
+								if not in_existing_threat then
+									stop_at = to
+								end
 							end
+
+							stop_at_fallback = to
 						end
 
-						stop_at_fallback = to
+						sign = sign * -1
 					end
-
-					sign = sign * -1
 				end
 
 				if stop_at then
@@ -2971,31 +2985,35 @@ local function detect_oobb(nav_world, traverse_logic, bot_position, bot_height, 
 			local projected_distance = 1 / math.cos(angle)
 			local ray_offset = Quaternion.rotate(Quaternion.axis_angle(Vector3.up(), angle), right_vector) * projected_distance
 			local to = bot_position + ray_offset * (sign * distance)
-			local on_nav_mesh, z = GwNavQueries.triangle_from_position(nav_world, to, above, below)
+			local dist_sq = Vector3.distance_squared(bot_position, to)
 
-			if on_nav_mesh then
-				to.z = z
-			end
+			if dist_sq > 1e-06 then
+				local on_nav_mesh, tri_z = GwNavQueries.triangle_from_position(nav_world, to, above, below)
 
-			local raycango = on_nav_mesh and GwNavQueries.raycango(nav_world, bot_position, to, traverse_logic)
+				if on_nav_mesh then
+					to.z = tri_z
+				end
 
-			if raycango then
-				fallback_stop_at = to
+				local raycango = on_nav_mesh and GwNavQueries.raycango(nav_world, bot_position, to, traverse_logic)
 
-				local in_liquid = area_damage_system:is_position_in_liquid(to, BotNavTransitionManager.NAV_COST_MAP_LAYERS)
-
-				if not in_liquid then
-					local collides_with_enemy = dodges_into_enemies(bot_blackboard, bot_position, to, bot_radius, proximite_enemies)
-
-					if not collides_with_enemy then
-						local in_existing_threat = is_inside_existing_threat(existing_threats, to, bot_radius)
-
-						if not in_existing_threat then
-							stop_at = to
-						end
-					end
-
+				if raycango then
 					fallback_stop_at = to
+
+					local in_liquid = area_damage_system:is_position_in_liquid(to, BotNavTransitionManager.NAV_COST_MAP_LAYERS)
+
+					if not in_liquid then
+						local collides_with_enemy = dodges_into_enemies(bot_blackboard, bot_position, to, bot_radius, proximite_enemies)
+
+						if not collides_with_enemy then
+							local in_existing_threat = is_inside_existing_threat(existing_threats, to, bot_radius)
+
+							if not in_existing_threat then
+								stop_at = to
+							end
+						end
+
+						fallback_stop_at = to
+					end
 				end
 			end
 

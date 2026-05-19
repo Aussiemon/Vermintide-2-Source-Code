@@ -24018,6 +24018,112 @@ HordeCompositions.standard_bearer_ambush = {
 		},
 	},
 }
+HordeCompositions.beastmen_trickle = {
+	{
+		{
+			name = "beastrickle",
+			weight = 3,
+			breeds = {
+				"beastmen_gor",
+				{
+					2,
+					3,
+				},
+			},
+		},
+	},
+	{
+		{
+			name = "beastrickle",
+			weight = 3,
+			breeds = {
+				"beastmen_gor",
+				{
+					2,
+					3,
+				},
+			},
+		},
+	},
+	{
+		{
+			name = "beastrickle",
+			weight = 3,
+			breeds = {
+				"beastmen_gor",
+				{
+					3,
+					4,
+				},
+			},
+		},
+	},
+	{
+		{
+			name = "beastrickle",
+			weight = 3,
+			breeds = {
+				"beastmen_gor",
+				{
+					3,
+					4,
+				},
+			},
+		},
+	},
+	{
+		{
+			name = "beastrickle",
+			weight = 3,
+			breeds = {
+				"beastmen_gor",
+				{
+					4,
+					5,
+				},
+			},
+		},
+	},
+	{
+		{
+			name = "beastrickle",
+			weight = 3,
+			breeds = {
+				"beastmen_gor",
+				{
+					4,
+					5,
+				},
+			},
+		},
+	},
+	{
+		{
+			name = "beastrickle",
+			weight = 3,
+			breeds = {
+				"beastmen_gor",
+				{
+					5,
+					6,
+				},
+			},
+		},
+	},
+	{
+		{
+			name = "beastrickle",
+			weight = 3,
+			breeds = {
+				"beastmen_gor",
+				{
+					3,
+					4,
+				},
+			},
+		},
+	},
+}
 HordeCompositions.wt_end_event_skeletons_01 = {
 	{
 		{

@@ -255,6 +255,30 @@ ItemMasterList.whale_oil_barrel = {
 	temporary_template = "whale_oil_barrel",
 	can_wield = CanWieldAllItemTemplates,
 }
+ItemMasterList.dwarf_explosive_barrel = {
+	gamepad_hud_icon = "consumables_icon_defence",
+	hud_icon = "consumables_icon_defence",
+	inventory_icon = "icons_placeholder",
+	is_local = true,
+	item_type = "explosive_inventory_item",
+	left_hand_unit = "units/weapons/player/wpn_dwarf_barrel_01/wpn_dwarf_barrel_01",
+	rarity = "plentiful",
+	slot_type = "healthkit",
+	temporary_template = "dwarf_explosive_barrel",
+	can_wield = CanWieldAllItemTemplates,
+}
+ItemMasterList.dwarf_beer_barrel = {
+	gamepad_hud_icon = "consumables_icon_defence",
+	hud_icon = "consumables_icon_defence",
+	inventory_icon = "icons_placeholder",
+	is_local = true,
+	item_type = "inventory_item",
+	left_hand_unit = "units/weapons/player/wpn_dwarf_barrel_02/wpn_dwarf_barrel_02",
+	rarity = "plentiful",
+	slot_type = "healthkit",
+	temporary_template = "dwarf_beer_barrel",
+	can_wield = CanWieldAllItemTemplates,
+}
 ItemMasterList.wpn_gargoyle_head = {
 	gamepad_hud_icon = "consumables_icon_defence",
 	hud_icon = "consumables_icon_defence",

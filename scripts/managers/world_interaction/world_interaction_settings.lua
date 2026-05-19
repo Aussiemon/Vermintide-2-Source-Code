@@ -24,6 +24,7 @@ WorldInteractionSettings = {
 		ripple_sound_event_delay = 0.3,
 		ripple_time_step = 0.1,
 		shading_env_variable = "world_interaction_water_window_size",
+		use_simple_effects = true,
 		water_speed_limit = 2,
 		window_size = 30,
 		default_ripple_start_size = {
@@ -34,7 +35,7 @@ WorldInteractionSettings = {
 			1,
 			2,
 		},
-		splash = {
+		default_water = {
 			default_material = "default_water_ripple_circle",
 			multiplier = 40,
 			random_size_diff = 0.5,
@@ -42,6 +43,20 @@ WorldInteractionSettings = {
 			start_size = {
 				0.2,
 				0.2,
+			},
+			stretch_multiplier = {
+				1,
+				1,
+			},
+		},
+		default_unit_water = {
+			default_material = "default_step_water_generated_ripple",
+			multiplier = 30,
+			random_size_diff = 0.5,
+			timer_ref = 8,
+			start_size = {
+				0.5,
+				0.5,
 			},
 			stretch_multiplier = {
 				1,

@@ -36,7 +36,7 @@ weapon_template.actions = {
 				{
 					action = "action_one",
 					input = "action_one_release",
-					start_time = 0.6,
+					start_time = 0.5,
 					sub_action = "heavy_attack_left",
 				},
 				{
@@ -94,7 +94,7 @@ weapon_template.actions = {
 				{
 					action = "action_one",
 					input = "action_one_release",
-					start_time = 0.6,
+					start_time = 0.5,
 					sub_action = "heavy_attack_right",
 				},
 				{
@@ -148,7 +148,7 @@ weapon_template.actions = {
 				{
 					action = "action_one",
 					input = "action_one_release",
-					start_time = 0.55,
+					start_time = 0.5,
 					sub_action = "heavy_attack_up",
 				},
 				{
@@ -458,7 +458,7 @@ weapon_template.actions = {
 			aim_assist_ramp_multiplier = 0.5,
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_heavy_left_up",
-			damage_profile = "medium_pointy_smiter_upper_1h",
+			damage_profile = "medium_slashing_tank_1h_finesse",
 			damage_window_end = 0.48,
 			damage_window_start = 0.37,
 			dedicated_target_range = 3,
@@ -1305,10 +1305,10 @@ weapon_template.block_fatigue_point_multiplier = 0.5
 weapon_template.outer_block_fatigue_point_multiplier = 1.5
 weapon_template.buffs = {
 	change_dodge_distance = {
-		external_optional_multiplier = 1.25,
+		external_optional_multiplier = 1.35,
 	},
 	change_dodge_speed = {
-		external_optional_multiplier = 1.25,
+		external_optional_multiplier = 1.35,
 	},
 }
 weapon_template.attack_meta_data = {

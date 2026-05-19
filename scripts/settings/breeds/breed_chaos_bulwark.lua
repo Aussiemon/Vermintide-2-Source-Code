@@ -13,6 +13,12 @@ local custom_stagger_types = {
 	weak = 1,
 	weakspot = 8,
 }
+local custom_utility_stagger_types = {
+	exploosion = 6,
+	heavy = 2,
+	medium = 5.6,
+	weak = 7,
+}
 local pushed_data = {
 	ahead_dist = 1.5,
 	player_pushed_speed = 4,
@@ -316,7 +322,7 @@ local breed_data = {
 			},
 		},
 	},
-	before_stagger_enter_function = function (unit, blackboard, attacker_unit, is_push, stagger_value_to_add, predicted_damage)
+	before_stagger_enter_function = function (unit, blackboard, attacker_unit, is_push, stagger_value_to_add, predicted_damage, damage_source)
 		local ai_shield_extension = ScriptUnit.extension(unit, "ai_shield_system")
 		local t = Managers.time:time("game")
 		local breed = blackboard.breed
@@ -335,6 +341,18 @@ local breed_data = {
 		if blackboard.weakspot_hit and not blackboard.weakspot_exploded and not ai_shield_extension.is_blocking then
 			weakspot_stagger = true
 			blackboard.weakspot_exploded = true
+		end
+
+		local attacking_unit = ScriptUnit.has_extension(attacker_unit, "career_system")
+
+		if damage_source == "career_ability" then
+			stagger_value_to_add = difficulty_tweaks.shield_open_stagger_threshold - custom_utility_stagger_types.medium
+		elseif damage_source == "charge_ability_hit" then
+			stagger_value_to_add = difficulty_tweaks.shield_open_stagger_threshold - custom_utility_stagger_types.heavy
+		elseif damage_source == "charge_ability_hit_blast" and not attacking_unit._career_name == "wh_zealot" then
+			stagger_value_to_add = difficulty_tweaks.shield_open_stagger_threshold - custom_utility_stagger_types.exploosion
+		elseif damage_source == "buff" then
+			stagger_value_to_add = difficulty_tweaks.shield_open_stagger_threshold - custom_utility_stagger_types.weak
 		end
 
 		predicted_damage = predicted_damage or 0.1

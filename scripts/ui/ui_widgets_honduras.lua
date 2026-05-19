@@ -822,32 +822,13 @@ UIWidgets.create_recipe_grid = function (scenegraph_id, size, rows, slots_per_ro
 				},
 			}
 
-			local slot_background_frame_name = "item_frame" .. name_suffix
-
-			passes[#passes + 1] = {
-				pass_type = "texture",
-				content_id = hotspot_name,
-				texture_id = slot_background_frame_name,
-				style_id = slot_background_frame_name,
-				content_check_function = function (content)
-					return content[item_icon_name]
-				end,
-			}
-			style[slot_background_frame_name] = {
-				size = icon_size,
-				color = {
-					255,
-					255,
-					255,
-					255,
-				},
-				offset = {
-					offset[1],
-					offset[2],
-					4,
-				},
-			}
-			content[hotspot_name][slot_background_frame_name] = "item_frame"
+			UIWidgets.append_item_frame_pass("item_frame" .. name_suffix, passes, content, style, icon_size, {
+				offset[1],
+				offset[2],
+				4,
+			}, false, hotspot_name, nil, nil, function (runtime_content)
+				return runtime_content[item_icon_name]
+			end)
 
 			local slot_craft_frame_name = "item_craft_frame" .. name_suffix
 
@@ -1445,32 +1426,13 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 			}
 			content[remove_marked_deed_icon_name] = "salvage_item_icon"
 
-			local slot_background_frame_name = "item_frame" .. name_suffix
-
-			passes[#passes + 1] = {
-				pass_type = "texture",
-				content_id = hotspot_name,
-				texture_id = slot_background_frame_name,
-				style_id = slot_background_frame_name,
-				content_check_function = function (content)
-					return content[item_icon_name]
-				end,
-			}
-			style[slot_background_frame_name] = {
-				size = icon_size,
-				color = {
-					255,
-					255,
-					255,
-					255,
-				},
-				offset = {
-					offset[1],
-					offset[2],
-					5,
-				},
-			}
-			content[hotspot_name][slot_background_frame_name] = "item_frame"
+			UIWidgets.append_item_frame_pass("item_frame" .. name_suffix, passes, content, style, icon_size, {
+				offset[1],
+				offset[2],
+				5,
+			}, false, hotspot_name, nil, nil, function (runtime_content)
+				return runtime_content[item_icon_name]
+			end)
 
 			local rarity_texture_name = "rarity_texture" .. name_suffix
 
@@ -1877,31 +1839,13 @@ UIWidgets.create_simple_inventory_item = function (scenegraph_id, size)
 		},
 	}
 
-	local slot_background_frame_name = "item_frame"
-
-	passes[#passes + 1] = {
-		pass_type = "texture",
-		texture_id = slot_background_frame_name,
-		style_id = slot_background_frame_name,
-		content_check_function = function (content)
-			return content[item_icon_name]
-		end,
-	}
-	style[slot_background_frame_name] = {
-		size = size,
-		color = {
-			255,
-			255,
-			255,
-			255,
-		},
-		offset = {
-			0,
-			0,
-			4,
-		},
-	}
-	content[slot_background_frame_name] = "item_frame"
+	UIWidgets.append_item_frame_pass("item_frame", passes, content, style, size, {
+		0,
+		0,
+		4,
+	}, false, nil, nil, nil, function (runtime_content)
+		return runtime_content[item_icon_name]
+	end)
 
 	local rarity_texture_name = "rarity_texture"
 
@@ -2078,32 +2022,13 @@ UIWidgets.create_loadout_grid = function (scenegraph_id, size, rows, spacing, al
 				},
 			}
 
-			local slot_background_frame_name = "item_frame" .. name_suffix
-
-			passes[#passes + 1] = {
-				pass_type = "texture",
-				content_id = hotspot_name,
-				texture_id = slot_background_frame_name,
-				style_id = slot_background_frame_name,
-				content_check_function = function (content)
-					return content[item_icon_name]
-				end,
-			}
-			style[slot_background_frame_name] = {
-				size = icon_size,
-				color = {
-					255,
-					255,
-					255,
-					255,
-				},
-				offset = {
-					offset[1],
-					offset[2],
-					4,
-				},
-			}
-			content[hotspot_name][slot_background_frame_name] = "item_frame"
+			UIWidgets.append_item_frame_pass("item_frame" .. name_suffix, passes, content, style, icon_size, {
+				offset[1],
+				offset[2],
+				4,
+			}, false, hotspot_name, nil, nil, function (runtime_content)
+				return runtime_content[item_icon_name]
+			end)
 
 			local rarity_texture_name = "rarity_texture" .. name_suffix
 
@@ -2541,32 +2466,13 @@ UIWidgets.create_loadout_grid_console = function (scenegraph_id, size, rows, spa
 				},
 			}
 
-			local slot_background_frame_name = "item_frame" .. name_suffix
-
-			passes[#passes + 1] = {
-				pass_type = "texture",
-				content_id = hotspot_name,
-				texture_id = slot_background_frame_name,
-				style_id = slot_background_frame_name,
-				content_check_function = function (content)
-					return content[item_icon_name]
-				end,
-			}
-			style[slot_background_frame_name] = {
-				size = icon_size,
-				color = {
-					255,
-					255,
-					255,
-					255,
-				},
-				offset = {
-					offset[1],
-					offset[2],
-					4,
-				},
-			}
-			content[hotspot_name][slot_background_frame_name] = "item_frame"
+			UIWidgets.append_item_frame_pass("item_frame" .. name_suffix, passes, content, style, icon_size, {
+				offset[1],
+				offset[2],
+				4,
+			}, false, hotspot_name, nil, nil, function (runtime_content)
+				return runtime_content[item_icon_name]
+			end)
 
 			local rarity_texture_name = "rarity_texture" .. name_suffix
 
@@ -18664,7 +18570,7 @@ UIWidgets.create_item_option_overview = function (scenegraph_id, size)
 			color = Colors.get_color_table_with_alpha("promo", 255),
 			offset = {
 				10 + icon_size[1] - 28,
-				13,
+				17,
 				10,
 			},
 		},
@@ -18759,6 +18665,16 @@ UIWidgets.create_item_option_overview = function (scenegraph_id, size)
 			},
 		},
 	}
+
+	UIWidgets.append_item_frame_pass("item_frame", passes, content, style, icon_size, {
+		10,
+		-60,
+		6,
+	}, false, nil, {
+		horizontal_alignment = "left",
+		vertical_alignment = "top",
+	}, nil, nil)
+
 	local widget = {}
 	local element = {}
 
@@ -24038,4 +23954,49 @@ UIWidgets.create_loading_spinner = function (scenegraph_id)
 			},
 		},
 	}
+end
+
+UIWidgets.append_item_frame_pass = function (pass_id, passes, content, style, icon_size, offset, masked, optional_content_id, optional_alignment, optional_scenegraph_id, optional_content_check_function)
+	assert(type(pass_id) == "string", "pass_id needs to be a string")
+	assert(type(passes) == "table", "passes needs to be a table")
+	assert(type(content) == "table", "content needs to be a table")
+	assert(type(style) == "table", "style needs to be a table")
+	assert(type(icon_size) == "table", "icon_size needs to be a table")
+	assert(type(offset) == "table", "offset needs to be a table")
+	assert(optional_content_id == nil or type(optional_content_id) == "string", "optional_content_id needs to be a string or nil")
+	assert(optional_alignment == nil or type(optional_alignment) == "table", "optional_alignment needs to be a table or nil")
+	assert(masked == nil or type(masked) == "boolean", "masked needs to be a boolean or nil")
+	assert(optional_scenegraph_id == nil or type(optional_scenegraph_id) == "string", "optional_scenegraph_id needs to be a string or nil")
+	assert(optional_content_check_function == nil or type(optional_content_check_function) == "function", "optional_content_check_function needs to be a function or nil")
+	table.append(passes, {
+		{
+			pass_type = "texture",
+			content_id = optional_content_id,
+			texture_id = pass_id,
+			style_id = pass_id,
+			content_check_function = optional_content_check_function,
+		},
+	})
+
+	content = content[optional_content_id] or content
+
+	table.merge(content, {
+		[pass_id] = "item_frame",
+	})
+	table.merge(style, {
+		[pass_id] = {
+			masked = masked,
+			horizontal_alignment = optional_alignment and optional_alignment.horizontal_alignment or nil,
+			vertical_alignment = optional_alignment and optional_alignment.vertical_alignment or nil,
+			offset = offset,
+			color = {
+				255,
+				255,
+				255,
+				255,
+			},
+			texture_size = icon_size,
+			scenegraph_id = optional_scenegraph_id,
+		},
+	})
 end

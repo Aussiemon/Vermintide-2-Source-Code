@@ -723,7 +723,6 @@ local function create_illusion_button()
 		content = {
 			background_texture = "icons_placeholder",
 			equipped_texture = "button_illusion_glow",
-			frame_texture = "item_frame",
 			hover_texture = "button_illusion_glow_white",
 			icon_texture = "icons_placeholder",
 			lock_texture = "hero_icon_locked",
@@ -773,25 +772,6 @@ local function create_illusion_button()
 					0,
 					0,
 					1,
-				},
-			},
-			frame_texture = {
-				horizontal_alignment = "center",
-				vertical_alignment = "center",
-				texture_size = {
-					80,
-					80,
-				},
-				color = {
-					255,
-					255,
-					255,
-					255,
-				},
-				offset = {
-					0,
-					0,
-					2,
 				},
 			},
 			equipped_texture = {

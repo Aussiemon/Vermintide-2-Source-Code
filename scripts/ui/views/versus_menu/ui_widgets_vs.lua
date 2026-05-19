@@ -427,33 +427,16 @@ UIWidgets.add_loadout_grid = function (definition, content_identifier, scenegrap
 				scenegraph_id = scenegraph_id,
 			}
 
-			local slot_background_frame_name = "item_frame" .. name_suffix
-
-			passes[#passes + 1] = {
-				pass_type = "texture",
-				content_id = slot_content_id,
-				texture_id = slot_background_frame_name,
-				style_id = slot_background_frame_name,
-				content_check_function = function (content)
-					return content[item_icon_name]
-				end,
-			}
-			style[slot_background_frame_name] = {
-				size = icon_size,
-				color = {
-					255,
-					255,
-					255,
-					255,
-				},
-				offset = {
-					offset[1],
-					offset[2],
-					4,
-				},
-				scenegraph_id = scenegraph_id,
-			}
-			slot_content[slot_background_frame_name] = "item_frame"
+			UIWidgets.append_item_frame_pass("item_frame" .. name_suffix, passes, content, style, icon_size, {
+				offset[1],
+				offset[2],
+				4,
+			}, false, slot_content_id, {
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+			}, scenegraph_id, function (runtime_content)
+				return runtime_content[item_icon_name]
+			end)
 
 			local rarity_texture_name = "rarity_texture" .. name_suffix
 
@@ -7302,7 +7285,7 @@ UIWidgets.create_screen_ceremony_award = function (scenegraph_id, award_data, of
 		},
 	}
 
-	local stupid_offset = UTF8Utils.string_length(header) > 10 and 15 or 0
+	local extra_string_offset = UTF8Utils.string_length(header) > 10 and 15 or 0
 
 	style.header = {
 		dynamic_font_size = true,
@@ -7319,7 +7302,7 @@ UIWidgets.create_screen_ceremony_award = function (scenegraph_id, award_data, of
 		text_color = Colors.get_color_table_with_alpha("white", 255),
 		offset = {
 			215,
-			140 + stupid_offset,
+			140 + extra_string_offset,
 			3,
 		},
 	}
@@ -7338,7 +7321,7 @@ UIWidgets.create_screen_ceremony_award = function (scenegraph_id, award_data, of
 		text_color = Colors.get_color_table_with_alpha("black", 255),
 		offset = {
 			213,
-			138 + stupid_offset,
+			138 + extra_string_offset,
 			2,
 		},
 	}
@@ -7358,7 +7341,7 @@ UIWidgets.create_screen_ceremony_award = function (scenegraph_id, award_data, of
 		text_color = Colors.get_color_table_with_alpha("font_default", 255),
 		offset = {
 			220,
-			120 + stupid_offset * 0.5,
+			120 + extra_string_offset * 0.5,
 			3,
 		},
 	}
@@ -7378,7 +7361,7 @@ UIWidgets.create_screen_ceremony_award = function (scenegraph_id, award_data, of
 		text_color = Colors.get_color_table_with_alpha("black", 255),
 		offset = {
 			222,
-			118 + stupid_offset * 0.5,
+			118 + extra_string_offset * 0.5,
 			2,
 		},
 	}

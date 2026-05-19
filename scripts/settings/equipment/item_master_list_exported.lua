@@ -1725,6 +1725,7 @@ ItemMasterList.frame_skulls = {
 	can_wield = CanWieldAllItemTemplates,
 	events = {
 		"skulls",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.frame_geheimnisnacht_01 = {
@@ -1741,6 +1742,7 @@ ItemMasterList.frame_geheimnisnacht_01 = {
 	can_wield = CanWieldAllItemTemplates,
 	events = {
 		"geheimnisnacht",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.frame_geheimnisnacht_02 = {
@@ -1770,6 +1772,7 @@ ItemMasterList.frame_geheimnisnacht_03 = {
 	can_wield = CanWieldAllItemTemplates,
 	events = {
 		"geheimnisnacht",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.frame_summer = {
@@ -1798,6 +1801,7 @@ ItemMasterList.frame_mondstille_01 = {
 	can_wield = CanWieldAllItemTemplates,
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.frame_mondstille_02 = {
@@ -1814,6 +1818,7 @@ ItemMasterList.frame_mondstille_02 = {
 	can_wield = CanWieldAllItemTemplates,
 	events = {
 		"gotwf",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.frame_mondstille_03 = {
@@ -3102,6 +3107,7 @@ ItemMasterList.frame_0094 = {
 	can_wield = CanWieldAllItemTemplates,
 	events = {
 		"anniversary",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.frame_0095 = {
@@ -3118,6 +3124,7 @@ ItemMasterList.frame_0095 = {
 	can_wield = CanWieldAllItemTemplates,
 	events = {
 		"skulls",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.frame_0096 = {
@@ -3254,6 +3261,7 @@ ItemMasterList.frame_skulls_2021 = {
 	can_wield = CanWieldAllItemTemplates,
 	events = {
 		"skulls",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.frame_skulls_2022 = {
@@ -3270,6 +3278,7 @@ ItemMasterList.frame_skulls_2022 = {
 	can_wield = CanWieldAllItemTemplates,
 	events = {
 		"skulls",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.crafting_material_scrap = {
@@ -13776,6 +13785,6 @@ ItemMasterList.frame_dwarf_fest = {
 	temporary_template = "frame_dwarf_fest",
 	can_wield = CanWieldAllItemTemplates,
 	events = {
-		"dwarf_fest_2025",
+		"dwarf_fest",
 	},
 }

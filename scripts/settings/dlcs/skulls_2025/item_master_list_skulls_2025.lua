@@ -19,6 +19,7 @@ ItemMasterList.dw_dual_axe_skin_06_runed_04 = {
 	},
 	events = {
 		"skulls",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.we_spear_skin_03_runed_04 = {
@@ -41,6 +42,7 @@ ItemMasterList.we_spear_skin_03_runed_04 = {
 	},
 	events = {
 		"skulls",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.es_halberd_skin_04_runed_04 = {
@@ -63,6 +65,7 @@ ItemMasterList.es_halberd_skin_04_runed_04 = {
 	},
 	events = {
 		"skulls",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.bw_flamethrower_staff_skin_02_runed_04 = {
@@ -86,6 +89,7 @@ ItemMasterList.bw_flamethrower_staff_skin_02_runed_04 = {
 	},
 	events = {
 		"skulls",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.wh_repeating_crossbow_skin_03_runed_04 = {
@@ -108,6 +112,7 @@ ItemMasterList.wh_repeating_crossbow_skin_03_runed_04 = {
 	},
 	events = {
 		"skulls",
+		"dwarf_fest",
 	},
 }
 ItemMasterList.frame_skulls_2025 = {
@@ -124,5 +129,6 @@ ItemMasterList.frame_skulls_2025 = {
 	can_wield = CanWieldAllItemTemplates,
 	events = {
 		"skulls",
+		"dwarf_fest",
 	},
 }

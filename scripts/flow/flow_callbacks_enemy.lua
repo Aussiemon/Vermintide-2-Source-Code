@@ -304,7 +304,13 @@ end
 
 local function enemy_dismember_spawn_gib(unit_spawner, unit, world, gibsettings, force_multiplier, unit_inventory_extension, unit_ai_system_extension)
 	local node_id = Unit.node(unit, gibsettings.gib_parent_align_node)
-	local spawn_pose = Matrix4x4.from_quaternion_position(Unit.world_rotation(unit, node_id), Unit.world_position(unit, node_id))
+	local rot, pos = Unit.world_rotation(unit, node_id), Unit.world_position(unit, node_id)
+
+	if not Vector3.is_valid(pos) then
+		return
+	end
+
+	local spawn_pose = Matrix4x4.from_quaternion_position(rot, pos)
 
 	if gibsettings.gib_disable_auto_scale ~= true then
 		local unit_scale = Unit.local_scale(unit, 1)

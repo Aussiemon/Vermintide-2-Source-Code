@@ -594,4 +594,34 @@ DLCSettings = DLCSettings or {
 			common = "scripts/settings/dlcs/anniversary_2026/anniversary_2026_common_settings",
 		},
 	},
+	skulls_2026 = {
+		localization = "localization/skulls_2026",
+		package_name = "resource_packages/dlcs/skulls_2026",
+		additional_settings = {
+			buff = "scripts/settings/dlcs/skulls_2023/buff_settings_skulls_2023",
+			common = "scripts/settings/dlcs/skulls_2026/skulls_2026_common_settings",
+			quest = "scripts/settings/dlcs/skulls_2026/skulls_2026_quest_settings",
+		},
+	},
+	geheimnisnacht_2026 = {
+		localization = "localization/geheimnisnacht_2026",
+		package_name = "resource_packages/dlcs/geheimnisnacht_2026",
+		additional_settings = {
+			common = "scripts/settings/dlcs/geheimnisnacht_2026/geheimnisnacht_2026_common_settings",
+		},
+	},
+	gotwf_2026 = {
+		localization = "localization/gotwf_2026",
+		package_name = "resource_packages/dlcs/gotwf_2026",
+		additional_settings = {
+			common = "scripts/settings/dlcs/gotwf/gotwf_2026_common_settings",
+		},
+	},
+	balance_2026 = {
+		localization = "localization/balance_2026",
+		package_name = "resource_packages/dlcs/balance_2026",
+		additional_settings = {
+			common = "scripts/settings/dlcs/balance_2026/balance_2026_common_settings",
+		},
+	},
 }

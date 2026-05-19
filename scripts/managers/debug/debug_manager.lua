@@ -715,7 +715,7 @@ DebugManager.set_time_scale = function (self, time_scale_index, skip_sync)
 
 	GLOBAL_TIME_SCALE = time_scale
 
-	if not skip_sync then
+	if not skip_sync and Managers.state.network:game() then
 		local debug_command_lookup = NetworkLookup.debug_commands.set_time_scale
 
 		if self.is_server then

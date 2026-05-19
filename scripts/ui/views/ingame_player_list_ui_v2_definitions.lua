@@ -1711,6 +1711,10 @@ local function create_description_text(text, scenegraph_id)
 end
 
 local function create_reward_item(offset_x, item)
+	local icon_size = {
+		60,
+		60,
+	}
 	local definition = {
 		scenegraph_id = "reward_item",
 		element = {
@@ -1726,11 +1730,6 @@ local function create_reward_item(offset_x, item)
 					texture_id = "icon_id",
 				},
 				{
-					pass_type = "texture",
-					style_id = "icon",
-					texture_id = "frame_id",
-				},
-				{
 					item_id = "item",
 					pass_type = "item_tooltip",
 					scenegraph_id = "reward_item_tooltip",
@@ -1741,7 +1740,6 @@ local function create_reward_item(offset_x, item)
 			},
 		},
 		content = {
-			frame_id = "item_frame",
 			hotspot = {},
 			icon_id = item.data.inventory_icon,
 			item = item,
@@ -1750,14 +1748,8 @@ local function create_reward_item(offset_x, item)
 			icon = {
 				horizontal_alignment = "left",
 				vertical_alignment = "top",
-				texture_size = {
-					60,
-					60,
-				},
-				area_size = {
-					60,
-					60,
-				},
+				texture_size = icon_size,
+				area_size = icon_size,
 				offset = {
 					0,
 					0,
@@ -1771,6 +1763,15 @@ local function create_reward_item(offset_x, item)
 			0,
 		},
 	}
+
+	UIWidgets.append_item_frame_pass("frame_id", definition.element.passes, definition.content, definition.style, icon_size, {
+		0,
+		0,
+		1,
+	}, false, nil, {
+		horizontal_alignment = "left",
+		vertical_alignment = "top",
+	}, nil, nil)
 
 	return definition
 end

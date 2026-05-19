@@ -344,7 +344,7 @@ HeroWindowItemCustomization._create_ui_elements = function (self)
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
-		local widget = UIWidget.init(widget_definition)
+		local widget = UIWidget.init(widget_definition, self._ui_top_renderer)
 
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget

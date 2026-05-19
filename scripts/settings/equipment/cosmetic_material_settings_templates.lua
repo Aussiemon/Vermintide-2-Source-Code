@@ -157,6 +157,12 @@ MaterialSettingsTemplates.frame_skulls_2025 = {
 		type = "texture",
 	},
 }
+MaterialSettingsTemplates.frame_skulls_2026 = {
+	portrait_frame = {
+		texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_skulls_2026/store_item_icon_frame_skulls_2026",
+		type = "texture",
+	},
+}
 MaterialSettingsTemplates.frame_geheimnisnacht_04 = {
 	portrait_frame = {
 		texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_geheimnisnacht_04/store_item_icon_frame_geheimnisnacht_04",
@@ -181,6 +187,12 @@ MaterialSettingsTemplates.frame_geheimnisnacht_2025 = {
 		type = "texture",
 	},
 }
+MaterialSettingsTemplates.frame_geheimnisnacht_2026 = {
+	portrait_frame = {
+		texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_geheimnisnacht_2026/store_item_icon_frame_geheimnisnacht_2026",
+		type = "texture",
+	},
+}
 MaterialSettingsTemplates.frame_gotwf_01 = {
 	portrait_frame = {
 		texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_gotwf_01/store_item_icon_frame_gotwf_01",
@@ -196,6 +208,12 @@ MaterialSettingsTemplates.frame_gotwf_2024 = {
 MaterialSettingsTemplates.frame_gotwf_2025 = {
 	portrait_frame = {
 		texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_gotwf_2025/store_item_icon_frame_gotwf_2025",
+		type = "texture",
+	},
+}
+MaterialSettingsTemplates.frame_gotwf_2026 = {
+	portrait_frame = {
+		texture = "gui/1080p/single_textures/store_item_icons/store_item_icon_frame_gotwf_2026/store_item_icon_frame_gotwf_2026",
 		type = "texture",
 	},
 }

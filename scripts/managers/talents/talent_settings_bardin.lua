@@ -759,7 +759,7 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				icon = "bardin_slayer_passive",
 				refresh_durations = true,
-				stat_buff = "increased_weapon_damage",
+				stat_buff = "increased_weapon_damage_melee",
 			},
 		},
 	},

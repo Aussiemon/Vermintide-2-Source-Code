@@ -312,7 +312,7 @@ Pickups.level_events.beer_barrel = {
 	spawn_weighting = 1e-06,
 	type = "inventory_item",
 	unit_name = "units/weapons/player/pup_explosive_barrel/pup_explosive_barrel_01",
-	unit_template_name = "pickup_unit",
+	unit_template_name = "pickup_projectile_unit",
 	wield_on_pickup = true,
 }
 Pickups.level_events.magic_barrel = {
@@ -351,6 +351,35 @@ Pickups.level_events.wizards_barrel = {
 			AIGroupTemplates.ethereal_skulls.try_spawn_group("picked_up", interactor_unit)
 		end
 	end,
+}
+Pickups.level_events.dwarf_explosive_barrel = {
+	additional_data_func = "explosive_barrel",
+	debug_pickup_category = "level_event",
+	hud_description = "explosive_barrel",
+	individual_pickup = false,
+	item_description = "explosive_barrel",
+	item_name = "dwarf_explosive_barrel",
+	only_once = true,
+	slot_name = "slot_level_event",
+	spawn_weighting = 1e-06,
+	type = "explosive_inventory_item",
+	unit_name = "units/weapons/player/pup_dwarf_barrel_01/pup_dwarf_barrel_01",
+	unit_template_name = "explosive_pickup_projectile_unit",
+	wield_on_pickup = true,
+}
+Pickups.level_events.dwarf_beer_barrel = {
+	debug_pickup_category = "level_event",
+	hud_description = "beer_barrel",
+	individual_pickup = false,
+	item_description = "beer_barrel",
+	item_name = "dwarf_beer_barrel",
+	only_once = true,
+	slot_name = "slot_level_event",
+	spawn_weighting = 1e-06,
+	type = "inventory_item",
+	unit_name = "units/weapons/player/pup_dwarf_barrel_02/pup_dwarf_barrel_02",
+	unit_template_name = "pickup_projectile_unit",
+	wield_on_pickup = true,
 }
 Pickups.level_events.grimoire = {
 	debug_pickup_category = "special",

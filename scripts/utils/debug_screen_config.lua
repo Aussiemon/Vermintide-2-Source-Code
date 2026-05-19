@@ -218,6 +218,129 @@ local settings = {
 	},
 	{
 		category = "Allround useful stuff!",
+		description = "When entering a level, Teleports the player to a portal hub element",
+		setting_name = "teleport player when enter game",
+		item_source = {},
+		load_items_source_func = function (options)
+			local current_level_key = Managers.level_transition_handler:get_current_level_keys()
+
+			if not current_level_key then
+				return
+			end
+
+			table.clear(options)
+
+			options[1] = "[clear value]"
+
+			local portals = ConflictUtils.get_teleporter_portals()
+
+			for key, _ in pairs(portals) do
+				options[#options + 1] = key
+			end
+
+			if Managers.player.is_server then
+				local level_analysis = Managers.state.conflict.level_analysis
+				local main_paths = level_analysis:get_main_paths()
+				local original_order = table.mirror_array(options)
+
+				table.sort(options, function (a, b)
+					if a == "[clear value]" or b == "[clear value]" then
+						return a == "[clear value]"
+					end
+
+					local pos_a = portals[a][1]:unbox()
+					local pos_b = portals[b][1]:unbox()
+					local _, best_travel_dist_a = MainPathUtils.closest_pos_at_main_path(main_paths, pos_a)
+					local _, best_travel_dist_b = MainPathUtils.closest_pos_at_main_path(main_paths, pos_b)
+
+					best_travel_dist_a = best_travel_dist_a or math.huge
+					best_travel_dist_b = best_travel_dist_b or math.huge
+
+					if best_travel_dist_a ~= best_travel_dist_b then
+						return best_travel_dist_a < best_travel_dist_b
+					end
+
+					return original_order[a] < original_order[b]
+				end)
+			else
+				local local_player = Managers.player:local_player()
+				local player_unit = local_player and local_player.player_unit
+
+				if not ALIVE[player_unit] then
+					return
+				end
+
+				local units = Managers.state.entity:get_entities("EndZoneExtension")
+				local any_end_zone = next(units)
+
+				if not any_end_zone then
+					return
+				end
+
+				local end_zone_pos = Unit.world_position(any_end_zone, 0)
+				local player_pos = Unit.world_position(player_unit, 0)
+				local to_end_zone = end_zone_pos - player_pos
+				local original_order = table.mirror_array(options)
+
+				table.sort(options, function (a, b)
+					if a == "[clear value]" or b == "[clear value]" then
+						return a == "[clear value]"
+					end
+
+					local pos_a = portals[a][1]:unbox()
+					local pos_b = portals[b][1]:unbox()
+					local to_pos_a = pos_a - player_pos
+					local to_pos_b = pos_b - player_pos
+					local pos_a_proj = Vector3.dot(to_pos_a, to_end_zone)
+					local pos_b_proj = Vector3.dot(to_pos_b, to_end_zone)
+
+					if pos_a_proj == pos_b_proj then
+						return original_order[a] < original_order[b]
+					end
+
+					return pos_a_proj < pos_b_proj
+				end)
+			end
+		end,
+		func = function (options, index)
+			if options[index] == "[clear value]" then
+				return
+			end
+
+			local local_player = Managers.player:local_player()
+
+			if local_player then
+				local player_unit = local_player.player_unit
+
+				if Unit.alive(player_unit) then
+					local portals = ConflictUtils.get_teleporter_portals()
+
+					if table.is_empty(portals) then
+						return
+					end
+
+					local portal_id = options[index]
+					local pos = portals[portal_id][1]:unbox()
+					local rot = portals[portal_id][2]:unbox()
+					local locomotion = ScriptUnit.extension(player_unit, "locomotion_system")
+					local world = Managers.world:world("level_world")
+
+					LevelHelper:flow_event(world, "teleport_" .. portal_id)
+					locomotion:teleport_to(pos, rot)
+				end
+			end
+
+			local current_level_key = Managers.level_transition_handler:get_current_level_keys()
+
+			script_data["teleport player when enter game"] = current_level_key .. ":" .. options[index]
+
+			Development.set_setting("teleport player when enter game", current_level_key .. ":" .. options[index])
+			Development.clear_param_cache("teleport player when enter game")
+			print("TELEPORT")
+		end,
+	},
+	{
+		category = "Allround useful stuff!",
 		description = "Teleports the player to another player.",
 		setting_name = "teleport player to player",
 		item_source = {},
@@ -552,6 +675,10 @@ local settings = {
 			end)
 		end,
 		func = function (options, index)
+			if not Managers.state.network.is_server then
+				return
+			end
+
 			local level_name = options[index]
 			local environment_id = 0
 			local combined_name = options[level_name]
@@ -7574,9 +7701,12 @@ local settings = {
 		category = "Progression",
 		close_when_selected = true,
 		description = "Restart",
+		propagate_to_server = true,
 		setting_name = "Retry current level",
 		func = function ()
-			Managers.state.game_mode:retry_level()
+			if Managers.state.network.is_server then
+				Managers.state.game_mode:retry_level()
+			end
 		end,
 	},
 	{

@@ -1839,7 +1839,6 @@ HeroViewStateLoot._setup_rewards = function (self, rewards)
 			content.final_glow = "loot_presentation_circle_glow_" .. item_rarity .. "_large"
 			content.image = nil
 			content.amount_text = nil
-			content.item_icon_frame = "item_frame"
 
 			if slot_type == "melee" or slot_type == "ranged" or slot_type == "weapon_skin" then
 				local viewport, world

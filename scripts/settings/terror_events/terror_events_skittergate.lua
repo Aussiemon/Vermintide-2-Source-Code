@@ -138,6 +138,14 @@ local terror_event_blueprints = {
 			"disable_kick",
 		},
 		{
+			"control_pacing",
+			enable = false,
+		},
+		{
+			"control_specials",
+			enable = false,
+		},
+		{
 			"set_master_event_running",
 			name = "skittergate_rasknitt_boss",
 		},

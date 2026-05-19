@@ -232,6 +232,38 @@ whale_oil_barrel.actions.action_dropped.default.projectile_info = {
 	projectile_unit_template_name = "explosive_pickup_projectile_unit",
 }
 
+local dwarf_explosive_barrel = table.clone(weapon_template)
+
+dwarf_explosive_barrel.left_hand_unit = "units/weapons/player/wpn_dwarf_barrel_01/wpn_dwarf_barrel_01"
+dwarf_explosive_barrel.actions.action_one.default.projectile_info = {
+	drop_on_player_destroyed = true,
+	pickup_name = "dwarf_explosive_barrel",
+	projectile_unit_name = "units/weapons/player/pup_dwarf_barrel_01/pup_dwarf_barrel_01",
+	projectile_unit_template_name = "explosive_pickup_projectile_unit",
+}
+dwarf_explosive_barrel.actions.action_dropped.default.projectile_info = {
+	drop_on_player_destroyed = true,
+	pickup_name = "dwarf_explosive_barrel",
+	projectile_unit_name = "units/weapons/player/pup_dwarf_barrel_01/pup_dwarf_barrel_01",
+	projectile_unit_template_name = "explosive_pickup_projectile_unit",
+}
+
+local dwarf_beer_barrel = table.clone(weapon_template)
+
+dwarf_beer_barrel.left_hand_unit = "units/weapons/player/wpn_dwarf_barrel_02/wpn_dwarf_barrel_02"
+dwarf_beer_barrel.actions.action_one.default.projectile_info = {
+	drop_on_player_destroyed = true,
+	pickup_name = "dwarf_beer_barrel",
+	projectile_unit_name = "units/weapons/player/pup_dwarf_barrel_02/pup_dwarf_barrel_02",
+	projectile_unit_template_name = "pickup_projectile_unit",
+}
+dwarf_beer_barrel.actions.action_dropped.default.projectile_info = {
+	drop_on_player_destroyed = true,
+	pickup_name = "dwarf_beer_barrel",
+	projectile_unit_name = "units/weapons/player/pup_dwarf_barrel_02/pup_dwarf_barrel_02",
+	projectile_unit_template_name = "pickup_projectile_unit",
+}
+
 return {
 	explosive_barrel = explosive_barrel,
 	explosive_barrel_objective = explosive_barrel_objective,
@@ -240,4 +272,6 @@ return {
 	magic_barrel = magic_barrel,
 	wizards_barrel = wizards_barrel,
 	whale_oil_barrel = whale_oil_barrel,
+	dwarf_explosive_barrel = dwarf_explosive_barrel,
+	dwarf_beer_barrel = dwarf_beer_barrel,
 }

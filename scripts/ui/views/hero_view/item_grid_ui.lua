@@ -483,6 +483,7 @@ ItemGridUI.add_item_to_slot_index = function (self, slot_index, item, optional_a
 	local backend_id = item and item.backend_id
 
 	content["item" .. name_sufix] = item
+	item_content.item = item
 
 	if item then
 		local item_data = item.data
@@ -602,6 +603,7 @@ ItemGridUI._populate_inventory_page = function (self, items, start_read_index)
 			local backend_id = item and item.backend_id
 
 			content["item" .. name_sufix] = backend_id and item
+			item_content.item = backend_id and item
 
 			if item then
 				local item_data = item.data
@@ -707,6 +709,7 @@ ItemGridUI.clear_item_grid = function (self)
 			local item_style = style[item_icon_name]
 
 			content["item" .. name_sufix] = nil
+			item_content.item = nil
 			item_content[item_icon_name] = nil
 			item_content[item_amount_name] = ""
 			item_content.equipped = false

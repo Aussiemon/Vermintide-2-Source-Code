@@ -219,9 +219,6 @@ PlayerCharacterStateClimbingLadder._move_on_ladder = function (self, first_perso
 	local movement = CharacterStateHelper.get_square_movement_input(input_extension)
 	local x_input = Vector3.x(movement)
 	local y_input = Vector3.y(movement)
-
-	Debug.text("x:%f, y:%f", x_input, y_input)
-
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local mover = Unit.mover(unit)
 	local direction
