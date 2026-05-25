@@ -469,18 +469,44 @@ EacManager._pump_eos_actions = function (self)
 	end
 end
 
+local AUTH_SESSION_TICKET_RETRY_DELAY_IN_SECONDS = 5
+local AUTH_SESSION_TICKET_RETRY_COUNT = 2
 local AUTH_STATE_MACHINE = {
-	init = function (self)
+	init = function (self, t)
+		eac_printf("Retrieving Steam auth session ticket...")
+
+		self._auth_retries = 0
+
 		return "retrieve_ticket"
 	end,
 	retrieve_ticket = function (self, t)
-		eac_printf("Retrieving Steam auth session ticket...")
+		local ticket = Steam.retrieve_auth_session_ticket("epiconlineservices")
 
-		self._steam_ticket_job = Steam.retrieve_auth_session_ticket("epiconlineservices")
+		if ticket then
+			self._steam_ticket_job = ticket
 
-		return "poll_ticket"
+			return "poll_ticket"
+		end
+
+		self._auth_retries = self._auth_retries + 1
+
+		if self._auth_retries > AUTH_SESSION_TICKET_RETRY_COUNT then
+			eac_printf("Failed to retrieve auth session ticket. Exceded max %d retry attempt(s).", AUTH_SESSION_TICKET_RETRY_COUNT)
+
+			self._eos_auth_complete = true
+			self._eos_auth_error = Localize("backend_err_auth_steam")
+		end
+
+		self._auth_retry_t = t + AUTH_SESSION_TICKET_RETRY_DELAY_IN_SECONDS
+
+		return "retrying_retrieve_ticket"
 	end,
-	poll_ticket = function (self)
+	retrying_retrieve_ticket = function (self, t)
+		if t >= self._auth_retry_t then
+			return "retrieve_ticket"
+		end
+	end,
+	poll_ticket = function (self, t)
 		local auth_session_ticket = Steam.poll_auth_session_ticket(self._steam_ticket_job)
 
 		if auth_session_ticket then
@@ -490,7 +516,7 @@ local AUTH_STATE_MACHINE = {
 			return "start_authenticate"
 		end
 	end,
-	start_authenticate = function (self)
+	start_authenticate = function (self, t)
 		eac_printf("Authenticating with Steam as an identity provider...")
 		EOS_EAC.authenticate_with_steam(self._auth_session_ticket)
 
@@ -498,7 +524,7 @@ local AUTH_STATE_MACHINE = {
 
 		return "poll_authenticate"
 	end,
-	poll_authenticate = function (self)
+	poll_authenticate = function (self, t)
 		local status, result = EOS_EAC.poll_authenticate_status()
 
 		if status == "in_flight" then
@@ -518,7 +544,7 @@ local AUTH_STATE_MACHINE = {
 
 		return "poll_valid"
 	end,
-	poll_valid = function (self)
+	poll_valid = function (self, t)
 		if EOS_EAC.poll_authenticate_status() == "expired" then
 			eac_printf("Refreshing user id ...")
 

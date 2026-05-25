@@ -4182,8 +4182,9 @@ PowerLevelTemplates = {
 	pickaxe_heavy_smiter_vertical_critical_strike = {
 		attack_armor_power_modifer = {
 			1,
-			0.5,
+			0.75,
 			1.5,
+			1,
 			1,
 			1,
 		},
@@ -4240,7 +4241,7 @@ PowerLevelTemplates = {
 	pickaxe_heavy_linesman_horizontal_critical_strike = {
 		attack_armor_power_modifer = {
 			1,
-			0.5,
+			0.75,
 			1,
 			1,
 			1,
@@ -4311,10 +4312,11 @@ PowerLevelTemplates = {
 	pickaxe_heavy_smiter_vertical_charged_critical_strike = {
 		attack_armor_power_modifer = {
 			1,
-			0.5,
+			0.75,
 			1.5,
 			1,
 			1,
+			0.85,
 		},
 		impact_armor_power_modifer = {
 			1,
@@ -4757,8 +4759,35 @@ PowerLevelTemplates = {
 				},
 			},
 			power_distribution = {
-				attack = 0.1,
+				attack = 0.175,
 				impact = 0.175,
+			},
+		},
+		{
+			attack_template = "slashing_smiter",
+			boost_curve_coefficient_headshot = 1,
+			boost_curve_type = "smiter_curve",
+			armor_modifier = {
+				attack = {
+					1.25,
+					0.65,
+					2.5,
+					1,
+					0.75,
+					0.6,
+				},
+				impact = {
+					1,
+					0.5,
+					1,
+					1,
+					0.75,
+					0.25,
+				},
+			},
+			power_distribution = {
+				attack = 0.1,
+				impact = 0.125,
 			},
 		},
 		{
@@ -4785,7 +4814,7 @@ PowerLevelTemplates = {
 			},
 			power_distribution = {
 				attack = 0.085,
-				impact = 0.125,
+				impact = 0.1,
 			},
 		},
 	},

@@ -414,7 +414,7 @@ achievements.bless_punch_back = {
 					local last_hit_buffer = template_data.last_hit
 					local last_hit_n = template_data.last_hit_n
 
-					for unit, attack_t in last_hit_buffer do
+					for unit, attack_t in pairs(last_hit_buffer) do
 						if not ALIVE[unit] or t > attack_t + bless_punch_back_time_window then
 							last_hit_buffer[unit] = nil
 							last_hit_n = last_hit_n - 1

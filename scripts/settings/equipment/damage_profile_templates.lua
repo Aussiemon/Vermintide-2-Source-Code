@@ -971,7 +971,7 @@ DamageProfileTemplates.axe_1h_light_smiter_horizontal = {
 }
 DamageProfileTemplates.axe_1h_heavy_smiter_vertical = {
 	armor_modifier = "axe_1h_heavy_smiter_vertical_armor_modifier",
-	charge_value = "light_attack",
+	charge_value = "heavy_attack",
 	cleave_distribution = "axe_1h_heavy_smiter_vertical_cleave_distribution",
 	critical_strike = "axe_1h_heavy_smiter_vertical_critical_strike",
 	default_target = "axe_1h_heavy_smiter_vertical_default_target",
@@ -1080,7 +1080,7 @@ DamageProfileTemplates.elven_axe_light_smiter_vertical = {
 }
 DamageProfileTemplates.elven_axe_heavy_smiter_vertical = {
 	armor_modifier = "elven_axe_heavy_smiter_vertical_armor_modifier",
-	charge_value = "light_attack",
+	charge_value = "heavy_attack",
 	cleave_distribution = "elven_axe_heavy_smiter_vertical_cleave_distribution",
 	critical_strike = "elven_axe_heavy_smiter_vertical_critical_strike",
 	default_target = "elven_axe_heavy_smiter_vertical_default_target",
@@ -1115,7 +1115,7 @@ DamageProfileTemplates.axe_falchion_light_smiter_horizontal = {
 }
 DamageProfileTemplates.axe_falcion_heavy_smiter_vertical_right = {
 	armor_modifier = "axe_falcion_heavy_smiter_vertical_right_armor_modifier",
-	charge_value = "light_attack",
+	charge_value = "heavy_attack",
 	cleave_distribution = "axe_falcion_heavy_smiter_vertical_right_cleave_distribution",
 	critical_strike = "axe_falcion_heavy_smiter_vertical_right_critical_strike",
 	default_target = "axe_falcion_heavy_smiter_vertical_right_default_target",
@@ -1167,7 +1167,7 @@ DamageProfileTemplates.crowbill_1h_light_smiter_diag = {
 }
 DamageProfileTemplates.crowbill_1h_heavy_smiter = {
 	armor_modifier = "crowbill_1h_heavy_smiter_armor_modifier",
-	charge_value = "light_attack",
+	charge_value = "heavy_attack",
 	cleave_distribution = "crowbill_1h_heavy_smiter_cleave_distribution",
 	critical_strike = "crowbill_1h_heavy_smiter_critical_strike",
 	default_target = "crowbill_1h_heavy_smiter_default_target",
@@ -1176,7 +1176,7 @@ DamageProfileTemplates.crowbill_1h_heavy_smiter = {
 }
 DamageProfileTemplates.crowbill_1h_heavy_smiter_diag = {
 	armor_modifier = "crowbill_1h_heavy_smiter_diag_armor_modifier",
-	charge_value = "light_attack",
+	charge_value = "heavy_attack",
 	cleave_distribution = "crowbill_1h_heavy_smiter_diag_cleave_distribution",
 	critical_strike = "crowbill_1h_heavy_smiter_diag_critical_strike",
 	default_target = "crowbill_1h_heavy_smiter_diag_default_target",
