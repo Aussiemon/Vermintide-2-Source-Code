@@ -33,6 +33,7 @@ local button_size = {
 	48,
 	48,
 }
+local NUM_PERKS = 6
 local scenegraph_definition = {
 	screen = console_menu_scenegraphs.screen,
 	area = console_menu_scenegraphs.area,
@@ -790,45 +791,17 @@ local scenegraph_definition = {
 			1,
 		},
 	},
-	career_perk_1 = {
+	career_perk_anchor = {
 		horizontal_alignment = "left",
 		parent = "perk_title_divider",
 		vertical_alignment = "bottom",
 		size = {
-			420,
+			0,
 			1,
 		},
 		position = {
 			10,
 			-30,
-			1,
-		},
-	},
-	career_perk_2 = {
-		horizontal_alignment = "left",
-		parent = "career_perk_1",
-		vertical_alignment = "center",
-		size = {
-			420,
-			1,
-		},
-		position = {
-			0,
-			0,
-			1,
-		},
-	},
-	career_perk_3 = {
-		horizontal_alignment = "left",
-		parent = "career_perk_2",
-		vertical_alignment = "center",
-		size = {
-			420,
-			1,
-		},
-		position = {
-			0,
-			0,
 			1,
 		},
 	},
@@ -861,6 +834,30 @@ local scenegraph_definition = {
 		},
 	},
 }
+
+for i = 1, NUM_PERKS do
+	local parent = i - 1
+
+	if i == 1 then
+		parent = "anchor"
+	end
+
+	scenegraph_definition["career_perk_" .. i] = {
+		horizontal_alignment = "left",
+		vertical_alignment = "bottom",
+		parent = "career_perk_" .. parent,
+		size = {
+			410,
+			1,
+		},
+		position = {
+			0,
+			0,
+			1,
+		},
+	}
+end
+
 local hero_career_style = {
 	dynamic_font_size = true,
 	font_size = 40,
@@ -1923,9 +1920,6 @@ local info_window_widgets = {
 	}, "info_video_edge_right"),
 	perk_title_text = UIWidgets.create_simple_text(Localize("hero_view_perk_title"), "perk_title_text", nil, nil, sub_title_text_style),
 	perk_title_divider = UIWidgets.create_simple_texture("infoslate_frame_02_horizontal", "perk_title_divider", true),
-	career_perk_1 = UIWidgets.create_career_perk_text("career_perk_1"),
-	career_perk_2 = UIWidgets.create_career_perk_text("career_perk_2"),
-	career_perk_3 = UIWidgets.create_career_perk_text("career_perk_3"),
 	passive_title_text = UIWidgets.create_simple_text("n/a", "passive_title_text", nil, nil, sub_title_text_style),
 	passive_type_title = UIWidgets.create_simple_text(Localize("hero_view_passive_ability"), "passive_type_title", nil, nil, type_title_text_style),
 	passive_title_divider = UIWidgets.create_simple_texture("infoslate_frame_02_horizontal", "passive_title_divider", true),
@@ -1939,6 +1933,11 @@ local info_window_widgets = {
 	active_icon = UIWidgets.create_simple_texture("icons_placeholder", "active_icon", true),
 	active_icon_frame = UIWidgets.create_simple_texture("talent_frame", "active_icon_frame", true),
 }
+
+for i = 1, NUM_PERKS do
+	info_window_widgets["career_perk_" .. i] = UIWidgets.create_career_perk_text("career_perk_" .. i)
+end
+
 local animation_definitions = {
 	on_enter = {
 		{
@@ -2039,4 +2038,5 @@ return {
 	weapon_slots = weapon_slots,
 	tag_widget_func = UIWidgets.create_tag,
 	generic_input_actions = generic_input_actions,
+	NUM_PERKS = NUM_PERKS,
 }

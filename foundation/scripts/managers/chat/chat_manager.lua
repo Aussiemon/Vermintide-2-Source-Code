@@ -540,11 +540,18 @@ ChatManager._get_message_target = function (self, message_target)
 	end
 end
 
-ChatManager.send_chat_message = function (self, channel_id, local_player_id, message, localize, localization_parameters, localize_parameters, recent_message_index, optional_message_target, optional_message_type, optional_message_target_key, sender_peer_id)
-	local command, parameters, context_data = self:_handle_command(message, recent_message_index, optional_message_target)
+ChatManager.send_chat_message = function (self, channel_id, local_player_id, original_message, localize, localization_parameters, localize_parameters, recent_message_index, optional_message_target, optional_message_type, optional_message_target_key, sender_peer_id)
+	local command, parameters, context_data = self:_handle_command(original_message, recent_message_index, optional_message_target)
 
 	if command then
 		return command, parameters, context_data
+	end
+
+	local message = original_message
+	local max_chat_message_length = NetworkConstants.max_string_length - 5
+
+	if max_chat_message_length < #original_message then
+		message = UTF8Utils.clamp_byte_length(message, max_chat_message_length) .. "..."
 	end
 
 	fassert(self:has_channel(channel_id), "Haven't registered channel: %s", tostring(channel_id))

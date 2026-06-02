@@ -89,7 +89,6 @@ CareerAbilityESHuntsman._run_ability = function (self, skip_cooldown)
 
 	if talent_extension:has_talent("markus_huntsman_activated_ability_improved_stealth") then
 		local_buff_names = {
-			"markus_huntsman_activated_ability_increased_zoom",
 			"markus_huntsman_activated_ability_increased_reload_speed",
 			"markus_huntsman_activated_ability_decrease_move_speed",
 			"markus_huntsman_activated_ability_decrease_crouch_move_speed",
@@ -114,7 +113,6 @@ CareerAbilityESHuntsman._run_ability = function (self, skip_cooldown)
 		}
 	else
 		local_buff_names = {
-			"markus_huntsman_activated_ability_increased_zoom",
 			"markus_huntsman_activated_ability_increased_reload_speed",
 			"markus_huntsman_activated_ability_decrease_move_speed",
 			"markus_huntsman_activated_ability_decrease_crouch_move_speed",

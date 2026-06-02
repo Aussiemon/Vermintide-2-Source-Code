@@ -472,10 +472,13 @@ HeroWindowTalents._populate_career_info = function (self, initialize)
 
 	for index, data in ipairs(passive_perks) do
 		local widget = widgets_by_name["career_perk_" .. index]
-		local display_name = data.display_name
 
-		widget.content.text = Localize(display_name)
-		widget.content.tooltip_data = data
+		if widget then
+			local display_name = data.display_name
+
+			widget.content.text = Localize(display_name)
+			widget.content.tooltip_data = data
+		end
 	end
 end
 

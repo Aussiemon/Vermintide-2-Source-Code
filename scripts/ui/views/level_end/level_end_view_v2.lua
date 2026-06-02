@@ -309,7 +309,7 @@ LevelEndView._verify_weapon_data = function (self, player_data, weapon_slot, wea
 	local career_name = career_settings.name
 	local verified_weapon_slot = career_settings.preview_wield_slot
 	local verified_weapon = {
-		item_name = career_settings.preview_items[1],
+		item_name = career_settings.preview_items[1].item_name,
 	}
 	local verfied_pose_anim
 

@@ -49,3 +49,25 @@ UTF8Utils.sub_string = function (text, char_from, char_to)
 		return ""
 	end
 end
+
+UTF8Utils.clamp_byte_length = function (text, max_bytes)
+	if max_bytes >= #text then
+		return text
+	end
+
+	max_bytes = max_bytes + 1
+
+	local byte_index = 1
+
+	while byte_index <= max_bytes do
+		local _, tmp_byte_to = Utf8.location(text, byte_index)
+
+		if max_bytes < tmp_byte_to then
+			break
+		end
+
+		byte_index = tmp_byte_to
+	end
+
+	return string.sub(text, 1, byte_index - 1)
+end

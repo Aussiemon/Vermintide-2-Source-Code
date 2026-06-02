@@ -1,6 +1,7 @@
 ﻿-- chunkname: @scripts/network_lookup/network_constants.lua
 
 NetworkConstants = NetworkConstants or {}
+NetworkConstants.max_string_length = 500
 
 local function check_bounderies(network_variable_name, network_lookup_name, store_variable_info)
 	local network_variable_info = Network.type_info(network_variable_name)

@@ -241,8 +241,7 @@ weapon_template.actions = {
 			anim_time_scale = 2.2,
 			charge_time = 0.5,
 			cooldown = 0.2,
-			heavy_aim_flow_delay = 0.9,
-			heavy_aim_flow_event = "lua_heavy_zoom",
+			default_zoom = "zoom_in_trueflight",
 			hold_input = "action_two_hold",
 			kind = "aim",
 			minimum_hold_time = 0.2,
@@ -290,6 +289,10 @@ weapon_template.actions = {
 					start_time = 0.5,
 					sub_action = "default",
 				},
+			},
+			buffed_zoom_thresholds = {
+				"zoom_in_trueflight",
+				"zoom_in",
 			},
 			zoom_condition_function = function ()
 				return true

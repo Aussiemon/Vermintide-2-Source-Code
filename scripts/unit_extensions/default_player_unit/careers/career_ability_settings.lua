@@ -320,6 +320,7 @@ PassiveAbilitySettings = {
 			"markus_huntsman_passive_crit_aura",
 			"markus_huntsman_ability_cooldown_on_hit",
 			"markus_huntsman_ability_cooldown_on_damage_taken",
+			"markus_huntsman_passive_increased_zoom",
 		},
 		perks = {
 			{
@@ -333,6 +334,10 @@ PassiveAbilitySettings = {
 			{
 				description = "career_passive_desc_es_1d",
 				display_name = "career_passive_name_es_1d",
+			},
+			{
+				description = "career_passive_desc_es_1f",
+				display_name = "career_passive_name_es_1f",
 			},
 		},
 	},

@@ -5,7 +5,6 @@ require("scripts/utils/keystroke_helper")
 local definitions = local_require("scripts/ui/views/chat_gui_definitions")
 
 ChatGui = class(ChatGui)
-ChatGui.MAX_CHARS = 500
 
 ChatGui.init = function (self, ui_context)
 	self.input_manager = ui_context.input_manager
@@ -809,7 +808,8 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 
 				local ctrl_button_index = Keyboard.button_index("left ctrl")
 				local ctrl_held = Keyboard.pressed(ctrl_button_index) or Keyboard.button(ctrl_button_index) > 0
-				local new_chat_message, new_chat_index, new_chat_mode = KeystrokeHelper.parse_strokes(self.chat_message, self.chat_index, self.chat_mode, keystrokes, ChatGui.MAX_CHARS)
+				local max_chars = NetworkConstants.max_string_length
+				local new_chat_message, new_chat_index, new_chat_mode = KeystrokeHelper.parse_strokes(self.chat_message, self.chat_index, self.chat_mode, keystrokes, max_chars)
 
 				if new_chat_index ~= self.chat_index then
 					if new_chat_index == 1 then

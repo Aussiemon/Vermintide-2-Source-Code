@@ -18,7 +18,6 @@ local RPCS = {
 	"rpc_shared_state_start_atomic_set_server",
 	"rpc_shared_state_end_atomic_set_server",
 }
-local STRING_CHUNK_SIZE = 500
 
 local function get_or_create_table(table, key)
 	local val = table[key]
@@ -295,6 +294,8 @@ local function send_set_peer_rpc(channel_id, context, owner, key_type_lookup, pe
 		if encoded_len == 0 then
 			RPC[rpc](channel_id, context, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value, true)
 		else
+			local STRING_CHUNK_SIZE = NetworkConstants.max_string_length
+
 			for i = 1, encoded_len, STRING_CHUNK_SIZE do
 				local string_chunk = encoded_value:sub(i, i + STRING_CHUNK_SIZE - 1)
 				local complete = encoded_len < i + STRING_CHUNK_SIZE
@@ -317,6 +318,8 @@ local function send_set_server_rpc(channel_id, context, key_type_lookup, peer_id
 		if encoded_len == 0 then
 			RPC[rpc](channel_id, context, key_type_lookup, peer_id, local_player_id, profile_index, career_index, party_id, encoded_value, true)
 		else
+			local STRING_CHUNK_SIZE = NetworkConstants.max_string_length
+
 			for i = 1, encoded_len, STRING_CHUNK_SIZE do
 				local string_chunk = encoded_value:sub(i, i + STRING_CHUNK_SIZE - 1)
 				local complete = encoded_len < i + STRING_CHUNK_SIZE

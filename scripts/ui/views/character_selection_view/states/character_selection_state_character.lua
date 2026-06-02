@@ -14,6 +14,7 @@ local hero_icon_widget_definition = definitions.hero_icon_widget
 local generic_input_actions = definitions.generic_input_actions
 local animation_definitions = definitions.animation_definitions
 local scenegraph_definition = definitions.scenegraph_definition
+local NUM_PERKS = definitions.NUM_PERKS
 local DO_RELOAD = false
 local PERK_TEXT_AREA = 240
 local VIDEO_REFERENCE_NAME = "CharacterSelectionStateCharacter"
@@ -1370,7 +1371,7 @@ CharacterSelectionStateCharacter._populate_career_info = function (self, profile
 	local total_perks_height = 0
 	local perks_height_spacing = 0
 
-	for i = 1, 3 do
+	for i = 1, NUM_PERKS do
 		local widget = widgets_by_name["career_perk_" .. i]
 		local content = widget.content
 		local style = widget.style

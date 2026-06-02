@@ -4279,7 +4279,7 @@ PowerLevelTemplates = {
 		boost_curve_type = "linesman_curve",
 		power_distribution = {
 			attack = 0.05,
-			impact = 0.08,
+			impact = 0.075,
 		},
 	},
 	pickaxe_heavy_linesman_horizontal_targets = {
@@ -5439,7 +5439,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			1,
-			2,
+			2.5,
 			1,
 			1,
 		},
@@ -5697,6 +5697,7 @@ PowerLevelTemplates = {
 	mace_1h_light_smiter_vertical_default_target = {
 		attack_template = "slashing_smiter",
 		boost_curve_type = "smiter_curve",
+		dot_balefire_variant = true,
 		dot_template_name = "burning_dot_1tick",
 		power_distribution = {
 			attack = 0.2,
@@ -5854,7 +5855,7 @@ PowerLevelTemplates = {
 			dot_template_name = "burning_dot_2tick_slow_unstackable",
 			stagger_duration_modifier = 1.5,
 			power_distribution = {
-				attack = 0.075,
+				attack = 0.1,
 				impact = 0.2,
 			},
 		},
@@ -5865,7 +5866,7 @@ PowerLevelTemplates = {
 			dot_template_name = "burning_dot_2tick_slow_unstackable",
 			stagger_duration_modifier = 1.5,
 			power_distribution = {
-				attack = 0.05,
+				attack = 0.075,
 				impact = 0.15,
 			},
 		},

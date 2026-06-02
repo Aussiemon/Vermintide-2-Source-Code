@@ -336,6 +336,15 @@ TalentBuffTemplates.empire_soldier = {
 			},
 		},
 	},
+	markus_huntsman_passive_increased_zoom = {
+		buffs = {
+			{
+				perks = {
+					buff_perks.increased_zoom,
+				},
+			},
+		},
+	},
 	markus_huntsman_passive_no_damage_dropoff = {
 		buffs = {
 			{
@@ -357,19 +366,6 @@ TalentBuffTemplates.empire_soldier = {
 				refresh_durations = true,
 				remove_buff_func = "end_huntsman_activated_ability",
 				duration = buff_tweak_data.markus_huntsman_activated_ability.duration,
-			},
-		},
-	},
-	markus_huntsman_activated_ability_increased_zoom = {
-		buffs = {
-			{
-				max_stacks = 1,
-				name = "markus_huntsman_activated_ability_increased_zoom",
-				refresh_durations = true,
-				duration = buff_tweak_data.markus_huntsman_activated_ability.duration,
-				perks = {
-					buff_perks.increased_zoom,
-				},
 			},
 		},
 	},

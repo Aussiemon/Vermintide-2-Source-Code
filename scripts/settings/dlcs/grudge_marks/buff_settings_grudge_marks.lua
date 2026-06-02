@@ -908,7 +908,10 @@ settings.buff_function_templates = {
 							name_index = name_index,
 						}
 						local target_position = ConflictUtils.get_closest_position(mirror_pos, side.ENEMY_PLAYER_AND_BOT_POSITIONS)
-						local rot = ConflictUtils.look_at_position_flat(mirror_pos, target_position)
+
+						target_position = target_position or teleport_position or Vector3.zero()
+
+						local rot = target_position and ConflictUtils.look_at_position_flat(mirror_pos, target_position)
 
 						Managers.state.conflict:spawn_queued_unit(breed, Vector3Box(mirror_pos), QuaternionBox(rot), "mirror_spawn", nil, nil, optional_data, nil)
 

@@ -7,6 +7,7 @@ local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local generic_input_actions = definitions.generic_input_actions
+local NUM_PERKS = definitions.NUM_PERKS
 local DO_RELOAD = false
 
 HeroWindowTalentsConsole = class(HeroWindowTalentsConsole)
@@ -652,7 +653,7 @@ HeroWindowTalentsConsole._populate_career_info = function (self, initialize)
 	local total_perks_height = 0
 	local perks_height_spacing = 0
 
-	for i = 1, 3 do
+	for i = 1, NUM_PERKS do
 		local widget = widgets_by_name["career_perk_" .. i]
 		local content = widget.content
 		local style = widget.style

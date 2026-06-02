@@ -15,6 +15,7 @@ local tag_widget_func = definitions.tag_widget_func
 local loadout_button_widget_definitions = definitions.loadout_button_widget_definitions
 local console_cursor_definition = definitions.console_cursor_definition
 local generic_input_actions = definitions.generic_input_actions
+local NUM_PERKS = definitions.NUM_PERKS
 local EMPTY_TABLE = {}
 
 CharacterSelectionStateVersusLoadouts = class(CharacterSelectionStateVersusLoadouts, CharacterSelectionStateCharacter)
@@ -1481,7 +1482,7 @@ CharacterSelectionStateVersusLoadouts._populate_career_info = function (self)
 	local total_perks_height = 0
 	local perks_height_spacing = 0
 
-	for i = 1, 3 do
+	for i = 1, NUM_PERKS do
 		local widget = widgets_by_name["career_perk_" .. i]
 		local content = widget.content
 		local style = widget.style

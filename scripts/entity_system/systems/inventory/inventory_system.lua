@@ -289,6 +289,10 @@ InventorySystem.rpc_add_equipment = function (self, channel_id, go_id, slot_id, 
 	local unit = self.unit_storage:unit(go_id)
 
 	if unit == nil or not ALIVE[unit] then
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		printf("[InventorySystem] Failed to call `rpc_add_equipment` for peer_id %s", peer_id)
+
 		return
 	end
 
