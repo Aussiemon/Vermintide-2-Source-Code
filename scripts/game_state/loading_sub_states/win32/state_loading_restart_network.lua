@@ -158,6 +158,8 @@ StateLoadingRestartNetwork._init_network = function (self)
 		end
 	end
 
+	dofile("scripts/network_lookup/network_constants")
+
 	if script_data.done_initial_join then
 		lobby_to_join = nil
 		host_to_join = nil
