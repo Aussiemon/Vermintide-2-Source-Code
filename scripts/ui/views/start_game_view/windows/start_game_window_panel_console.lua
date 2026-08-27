@@ -57,6 +57,7 @@ StartGameWindowPanelConsole._create_ui_elements = function (self, definitions, p
 
 			widget.content.layout_name = layout_name
 			widget.disable_function_name = settings.disable_function_name
+			widget.is_layout_disabled = Managers.ui:is_ui_layout_disabled(layout_name)
 			title_button_widgets[#title_button_widgets + 1] = widget
 		end
 	end
@@ -149,15 +150,19 @@ StartGameWindowPanelConsole._update_title_buttons_disable_status = function (sel
 
 	for i = 1, #title_button_widgets do
 		local widget = title_button_widgets[i]
-		local disable_function_name = widget.disable_function_name
+		local is_disabled = false
 
-		if disable_function_name then
-			local is_disabled = self[disable_function_name](self)
-
-			widget.content.button_hotspot.disable_button = is_disabled
+		if widget.is_layout_disabled then
+			is_disabled = true
 		else
-			widget.content.button_hotspot.disable_button = false
+			local disable_function_name = widget.disable_function_name
+
+			if disable_function_name then
+				is_disabled = self[disable_function_name](self)
+			end
 		end
+
+		widget.content.button_hotspot.disable_button = is_disabled
 	end
 end
 

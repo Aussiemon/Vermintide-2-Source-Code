@@ -19,12 +19,10 @@ ModManager.init = function (self, boot_gui)
 	self._ui_time = 0
 	self._network_callbacks = {}
 
-	local in_modded_realm = script_data["eac-untrusted"]
-
-	Crashify.print_property("realm", in_modded_realm and "modded" or "official")
+	Crashify.print_property("realm", MODDED_REALM and "modded" or "official")
 
 	if rawget(_G, "Presence") then
-		Presence.set_presence("status", in_modded_realm and "Modded Realm" or "Official Realm")
+		Presence.set_presence("status", MODDED_REALM and "Modded Realm" or "Official Realm")
 	end
 
 	self._mod_shim = ModShim:new()
@@ -37,7 +35,7 @@ ModManager.init = function (self, boot_gui)
 	if has_enabled_mods and is_bundled then
 		print("[ModManager] Fetching mod metadata ...")
 
-		if in_modded_realm then
+		if MODDED_REALM then
 			self._mod_metadata = {}
 			self._state = "fetching_metadata"
 		else
@@ -272,7 +270,7 @@ ModManager._start_scan = function (self)
 
 	self._state = "scanning"
 
-	Mod.start_scan(not script_data["eac-untrusted"])
+	Mod.start_scan(not MODDED_REALM)
 end
 
 ModManager._build_mod_table = function (self, mod_handles)

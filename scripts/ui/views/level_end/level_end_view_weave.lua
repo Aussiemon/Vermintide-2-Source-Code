@@ -40,7 +40,7 @@ end
 LevelEndViewWeave.setup_pages = function (self, game_won, rewards)
 	local index_by_state_name
 
-	if self._is_untrusted then
+	if GameSettingsDevelopment.read_only_backend then
 		index_by_state_name = self:_setup_pages_untrusted()
 	elseif game_won then
 		index_by_state_name = self:_setup_pages_victory(rewards)

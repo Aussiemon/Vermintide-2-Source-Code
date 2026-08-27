@@ -643,7 +643,7 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 			if needle ~= nil and not SearchUtils.simple_search(needle, entry_data.name) and not SearchUtils.simple_search(needle, entry_data.desc) then
 				-- Nothing
 			else
-				local completed = (entry_data.completed or script_data.set_all_challenges_claimable) and not script_data["eac-untrusted"]
+				local completed = (entry_data.completed or script_data.set_all_challenges_claimable) and not GameSettingsDevelopment.read_only_backend
 
 				if query.completed ~= nil and query.completed == not completed then
 					-- Nothing
@@ -2989,7 +2989,7 @@ HeroViewStateAchievements._handle_claim_all_challenges = function (self)
 
 	local has_claimable_widgets = self._claimable_challenge_widgets and #self._claimable_challenge_widgets > 0 and true or false
 
-	if has_claimable_widgets and (has_unclaimed_challenges or self._has_claimable_filtered_challenges) and not script_data["eac-untrusted"] and not self:_is_polling() then
+	if has_claimable_widgets and (has_unclaimed_challenges or self._has_claimable_filtered_challenges) and not GameSettingsDevelopment.read_only_backend and not self:_is_polling() then
 		claim_all_button.content.visible = true
 	else
 		claim_all_button.content.visible = false

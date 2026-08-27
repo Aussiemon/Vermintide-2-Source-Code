@@ -77,7 +77,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_drachenfels_spawn = function (unit, bl
 	local physics_world = World.get_data(blackboard.world, "physics_world")
 	local level_analysis = Managers.state.conflict.level_analysis
 	local node_units = level_analysis.generic_ai_node_units.sorcerer_boss_drachenfels_center
-	local center_unit = node_units[1]
+	local center_unit = node_units and node_units[1] or unit
 
 	blackboard.no_kill_achievement = true
 	blackboard.ring_center_position = Vector3Box(Unit.local_position(center_unit, 0))

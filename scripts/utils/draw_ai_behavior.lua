@@ -355,7 +355,7 @@ local function update_node_history(blackboard, node_children, current_identifier
 end
 
 local function longest_text_length_check(text, longest_text, longest_text_length)
-	local text_length = UTF8Utils.string_length(text)
+	local text_length = Utf8.length(text)
 
 	if longest_text_length < text_length then
 		return text, text_length

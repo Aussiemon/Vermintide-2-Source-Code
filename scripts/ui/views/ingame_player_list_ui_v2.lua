@@ -831,7 +831,7 @@ IngamePlayerListUI._update_widgets = function (self)
 
 		local name = player_data.player_name
 
-		player_data.player_name = UTF8Utils.string_length(name) > PLAYER_NAME_MAX_LENGTH and UIRenderer.crop_text_width(self._ui_top_renderer, name, 370, widget.style.name) or name
+		player_data.player_name = Utf8.length(name) > PLAYER_NAME_MAX_LENGTH and UIRenderer.crop_text_width(self._ui_top_renderer, name, 370, widget.style.name) or name
 		player_data.widget = widget
 	end
 end

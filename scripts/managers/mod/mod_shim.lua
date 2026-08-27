@@ -72,6 +72,11 @@ ModShim.patches = {
 			return UIUtils.is_button_hover_enter(widget, hotspot_name)
 		end,
 	},
+	{
+		name = "UTF8Utils.string_length",
+		mods = {},
+		func = Utf8.length,
+	},
 }
 ModShim.error_handling = {
 	error_state = {},
@@ -298,7 +303,7 @@ local function print_deprecated_function_warning(name)
 end
 
 ModShim.init = function (self)
-	self._enable_wedges = not script_data["eac-untrusted"]
+	self._enable_wedges = not MODDED_REALM
 
 	if self._enable_wedges then
 		self._wedged_mod_by_id = {}

@@ -756,10 +756,10 @@ HeroWindowWeaveProperties._populate_menu_option_widget = function (self, entry_d
 		content.price_text = price_text
 		entry_data.next_cost = next_cost
 
-		local default_text_length = UTF8Utils.string_length(title)
+		local default_text_length = Utf8.length(title)
 		local end_index = string.find(title, " ", 1)
 		local value_string = string.sub(title, 1, end_index)
-		local value_string_length = UTF8Utils.string_length(value_string)
+		local value_string_length = Utf8.length(value_string)
 		local text_style = style.title_text
 
 		if text_style then
@@ -796,8 +796,8 @@ HeroWindowWeaveProperties._align_menu_option_price_text = function (self, style,
 	local price_icon_width = 0
 
 	if value_text then
-		local value_string_length = UTF8Utils.string_length(value_text)
-		local default_text_length = UTF8Utils.string_length(price_text)
+		local value_string_length = Utf8.length(value_text)
+		local default_text_length = Utf8.length(price_text)
 		local color_override_table = price_text_style.color_override_table
 
 		color_override_table.start_index = default_text_length - value_string_length
@@ -1892,7 +1892,7 @@ HeroWindowWeaveProperties._set_essence_upgrade_cost = function (self, essence_am
 	end
 
 	widget_warning.content.visible = magic_cap_reached ~= nil and magic_cap_reached or false
-	button_content.button_hotspot.disable_button = script_data["eac-untrusted"] or magic_cap_reached or not essence_amount or not can_afford
+	button_content.button_hotspot.disable_button = GameSettingsDevelopment.read_only_backend or magic_cap_reached or not essence_amount or not can_afford
 	button_content.title_text = button_text
 end
 

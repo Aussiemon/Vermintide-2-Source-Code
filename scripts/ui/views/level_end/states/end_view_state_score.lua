@@ -592,7 +592,7 @@ EndViewStateScore._setup_score_panel = function (self, score_panel_scores, playe
 				local score_text_name = "score_text" .. line_suffix
 				local row_name = "row_bg" .. line_suffix
 				local row_content = content[row_name]
-				local name = UTF8Utils.string_length(player_name) > PLAYER_NAME_MAX_LENGTH and UIRenderer.crop_text_width(self.ui_renderer, player_name, player_score_size[1] - 40, style[score_text_name]) or player_name
+				local name = Utf8.length(player_name) > PLAYER_NAME_MAX_LENGTH and UIRenderer.crop_text_width(self.ui_renderer, player_name, player_score_size[1] - 40, style[score_text_name]) or player_name
 
 				row_content[score_text_name] = name
 			end

@@ -370,7 +370,7 @@ template.update_function = function (ui_renderer, widget, marker, settings, dt, 
 
 	local marker_owner = Managers.player:owner(unit)
 	local marker_owner_name = marker_owner and marker_owner:name() or ""
-	local marker_owner_name_length = UTF8Utils.string_length(marker_owner_name)
+	local marker_owner_name_length = Utf8.length(marker_owner_name)
 
 	if marker_owner_name_length > 18 then
 		marker_owner_name = string.sub(marker_owner_name, 1, 18) .. "..."

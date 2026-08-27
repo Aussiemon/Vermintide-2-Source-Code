@@ -218,7 +218,7 @@ end
 EquipmentUI._set_slot_input = function (self, widget, slot_name)
 	local input_action = input_actions_by_slot[slot_name]
 	local texture_data, input_text, prefix_text = self:_get_input_texture_data(input_action)
-	local text_length = input_text and UTF8Utils.string_length(input_text) or 0
+	local text_length = input_text and Utf8.length(input_text) or 0
 	local max_length = 40
 	local input_style = widget.style.input_text
 	local ui_renderer = self.ui_renderer

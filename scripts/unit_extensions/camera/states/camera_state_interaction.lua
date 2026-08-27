@@ -13,9 +13,8 @@ CameraStateInteraction.on_enter = function (self, unit, input, dt, context, t, p
 	if world_manager:has_world("level_world") then
 		local camera_target_unit
 		local world = world_manager:world("level_world")
-		local mechanism = Managers.mechanism:game_mechanism()
-		local inn_level_name = mechanism:get_hub_level_key()
-		local level_settings = LevelSettings[inn_level_name]
+		local level_key = Managers.level_transition_handler:get_current_level_key()
+		local level_settings = LevelSettings[level_key]
 		local level_name = level_settings.level_name
 		local level = ScriptWorld.level(world, level_name)
 

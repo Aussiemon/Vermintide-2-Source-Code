@@ -100,7 +100,7 @@ CareerAbilityBWNecromancerCommand._update_outlines = function (self, t)
 	end
 end
 
-CareerAbilityBWNecromancerCommand._command_sacrifice_pet = function (self, pet_unit)
+CareerAbilityBWNecromancerCommand._server_command_sacrifice_pet = function (self, pet_unit)
 	local target_node_id = Unit.has_node(pet_unit, "j_spine") and Unit.node(pet_unit, "j_spine") or 0
 	local network_manager = Managers.state.network
 	local effect_name_id = NetworkLookup.effects["fx/necromancer_skeleton_sacrifice"]
@@ -269,19 +269,22 @@ CareerAbilityBWNecromancerCommand.rpc_necromancer_command_charge = function (sel
 end
 
 CareerAbilityBWNecromancerCommand.command_sacrifice = function (self, target_unit)
+	if not HEALTH_ALIVE[target_unit] then
+		return
+	end
+
 	if self._is_local then
 		Managers.telemetry_events:necromancer_used_command_item(self._player, "sacrifice")
 	end
 
-	if not self._is_server then
+	if self._is_server then
+		self:_server_command_sacrifice_pet(target_unit)
+	else
 		local target_unit_id = self._unit_storage:go_id(target_unit)
 
 		self._network_transmit:send_rpc_server("rpc_necromancer_command_sacrifice", target_unit_id, CommandSyncTypes.pet)
-
-		return
+		self._commander_extension:remove_controlled_unit(target_unit, true)
 	end
-
-	self:_command_sacrifice_pet(target_unit)
 end
 
 CareerAbilityBWNecromancerCommand.rpc_necromancer_command_sacrifice = function (self, channel_id, target_unit_id)

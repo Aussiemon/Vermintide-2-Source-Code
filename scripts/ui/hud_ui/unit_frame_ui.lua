@@ -601,7 +601,7 @@ UnitFrameUI.set_player_name = function (self, name_text)
 
 			player_name_shadow_style.font_size = player_name_shadow_font_size
 		else
-			display_name = widget.style.player_name and UTF8Utils.string_length(name_text) > PLAYER_NAME_MAX_LENGTH and UIRenderer.crop_text_width(self.ui_renderer, name_text, max_width, widget.style.player_name) or name_text
+			display_name = widget.style.player_name and Utf8.length(name_text) > PLAYER_NAME_MAX_LENGTH and UIRenderer.crop_text_width(self.ui_renderer, name_text, max_width, widget.style.player_name) or name_text
 		end
 
 		widget_content.player_name = display_name

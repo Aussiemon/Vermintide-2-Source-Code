@@ -787,7 +787,7 @@ HeroWindowCosmeticsLoadoutPoseInventoryConsole._on_illusion_index_pressed = func
 end
 
 HeroWindowCosmeticsLoadoutPoseInventoryConsole._enable_apply_illusion_button = function (self, enable, disable_edges)
-	if script_data["eac-untrusted"] then
+	if GameSettingsDevelopment.read_only_backend then
 		enable = false
 	end
 

@@ -462,7 +462,7 @@ PlayFabMirrorBase.dlc_ownership_request_cb = function (self, result)
 
 	self._owner_dlcs_cb_data = table.shallow_copy(function_result)
 
-	if script_data["eac-untrusted"] then
+	if GameSettingsDevelopment.read_only_backend then
 		self:_handle_owned_dlcs_data()
 		self:_request_best_power_levels()
 	else
@@ -1880,7 +1880,7 @@ PlayFabMirrorBase._commit_status = function (self)
 	if commit_data.status == "commit_error" then
 		return "commit_error"
 	elseif commit_data.num_updates == commit_data.updates_to_make and not commit_data.wait_for_stats and not commit_data.wait_for_weave_user_data and not commit_data.wait_for_keep_decorations and not commit_data.wait_for_user_data and not commit_data.wait_for_read_only_data and not commit_data.wait_for_win_tracks_data and not commit_data.wait_for_gotwf_data and not commit_data.wait_for_weapon_pose_skin_data then
-		if IS_CONSOLE and not Managers.account:offline_mode() then
+		if not Managers.account:offline_mode() and IS_CONSOLE then
 			PlayfabBackendSaveDataUtils.store_online_data(self)
 		end
 
@@ -2823,7 +2823,7 @@ PlayFabMirrorBase._commit_internal = function (self, queue_id, commit_complete_c
 
 	local request, stats_to_save = stats_interface:get_stat_save_request()
 
-	if request and not script_data["eac-untrusted"] then
+	if request and not GameSettingsDevelopment.read_only_backend then
 		local success_callback = callback(self, "save_statistics_cb", commit_id, stats_to_save)
 		local id = self._request_queue:enqueue(request, success_callback, true)
 
@@ -2836,7 +2836,7 @@ PlayFabMirrorBase._commit_internal = function (self, queue_id, commit_complete_c
 		commit.request_queue_ids[#commit.request_queue_ids + 1] = id
 	end
 
-	if not script_data["eac-untrusted"] then
+	if not GameSettingsDevelopment.read_only_backend then
 		local weaves_interface = Managers.backend:get_interface("weaves")
 		local weave_user_data = weaves_interface:get_dirty_user_data()
 
@@ -2854,7 +2854,7 @@ PlayFabMirrorBase._commit_internal = function (self, queue_id, commit_complete_c
 		end
 	end
 
-	if not script_data["eac-untrusted"] then
+	if not GameSettingsDevelopment.read_only_backend then
 		local items_interface = Managers.backend:get_interface("items")
 		local weapon_pose_data = items_interface:get_dirty_weapon_pose_data()
 

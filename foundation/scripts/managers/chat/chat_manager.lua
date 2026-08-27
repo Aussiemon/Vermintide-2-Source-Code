@@ -810,7 +810,7 @@ ChatManager._profanity_check = function (self, message)
 
 		while start_index do
 			local replacement_text = ""
-			local length = UTF8Utils.string_length(profanity)
+			local length = Utf8.length(profanity)
 
 			for i = 1, length do
 				replacement_text = replacement_text .. "*"

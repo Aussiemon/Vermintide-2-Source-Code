@@ -2209,7 +2209,7 @@ InteractionDefinitions.forge_access.client.stop = function (world, interactor_un
 end
 
 InteractionDefinitions.forge_access.client.can_interact = function (interactor_unit, interactable_unit, data, config)
-	return not script_data["eac-untrusted"]
+	return not GameSettingsDevelopment.read_only_backend
 end
 
 InteractionDefinitions.forge_access.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
@@ -2299,7 +2299,7 @@ InteractionDefinitions.loot_access.client.stop = function (world, interactor_uni
 end
 
 InteractionDefinitions.loot_access.client.can_interact = function (interactor_unit, interactable_unit, data, config)
-	return not script_data["eac-untrusted"]
+	return not GameSettingsDevelopment.read_only_backend
 end
 
 InteractionDefinitions.loot_access.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)

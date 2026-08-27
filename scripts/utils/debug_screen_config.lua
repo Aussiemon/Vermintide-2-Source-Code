@@ -6692,12 +6692,6 @@ local settings = {
 	},
 	{
 		category = "UI",
-		description = "Disables rainbow colorization of unlocalized strings to prevent eyesore.",
-		is_boolean = true,
-		setting_name = "disable_colorize_unlocalized_strings",
-	},
-	{
-		category = "UI",
 		description = "Turns off positive reinforcement UI",
 		is_boolean = true,
 		setting_name = "disable_reinforcement_ui",

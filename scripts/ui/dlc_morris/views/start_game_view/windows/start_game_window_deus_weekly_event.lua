@@ -35,8 +35,8 @@ StartGameWindowDeusWeeklyEvent.on_enter = function (self, params, offset)
 	self._current_difficulty = self._parent:get_difficulty_option(true) or Managers.state.difficulty:get_difficulty()
 
 	self:_update_difficulty_option(self._current_difficulty)
-	self:_fetch_event_data()
 
+	self._refresh_requested = true
 	self._is_focused = false
 	self._play_button_pressed = false
 	self._show_additional_settings = false
@@ -49,7 +49,7 @@ end
 
 local EMPTY_TABLE = {}
 
-StartGameWindowDeusWeeklyEvent._fetch_event_data = function (self)
+StartGameWindowDeusWeeklyEvent._refresh_event_data = function (self)
 	local live_event_interface = Managers.backend:get_interface("live_events")
 	local game_mode_data, information = live_event_interface:get_weekly_chaos_wastes_game_mode_data()
 	local rewards = live_event_interface:get_weekly_chaos_wastes_rewards_data() or EMPTY_TABLE
@@ -355,6 +355,12 @@ StartGameWindowDeusWeeklyEvent.set_focus = function (self, focused)
 end
 
 StartGameWindowDeusWeeklyEvent.update = function (self, dt, t)
+	if self._refresh_requested then
+		self:_refresh_event_data()
+
+		self._refresh_requested = false
+	end
+
 	self:_update_can_play()
 	self:_update_animations(dt)
 	self:_update_time_left()
@@ -681,26 +687,27 @@ StartGameWindowDeusWeeklyEvent._update_animations = function (self, dt)
 	end
 end
 
-StartGameWindowDeusWeeklyEvent._refresh_data = function (self)
-	if self._num_requests > 0 then
+StartGameWindowDeusWeeklyEvent._fetch_event_data = function (self)
+	if self._fetch_in_progress then
 		return
 	end
 
+	self._fetch_in_progress = true
+
 	local live_event_interface = Managers.backend:get_interface("live_events")
-	local cb = callback(self, "_refresh_data_cb")
+	local requests = 2
+
+	local function cb()
+		requests = requests - 1
+
+		if requests == 0 then
+			self._refresh_requested = true
+			self._fetch_in_progress = false
+		end
+	end
 
 	live_event_interface:request_live_events(cb)
 	live_event_interface:request_weekly_event_rewards(cb)
-
-	self._num_requests = 2
-end
-
-StartGameWindowDeusWeeklyEvent._refresh_data_cb = function (self, result)
-	self._num_requests = self._num_requests - 1
-
-	if self._num_requests <= 0 then
-		self:_fetch_event_data()
-	end
 end
 
 StartGameWindowDeusWeeklyEvent._update_time_left = function (self)
@@ -722,7 +729,7 @@ StartGameWindowDeusWeeklyEvent._update_time_left = function (self)
 		if remaining_time < 0 then
 			remaining_time = 0
 
-			self:_refresh_data()
+			self:_fetch_event_data()
 		end
 
 		widget_content.text = string.format(fmt, remaining_time)

@@ -114,7 +114,7 @@ local function extract_lines(text)
 	local language_id = Managers.localizer:language_id()
 	local is_chinese = language_id == "zh"
 	local lines = {}
-	local text_length = UTF8Utils.string_length(text)
+	local text_length = Utf8.length(text)
 	local index = 1
 	local latest_space_index
 	local max_chars_per_line = 50
@@ -131,12 +131,16 @@ local function extract_lines(text)
 
 			if max_chars_per_line < i - index and i < text_length then
 				if latest_space_index then
-					lines[#lines + 1] = UTF8Utils.sub_string(text, index, latest_space_index)
+					local line = UTF8Utils.sub_string(text, index, latest_space_index)
+
+					lines[#lines + 1] = line
 					index = latest_space_index + 1
 					i = latest_space_index
 					latest_space_index = nil
 				else
-					lines[#lines + 1] = UTF8Utils.sub_string(text, index, i)
+					local line = UTF8Utils.sub_string(text, index, i)
+
+					lines[#lines + 1] = line
 					index = i + 1
 				end
 			end
@@ -144,14 +148,18 @@ local function extract_lines(text)
 			local is_space_char = char == " "
 
 			if is_space_char and max_chars_per_line < i - index then
-				lines[#lines + 1] = UTF8Utils.sub_string(text, index, i)
+				local line = UTF8Utils.sub_string(text, index, i)
+
+				lines[#lines + 1] = line
 				index = i + 1
 			end
 		end
 	end
 
 	if index < text_length then
-		lines[#lines + 1] = UTF8Utils.sub_string(text, index, text_length)
+		local line = UTF8Utils.sub_string(text, index, text_length)
+
+		lines[#lines + 1] = line
 	end
 
 	return lines

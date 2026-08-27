@@ -66,7 +66,7 @@ BackendManagerPlayFab.init = function (self, signin_name, mirror_name, server_qu
 	self._metadata = {
 		client_type = "client",
 		client_version = VersionSettings.version,
-		realm = HAS_STEAM and script_data["eac-untrusted"] and "modded" or "official",
+		realm = MODDED_REALM and "modded" or "official",
 	}
 end
 

@@ -46,6 +46,11 @@ script_data.debug_behaviour_trees = script_data.debug_behaviour_trees ~= nil and
 
 fassert(not Development.parameter("use_offline_backend") and not Development.parameter("use_local_backend"), "Unable to use local backend with DEBUG stripped. Remove --use-local-backend or --use-offline-backend")
 
+if MODDED_REALM then
+	GameSettingsDevelopment.read_only_backend = true
+	GameSettingsDevelopment.achievements_disabled = true
+end
+
 GameSettingsDevelopment.use_backend = not GameSettingsDevelopment.use_offline_backend
 GameSettingsDevelopment.backend_settings = BackendSettings.dev_steam_playfab
 GameSettingsDevelopment.twitch_enabled = true

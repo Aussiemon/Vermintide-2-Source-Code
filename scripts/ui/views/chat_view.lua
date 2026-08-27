@@ -907,7 +907,7 @@ ChatView._update_create_channel_input = function (self, dt, t)
 
 			create_channel_window_content.chat_text_id = string.format(create_channel_window_content.chat_text_id, "%w")
 			create_channel_window_content.chat_text_id = string.gsub(create_channel_window_content.chat_text_id, "%s", "")
-			create_channel_window_content.caret_index = UTF8Utils.string_length(create_channel_window_content.chat_text_id) + 1
+			create_channel_window_content.caret_index = Utf8.length(create_channel_window_content.chat_text_id) + 1
 		elseif input_service:get("chat_backspace_pressed") then
 			local keystrokes = {
 				Keyboard.BACKSPACE,
@@ -1196,7 +1196,7 @@ ChatView._update_channels_list_input = function (self, dt, t)
 
 				channel_window_widget_content.chat_text_id = string.format(channel_window_widget_content.chat_text_id, "%w")
 				channel_window_widget_content.chat_text_id = string.gsub(channel_window_widget_content.chat_text_id, "%s", "")
-				channel_window_widget_content.caret_index = UTF8Utils.string_length(channel_window_widget_content.chat_text_id) + 1
+				channel_window_widget_content.caret_index = Utf8.length(channel_window_widget_content.chat_text_id) + 1
 			end
 		elseif input_service:get("chat_backspace_pressed") then
 			local keystrokes = {

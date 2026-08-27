@@ -27,7 +27,6 @@ EndViewStateScoreVSTabReport.on_enter = function (self, params)
 		snap_pixel_positions = true,
 	}
 	self._progression_presentation_done = self._context.progression_presentation_done
-	self._is_untrusted = script_data["eac-untrusted"]
 	self._animations = {}
 	self._ui_animations = {}
 	self._animation_callbacks = {}
@@ -116,7 +115,7 @@ EndViewStateScoreVSTabReport._extract_rewards = function (self)
 end
 
 EndViewStateScoreVSTabReport._trigger_telemetry_events = function (self)
-	if self._is_untrusted then
+	if MODDED_REALM then
 		return
 	end
 

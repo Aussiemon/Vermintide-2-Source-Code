@@ -49,7 +49,7 @@ BackendInterfaceDLCsPlayfab._update_owned_dlcs_cb = function (self, result)
 	local function_result = result.FunctionResult
 	local new_dlcs = function_result.new_dlcs
 	local revoked_dlcs = function_result.revoked_dlcs
-	local execute_logic = not script_data["eac-untrusted"] and (not new_dlcs or not revoked_dlcs or #new_dlcs > 0 or #revoked_dlcs > 0)
+	local execute_logic = not GameSettingsDevelopment.read_only_backend and (not new_dlcs or not revoked_dlcs or #new_dlcs > 0 or #revoked_dlcs > 0)
 
 	self._owner_dlcs_cb_data = table.shallow_copy(function_result)
 	self._owner_dlcs_cb_data.dlcs_dirty = HAS_STEAM and execute_logic

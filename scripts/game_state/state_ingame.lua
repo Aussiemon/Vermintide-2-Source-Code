@@ -560,7 +560,7 @@ StateIngame.on_enter = function (self)
 	local quick_game = Managers.venture.quickplay:is_quick_game()
 	local realm = "official"
 
-	if HAS_STEAM and script_data["eac-untrusted"] then
+	if MODDED_REALM then
 		realm = "modded"
 	end
 

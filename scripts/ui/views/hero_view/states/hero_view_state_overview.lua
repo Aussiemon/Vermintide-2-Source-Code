@@ -157,20 +157,16 @@ HeroViewStateOverview._setup_menu_layout = function (self, params)
 end
 
 HeroViewStateOverview.can_add = function (self, window_layout_name)
-	local window_layouts = self._window_layouts
+	if Managers.ui:is_ui_layout_disabled(window_layout_name) then
+		return false
+	end
 
-	for i = 1, #window_layouts do
-		local window_layout = window_layouts[i]
+	local _, window_layout = table.find_by_key(self._window_layouts, "name", window_layout_name)
 
-		if window_layout.name == window_layout_name then
-			local mechanism_name = Managers.mechanism:current_mechanism_name()
+	if window_layout and window_layout.can_add_function then
+		local mechanism_name = Managers.mechanism:current_mechanism_name()
 
-			if window_layout.can_add_function then
-				return window_layout.can_add_function(mechanism_name)
-			else
-				return true
-			end
-		end
+		return window_layout.can_add_function(mechanism_name)
 	end
 
 	return true
@@ -352,12 +348,10 @@ HeroViewStateOverview.get_layout_name = function (self)
 end
 
 HeroViewStateOverview.set_layout_by_name = function (self, name)
-	for index, layout_setting in ipairs(self._window_layouts) do
-		if layout_setting.name == name then
-			self:set_layout(index)
+	local index = table.find_by_key(self._window_layouts, "name", name)
 
-			return
-		end
+	if index then
+		self:set_layout(index)
 	end
 end
 
@@ -366,6 +360,18 @@ HeroViewStateOverview.close_on_exit = function (self)
 end
 
 HeroViewStateOverview.set_layout = function (self, index)
+	self._wanted_layout_index = index
+end
+
+HeroViewStateOverview._update_set_layout = function (self)
+	local index = self._wanted_layout_index
+
+	if not index then
+		return
+	end
+
+	self._wanted_layout_index = nil
+
 	local layout_setting = self:_get_layout_setting(index)
 	local windows = layout_setting.windows
 	local sound_event_enter = layout_setting.sound_event_enter
@@ -606,6 +612,8 @@ HeroViewStateOverview.update = function (self, dt, t)
 
 		self:create_ui_elements()
 	end
+
+	self:_update_set_layout()
 
 	local input_manager = self.input_manager
 	local input_service = self:window_input_service()

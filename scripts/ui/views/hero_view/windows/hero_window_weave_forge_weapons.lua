@@ -1737,8 +1737,8 @@ HeroWindowWeaveForgeWeapons._create_property_option_entry = function (self, size
 	local style = widget.style
 	local text_style = style.text
 	local color_override_table = text_style.color_override_table
-	local default_text_length = UTF8Utils.string_length(text) or 0
-	local value_string_length = UTF8Utils.string_length(value_string)
+	local default_text_length = Utf8.length(text) or 0
+	local value_string_length = Utf8.length(value_string)
 	local text_style = style.text
 
 	if text_style then

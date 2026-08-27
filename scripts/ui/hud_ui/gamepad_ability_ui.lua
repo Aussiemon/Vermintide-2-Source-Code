@@ -328,7 +328,7 @@ end
 
 GamePadAbilityUI._set_input = function (self, widget, input_action)
 	local texture_data, input_text, prefix_text = self:_get_input_texture_data(input_action)
-	local text_length = input_text and UTF8Utils.string_length(input_text) or 0
+	local text_length = input_text and Utf8.length(input_text) or 0
 	local max_length = 40
 	local style = widget.style
 	local content = widget.content

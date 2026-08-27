@@ -1061,8 +1061,8 @@ UITooltipPasses = {
 							text = HIDDEN_DESCRIPTION_TEXT
 						else
 							local description, advanced_description = UIUtils.get_property_description(property_key, property_value)
-							local additional_text_length = advanced_description and UTF8Utils.string_length(advanced_description) or 0
-							local default_text_length = text and UTF8Utils.string_length(text) or 0
+							local additional_text_length = advanced_description and Utf8.length(advanced_description) or 0
+							local default_text_length = text and Utf8.length(text) or 0
 
 							text = description .. advanced_description
 
@@ -6309,8 +6309,8 @@ UITooltipPasses = {
 				local entry_text = entry.text .. " "
 				local power_level_text = tostring(power_level)
 				local text = entry_text .. power_level_text
-				local power_text_length = UTF8Utils.string_length(power_level_text) or 0
-				local entry_text_length = UTF8Utils.string_length(entry_text) or 0
+				local power_text_length = Utf8.length(power_level_text) or 0
+				local entry_text_length = Utf8.length(entry_text) or 0
 				local entry_text_style = style.entry_text
 				local color_override_table = entry_text_style.color_override_table
 

@@ -292,13 +292,6 @@ ProximitySystem.unfreeze = function (self, unit, extension_name)
 	end
 end
 
-local function unit_world_forward(unit)
-	local unit_world_pose = Unit.world_pose(unit, 0)
-	local forward_vec = Matrix4x4.forward(unit_world_pose)
-
-	return forward_vec
-end
-
 local function check_raycast_center(physics_world, unit, target)
 	local ray_position = Unit.world_position(unit, Unit.node(unit, "camera_attach"))
 	local unit_center_matrix, _ = Unit.box(target)
@@ -327,30 +320,25 @@ local function check_raycast_center(physics_world, unit, target)
 	end
 end
 
+local function _aim_direction(unit, network_manager)
+	local game = network_manager:game()
+
+	if game then
+		local game_object_id = network_manager:unit_game_object_id(unit)
+		local dir = GameSession.game_object_field(game, game_object_id, "aim_direction")
+
+		return dir
+	else
+		local rot = Unit.world_rotation(unit, 0)
+		local dir = Quaternion.forward(rot)
+
+		return dir
+	end
+end
+
 local nearby_units = {}
 
 ProximitySystem.update = function (self, context, t)
-	local player_unit_extensions_map = self.player_unit_extensions_map
-	local unit_forwards = self.unit_forwards
-	local Unit_world_forward = unit_world_forward
-	local network_manager = Managers.state.network
-	local game = network_manager:game()
-
-	if game and not LEVEL_EDITOR_TEST then
-		for unit, extension in pairs(player_unit_extensions_map) do
-			local game_object_id = network_manager:unit_game_object_id(unit)
-			local my_direction = GameSession.game_object_field(game, game_object_id, "aim_direction")
-
-			unit_forwards[unit] = my_direction
-		end
-	else
-		for unit, extension in pairs(player_unit_extensions_map) do
-			local my_direction = Unit_world_forward(unit, 0)
-
-			unit_forwards[unit] = my_direction
-		end
-	end
-
 	if script_data.debug_has_been_seen then
 		for unit, extension in pairs(self.unit_extension_data) do
 			local color = extension.has_been_seen and Color(0, 255, 0) or Color(255, 0, 0)
@@ -414,10 +402,10 @@ ProximitySystem.physics_async_update = function (self, context, t)
 	end
 
 	local enemy_check_raycasts = self.enemy_check_raycasts
-	local unit_forwards = self.unit_forwards
 	local ray_read_index = self.raycast_read_index
 	local ray_write_index = self.raycast_write_index
 	local ray_max = self.raycast_max_index
+	local network_manager = Managers.state.network
 
 	for unit, extension in pairs(player_unit_extensions_map) do
 		repeat
@@ -486,65 +474,61 @@ ProximitySystem.physics_async_update = function (self, context, t)
 			local cast_ray, heard
 
 			if raycast_timer > RAYCAST_ENEMY_CHECK_INTERVAL then
-				local my_direction = unit_forwards[unit]
+				local my_direction = _aim_direction(unit, network_manager)
+				local my_pos_flat = Vector3.flat(position)
 
-				if my_direction then
-					local my_pos_flat = Vector3.flat(position)
-					local height_position = my_direction.z
+				my_direction.z = 0
 
-					my_direction.z = 0
+				local radius = SPECIAL_PROXIMITY_DISTANCE
+				local num_nearby_units = Broadphase.query(special_units_broadphase, position, radius, nearby_units)
 
-					local radius = SPECIAL_PROXIMITY_DISTANCE
-					local num_nearby_units = Broadphase.query(special_units_broadphase, position, radius, nearby_units)
+				for i = 1, num_nearby_units do
+					local nearby_unit = nearby_units[i]
 
-					for i = 1, num_nearby_units do
-						local nearby_unit = nearby_units[i]
+					nearby_units[i] = nil
 
-						nearby_units[i] = nil
+					local is_alive = HEALTH_ALIVE[nearby_unit]
 
-						local is_alive = HEALTH_ALIVE[nearby_unit]
+					if nearby_unit ~= unit and is_alive and enemy_units_lookup[nearby_unit] and self:_valid_dialogue_unit(nearby_unit, nil) then
+						local nearby_unit_pos = Unit_local_position(nearby_unit, 0)
+						local nearby_unit_pos_flat = Vector3.flat(nearby_unit_pos)
+						local direction_unit_nearby_unit = nearby_unit_pos_flat - my_pos_flat
 
-						if nearby_unit ~= unit and is_alive and enemy_units_lookup[nearby_unit] and self:_valid_dialogue_unit(nearby_unit, nil) then
-							local nearby_unit_pos = Unit_local_position(nearby_unit, 0)
-							local nearby_unit_pos_flat = Vector3.flat(nearby_unit_pos)
-							local direction_unit_nearby_unit = nearby_unit_pos_flat - my_pos_flat
+						direction_unit_nearby_unit = Vector3.normalize(direction_unit_nearby_unit)
 
-							direction_unit_nearby_unit = Vector3.normalize(direction_unit_nearby_unit)
+						if hear_timer > HEAR_ENEMY_CHECK_INTERVAL then
+							local distance_sq = Vector3.distance_squared(nearby_unit_pos, position)
 
-							if hear_timer > HEAR_ENEMY_CHECK_INTERVAL then
-								local distance_sq = Vector3.distance_squared(nearby_unit_pos, position)
+							if distance_sq < SPECIAL_PROXIMITY_DISTANCE_HEARD_SQ then
+								local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+								local event_data = FrameTable.alloc_table()
+								local breed = Unit.get_data(nearby_unit, "breed")
 
-								if distance_sq < SPECIAL_PROXIMITY_DISTANCE_HEARD_SQ then
-									local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
-									local event_data = FrameTable.alloc_table()
-									local breed = Unit.get_data(nearby_unit, "breed")
+								if breed then
+									event_data.enemy_tag = breed.name
 
-									if breed then
-										event_data.enemy_tag = breed.name
+									assert(event_data.enemy_tag)
 
-										assert(event_data.enemy_tag)
+									event_data.enemy_unit = nearby_unit
+									event_data.distance = Vector3.distance(nearby_unit_pos_flat, my_pos_flat)
 
-										event_data.enemy_unit = nearby_unit
-										event_data.distance = Vector3.distance(nearby_unit_pos_flat, my_pos_flat)
+									dialogue_input:trigger_dialogue_event("heard_enemy", event_data)
 
-										dialogue_input:trigger_dialogue_event("heard_enemy", event_data)
-
-										heard = true
-									end
+									heard = true
 								end
 							end
+						end
 
-							local result = Vector3.dot(direction_unit_nearby_unit, my_direction)
+						local result = Vector3.dot(direction_unit_nearby_unit, my_direction)
 
-							if result > 0.7 then
-								cast_ray = true
-								enemy_check_raycasts[ray_write_index] = unit
-								enemy_check_raycasts[ray_write_index + 1] = nearby_unit
-								ray_write_index = (ray_write_index + 1) % ray_max + 1
+						if result > 0.7 then
+							cast_ray = true
+							enemy_check_raycasts[ray_write_index] = unit
+							enemy_check_raycasts[ray_write_index + 1] = nearby_unit
+							ray_write_index = (ray_write_index + 1) % ray_max + 1
 
-								if ray_read_index == ray_write_index then
-									ray_read_index = (ray_read_index + 1) % ray_max + 1
-								end
+							if ray_read_index == ray_write_index then
+								ray_read_index = (ray_read_index + 1) % ray_max + 1
 							end
 						end
 					end
@@ -563,7 +547,6 @@ ProximitySystem.physics_async_update = function (self, context, t)
 			self.raycast_write_index = ray_write_index
 			extension.hear_timer = hear_timer
 			extension.raycast_timer = raycast_timer
-			unit_forwards[unit] = nil
 		until true
 	end
 
@@ -834,7 +817,6 @@ end
 
 ProximitySystem.post_update = function (self, context, t)
 	local enemy_check_raycasts = self.enemy_check_raycasts
-	local unit_forwards = self.unit_forwards
 	local physics_world = self.physics_world
 	local darkness_system = Managers.state.entity:system("darkness_system")
 	local read_index = self.raycast_read_index

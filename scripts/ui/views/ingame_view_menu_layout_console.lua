@@ -1109,14 +1109,14 @@ local full_access_layout = {
 		can_add_function = can_add_ingame_menu,
 	},
 	{
-		display_name = "achievements",
+		display_name = "achv_menu_achievements_category_title",
 		fade = true,
 		requires_player_unit = true,
 		transition = "hero_view",
 		transition_state = "achievements",
 	},
 	{
-		display_name = "start_menu_view",
+		display_name = "main_menu",
 		fade = false,
 		requires_player_unit = true,
 		transition = "start_menu_view",
@@ -1129,7 +1129,7 @@ local full_access_layout = {
 		disable_for_mechanism = default_disable_for_mechanism,
 	},
 	{
-		display_name = "console_friends_menu_button_name",
+		display_name = "map_friend_button_tooltip",
 		fade = true,
 		transition = "console_friends_menu",
 		disable_for_mechanism = default_disable_for_mechanism,

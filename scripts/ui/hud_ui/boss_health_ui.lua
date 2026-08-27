@@ -179,64 +179,52 @@ BossHealthUI._set_portrait_and_title = function (self, boss_data, marked, title)
 	end
 end
 
-local small_style = {
-	divider_icon_width = 22,
-	font_size = 16,
-	font_type = "hell_shark",
-	upper_case = true,
-}
 local large_style = {
 	divider_icon_width = 22,
 	font_size = 20,
 	font_type = "hell_shark",
 	upper_case = true,
-	fallback_style = small_style,
 }
 
-BossHealthUI._generate_attributes = function (self, attributes, widget, current_style, max_row_width, enemy_name)
+BossHealthUI._generate_attributes = function (self, localized_attributes, widget)
+	local current_style = large_style
 	local font_size = current_style.font_size
 	local content = widget.content
-	local j = 0
 	local text_x_start = (content.attribute_offset_reference or 0) + 4
 	local x = text_x_start
 	local y = -40
 	local divider_spacing_in_pixels = 24
 	local divider_move_x = (divider_spacing_in_pixels - current_style.divider_icon_width) / 2
 
-	for id in pairs(attributes) do
-		if id then
-			j = j + 1
-			content.attributes[j] = true
-			content.num_attributes = j
+	for j, localized_attr in ipairs(localized_attributes) do
+		content.attributes[j] = true
+		content.num_attributes = j
 
-			local text_id = "attribute_text_" .. j
-			local style = widget.style[text_id]
+		local text_id = "attribute_text_" .. j
+		local style = widget.style[text_id]
 
-			if style then
-				local enhancement_data = BreedEnhancements[id]
-				local skull_divider_id = content.skull_dividers[j]
+		if style then
+			local skull_divider_id = content.skull_dividers[j]
 
-				if skull_divider_id then
-					local skull_divider_style = widget.style[skull_divider_id]
+			if skull_divider_id then
+				local skull_divider_style = widget.style[skull_divider_id]
 
-					skull_divider_style.offset[1] = x + divider_move_x
-					skull_divider_style.offset[2] = y - 13
-					x = x + divider_spacing_in_pixels
-				end
+				skull_divider_style.offset[1] = x + divider_move_x
+				skull_divider_style.offset[2] = y - 13
+				x = x + divider_spacing_in_pixels
+			end
 
-				local text = "{#grad(true);color(242,226,187,255);color2(255,125,80,255)}" .. Utf8.upper(Localize(enhancement_data.display_name or "missing_grudge_mark_name"))
-				local pixel_width = UIUtils.get_text_width(self.ui_renderer, current_style, text)
+			local text = "{#grad(true);color(242,226,187,255);color2(255,125,80,255)}" .. localized_attr
+			local pixel_width = UIUtils.get_text_width(self.ui_renderer, current_style, text)
 
-				content[text_id] = text
-				style.offset[1] = x
-				style.font_size = font_size
-				style.text_color = enhancement_data.text_color
-				x = x + pixel_width
+			content[text_id] = text
+			style.offset[1] = x
+			style.font_size = font_size
+			x = x + pixel_width
 
-				if j % 3 == 0 then
-					x = text_x_start
-					y = y - 16
-				end
+			if j % 3 == 0 then
+				x = text_x_start
+				y = y - 16
 			end
 		end
 	end
@@ -244,7 +232,7 @@ BossHealthUI._generate_attributes = function (self, attributes, widget, current_
 	local bg_style = widget.style.lower_marked_bg
 
 	if bg_style then
-		if j <= 4 then
+		if #localized_attributes <= 4 then
 			bg_style.offset[2] = -83 + current_style.font_size - 4
 		else
 			bg_style.offset[2] = -83
@@ -259,21 +247,37 @@ BossHealthUI._update_enemy_portrait_name_and_attributes = function (self, boss_d
 	local ai_system = Managers.state.entity:system("ai_system")
 	local attributes = ai_system:get_attributes(unit)
 	local grudge_marked = attributes.grudge_marked
+	local breed_name = boss_data.breed_name
+	local breed = Breeds[breed_name] or PlayerBreeds[breed_name]
+	local custom_attribute
+	local boss_phase_func = breed.boss_health_ui_boss_phase_func
 
-	if not boss_data.dirty and boss_data.cached_name then
+	if boss_phase_func then
+		local boss_phase, time_left = boss_phase_func(unit)
+
+		if boss_phase then
+			if time_left and time_left > 0 then
+				custom_attribute = string.format("%s (%s)", Localize(boss_phase), string.format(Localize("datetime_seconds_short"), time_left))
+			else
+				custom_attribute = Localize(boss_phase)
+			end
+		end
+	end
+
+	if not boss_data.dirty and boss_data.cached_name and custom_attribute == boss_data.cached_custom_attribute then
 		return boss_data.cached_name, grudge_marked
 	end
 
-	local breed_name = boss_data.breed_name
 	local enemy_name
 	local widget = self._widgets_by_name[boss_data.widget_name]
 
 	if widget then
 		table.clear(widget.content.attributes)
+
+		widget.content.has_custom_attribute = not not boss_phase_func
 	end
 
 	local level_key = Managers.level_transition_handler:get_current_level_key()
-	local breed = Breeds[breed_name] or PlayerBreeds[breed_name]
 	local level_name_pool = breed and breed.name_pool_by_level and breed.name_pool_by_level[level_key]
 
 	if grudge_marked then
@@ -303,19 +307,29 @@ BossHealthUI._update_enemy_portrait_name_and_attributes = function (self, boss_d
 		enemy_name = breed.display_name or breed_name
 	end
 
-	if grudge_marked and widget then
-		local max_row_width = 430
+	if widget then
+		local localized_attributes = {}
 
-		if attributes.breed_enhancements then
-			local done, fallback_style = self:_generate_attributes(attributes.breed_enhancements, widget, large_style, max_row_width, enemy_name)
+		if grudge_marked and attributes.breed_enhancements then
+			for enhancement_name in pairs(attributes.breed_enhancements) do
+				local enhancement_data = BreedEnhancements[enhancement_name]
+				local display_name = enhancement_data.display_name or "missing_grudge_mark_name"
 
-			while not done do
-				done, fallback_style = self:_generate_attributes(attributes.breed_enhancements, widget, fallback_style, max_row_width, enemy_name)
+				localized_attributes[#localized_attributes + 1] = Utf8.upper(Localize(display_name))
 			end
+		end
+
+		if custom_attribute then
+			localized_attributes[#localized_attributes + 1] = custom_attribute
+		end
+
+		if not table.is_empty(localized_attributes) then
+			self:_generate_attributes(localized_attributes, widget)
 		end
 	end
 
 	boss_data.cached_name = enemy_name
+	boss_data.cached_custom_attribute = custom_attribute
 
 	return enemy_name, grudge_marked
 end
@@ -346,22 +360,6 @@ BossHealthUI._update_proximity_boss = function (self)
 	local proximity_boss_unit = proximity_system.closest_boss_unit
 
 	self:_event_register_boss_unit(proximity_boss_unit, "proximity")
-end
-
-BossHealthUI._update_name = function (self, boss_data)
-	local name, grudge_marked = self:_update_enemy_portrait_name_and_attributes(boss_data)
-	local breed = Breeds[boss_data.breed_name]
-
-	if breed and breed.custom_health_bar_name then
-		local custom_name = breed.custom_health_bar_name(boss_data.unit, name)
-
-		if custom_name then
-			name = custom_name
-			grudge_marked = true
-		end
-	end
-
-	self:_set_portrait_and_title(boss_data, grudge_marked, name)
 end
 
 BossHealthUI._is_forced = function (self, boss_unit)
@@ -607,7 +605,9 @@ BossHealthUI._sync_boss_unit_health = function (self, dt, t)
 		local dirty = boss_data.dirty
 
 		if boss_data.prioritized or boss_data.forced or dirty then
-			self:_update_name(boss_data)
+			local name, grudge_marked = self:_update_enemy_portrait_name_and_attributes(boss_data)
+
+			self:_set_portrait_and_title(boss_data, grudge_marked, name)
 		end
 
 		local widget = self._widgets_by_name[boss_data.widget_name]

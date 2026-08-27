@@ -758,7 +758,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 
 				self.ui_scenegraph.chat_input_text.size[1] = definitions.CHAT_INPUT_TEXT_WIDTH - text_width
 				self.chat_input_widget.style.text.offset[1] = self.chat_input_widget.style.channel_text.offset[1] + text_width
-				self.chat_input_widget.content.caret_index = UTF8Utils.string_length(self.chat_message) + 1
+				self.chat_input_widget.content.caret_index = Utf8.length(self.chat_message) + 1
 				self.chat_index = self.chat_input_widget.content.caret_index
 
 				local view_name, color = Managers.chat:current_view_and_color()
@@ -814,7 +814,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 				if new_chat_index ~= self.chat_index then
 					if new_chat_index == 1 then
 						self.chat_input_widget.content.text_index = new_chat_index
-					elseif new_chat_index > UTF8Utils.string_length(new_chat_message) then
+					elseif new_chat_index > Utf8.length(new_chat_message) then
 						self.chat_input_widget.content.jump_to_end = true
 					end
 				end
@@ -929,7 +929,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 
 				self.ui_scenegraph.chat_input_text.size[1] = definitions.CHAT_INPUT_TEXT_WIDTH - text_width
 				self.chat_input_widget.style.text.offset[1] = self.chat_input_widget.style.channel_text.offset[1] + text_width
-				self.chat_input_widget.content.caret_index = UTF8Utils.string_length(self.chat_message) + 1
+				self.chat_input_widget.content.caret_index = Utf8.length(self.chat_message) + 1
 				self.chat_index = self.chat_input_widget.content.caret_index
 
 				local view_name, color = Managers.chat:current_view_and_color()

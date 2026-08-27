@@ -15,7 +15,7 @@ local function check_eac_supported()
 		return false, "unsupported platform: " .. tostring(PLATFORM)
 	end
 
-	if script_data["eac-untrusted"] then
+	if MODDED_REALM then
 		return false, "in modded realm"
 	end
 

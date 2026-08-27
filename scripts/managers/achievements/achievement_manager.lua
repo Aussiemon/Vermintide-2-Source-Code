@@ -122,7 +122,7 @@ AchievementManager.init = function (self, world, statistics_db)
 end
 
 AchievementManager.trigger_event = function (self, event_name, ...)
-	if DEDICATED_SERVER or script_data["eac-untrusted"] then
+	if GameSettingsDevelopment.read_only_backend then
 		return
 	end
 
@@ -291,7 +291,7 @@ AchievementManager.num_achievement_categories = function (self)
 end
 
 AchievementManager.update = function (self, dt, t)
-	if not self._enabled or not self:_check_version_number() or not self:_check_initialized_achievements() or not self:_verify_platform_achievements() or script_data["eac-untrusted"] then
+	if not self._enabled or not self:_check_version_number() or not self:_check_initialized_achievements() or not self:_verify_platform_achievements() or GameSettingsDevelopment.read_only_backend then
 		return
 	end
 

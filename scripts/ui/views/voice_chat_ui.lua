@@ -405,7 +405,7 @@ VoiceChatUI._update_widgets = function (self)
 		end
 
 		local name_widget = self.name_widgets[index]
-		local cropped_name = UTF8Utils.string_length(name) > PLAYER_NAME_MAX_LENGTH and UIRenderer.crop_text_width(self.ui_top_renderer, name, 250, name_widget.style.text) or name
+		local cropped_name = Utf8.length(name) > PLAYER_NAME_MAX_LENGTH and UIRenderer.crop_text_width(self.ui_top_renderer, name, 250, name_widget.style.text) or name
 		local name_widget_content = name_widget.content
 		local name_widget_element = name_widget.element
 

@@ -982,7 +982,7 @@ HeroWindowWeaveForgeOverview._set_essence_upgrade_cost = function (self, essence
 	local button_length = size[1]
 	local button_text_width_offset = text_width_offset + (button_length / 2 - text_width / 2)
 
-	button_content.button_hotspot.disable_button = script_data["eac-untrusted"] or not essence_amount or not can_afford
+	button_content.button_hotspot.disable_button = GameSettingsDevelopment.read_only_backend or not essence_amount or not can_afford
 	button_content.title_text = button_text
 	button_style.title_text.size[1] = text_width
 	button_style.title_text_shadow.size[1] = text_width

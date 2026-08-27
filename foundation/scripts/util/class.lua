@@ -3,7 +3,7 @@
 local destroyed_mt = {}
 
 destroyed_mt.__index = function ()
-	error("This object has been destroyed")
+	error("This object has been destroyed", 2)
 end
 
 local special_functions = {

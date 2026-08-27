@@ -266,7 +266,7 @@ AbilityUI.event_input_changed = function (self)
 	local input_action = gamepad_active and "ability" or "action_career"
 	local widget = self._widgets_by_name.ability
 	local _, input_text = self:_get_input_texture_data(input_action)
-	local text_length = input_text and UTF8Utils.string_length(input_text) or 0
+	local text_length = input_text and Utf8.length(input_text) or 0
 
 	if input_text then
 		local ui_renderer = self._ui_renderer

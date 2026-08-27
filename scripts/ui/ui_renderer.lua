@@ -1458,7 +1458,7 @@ UIRenderer.scaled_cursor_position_by_scenegraph = function (input_service, scene
 end
 
 UIRenderer.crop_text = function (text, max_chars)
-	local text_length = UTF8Utils.string_length(text)
+	local text_length = Utf8.length(text)
 
 	if max_chars < text_length then
 		local cropped_text = UTF8Utils.sub_string(text, 1, max_chars) .. "..."
@@ -1479,7 +1479,7 @@ UIRenderer.crop_text_width = function (self, text, max_width, style)
 	if max_width < text_width then
 		repeat
 			local width_percent = 1 - (1 - (max_width - crop_suffix_width) / text_width) * 0.5
-			local num_char = UTF8Utils.string_length(text)
+			local num_char = Utf8.length(text)
 
 			num_char = math.floor(num_char * width_percent)
 			text = UTF8Utils.sub_string(text, 1, num_char)
@@ -1491,7 +1491,7 @@ UIRenderer.crop_text_width = function (self, text, max_width, style)
 			text_width = math.floor(UIRenderer.text_size(self, text, font[1], scaled_font_size))
 		until text_width <= max_width
 
-		local num_char = UTF8Utils.string_length(text)
+		local num_char = Utf8.length(text)
 
 		text = UTF8Utils.sub_string(text, 1, num_char) .. "..."
 	end

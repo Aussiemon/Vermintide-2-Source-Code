@@ -678,7 +678,7 @@ end
 
 VersusTeamParadingViewV2._set_player_name = function (self, player)
 	local player_name = player:name()
-	local player_name_length = UTF8Utils.string_length(player_name)
+	local player_name_length = Utf8.length(player_name)
 
 	if player_name_length > 18 then
 		player_name = string.sub(player_name, 1, 18) .. "..."

@@ -2,72 +2,63 @@
 
 UTF8Utils = UTF8Utils or {}
 
-UTF8Utils.string_length = function (text)
-	local length = #text
-	local index = 1
-	local num_chars = 0
-	local _
+local Utf8_location = Utf8.location
 
-	while index <= length do
-		_, index = Utf8.location(text, index)
-		num_chars = num_chars + 1
+Utf8.length = function (text)
+	local byte_length = #text
+	local next_byte_index = 1
+
+	for char_index = 1, byte_length do
+		local _, byte_index = Utf8.location(text, next_byte_index)
+
+		if byte_length < byte_index then
+			return char_index
+		end
+
+		next_byte_index = byte_index
 	end
 
-	return num_chars
+	return 0
 end
 
 UTF8Utils.sub_string = function (text, char_from, char_to)
-	if char_to <= 0 or text == "" then
-		return ""
+	local num_bytes = #text
+
+	if num_bytes == 0 then
+		return text
 	end
 
-	local byte_index = 1
-	local byte_count = #text
-	local byte_from, byte_to = -1, -1
-	local char_index = 1
+	local byte_from = UTF8Utils.count_bytes(text, char_from - 1, 1) + 1
+	local byte_to = UTF8Utils.count_bytes(text, char_to - char_from + 1, byte_from)
 
-	while byte_index <= byte_count do
-		local tmp_byte_from, tmp_byte_to = Utf8.location(text, byte_index)
+	return string.sub(text, byte_from, byte_to)
+end
 
-		if char_index == char_from then
-			byte_from = tmp_byte_from
-		end
+UTF8Utils.count_bytes = function (text, num_chars, start_byte)
+	local num_bytes = #text
+	local _
 
-		if char_index == char_to then
-			byte_to = tmp_byte_to - 1
+	for char_index = 1, num_chars do
+		_, start_byte = Utf8_location(text, start_byte)
 
+		if num_bytes < start_byte then
 			break
 		end
-
-		char_index = char_index + 1
-		byte_index = tmp_byte_to
 	end
 
-	if byte_from then
-		return string.sub(text, byte_from, byte_to)
-	else
-		return ""
-	end
+	return start_byte - 1
 end
 
 UTF8Utils.clamp_byte_length = function (text, max_bytes)
+	if max_bytes <= 0 then
+		return ""
+	end
+
 	if max_bytes >= #text then
 		return text
 	end
 
-	max_bytes = max_bytes + 1
+	local next_byte_from = Utf8_location(text, max_bytes + 1)
 
-	local byte_index = 1
-
-	while byte_index <= max_bytes do
-		local _, tmp_byte_to = Utf8.location(text, byte_index)
-
-		if max_bytes < tmp_byte_to then
-			break
-		end
-
-		byte_index = tmp_byte_to
-	end
-
-	return string.sub(text, 1, byte_index - 1)
+	return string.sub(text, 1, next_byte_from - 1)
 end

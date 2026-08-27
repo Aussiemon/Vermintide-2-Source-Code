@@ -3,6 +3,7 @@
 require("foundation/scripts/util/table")
 require("scripts/settings/attachment_node_linking")
 require("scripts/settings/ai_inventory_templates")
+require("scripts/settings/equipment/weapon_material_settings_templates")
 
 local unit_alive = Unit.alive
 
@@ -951,6 +952,7 @@ function flow_callback_remove_player_items(params)
 
 		local temp = flow_callback_remove_player_items(params)
 
+		World.unlink_unit(world, item_attachments[i])
 		World.destroy_unit(world, item_attachments[i])
 	end
 

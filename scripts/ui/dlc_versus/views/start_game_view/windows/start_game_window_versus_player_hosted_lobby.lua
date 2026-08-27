@@ -942,7 +942,7 @@ StartGameWindowVersusPlayerHostedLobby._update_server_name = function (self)
 			self._parent.parent:set_input_blocked(false)
 		end
 	elseif UIUtils.is_button_pressed(widget) then
-		input.caret_index = 1 + UTF8Utils.string_length(input.text)
+		input.caret_index = 1 + Utf8.length(input.text)
 		input.active = true
 
 		self._parent.parent:set_input_blocked(true)

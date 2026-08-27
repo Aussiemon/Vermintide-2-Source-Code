@@ -679,6 +679,20 @@ local scenegraph_definition = {
 			50,
 		},
 	},
+	menu_option_7 = {
+		horizontal_alignment = "center",
+		parent = "menu_anchor_point",
+		vertical_alignment = "center",
+		position = {
+			0,
+			-210,
+			10,
+		},
+		size = {
+			300,
+			50,
+		},
+	},
 	ai_benchmark = {
 		horizontal_alignment = "center",
 		parent = "menu_anchor_point",

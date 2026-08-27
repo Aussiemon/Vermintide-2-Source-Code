@@ -49,9 +49,7 @@ ActionCareerBWNecromancerCommandVent.client_owner_start_action = function (self,
 		buff_system:add_buff_synced(player_unit, "sienna_necromancer_4_3_withering_touch", BuffSyncType.LocalAndServer)
 	end
 
-	if HEALTH_ALIVE[target_pet] then
-		self._command_ability:command_sacrifice(target_pet)
-	end
+	self._command_ability:command_sacrifice(target_pet)
 end
 
 ActionCareerBWNecromancerCommandVent.client_owner_post_update = function (self, dt, t, world, can_damage)

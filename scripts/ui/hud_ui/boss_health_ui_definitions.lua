@@ -106,7 +106,7 @@ local function create_health_bar_widget(is_additional)
 			texture_id = "marked_portrait_frame",
 			retained_mode = retained_mode,
 			content_check_function = function (content)
-				return content.attributes[1]
+				return content.attributes[1] or content.has_custom_attribute
 			end,
 		},
 		{

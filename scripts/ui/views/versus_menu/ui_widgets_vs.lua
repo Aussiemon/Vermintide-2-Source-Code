@@ -7285,7 +7285,7 @@ UIWidgets.create_screen_ceremony_award = function (scenegraph_id, award_data, of
 		},
 	}
 
-	local extra_string_offset = UTF8Utils.string_length(header) > 10 and 15 or 0
+	local extra_string_offset = Utf8.length(header) > 10 and 15 or 0
 
 	style.header = {
 		dynamic_font_size = true,

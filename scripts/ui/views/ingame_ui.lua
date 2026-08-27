@@ -378,8 +378,8 @@ IngameUI._handle_versus_matchmaking = function (self)
 	return false
 end
 
-IngameUI.not_in_modded = function (self)
-	return not script_data["eac-untrusted"]
+IngameUI.can_open_loot = function (self)
+	return not GameSettingsDevelopment.read_only_backend
 end
 
 local hotkeys_blocked_during_vote = {
@@ -808,10 +808,6 @@ end
 
 IngameUI._render_debug_ui = function (self, dt, t)
 	if not script_data.disable_debug_draw then
-		local disable_colorize_unlocalized_strings = script_data.disable_colorize_unlocalized_strings
-
-		script_data.disable_colorize_unlocalized_strings = true
-
 		if self.menu_active and GameSettingsDevelopment.show_version_info and not script_data.hide_version_info then
 			self:_render_version_info()
 		end
@@ -819,8 +815,6 @@ IngameUI._render_debug_ui = function (self, dt, t)
 		if GameSettingsDevelopment.show_fps and not script_data.hide_fps then
 			self:_render_fps(dt)
 		end
-
-		script_data.disable_colorize_unlocalized_strings = disable_colorize_unlocalized_strings
 	end
 end
 

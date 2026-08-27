@@ -547,6 +547,8 @@ Boot._setup_statemachine = function (self, start_state, params)
 end
 
 Boot.on_close = function (self)
+	print("[Boot] on_close")
+
 	if self._machine and self._machine.on_close then
 		return self._machine:on_close()
 	end
@@ -915,6 +917,8 @@ Boot.game_update = function (self, real_world_dt)
 end
 
 Boot.shutdown = function (self, dt)
+	print("[Boot] shutdown")
+
 	if self._machine then
 		self._machine:destroy(true)
 	end

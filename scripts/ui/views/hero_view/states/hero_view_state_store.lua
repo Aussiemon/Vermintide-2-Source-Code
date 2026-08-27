@@ -2427,14 +2427,16 @@ HeroViewStateStore.get_steam_item_price_text = function (self, steam_itemdefid, 
 	if not content.can_use_item then
 		price_text = Localize(content.can_not_use_item_reason or "dlc_price_unavailable")
 	elseif price then
-		price_text = tostring(currency) .. " " .. string.format("%.2f", price * 0.01)
+		local currency_label = tostring(currency)
+
+		price_text = string.format("%s %.2f", currency_label, price * 0.01)
 
 		if item_data and item_data.item_type == "bundle" then
 			local regular_price = steam_data and steam_data.regular_prices[currency] or item_data.bundle_price
 
-			price_text_original = tostring(currency) .. " " .. string.format("%.2f", regular_price * 0.01)
+			price_text_original = string.format("%s %.2f", currency_label, regular_price * 0.01)
 		else
-			price_text_original = discount and tostring(currency) .. " " .. string.format("%.2f", price * (100 / (100 - discount)) * 0.01)
+			price_text_original = discount and string.format("%s %.2f", currency_label, price * (100 / (100 - discount)) * 0.01)
 		end
 	else
 		price_text = Localize("dlc_price_unavailable")

@@ -40,7 +40,7 @@ if not DEDICATED_SERVER then
 	GameServerInternal.open_channel = function (lobby, peer)
 		local channel_id = SteamGameServerLobby.open_channel(lobby, peer)
 
-		print("LobbyInternal.open_channel lobby: %s, to peer: %s channel: %s", lobby, peer, channel_id)
+		printf("LobbyInternal.open_channel lobby: %s, to peer: %s channel: %s", lobby, peer, channel_id)
 
 		return channel_id
 	end

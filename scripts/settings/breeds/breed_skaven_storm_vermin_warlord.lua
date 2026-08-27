@@ -167,7 +167,7 @@ local breed_data = {
 
 		local t = Managers.time:time("game")
 
-		if t < blackboard.intro_timer then
+		if t < (blackboard.intro_timer or 0) then
 			stagger_type = stagger_types.none
 
 			return stagger_type, duration, length

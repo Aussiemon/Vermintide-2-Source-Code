@@ -56,11 +56,7 @@ LevelEndViewBase.init = function (self, context)
 		self._players_session_score = self.context.players_session_score
 	end
 
-	local is_untrusted = script_data["eac-untrusted"]
-
-	self._is_untrusted = is_untrusted
-
-	if not is_untrusted then
+	if not GameSettingsDevelopment.read_only_backend then
 		self.level_up_rewards = self:_get_level_up_rewards()
 		self.deed_rewards = self:_get_deed_rewards()
 		self.deus_rewards = self:_get_deus_rewards()
@@ -232,7 +228,7 @@ LevelEndViewBase.on_enter = function (self)
 end
 
 LevelEndViewBase.on_exit = function (self)
-	if not self._is_untrusted then
+	if not GameSettingsDevelopment.read_only_backend then
 		local difficulty_key = Managers.state.difficulty:get_difficulty()
 		local chest_settings = LootChestData.chests_by_category[difficulty_key]
 		local chests_package_name = chest_settings.package_name

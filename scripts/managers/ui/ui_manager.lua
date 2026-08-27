@@ -240,3 +240,42 @@ end
 UIManager.ingame_ui = function (self)
 	return self._ingame_ui
 end
+
+UIManager._fetch_disabled_ui_layouts = function (self)
+	local disabled_ui_layouts = self._disabled_ui_layouts
+
+	if not disabled_ui_layouts then
+		local backend_manager = Managers.backend
+
+		fassert(backend_manager:get_backend_mirror(), "Backend not created yet")
+
+		local title_settings = backend_manager:get_title_settings()
+
+		disabled_ui_layouts = title_settings and title_settings.disabled_ui_layouts or {}
+		self._disabled_ui_layouts = disabled_ui_layouts
+	end
+
+	return disabled_ui_layouts
+end
+
+local function _is_hidden(status)
+	return status == "hide"
+end
+
+local function _is_disabled(status)
+	return status == "disable" or status == true or _is_hidden(status)
+end
+
+UIManager.is_ui_layout_disabled = function (self, layout_name)
+	local disabled_ui_layouts = self:_fetch_disabled_ui_layouts()
+	local status = disabled_ui_layouts[layout_name]
+
+	return _is_disabled(status)
+end
+
+UIManager.is_ui_layout_hidden = function (self, layout_name)
+	local disabled_ui_layouts = self:_fetch_disabled_ui_layouts()
+	local status = disabled_ui_layouts[layout_name]
+
+	return _is_hidden(status)
+end

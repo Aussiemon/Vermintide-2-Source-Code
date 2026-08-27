@@ -111,6 +111,7 @@ ImguiBuffsDebug.draw = function (self, is_open)
 	self:_display_perks(perks)
 	self:_display_stat_buffs(stat_buffs)
 	self:_display_event_buffs(event_buffs)
+	self:_display_movement_settings(self._current_unit)
 	Imgui.end_window()
 
 	return do_close
@@ -417,6 +418,34 @@ ImguiBuffsDebug._display_event_buffs = function (self, event_buffs)
 			end
 		end
 
+		Imgui.dummy(10, 10)
+		Imgui.tree_pop()
+	end
+end
+
+ImguiBuffsDebug._display_movement_settings = function (self, unit)
+	if not Unit.alive(unit) then
+		return
+	end
+
+	local movement_settings = PlayerUnitMovementSettings.get_movement_settings_table(unit)
+
+	if not movement_settings then
+		return
+	end
+
+	if Imgui.tree_node("Movement Settings") then
+		Imgui.text(string.format("%-36s", "Move speed"))
+		Imgui.text(string.format("    %-36s%.1f", "forwards", movement_settings.move_speed))
+		Imgui.text(string.format("    %-36s%.1f", "backwards", movement_settings.backward_move_scale * movement_settings.move_speed))
+		Imgui.text(string.format("    %-36s%.1f", "walk", movement_settings.walk_move_speed))
+		Imgui.text(string.format("    %-36s%.1f", "crouch", movement_settings.crouch_move_speed))
+		Imgui.text(string.format("    %-36s%.1f", "pounce", movement_settings.pounce_speed))
+		Imgui.text(string.format("%-36s", "Dodge"))
+		Imgui.text(string.format("    %-36s%.1f m", "distance", movement_settings.dodging.distance))
+		Imgui.text(string.format("    %-36sx%.1f", "distance modifier", movement_settings.dodging.distance_modifier))
+		Imgui.text(string.format("    %-36s%.1f s", "cooldown", movement_settings.dodging.dodge_cd))
+		Imgui.text(string.format("    %-36sx%.1f", "speed modifier", movement_settings.dodging.speed_modifier))
 		Imgui.dummy(10, 10)
 		Imgui.tree_pop()
 	end

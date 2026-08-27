@@ -18,7 +18,7 @@ local PROFILE_OFFSET = {
 LevelEndViewVersus = class(LevelEndViewVersus, LevelEndViewBase)
 
 LevelEndViewVersus._setup_pages_victory = function (self, rewards)
-	if not self._is_untrusted then
+	if not GameSettingsDevelopment.read_only_backend then
 		return {
 			EndViewStateParadingVS = 1,
 			EndViewStateScoreVS = 2,
@@ -32,7 +32,7 @@ LevelEndViewVersus._setup_pages_victory = function (self, rewards)
 end
 
 LevelEndViewVersus._setup_pages_defeat = function (self, rewards)
-	if not self._is_untrusted then
+	if not GameSettingsDevelopment.read_only_backend then
 		return {
 			EndViewStateParadingVS = 1,
 			EndViewStateScoreVS = 2,
@@ -717,7 +717,7 @@ end
 LevelEndViewVersus.setup_pages = function (self, game_won, rewards)
 	local index_by_state_name
 
-	if self._is_untrusted then
+	if GameSettingsDevelopment.read_only_backend then
 		index_by_state_name = self:_setup_pages_untrusted()
 	elseif game_won then
 		index_by_state_name = self:_setup_pages_victory(rewards)

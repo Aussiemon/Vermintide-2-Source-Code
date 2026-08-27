@@ -50,7 +50,6 @@ StateInGameRunning.on_enter = function (self, params)
 	self.is_in_tutorial = params.is_in_tutorial
 	self.network_event_delegate = params.network_event_delegate
 	self.end_conditions_met = false
-	self._booted_eac_untrusted = script_data["eac-untrusted"]
 
 	if self.is_in_tutorial then
 		input_manager:create_input_service("Tutorial", "TutorialPlayerControllerKeymaps", "TutorialPlayerControllerFilters")
@@ -311,7 +310,7 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 
 		level_end_view_context.rewards = context_rewards
 
-		if not self._booted_eac_untrusted then
+		if not GameSettingsDevelopment.read_only_backend then
 			local level, start_experience, start_experience_pool = self.rewards:get_level_start()
 			local versus_level, versus_start_experience = self.rewards:get_versus_level_start()
 
@@ -687,7 +686,6 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	end
 
 	local screen_name, screen_config, screen_params = Managers.state.game_mode:get_end_screen_config(game_won, game_lost, player, reason)
-	local is_booted_unstrusted = self._booted_eac_untrusted
 	local is_game_mode_weave = game_mode_key == "weave"
 	local weave_tier, score, num_players, weave_progress
 
@@ -699,7 +697,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	end
 
 	local function callback(status)
-		if is_game_mode_weave and not is_booted_unstrusted and game_won and is_final_objective and is_server and not self.is_quickplay then
+		if is_game_mode_weave and not GameSettingsDevelopment.read_only_backend and game_won and is_final_objective and is_server and not self.is_quickplay then
 			self:_submit_weave_scores(weave_tier, score, num_players)
 		end
 
@@ -867,7 +865,7 @@ StateInGameRunning.update = function (self, dt, t)
 
 	if ingame_ui then
 		local ui_ready = not ingame_ui.survey_active and not self.has_setup_end_of_level and ingame_ui:end_screen_active() and ingame_ui:end_screen_fade_in_complete()
-		local rewards_ready = self._booted_eac_untrusted or self.rewards:rewards_generated() and not self.rewards:consuming_deed() and self.chests_package_name and Managers.package:has_loaded(self.chests_package_name, "global")
+		local rewards_ready = GameSettingsDevelopment.read_only_backend or self.rewards:rewards_generated() and not self.rewards:consuming_deed() and self.chests_package_name and Managers.package:has_loaded(self.chests_package_name, "global")
 		local mechanism_name = Managers.mechanism:current_mechanism_name()
 
 		if mechanism_name == "versus" then

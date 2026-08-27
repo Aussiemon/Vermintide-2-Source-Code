@@ -92,7 +92,7 @@ HeroWindowOptions.create_ui_elements = function (self, params, offset)
 
 	local mechanism_name = Managers.mechanism:current_mechanism_name()
 
-	if script_data["eac-untrusted"] or not DamageUtils.is_in_inn or mechanism_name == "versus" then
+	if GameSettingsDevelopment.read_only_backend or not DamageUtils.is_in_inn or mechanism_name == "versus" then
 		widgets_by_name.game_option_3.content.button_hotspot.disable_button = true
 		widgets_by_name.game_option_5.content.button_hotspot.disable_button = true
 	end

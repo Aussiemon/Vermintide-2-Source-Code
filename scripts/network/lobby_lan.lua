@@ -39,7 +39,7 @@ LobbyInternal.leave_lobby = Network.leave_lan_lobby
 LobbyInternal.open_channel = function (lobby, peer)
 	local channel_id = LanLobby.open_channel(lobby, peer)
 
-	print("LobbyInternal.open_channel lobby: %s, to peer: %s channel: %s", lobby, peer, channel_id)
+	printf("LobbyInternal.open_channel lobby: %s, to peer: %s channel: %s", lobby, peer, channel_id)
 
 	return channel_id
 end

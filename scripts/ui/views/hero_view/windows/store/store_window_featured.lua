@@ -50,6 +50,10 @@ local GRID_SIZE_BY_TYPE = {
 		1,
 		1,
 	},
+	weapon_pose_bundle = {
+		1,
+		1,
+	},
 }
 local BACKFILL_ITEM_ORDER = {
 	"dlc",
@@ -608,7 +612,7 @@ StoreWindowFeatured._get_default_featured_grid_content = function (self, optiona
 	local peddler_items = peddler_interface:get_peddler_stock()
 	local backend_common = Managers.backend:get_interface("common")
 	local backend_items = Managers.backend:get_interface("items")
-	local hero_filter = "can_wield_by_current_hero and not owned"
+	local hero_filter = "can_wield_by_current_hero and not owned and ( not is_event_item or is_active_event_item )"
 	local hero_items = backend_common:filter_items(peddler_items, hero_filter)
 	local os_time = os.time() * 1000
 	local num_items = optional_num_items or 9

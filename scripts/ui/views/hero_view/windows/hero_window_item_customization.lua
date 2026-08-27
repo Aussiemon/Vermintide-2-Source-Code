@@ -1875,7 +1875,7 @@ HeroWindowItemCustomization._state_setup_property_reroll = function (self)
 end
 
 HeroWindowItemCustomization._enable_craft_button = function (self, enable, disable_edges)
-	if script_data["eac-untrusted"] then
+	if GameSettingsDevelopment.read_only_backend then
 		enable = false
 	end
 
@@ -1925,7 +1925,7 @@ HeroWindowItemCustomization._update_state_craft_button = function (self, recipe_
 
 	local widget_craft_button = widgets_by_name.craft_button
 
-	widget_craft_button.content.button_hotspot.disable_button = force_disable or not has_all_requirements or script_data["eac-untrusted"]
+	widget_craft_button.content.button_hotspot.disable_button = force_disable or not has_all_requirements or GameSettingsDevelopment.read_only_backend
 	widget_craft_button.content.title_text = button_text
 	self._has_all_crafting_requirements = has_all_requirements
 
@@ -2055,8 +2055,8 @@ HeroWindowItemCustomization._create_property_option_entry = function (self, text
 	local style = widget.style
 	local text_style = style.text
 	local color_override_table = text_style.color_override_table
-	local value_text_length = value_range_text and UTF8Utils.string_length(value_range_text) or 0
-	local default_text_length = UTF8Utils.string_length(text) or 0
+	local value_text_length = value_range_text and Utf8.length(value_range_text) or 0
+	local default_text_length = Utf8.length(text) or 0
 
 	color_override_table.start_index = default_text_length + 1
 	color_override_table.end_index = default_text_length + value_text_length

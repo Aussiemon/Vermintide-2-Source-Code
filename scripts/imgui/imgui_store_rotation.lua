@@ -7,6 +7,13 @@ local APP_IDS = {
 	[2] = "552500",
 }
 local SEARCH_TYPES = table.enum("slideshow", "featured", "discount")
+
+local function _clean_loc(text_id)
+	local text = Localize(text_id)
+
+	return text
+end
+
 local relative_save_file_path = "/.shop/imgui_store_tool_save_file.json"
 
 ImguiStoreRotation = class(ImguiStoreRotation)
@@ -111,7 +118,7 @@ ImguiStoreRotation._filter_item_keys_list = function (self)
 		if not item or item.item_type == "deed" then
 			-- Nothing
 		else
-			local localized_name = string.gsub(Localize(item.display_name or item.name), LocalizationDebug.TAG, "")
+			local localized_name = _clean_loc(item.display_name or item.name)
 
 			if item.item_type == "bundle" or is_dlc then
 				slideshow_items[#slideshow_items + 1] = key
@@ -593,7 +600,7 @@ ImguiStoreRotation._draw_selcted_layout_items = function (self, items_list)
 
 		if self._localize then
 			local item = rawget(ItemMasterList, item_id)
-			local name = string.gsub(Localize(item.display_name), LocalizationDebug.TAG, "")
+			local name = _clean_loc(item.display_name)
 
 			Imgui.text_colored("Featured Item: " .. name, 245, 245, 207, 255)
 		else
@@ -629,7 +636,7 @@ ImguiStoreRotation._draw_selcted_slideshow_items = function (self, items_list)
 			if item.error_text then
 				Imgui.text_colored(key .. " : " .. value, 255, 0, 0, 255)
 			elseif self._localize and (key == "header" or key == "description") then
-				local loc_value = string.gsub(Localize(value), LocalizationDebug.TAG, "")
+				local loc_value = _clean_loc(value)
 
 				Imgui.text_colored(key .. " : ", 0, 186, 112, 255)
 				Imgui.same_line()
@@ -902,8 +909,8 @@ end
 ImguiStoreRotation._make_item_def = function (self, key, item, discount)
 	local steam_id = item.steam_itemdefid
 	local original_price = SteamInventory.get_item_definition_property(steam_id, "price")
-	local loc_display_name = string.gsub(Localize(item.display_name), LocalizationDebug.TAG, "")
-	local loc_description = string.gsub(Localize(item.description), LocalizationDebug.TAG, "")
+	local loc_display_name = _clean_loc(item.display_name)
+	local loc_description = _clean_loc(item.description)
 
 	return {
 		hidden = false,
@@ -927,8 +934,8 @@ end
 ImguiStoreRotation._make_bundle_def = function (self, key, item, discount)
 	local steam_id = item.steam_itemdefid
 	local original_price = SteamInventory.get_item_definition_property(steam_id, "price")
-	local loc_name = string.gsub(Localize(item and item.display_name or "not_assigned"), LocalizationDebug.TAG, "")
-	local loc_description = string.gsub(Localize(item and item.description or "not_assigned"), LocalizationDebug.TAG, "")
+	local loc_name = _clean_loc(item and item.display_name or "not_assigned")
+	local loc_description = _clean_loc(item and item.description or "not_assigned")
 
 	return {
 		hidden = false,
@@ -1315,7 +1322,7 @@ ImguiStoreRotation._create_cosmetics_item_list_file = function (self)
 		local can_wield_string = ""
 
 		for i = 1, #can_wield do
-			local loc_can_wield = string.gsub(Localize(can_wield[i]), LocalizationDebug.TAG, "")
+			local loc_can_wield = _clean_loc(can_wield[i])
 
 			if i == #can_wield then
 				can_wield_string = can_wield_string .. loc_can_wield
@@ -1330,21 +1337,21 @@ ImguiStoreRotation._create_cosmetics_item_list_file = function (self)
 	end
 
 	for profile_name, profile_cosmetics_data in pairs(self._cosmetic_items) do
-		local loc_profile_name = string.gsub(Localize(profile_name), LocalizationDebug.TAG, "")
+		local loc_profile_name = _clean_loc(profile_name)
 
 		if profile_name == "frame" then
 			for item_name, item_data in pairs(profile_cosmetics_data) do
-				local loc_item_name = string.gsub(Localize(item_name), LocalizationDebug.TAG, "")
+				local loc_item_name = _clean_loc(item_name)
 				local item_key = item_data.item_key
 
 				str = str .. "\" \"" .. "," .. loc_profile_name .. "," .. "\"" .. loc_item_name .. "\"" .. ", " .. item_key .. ", All" .. "\n"
 			end
 		else
 			for item_type, item_type_data in pairs(profile_cosmetics_data) do
-				local loc_item_type = string.gsub(Localize(item_type), LocalizationDebug.TAG, "")
+				local loc_item_type = _clean_loc(item_type)
 
 				for item_name, item_data in pairs(item_type_data) do
-					local loc_item_name = string.gsub(Localize(item_name), LocalizationDebug.TAG, "")
+					local loc_item_name = _clean_loc(item_name)
 
 					str = str .. loc_profile_name .. "," .. loc_item_type .. ","
 

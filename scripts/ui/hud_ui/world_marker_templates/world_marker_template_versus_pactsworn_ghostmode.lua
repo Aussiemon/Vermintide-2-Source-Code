@@ -241,7 +241,7 @@ template.update_function = function (ui_renderer, widget, marker, settings, dt, 
 	style.ally_name_shadow.offset[2] = ally_name_offset_y
 
 	local ally_name = allow_name and content.player_name or ""
-	local ally_name_length = UTF8Utils.string_length(ally_name)
+	local ally_name_length = Utf8.length(ally_name)
 
 	if ally_name_length > 18 then
 		ally_name = string.sub(ally_name, 1, 18) .. "..."

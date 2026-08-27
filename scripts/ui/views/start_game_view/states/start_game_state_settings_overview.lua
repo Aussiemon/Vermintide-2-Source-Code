@@ -365,6 +365,11 @@ end
 
 StartGameStateSettingsOverview.can_add_layout = function (self, layout_setting)
 	local can_add_function = layout_setting.can_add_function
+	local layout_name = layout_setting.name
+
+	if Managers.ui:is_ui_layout_hidden(layout_name) then
+		return false
+	end
 
 	return can_add_function and can_add_function(self)
 end
@@ -681,16 +686,9 @@ StartGameStateSettingsOverview.get_layout_setting = function (self, index)
 end
 
 StartGameStateSettingsOverview.get_layout_setting_by_name = function (self, name)
-	local window_layouts = self._window_layouts
+	local _, layout_setting = table.find_by_key(self._window_layouts, "name", name)
 
-	for i = 1, #window_layouts do
-		local layout_setting = window_layouts[i]
-		local layout_name = layout_setting.name
-
-		if name == layout_name then
-			return layout_setting
-		end
-	end
+	return layout_setting
 end
 
 StartGameStateSettingsOverview._get_first_game_mode_option_layout = function (self)
@@ -698,9 +696,13 @@ StartGameStateSettingsOverview._get_first_game_mode_option_layout = function (se
 
 	for i = 1, #window_layouts do
 		local layout_setting = window_layouts[i]
+		local layout_name = layout_setting.name
+		local is_valid = self:can_add_layout(layout_setting)
 
-		if self:can_add_layout(layout_setting) then
-			return layout_setting.name, layout_setting
+		is_valid = is_valid and not Managers.ui:is_ui_layout_disabled(layout_name)
+
+		if is_valid then
+			return layout_name, layout_setting
 		end
 	end
 end

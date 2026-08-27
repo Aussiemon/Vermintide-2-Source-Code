@@ -160,7 +160,7 @@ TwitchManager.cb_on_user_info_received = function (self, success, code, headers,
 	self:_show_result_info(success, code, headers, data, userdata)
 
 	if success then
-		local result_data = cjson.decode(data)
+		local result_data = data and cjson.decode(data)
 
 		if result_data then
 			if result_data.status == 401 and self._num_retries < MAX_NUM_RETRIES then

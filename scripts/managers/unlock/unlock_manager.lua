@@ -716,7 +716,7 @@ UnlockManager._update_backend_unlocks = function (self, t)
 				return
 			end
 
-			if script_data["eac-untrusted"] then
+			if GameSettingsDevelopment.read_only_backend then
 				return
 			end
 
@@ -857,19 +857,22 @@ UnlockManager._handle_unseen_rewards = function (self)
 		if reward.item_type == "weapon_skin" then
 			local item_id = reward.item_id
 			local weapon_skin_data = WeaponSkins.skins[item_id]
-			local rarity = weapon_skin_data.rarity or "plentiful"
 
-			item = {
-				skin = item_id,
-				data = {
-					information_text = "information_weapon_skin",
-					item_type = "weapon_skin",
-					slot_type = "weapon_skin",
-					matching_item_key = weapon_skin_data.item_type,
-					can_wield = CanWieldAllItemTemplates,
-					rarity = rarity,
-				},
-			}
+			if weapon_skin_data then
+				local rarity = weapon_skin_data.rarity or "plentiful"
+
+				item = {
+					skin = item_id,
+					data = {
+						information_text = "information_weapon_skin",
+						item_type = "weapon_skin",
+						slot_type = "weapon_skin",
+						matching_item_key = weapon_skin_data.item_type,
+						can_wield = CanWieldAllItemTemplates,
+						rarity = rarity,
+					},
+				}
+			end
 		elseif reward.reward_type == "weapon_pose" then
 			item = item_interface:get_item_from_key(reward.item_id)
 		elseif reward.reward_type == "keep_decoration_painting" then

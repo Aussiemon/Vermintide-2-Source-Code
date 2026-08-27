@@ -147,7 +147,9 @@ Development.init_application_parameters = function (args, do_pretty_print_args)
 		end
 	end
 
-	script_data["eac-untrusted"] = application_parameters["eac-untrusted"] ~= nil or application_parameters.eac_untrusted ~= nil
+	local modded_realm = application_parameters["eac-untrusted"] ~= nil or application_parameters.eac_untrusted ~= nil
+
+	rawset(_G, "MODDED_REALM", modded_realm)
 
 	if DEDICATED_SERVER or BUILD ~= "release" then
 		if application_parameters["use-clean-settings"] then

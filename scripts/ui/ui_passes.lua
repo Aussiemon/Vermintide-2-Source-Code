@@ -1647,7 +1647,7 @@ local function extract_button_data_from_text(ui_renderer, ui_style, input_text, 
 
 					REPLACEMENT_STR_LIST[i] = string.rep("½", replacement_str_iterator)
 				else
-					local localized_button_name = Utf8.upper(unassigned and Localize(keymap_binding[2]) or Keyboard.button_name(keymap_binding[2]) or Localize(UNASSIGNED_KEY))
+					local localized_button_name = Utf8.upper(unassigned and Localize(keymap_binding[2]) or Keyboard.button_locale_name(keymap_binding[2]) or Localize(UNASSIGNED_KEY))
 					local text_width = UIRenderer.text_size(ui_renderer, localized_button_name, font_material, font_size) + font_size * inv_scale
 					local final_replacement_str_iterator = math.ceil(text_width / final_replacement_width)
 
@@ -1761,7 +1761,7 @@ local function render_buttons_in_text(ui_renderer, text, font_material, font_siz
 						UIRenderer.draw_text(ui_renderer, "[?]", font_material, font_size, font_name, unassigned_button_pos, Colors.get_color_table_with_alpha("font_title", 255))
 					end
 				else
-					local localized_button_name = Utf8.upper(unassigned and Localize(keymap_binding[2]) or Keyboard.button_name(keymap_binding[2]) or Localize(UNASSIGNED_KEY))
+					local localized_button_name = Utf8.upper(unassigned and Localize(keymap_binding[2]) or Keyboard.button_locale_name(keymap_binding[2]) or Localize(UNASSIGNED_KEY))
 					local button_text_length, button_text_height = UIRenderer.text_size(ui_renderer, localized_button_name, font_material, font_size)
 					local left_part = button_texture_data[1]
 					local middle_part = button_texture_data[2]
@@ -1990,7 +1990,7 @@ UIPasses.text = {
 		end
 
 		if ui_style.word_wrap then
-			local global_text_length = UTF8Utils.string_length(text)
+			local global_text_length = Utf8.length(text)
 			local _, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_name, font_size)
 			local texts = UIRenderer.word_wrap(ui_renderer, text, font_material, font_size, ui_style.area_size and ui_style.area_size[1] or size[1])
 			local text_start_index = ui_content.text_start_index or 1
@@ -2029,7 +2029,7 @@ UIPasses.text = {
 			for i = 1, num_texts do
 				text = texts[i - 1 + text_start_index]
 
-				local text_length = text and UTF8Utils.string_length(text) or 0
+				local text_length = text and Utf8.length(text) or 0
 				local width
 
 				if horizontal_alignment ~= "left" then
@@ -2091,7 +2091,7 @@ UIPasses.text = {
 			end
 		elseif ui_style.horizontal_scroll then
 			local start_index = ui_content.text_index
-			local text_length = UTF8Utils.string_length(text)
+			local text_length = Utf8.length(text)
 			local end_index = ui_content.end_index or text_length
 			local replacing_character = ui_style.replacing_character
 
@@ -2103,7 +2103,7 @@ UIPasses.text = {
 			local jump_to_end = ui_content.jump_to_end or text_length < ui_content.caret_index
 
 			if jump_to_end then
-				end_index = UTF8Utils.string_length(text)
+				end_index = Utf8.length(text)
 				start_index = end_index
 				ui_content.jump_to_end = nil
 				sub_string_width = 0
@@ -4129,7 +4129,7 @@ UIPasses.rect_text = {
 		local num_texts = math.min(#texts - (text_start_index - 1), max_texts)
 		local full_font_height = (font_max + math.abs(font_min)) * RESOLUTION_LOOKUP.inv_scale
 		local text_offset = Vector3(0, ui_style.grow_downward and full_font_height or -full_font_height, 0)
-		local global_text_length = UTF8Utils.string_length(text)
+		local global_text_length = Utf8.length(text)
 
 		rect_text_size[2] = full_font_height * num_texts
 		rect_text_size[1] = 0
@@ -4153,7 +4153,7 @@ UIPasses.rect_text = {
 			for i = 1, num_texts do
 				text = texts[i - 1 + text_start_index]
 
-				local text_length = text and UTF8Utils.string_length(text) or 0
+				local text_length = text and Utf8.length(text) or 0
 				local width = UIRenderer.text_size(ui_renderer, text, font_material, font_size, size[2])
 				local alignment_offset = Vector3(size[1] / 2 - width / 2, 0, 0)
 				local line_color_override

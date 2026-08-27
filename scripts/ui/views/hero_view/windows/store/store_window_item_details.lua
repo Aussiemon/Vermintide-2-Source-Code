@@ -233,7 +233,7 @@ end
 StoreWindowItemDetails._set_item_icon = function (self, texture)
 	local widget = self._widgets_by_name.item_icon
 
-	widget.content.texture_id = texture
+	widget.content.texture_id = texture or "icons_placeholder"
 end
 
 StoreWindowItemDetails._set_title_text_color = function (self, text_color)

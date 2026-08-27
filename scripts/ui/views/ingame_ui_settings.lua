@@ -815,7 +815,7 @@ local view_settings = {
 			disable_for_mechanism = default_disable_for_mechanism,
 		},
 		hotkey_loot = {
-			can_interact_func = "not_in_modded",
+			can_interact_func = "can_open_loot",
 			error_message = "matchmaking_ready_interaction_message_loot",
 			in_transition = "hero_view_force",
 			in_transition_menu = "hero_view",

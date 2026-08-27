@@ -58,7 +58,6 @@ local breed_data = {
 	bone_lod_level = 0,
 	boost_curve_multiplier_override = 1.8,
 	boss = true,
-	boss_damage_reduction = true,
 	boss_staggers = true,
 	bot_hitbox_radius_approximation = 1,
 	bot_opportunity_target_melee_range = 7,
@@ -91,6 +90,7 @@ local breed_data = {
 	is_always_spawnable = true,
 	is_bot_aid_threat = true,
 	keep_weapon_on_death = false,
+	lord_damage_reduction = true,
 	minion_detection_radius = 10,
 	navigation_spline_distance_to_borders = 1,
 	near_vomit = "troll_chief_vomit_near",
@@ -203,7 +203,7 @@ local breed_data = {
 			StatusEffectNames.burning_warpfire,
 		}),
 	},
-	custom_health_bar_name = function (unit, default_name)
+	boss_health_ui_boss_phase_func = function (unit)
 		local health_extension = ScriptUnit.has_extension(unit, "health_system")
 
 		if not health_extension then
@@ -212,19 +212,15 @@ local breed_data = {
 
 		local buff_extension = ScriptUnit.extension(unit, "buff_system")
 		local current_time = Managers.time:time("game")
+		local downed_buff = buff_extension:get_buff_type("troll_chief_downed_regen")
 
-		if health_extension.state == "down" then
-			local downed_buff = buff_extension:get_buff_type("troll_chief_downed_regen")
+		if downed_buff and health_extension.state == "down" then
+			local time_since_downed = current_time - downed_buff.start_time
+			local total_time = AiUtils.downed_duration(BreedActions.chaos_troll_chief.downed)
+			local time_left = total_time - time_since_downed
 
-			if downed_buff then
-				local time_since_downed = current_time - downed_buff.start_time
-				local total_time = AiUtils.downed_duration(BreedActions.chaos_troll_chief.downed)
-				local time_left = total_time - time_since_downed
-				local title = Localize("chaos_troll_chief_regenerating")
-
-				if time_left > 0 then
-					return string.format("%s: %d", title, time_left)
-				end
+			if time_left > 0 then
+				return "chaos_troll_chief_regenerating", time_left
 			end
 		end
 
@@ -234,17 +230,16 @@ local breed_data = {
 			local time_since_buff = current_time - rage_buff.start_time
 			local total_time = rage_buff.duration
 			local time_left = total_time - time_since_buff
-			local title = Localize("chaos_troll_chief_raging")
 
 			if time_left > 0 then
-				return string.format("%s: %d", title, time_left)
+				return "chaos_troll_chief_raging", time_left
 			end
 		end
 
 		local num_protection_buff = buff_extension:num_buff_stacks("sorcerer_tether_buff_invulnerability")
 
 		if num_protection_buff > 0 then
-			return string.format("%s (%s)", Localize(default_name), Localize("chaos_troll_chief_protected"))
+			return "chaos_troll_chief_protected", nil
 		end
 	end,
 	debug_color = {
@@ -1167,6 +1162,7 @@ local action_data = {
 			120,
 			120,
 			90,
+			75,
 			75,
 			75,
 			75,

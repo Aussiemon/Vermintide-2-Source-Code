@@ -139,7 +139,7 @@ HeroWindowPanelConsole.create_ui_elements = function (self, params, offset)
 
 	assert(title_button_widgets[3].content.text_field == "hero_window_crafting")
 
-	title_button_widgets[3].content.button_hotspot.disable_button = script_data["eac-untrusted"]
+	title_button_widgets[3].content.button_hotspot.disable_button = GameSettingsDevelopment.read_only_backend
 
 	for i = 1, #title_button_widgets do
 		local title_button_widget = title_button_widgets[i]

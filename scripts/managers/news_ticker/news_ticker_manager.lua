@@ -118,7 +118,9 @@ NewsTickerManager.cb_loading_screen_loaded = function (self, info)
 end
 
 NewsTickerManager.loading_screen_text = function (self)
-	return self._loading_screen_text
+	local text = self._loading_screen_text
+
+	return text
 end
 
 NewsTickerManager.refresh_ingame_message = function (self)
@@ -147,5 +149,7 @@ NewsTickerManager.cb_ingame_loaded = function (self, info)
 end
 
 NewsTickerManager.ingame_text = function (self)
-	return self._ingame_text
+	local text = self._ingame_text
+
+	return text
 end

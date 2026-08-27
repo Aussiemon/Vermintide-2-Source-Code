@@ -1050,12 +1050,7 @@ CharacterStateHelper._check_chain_action = function (wield_input, action_data, i
 				if action_settings and not condition_failed and not cooldown then
 					send_buffer = action_data.send_buffer
 					clear_buffer = action_data.clear_buffer
-
-					if buffered and action_data.input == "action_one_release" then
-						force_release_input = "action_one_hold"
-					elseif auto_chain and action_data.input == "action_wield" then
-						-- Nothing
-					end
+					force_release_input = buffered and action_data.input == "action_one_release" and "action_one_hold" or auto_chain and action_data.input == "action_wield" and false or force_release_input
 
 					return true, new_action, new_sub_action, wield_input, send_buffer, clear_buffer, force_release_input
 				end
