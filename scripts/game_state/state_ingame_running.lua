@@ -719,7 +719,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 		local end_mission_rewards = game_mode_setting.end_mission_rewards
 
 		if end_mission_rewards then
-			if not is_booted_unstrusted and (game_lost or is_final_objective) then
+			if not GameSettingsDevelopment.read_only_backend and (game_lost or is_final_objective) then
 				self:_award_end_of_level_rewards(statistics_db, stats_id, game_won, difficulty_key, level_key)
 			end
 

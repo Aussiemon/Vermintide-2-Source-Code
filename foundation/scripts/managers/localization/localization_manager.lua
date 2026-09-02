@@ -172,13 +172,16 @@ local INPUT_SERVICE_NAMES = {}
 LocalizationManager.get_input_action = function (self, text_id)
 	local str = self:_base_lookup(text_id) or localize_err_string(text_id)
 	local macro = string.match(str, "%b$;[%a%d_]*:")
-	local input_service_name
 
 	table.clear(INPUT_ACTIONS)
 	table.clear(INPUT_SERVICE_NAMES)
 
 	while macro do
-		local start_index, end_index = string.find(str, macro)
+		local _, end_index = string.find(str, macro)
+
+		if not end_index then
+			break
+		end
 
 		str = string.sub(str, end_index + 2)
 
@@ -186,8 +189,11 @@ LocalizationManager.get_input_action = function (self, text_id)
 		local input_service_and_action = string.sub(macro, arg_start + 1, -2)
 		local split_start, split_end = string.find(input_service_and_action, "__")
 
-		INPUT_SERVICE_NAMES[#INPUT_SERVICE_NAMES + 1] = string.sub(input_service_and_action, 1, split_start - 1)
-		INPUT_ACTIONS[#INPUT_ACTIONS + 1] = string.sub(input_service_and_action, split_end + 1)
+		if split_start then
+			INPUT_SERVICE_NAMES[#INPUT_SERVICE_NAMES + 1] = string.sub(input_service_and_action, 1, split_start - 1)
+			INPUT_ACTIONS[#INPUT_ACTIONS + 1] = string.sub(input_service_and_action, split_end + 1)
+		end
+
 		macro = string.match(str, "%b$;[%a%d_]*:")
 	end
 

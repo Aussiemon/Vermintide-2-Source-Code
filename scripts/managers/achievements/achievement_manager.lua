@@ -81,6 +81,10 @@ AchievementManager.init = function (self, world, statistics_db)
 		self.platform = "debug"
 	end
 
+	if GameSettingsDevelopment.achievements_disabled then
+		self.platform = "debug"
+	end
+
 	local event_mappings = self._event_mappings
 	local template_count = 0
 

@@ -268,14 +268,16 @@ MenuInformationSlateUI._parse_information_data = function (self, information_dat
 	local body = information_data.body
 	local offset = 0
 
-	for idx, section_data in ipairs(body) do
-		local section_type = section_data.type
-		local func = self["_parse_" .. section_type .. "_data"]
+	if body then
+		for idx, section_data in ipairs(body) do
+			local section_type = section_data.type
+			local func = self["_parse_" .. section_type .. "_data"]
 
-		if func then
-			offset = func(self, section_data, idx, offset)
-		else
-			fassert(false, "[MenuInformationSlateUi] There is no parse function for type %q", section_type)
+			if func then
+				offset = func(self, section_data, idx, offset)
+			else
+				fassert(false, "[MenuInformationSlateUi] There is no parse function for type %q", section_type)
+			end
 		end
 	end
 

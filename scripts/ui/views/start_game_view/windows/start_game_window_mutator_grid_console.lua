@@ -161,7 +161,7 @@ StartGameWindowMutatorGridConsole.create_ui_elements = function (self, params, o
 	self._overlay_widgets, self._overlay_widgets_by_name = UIUtils.create_widgets(overlay_widget_definition)
 	self._delete_deeds_buttons_widgets, self._delete_deeds_buttons_widgets_by_name = UIUtils.create_widgets(delete_deeds_buttons_definition)
 
-	if not GameSettingsDevelopment.read_only_backend then
+	if GameSettingsDevelopment.read_only_backend then
 		local delete_deed_widgets = self._delete_deeds_buttons_widgets_by_name
 
 		delete_deed_widgets.button_delete.content.button_hotspot.disable_button = true
