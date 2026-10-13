@@ -128,11 +128,11 @@ local generic_frame_template = {
 
 CosmeticUtils.generate_frame_template = function (name)
 	local template = generic_frame_template
-	local texture_package_name = string.format("resource_packages/store/item_icons/store_item_icon_%s", name)
+	local texture_package_name = string.format("resource_packages/store/item_icons/sii_%s", name)
 
 	if Application.can_get("package", texture_package_name) then
 		template.texture_package_name = texture_package_name
-		MaterialSettingsTemplates.generated_portrait_frame.portrait_frame.texture = string.format("gui/1080p/single_textures/store_item_icons/store_item_icon_%s/store_item_icon_%s", name, name)
+		MaterialSettingsTemplates.generated_portrait_frame.portrait_frame.texture = string.format("gui/1080p/single_textures/store_item_icons/sii_%s", name)
 	elseif Cosmetics[name] then
 		local cosmetic = Cosmetics[name]
 

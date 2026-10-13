@@ -660,8 +660,8 @@ ImguiStoreRotation._draw_selected_item_image = function (self, item_id)
 
 	if item then
 		if item.item_type ~= "bundle" then
-			local texture_name = "store_item_icon_" .. item_id
-			local texture_path = "gui/1080p/single_textures/store_item_icons/" .. texture_name .. "/" .. texture_name
+			local texture_name = "sii_" .. item_id
+			local texture_path = "gui/1080p/single_textures/store_item_icons/" .. texture_name
 			local package_name = "resource_packages/store/item_icons/" .. texture_name
 
 			if not Application.can_get("texture", texture_path) and Application.can_get("package", package_name) then
@@ -690,7 +690,7 @@ ImguiStoreRotation._draw_selected_item_image = function (self, item_id)
 				end
 			end
 		elseif item.item_type == "bundle" then
-			local texture_name = "store_item_icon_" .. item_id
+			local texture_name = "sii_" .. item_id
 			local texture_path = "gui/1080p/single_textures/store_bundle/" .. texture_name
 			local package_name = "resource_packages/store/bundle_icons/" .. texture_name
 

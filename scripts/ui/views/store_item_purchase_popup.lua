@@ -1710,7 +1710,7 @@ StoreItemPurchasePopup._populate_item_widget = function (self, widget, item, pro
 
 	local reference_name = "StoreItemPurchasePopup_" .. product_id .. "_" .. self._reference_id
 	local package_product_id = has_parent and parent_id and parent_id or store_icon_override_key or product_id
-	local texture_name = "store_item_icon_" .. package_product_id
+	local texture_name = "sii_" .. package_product_id
 	local package_name = "resource_packages/store/item_icons/" .. texture_name
 	local package_available = Application.can_get("package", package_name)
 
@@ -1727,7 +1727,7 @@ StoreItemPurchasePopup._populate_item_widget = function (self, widget, item, pro
 				return
 			end
 
-			local texture_path = "gui/1080p/single_textures/store_item_icons/" .. texture_name .. "/" .. texture_name
+			local texture_path = "gui/1080p/single_textures/store_item_icons/" .. texture_name
 
 			self:_set_material_diffuse(gui, new_material_name, texture_path)
 

@@ -9,7 +9,7 @@ StoreBundleLayouts = {
 				localize = false,
 				show_frame = true,
 				text = "",
-				texture_package = "resource_packages/store/bundle_icons/store_item_icon_five_career_bundle_0001",
+				texture_package = "resource_packages/store/bundle_icons/sii_five_career_bundle_0001",
 				texture_path = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_five_career_bundle_0001",
 				image_size = {
 					800.4,
@@ -265,7 +265,7 @@ StoreBundleLayouts = {
 				localize = false,
 				show_frame = true,
 				text = "",
-				texture_package = "resource_packages/store/bundle_icons/store_item_icon_fall_collection_2021_bundle",
+				texture_package = "resource_packages/store/bundle_icons/sii_fall_collection_2021_bundle",
 				texture_path = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_fall_collection_2021_bundle",
 				image_size = {
 					800.4,
@@ -521,7 +521,7 @@ StoreBundleLayouts = {
 				localize = false,
 				show_frame = true,
 				text = "",
-				texture_package = "resource_packages/store/bundle_icons/store_item_icon_q1_collection_bundle",
+				texture_package = "resource_packages/store/bundle_icons/sii_q1_collection_bundle",
 				texture_path = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_q1_collection_bundle",
 				image_size = {
 					800.4,
@@ -777,7 +777,7 @@ StoreBundleLayouts = {
 				localize = false,
 				show_frame = true,
 				text = "",
-				texture_package = "resource_packages/store/bundle_icons/store_item_icon_five_career_bundle_0004",
+				texture_package = "resource_packages/store/bundle_icons/sii_five_career_bundle_0004",
 				texture_path = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_five_career_bundle_0004",
 				image_size = {
 					800.4,
@@ -1033,7 +1033,7 @@ StoreBundleLayouts = {
 				localize = false,
 				show_frame = true,
 				text = "",
-				texture_package = "resource_packages/store/bundle_icons/store_item_icon_five_career_bundle_0005",
+				texture_package = "resource_packages/store/bundle_icons/sii_five_career_bundle_0005",
 				texture_path = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_five_career_bundle_0005",
 				image_size = {
 					800.4,
@@ -1289,7 +1289,7 @@ StoreBundleLayouts = {
 				localize = false,
 				show_frame = true,
 				text = "",
-				texture_package = "resource_packages/store/bundle_icons/store_item_icon_five_career_bundle_0006",
+				texture_package = "resource_packages/store/bundle_icons/sii_five_career_bundle_0006",
 				texture_path = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_five_career_bundle_0006",
 				image_size = {
 					800.4,
@@ -1545,7 +1545,7 @@ StoreBundleLayouts = {
 				localize = false,
 				show_frame = true,
 				text = "",
-				texture_package = "resource_packages/store/bundle_icons/store_item_icon_q2_2023_hat_collection",
+				texture_package = "resource_packages/store/bundle_icons/sii_q2_2023_hat_collection",
 				texture_path = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_q2_2023_hat_collection",
 				image_size = {
 					800.4,
@@ -1761,7 +1761,7 @@ StoreBundleLayouts = {
 				localize = false,
 				show_frame = true,
 				text = "",
-				texture_package = "resource_packages/store/bundle_icons/store_item_icon_five_career_bundle_0007",
+				texture_package = "resource_packages/store/bundle_icons/sii_five_career_bundle_0007",
 				texture_path = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_five_career_bundle_0007",
 				image_size = {
 					800.4,
@@ -2017,7 +2017,7 @@ StoreBundleLayouts = {
 				localize = false,
 				show_frame = true,
 				text = "",
-				texture_package = "resource_packages/store/bundle_icons/store_item_icon_skaven_skins_bundle_0001",
+				texture_package = "resource_packages/store/bundle_icons/sii_skaven_skins_bundle_0001",
 				texture_path = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_skaven_skins_bundle_0001",
 				image_size = {
 					800.4,
@@ -2233,7 +2233,7 @@ StoreBundleLayouts = {
 				localize = false,
 				show_frame = true,
 				text = "",
-				texture_package = "resource_packages/store/bundle_icons/store_item_icon_five_career_bundle_0008",
+				texture_package = "resource_packages/store/bundle_icons/sii_five_career_bundle_0008",
 				texture_path = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_five_career_bundle_0008",
 				image_size = {
 					800.4,

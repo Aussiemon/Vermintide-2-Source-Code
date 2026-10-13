@@ -86,6 +86,16 @@ IngameViewLayoutLogic._update_menu_options = function (self)
 				new_menu_layout = layout_list.tutorial
 			elseif is_offline then
 				new_menu_layout = layout_list.offline
+
+				if IS_WINDOWS then
+					if num_human_players == 1 then
+						new_menu_layout = layout_list.alone
+					elseif self.is_server then
+						new_menu_layout = layout_list.host
+					else
+						new_menu_layout = layout_list.client
+					end
+				end
 			elseif num_human_players == 1 then
 				new_menu_layout = layout_list.alone
 			elseif self.is_server then

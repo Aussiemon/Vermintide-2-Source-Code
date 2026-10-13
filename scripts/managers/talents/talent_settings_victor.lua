@@ -909,7 +909,7 @@ TalentBuffTemplates.witch_hunter = {
 	victor_bountyhunter_stacking_damage_reduction_on_elite_or_special_kill_buff = {
 		buffs = {
 			{
-				icon = "victor_bountyhunter_stacking_damage_reduction_on_elite_or_special_kill",
+				icon = "bh_5_3",
 				stat_buff = "damage_taken",
 			},
 		},
@@ -945,7 +945,7 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				buff_func = "victor_bounty_blast_streak_buff",
 				event = "on_hit",
-				icon = "victor_bountyhunter_activated_ability_reset_cooldown_on_stacks",
+				icon = "bh_6_1",
 				max_stacks = 20,
 			},
 		},
@@ -1149,7 +1149,7 @@ TalentBuffTemplates.witch_hunter = {
 	victor_witchhunter_ping_target_crit_chance = {
 		buffs = {
 			{
-				icon = "victor_witchhunter_critical_hit_chance_on_ping_target_killed",
+				icon = "wh_4_3",
 				max_stacks = 1,
 				refresh_durations = true,
 				stat_buff = "critical_strike_chance",
@@ -1245,7 +1245,7 @@ TalentBuffTemplates.witch_hunter = {
 	victor_witchhunter_activated_ability_guaranteed_crit_self_buff = {
 		buffs = {
 			{
-				icon = "victor_witchhunter_activated_ability_guaranteed_crit_self_buff",
+				icon = "wh_6_2",
 				max_stacks = 1,
 				refresh_durations = true,
 				stat_buff = "critical_strike_chance_melee",
@@ -1915,7 +1915,7 @@ Talents.witch_hunter = {
 	{
 		buffer = "server",
 		description = "victor_bountyhunter_stacking_damage_reduction_on_elite_or_special_kill_desc",
-		icon = "victor_bountyhunter_stacking_damage_reduction_on_elite_or_special_kill",
+		icon = "bh_5_3",
 		name = "victor_bountyhunter_stacking_damage_reduction_on_elite_or_special_kill",
 		num_ranks = 1,
 		description_values = {
@@ -1966,7 +1966,7 @@ Talents.witch_hunter = {
 	},
 	{
 		description = "victor_bountyhunter_activated_ability_reset_cooldown_on_stacks_2_desc",
-		icon = "victor_bountyhunter_activated_ability_reset_cooldown_on_stacks",
+		icon = "bh_6_1",
 		name = "victor_bountyhunter_activated_ability_reset_cooldown_on_stacks",
 		num_ranks = 1,
 		description_values = {
@@ -2170,7 +2170,7 @@ Talents.witch_hunter = {
 	{
 		buffer = "both",
 		description = "victor_witchhunter_critical_hit_chance_on_ping_target_killed_desc_2",
-		icon = "victor_witchhunter_critical_hit_chance_on_ping_target_killed",
+		icon = "wh_4_3",
 		name = "victor_witchhunter_critical_hit_chance_on_ping_target_killed",
 		num_ranks = 1,
 		description_values = {
@@ -2270,7 +2270,7 @@ Talents.witch_hunter = {
 	},
 	{
 		description = "victor_captain_activated_ability_stagger_ping_debuff_desc",
-		icon = "victor_captain_activated_ability_stagger_ping_debuff",
+		icon = "wh_6_1",
 		name = "victor_captain_activated_ability_stagger_ping_debuff",
 		num_ranks = 1,
 		description_values = {},
@@ -2278,7 +2278,7 @@ Talents.witch_hunter = {
 	},
 	{
 		description = "victor_witchhunter_activated_ability_guaranteed_crit_self_buff_desc",
-		icon = "victor_witchhunter_activated_ability_guaranteed_crit_self_buff",
+		icon = "wh_6_2",
 		name = "victor_witchhunter_activated_ability_guaranteed_crit_self_buff",
 		num_ranks = 1,
 		description_values = {
@@ -2294,7 +2294,7 @@ Talents.witch_hunter = {
 	},
 	{
 		description = "victor_witchhunter_activated_ability_refund_cooldown_on_enemies_hit_desc",
-		icon = "victor_witchhunter_activated_ability_refund_cooldown_on_enemies_hit",
+		icon = "wh_5_3",
 		name = "victor_witchhunter_activated_ability_refund_cooldown_on_enemies_hit",
 		num_ranks = 1,
 		description_values = {

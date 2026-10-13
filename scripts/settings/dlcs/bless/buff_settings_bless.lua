@@ -153,7 +153,7 @@ settings.buff_templates = {
 	victor_priest_book_buff_attack_speed = {
 		buffs = {
 			{
-				icon = "victor_witchhunter_activated_ability_guaranteed_crit_self_buff",
+				icon = "wh_6_2",
 				max_stacks = 1,
 				multiplier = 0.1,
 				name = "victor_priest_book_buff_attack_speed",

@@ -372,7 +372,7 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_scholar_passive_increased_attack_speed = {
 		buffs = {
 			{
-				icon = "sienna_scholar_passive_increased_attack_speed_from_overcharge",
+				icon = "scholar_4_3",
 				stat_buff = "attack_speed",
 			},
 		},
@@ -388,7 +388,7 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_scholar_passive_increased_power_level_on_high_overcharge_buff = {
 		buffs = {
 			{
-				icon = "sienna_scholar_passive_increased_power_level_on_high_overcharge",
+				icon = "scholar_4_2",
 				stat_buff = "power_level_ranged",
 			},
 		},
@@ -405,7 +405,7 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_scholar_passive_overcharge_pause_on_special_kill_buff = {
 		buffs = {
 			{
-				icon = "sienna_scholar_passive_overcharge_pause_on_special_kill",
+				icon = "scholar_4_1",
 				max_stacks = 1,
 				refresh_durations = true,
 				stat_buff = "reduced_overcharge",
@@ -1000,7 +1000,7 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_unchained_activated_ability_pulse = {
 		buffs = {
 			{
-				icon = "sienna_unchained_activated_ability_power_on_enemies_hit",
+				icon = "unchained_6_1",
 				max_stacks = 1,
 				pulse_frequency = 0.5,
 				refresh_durations = true,
@@ -1271,7 +1271,7 @@ Talents.bright_wizard = {
 	},
 	{
 		description = "sienna_scholar_passive_increased_attack_speed_from_overcharge_desc",
-		icon = "sienna_scholar_passive_increased_attack_speed_from_overcharge",
+		icon = "scholar_4_3",
 		name = "sienna_scholar_passive_increased_attack_speed_from_overcharge",
 		num_ranks = 1,
 		description_values = {
@@ -1293,7 +1293,7 @@ Talents.bright_wizard = {
 	{
 		buffer = "server",
 		description = "sienna_scholar_passive_increased_power_level_on_high_overcharge_desc",
-		icon = "sienna_scholar_passive_increased_power_level_on_high_overcharge",
+		icon = "scholar_4_2",
 		name = "sienna_scholar_passive_increased_power_level_on_high_overcharge",
 		num_ranks = 1,
 		description_values = {
@@ -1308,7 +1308,7 @@ Talents.bright_wizard = {
 	},
 	{
 		description = "sienna_scholar_passive_overcharge_pause_on_special_kill_desc",
-		icon = "sienna_scholar_passive_overcharge_pause_on_special_kill",
+		icon = "scholar_4_1",
 		name = "sienna_scholar_passive_overcharge_pause_on_special_kill",
 		num_ranks = 1,
 		description_values = {
@@ -1409,7 +1409,7 @@ Talents.bright_wizard = {
 	},
 	{
 		description = "sienna_scholar_activated_ability_crit_refresh_cooldown_desc",
-		icon = "sienna_scholar_activated_ability_crit_refresh_cooldown",
+		icon = "scholar_6_3",
 		name = "sienna_scholar_activated_ability_crit_refresh_cooldown",
 		num_ranks = 1,
 		buffs = {
@@ -1677,7 +1677,7 @@ Talents.bright_wizard = {
 	{
 		buffer = "server",
 		description = "sienna_adept_increased_burn_damage_reduced_non_burn_damage_desc",
-		icon = "sienna_adept_increased_burn_damage_reduced_non_burn_damage",
+		icon = "bw_2_2",
 		name = "sienna_adept_increased_burn_damage_reduced_non_burn_damage",
 		num_ranks = 1,
 		description_values = {
@@ -2053,7 +2053,7 @@ Talents.bright_wizard = {
 	{
 		buffer = "server",
 		description = "sienna_unchained_activated_ability_fire_aura_desc",
-		icon = "sienna_unchained_activated_ability_power_on_enemies_hit",
+		icon = "unchained_6_1",
 		name = "sienna_unchained_activated_ability_fire_aura",
 		num_ranks = 1,
 		description_values = {

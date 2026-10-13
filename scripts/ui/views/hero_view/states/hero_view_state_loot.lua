@@ -1190,9 +1190,10 @@ HeroViewStateLoot._select_grid_item = function (self, item, t, reset_num_chests)
 	local items_per_chest = UISettings.items_per_chest
 	local has_space_for_one = items_per_chest <= free_inventory_slots
 	local has_space_for_multiple = free_inventory_slots >= items_per_chest * num_chests_to_multi_open
+	local read_write_backend = not GameSettingsDevelopment.read_only_backend
 
-	self._open_chests_enabled = num_chests >= 1 and has_space_for_one
-	self._open_multiple_chests_enabled = num_chests >= 2 and has_space_for_multiple
+	self._open_chests_enabled = read_write_backend and num_chests >= 1 and has_space_for_one
+	self._open_multiple_chests_enabled = read_write_backend and num_chests >= 2 and has_space_for_multiple
 	widgets_by_name.item_cap_warning_text.content.visible = not has_space_for_one or not has_space_for_multiple
 	widgets_by_name.open_button.content.button_hotspot.disable_button = not self._open_chests_enabled
 	widgets_by_name.open_multiple_button.content.button_hotspot.disable_button = not self._open_multiple_chests_enabled

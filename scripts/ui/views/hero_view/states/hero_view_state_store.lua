@@ -2026,7 +2026,7 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 	self._reference_id = (self._reference_id or 0) + 1
 
 	local reference_name = product_id .. "_" .. self._reference_id
-	local texture_name = "store_item_icon_" .. (store_icon_override_key or product_id)
+	local texture_name = "sii_" .. (store_icon_override_key or product_id)
 	local package_name = item_data.store_texture_package or "resource_packages/store/item_icons/" .. texture_name
 	local package_available = Application.can_get("package", package_name)
 
@@ -2040,7 +2040,7 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 		self:_create_material_instance(top_gui, new_material_name, template_material_name, reference_name)
 
 		local function callback()
-			local texture_path = item_data.store_texture or "gui/1080p/single_textures/store_item_icons/" .. texture_name .. "/" .. texture_name
+			local texture_path = item_data.store_texture or "gui/1080p/single_textures/store_item_icons/" .. texture_name
 
 			self:_set_material_diffuse(top_gui, new_material_name, texture_path)
 
@@ -2091,7 +2091,7 @@ HeroViewStateStore._populate_collection_item = function (self, widget, product, 
 	self._reference_id = (self._reference_id or 0) + 1
 
 	local reference_name = product_id .. "_" .. self._reference_id
-	local texture_name = "store_item_icon_" .. (store_icon_override_key or product_id)
+	local texture_name = "sii_" .. (store_icon_override_key or product_id)
 	local package_name = item_data.store_texture_package or "resource_packages/store/item_icons/" .. texture_name
 	local package_available = Application.can_get("package", package_name)
 
@@ -2105,7 +2105,7 @@ HeroViewStateStore._populate_collection_item = function (self, widget, product, 
 		self:_create_material_instance(top_gui, new_material_name, template_material_name, reference_name)
 
 		local function callback()
-			local texture_path = item_data.store_texture or "gui/1080p/single_textures/store_item_icons/" .. texture_name .. "/" .. texture_name
+			local texture_path = item_data.store_texture or "gui/1080p/single_textures/store_item_icons/" .. texture_name
 
 			self:_set_material_diffuse(top_gui, new_material_name, texture_path)
 

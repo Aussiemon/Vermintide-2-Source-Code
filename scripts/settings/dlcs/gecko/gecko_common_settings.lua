@@ -9,7 +9,7 @@ settings.keep_decoration_file_names = {
 	"scripts/settings/paintings_01",
 }
 
-local extra_sound_package = "resource_packages/keep_paintings/keep_paintings_inn_level_sounds_01"
+local extra_sound_package = "resource_packages/keep_paintings/kp_inn_level_sounds_01"
 
 settings.extra_level_packages = {
 	inn_level = {

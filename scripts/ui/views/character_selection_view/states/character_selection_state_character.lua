@@ -1306,7 +1306,7 @@ CharacterSelectionStateCharacter.cb_hero_unit_spawned = function (self, hero_nam
 
 			world_previewer:equip_item(item_name, slot, backend_id)
 		elseif career_settings.required_dlc and Managers.unlock:is_dlc_unlocked(career_settings.required_dlc) then
-			Crashify.print_exception("[Cosmetic] Failed to equip item in slot \"slot_hat\" for career %q in character selection state character", career_name)
+			Crashify.print_exception("[Cosmetic]", "Failed to equip item in slot \"slot_hat\" for career %q in character selection state character", career_name)
 		end
 
 		local skin_item = BackendUtils.get_loadout_item(career_name, "slot_skin")

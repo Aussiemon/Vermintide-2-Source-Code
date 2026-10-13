@@ -2270,7 +2270,7 @@ for _, painting in ipairs(painting_order) do
 	end
 end
 
-local prefix = "resource_packages/keep_paintings/keep_painting_"
+local prefix = "resource_packages/keep_paintings/kp_"
 
 PaintingPackageNames = PaintingPackageNames or {}
 
